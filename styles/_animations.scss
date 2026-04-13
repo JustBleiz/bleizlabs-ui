@@ -172,7 +172,10 @@
   }
 }
 
-// RadioGroupItem dot — scale-in when selected (replaces old radioFill)
+// RadioGroupItem dot — scale-in when selected
+// (keyframe name `radioFill` predates the RadioOption → RadioGroupItem rename
+// per D24; the keyframe identifier is kept for stability, only the consuming
+// component was renamed.)
 @keyframes radioFill {
   from {
     opacity: 0;

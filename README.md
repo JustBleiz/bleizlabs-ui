@@ -58,7 +58,7 @@ To consume tokens from a React component:
 }
 ```
 
-Components **never** reference primitive tokens — always semantic CSS variables (`var(--color-brand)`, not `$brand-500`). See `docs/component-standards.md` §3.5.
+Components **never** reference primitive tokens — always semantic CSS variables (`var(--color-brand)`, not `$brand-500`). See `../docs/component-standards.md` §3.5.
 
 ## Playground — visual QA
 
