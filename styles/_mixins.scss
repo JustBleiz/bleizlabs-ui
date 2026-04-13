@@ -1,0 +1,170 @@
+// _mixins.scss
+//
+// Reusable SCSS mixins: breakpoints (mobile-first, D12), touch-target (D13),
+// typography helpers. Components @use this file via `@use '../styles/mixins' as mx`
+// and reference mixins as `@include mx.bp-md { ... }`.
+
+@use 'project-settings' as *;
+
+// ============================================================================
+// BREAKPOINTS — mobile-first (min-width) per D12
+// ============================================================================
+// Usage:
+//   .root {
+//     padding: var(--space-3);
+//     @include mx.bp-md { padding: var(--space-4); }
+//     @include mx.bp-lg { padding: var(--space-6); }
+//   }
+
+@mixin bp-sm {
+  @media (min-width: $seed-bp-sm) {
+    @content;
+  }
+}
+
+@mixin bp-md {
+  @media (min-width: $seed-bp-md) {
+    @content;
+  }
+}
+
+@mixin bp-lg {
+  @media (min-width: $seed-bp-lg) {
+    @content;
+  }
+}
+
+@mixin bp-xl {
+  @media (min-width: $seed-bp-xl) {
+    @content;
+  }
+}
+
+@mixin bp-2xl {
+  @media (min-width: $seed-bp-2xl) {
+    @content;
+  }
+}
+
+// ============================================================================
+// TOUCH TARGETS — 44x44 minimum on coarse pointer (D13, WCAG 2.2 AAA)
+// ============================================================================
+// Apply to interactive atoms (Button, Checkbox, RadioGroupItem, Toggle,
+// ToggleGroup, Switch, Accordion trigger, Phase 10 triggers). Relaxed on
+// precise pointer (desktop mouse) where smaller hit targets are acceptable.
+//
+// Usage:
+//   .root {
+//     @include mx.touch-target;
+//   }
+
+@mixin touch-target {
+  @media (pointer: coarse) {
+    min-height: 44px;
+    min-width: 44px;
+  }
+}
+
+// ============================================================================
+// TYPOGRAPHY HELPERS — presets using --font-primary / --font-secondary
+// ============================================================================
+// Keeps heading styles consistent across components without duplication.
+// Heading component uses these; page-level SCSS can too for standalone cases.
+
+@mixin heading-1 {
+  font-family: var(--font-primary);
+  font-size: var(--font-size-5xl);
+  line-height: var(--line-height-tight);
+  font-weight: var(--font-weight-bold);
+  letter-spacing: -0.025em;
+}
+
+@mixin heading-2 {
+  font-family: var(--font-primary);
+  font-size: var(--font-size-4xl);
+  line-height: var(--line-height-tight);
+  font-weight: var(--font-weight-bold);
+  letter-spacing: -0.02em;
+}
+
+@mixin heading-3 {
+  font-family: var(--font-primary);
+  font-size: var(--font-size-3xl);
+  line-height: var(--line-height-snug);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: -0.015em;
+}
+
+@mixin heading-4 {
+  font-family: var(--font-primary);
+  font-size: var(--font-size-2xl);
+  line-height: var(--line-height-snug);
+  font-weight: var(--font-weight-semibold);
+}
+
+@mixin body-large {
+  font-family: var(--font-secondary);
+  font-size: var(--font-size-lg);
+  line-height: var(--line-height-relaxed);
+  font-weight: var(--font-weight-regular);
+}
+
+@mixin body-base {
+  font-family: var(--font-secondary);
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-normal);
+  font-weight: var(--font-weight-regular);
+}
+
+@mixin body-small {
+  font-family: var(--font-secondary);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-normal);
+  font-weight: var(--font-weight-regular);
+}
+
+@mixin caption {
+  font-family: var(--font-secondary);
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-normal);
+  font-weight: var(--font-weight-medium);
+  letter-spacing: 0.01em;
+}
+
+// ============================================================================
+// FOCUS RING HELPER — standardized focus-visible styling
+// ============================================================================
+// Usage:
+//   .root {
+//     &:focus-visible {
+//       @include mx.focus-ring;
+//     }
+//   }
+
+@mixin focus-ring {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+
+@mixin focus-ring-error {
+  outline: none;
+  box-shadow: var(--focus-ring-error);
+}
+
+// ============================================================================
+// VISUALLY HIDDEN — hide from sight but keep in accessibility tree
+// ============================================================================
+// For screen-reader-only labels, native inputs behind custom UI (Switch,
+// Checkbox custom styling), etc.
+
+@mixin sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
