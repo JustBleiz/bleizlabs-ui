@@ -1,0 +1,49 @@
+// _project-overrides.scss
+//
+// OPTIONAL manual overrides — use when the generator cascade doesn't produce
+// the exact value you need for a specific project.
+//
+// This file is intentionally empty by default. Add overrides only when:
+//   1. A generated color shade is slightly off for your brand (e.g., brand-600
+//      is too dark visually — override to a custom value)
+//   2. A semantic token needs a one-off adjustment that shouldn't change the
+//      generator logic (which would ripple through other projects)
+//   3. Dark/light theme needs per-token tweaks beyond what the generator provides
+//
+// Rules:
+//   - Overrides go INSIDE :root or :root[data-theme='*'] blocks
+//   - Use `!important` only as last resort — prefer more specific selectors
+//   - Document WHY each override exists (one-line comment)
+//   - If an override is needed across many projects, it's a generator bug —
+//     fix _generator.scss and let every project inherit the fix
+//
+// Order of precedence (CSS cascade):
+//   1. _semantics.scss defines tokens
+//   2. _component-tokens.scss adds per-component aliases
+//   3. _project-overrides.scss (this file) applies last — wins where specified
+//
+// For architectural context: docs/decisions.md D3 (seed-based generation),
+// D9 (spacing scale), D25 (a11y pipeline).
+
+// ============================================================================
+// EXAMPLE: brand hover override if generated shade feels off
+// ============================================================================
+// :root {
+//   --hover-brand: #1ab39b;  // custom hover (reason: generated tint too bright)
+// }
+
+// ============================================================================
+// EXAMPLE: light-theme-specific surface override
+// ============================================================================
+// :root[data-theme='light'] {
+//   --color-surface-raised: #fafafa;  // slightly warmer than generated gray-100
+// }
+
+// ============================================================================
+// EXAMPLE: focus ring customization per brand guidelines
+// ============================================================================
+// :root {
+//   --focus-ring: 0 0 0 2px #fff, 0 0 0 4px var(--color-brand);  // double ring
+// }
+
+// (leave empty below — add overrides as needed)
