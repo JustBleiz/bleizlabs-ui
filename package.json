@@ -3,14 +3,29 @@
   "version": "0.1.0-dev",
   "description": "Universal fully-styled React component library for BleizLabs. Zero runtime UI dependencies. Seed-based design tokens. Copy-to-project model.",
   "private": true,
-  "type": "module",
   "license": "MIT",
   "author": "BleizLabs",
   "scripts": {
-    "build": "node playground/build.mjs",
-    "preview": "node playground/build.mjs"
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint",
+    "lint:fix": "eslint --fix",
+    "tokens:build": "node playground/build.mjs",
+    "tokens:verify": "node playground/build.mjs"
+  },
+  "dependencies": {
+    "next": "^16.2.3",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
   },
   "devDependencies": {
-    "sass": "^1.83.0"
+    "@types/node": "^20.11.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "eslint": "^9.0.0",
+    "eslint-config-next": "^16.2.3",
+    "sass": "^1.83.0",
+    "typescript": "^5.6.0"
   }
 }
