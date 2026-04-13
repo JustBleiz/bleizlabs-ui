@@ -1,0 +1,16 @@
+{
+  "name": "bleizlabs-ui",
+  "version": "0.1.0-dev",
+  "description": "Universal fully-styled React component library for BleizLabs. Zero runtime UI dependencies. Seed-based design tokens. Copy-to-project model.",
+  "private": true,
+  "type": "module",
+  "license": "MIT",
+  "author": "BleizLabs",
+  "scripts": {
+    "build": "node playground/build.mjs",
+    "preview": "node playground/build.mjs"
+  },
+  "devDependencies": {
+    "sass": "^1.83.0"
+  }
+}
