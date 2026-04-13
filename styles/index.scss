@@ -1,0 +1,22 @@
+// index.scss
+//
+// Main entry for bleizlabs-ui style fundament.
+// Consumers:
+//   @use 'path/to/bleizlabs-ui/styles/index' as bui;
+//
+// Load order matters:
+//   1. project-settings  — seed values (source of truth)
+//   2. generator         — reads seeds, produces SCSS scales/maps/functions
+//   3. semantics         — emits CSS custom properties, sets :root base styles
+//   4. component-tokens  — optional per-component aliases (mostly empty by default)
+//   5. mixins            — breakpoints, touch-target, typography, focus-ring, sr-only
+//   6. animations        — 16 keyframes + global prefers-reduced-motion guard
+//   7. project-overrides — last-layer escape hatch (empty by default)
+
+@forward 'project-settings';
+@forward 'generator';
+@forward 'semantics';
+@forward 'component-tokens';
+@forward 'mixins';
+@forward 'animations';
+@forward 'project-overrides';
