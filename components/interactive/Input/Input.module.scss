@@ -14,11 +14,12 @@
 .inputWrap {
   position: relative;
   display: flex;
-  align-items: center;
+  align-items: stretch;
   width: 100%;
   background: var(--input-bg);
   border: 1px solid var(--input-border);
   border-radius: var(--radius-input);
+  overflow: hidden;
   transition:
     border-color var(--duration-fast) var(--easing-default),
     box-shadow var(--duration-fast) var(--easing-default);
@@ -62,13 +63,23 @@
   @include mx.touch-target;
 }
 
-.hasStart .input {
+// `.hasStartIcon` / `.hasEndIcon` adjust input padding when a decorative
+// icon slot is present (icon sits inside the input wrap, so the input no
+// longer needs full left/right padding to stay visually centered).
+// Prefix/suffix addons use `.addonText[data-side='*'] + .input` selectors
+// (below) and are handled separately — they fully replace the input's edge
+// padding because the addon owns the visual edge.
+.hasStartIcon .input {
   padding-left: var(--space-2);
 }
 
-.hasEnd .input {
+.hasEndIcon .input {
   padding-right: var(--space-2);
 }
+
+// ============================================================================
+// ICON SLOTS — startIcon / endIcon (decorative)
+// ============================================================================
 
 .startIcon,
 .endIcon {
@@ -94,6 +105,123 @@
   margin-right: var(--space-3);
 }
 
+// ============================================================================
+// TEXT ADDON — prefix / suffix props (E08 Layer 1)
+// ============================================================================
+// Visually distinct surface inside the input wrap. Sits flush against the
+// inner edge so the wrap looks like a single segmented control. The
+// `data-side` attribute distinguishes left vs right for SCSS selectors —
+// kept as a data attribute (not a separate class) so the markup is symmetric.
+
+.addonText {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  padding: 0 var(--space-3);
+  background: var(--input-addon-bg);
+  color: var(--input-addon-text);
+  font-family: var(--font-secondary);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-medium);
+  line-height: var(--line-height-normal);
+  white-space: nowrap;
+  user-select: none;
+}
+
+.addonText[data-side='start'] {
+  border-right: 1px solid var(--input-addon-border);
+}
+
+.addonText[data-side='end'] {
+  border-left: 1px solid var(--input-addon-border);
+}
+
+// When a prefix addon is present, kill the duplicate inner padding-left on
+// the input itself so the addon visually owns the left edge.
+.inputWrap > .addonText[data-side='start'] + .input {
+  padding-left: var(--space-3);
+}
+
+.inputWrap > .input + .addonText[data-side='end'] {
+  // suffix sits flush against the input
+}
+
+// ============================================================================
+// END SLOT — loading spinner / clear button container
+// ============================================================================
+
+.endSlot {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: var(--space-3);
+  flex-shrink: 0;
+}
+
+.clearButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--space-6);
+  height: var(--space-6);
+  margin-right: var(--space-2);
+  padding: 0;
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-sm);
+  color: var(--color-text-muted);
+  cursor: pointer;
+  flex-shrink: 0;
+  transition:
+    background-color var(--duration-fast) var(--easing-default),
+    color var(--duration-fast) var(--easing-default);
+
+  > svg {
+    width: var(--space-4);
+    height: var(--space-4);
+  }
+
+  &:hover {
+    background: var(--color-surface-raised);
+    color: var(--color-text-primary);
+  }
+
+  &:focus-visible {
+    @include mx.focus-ring;
+  }
+
+  // WCAG 2.5.5 enhanced target size on coarse pointer (D13)
+  @include mx.touch-target;
+}
+
+// ============================================================================
+// LOADING SPINNER — inline border spinner
+// ============================================================================
+
+.loadingSpinner {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--space-5);
+  height: var(--space-5);
+  color: var(--color-text-secondary);
+}
+
+.spinnerRing {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: 2px solid currentcolor;
+  border-top-color: transparent;
+  border-radius: 50%;
+  animation: spin var(--duration-slow) linear infinite;
+}
+
+// ============================================================================
+// HELPER / ERROR / COUNTER — below the input
+// ============================================================================
+
 .helper {
   margin: 0;
   font-family: var(--font-secondary);
@@ -111,12 +239,27 @@
   line-height: var(--line-height-normal);
 }
 
+.counter {
+  margin: 0;
+  align-self: flex-end;
+  font-family: var(--font-secondary);
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+  font-variant-numeric: tabular-nums;
+  line-height: var(--line-height-normal);
+}
+
 .srOnly {
   @include mx.sr-only;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .inputWrap {
+  .inputWrap,
+  .clearButton {
     transition: none;
+  }
+
+  .spinnerRing {
+    animation-duration: 0.001ms;
   }
 }
