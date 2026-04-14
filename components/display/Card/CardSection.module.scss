@@ -1,0 +1,15 @@
+.root {
+  display: flex;
+  flex-direction: var(--card-section-direction, column);
+  gap: var(--space-3);
+  min-width: 0;
+}
+
+// Any section marked `separator` gets a top divider EXCEPT when it is the
+// first child of its container. This makes the prop intuitive: "draw a
+// separator above me, unless I'm the first thing here."
+.separator:not(:first-child) {
+  margin-top: var(--space-4);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--color-border-subtle);
+}

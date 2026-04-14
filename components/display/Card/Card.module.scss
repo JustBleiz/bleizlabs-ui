@@ -1,0 +1,80 @@
+.root {
+  display: flex;
+  flex-direction: var(--card-direction, column);
+  width: var(--card-width, auto);
+  min-width: 0;
+  padding: var(--card-padding, var(--padding-card));
+  border-radius: var(--card-radius, var(--radius-card));
+  background: var(--color-surface);
+  color: var(--color-text-primary);
+  transition:
+    transform var(--duration-fast) var(--easing-default),
+    box-shadow var(--duration-fast) var(--easing-default),
+    border-color var(--duration-fast) var(--easing-default);
+}
+
+// ============================================================================
+// VARIANTS
+// ============================================================================
+
+.variantDefault {
+  border: 1px solid var(--color-border-subtle);
+}
+
+.variantElevated {
+  border: 1px solid var(--color-border-subtle);
+  box-shadow: var(--shadow-card);
+}
+
+.variantAccent {
+  position: relative;
+  border: 1px solid var(--color-border-subtle);
+}
+
+.accentLeft {
+  border-left: 3px solid var(--card-accent-color, var(--color-brand));
+}
+
+.accentTop {
+  border-top: 3px solid var(--card-accent-color, var(--color-brand));
+}
+
+.variantGlass {
+  background: var(--card-bg-glass);
+  border: 1px solid var(--color-border-subtle);
+  backdrop-filter: blur(var(--card-blur));
+  -webkit-backdrop-filter: blur(var(--card-blur));
+}
+
+// ============================================================================
+// HOVERABLE — opt-in interactive state
+// ============================================================================
+
+.hoverable {
+  cursor: pointer;
+
+  &:hover {
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-lg);
+    border-color: var(--color-border);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--focus-ring);
+    outline-offset: 2px;
+  }
+}
+
+// ============================================================================
+// REDUCED MOTION
+// ============================================================================
+
+@media (prefers-reduced-motion: reduce) {
+  .root {
+    transition: none;
+  }
+
+  .hoverable:hover {
+    transform: none;
+  }
+}
