@@ -119,6 +119,38 @@ const components: ComponentLink[] = [
     phase: 'Phase 3 — Display',
     status: 'available',
   },
+  {
+    href: '/components/button',
+    name: 'Button + ButtonGroup',
+    description:
+      '5 variants, 3 sizes, icon + iconOnly + href fallback + asChild. ButtonGroup joins via joined-group mixin (server-safe).',
+    phase: 'Phase 4 — Simple Interactive',
+    status: 'available',
+  },
+  {
+    href: '/components/input',
+    name: 'Input + Label + Textarea',
+    description:
+      'Form trio with controlled / uncontrolled state, auto-id label coupling, error + helper, start/end icons.',
+    phase: 'Phase 4 — Simple Interactive',
+    status: 'available',
+  },
+  {
+    href: '/components/selection',
+    name: 'Checkbox + RadioGroup',
+    description:
+      'Native form inputs with custom styling, checkmark + radioFill animations, controlled state, context-driven group.',
+    phase: 'Phase 4 — Simple Interactive',
+    status: 'available',
+  },
+  {
+    href: '/components/toggles',
+    name: 'Toggle + Switch + Accordion',
+    description:
+      'Toggle (aria-pressed), ToggleGroup (single/multiple, joined-group reuse), Switch (animated thumb), Accordion (APG disclosure).',
+    phase: 'Phase 4 — Simple Interactive',
+    status: 'available',
+  },
 ];
 
 export default function HomePage() {
