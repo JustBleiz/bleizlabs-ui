@@ -1,0 +1,111 @@
+import { forwardRef, type HTMLAttributes, type ReactNode } from 'react';
+import { ToggleGroup } from '@/components/interactive/ToggleGroup';
+import { Toggle } from '@/components/interactive/Toggle';
+import { Text } from '@/components/typography/Text';
+import { cn } from '@/components/utils/cn';
+import styles from './ToggleGroupFilter.module.scss';
+
+/**
+ * ToggleGroupFilter — filter-chip row composing ToggleGroup + Toggle + Text
+ * (Phase 7 M5, server-safe).
+ *
+ * @layer   molecule
+ * @tokens  --space-{1,2,3}
+ * @deps    ToggleGroup atom (type="multiple"), Toggle atom (value, children,
+ *          icon), Text atom (caption uppercase), cn
+ * @a11y    Delegates the `role="group"` + `aria-label` landmark to the
+ *          inner ToggleGroup. `label` (required) is forwarded as
+ *          ToggleGroup's `aria-label`. The optional `groupLabel`
+ *          renders as a visible uppercase caption above the toggle row
+ *          — it is **independent** from the accessible `label` so the
+ *          visual heading and the ARIA name can differ, or the visual
+ *          heading can be omitted entirely without losing accessibility.
+ * @notes   Thin wrapper over `ToggleGroup type="multiple"` — controlled
+ *          only (consumer owns `value` + `onValueChange` state). Maps
+ *          the flat `options` array to `Toggle` children internally so
+ *          consumers don't have to compose JSX manually. For custom
+ *          Toggle children layouts, drop down to `ToggleGroup` directly.
+ *
+ * @example
+ * const [statuses, setStatuses] = useState<string[]>(['active']);
+ *
+ * <ToggleGroupFilter
+ *   label="Filtr statusów"
+ *   groupLabel="Status"
+ *   options={[
+ *     { value: 'active', label: 'Aktywne' },
+ *     { value: 'paused', label: 'Wstrzymane' },
+ *     { value: 'done', label: 'Zakończone' },
+ *   ]}
+ *   value={statuses}
+ *   onValueChange={setStatuses}
+ * />
+ */
+export interface ToggleGroupFilterOption {
+  /** Stable value string — included in `onValueChange` when selected. */
+  value: string;
+  /** Visible label inside the Toggle. */
+  label: string;
+  /** Optional leading icon rendered by the underlying Toggle. */
+  icon?: ReactNode;
+}
+
+export interface ToggleGroupFilterProps
+  extends Omit<
+    HTMLAttributes<HTMLDivElement>,
+    'aria-label' | 'defaultValue' | 'onChange'
+  > {
+  /** Filter options rendered as `Toggle` children inside the group. */
+  options: ToggleGroupFilterOption[];
+  /** Controlled active values — subset of `options[].value`. */
+  value: string[];
+  /** Called with the new array of active values. */
+  onValueChange: (value: string[]) => void;
+  /** Accessible name for `role="group"` (required). */
+  label: string;
+  /** Optional visible uppercase caption above the toggle row. */
+  groupLabel?: string;
+}
+
+export const ToggleGroupFilter = forwardRef<
+  HTMLDivElement,
+  ToggleGroupFilterProps
+>(function ToggleGroupFilter(
+  {
+    options,
+    value,
+    onValueChange,
+    label,
+    groupLabel,
+    className,
+    ...rest
+  },
+  ref,
+) {
+  return (
+    <div ref={ref} className={cn(styles.root, className)} {...rest}>
+      {groupLabel ? (
+        <Text variant="caption" color="muted" uppercase className={styles.caption}>
+          {groupLabel}
+        </Text>
+      ) : null}
+      <ToggleGroup
+        type="multiple"
+        value={value}
+        onValueChange={onValueChange}
+        aria-label={label}
+        className={styles.group}
+      >
+        {options.map((option) => (
+          <Toggle
+            key={option.value}
+            value={option.value}
+            icon={option.icon}
+          >
+            {option.label}
+          </Toggle>
+        ))}
+      </ToggleGroup>
+    </div>
+  );
+});
