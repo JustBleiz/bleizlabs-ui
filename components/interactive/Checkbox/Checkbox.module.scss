@@ -1,0 +1,77 @@
+@use '../../../styles/mixins' as mx;
+
+.root {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-3);
+  font-family: var(--font-secondary);
+  font-size: var(--font-size-base);
+  color: var(--color-text-primary);
+  line-height: var(--line-height-normal);
+  cursor: pointer;
+  user-select: none;
+
+  @include mx.touch-target;
+}
+
+.disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.input {
+  @include mx.sr-only;
+}
+
+.box {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--space-5);
+  height: var(--space-5);
+  flex-shrink: 0;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  color: var(--color-text-inverse);
+  transition:
+    background-color var(--duration-fast) var(--easing-default),
+    border-color var(--duration-fast) var(--easing-default);
+}
+
+.check {
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  transform: scale(0);
+}
+
+.input:focus-visible + .box {
+  @include mx.focus-ring;
+}
+
+.input:checked + .box {
+  background: var(--color-brand);
+  border-color: var(--color-brand);
+}
+
+.input:checked + .box .check {
+  animation: checkmark var(--duration-fast) var(--easing-default) forwards;
+}
+
+.label {
+  display: inline-flex;
+  align-items: center;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .box {
+    transition: none;
+  }
+
+  .input:checked + .box .check {
+    animation: none;
+    opacity: 1;
+    transform: scale(1);
+  }
+}
