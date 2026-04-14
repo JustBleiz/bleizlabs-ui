@@ -1,0 +1,37 @@
+@use '../../../styles/mixins' as mx;
+
+// ============================================================================
+// BASE — outlined pill using native <kbd>
+// ============================================================================
+
+.root {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.75em;
+  border: 1px solid var(--color-border);
+  border-bottom-width: 2px;
+  border-radius: var(--radius-sm);
+  background: var(--color-surface-raised);
+  color: var(--color-text-primary);
+  font-family: var(--font-mono);
+  font-weight: var(--font-weight-medium);
+  line-height: var(--line-height-snug);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  vertical-align: baseline;
+}
+
+// ============================================================================
+// SIZES
+// ============================================================================
+
+.sizeSm {
+  padding: 0 var(--space-1);
+  font-size: var(--font-size-xs);
+}
+
+.sizeMd {
+  padding: var(--space-1) var(--space-2);
+  font-size: var(--font-size-sm);
+}
