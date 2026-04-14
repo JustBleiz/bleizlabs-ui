@@ -223,6 +223,14 @@ const components: ComponentLink[] = [
     phase: 'Phase 10 — Complex Interactive',
     status: 'available',
   },
+  {
+    href: '/components/sheet',
+    name: 'Sheet',
+    description:
+      'E18 CI4 — 4-directional side panel (left/right/top/bottom). Per-side animation, inner-corner border-radius, safe-area-inset. Horizontal uses width variants, vertical uses height. Closes the Drawer family. Reuses useFocusTrap.',
+    phase: 'Phase 10 — Complex Interactive',
+    status: 'available',
+  },
 ];
 
 export default function HomePage() {

@@ -77,6 +77,7 @@ import { ActionCard } from '@/components/presets/ActionCard';
 import { Dialog } from '@/components/complex/Dialog';
 import { AlertDialog } from '@/components/complex/AlertDialog';
 import { Drawer } from '@/components/complex/Drawer';
+import { Sheet } from '@/components/complex/Sheet';
 
 import styles from './page.module.scss';
 
@@ -216,6 +217,7 @@ export default function DemoPage() {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [alertOpen, setAlertOpen] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [sheetOpen, setSheetOpen] = useState(false);
   const [radio, setRadio] = useState('b');
   const [toggle, setToggle] = useState(false);
   const [toggleGroup, setToggleGroup] = useState('grid');
@@ -917,7 +919,7 @@ export default function DemoPage() {
           Phase 10 — Complex Interactive
         </Heading>
         <Text color="muted">
-          Dialog (E15 CI1) + AlertDialog (E16 CI2) + Drawer (E17 CI3) — portal + focus trap + scroll lock + background inert. Own build per WAI-ARIA APG (zero runtime UI deps, D5/D25). Remaining 19 components land per-Epic.
+          Dialog (E15 CI1) + AlertDialog (E16 CI2) + Drawer (E17 CI3) + Sheet (E18 CI4) — portal + focus trap + scroll lock + background inert. Own build per WAI-ARIA APG (zero runtime UI deps, D5/D25). Remaining 18 components land per-Epic.
         </Text>
 
         <div className={styles.grid}>
@@ -961,6 +963,20 @@ export default function DemoPage() {
                   Bottom-positioned sheet. Slide-up animation, sticky footer, iOS safe-area. Reuses useFocusTrap.
                 </Text>
                 <Button onClick={() => setDrawerOpen(true)}>Open Drawer</Button>
+              </Stack>
+            </CardBody>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <Heading level={3} size="lg">Sheet</Heading>
+            </CardHeader>
+            <CardBody>
+              <Stack gap={3}>
+                <Text variant="small" color="muted">
+                  4-directional side panel. Per-side animation, inner-corner radius, safe-area-inset, sticky footer.
+                </Text>
+                <Button onClick={() => setSheetOpen(true)}>Open Sheet (right)</Button>
               </Stack>
             </CardBody>
           </Card>
@@ -1015,11 +1031,27 @@ export default function DemoPage() {
             portal, scroll lock, Escape, and inert from Dialog pattern.
           </Text>
         </Drawer>
+
+        <Sheet
+          open={sheetOpen}
+          onOpenChange={setSheetOpen}
+          side="right"
+          title="Details"
+          description="4-directional side panel. Right slide-in with inner-corner radius."
+          footer={<Button onClick={() => setSheetOpen(false)}>Close</Button>}
+        >
+          <Text>
+            Sheet closes the Drawer family with 4-directional variants
+            (left/right/top/bottom). Per-side animation, inner-corner
+            border-radius, safe-area-inset, width (l/r) vs height (t/b)
+            size variants, sticky footer.
+          </Text>
+        </Sheet>
       </section>
 
       <footer className={styles.footer}>
         <Text variant="small" color="muted">
-          61/80 components live · Phase 0-9 complete + Phase 10 in progress (3/22) · See{' '}
+          62/80 components live · Phase 0-9 complete + Phase 10 in progress (4/22) · See{' '}
           <Link href="/">dev index</Link> for per-component playgrounds.
         </Text>
       </footer>

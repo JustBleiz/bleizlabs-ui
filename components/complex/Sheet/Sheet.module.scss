@@ -1,0 +1,291 @@
+// Sheet — Phase 10 Complex Interactive (E18)
+// 4-directional side panel. Visual modifier of APG /dialog-modal/ pattern.
+// Forked from Drawer.module.scss with per-side variant classes driven by
+// `side` prop. Closes the Drawer family (Drawer = bottom-only; Sheet = 4 sides).
+//
+// Per-side lookups (all driven by side prop):
+//   - side{Left,Right,Top,Bottom}       → .root flex alignment
+//   - size{Sm,Md,Lg}{H,V}               → content width (horizontal) or height (vertical)
+//   - radius{Left,Right,Top,Bottom}     → inner corners only (outer edge flush)
+//   - border{Left,Right,Top,Bottom}     → remove outer edge border
+//   - safeArea{Left,Right,Top,Bottom}   → iOS env(safe-area-inset-*)
+//   - animate{Left,Right,Top,Bottom}    → slide-in keyframe direction
+//
+// `.root` base class per D11. Semantic tokens only per D25. Touch target
+// delegation: action buttons via Button atom; close button via mx.touch-target.
+
+@use 'mixins' as mx;
+
+.root {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-modal);
+  display: flex;
+  background: var(--color-overlay);
+  animation: sheetOverlayIn var(--duration-normal) var(--easing-default);
+}
+
+// Per-side .root flex alignment — positions the content box at the chosen edge.
+.sideLeft {
+  align-items: stretch;
+  justify-content: flex-start;
+}
+.sideRight {
+  align-items: stretch;
+  justify-content: flex-end;
+}
+.sideTop {
+  align-items: flex-start;
+  // Vertical sizes apply width:100% on .content — no justify-content needed.
+}
+.sideBottom {
+  align-items: flex-end;
+  // Vertical sizes apply width:100% on .content — no justify-content needed.
+}
+
+.content {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  padding: var(--space-5);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border-subtle);
+  box-shadow: var(--shadow-2xl);
+  // overflow isolated on .body so footer stays sticky (Drawer precedent)
+  overflow: hidden;
+
+  &:focus {
+    outline: none;
+  }
+
+  &:focus-visible {
+    @include mx.focus-ring;
+  }
+}
+
+// Horizontal sizes (left/right) — WIDTH variants, full viewport height.
+// max-width guards against ultra-wide sheets swallowing the viewport.
+.sizeSmH {
+  width: 320px;
+  max-width: 90vw;
+  height: 100%;
+}
+.sizeMdH {
+  width: 420px;
+  max-width: 90vw;
+  height: 100%;
+}
+.sizeLgH {
+  width: 560px;
+  max-width: 90vw;
+  height: 100%;
+}
+
+// Vertical sizes (top/bottom) — HEIGHT variants, full viewport width.
+// lg uses dvh with vh fallback for iOS Safari address bar collapse.
+.sizeSmV {
+  height: 240px;
+  width: 100%;
+}
+.sizeMdV {
+  height: 360px;
+  width: 100%;
+}
+.sizeLgV {
+  width: 100%;
+  height: min(80vh, calc(100vh - var(--space-8)));
+  height: min(80dvh, calc(100dvh - var(--space-8)));
+}
+
+// Border-radius — only inner corners (outer edge is flush with viewport).
+.radiusLeft {
+  border-radius: 0 var(--radius-lg) var(--radius-lg) 0;
+}
+.radiusRight {
+  border-radius: var(--radius-lg) 0 0 var(--radius-lg);
+}
+.radiusTop {
+  border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+}
+.radiusBottom {
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+}
+
+// Remove outer edge border (the edge flush with viewport).
+.borderLeft {
+  border-left: none;
+}
+.borderRight {
+  border-right: none;
+}
+.borderTop {
+  border-top: none;
+}
+.borderBottom {
+  border-bottom: none;
+}
+
+// iOS safe-area insets — matched to side (notch / Dynamic Island / home indicator).
+.safeAreaLeft {
+  padding-left: max(var(--space-5), env(safe-area-inset-left));
+}
+.safeAreaRight {
+  padding-right: max(var(--space-5), env(safe-area-inset-right));
+}
+.safeAreaTop {
+  padding-top: max(var(--space-5), env(safe-area-inset-top));
+}
+.safeAreaBottom {
+  padding-bottom: max(var(--space-5), env(safe-area-inset-bottom));
+}
+
+// Animation direction per side — 4 distinct slide-in keyframes.
+.animateLeft {
+  animation: sheetContentInLeft var(--duration-normal) var(--easing-default);
+}
+.animateRight {
+  animation: sheetContentInRight var(--duration-normal) var(--easing-default);
+}
+.animateTop {
+  animation: sheetContentInTop var(--duration-normal) var(--easing-default);
+}
+.animateBottom {
+  animation: sheetContentInBottom var(--duration-normal) var(--easing-default);
+}
+
+.header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.title {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.description {
+  margin: 0;
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  // Body owns overflow so footer stays sticky (Drawer precedent).
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--space-3);
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--color-border-subtle);
+  flex: 0 0 auto;
+}
+
+.closeButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  background: transparent;
+  color: var(--color-text-muted);
+  border: 1px solid transparent;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition:
+    background var(--duration-fast) var(--easing-default),
+    color var(--duration-fast) var(--easing-default),
+    border-color var(--duration-fast) var(--easing-default);
+
+  // WCAG 2.5.5 / D13: touch target ≥44×44 on coarse pointers (mobile).
+  @include mx.touch-target;
+
+  &:hover {
+    background: var(--color-surface-raised);
+    color: var(--color-text-primary);
+    border-color: var(--color-border-subtle);
+  }
+
+  &:focus-visible {
+    @include mx.focus-ring;
+  }
+}
+
+@keyframes sheetOverlayIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes sheetContentInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes sheetContentInRight {
+  from {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes sheetContentInTop {
+  from {
+    opacity: 0;
+    transform: translateY(-100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes sheetContentInBottom {
+  from {
+    opacity: 0;
+    transform: translateY(100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .root,
+  .content,
+  .animateLeft,
+  .animateRight,
+  .animateTop,
+  .animateBottom {
+    animation: none;
+  }
+
+  .closeButton {
+    transition: none;
+  }
+}
