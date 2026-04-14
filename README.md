@@ -5,7 +5,7 @@
 
 ## Status
 
-**Phase 0 ✓ + Phase 1 Layout ✓ + Phase 2 Typography ✓ + Phase 3 Display ✓** (delivered 2026-04-14 in Epics E03+E04+E05+E06).
+**Phase 0 ✓ + Phase 1 Layout ✓ + Phase 2 Typography ✓ + Phase 3 Display ✓ + Phase 4 Simple Interactive ✓** (delivered 2026-04-14 in Epics E03+E04+E05+E06+E07). **30/41 simple atoms live**, 30/74 total components.
 
 - Phase 0: 7 SCSS fundament files for design tokens (`styles/`) — including `joined-group` mixin (E07) and `--input-*` semantic aliases (E07)
 - Phase 1: 4 layout atoms — Stack, Inline, Container, Section (`components/layout/`)
