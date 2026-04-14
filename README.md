@@ -5,7 +5,7 @@
 
 ## Status
 
-**Phase 0 ✓ + Phase 1 Layout ✓ + Phase 2 Typography ✓ + Phase 3 Display ✓ + Phase 4 Simple Interactive ✓ + Phase 4 Production Hardening ✓ + Phase 5 Feedback ✓** (delivered 2026-04-14 in Epics E03+E04+E05+E06+E07+E08+E09). **39/47 simple atoms live, 39/80 total components**.
+**Phase 0 ✓ + Phase 1 Layout ✓ + Phase 2 Typography ✓ + Phase 3 Display ✓ + Phase 4 Simple Interactive ✓ + Phase 4 Production Hardening ✓ + Phase 5 Feedback ✓ + Phase 6 Specialized Tier A ✓** (delivered 2026-04-14 in Epics E03+E04+E05+E06+E07+E08+E09+E10). **44/47 simple atoms live, 44/80 total components**.
 
 - Phase 0: 7 SCSS fundament files for design tokens (`styles/`) — including `joined-group` mixin (E07) and `--input-*` + `--input-addon-*` semantic aliases (E07 + E08)
 - Phase 1: 4 layout atoms — Stack, Inline, Container, Section (`components/layout/`)
@@ -13,10 +13,11 @@
 - Phase 3: 12 display atoms — Card + 4 slots (CardHeader, CardBody, CardFooter, CardSection), Badge, Separator, IconBox, Avatar, Skeleton, Spinner, AspectRatio (`components/display/`)
 - Phase 4 (E07): 12 simple interactive atoms — Button, ButtonGroup, Input, Label, Textarea, Checkbox, RadioGroup + RadioGroupItem, Toggle, ToggleGroup, Switch, Accordion (`components/interactive/`)
 - Phase 4 (E08 Production Hardening): 6 form-input atoms — InputGroup, InputGroupText, NumberInput, MaskedInput, PhoneInput, PasswordInput (+ Input hardened with prefix/suffix/showCounter/clearable/loading). D26 3-layer architecture.
-- Phase 5 (E09): 3 feedback atoms — Empty (icon + title + description + `cta: ReactNode` slot, optional `role="status"` via rest spread), Alert (4 variants with role/aria-live mapping, opt-in `onClose`, optional `href` body wrap), Progress (discriminated union stages XOR percent, `aria-current="step"` / `role="progressbar"`) (`components/feedback/`)
-- Plus: Slot primitive + cn + mergeRefs + `masks.ts` utils (`components/utils/`), `SpaceIndex` type (`components/types/`), Next.js 16.2.3 dev playground with 20 component routes (`app/`)
+- Phase 5 (E09): 3 feedback atoms — Empty, Alert, Progress (`components/feedback/`)
+- Phase 6 Tier A (E10): 5 specialized atoms — Dot (6 colors + pulse + asChild), MetricBar (standalone used/total with role=progressbar + aria-valuetext), AnimatedCounter (rAF + easeOutCubic + Intl.NumberFormat + prefers-reduced-motion jump), Breadcrumb (semantic nav + ol + aria-current="page" + ellipsis collapse), Pagination (full/compact variant union with sibling-range ellipsis algorithm) (`components/specialized/`)
+- Plus: Slot primitive + cn + mergeRefs + `masks.ts` utils (`components/utils/`), `SpaceIndex` type (`components/types/`), Next.js 16.2.3 dev playground with 21 component routes (`app/`)
 
-**Next:** Phase 6 — Specialized atoms (Dot, MetricBar, AnimatedCounter, Breadcrumb, Pagination, UsageDonut, AvailabilityBar, Kbd).
+**Next:** Phase 6 Tier B — UsageDonut, AvailabilityBar, Kbd (E11).
 
 For the full design rationale and decisions log, see `../docs/decisions.md` and `../docs/component-standards.md`.
 For the roadmap see `../ROADMAP.md`.
