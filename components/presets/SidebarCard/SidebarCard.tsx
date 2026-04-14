@@ -12,7 +12,7 @@ import { cn } from '../../utils/cn';
 import styles from './SidebarCard.module.scss';
 
 export interface SidebarCardProps
-  extends Omit<CardProps, 'direction' | 'children' | 'variant'> {
+  extends Omit<CardProps, 'direction' | 'children' | 'variant' | 'title'> {
   /** Optional uppercase caption rendered above the header (e.g., "NAVIGATION", "FILTERS"). */
   label?: string;
   /** Optional heading slot. Scalar strings/numbers auto-wrap in `<Heading level={3} size="md">`; ReactNode passes through. */

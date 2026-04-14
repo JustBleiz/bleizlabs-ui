@@ -17,7 +17,18 @@ import { cn } from '../../utils/cn';
 import styles from './FormCard.module.scss';
 
 export interface FormCardProps
-  extends Omit<CardProps, 'direction' | 'children'> {
+  extends Omit<
+    CardProps,
+    | 'direction'
+    | 'children'
+    | 'title'
+    | 'onSubmit'
+    | 'action'
+    | 'method'
+    | 'encType'
+    | 'noValidate'
+    | 'autoComplete'
+  > {
   /** Heading slot. Scalar strings/numbers auto-wrap in `<Heading level={3} size="lg">`. */
   title?: ReactNode;
   /** Description slot. Scalar strings/numbers auto-wrap in `<Text variant="body" color="muted">`. */

@@ -27,7 +27,12 @@ const SEVERITY_MAP: Record<ActionCardSeverity, SeverityMapping> = {
 export interface ActionCardProps
   extends Omit<
     CardProps,
-    'direction' | 'children' | 'variant' | 'accentColor' | 'accentPosition'
+    | 'direction'
+    | 'children'
+    | 'variant'
+    | 'accentColor'
+    | 'accentPosition'
+    | 'title'
   > {
   /** Severity level — drives Card accent border color and default IconBox variant. Required. */
   severity: ActionCardSeverity;

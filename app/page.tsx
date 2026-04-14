@@ -183,6 +183,14 @@ const components: ComponentLink[] = [
     phase: 'Phase 7 — Molecules',
     status: 'available',
   },
+  {
+    href: '/components/presets',
+    name: 'Card Presets',
+    description:
+      'E13 — ContentCard, SidebarCard, FormCard, StatsCard (stacked/inline/icon-lead), ActionCard (severity-driven accent).',
+    phase: 'Phase 8 — Card Presets',
+    status: 'available',
+  },
 ];
 
 export default function HomePage() {

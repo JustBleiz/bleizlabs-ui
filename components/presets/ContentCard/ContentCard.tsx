@@ -12,7 +12,7 @@ import { cn } from '../../utils/cn';
 import styles from './ContentCard.module.scss';
 
 export interface ContentCardProps
-  extends Omit<CardProps, 'direction' | 'children'> {
+  extends Omit<CardProps, 'direction' | 'children' | 'title'> {
   /** Heading slot. Scalar strings/numbers auto-wrap in `<Heading level={3} size="lg">`; ReactNode passes through. */
   title?: ReactNode;
   /** Description slot. Scalar strings/numbers auto-wrap in `<Text variant="body" color="muted">`; ReactNode passes through. */
