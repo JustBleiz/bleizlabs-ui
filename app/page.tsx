@@ -151,6 +151,14 @@ const components: ComponentLink[] = [
     phase: 'Phase 4 — Simple Interactive',
     status: 'available',
   },
+  {
+    href: '/components/input-production',
+    name: 'Input Production Hardening',
+    description:
+      'E08 — Input prefix/suffix/counter/clearable/loading, InputGroup + InputGroupText, NumberInput, MaskedInput, PhoneInput, PasswordInput.',
+    phase: 'Phase 4 — Simple Interactive (E08)',
+    status: 'available',
+  },
 ];
 
 export default function HomePage() {
