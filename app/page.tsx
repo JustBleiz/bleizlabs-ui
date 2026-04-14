@@ -169,10 +169,18 @@ const components: ComponentLink[] = [
   },
   {
     href: '/components/specialized',
-    name: 'Specialized (Tier A)',
+    name: 'Specialized',
     description:
-      'E10 — Dot (6 colors + pulse), MetricBar (used/total), AnimatedCounter (count-up rAF), Breadcrumb (semantic nav + ellipsis), Pagination (full/compact variants).',
+      'E10+E11 — Dot, MetricBar, AnimatedCounter, Breadcrumb, Pagination (Tier A) + UsageDonut, AvailabilityBar, Kbd (Tier B). Phase 6 complete.',
     phase: 'Phase 6 — Specialized',
+    status: 'available',
+  },
+  {
+    href: '/components/molecules',
+    name: 'Molecules',
+    description:
+      'E12 — DataRow, BackLink, SectionDivider, AccordionGroup (single/multiple), ToggleGroupFilter, DeadlineBadge (hydration-safe countdown).',
+    phase: 'Phase 7 — Molecules',
     status: 'available',
   },
 ];
