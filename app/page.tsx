@@ -39,6 +39,22 @@ const components: ComponentLink[] = [
     phase: 'Phase 1 — Layout',
     status: 'available',
   },
+  {
+    href: '/components/heading',
+    name: 'Heading',
+    description:
+      'Semantic h1-h6 with decoupled visual size, weight, color, align, asChild.',
+    phase: 'Phase 2 — Typography',
+    status: 'available',
+  },
+  {
+    href: '/components/text',
+    name: 'Text',
+    description:
+      'Universal body text with five variants, weight, color, uppercase, asChild.',
+    phase: 'Phase 2 — Typography',
+    status: 'available',
+  },
 ];
 
 export default function HomePage() {

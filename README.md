@@ -5,13 +5,14 @@
 
 ## Status
 
-**Phase 0 ✓ + Phase 1 Layout ✓** (delivered 2026-04-14 in Epics E03+E04).
+**Phase 0 ✓ + Phase 1 Layout ✓ + Phase 2 Typography ✓** (delivered 2026-04-14 in Epics E03+E04+E05).
 
 - Phase 0: 7 SCSS fundament files for design tokens (`styles/`)
 - Phase 1: 4 layout atoms — Stack, Inline, Container, Section (`components/layout/`)
+- Phase 2: 2 typography atoms — Heading, Text (`components/typography/`)
 - Plus: Slot primitive + cn + mergeRefs utils (`components/utils/`), `SpaceIndex` type (`components/types/`), Next.js 16.2.3 dev playground (`app/`)
 
-**Next:** Phase 2 — Typography atoms (Heading, Text, Label).
+**Next:** Phase 3 — Display atoms (Card + slots, Badge, Separator, IconBox, Avatar, Skeleton, Spinner, AspectRatio). Note: Label originally planned in Phase 2 was moved to Phase 4 in E05 due to form semantic coupling — it ships next to Input/Textarea.
 
 For the full design rationale and decisions log, see `../docs/decisions.md` and `../docs/component-standards.md`.
 For the roadmap see `../ROADMAP.md`.
