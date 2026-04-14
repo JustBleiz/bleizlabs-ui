@@ -1,0 +1,61 @@
+// StatsCard — Phase 8 E13
+// Three layouts on top of Card atom: stacked | inline | icon-lead.
+// Body gap tightens stacked content so label→value→change reads as one cluster.
+
+.root {
+  // Inherits Card atom styling.
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.label {
+  // Keeps label tight against the value below it.
+}
+
+.change {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.layout-stacked {
+  // Default — body flex column handles layout.
+}
+
+.layout-inline {
+  // Label | Value on one row; change flows below via body column layout.
+}
+
+.inlineRow {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.inlineValue {
+  display: inline-flex;
+  align-items: baseline;
+}
+
+.layout-icon-lead {
+  // Body inner wraps icon + content cluster.
+}
+
+.iconLead {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-4);
+}
+
+.iconLeadContent {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  flex: 1 1 auto;
+  min-width: 0;
+}
