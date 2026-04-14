@@ -208,6 +208,17 @@
   --z-toast: #{$z-toast};
 
   // ==========================================================================
+  // CONTAINER MAX-WIDTHS — used by <Container size> (Phase 1 L3)
+  // ==========================================================================
+  // Match the breakpoint thresholds so a Container can be capped at the
+  // viewport range it serves. `fluid` is intentionally absent — the component
+  // applies `max-width: 100%` directly when size === 'fluid'.
+  --container-sm: #{$seed-bp-sm};
+  --container-md: #{$seed-bp-md};
+  --container-lg: #{$seed-bp-lg};
+  --container-xl: #{$seed-bp-xl};
+
+  // ==========================================================================
   // DEFAULT THEME SURFACES — driven by $seed-mode
   // ==========================================================================
   // This block sets which theme loads before any JS runs. Runtime toggle
