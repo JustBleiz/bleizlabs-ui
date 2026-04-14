@@ -5,14 +5,15 @@
 
 ## Status
 
-**Phase 0 ✓ + Phase 1 Layout ✓ + Phase 2 Typography ✓ + Phase 3 Display ✓ + Phase 4 Simple Interactive ✓** (delivered 2026-04-14 in Epics E03+E04+E05+E06+E07). **30/41 simple atoms live**, 30/74 total components.
+**Phase 0 ✓ + Phase 1 Layout ✓ + Phase 2 Typography ✓ + Phase 3 Display ✓ + Phase 4 Simple Interactive ✓ + Phase 4 Production Hardening ✓** (delivered 2026-04-14 in Epics E03+E04+E05+E06+E07+E08). **36/47 simple atoms live, 36/80 total components**.
 
-- Phase 0: 7 SCSS fundament files for design tokens (`styles/`) — including `joined-group` mixin (E07) and `--input-*` semantic aliases (E07)
+- Phase 0: 7 SCSS fundament files for design tokens (`styles/`) — including `joined-group` mixin (E07) and `--input-*` + `--input-addon-*` semantic aliases (E07 + E08)
 - Phase 1: 4 layout atoms — Stack, Inline, Container, Section (`components/layout/`)
 - Phase 2: 2 typography atoms — Heading, Text (`components/typography/`)
 - Phase 3: 12 display atoms — Card + 4 slots (CardHeader, CardBody, CardFooter, CardSection), Badge, Separator, IconBox, Avatar, Skeleton, Spinner, AspectRatio (`components/display/`)
-- Phase 4: 12 simple interactive atoms — Button, ButtonGroup (NEW I1.5), Input, Label, Textarea, Checkbox, RadioGroup + RadioGroupItem, Toggle, ToggleGroup, Switch, Accordion (`components/interactive/`)
-- Plus: Slot primitive + cn + mergeRefs utils (`components/utils/`), `SpaceIndex` type (`components/types/`), Next.js 16.2.3 dev playground with 18 component routes (`app/`)
+- Phase 4 (E07): 12 simple interactive atoms — Button, ButtonGroup, Input, Label, Textarea, Checkbox, RadioGroup + RadioGroupItem, Toggle, ToggleGroup, Switch, Accordion (`components/interactive/`)
+- Phase 4 (E08 Production Hardening): 6 form-input atoms — InputGroup, InputGroupText, NumberInput, MaskedInput, PhoneInput, PasswordInput (+ Input hardened with prefix/suffix/showCounter/clearable/loading). D26 3-layer architecture.
+- Plus: Slot primitive + cn + mergeRefs + `masks.ts` utils (`components/utils/`), `SpaceIndex` type (`components/types/`), Next.js 16.2.3 dev playground with 19 component routes (`app/`)
 
 **Next:** Phase 5 — Feedback atoms (Empty, Alert, Progress).
 
