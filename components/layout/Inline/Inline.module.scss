@@ -1,0 +1,35 @@
+@use 'mixins' as mx;
+
+.root {
+  display: flex;
+  flex-direction: row;
+  align-items: var(--inline-align, center);
+  justify-content: var(--inline-justify, flex-start);
+  gap: var(--inline-gap, var(--space-2));
+  flex-wrap: var(--inline-wrap, nowrap);
+  min-width: 0;
+}
+
+.root[data-collapse-below='sm'] {
+  flex-direction: column;
+
+  @include mx.bp-sm {
+    flex-direction: row;
+  }
+}
+
+.root[data-collapse-below='md'] {
+  flex-direction: column;
+
+  @include mx.bp-md {
+    flex-direction: row;
+  }
+}
+
+.root[data-collapse-below='lg'] {
+  flex-direction: column;
+
+  @include mx.bp-lg {
+    flex-direction: row;
+  }
+}

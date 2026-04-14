@@ -1,0 +1,11 @@
+.root {
+  width: 100%;
+  max-width: var(--section-max-width, none);
+  margin-left: var(--section-margin-x, 0);
+  margin-right: var(--section-margin-x, 0);
+  padding-top: var(--section-py, var(--space-10));
+  padding-bottom: var(--section-py, var(--space-10));
+  padding-left: var(--section-padding-x, 0);
+  padding-right: var(--section-padding-x, 0);
+  background: var(--section-bg, transparent);
+}

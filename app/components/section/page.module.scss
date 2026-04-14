@@ -1,0 +1,44 @@
+@use 'mixins' as mx;
+
+.main {
+  display: flex;
+  flex-direction: column;
+}
+
+.back {
+  @include mx.body-small;
+  color: var(--color-text-muted);
+  text-decoration: none;
+  display: inline-block;
+  margin-bottom: var(--space-3);
+
+  &:hover {
+    color: var(--color-text-primary);
+  }
+}
+
+.label {
+  @include mx.body-small;
+  color: var(--color-text-muted);
+  font-family: var(--font-mono);
+  display: block;
+  margin-bottom: var(--space-1);
+}
+
+.copy {
+  @include mx.body-base;
+  color: var(--color-text-primary);
+  margin: 0;
+  max-width: 60ch;
+}
+
+.main h1 {
+  @include mx.heading-1;
+  margin: 0 0 var(--space-2);
+}
+
+.main h2 {
+  @include mx.heading-3;
+  margin: 0;
+  color: var(--color-text-primary);
+}
