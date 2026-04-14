@@ -199,6 +199,14 @@ const components: ComponentLink[] = [
     phase: 'Phase 9 — Demo & Docs',
     status: 'available',
   },
+  {
+    href: '/components/dialog',
+    name: 'Dialog',
+    description:
+      'E15 CI1 — modal dialog with portal, focus trap, scroll lock, Escape close. First Phase 10 complex interactive. APG /dialog-modal/ pattern.',
+    phase: 'Phase 10 — Complex Interactive',
+    status: 'available',
+  },
 ];
 
 export default function HomePage() {

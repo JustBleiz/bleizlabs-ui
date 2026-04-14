@@ -1,0 +1,151 @@
+// Dialog — Phase 10 Complex Interactive (E15)
+// First Phase 10 component. Renders via portal to document.body — overlay
+// covers viewport, content centers inside. Semantic tokens only per D25.
+// prefers-reduced-motion disables both transitions + transforms.
+
+@use 'mixins' as mx;
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-modal);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-4);
+  background: var(--color-overlay);
+  animation: dialogOverlayIn var(--duration-normal) var(--easing-default);
+}
+
+.content {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  width: 100%;
+  max-height: calc(100vh - var(--space-8));
+  padding: var(--space-6);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-2xl);
+  overflow-y: auto;
+  animation: dialogContentIn var(--duration-normal) var(--easing-default);
+
+  &:focus {
+    outline: none;
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--color-brand);
+    outline-offset: 2px;
+  }
+}
+
+.sizeSm {
+  max-width: 420px;
+}
+
+.sizeMd {
+  max-width: 560px;
+}
+
+.sizeLg {
+  max-width: 720px;
+}
+
+.sizeXl {
+  max-width: 960px;
+}
+
+.header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.title {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.description {
+  margin: 0;
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--space-3);
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--color-border-subtle);
+}
+
+.closeButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  background: transparent;
+  color: var(--color-text-muted);
+  border: 1px solid transparent;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+
+  // WCAG 2.5.5 / D13: touch target ≥44×44 on coarse pointers (mobile)
+  @include mx.touch-target;
+
+  &:hover {
+    background: var(--color-surface-raised);
+    color: var(--color-text-primary);
+    border-color: var(--color-border-subtle);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--color-brand);
+    outline-offset: 2px;
+  }
+}
+
+@keyframes dialogOverlayIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes dialogContentIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .overlay,
+  .content {
+    animation: none;
+  }
+
+  .closeButton {
+    transition: none;
+  }
+}

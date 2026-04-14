@@ -5,7 +5,7 @@
 
 ## Status
 
-**Phase 0 ✓ + Phase 1 Layout ✓ + Phase 2 Typography ✓ + Phase 3 Display ✓ + Phase 4 Simple Interactive ✓ + Phase 4 Production Hardening ✓ + Phase 5 Feedback ✓ + Phase 6 Specialized ✓ + Phase 7 Molecules ✓ + Phase 8 Card Presets ✓** (delivered 2026-04-14 in Epics E03+E04+E05+E06+E07+E08+E09+E10+E11+E12+E13). **47/47 simple atoms (100%) + 6/6 molecules (100%) + 5/5 Card presets (100%) = 58/80 total components**.
+**Phase 0 ✓ + Phase 1 Layout ✓ + Phase 2 Typography ✓ + Phase 3 Display ✓ + Phase 4 Simple Interactive ✓ + Phase 4 Production Hardening ✓ + Phase 5 Feedback ✓ + Phase 6 Specialized ✓ + Phase 7 Molecules ✓ + Phase 8 Card Presets ✓ + Phase 9 Demo & Docs ✓** (delivered 2026-04-14 in Epics E03+E04+E05+E06+E07+E08+E09+E10+E11+E12+E13+E14). **47/47 simple atoms (100%) + 6/6 molecules (100%) + 5/5 Card presets (100%) = 58/80 total components**.
 
 - Phase 0: 7 SCSS fundament files for design tokens (`styles/`) — including `joined-group` mixin (E07) and `--input-*` + `--input-addon-*` semantic aliases (E07 + E08)
 - Phase 1: 4 layout atoms — Stack, Inline, Container, Section (`components/layout/`)
