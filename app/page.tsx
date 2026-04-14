@@ -167,6 +167,14 @@ const components: ComponentLink[] = [
     phase: 'Phase 5 — Feedback',
     status: 'available',
   },
+  {
+    href: '/components/specialized',
+    name: 'Specialized (Tier A)',
+    description:
+      'E10 — Dot (6 colors + pulse), MetricBar (used/total), AnimatedCounter (count-up rAF), Breadcrumb (semantic nav + ellipsis), Pagination (full/compact variants).',
+    phase: 'Phase 6 — Specialized',
+    status: 'available',
+  },
 ];
 
 export default function HomePage() {
