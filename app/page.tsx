@@ -159,6 +159,14 @@ const components: ComponentLink[] = [
     phase: 'Phase 4 — Simple Interactive (E08)',
     status: 'available',
   },
+  {
+    href: '/components/feedback',
+    name: 'Feedback',
+    description:
+      'E09 — Empty (zero-result slot + CTA), Alert (4 variants + opt-in dismiss + href body), Progress (discriminated union stages XOR percent).',
+    phase: 'Phase 5 — Feedback',
+    status: 'available',
+  },
 ];
 
 export default function HomePage() {
