@@ -5,7 +5,7 @@
 
 ## Status
 
-**Phase 0 ✓ + Phase 1 Layout ✓ + Phase 2 Typography ✓ + Phase 3 Display ✓ + Phase 4 Simple Interactive ✓ + Phase 4 Production Hardening ✓ + Phase 5 Feedback ✓ + Phase 6 Specialized ✓ + Phase 7 Molecules ✓** (delivered 2026-04-14 in Epics E03+E04+E05+E06+E07+E08+E09+E10+E11+E12). **47/47 simple atoms (100%) + 6/6 molecules (100%) = 53/80 total components**.
+**Phase 0 ✓ + Phase 1 Layout ✓ + Phase 2 Typography ✓ + Phase 3 Display ✓ + Phase 4 Simple Interactive ✓ + Phase 4 Production Hardening ✓ + Phase 5 Feedback ✓ + Phase 6 Specialized ✓ + Phase 7 Molecules ✓ + Phase 8 Card Presets ✓** (delivered 2026-04-14 in Epics E03+E04+E05+E06+E07+E08+E09+E10+E11+E12+E13). **47/47 simple atoms (100%) + 6/6 molecules (100%) + 5/5 Card presets (100%) = 58/80 total components**.
 
 - Phase 0: 7 SCSS fundament files for design tokens (`styles/`) — including `joined-group` mixin (E07) and `--input-*` + `--input-addon-*` semantic aliases (E07 + E08)
 - Phase 1: 4 layout atoms — Stack, Inline, Container, Section (`components/layout/`)
@@ -17,9 +17,10 @@
 - Phase 6 Tier A (E10): 5 specialized atoms — Dot, MetricBar, AnimatedCounter, Breadcrumb, Pagination (`components/specialized/`)
 - Phase 6 Tier B (E11): 3 specialized atoms — **UsageDonut** (multi-segment SVG donut z `stroke-dasharray` math + track circle + `centerLabel` slot + default color cycle), **AvailabilityBar** (day-by-day status strip z computed `aria-label` summary + native `title` tooltips + CSS Grid `--availability-cells`), **Kbd** (native semantic `<kbd>` + outlined pill via `--font-mono`) (`components/specialized/`)
 - Phase 7 (E12): 6 molecules — **DataRow** (label/value responsive via Inline collapseBelow), **BackLink** (ghost Button wrapper + inline SVG arrow), **SectionDivider** (gradient Separator + Text + 3 align positions), **AccordionGroup** (single/multiple mode + React.cloneElement injection + rAF-deferred state), **ToggleGroupFilter** (thin controlled ToggleGroup wrapper with options array mapping), **DeadlineBadge** (hydration-safe Intl.RelativeTimeFormat + Date.now inside useEffect+rAF, Badge asChild `<time>` projection) (`components/molecules/`)
-- Plus: Slot primitive + cn + mergeRefs + `masks.ts` utils (`components/utils/`), `SpaceIndex` type (`components/types/`), Next.js 16.2.3 dev playground with 22 component routes (`app/`)
+- Phase 8 (E13): 5 Card presets — **ContentCard** (flagship `padding={5}` + `radius="lg"` + title/description/footer slots with scalar auto-wrap), **SidebarCard** (glass variant default + optional uppercase label slot + `padding={4}` + `radius="md"`), **FormCard** (renders semantic `<form>` by default via `asForm=true` + 7 native form props top-level + CardFooter action mode for submit), **StatsCard** (discriminated union `layout: 'stacked' | 'inline' | 'icon-lead'` with TS-enforced icon requirement for icon-lead + IconBox composition), **ActionCard** (required `severity: 'info' | 'warning' | 'critical'` + required `cta` + internal SEVERITY_MAP driving accentColor + IconBox variant) (`components/presets/`)
+- Plus: Slot primitive + cn + mergeRefs + `masks.ts` utils (`components/utils/`), `SpaceIndex` type (`components/types/`), Next.js 16.2.3 dev playground with 23 component routes (`app/`)
 
-**Next:** Phase 8 Card Presets — ContentCard, SidebarCard, FormCard, StatsCard, ActionCard (E13).
+**Next:** Phase 9 Demo + README + registry update (E14 planned). Phase 10 Complex Interactive (Dialog, Popover, Tooltip, etc.) deferred until first consumer needs them.
 
 For the full design rationale and decisions log, see `../docs/decisions.md` and `../docs/component-standards.md`.
 For the roadmap see `../ROADMAP.md`.
