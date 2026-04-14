@@ -1,0 +1,74 @@
+@use '../../../styles/mixins' as mx;
+
+// ============================================================================
+// BASE
+// ============================================================================
+
+.root {
+  --availability-cells: 30;
+
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  width: 100%;
+  color: var(--color-text-secondary);
+}
+
+// ============================================================================
+// STRIP — CSS grid, one column per segment
+// ============================================================================
+
+.strip {
+  display: grid;
+  grid-template-columns: repeat(var(--availability-cells), minmax(0, 1fr));
+  gap: 2px;
+  width: 100%;
+  height: var(--space-4);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-radius: var(--radius-sm);
+  background: var(--color-surface-raised);
+}
+
+.cell {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: var(--radius-sm);
+}
+
+// ============================================================================
+// STATUS COLORS
+// ============================================================================
+
+.statusOk {
+  background: var(--color-success);
+}
+
+.statusWarning {
+  background: var(--color-warning);
+}
+
+.statusDown {
+  background: var(--color-error);
+}
+
+// ============================================================================
+// LABELS — first + last date underneath the strip
+// ============================================================================
+
+.labels {
+  display: flex;
+  justify-content: space-between;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  font-variant-numeric: tabular-nums;
+  line-height: var(--line-height-snug);
+}
+
+.labelStart,
+.labelEnd {
+  display: inline-block;
+}
