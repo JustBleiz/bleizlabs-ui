@@ -1,0 +1,114 @@
+@use 'mixins' as mx;
+
+.main {
+  max-width: 1024px;
+  margin: 0 auto;
+  padding: var(--space-10) var(--space-6);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-10);
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+
+  h1 {
+    @include mx.heading-1;
+    margin: 0;
+  }
+
+  p {
+    @include mx.body-base;
+    color: var(--color-text-secondary);
+    margin: 0;
+    max-width: 60ch;
+  }
+}
+
+.back {
+  @include mx.body-small;
+  color: var(--color-text-muted);
+  text-decoration: none;
+  width: fit-content;
+
+  &:hover {
+    color: var(--color-text-primary);
+  }
+}
+
+.demo {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+
+  h2 {
+    @include mx.heading-3;
+    margin: 0;
+    color: var(--color-text-primary);
+  }
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-3);
+
+  @include mx.bp-md {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.frame {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  padding: var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  min-width: 0;
+}
+
+.tall {
+  min-height: 240px;
+}
+
+.label {
+  @include mx.body-small;
+  color: var(--color-text-muted);
+  font-family: var(--font-mono);
+}
+
+.box {
+  background: var(--color-surface-raised);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-input);
+  padding: var(--space-2) var(--space-3);
+  color: var(--color-text-primary);
+  @include mx.body-small;
+}
+
+.hr {
+  width: 100%;
+  height: 1px;
+  border: 0;
+  background: var(--color-border);
+  margin: 0;
+}
+
+.list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+
+  li {
+    background: var(--color-surface-raised);
+    border: 1px solid var(--color-border-subtle);
+    border-radius: var(--radius-input);
+    padding: var(--space-2) var(--space-3);
+    color: var(--color-text-primary);
+    @include mx.body-small;
+  }
+}

@@ -8,6 +8,7 @@ const nextConfig = {
   reactStrictMode: true,
   sassOptions: {
     includePaths: [path.join(__dirname, 'styles')],
+    loadPaths: [path.join(__dirname, 'styles')],
   },
   typescript: {
     ignoreBuildErrors: false,
