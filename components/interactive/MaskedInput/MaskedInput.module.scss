@@ -1,0 +1,92 @@
+@use '../../../styles/mixins' as mx;
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  width: 100%;
+}
+
+.fieldDisabled {
+  cursor: not-allowed;
+}
+
+.inputWrap {
+  position: relative;
+  display: flex;
+  align-items: stretch;
+  width: 100%;
+  background: var(--input-bg);
+  border: 1px solid var(--input-border);
+  border-radius: var(--radius-input);
+  overflow: hidden;
+  transition:
+    border-color var(--duration-fast) var(--easing-default),
+    box-shadow var(--duration-fast) var(--easing-default);
+
+  &:focus-within {
+    border-color: var(--input-border-focus);
+    @include mx.focus-ring;
+  }
+}
+
+.inputWrapError {
+  border-color: var(--color-error);
+
+  &:focus-within {
+    border-color: var(--color-error);
+    @include mx.focus-ring-error;
+  }
+}
+
+.input {
+  flex: 1;
+  min-width: 0;
+  padding: var(--space-3) var(--space-4);
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--color-text-primary);
+  font-family: var(--font-secondary);
+  font-size: var(--font-size-base);
+  font-variant-numeric: tabular-nums;
+  line-height: var(--line-height-normal);
+
+  &::placeholder {
+    color: var(--color-text-muted);
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    color: var(--color-text-muted);
+  }
+
+  @include mx.touch-target;
+}
+
+.helper {
+  margin: 0;
+  font-family: var(--font-secondary);
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+  line-height: var(--line-height-normal);
+}
+
+.error {
+  margin: 0;
+  font-family: var(--font-secondary);
+  font-size: var(--font-size-xs);
+  color: var(--color-error);
+  font-weight: var(--font-weight-medium);
+  line-height: var(--line-height-normal);
+}
+
+.srOnly {
+  @include mx.sr-only;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .inputWrap {
+    transition: none;
+  }
+}
