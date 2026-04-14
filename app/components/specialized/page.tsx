@@ -1,12 +1,19 @@
 'use client';
 
 import Link from 'next/link';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { Dot } from '@/components/specialized/Dot';
 import { MetricBar } from '@/components/specialized/MetricBar';
 import { AnimatedCounter } from '@/components/specialized/AnimatedCounter';
 import { Breadcrumb } from '@/components/specialized/Breadcrumb';
 import { Pagination } from '@/components/specialized/Pagination';
+import { UsageDonut } from '@/components/specialized/UsageDonut';
+import {
+  AvailabilityBar,
+  type AvailabilitySegment,
+  type AvailabilityStatus,
+} from '@/components/specialized/AvailabilityBar';
+import { Kbd } from '@/components/specialized/Kbd';
 import { Button } from '@/components/interactive/Button';
 import { Heading } from '@/components/typography/Heading';
 import { Text } from '@/components/typography/Text';
@@ -40,6 +47,48 @@ export default function SpecializedPlaygroundPage() {
   const formatNumber = (n: number) =>
     new Intl.NumberFormat('pl-PL').format(n);
 
+  // Deterministic 30-day availability history (no RNG to avoid hydration flicker)
+  const availabilityHistory = useMemo<AvailabilitySegment[]>(() => {
+    const pattern: AvailabilityStatus[] = [
+      'ok',
+      'ok',
+      'ok',
+      'warning',
+      'ok',
+      'ok',
+      'ok',
+      'ok',
+      'ok',
+      'down',
+      'warning',
+      'ok',
+      'ok',
+      'ok',
+      'ok',
+      'ok',
+      'ok',
+      'ok',
+      'warning',
+      'ok',
+      'ok',
+      'ok',
+      'ok',
+      'ok',
+      'ok',
+      'ok',
+      'down',
+      'ok',
+      'ok',
+      'ok',
+    ];
+    const base = new Date('2026-03-16');
+    return pattern.map((status, i) => {
+      const d = new Date(base);
+      d.setDate(base.getDate() + i);
+      return { date: d.toISOString().slice(0, 10), status };
+    });
+  }, []);
+
   return (
     <main className={styles.main}>
       <header className={styles.header}>
@@ -47,12 +96,12 @@ export default function SpecializedPlaygroundPage() {
           &larr; back
         </Link>
         <Heading level={1} size="4xl">
-          Specialized (Tier A)
+          Specialized
         </Heading>
         <Text className={styles.intro}>
-          Phase 6 (E10 Tier A) — Dot, MetricBar, AnimatedCounter, Breadcrumb,
-          Pagination. Domain + navigation atoms. Tier B (UsageDonut,
-          AvailabilityBar, Kbd) deferred do E11.
+          Phase 6 — Tier A (E10: Dot, MetricBar, AnimatedCounter, Breadcrumb,
+          Pagination) + Tier B (E11: UsageDonut, AvailabilityBar, Kbd). Domain
+          + navigation + utility atoms. Phase 6 COMPLETE.
         </Text>
       </header>
 
@@ -312,6 +361,134 @@ export default function SpecializedPlaygroundPage() {
           >
             Jump to 10
           </Button>
+        </div>
+      </section>
+
+      {/* ==================================================================== */}
+      {/* USAGEDONUT (Tier B)                                                   */}
+      {/* ==================================================================== */}
+      <section className={styles.section}>
+        <Heading level={2} size="2xl">
+          UsageDonut <span className={styles.tierTag}>Tier B</span>
+        </Heading>
+        <Text>
+          Multi-segment SVG donut chart. Zero deps, `stroke-dasharray` math w{' '}
+          <code>viewBox 0 0 100 100</code>. <code>role=&quot;img&quot;</code> +{' '}
+          <code>aria-label</code> + SVG <code>&lt;title&gt;</code>. Default
+          color cycle brand → success → warning → info → error.
+        </Text>
+
+        <div className={styles.row}>
+          <UsageDonut
+            label="Budżet projektu"
+            size="md"
+            total={60}
+            segments={[
+              { label: 'Design', value: 12 },
+              { label: 'Development', value: 28 },
+              { label: 'QA', value: 6 },
+            ]}
+            centerLabel={
+              <>
+                <strong className={styles.big}>46h</strong>
+                <span>z 60h</span>
+              </>
+            }
+          />
+          <UsageDonut
+            label="Storage by type"
+            size="sm"
+            segments={[
+              { label: 'Docs', value: 42, color: 'var(--color-brand)' },
+              { label: 'Media', value: 18, color: 'var(--color-warning)' },
+              { label: 'Other', value: 5, color: 'var(--color-info)' },
+            ]}
+          />
+          <UsageDonut
+            label="Incident severity"
+            size="lg"
+            strokeWidth={20}
+            segments={[
+              { label: 'Critical', value: 2 },
+              { label: 'High', value: 5 },
+              { label: 'Medium', value: 11 },
+              { label: 'Low', value: 24 },
+            ]}
+            centerLabel={
+              <>
+                <strong className={styles.big}>42</strong>
+                <span>incidents</span>
+              </>
+            }
+          />
+        </div>
+      </section>
+
+      {/* ==================================================================== */}
+      {/* AVAILABILITYBAR (Tier B)                                              */}
+      {/* ==================================================================== */}
+      <section className={styles.section}>
+        <Heading level={2} size="2xl">
+          AvailabilityBar <span className={styles.tierTag}>Tier B</span>
+        </Heading>
+        <Text>
+          Day-by-day status strip z native <code>title</code> tooltipami (hover
+          nad komórkami). <code>role=&quot;img&quot;</code> na wrapperze z
+          computed summary. CSS Grid +{' '}
+          <code>--availability-cells</code> custom property.
+        </Text>
+
+        <div className={styles.stack}>
+          <AvailabilityBar
+            label="API uptime — ostatnie 30 dni"
+            segments={availabilityHistory}
+            showLabels
+          />
+          <AvailabilityBar
+            label="Service B status"
+            segments={availabilityHistory.slice(0, 14)}
+          />
+        </div>
+      </section>
+
+      {/* ==================================================================== */}
+      {/* KBD (Tier B)                                                          */}
+      {/* ==================================================================== */}
+      <section className={styles.section}>
+        <Heading level={2} size="2xl">
+          Kbd <span className={styles.tierTag}>Tier B</span>
+        </Heading>
+        <Text>
+          Native semantyczny <code>&lt;kbd&gt;</code> z outlined pill styling.
+          Konsument przekazuje raw text (Ctrl, ⌘, Enter). Kombinacje składane
+          poprzez wiele &lt;Kbd&gt; z separatorem + po stronie konsumenta.
+        </Text>
+
+        <div className={styles.stack}>
+          <div className={styles.row}>
+            <span className={styles.inline}>
+              Command palette: <Kbd>Ctrl</Kbd> + <Kbd>K</Kbd>
+            </span>
+            <span className={styles.inline}>
+              Save: <Kbd>⌘</Kbd> + <Kbd>S</Kbd>
+            </span>
+            <span className={styles.inline}>
+              Quit: <Kbd>Esc</Kbd>
+            </span>
+          </div>
+
+          <div className={styles.row}>
+            <span className={styles.inline}>
+              Size sm: <Kbd size="sm">Ctrl</Kbd> + <Kbd size="sm">Shift</Kbd> +{' '}
+              <Kbd size="sm">P</Kbd>
+            </span>
+            <span className={styles.inline}>
+              Function keys: <Kbd>F1</Kbd> <Kbd>F5</Kbd> <Kbd>F12</Kbd>
+            </span>
+            <span className={styles.inline}>
+              Arrows: <Kbd>↑</Kbd> <Kbd>↓</Kbd> <Kbd>←</Kbd> <Kbd>→</Kbd>
+            </span>
+          </div>
         </div>
       </section>
     </main>
