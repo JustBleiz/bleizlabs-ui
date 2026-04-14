@@ -55,6 +55,70 @@ const components: ComponentLink[] = [
     phase: 'Phase 2 — Typography',
     status: 'available',
   },
+  {
+    href: '/components/card',
+    name: 'Card',
+    description:
+      'Surface container with 4 variants, hoverable, accent positions, and 4 flat slot components.',
+    phase: 'Phase 3 — Display',
+    status: 'available',
+  },
+  {
+    href: '/components/badge',
+    name: 'Badge',
+    description:
+      'Inline status / category indicator with 6 colors, pill, dot, icon, uppercase, asChild.',
+    phase: 'Phase 3 — Display',
+    status: 'available',
+  },
+  {
+    href: '/components/separator',
+    name: 'Separator',
+    description:
+      'Divider line with subtle / gradient / brand variants, horizontal + vertical orientation.',
+    phase: 'Phase 3 — Display',
+    status: 'available',
+  },
+  {
+    href: '/components/icon-box',
+    name: 'IconBox',
+    description:
+      'Square icon container with 5 variants, 3 sizes, and asChild for interactive use.',
+    phase: 'Phase 3 — Display',
+    status: 'available',
+  },
+  {
+    href: '/components/avatar',
+    name: 'Avatar',
+    description:
+      'User identity with image / initials fallback chain, 5 sizes, status indicator.',
+    phase: 'Phase 3 — Display',
+    status: 'available',
+  },
+  {
+    href: '/components/skeleton',
+    name: 'Skeleton',
+    description:
+      'Loading placeholder with text / rect / circle variants and pulse / shimmer animations.',
+    phase: 'Phase 3 — Display',
+    status: 'available',
+  },
+  {
+    href: '/components/spinner',
+    name: 'Spinner',
+    description:
+      'Inline loading indicator with 4 sizes, 3 colors, and accessible status semantics.',
+    phase: 'Phase 3 — Display',
+    status: 'available',
+  },
+  {
+    href: '/components/aspect-ratio',
+    name: 'AspectRatio',
+    description:
+      'Media container with fixed aspect ratio for images, video, iframes (Tier B).',
+    phase: 'Phase 3 — Display',
+    status: 'available',
+  },
 ];
 
 export default function HomePage() {
