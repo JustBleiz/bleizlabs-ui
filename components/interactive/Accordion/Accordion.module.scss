@@ -1,0 +1,110 @@
+@use '../../../styles/mixins' as mx;
+
+.root {
+  display: flex;
+  flex-direction: column;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+.open {
+  background: var(--color-surface-raised);
+}
+
+.trigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  width: 100%;
+  padding: var(--space-4) var(--space-5);
+  background: transparent;
+  border: none;
+  color: var(--color-text-primary);
+  font-family: var(--font-secondary);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-medium);
+  text-align: left;
+  cursor: pointer;
+  user-select: none;
+
+  @include mx.touch-target;
+
+  &:focus-visible {
+    @include mx.focus-ring;
+    outline-offset: -2px;
+  }
+
+  &:hover:not(:disabled) {
+    background: var(--color-surface-raised);
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.55;
+  }
+}
+
+.compact .trigger {
+  padding: var(--space-3) var(--space-4);
+  font-size: var(--font-size-sm);
+}
+
+.question {
+  flex: 1;
+  min-width: 0;
+}
+
+.chevron {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--space-5);
+  height: var(--space-5);
+  flex-shrink: 0;
+  color: var(--color-text-secondary);
+  transition: transform var(--duration-normal) var(--easing-default);
+
+  > svg {
+    width: 100%;
+    height: 100%;
+  }
+}
+
+.open .chevron {
+  transform: rotate(180deg);
+}
+
+.panel {
+  border-top: 1px solid var(--color-border-subtle);
+}
+
+.panel[hidden] {
+  display: none;
+}
+
+.open .panel {
+  animation: expandDown var(--duration-normal) var(--easing-default);
+}
+
+.panelInner {
+  padding: var(--space-4) var(--space-5);
+  color: var(--color-text-secondary);
+  line-height: var(--line-height-normal);
+}
+
+.compact .panelInner {
+  padding: var(--space-3) var(--space-4);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .chevron {
+    transition: none;
+  }
+
+  .open .panel {
+    animation: none;
+  }
+}
