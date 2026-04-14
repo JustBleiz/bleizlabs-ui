@@ -1,19 +1,23 @@
 // _animations.scss
 //
-// 17 base keyframes + infinite modifier + global prefers-reduced-motion guard.
+// 16 base @keyframes + 1 utility modifier class + global prefers-reduced-motion guard.
 //
-// Keyframe groups:
+// Keyframe groups (16 total):
 //   Entry (6):     fadeIn, fadeInUp, fadeInDown, slideInLeft, slideInRight, scaleIn
 //   Feedback (4):  pulse, shake, spin, shimmer
 //   Exit (1):      fadeOut
 //   State (5):     expandDown, collapseUp, checkmark, radioFill, switchSlide
-//   Utility (1):   .animation-infinite modifier class
+//
+// Utility class: `.animation-infinite` modifier (NOT a keyframe — sets
+//   animation-iteration-count: infinite on any element).
 //
 // Components use these via CSS animation property + token durations:
 //   .root { animation: fadeIn var(--duration-normal) var(--easing-default); }
 //
 // Projects may add custom keyframes (orbFloat, cardStagger, etc.) in their
 // own SCSS — these 16 are the minimum base everyone can rely on.
+//
+// Animations doc bumped to 16 keyframes in E06 (added shimmer for Skeleton).
 
 // ============================================================================
 // ENTRY ANIMATIONS
