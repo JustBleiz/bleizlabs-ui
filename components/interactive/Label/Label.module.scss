@@ -1,0 +1,23 @@
+.root {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  font-family: var(--font-secondary);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  line-height: var(--line-height-normal);
+  color: var(--color-text-primary);
+  cursor: pointer;
+  user-select: none;
+}
+
+.disabled {
+  cursor: not-allowed;
+  color: var(--color-text-muted);
+  opacity: 0.6;
+}
+
+.required {
+  color: var(--color-error);
+  font-weight: var(--font-weight-bold);
+}

@@ -1,0 +1,122 @@
+@use '../../../styles/mixins' as mx;
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  width: 100%;
+}
+
+.fieldDisabled {
+  cursor: not-allowed;
+}
+
+.inputWrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  background: var(--input-bg);
+  border: 1px solid var(--input-border);
+  border-radius: var(--radius-input);
+  transition:
+    border-color var(--duration-fast) var(--easing-default),
+    box-shadow var(--duration-fast) var(--easing-default);
+
+  &:focus-within {
+    border-color: var(--input-border-focus);
+    @include mx.focus-ring;
+  }
+}
+
+.inputWrapError {
+  border-color: var(--color-error);
+
+  &:focus-within {
+    border-color: var(--color-error);
+    @include mx.focus-ring-error;
+  }
+}
+
+.input {
+  flex: 1;
+  min-width: 0;
+  padding: var(--space-3) var(--space-4);
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--color-text-primary);
+  font-family: var(--font-secondary);
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-normal);
+
+  &::placeholder {
+    color: var(--color-text-muted);
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    color: var(--color-text-muted);
+  }
+
+  @include mx.touch-target;
+}
+
+.hasStart .input {
+  padding-left: var(--space-2);
+}
+
+.hasEnd .input {
+  padding-right: var(--space-2);
+}
+
+.startIcon,
+.endIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--space-5);
+  height: var(--space-5);
+  color: var(--color-text-muted);
+  flex-shrink: 0;
+
+  > svg {
+    width: 100%;
+    height: 100%;
+  }
+}
+
+.startIcon {
+  margin-left: var(--space-3);
+}
+
+.endIcon {
+  margin-right: var(--space-3);
+}
+
+.helper {
+  margin: 0;
+  font-family: var(--font-secondary);
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+  line-height: var(--line-height-normal);
+}
+
+.error {
+  margin: 0;
+  font-family: var(--font-secondary);
+  font-size: var(--font-size-xs);
+  color: var(--color-error);
+  font-weight: var(--font-weight-medium);
+  line-height: var(--line-height-normal);
+}
+
+.srOnly {
+  @include mx.sr-only;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .inputWrap {
+    transition: none;
+  }
+}
