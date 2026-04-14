@@ -73,6 +73,10 @@ import { FormCard } from '@/components/presets/FormCard';
 import { StatsCard } from '@/components/presets/StatsCard';
 import { ActionCard } from '@/components/presets/ActionCard';
 
+// Complex interactive (Phase 10)
+import { Dialog } from '@/components/complex/Dialog';
+import { AlertDialog } from '@/components/complex/AlertDialog';
+
 import styles from './page.module.scss';
 
 type Theme = 'light' | 'dark';
@@ -185,6 +189,7 @@ const PHASES = [
   { id: 'phase-6', label: 'Phase 6 Specialized' },
   { id: 'phase-7', label: 'Phase 7 Molecules' },
   { id: 'phase-8', label: 'Phase 8 Presets' },
+  { id: 'phase-10', label: 'Phase 10 Complex' },
 ];
 
 // Deterministic future dates (SSR-safe via string literal)
@@ -207,6 +212,8 @@ export default function DemoPage() {
 
   const [checked, setChecked] = useState(true);
   const [switched, setSwitched] = useState(true);
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [alertOpen, setAlertOpen] = useState(false);
   const [radio, setRadio] = useState('b');
   const [toggle, setToggle] = useState(false);
   const [toggleGroup, setToggleGroup] = useState('grid');
@@ -903,9 +910,79 @@ export default function DemoPage() {
         </div>
       </section>
 
+      <section id="phase-10" className={styles.section}>
+        <Heading level={2} size="2xl">
+          Phase 10 — Complex Interactive
+        </Heading>
+        <Text color="muted">
+          Dialog (E15 CI1) + AlertDialog (E16 CI2) — portal + focus trap + scroll lock + background inert. Own build per WAI-ARIA APG (zero runtime UI deps, D5/D25). Remaining 20 components land per-Epic.
+        </Text>
+
+        <div className={styles.grid}>
+          <Card>
+            <CardHeader>
+              <Heading level={3} size="lg">Dialog</Heading>
+            </CardHeader>
+            <CardBody>
+              <Stack gap={3}>
+                <Text variant="small" color="muted">
+                  Generic modal with optional description. Overlay click + Escape close by default.
+                </Text>
+                <Button onClick={() => setDialogOpen(true)}>Open Dialog</Button>
+              </Stack>
+            </CardBody>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <Heading level={3} size="lg">AlertDialog</Heading>
+            </CardHeader>
+            <CardBody>
+              <Stack gap={3}>
+                <Text variant="small" color="muted">
+                  Blocking alert with required description + severity. Initial focus on Cancel. Overlay click blocked.
+                </Text>
+                <Button variant="warning" onClick={() => setAlertOpen(true)}>
+                  Open AlertDialog
+                </Button>
+              </Stack>
+            </CardBody>
+          </Card>
+        </div>
+
+        <Dialog
+          open={dialogOpen}
+          onOpenChange={setDialogOpen}
+          title="Generic dialog"
+          description="This is a Dialog — dismissible via Escape, overlay click, or the close button."
+          footer={
+            <>
+              <Button variant="ghost" onClick={() => setDialogOpen(false)}>Cancel</Button>
+              <Button onClick={() => setDialogOpen(false)}>OK</Button>
+            </>
+          }
+        >
+          <Text>
+            Dialog is the flexible modal primitive. Use it for forms, settings,
+            info panes. For blocking destructive confirms use AlertDialog.
+          </Text>
+        </Dialog>
+
+        <AlertDialog
+          open={alertOpen}
+          onOpenChange={setAlertOpen}
+          title="Delete workspace?"
+          description="This action cannot be undone. All workspace data will be permanently removed."
+          severity="critical"
+          confirmLabel="Delete"
+          onConfirm={() => setAlertOpen(false)}
+          onCancel={() => setAlertOpen(false)}
+        />
+      </section>
+
       <footer className={styles.footer}>
         <Text variant="small" color="muted">
-          58/80 components live · Phase 0-8 complete · See{' '}
+          60/80 components live · Phase 0-9 complete + Phase 10 in progress (2/22) · See{' '}
           <Link href="/">dev index</Link> for per-component playgrounds.
         </Text>
       </footer>
