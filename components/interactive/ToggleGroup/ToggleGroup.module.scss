@@ -1,5 +1,9 @@
 @use '../../../styles/mixins' as mx;
 
+// joined-group has horizontal + vertical variants under separate selectors
+// (same pattern as ButtonGroup) so each rendered element gets exactly one
+// mixin expansion, never both, regardless of source order.
+
 .root {
   display: inline-flex;
   flex-direction: row;
@@ -11,11 +15,11 @@
   align-items: stretch;
 }
 
-.attached {
+.attachedHorizontal {
   @include mx.joined-group;
 }
 
-.attached.vertical {
+.attachedVertical {
   @include mx.joined-group($orientation: vertical);
 }
 

@@ -26,11 +26,19 @@ import styles from './Button.module.scss';
  *          child (e.g., Next `<Link>`). `iconOnly` requires the consumer to
  *          pass `aria-label` because there is no visible text. Disabled
  *          state uses native `disabled` for `<button>` and
- *          `aria-disabled="true"` + `tabIndex={-1}` + click prevention for
- *          `<a>` (anchors don't honor the `disabled` attribute).
- * @notes   Server-Component safe. No `'use client'` directive — Button has
- *          no internal state. Click handlers are passed through to the
- *          rendered element. Hover/focus/active styling is CSS-only.
+ *          `aria-disabled="true"` + `tabIndex={-1}` + href removal for `<a>`
+ *          (anchors don't honor the `disabled` attribute). For `asChild`,
+ *          disabled is forwarded as BOTH `aria-disabled="true"` AND
+ *          `data-disabled` so consumer-rendered elements stay accessible
+ *          to assistive tech (WCAG 4.1.2 Name/Role/Value).
+ * @notes   The Button file itself has no `'use client'` directive — the
+ *          `<button>` and `<a>` render paths are fully RSC-compatible
+ *          (no internal state, no event handler injection). The
+ *          `asChild` path imports `Slot`, which DOES carry a `'use client'`
+ *          boundary — so consumers using `asChild` will pull a client
+ *          boundary into their tree. Plain `<Button>` and `<Button href>`
+ *          remain server-safe regardless. Hover/focus/active styling is
+ *          CSS-only across all three render paths.
  *
  * @example
  * <Button onClick={save}>Save</Button>
@@ -64,6 +72,12 @@ interface ButtonOwnProps {
   href?: string;
   /** Full-width within parent. Default `false`. */
   fullWidth?: boolean;
+  /**
+   * Native button `type` attribute. Default `'button'` — this is
+   * intentionally NOT `'submit'` to avoid accidental form submissions
+   * when a Button is dropped inside a form without an explicit type.
+   */
+  type?: 'button' | 'submit' | 'reset';
   /** Render as the single child element via Slot (e.g., Next `<Link>`). */
   asChild?: boolean;
 }
@@ -174,6 +188,7 @@ export const Button = forwardRef<HTMLElement, ButtonProps>(function Button(
         ref={ref as React.Ref<HTMLElement>}
         className={rootClass}
         style={buttonStyle}
+        aria-disabled={disabled || undefined}
         data-disabled={disabled || undefined}
         {...(rest as React.HTMLAttributes<HTMLElement>)}
       >

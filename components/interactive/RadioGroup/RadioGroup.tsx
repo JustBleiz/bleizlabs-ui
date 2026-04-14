@@ -119,10 +119,31 @@ export const RadioGroup = forwardRef<HTMLDivElement, RadioGroupProps>(
 /**
  * RadioGroupItem — individual radio option (renders inside RadioGroup).
  *
- * @a11y  Native `<input type="radio">` (visually hidden) wrapped in
- *        `<label>` so the entire card is clickable. Title and description
- *        compose into the visible label; arrow keys navigate between
- *        items via native browser behavior.
+ * @layer   atom (interactive)
+ * @tokens  --color-brand, --color-surface, --color-surface-raised,
+ *          --color-border, --color-border-strong, --color-text-primary,
+ *          --color-text-secondary, --focus-ring, --radius-md, --space-{1..6}
+ * @deps    cn, useRadioGroupContext (internal)
+ * @a11y    Native `<input type="radio">` (visually hidden via sr-only mixin)
+ *          wrapped in a `<label htmlFor>` so the entire card is clickable.
+ *          Arrow-key roving navigation between items comes for free from
+ *          the native radio group browser behavior. Each item's id is
+ *          auto-generated and unique within the group. The forwarded ref
+ *          targets the underlying `<input>` (form-ref convention) — not
+ *          the outer `<label>` — because consumers typically need to call
+ *          `.focus()` or `.checked` on the actual form element.
+ * @notes   Must be rendered inside a `<RadioGroup>` — `useRadioGroupContext`
+ *          throws otherwise. Reads `name` and active value from context;
+ *          you do NOT pass `name` per item. Animation: `radioFill` keyframe
+ *          (E03 _animations.scss) scale-in for the dot when selected;
+ *          reduced-motion preserves the visible filled state without
+ *          animation via opacity 1 + scale 1 fallback.
+ *
+ * @example
+ * <RadioGroup name="plan" defaultValue="pro">
+ *   <RadioGroupItem value="free" title="Free" description="Basic" />
+ *   <RadioGroupItem value="pro" title="Pro" description="$10/mo" />
+ * </RadioGroup>
  */
 export interface RadioGroupItemProps
   extends Omit<HTMLAttributes<HTMLLabelElement>, 'title'> {

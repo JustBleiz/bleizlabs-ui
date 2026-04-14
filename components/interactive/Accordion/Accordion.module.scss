@@ -78,18 +78,31 @@
 }
 
 .panel {
+  display: grid;
+  grid-template-rows: 1fr;
   border-top: 1px solid var(--color-border-subtle);
+  transition:
+    grid-template-rows var(--duration-normal) var(--easing-default),
+    border-top-color var(--duration-fast) var(--easing-default);
 }
 
-.panel[hidden] {
-  display: none;
+// Closed state — collapsed via grid-template-rows trick (modern, performant
+// alternative to max-height keyframe). The `1fr → 0fr` transition animates
+// reliably because the element stays in the layout tree (no `display: none`
+// or `hidden` attribute that would suppress the starting frame).
+// `aria-hidden="true"` (set by the .tsx) keeps SR consistent with visibility.
+.panelClosed {
+  grid-template-rows: 0fr;
+  border-top-color: transparent;
+  pointer-events: none;
 }
 
-.open .panel {
-  animation: expandDown var(--duration-normal) var(--easing-default);
+.panelClosed > .panelInner {
+  visibility: hidden;
 }
 
 .panelInner {
+  overflow: hidden;
   padding: var(--space-4) var(--space-5);
   color: var(--color-text-secondary);
   line-height: var(--line-height-normal);
@@ -100,11 +113,8 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .chevron {
+  .chevron,
+  .panel {
     transition: none;
-  }
-
-  .open .panel {
-    animation: none;
   }
 }

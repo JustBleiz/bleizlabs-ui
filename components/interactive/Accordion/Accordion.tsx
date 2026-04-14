@@ -22,15 +22,25 @@ import styles from './Accordion.module.scss';
  * @a11y    Renders a `<button aria-expanded aria-controls>` trigger
  *          coupled to a `<div role="region" aria-labelledby>` panel via
  *          auto-generated ids. Native button gives keyboard Space/Enter
- *          activation. The panel uses `hidden` attribute when collapsed
- *          so screen readers skip it. Implements WAI-ARIA APG accordion
+ *          activation. When closed, the panel sets `aria-hidden="true"`
+ *          and `pointer-events: none` so assistive tech and pointer
+ *          interactions both skip the collapsed content; the inner
+ *          wrapper carries `visibility: hidden` so it's removed from
+ *          tab order without leaving the layout tree (which would break
+ *          the open/close animation). Implements WAI-ARIA APG accordion
  *          pattern (https://w3.org/WAI/ARIA/apg/patterns/accordion/).
  * @notes   Client Component (`'use client'`) for controlled (`open`) +
  *          uncontrolled (`defaultOpen`) state. Single-panel only — for
  *          a group with single/multiple expansion mode, compose multiple
  *          Accordion instances inside a parent (AccordionGroup is
- *          planned for Phase 8). Animations: expandDown / collapseUp
- *          keyframes (E03 _animations.scss).
+ *          planned for Phase 8). Animation: CSS transition on
+ *          `grid-template-rows` (`1fr` ↔ `0fr`) — modern, performant
+ *          alternative to a `max-height` keyframe. The panel stays in
+ *          the layout tree across both states so the start frame of
+ *          the transition always renders, eliminating the flicker
+ *          inherent to `display: none` / `hidden` toggles. The chevron
+ *          uses a separate transform transition. Reduced-motion
+ *          disables both transitions.
  *
  * @example
  * <Accordion question="What's included?">
@@ -55,6 +65,7 @@ export interface AccordionProps
   compact?: boolean;
   /** Disable the trigger. */
   disabled?: boolean;
+  /** Panel content rendered inside the disclosure region. */
   children: ReactNode;
 }
 
@@ -118,8 +129,8 @@ export const Accordion = forwardRef<HTMLDivElement, AccordionProps>(
           id={panelId}
           role="region"
           aria-labelledby={triggerId}
-          hidden={!open}
-          className={styles.panel}
+          aria-hidden={!open}
+          className={cn(styles.panel, !open && styles.panelClosed)}
         >
           <div className={styles.panelInner}>{children}</div>
         </div>

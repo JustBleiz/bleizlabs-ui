@@ -4,6 +4,7 @@
   --switch-track-w: 36px;
   --switch-track-h: 20px;
   --switch-thumb-size: 16px;
+  --switch-thumb-offset: 2px;
 
   display: inline-flex;
   align-items: center;
@@ -56,7 +57,7 @@
 .thumb {
   position: absolute;
   top: 50%;
-  left: 2px;
+  left: var(--switch-thumb-offset);
   width: var(--switch-thumb-size);
   height: var(--switch-thumb-size);
   background: var(--color-surface);
@@ -71,7 +72,7 @@
 }
 
 .input:checked + .track .thumb {
-  left: calc(var(--switch-track-w) - var(--switch-thumb-size) - 2px);
+  left: calc(var(--switch-track-w) - var(--switch-thumb-size) - var(--switch-thumb-offset));
 }
 
 .label {

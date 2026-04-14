@@ -34,11 +34,19 @@
   }
 
   &:disabled,
-  &[aria-disabled='true'],
-  &[data-disabled='true'] {
+  &[aria-disabled='true'] {
     cursor: not-allowed;
     opacity: 0.55;
     pointer-events: none;
+  }
+
+  // asChild path uses data-disabled (no native disabled attr) — must
+  // remain pointer-event-receiving so consumers can render tooltips,
+  // popovers, or other UX patterns that need to detect attempted
+  // interaction on a disabled-styled element.
+  &[data-disabled='true'] {
+    cursor: not-allowed;
+    opacity: 0.55;
   }
 }
 

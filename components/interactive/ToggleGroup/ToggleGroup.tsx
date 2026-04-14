@@ -1,5 +1,6 @@
 'use client';
 
+import * as React from 'react';
 import {
   Children,
   cloneElement,
@@ -23,7 +24,7 @@ import styles from './ToggleGroup.module.scss';
  * @tokens  none of its own — children (Toggle) supply their own styles;
  *          the `joined-group` SCSS mixin (also used by ButtonGroup) handles
  *          the visual joining: collapsed inner radii + deduped 1px borders.
- * @deps    Toggle, cn, joined-group SCSS mixin
+ * @deps    Toggle (type only), cn, joined-group SCSS mixin
  * @a11y    Renders `role="group"` with required `aria-label`. Children are
  *          native `<button aria-pressed>` toggles — keyboard Tab/Space and
  *          assistive-tech press semantics work via Toggle's own a11y.
@@ -32,10 +33,13 @@ import styles from './ToggleGroup.module.scss';
  * @notes   Client Component (`'use client'`) for controlled/uncontrolled
  *          state. `type="single"` selects one child at a time (string
  *          value); `type="multiple"` allows any subset (string[] value).
- *          Children must be Toggle elements with a `value` prop attached
- *          (we read it via `props.value` and pass back the controlled
- *          pressed state). Reuses the `joined-group` mixin from
- *          ButtonGroup (I1.5) — the visual joining behavior is identical.
+ *          The `type` discriminant is treated as STABLE — switching it at
+ *          runtime is not supported (the underlying state shape differs
+ *          and would require a remount). Children must be Toggle elements
+ *          with a `value` prop attached (we read it via `props.value` and
+ *          pass back the controlled pressed state). Reuses the
+ *          `joined-group` mixin from ButtonGroup (I1.5) — the visual
+ *          joining behavior is identical.
  *
  * @example
  * <ToggleGroup type="single" defaultValue="left" aria-label="Text align">
@@ -53,24 +57,37 @@ export type ToggleGroupOrientation = 'horizontal' | 'vertical';
 
 interface ToggleGroupBaseProps
   extends Omit<HTMLAttributes<HTMLDivElement>, 'role' | 'defaultValue' | 'onChange'> {
+  /** Layout direction of the group. Default `horizontal`. */
   orientation?: ToggleGroupOrientation;
+  /** Collapse inner radii + dedupe borders via `joined-group`. Default `true`. */
   attached?: boolean;
+  /** Disable every child Toggle (merges with each child's own `disabled`). */
   disabled?: boolean;
+  /** Required accessible name for `role="group"`. */
   'aria-label': string;
+  /** Toggle elements with a `value` prop attached. Non-Toggle children pass through unchanged. */
   children: ReactNode;
 }
 
 interface ToggleGroupSingleProps extends ToggleGroupBaseProps {
+  /** Discriminant — single-selection mode (one Toggle pressed at a time). */
   type: 'single';
+  /** Controlled active value. */
   value?: string;
+  /** Uncontrolled initial active value. */
   defaultValue?: string;
+  /** Fires whenever the active value changes (controlled or uncontrolled). */
   onValueChange?: (value: string) => void;
 }
 
 interface ToggleGroupMultipleProps extends ToggleGroupBaseProps {
+  /** Discriminant — multiple-selection mode (any subset pressed). */
   type: 'multiple';
+  /** Controlled active values. */
   value?: string[];
+  /** Uncontrolled initial active values. */
   defaultValue?: string[];
+  /** Fires whenever the active set changes (controlled or uncontrolled). */
   onValueChange?: (value: string[]) => void;
 }
 
@@ -80,66 +97,138 @@ type ToggleChild = ReactElement<ToggleProps & { value?: string }>;
 
 export const ToggleGroup = forwardRef<HTMLDivElement, ToggleGroupProps>(
   function ToggleGroup(props, ref) {
-    const {
-      type,
-      orientation = 'horizontal',
-      attached = true,
-      disabled: groupDisabled = false,
-      className,
-      children,
-      ...rest
-    } = props;
-
-    const [singleState, setSingleState] = useState<string | undefined>(
-      type === 'single' ? props.defaultValue : undefined,
+    return props.type === 'single' ? (
+      <ToggleGroupSingle {...props} forwardedRef={ref} />
+    ) : (
+      <ToggleGroupMultiple {...props} forwardedRef={ref} />
     );
-    const [multipleState, setMultipleState] = useState<string[]>(
-      type === 'multiple' ? props.defaultValue ?? [] : [],
-    );
+  },
+);
 
-    const isControlled =
-      (type === 'single' && props.value !== undefined) ||
-      (type === 'multiple' && props.value !== undefined);
+// ============================================================================
+// SINGLE-MODE IMPLEMENTATION — strict ToggleGroupSingleProps narrowing
+// ============================================================================
 
-    const currentSingle =
-      type === 'single' && props.value !== undefined ? props.value : singleState;
-    const currentMultiple =
-      type === 'multiple' && props.value !== undefined
-        ? props.value
-        : multipleState;
+interface SingleInternalProps extends ToggleGroupSingleProps {
+  forwardedRef: React.ForwardedRef<HTMLDivElement>;
+}
 
-    const handleToggle = useCallback(
-      (value: string) => {
-        if (type === 'single') {
-          const next = currentSingle === value ? '' : value;
-          if (!isControlled) setSingleState(next || undefined);
-          (props.onValueChange as ((v: string) => void) | undefined)?.(next);
-        } else {
-          const next = currentMultiple.includes(value)
-            ? currentMultiple.filter((v) => v !== value)
-            : [...currentMultiple, value];
-          if (!isControlled) setMultipleState(next);
-          (props.onValueChange as ((v: string[]) => void) | undefined)?.(next);
-        }
-      },
-      [type, currentSingle, currentMultiple, isControlled, props],
-    );
+function ToggleGroupSingle({
+  value: controlledValue,
+  defaultValue,
+  onValueChange,
+  orientation = 'horizontal',
+  attached = true,
+  disabled: groupDisabled = false,
+  className,
+  children,
+  forwardedRef,
+  type: _type,
+  ...rest
+}: SingleInternalProps) {
+  void _type;
+  const [internal, setInternal] = useState<string | undefined>(defaultValue);
+  const isControlled = controlledValue !== undefined;
+  const active = isControlled ? controlledValue : internal;
 
-    const isPressed = (value: string): boolean =>
-      type === 'single' ? currentSingle === value : currentMultiple.includes(value);
+  const handleToggle = useCallback(
+    (next: string) => {
+      const resolved = active === next ? '' : next;
+      if (!isControlled) setInternal(resolved || undefined);
+      onValueChange?.(resolved);
+    },
+    [active, isControlled, onValueChange],
+  );
 
-    const cloned = Children.map(children, (child) => {
-      if (!isValidElement(child)) return child;
-      const toggleChild = child as ToggleChild;
-      const childValue = toggleChild.props.value;
-      if (typeof childValue !== 'string') return child;
-      return cloneElement(toggleChild, {
-        pressed: isPressed(childValue),
-        onPressedChange: () => handleToggle(childValue),
-        disabled: toggleChild.props.disabled || groupDisabled,
-      });
-    });
+  return (
+    <ToggleGroupShell
+      ref={forwardedRef}
+      orientation={orientation}
+      attached={attached}
+      className={className}
+      rest={rest}
+    >
+      {projectChildren(children, (childValue) => ({
+        pressed: active === childValue,
+        onToggle: () => handleToggle(childValue),
+        groupDisabled,
+      }))}
+    </ToggleGroupShell>
+  );
+}
 
+// ============================================================================
+// MULTIPLE-MODE IMPLEMENTATION — strict ToggleGroupMultipleProps narrowing
+// ============================================================================
+
+interface MultipleInternalProps extends ToggleGroupMultipleProps {
+  forwardedRef: React.ForwardedRef<HTMLDivElement>;
+}
+
+function ToggleGroupMultiple({
+  value: controlledValue,
+  defaultValue,
+  onValueChange,
+  orientation = 'horizontal',
+  attached = true,
+  disabled: groupDisabled = false,
+  className,
+  children,
+  forwardedRef,
+  type: _type,
+  ...rest
+}: MultipleInternalProps) {
+  void _type;
+  const [internal, setInternal] = useState<string[]>(defaultValue ?? []);
+  const isControlled = controlledValue !== undefined;
+  const active = isControlled ? controlledValue : internal;
+
+  const handleToggle = useCallback(
+    (next: string) => {
+      const resolved = active.includes(next)
+        ? active.filter((v) => v !== next)
+        : [...active, next];
+      if (!isControlled) setInternal(resolved);
+      onValueChange?.(resolved);
+    },
+    [active, isControlled, onValueChange],
+  );
+
+  return (
+    <ToggleGroupShell
+      ref={forwardedRef}
+      orientation={orientation}
+      attached={attached}
+      className={className}
+      rest={rest}
+    >
+      {projectChildren(children, (childValue) => ({
+        pressed: active.includes(childValue),
+        onToggle: () => handleToggle(childValue),
+        groupDisabled,
+      }))}
+    </ToggleGroupShell>
+  );
+}
+
+// ============================================================================
+// SHARED LAYOUT SHELL
+// ============================================================================
+
+interface ShellProps {
+  orientation: ToggleGroupOrientation;
+  attached: boolean;
+  className?: string;
+  rest: HTMLAttributes<HTMLDivElement>;
+  children: ReactNode;
+}
+
+const ToggleGroupShell = forwardRef<HTMLDivElement, ShellProps>(
+  function ToggleGroupShell(
+    { orientation, attached, className, rest, children },
+    ref,
+  ) {
+    const isVertical = orientation === 'vertical';
     return (
       <div
         ref={ref}
@@ -147,15 +236,43 @@ export const ToggleGroup = forwardRef<HTMLDivElement, ToggleGroupProps>(
         data-orientation={orientation}
         className={cn(
           styles.root,
-          orientation === 'vertical' && styles.vertical,
-          attached && styles.attached,
+          isVertical && styles.vertical,
+          attached && (isVertical ? styles.attachedVertical : styles.attachedHorizontal),
           !attached && styles.detached,
           className,
         )}
         {...rest}
       >
-        {cloned}
+        {children}
       </div>
     );
   },
 );
+
+// ============================================================================
+// CHILD PROJECTION — Children.map + cloneElement injection
+// ============================================================================
+
+interface ChildSlot {
+  pressed: boolean;
+  onToggle: () => void;
+  groupDisabled: boolean;
+}
+
+function projectChildren(
+  children: ReactNode,
+  getSlot: (value: string) => ChildSlot,
+): ReactNode {
+  return Children.map(children, (child) => {
+    if (!isValidElement(child)) return child;
+    const toggleChild = child as ToggleChild;
+    const childValue = toggleChild.props.value;
+    if (typeof childValue !== 'string') return child;
+    const slot = getSlot(childValue);
+    return cloneElement(toggleChild, {
+      pressed: slot.pressed,
+      onPressedChange: slot.onToggle,
+      disabled: toggleChild.props.disabled || slot.groupDisabled,
+    });
+  });
+}

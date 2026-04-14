@@ -14,12 +14,16 @@
 // ============================================================================
 // ATTACHED — joined edges, collapsed inner radii, deduped borders
 // ============================================================================
+// `joined-group` is mutually exclusive per orientation. The horizontal and
+// vertical variants live under separate selectors so a `.attached.vertical`
+// element gets ONLY the vertical mixin expansion, never both — avoiding
+// declaration conflicts that depend on source order.
 
-.attached {
+.attachedHorizontal {
   @include mx.joined-group;
 }
 
-.attached.vertical {
+.attachedVertical {
   @include mx.joined-group($orientation: vertical);
 }
 

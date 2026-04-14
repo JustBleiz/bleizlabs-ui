@@ -60,6 +60,7 @@ export const ButtonGroup = forwardRef<HTMLDivElement, ButtonGroupProps>(
     },
     ref,
   ) {
+    const isVertical = orientation === 'vertical';
     return (
       <div
         ref={ref}
@@ -67,8 +68,8 @@ export const ButtonGroup = forwardRef<HTMLDivElement, ButtonGroupProps>(
         data-orientation={orientation}
         className={cn(
           styles.root,
-          orientation === 'vertical' && styles.vertical,
-          attached && styles.attached,
+          isVertical && styles.vertical,
+          attached && (isVertical ? styles.attachedVertical : styles.attachedHorizontal),
           !attached && styles.detached,
           className,
         )}
