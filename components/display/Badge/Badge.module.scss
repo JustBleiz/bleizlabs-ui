@@ -1,0 +1,87 @@
+.root {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: var(--space-1) var(--space-2);
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--color-text-primary);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.label {
+  display: inline-block;
+}
+
+.icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--font-size-sm);
+  line-height: 1;
+}
+
+.dot {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: var(--radius-full);
+  background: currentcolor;
+}
+
+// ============================================================================
+// MODIFIERS
+// ============================================================================
+
+.pill {
+  border-radius: var(--radius-full);
+}
+
+.uppercase {
+  text-transform: uppercase;
+  letter-spacing: var(--letter-spacing-wider);
+}
+
+// ============================================================================
+// COLOR VARIANTS — subtle bg + strong text + matching border
+// ============================================================================
+
+.colorDefault {
+  border-color: var(--color-border-subtle);
+  background: transparent;
+  color: var(--color-text-secondary);
+}
+
+.colorBrand {
+  border-color: var(--color-brand-subtle);
+  background: var(--color-brand-subtle);
+  color: var(--color-brand-strong);
+}
+
+.colorSuccess {
+  border-color: var(--color-success-subtle);
+  background: var(--color-success-subtle);
+  color: var(--color-success-strong);
+}
+
+.colorWarning {
+  border-color: var(--color-warning-subtle);
+  background: var(--color-warning-subtle);
+  color: var(--color-warning-strong);
+}
+
+.colorError {
+  border-color: var(--color-error-subtle);
+  background: var(--color-error-subtle);
+  color: var(--color-error-strong);
+}
+
+.colorInfo {
+  border-color: var(--color-info-subtle);
+  background: var(--color-info-subtle);
+  color: var(--color-info-strong);
+}

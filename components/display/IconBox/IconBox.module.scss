@@ -1,0 +1,75 @@
+.root {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid transparent;
+  border-radius: var(--radius-md);
+  background: transparent;
+  color: var(--color-text-primary);
+  line-height: 1;
+}
+
+.icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 60%;
+  height: 60%;
+}
+
+// ============================================================================
+// SIZE — square dimensions, icon scales to 60% inside
+// ============================================================================
+
+.sizeSm {
+  width: 32px;
+  height: 32px;
+  font-size: 14px;
+}
+
+.sizeMd {
+  width: 40px;
+  height: 40px;
+  font-size: 18px;
+}
+
+.sizeLg {
+  width: 48px;
+  height: 48px;
+  font-size: 22px;
+}
+
+// ============================================================================
+// VARIANTS
+// ============================================================================
+
+.variantDefault {
+  border-color: var(--color-border-subtle);
+  background: var(--color-surface);
+  color: var(--color-text-secondary);
+}
+
+.variantBrand {
+  border-color: var(--color-brand-subtle);
+  background: var(--color-brand-subtle);
+  color: var(--color-brand-strong);
+}
+
+.variantSuccess {
+  border-color: var(--color-success-subtle);
+  background: var(--color-success-subtle);
+  color: var(--color-success-strong);
+}
+
+.variantError {
+  border-color: var(--color-error-subtle);
+  background: var(--color-error-subtle);
+  color: var(--color-error-strong);
+}
+
+.variantPlain {
+  border-color: transparent;
+  background: transparent;
+  color: var(--color-text-muted);
+}
