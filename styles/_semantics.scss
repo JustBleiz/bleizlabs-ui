@@ -43,6 +43,14 @@
   --font-weight-semibold: #{$font-weight-semibold};
   --font-weight-bold: #{$font-weight-bold};
 
+  // Letter-spacing scale — fine typographic control (Phase 3 + retroactive Phase 2 fix)
+  // Defaults map to common ranges: -0.025em (display headings) → 0.06em (uppercase labels)
+  --letter-spacing-tight: -0.015em;
+  --letter-spacing-tighter: -0.025em;
+  --letter-spacing-normal: 0;
+  --letter-spacing-wide: 0.01em;
+  --letter-spacing-wider: 0.06em;
+
   // ==========================================================================
   // SPACING — full scale + semantic defaults
   // ==========================================================================
@@ -172,6 +180,9 @@
   --shadow-brand: #{$shadow-brand};
   --shadow-brand-lg: #{$shadow-brand-lg};
 
+  // Card-specific shadow alias — neutral elevated card lift (Phase 3 D1)
+  --shadow-card: var(--shadow-md);
+
   // ==========================================================================
   // GLOWS
   // ==========================================================================
@@ -208,6 +219,13 @@
   --z-toast: #{$z-toast};
 
   // ==========================================================================
+  // CARD GLASS VARIANT — backdrop-filter intensity (Phase 3 D1)
+  // ==========================================================================
+  // Theme-aware glass surface lives in light/dark blocks below. Blur strength
+  // is theme-independent — projects can dial it up for heavier frosted glass.
+  --card-blur: 12px;
+
+  // ==========================================================================
   // CONTAINER MAX-WIDTHS — used by <Container size> (Phase 1 L3)
   // ==========================================================================
   // Match the breakpoint thresholds so a Container can be capped at the
@@ -238,6 +256,8 @@
     --color-text-secondary: #{$dark-text-secondary};
     --color-text-muted: #{$dark-text-muted};
     --color-text-inverse: #{$dark-text-inverse};
+
+    --card-bg-glass: rgba(255, 255, 255, 0.04);
   } @else {
     --color-bg: #{$light-bg};
     --color-surface: #{$light-surface};
@@ -252,6 +272,8 @@
     --color-text-secondary: #{$light-text-secondary};
     --color-text-muted: #{$light-text-muted};
     --color-text-inverse: #{$light-text-inverse};
+
+    --card-bg-glass: rgba(255, 255, 255, 0.6);
   }
 }
 
@@ -273,6 +295,8 @@
   --color-text-secondary: #{$light-text-secondary};
   --color-text-muted: #{$light-text-muted};
   --color-text-inverse: #{$light-text-inverse};
+
+  --card-bg-glass: rgba(255, 255, 255, 0.6);
 }
 
 // ============================================================================
@@ -293,6 +317,8 @@
   --color-text-secondary: #{$dark-text-secondary};
   --color-text-muted: #{$dark-text-muted};
   --color-text-inverse: #{$dark-text-inverse};
+
+  --card-bg-glass: rgba(255, 255, 255, 0.04);
 }
 
 // ============================================================================

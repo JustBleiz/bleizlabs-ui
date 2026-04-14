@@ -1,10 +1,10 @@
 // _animations.scss
 //
-// 16 base keyframes + infinite modifier + global prefers-reduced-motion guard.
+// 17 base keyframes + infinite modifier + global prefers-reduced-motion guard.
 //
 // Keyframe groups:
 //   Entry (6):     fadeIn, fadeInUp, fadeInDown, slideInLeft, slideInRight, scaleIn
-//   Feedback (3):  pulse, shake, spin
+//   Feedback (4):  pulse, shake, spin, shimmer
 //   Exit (1):      fadeOut
 //   State (5):     expandDown, collapseUp, checkmark, radioFill, switchSlide
 //   Utility (1):   .animation-infinite modifier class
@@ -116,6 +116,18 @@
   }
   to {
     transform: rotate(360deg);
+  }
+}
+
+// Skeleton shimmer — gradient sweeps across loading placeholder
+// Used by Skeleton component (Phase 3 D6) as `shimmer` variant alternative to `pulse`.
+// Component sets a `background-image: linear-gradient(...)` and animates `background-position`.
+@keyframes shimmer {
+  from {
+    background-position: -200% 0;
+  }
+  to {
+    background-position: 200% 0;
   }
 }
 
