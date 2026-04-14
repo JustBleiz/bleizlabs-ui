@@ -226,7 +226,7 @@
   --card-blur: 12px;
 
   // ==========================================================================
-  // INPUT TOKENS — Phase 4 Simple Interactive (E07)
+  // INPUT TOKENS — Phase 4 Simple Interactive (E07) + addons (E08)
   // ==========================================================================
   // Semantic aliases for form controls (Input, Textarea, Checkbox, Switch,
   // RadioGroup). Resolve to theme-active surface/border/brand tokens so input
@@ -237,6 +237,14 @@
   --input-bg: var(--color-surface);
   --input-border: var(--color-border);
   --input-border-focus: var(--color-brand);
+
+  // Addon tokens (E08) — used by Input prefix/suffix props and InputGroupText
+  // slot. Visually distinct surface that signals "this is a label, not an
+  // editable area" while staying on-theme. Projects override via the alias,
+  // not by editing component SCSS.
+  --input-addon-bg: var(--color-surface-raised);
+  --input-addon-text: var(--color-text-secondary);
+  --input-addon-border: var(--color-border);
 
   // ==========================================================================
   // CONTAINER MAX-WIDTHS — used by <Container size> (Phase 1 L3)
