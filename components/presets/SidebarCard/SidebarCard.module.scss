@@ -1,0 +1,23 @@
+// SidebarCard — Phase 8 E13
+// Glass-variant preset over Card atom. Tightens header internals so label → title → description
+// stack cleanly and body items sit close to header without visual gap inflation.
+
+.root {
+  // Inherits Card glass styling. Hook left open for sidebar-specific rules.
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.label {
+  letter-spacing: var(--letter-spacing-wider);
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
