@@ -1,0 +1,125 @@
+@use '../../../styles/mixins' as mx;
+
+// ============================================================================
+// BASE
+// ============================================================================
+
+.root {
+  display: block;
+  width: 100%;
+  color: var(--color-text-primary);
+}
+
+// ============================================================================
+// STAGES MODE — horizontal pill strip
+// ============================================================================
+
+.modeStages {
+  font-size: var(--font-size-xs);
+}
+
+.stageList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.stageItem {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: var(--space-1) var(--space-2);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-full);
+  background: var(--color-surface-raised);
+  color: var(--color-text-secondary);
+  font-weight: var(--font-weight-medium);
+  line-height: 1;
+  transition:
+    background var(--duration-normal) var(--easing-default),
+    border-color var(--duration-normal) var(--easing-default),
+    color var(--duration-normal) var(--easing-default);
+}
+
+.stageIndex {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.25em;
+  padding: 0 var(--space-1);
+  border-radius: var(--radius-full);
+  background: var(--color-surface);
+  color: inherit;
+  font-weight: var(--font-weight-semibold);
+  font-variant-numeric: tabular-nums;
+}
+
+.stageLabel {
+  text-transform: uppercase;
+  letter-spacing: var(--letter-spacing-wider);
+}
+
+.stagePending {
+  // default look — uses base .stageItem styling
+}
+
+.stageCompleted {
+  border-color: var(--color-brand-subtle);
+  background: var(--color-brand-subtle);
+  color: var(--color-brand-strong);
+}
+
+.stageCompleted .stageIndex {
+  background: var(--color-brand);
+  color: var(--color-surface);
+}
+
+.stageActive {
+  border-color: var(--color-brand);
+  background: var(--color-brand);
+  color: var(--color-surface);
+}
+
+.stageActive .stageIndex {
+  background: var(--color-surface);
+  color: var(--color-brand-strong);
+}
+
+// ============================================================================
+// PERCENT MODE — linear progress bar
+// ============================================================================
+
+.modePercent {
+  --progress-value: 0%;
+}
+
+.track {
+  position: relative;
+  width: 100%;
+  height: var(--space-2);
+  overflow: hidden;
+  border-radius: var(--radius-full);
+  background: var(--color-surface-raised);
+}
+
+.bar {
+  width: var(--progress-value);
+  height: 100%;
+  border-radius: inherit;
+  background: var(--color-brand);
+  transition: width var(--duration-normal) var(--easing-default);
+}
+
+// ============================================================================
+// REDUCED MOTION
+// ============================================================================
+
+@media (prefers-reduced-motion: reduce) {
+  .stageItem,
+  .bar {
+    transition: none;
+  }
+}
