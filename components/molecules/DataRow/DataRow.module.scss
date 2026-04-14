@@ -1,0 +1,20 @@
+// ============================================================================
+// DataRow — layer over Inline + Text atoms
+// ============================================================================
+
+.root {
+  width: 100%;
+}
+
+.label {
+  flex: 0 0 auto;
+}
+
+.value {
+  display: inline-flex;
+  flex: 0 1 auto;
+  align-items: baseline;
+  min-width: 0;
+  color: var(--color-text-primary);
+  text-align: right;
+}
