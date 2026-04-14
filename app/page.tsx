@@ -15,21 +15,21 @@ const components: ComponentLink[] = [
     name: 'Stack',
     description: 'Vertical flex layout atom with gap, align, justify, divider.',
     phase: 'Phase 1 — Layout',
-    status: 'pending',
+    status: 'available',
   },
   {
     href: '/components/inline',
     name: 'Inline',
     description: 'Horizontal flex layout atom with wrap and collapseBelow.',
     phase: 'Phase 1 — Layout',
-    status: 'pending',
+    status: 'available',
   },
   {
     href: '/components/container',
     name: 'Container',
     description: 'Max-width centered wrapper with size + padding variants.',
     phase: 'Phase 1 — Layout',
-    status: 'pending',
+    status: 'available',
   },
   {
     href: '/components/section',
@@ -37,7 +37,7 @@ const components: ComponentLink[] = [
     description:
       'Full-width semantic band with bg variants and tag override.',
     phase: 'Phase 1 — Layout',
-    status: 'pending',
+    status: 'available',
   },
 ];
 

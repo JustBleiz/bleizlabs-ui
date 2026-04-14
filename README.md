@@ -5,9 +5,13 @@
 
 ## Status
 
-**Design phase complete** (D1-D25). Currently in **Phase 0 — Style Fundament** (7 SCSS files for design tokens).
+**Phase 0 ✓ + Phase 1 Layout ✓** (delivered 2026-04-14 in Epics E03+E04).
 
-React components start at Phase 1 (Layout atoms: Stack, Inline, Container, Section).
+- Phase 0: 7 SCSS fundament files for design tokens (`styles/`)
+- Phase 1: 4 layout atoms — Stack, Inline, Container, Section (`components/layout/`)
+- Plus: Slot primitive + cn + mergeRefs utils (`components/utils/`), `SpaceIndex` type (`components/types/`), Next.js 16.2.3 dev playground (`app/`)
+
+**Next:** Phase 2 — Typography atoms (Heading, Text, Label).
 
 For the full design rationale and decisions log, see `../docs/decisions.md` and `../docs/component-standards.md`.
 For the roadmap see `../ROADMAP.md`.
