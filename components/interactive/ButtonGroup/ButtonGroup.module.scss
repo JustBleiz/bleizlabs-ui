@@ -1,0 +1,32 @@
+@use '../../../styles/mixins' as mx;
+
+.root {
+  display: inline-flex;
+  flex-direction: row;
+  align-items: stretch;
+}
+
+.vertical {
+  flex-direction: column;
+  align-items: stretch;
+}
+
+// ============================================================================
+// ATTACHED — joined edges, collapsed inner radii, deduped borders
+// ============================================================================
+
+.attached {
+  @include mx.joined-group;
+}
+
+.attached.vertical {
+  @include mx.joined-group($orientation: vertical);
+}
+
+// ============================================================================
+// DETACHED — fallback to gap-based row (equivalent to Inline)
+// ============================================================================
+
+.detached {
+  gap: var(--space-2);
+}

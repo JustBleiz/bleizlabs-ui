@@ -1,0 +1,197 @@
+@use '../../../styles/mixins' as mx;
+
+.root {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  box-sizing: border-box;
+  padding: var(--button-padding-y, var(--space-2)) var(--button-padding-x, var(--space-4));
+  border: 1px solid transparent;
+  border-radius: var(--radius-input);
+  background: transparent;
+  color: var(--color-text-primary);
+  font-family: var(--font-secondary);
+  font-size: var(--button-font-size, var(--font-size-base));
+  font-weight: var(--font-weight-medium);
+  line-height: 1;
+  white-space: nowrap;
+  text-decoration: none;
+  cursor: pointer;
+  user-select: none;
+  transition:
+    background-color var(--duration-fast) var(--easing-default),
+    border-color var(--duration-fast) var(--easing-default),
+    color var(--duration-fast) var(--easing-default),
+    box-shadow var(--duration-fast) var(--easing-default),
+    transform var(--duration-fast) var(--easing-default);
+
+  @include mx.touch-target;
+
+  &:focus-visible {
+    @include mx.focus-ring;
+  }
+
+  &:disabled,
+  &[aria-disabled='true'],
+  &[data-disabled='true'] {
+    cursor: not-allowed;
+    opacity: 0.55;
+    pointer-events: none;
+  }
+}
+
+// ============================================================================
+// SIZES
+// ============================================================================
+
+.sizeSm {
+  --button-padding-y: var(--space-2);
+  --button-padding-x: var(--space-3);
+  --button-font-size: var(--font-size-sm);
+}
+
+.sizeMd {
+  --button-padding-y: var(--space-3);
+  --button-padding-x: var(--space-4);
+  --button-font-size: var(--font-size-base);
+}
+
+.sizeLg {
+  --button-padding-y: var(--space-4);
+  --button-padding-x: var(--space-5);
+  --button-font-size: var(--font-size-lg);
+}
+
+// ============================================================================
+// VARIANTS
+// ============================================================================
+
+.variantPrimary {
+  background: var(--color-brand);
+  color: var(--color-text-inverse);
+  border-color: var(--color-brand);
+  box-shadow: var(--shadow-brand, none);
+
+  &:hover:not(:disabled):not([aria-disabled='true']) {
+    background: var(--hover-brand);
+    border-color: var(--hover-brand);
+  }
+
+  &:active:not(:disabled):not([aria-disabled='true']) {
+    background: var(--active-brand);
+    border-color: var(--active-brand);
+    transform: translateY(1px);
+  }
+}
+
+.variantSecondary {
+  background: var(--color-surface-raised);
+  color: var(--color-text-primary);
+  border-color: var(--color-border);
+
+  &:hover:not(:disabled):not([aria-disabled='true']) {
+    background: var(--color-surface);
+    border-color: var(--color-border-strong);
+  }
+
+  &:active:not(:disabled):not([aria-disabled='true']) {
+    transform: translateY(1px);
+  }
+}
+
+.variantGhost {
+  background: transparent;
+  color: var(--color-text-primary);
+  border-color: transparent;
+
+  &:hover:not(:disabled):not([aria-disabled='true']) {
+    background: var(--color-surface-raised);
+  }
+
+  &:active:not(:disabled):not([aria-disabled='true']) {
+    background: var(--color-surface);
+  }
+}
+
+.variantLink {
+  padding-left: 0;
+  padding-right: 0;
+  background: transparent;
+  color: var(--color-brand);
+  border-color: transparent;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-thickness: 1px;
+
+  &:hover:not(:disabled):not([aria-disabled='true']) {
+    color: var(--hover-brand);
+  }
+
+  &:active:not(:disabled):not([aria-disabled='true']) {
+    color: var(--active-brand);
+  }
+}
+
+.variantWarning {
+  background: var(--color-warning);
+  color: var(--color-text-inverse);
+  border-color: var(--color-warning);
+
+  &:hover:not(:disabled):not([aria-disabled='true']) {
+    filter: brightness(1.08);
+  }
+
+  &:active:not(:disabled):not([aria-disabled='true']) {
+    transform: translateY(1px);
+    filter: brightness(0.95);
+  }
+}
+
+// ============================================================================
+// MODIFIERS
+// ============================================================================
+
+.iconOnly {
+  padding-left: var(--button-padding-y);
+  padding-right: var(--button-padding-y);
+  aspect-ratio: 1;
+}
+
+.fullWidth {
+  display: flex;
+  width: 100%;
+}
+
+.icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1em;
+  height: 1em;
+
+  > svg {
+    width: 100%;
+    height: 100%;
+  }
+}
+
+.label {
+  display: inline-flex;
+  align-items: center;
+}
+
+// ============================================================================
+// REDUCED MOTION
+// ============================================================================
+
+@media (prefers-reduced-motion: reduce) {
+  .root {
+    transition: none;
+  }
+
+  .root:active {
+    transform: none;
+  }
+}
