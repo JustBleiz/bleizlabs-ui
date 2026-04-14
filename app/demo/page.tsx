@@ -76,6 +76,7 @@ import { ActionCard } from '@/components/presets/ActionCard';
 // Complex interactive (Phase 10)
 import { Dialog } from '@/components/complex/Dialog';
 import { AlertDialog } from '@/components/complex/AlertDialog';
+import { Drawer } from '@/components/complex/Drawer';
 
 import styles from './page.module.scss';
 
@@ -214,6 +215,7 @@ export default function DemoPage() {
   const [switched, setSwitched] = useState(true);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [alertOpen, setAlertOpen] = useState(false);
+  const [drawerOpen, setDrawerOpen] = useState(false);
   const [radio, setRadio] = useState('b');
   const [toggle, setToggle] = useState(false);
   const [toggleGroup, setToggleGroup] = useState('grid');
@@ -915,7 +917,7 @@ export default function DemoPage() {
           Phase 10 — Complex Interactive
         </Heading>
         <Text color="muted">
-          Dialog (E15 CI1) + AlertDialog (E16 CI2) — portal + focus trap + scroll lock + background inert. Own build per WAI-ARIA APG (zero runtime UI deps, D5/D25). Remaining 20 components land per-Epic.
+          Dialog (E15 CI1) + AlertDialog (E16 CI2) + Drawer (E17 CI3) — portal + focus trap + scroll lock + background inert. Own build per WAI-ARIA APG (zero runtime UI deps, D5/D25). Remaining 19 components land per-Epic.
         </Text>
 
         <div className={styles.grid}>
@@ -945,6 +947,20 @@ export default function DemoPage() {
                 <Button variant="warning" onClick={() => setAlertOpen(true)}>
                   Open AlertDialog
                 </Button>
+              </Stack>
+            </CardBody>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <Heading level={3} size="lg">Drawer</Heading>
+            </CardHeader>
+            <CardBody>
+              <Stack gap={3}>
+                <Text variant="small" color="muted">
+                  Bottom-positioned sheet. Slide-up animation, sticky footer, iOS safe-area. Reuses useFocusTrap.
+                </Text>
+                <Button onClick={() => setDrawerOpen(true)}>Open Drawer</Button>
               </Stack>
             </CardBody>
           </Card>
@@ -978,11 +994,32 @@ export default function DemoPage() {
           onConfirm={() => setAlertOpen(false)}
           onCancel={() => setAlertOpen(false)}
         />
+
+        <Drawer
+          open={drawerOpen}
+          onOpenChange={setDrawerOpen}
+          title="Filter results"
+          description="Bottom-positioned sheet with slide-up animation and sticky footer."
+          footer={
+            <>
+              <Button variant="ghost" onClick={() => setDrawerOpen(false)}>
+                Cancel
+              </Button>
+              <Button onClick={() => setDrawerOpen(false)}>Apply</Button>
+            </>
+          }
+        >
+          <Text>
+            Drawer is the bottom-sheet primitive. Use it for mobile filter
+            panels, action sheets, and detail views. Reuses <code>useFocusTrap</code>,
+            portal, scroll lock, Escape, and inert from Dialog pattern.
+          </Text>
+        </Drawer>
       </section>
 
       <footer className={styles.footer}>
         <Text variant="small" color="muted">
-          60/80 components live · Phase 0-9 complete + Phase 10 in progress (2/22) · See{' '}
+          61/80 components live · Phase 0-9 complete + Phase 10 in progress (3/22) · See{' '}
           <Link href="/">dev index</Link> for per-component playgrounds.
         </Text>
       </footer>

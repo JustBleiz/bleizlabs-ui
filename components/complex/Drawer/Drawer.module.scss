@@ -1,0 +1,181 @@
+// Drawer — Phase 10 Complex Interactive (E17)
+// Bottom-positioned modal sheet. Visual modifier of Dialog pattern per APG
+// /dialog-modal/. Forked from AlertDialog.module.scss (E16 precedent) with:
+//   - `.root` uses align-items: flex-end (bottom-flush layout)
+//   - `.content` full-width with top-only border-radius
+//   - height variants (not width variants like Dialog/AlertDialog)
+//   - slide-up keyframe translateY(100% → 0)
+//   - iOS safe-area-inset-bottom honored in padding-bottom
+//   - dvh fallback to vh for lg size (iOS Safari address bar collapse)
+// Semantic tokens only per D25. prefers-reduced-motion disables animation.
+// `.root` is the outermost portal-rendered element per D11. Touch target
+// enforcement on footer/action buttons delegated to Button atom.
+
+@use 'mixins' as mx;
+
+.root {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-modal);
+  display: flex;
+  align-items: flex-end; // bottom-align content
+  justify-content: center;
+  background: var(--color-overlay);
+  animation: drawerOverlayIn var(--duration-normal) var(--easing-default);
+}
+
+.content {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  width: 100%;
+  padding: var(--space-5);
+  // iOS safe area: ensure content stays above notch/home indicator
+  padding-bottom: max(var(--space-5), env(safe-area-inset-bottom));
+  background: var(--color-surface);
+  border: 1px solid var(--color-border-subtle);
+  border-bottom: none; // flush with viewport bottom
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0; // top corners only
+  box-shadow: var(--shadow-2xl);
+  // NOTE: overflow-y intentionally NOT here — it lives on `.body` so the
+  // footer stays sticky at the drawer bottom while only the body scrolls.
+  // `.content` itself is a fixed-height flex column (max-height from size variant).
+  overflow: hidden;
+  animation: drawerContentIn var(--duration-normal) var(--easing-default);
+
+  &:focus {
+    outline: none;
+  }
+
+  &:focus-visible {
+    @include mx.focus-ring;
+  }
+}
+
+// Height variants (Drawer uses max-height, not max-width like Dialog/AlertDialog).
+.sizeSm {
+  max-height: 360px;
+}
+
+.sizeMd {
+  max-height: 560px;
+}
+
+.sizeLg {
+  // iOS Safari: dvh accounts for dynamic viewport (address bar collapse).
+  // Fallback to vh for older browsers. Safety margin via calc.
+  max-height: min(80vh, calc(100vh - var(--space-8)));
+  max-height: min(80dvh, calc(100dvh - var(--space-8)));
+}
+
+.header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.title {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.description {
+  margin: 0;
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  // Body flex-grows so footer stays sticky at bottom. `overflow-y: auto` here
+  // (not on .content) isolates scrolling to body only — header + footer stay
+  // pinned within the drawer flex column. `min-height: 0` is required for
+  // flex children to allow shrinking below content size (enables overflow).
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--space-3);
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--color-border-subtle);
+  // flex-shrink:0 keeps footer at drawer bottom when body content scrolls
+  flex: 0 0 auto;
+}
+
+.closeButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  background: transparent;
+  color: var(--color-text-muted);
+  border: 1px solid transparent;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition:
+    background var(--duration-fast) var(--easing-default),
+    color var(--duration-fast) var(--easing-default),
+    border-color var(--duration-fast) var(--easing-default);
+
+  // WCAG 2.5.5 / D13: touch target ≥44×44 on coarse pointers (mobile)
+  @include mx.touch-target;
+
+  &:hover {
+    background: var(--color-surface-raised);
+    color: var(--color-text-primary);
+    border-color: var(--color-border-subtle);
+  }
+
+  &:focus-visible {
+    @include mx.focus-ring;
+  }
+}
+
+// Desktop: optionally constrain max-width (Drawer stays bottom-positioned,
+// just narrower on wide screens to avoid ultra-wide full-bleed).
+@include mx.bp-md {
+  .content {
+    max-width: 720px;
+  }
+}
+
+@keyframes drawerOverlayIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes drawerContentIn {
+  from {
+    opacity: 0;
+    transform: translateY(100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .root,
+  .content {
+    animation: none;
+  }
+
+  .closeButton {
+    transition: none;
+  }
+}

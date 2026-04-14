@@ -215,6 +215,14 @@ const components: ComponentLink[] = [
     phase: 'Phase 10 — Complex Interactive',
     status: 'available',
   },
+  {
+    href: '/components/drawer',
+    name: 'Drawer',
+    description:
+      'E17 CI3 — bottom-positioned modal sheet. Slide-up keyframe, top-only border-radius, iOS safe-area-inset, sticky footer with scrollable body, height variants (sm/md/lg dvh). APG /dialog-modal/ modifier. Reuses useFocusTrap from Dialog.',
+    phase: 'Phase 10 — Complex Interactive',
+    status: 'available',
+  },
 ];
 
 export default function HomePage() {
