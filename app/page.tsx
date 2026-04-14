@@ -191,6 +191,14 @@ const components: ComponentLink[] = [
     phase: 'Phase 8 — Card Presets',
     status: 'available',
   },
+  {
+    href: '/demo',
+    name: 'Demo showcase',
+    description:
+      'E14 — one-stop showcase of all 58 components in 8 phase sections with runtime theme toggle.',
+    phase: 'Phase 9 — Demo & Docs',
+    status: 'available',
+  },
 ];
 
 export default function HomePage() {
