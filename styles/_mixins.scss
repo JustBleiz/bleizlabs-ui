@@ -174,8 +174,14 @@
 //
 // The mixin targets `> *` direct children — works with any component
 // (Button, Toggle, custom). Children are responsible for setting their own
-// border-radius via component tokens (which we then collapse with !important
-// scoped only to first/last logic — *not* general overrides).
+// border-radius via component tokens; the mixin's collapse rules win
+// against children's `.root` class declarations via pseudo-class
+// specificity boost: `*:not(:first-child):not(:last-child)` evaluates to
+// specificity 0,2,0 (each `:not()` adds the specificity of its inner
+// pseudo-class argument — `:first-child` and `:last-child` are 0,1,0
+// each), which beats a child's single `.root` class at 0,1,0. No
+// `!important` needed; the cascade is deterministic regardless of CSS
+// Modules file load order.
 
 @mixin joined-group($orientation: horizontal) {
   > * + * {
