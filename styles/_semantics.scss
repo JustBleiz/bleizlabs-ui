@@ -226,6 +226,19 @@
   --card-blur: 12px;
 
   // ==========================================================================
+  // INPUT TOKENS — Phase 4 Simple Interactive (E07)
+  // ==========================================================================
+  // Semantic aliases for form controls (Input, Textarea, Checkbox, Switch,
+  // RadioGroup). Resolve to theme-active surface/border/brand tokens so input
+  // styling tracks light/dark automatically. Projects can override the alias
+  // (e.g., `--input-bg: var(--color-surface-raised)`) without touching the
+  // component SCSS. Focus styling reuses `--focus-ring` / `--focus-ring-error`
+  // from the INTERACTIVE STATES block above.
+  --input-bg: var(--color-surface);
+  --input-border: var(--color-border);
+  --input-border-focus: var(--color-brand);
+
+  // ==========================================================================
   // CONTAINER MAX-WIDTHS — used by <Container size> (Phase 1 L3)
   // ==========================================================================
   // Match the breakpoint thresholds so a Container can be capped at the

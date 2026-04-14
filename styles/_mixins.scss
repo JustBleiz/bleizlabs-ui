@@ -152,6 +152,78 @@
 }
 
 // ============================================================================
+// JOINED GROUP — collapse inner radii + dedup borders for attached controls
+// ============================================================================
+// Used by ButtonGroup (Phase 4 I1.5) and ToggleGroup (Phase 4 I7) to render
+// a row/column of children that touch each other (zero gap), with outer
+// corners keeping the requested border-radius and inner edges going flat.
+// Also dedupes shared borders so 1px + 1px doesn't render as 2px between
+// adjacent children.
+//
+// Usage (horizontal default):
+//   .root {
+//     display: inline-flex;
+//     @include mx.joined-group;
+//   }
+//
+// Vertical variant:
+//   .root[data-orientation='vertical'] {
+//     flex-direction: column;
+//     @include mx.joined-group($orientation: vertical);
+//   }
+//
+// The mixin targets `> *` direct children — works with any component
+// (Button, Toggle, custom). Children are responsible for setting their own
+// border-radius via component tokens (which we then collapse with !important
+// scoped only to first/last logic — *not* general overrides).
+
+@mixin joined-group($orientation: horizontal) {
+  > * + * {
+    @if $orientation == horizontal {
+      margin-left: -1px;
+    } @else {
+      margin-top: -1px;
+    }
+  }
+
+  > *:not(:first-child):not(:last-child) {
+    border-radius: 0;
+  }
+
+  @if $orientation == horizontal {
+    > *:first-child:not(:last-child) {
+      border-top-right-radius: 0;
+      border-bottom-right-radius: 0;
+    }
+
+    > *:last-child:not(:first-child) {
+      border-top-left-radius: 0;
+      border-bottom-left-radius: 0;
+    }
+  } @else {
+    > *:first-child:not(:last-child) {
+      border-bottom-left-radius: 0;
+      border-bottom-right-radius: 0;
+    }
+
+    > *:last-child:not(:first-child) {
+      border-top-left-radius: 0;
+      border-top-right-radius: 0;
+    }
+  }
+
+  // Lift focused/hovered/active child above neighbors so its outline and
+  // borders aren't clipped by the next child's negative margin overlap.
+  > *:focus-visible,
+  > *:hover,
+  > *[aria-pressed='true'],
+  > *[data-state='on'] {
+    position: relative;
+    z-index: 1;
+  }
+}
+
+// ============================================================================
 // VISUALLY HIDDEN — hide from sight but keep in accessibility tree
 // ============================================================================
 // For screen-reader-only labels, native inputs behind custom UI (Switch,
