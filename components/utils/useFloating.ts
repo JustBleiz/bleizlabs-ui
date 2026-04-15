@@ -19,6 +19,12 @@
  * SSR safety: all DOM access is scoped to useLayoutEffect — zero window/document
  * access during render. Floating element is not measured until it mounts in
  * the portal target.
+ *
+ * E20 extension: optional `arrow` option adds arrow middleware support for
+ * Popover + HoverCard. When provided, `arrowStyles` is populated with the
+ * arrow's CSS position (left/top) for the caller to apply to the arrow DOM
+ * node. Consumers that do not need an arrow (Tooltip, DropdownMenu, Select,
+ * Combobox, ContextMenu) pay zero cost — the hook skips arrow math entirely.
  */
 
 import {
@@ -27,8 +33,24 @@ import {
   useRef,
   useState,
   type CSSProperties,
+  type RefObject,
 } from 'react';
-import { computePosition, type Placement } from './position';
+import {
+  computePosition,
+  computeArrowPosition,
+  parsePlacement,
+  type Placement,
+} from './position';
+
+export interface UseFloatingArrowOption {
+  /** Ref pointing at the rendered arrow DOM element. Hook reads offsetWidth/offsetHeight each update. */
+  ref: RefObject<HTMLElement | null>;
+  /**
+   * Minimum distance the arrow keeps from the floating element's corners
+   * (typically the floating element's border-radius value). Default `4`.
+   */
+  padding?: number;
+}
 
 export interface UseFloatingOptions {
   /** Whether the floating element is currently open (visible + mounted). Updates skip when closed. */
@@ -39,6 +61,12 @@ export interface UseFloatingOptions {
   offset?: number;
   /** Inner padding from viewport edges for flip + shift. Default `8`. */
   padding?: number;
+  /**
+   * Optional arrow support. When provided, the hook runs `computeArrowPosition`
+   * on every update and returns `arrowStyles` for the consumer to apply to
+   * the arrow DOM node. Omit this option to disable arrow math entirely.
+   */
+  arrow?: UseFloatingArrowOption;
 }
 
 export interface UseFloatingResult {
@@ -50,6 +78,12 @@ export interface UseFloatingResult {
   };
   /** Inline styles to apply to the floating element — `position: fixed` + computed `top`/`left`. */
   floatingStyles: CSSProperties;
+  /**
+   * Inline styles to apply to the arrow element — populated only when the
+   * `arrow` option is provided. Contains `position: absolute` + `left` or
+   * `top` (depending on placement axis) in pixels.
+   */
+  arrowStyles: CSSProperties | undefined;
   /** Actual placement after flip resolution (may differ from preferred). */
   placement: Placement;
   /** Force a recomputation — useful after content size change that isn't captured by ResizeObserver. */
@@ -62,7 +96,7 @@ export interface UseFloatingResult {
  * events on both elements. No-ops while `open` is false to avoid wasted work.
  */
 export function useFloating(options: UseFloatingOptions): UseFloatingResult {
-  const { open, placement = 'top', offset = 6, padding = 8 } = options;
+  const { open, placement = 'top', offset = 6, padding = 8, arrow } = options;
 
   const referenceRef = useRef<HTMLElement | null>(null);
   const floatingRef = useRef<HTMLElement | null>(null);
@@ -72,6 +106,10 @@ export function useFloating(options: UseFloatingOptions): UseFloatingResult {
     y: 0,
     placement,
   });
+  const [arrowCoords, setArrowCoords] = useState<{ x?: number; y?: number }>({});
+
+  const arrowRef = arrow?.ref;
+  const arrowPadding = arrow?.padding;
 
   const update = useCallback(() => {
     const reference = referenceRef.current;
@@ -93,10 +131,28 @@ export function useFloating(options: UseFloatingOptions): UseFloatingResult {
     });
 
     setCoords(result);
-  }, [placement, offset, padding]);
+
+    // Optional arrow pass — skipped entirely when `arrow` option is omitted.
+    if (arrowRef?.current) {
+      const arrowNode = arrowRef.current;
+      const arrowDimensions = {
+        width: arrowNode.offsetWidth,
+        height: arrowNode.offsetHeight,
+      };
+      const arrowResult = computeArrowPosition({
+        reference: referenceRect,
+        floatingCoords: { x: result.x, y: result.y },
+        floatingDimensions,
+        arrowDimensions,
+        placement: result.placement,
+        padding: arrowPadding,
+      });
+      setArrowCoords(arrowResult);
+    }
+  }, [placement, offset, padding, arrowRef, arrowPadding]);
 
   // Ref setters trigger update on mount — cannot use plain useRef because
-  // Tooltip needs to run update() the instant the floating element attaches.
+  // consumers need update() to run the instant the floating element attaches.
   const setReference = useCallback(
     (node: HTMLElement | null) => {
       referenceRef.current = node;
@@ -150,9 +206,25 @@ export function useFloating(options: UseFloatingOptions): UseFloatingResult {
     willChange: 'transform',
   };
 
+  // Arrow styles — only populated when caller supplied an arrow ref AND the
+  // last update produced a usable coord. The consumer applies these inline
+  // on the arrow DOM node. Direction is derived from `coords.placement` so
+  // the caller can additionally style via `data-placement` attribute if desired.
+  let arrowStyles: CSSProperties | undefined;
+  if (arrowRef) {
+    const { side } = parsePlacement(coords.placement);
+    const isVertical = side === 'top' || side === 'bottom';
+    if (isVertical && typeof arrowCoords.x === 'number') {
+      arrowStyles = { position: 'absolute', left: Math.round(arrowCoords.x) };
+    } else if (!isVertical && typeof arrowCoords.y === 'number') {
+      arrowStyles = { position: 'absolute', top: Math.round(arrowCoords.y) };
+    }
+  }
+
   return {
     refs: { setReference, setFloating },
     floatingStyles,
+    arrowStyles,
     placement: coords.placement,
     update,
   };

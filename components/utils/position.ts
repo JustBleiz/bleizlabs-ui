@@ -240,3 +240,76 @@ export function computePosition(args: ComputePositionArgs): ComputePositionResul
     placement: joinPlacement(side, alignment),
   };
 }
+
+// ──────────────────────────────────────────────────────────────────────────
+// Arrow middleware (E20 — added for Popover and downstream floating components)
+// ──────────────────────────────────────────────────────────────────────────
+
+export interface ComputeArrowPositionArgs {
+  /** Reference (trigger) bounding rect — typically from `trigger.getBoundingClientRect()`. */
+  reference: Rect;
+  /** Final `{ x, y }` coordinates of the floating element (post-shift). */
+  floatingCoords: { x: number; y: number };
+  /** Floating element dimensions. */
+  floatingDimensions: Dimensions;
+  /** Arrow element dimensions — caller measures its own arrow node. */
+  arrowDimensions: Dimensions;
+  /** Actual placement after flip resolution — drives which axis to compute. */
+  placement: Placement;
+  /**
+   * Minimum distance the arrow keeps from the floating element's corners.
+   * Typically matches the floating element's border-radius so the arrow
+   * does not visually stick out of a rounded corner. Default `4`.
+   */
+  padding?: number;
+}
+
+export interface ArrowPosition {
+  /** Horizontal offset from floating element's left edge (top/bottom placements). */
+  x?: number;
+  /** Vertical offset from floating element's top edge (left/right placements). */
+  y?: number;
+}
+
+/**
+ * Compute arrow position along a floating element's edge so the arrow visually
+ * points at the reference element's center, clamped to stay within the floating
+ * element's bounds (minus `padding` for rounded corners).
+ *
+ * Separate utility (NOT folded into `computePosition`) so non-arrow consumers
+ * pay zero cost — Tooltip, DropdownMenu, Select, Combobox, ContextMenu all
+ * run without arrow math. Popover and HoverCard opt in by calling this after
+ * `computePosition`.
+ */
+export function computeArrowPosition(args: ComputeArrowPositionArgs): ArrowPosition {
+  const {
+    reference,
+    floatingCoords,
+    floatingDimensions,
+    arrowDimensions,
+    placement,
+    padding = 4,
+  } = args;
+
+  const { side } = parsePlacement(placement);
+  const isVertical = side === 'top' || side === 'bottom';
+
+  if (isVertical) {
+    // Arrow sits on the horizontal edge of the floating element.
+    const referenceCenterX = reference.x + reference.width / 2;
+    // Desired arrow x (relative to floating's left edge).
+    const desired = referenceCenterX - floatingCoords.x - arrowDimensions.width / 2;
+    const min = padding;
+    const max = floatingDimensions.width - arrowDimensions.width - padding;
+    const x = max < min ? min : Math.max(min, Math.min(desired, max));
+    return { x };
+  }
+
+  // side === 'left' || side === 'right' — arrow on vertical edge.
+  const referenceCenterY = reference.y + reference.height / 2;
+  const desired = referenceCenterY - floatingCoords.y - arrowDimensions.height / 2;
+  const min = padding;
+  const max = floatingDimensions.height - arrowDimensions.height - padding;
+  const y = max < min ? min : Math.max(min, Math.min(desired, max));
+  return { y };
+}

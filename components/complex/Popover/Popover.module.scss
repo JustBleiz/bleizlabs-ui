@@ -1,0 +1,126 @@
+@use '../../../styles/mixins' as mx;
+
+// Popover — floating panel anchored to a trigger (Phase 10 CI5).
+// Zero runtime deps — positioning math lives in `utils/position.ts` +
+// `utils/useFloating.ts` (E19 primitive, E20 extended with arrow support).
+// Non-modal by default; optional `modal={true}` reuses Dialog's `useFocusTrap`.
+//
+// Fork keyframe pattern matches Dialog/AlertDialog/Drawer/Sheet/Tooltip
+// (each complex component owns its own keyframe for copy-to-project independence).
+
+.root {
+  // Portal root positioned fixed by useFloating — no layout contribution.
+  z-index: var(--z-popover);
+  // .content owns visible pointer-events; .root is a transparent anchor.
+  pointer-events: none;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  pointer-events: auto;
+
+  background: var(--color-surface-raised);
+  color: var(--color-text-primary);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  padding: var(--space-4);
+
+  word-wrap: break-word;
+  animation: popoverContentIn var(--duration-normal) var(--easing-default);
+
+  // Content is tabIndex={-1} so it can receive programmatic focus when no
+  // tabbables exist. Suppress the default browser outline on that programmatic
+  // focus (it's not a user-driven focus event) but keep focus-visible ring
+  // for keyboard navigation via child tabbables inheriting the ring mixin.
+  &:focus {
+    outline: none;
+  }
+
+  &:focus-visible {
+    @include mx.focus-ring;
+  }
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.title {
+  margin: 0;
+}
+
+.description {
+  margin: 0;
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  font-size: var(--font-size-md);
+  line-height: 1.5;
+}
+
+.footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-2);
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--color-border-subtle);
+}
+
+// Arrow — rotated square positioned by useFloating via inline `left`/`top`.
+// Direction via data-placement attribute decides which edge of .content the
+// arrow aligns with. The `--popover-arrow-size` custom property lets consumers
+// tweak size without overriding the whole selector.
+.arrow {
+  --popover-arrow-size: 10px;
+  position: absolute;
+  width: var(--popover-arrow-size);
+  height: var(--popover-arrow-size);
+  background: var(--color-surface-raised);
+  border-top: 1px solid var(--color-border-subtle);
+  border-left: 1px solid var(--color-border-subtle);
+  pointer-events: none;
+
+  // Placement-based positioning of the arrow relative to the content edge.
+  // For placement='bottom*' (popover below trigger), arrow sits on TOP edge.
+  &[data-placement^='bottom'] {
+    top: calc(var(--popover-arrow-size) / -2);
+    transform: rotate(45deg);
+  }
+  &[data-placement^='top'] {
+    bottom: calc(var(--popover-arrow-size) / -2);
+    transform: rotate(-135deg);
+  }
+  &[data-placement^='right'] {
+    left: calc(var(--popover-arrow-size) / -2);
+    transform: rotate(-45deg);
+  }
+  &[data-placement^='left'] {
+    right: calc(var(--popover-arrow-size) / -2);
+    transform: rotate(135deg);
+  }
+}
+
+@keyframes popoverContentIn {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .content {
+    animation: none;
+  }
+}

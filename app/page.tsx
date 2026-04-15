@@ -195,7 +195,7 @@ const components: ComponentLink[] = [
     href: '/demo',
     name: 'Demo showcase',
     description:
-      'E14 — one-stop showcase of all 63 components in 9 phase sections (incl. Phase 10 complex interactive) with runtime theme toggle.',
+      'E14 — one-stop showcase of all 64 components in 9 phase sections (incl. Phase 10 complex interactive) with runtime theme toggle.',
     phase: 'Phase 9 — Demo & Docs',
     status: 'available',
   },
@@ -236,6 +236,14 @@ const components: ComponentLink[] = [
     name: 'Tooltip',
     description:
       'E19 CI6 — modeless floating label on hover/focus. Own positioning engine (utils/position.ts + utils/useFloating.ts, zero deps), 12 placements with flip + shift, TooltipProvider delay group, SC 1.4.13 compliant (dismissable + hoverable + focus parity). APG /tooltip/.',
+    phase: 'Phase 10 — Complex Interactive',
+    status: 'available',
+  },
+  {
+    href: '/components/popover',
+    name: 'Popover',
+    description:
+      'E20 CI5 — floating panel anchored to a trigger. Compound flat API (Popover + PopoverTrigger + PopoverContent). Extends positioning engine with arrow middleware + optional arrow ref in useFloating. Non-modal default or opt-in modal (reuses useFocusTrap). Outside-click pointerdown capture dismiss. APG /dialog-modal/ modeless modifier.',
     phase: 'Phase 10 — Complex Interactive',
     status: 'available',
   },

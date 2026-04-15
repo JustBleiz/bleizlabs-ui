@@ -79,6 +79,7 @@ import { AlertDialog } from '@/components/complex/AlertDialog';
 import { Drawer } from '@/components/complex/Drawer';
 import { Sheet } from '@/components/complex/Sheet';
 import { Tooltip, TooltipProvider } from '@/components/complex/Tooltip';
+import { Popover, PopoverTrigger, PopoverContent } from '@/components/complex/Popover';
 
 import styles from './page.module.scss';
 
@@ -237,10 +238,10 @@ export default function DemoPage() {
               bleizlabs-ui demo
             </Heading>
             <Text className={styles.intro}>
-              Complete showcase of all 58 components — 47 atoms + 6 molecules +
-              5 Card presets. Toggle theme to inspect light + dark tokens.
-              Per-component deep dives live under{' '}
-              <Link href="/">/components/*</Link>.
+              Complete showcase of all 64 components — 47 atoms + 6 molecules +
+              5 Card presets + 6 complex interactive (Phase 10 in progress).
+              Toggle theme to inspect light + dark tokens. Per-component deep
+              dives live under <Link href="/">/components/*</Link>.
             </Text>
           </div>
           <button
@@ -920,7 +921,7 @@ export default function DemoPage() {
           Phase 10 — Complex Interactive
         </Heading>
         <Text color="muted">
-          Dialog (E15 CI1) + AlertDialog (E16 CI2) + Drawer (E17 CI3) + Sheet (E18 CI4) + Tooltip (E19 CI6) — portal + focus trap + scroll lock + background inert (modal family) and modeless positioning engine (Tooltip). Own build per WAI-ARIA APG (zero runtime UI deps, D5/D25 — Tooltip introduces own `utils/position.ts` + `utils/useFloating.ts` as shared positioning primitive). Remaining 17 components land per-Epic.
+          Dialog (E15 CI1) + AlertDialog (E16 CI2) + Drawer (E17 CI3) + Sheet (E18 CI4) + Tooltip (E19 CI6) + Popover (E20 CI5) — portal + focus trap + scroll lock + background inert (modal family) and positioning engine (Tooltip + Popover). Own build per WAI-ARIA APG (zero runtime UI deps, D5/D25). E19 introduced `utils/position.ts` + `utils/useFloating.ts`; E20 extended with `computeArrowPosition` + optional arrow ref. Remaining 16 components land per-Epic.
         </Text>
 
         <div className={styles.grid}>
@@ -1007,6 +1008,29 @@ export default function DemoPage() {
               </Stack>
             </CardBody>
           </Card>
+
+          <Card>
+            <CardHeader>
+              <Heading level={3} size="lg">Popover</Heading>
+            </CardHeader>
+            <CardBody>
+              <Stack gap={3}>
+                <Text variant="small" color="muted">
+                  Floating panel anchored to a trigger. Compound flat API (Popover + PopoverTrigger + PopoverContent). Extends positioning engine with arrow. Non-modal default; opt-in modal reuses useFocusTrap.
+                </Text>
+                <Inline gap={2}>
+                  <Popover showArrow>
+                    <PopoverTrigger asChild>
+                      <Button>Account</Button>
+                    </PopoverTrigger>
+                    <PopoverContent title="Signed in" description="user@example.com">
+                      <Text>Session active. Manage profile from your dashboard.</Text>
+                    </PopoverContent>
+                  </Popover>
+                </Inline>
+              </Stack>
+            </CardBody>
+          </Card>
         </div>
 
         <Dialog
@@ -1078,7 +1102,7 @@ export default function DemoPage() {
 
       <footer className={styles.footer}>
         <Text variant="small" color="muted">
-          63/80 components live · Phase 0-9 complete + Phase 10 in progress (5/22) · See{' '}
+          64/80 components live · Phase 0-9 complete + Phase 10 in progress (6/22) · See{' '}
           <Link href="/">dev index</Link> for per-component playgrounds.
         </Text>
       </footer>
