@@ -1,0 +1,119 @@
+@use '../../../styles/mixins' as mx;
+
+// ContextMenu — right-click menu surface (Phase 10 CI8).
+// Copies DropdownMenu's visual pattern (D-C1 Option B: copy+layer) because
+// DropdownMenuContext hard-codes `triggerRef` which ContextMenu cannot supply.
+// Planned refactor: extract shared MenuContent primitive at E23+ once we have
+// 3 floating-menu consumers (Popover + DropdownMenu + ContextMenu).
+//
+// Fork `contextMenuContentIn` keyframe uses scale-from-cursor (not translateY)
+// because the menu appears AT the cursor point — no directional origin.
+
+.root {
+  // Portal root — position: fixed inline via React. Z-index owned here.
+  z-index: var(--z-popover);
+  pointer-events: none;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  pointer-events: auto;
+
+  background: var(--color-surface-raised);
+  color: var(--color-text-primary);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+
+  padding: var(--space-1);
+  min-width: 180px;
+  max-width: min(320px, 90vw);
+
+  // Scrollable when content exceeds viewport height.
+  max-height: min(480px, calc(100vh - var(--space-8)));
+  overflow-y: auto;
+
+  // Scale-from-cursor entry animation — menu appears AT the cursor point,
+  // so scale is a natural origin (vs DropdownMenu's translateY-from-trigger).
+  animation: contextMenuContentIn var(--duration-fast) var(--easing-default);
+  transform-origin: top left;
+
+  &:focus {
+    outline: none;
+  }
+}
+
+.item {
+  all: unset;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  width: 100%;
+  padding: var(--space-2) var(--space-3);
+  min-height: 32px;
+  font-size: var(--font-size-sm);
+  line-height: 1.4;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  color: var(--color-text-primary);
+  user-select: none;
+
+  @media (pointer: coarse) {
+    @include mx.touch-target;
+  }
+
+  &:hover:not([data-disabled]) {
+    background: var(--color-surface-hover, var(--color-surface-raised));
+  }
+
+  &:focus-visible {
+    background: var(--color-surface-hover, var(--color-surface-raised));
+    @include mx.focus-ring;
+  }
+
+  &[data-disabled] {
+    color: var(--color-text-muted);
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+}
+
+.separator {
+  height: 1px;
+  background: var(--color-border-subtle);
+  margin: var(--space-1) 0;
+}
+
+.label {
+  padding: var(--space-2) var(--space-3) var(--space-1);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold, 600);
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  user-select: none;
+}
+
+.group {
+  display: flex;
+  flex-direction: column;
+}
+
+@keyframes contextMenuContentIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .content {
+    animation: none;
+  }
+}
