@@ -195,7 +195,7 @@ const components: ComponentLink[] = [
     href: '/demo',
     name: 'Demo showcase',
     description:
-      'E14 — one-stop showcase of all 64 components in 9 phase sections (incl. Phase 10 complex interactive) with runtime theme toggle.',
+      'E14 — one-stop showcase of all 65 components in 9 phase sections (incl. Phase 10 complex interactive) with runtime theme toggle.',
     phase: 'Phase 9 — Demo & Docs',
     status: 'available',
   },
@@ -244,6 +244,14 @@ const components: ComponentLink[] = [
     name: 'Popover',
     description:
       'E20 CI5 — floating panel anchored to a trigger. Compound flat API (Popover + PopoverTrigger + PopoverContent). Extends positioning engine with arrow middleware + optional arrow ref in useFloating. Non-modal default or opt-in modal (reuses useFocusTrap). Outside-click pointerdown capture dismiss. APG /dialog-modal/ modeless modifier.',
+    phase: 'Phase 10 — Complex Interactive',
+    status: 'available',
+  },
+  {
+    href: '/components/dropdown-menu',
+    name: 'DropdownMenu',
+    description:
+      'E21 CI7 — accessible menu with 7 compound flat exports (DropdownMenu + Trigger + Content + Item + Separator + Label + Group). Full APG /menu/ keyboard model: Enter/Space/ArrowDown opens first item, ArrowUp opens last, arrow keys cycle with wraparound, Home/End jump, typeahead (multi-char buffer 500ms reset), Escape restores focus, Tab closes. Own compound API (does not reuse Popover — role="dialog" incompatible). onSelect cancelable event for future Checkbox/Radio items.',
     phase: 'Phase 10 — Complex Interactive',
     status: 'available',
   },

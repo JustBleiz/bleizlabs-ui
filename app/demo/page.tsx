@@ -80,6 +80,13 @@ import { Drawer } from '@/components/complex/Drawer';
 import { Sheet } from '@/components/complex/Sheet';
 import { Tooltip, TooltipProvider } from '@/components/complex/Tooltip';
 import { Popover, PopoverTrigger, PopoverContent } from '@/components/complex/Popover';
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+} from '@/components/complex/DropdownMenu';
 
 import styles from './page.module.scss';
 
@@ -238,8 +245,8 @@ export default function DemoPage() {
               bleizlabs-ui demo
             </Heading>
             <Text className={styles.intro}>
-              Complete showcase of all 64 components — 47 atoms + 6 molecules +
-              5 Card presets + 6 complex interactive (Phase 10 in progress).
+              Complete showcase of all 65 components — 47 atoms + 6 molecules +
+              5 Card presets + 7 complex interactive (Phase 10 in progress).
               Toggle theme to inspect light + dark tokens. Per-component deep
               dives live under <Link href="/">/components/*</Link>.
             </Text>
@@ -921,7 +928,7 @@ export default function DemoPage() {
           Phase 10 — Complex Interactive
         </Heading>
         <Text color="muted">
-          Dialog (E15 CI1) + AlertDialog (E16 CI2) + Drawer (E17 CI3) + Sheet (E18 CI4) + Tooltip (E19 CI6) + Popover (E20 CI5) — portal + focus trap + scroll lock + background inert (modal family) and positioning engine (Tooltip + Popover). Own build per WAI-ARIA APG (zero runtime UI deps, D5/D25). E19 introduced `utils/position.ts` + `utils/useFloating.ts`; E20 extended with `computeArrowPosition` + optional arrow ref. Remaining 16 components land per-Epic.
+          Dialog (E15 CI1) + AlertDialog (E16 CI2) + Drawer (E17 CI3) + Sheet (E18 CI4) + Tooltip (E19 CI6) + Popover (E20 CI5) + DropdownMenu (E21 CI7) — modal family (focus trap + scroll lock + inert), positioning engine family (Tooltip + Popover), and accessible menu family (DropdownMenu with full APG keyboard model + typeahead + roving focus). Own build per WAI-ARIA APG (zero runtime UI deps, D5/D25). Remaining 15 components land per-Epic.
         </Text>
 
         <div className={styles.grid}>
@@ -1031,6 +1038,32 @@ export default function DemoPage() {
               </Stack>
             </CardBody>
           </Card>
+
+          <Card>
+            <CardHeader>
+              <Heading level={3} size="lg">DropdownMenu</Heading>
+            </CardHeader>
+            <CardBody>
+              <Stack gap={3}>
+                <Text variant="small" color="muted">
+                  Accessible menu with 7 flat compound exports. Full APG /menu/ keyboard model — arrow keys, Home/End, typeahead, Escape restores focus, Tab closes. Enter/Space on trigger focuses first item; ArrowUp focuses last.
+                </Text>
+                <Inline gap={2}>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button>Actions</Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent>
+                      <DropdownMenuItem>Edit profile</DropdownMenuItem>
+                      <DropdownMenuItem>Settings</DropdownMenuItem>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem>Sign out</DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </Inline>
+              </Stack>
+            </CardBody>
+          </Card>
         </div>
 
         <Dialog
@@ -1102,7 +1135,7 @@ export default function DemoPage() {
 
       <footer className={styles.footer}>
         <Text variant="small" color="muted">
-          64/80 components live · Phase 0-9 complete + Phase 10 in progress (6/22) · See{' '}
+          65/80 components live · Phase 0-9 complete + Phase 10 in progress (7/22) · See{' '}
           <Link href="/">dev index</Link> for per-component playgrounds.
         </Text>
       </footer>
