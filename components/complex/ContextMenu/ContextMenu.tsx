@@ -9,9 +9,12 @@
  *   --z-popover, --duration-fast, --easing-default, --space-1..5, --font-size-sm,
  *   --font-size-xs
  * @deps zero runtime deps. Positioning via direct `computePosition` call from
- *   `utils/position.ts` (Phase 2 D-C2 Option C — skip `useFloating` hook since
+ *   `utils/position.ts` (D-C2 Option C — skip `useFloating` hook since
  *   ContextMenu closes on scroll and never needs to "follow" a reference).
- *   Own Slot primitive for `asChild` trigger wrapping.
+ *   Dismiss + portal + focus + context via shared `utils/floating/` composable
+ *   primitives (E23 refactor). Own Slot primitive for `asChild` trigger wrapping.
+ *   Menu keyboard handler + typeahead remain inline — menu-specific (same as
+ *   DropdownMenu, to be co-extracted when a third menu consumer arrives).
  * @a11y Content: `role="menu"`, no `aria-modal` (menus are inherently non-modal).
  *   Items: `role="menuitem"`, `aria-disabled` + `data-disabled` for CSS, native
  *   `<button disabled>` for Enter/Space handling. Separator: `role="separator"
@@ -32,9 +35,6 @@
  *   15 Radix closed-issue cases mapped + 13 inherited DropdownMenu tests.
  * @todo Long-press on touch devices (deferred — iOS Safari magnifier conflict,
  *   touchmove cancel threshold, -webkit-touch-callout requirements).
- * @todo FloatingRoot extraction at E23+ — ContextMenu duplicates ~580 LOC from
- *   DropdownMenu (Item/Separator/Label/Group + keyboard handler + dismiss
- *   primitives). Planned refactor sprint to extract shared MenuContent.
  * @example
  *   <ContextMenu>
  *     <ContextMenuTrigger asChild>
@@ -49,10 +49,8 @@
  */
 
 import {
-  createContext,
   forwardRef,
   useCallback,
-  useContext,
   useEffect,
   useId,
   useLayoutEffect,
@@ -64,10 +62,16 @@ import {
   type ButtonHTMLAttributes,
   type CSSProperties,
 } from 'react';
-import { createPortal } from 'react-dom';
 import { Slot } from '../../utils/Slot';
 import { cn } from '../../utils/cn';
 import { computePosition, type Placement } from '../../utils/position';
+import {
+  createFloatingContext,
+  useFloatingState,
+  useFloatingDismiss,
+  useFloatingFocus,
+  FloatingPortal,
+} from '../../utils/floating';
 import styles from './ContextMenu.module.scss';
 
 // ──────────────────────────────────────────────────────────────────────────
@@ -87,23 +91,10 @@ interface ContextMenuContextValue {
   sideOffset: number;
   collisionPadding: number;
   closeOnScroll: boolean;
-  /**
-   * When the trigger is marked disabled, `onContextMenu` does not call
-   * `preventDefault()` — user gets their native browser context menu and
-   * our component does nothing.
-   */
-  triggerDisabled: boolean;
 }
 
-const ContextMenuContext = createContext<ContextMenuContextValue | null>(null);
-
-function useContextMenuContext(component: string): ContextMenuContextValue {
-  const ctx = useContext(ContextMenuContext);
-  if (!ctx) {
-    throw new Error(`${component} must be rendered inside a <ContextMenu> parent.`);
-  }
-  return ctx;
-}
+const [ContextMenuContextProvider, useContextMenuContext] =
+  createFloatingContext<ContextMenuContextValue>('ContextMenu');
 
 // ──────────────────────────────────────────────────────────────────────────
 // ContextMenu — state holder + context provider
@@ -141,26 +132,24 @@ export function ContextMenu({
   const reactId = useId();
   const contentId = `${reactId}-menu`;
 
-  const [uncontrolledOpen, setUncontrolledOpen] = useState(defaultOpen);
+  // Base controlled/uncontrolled hybrid via shared primitive. We wrap its
+  // `setOpen` in our own callback to also track `cursorPoint` — the shared
+  // hook doesn't need to know about menu-specific state.
+  const { open, setOpen: baseSetOpen } = useFloatingState({
+    controlledOpen,
+    defaultOpen,
+    onOpenChange,
+  });
   const [cursorPoint, setCursorPoint] = useState<CursorPoint | null>(null);
-  const isControlled = controlledOpen !== undefined;
-  const open = isControlled ? controlledOpen : uncontrolledOpen;
 
   const setOpen = useCallback(
     (next: boolean, point?: CursorPoint) => {
-      if (next === open && !point) return;
-      if (!isControlled) setUncontrolledOpen(next);
       if (next && point) setCursorPoint(point);
       if (!next) setCursorPoint(null);
-      onOpenChange?.(next);
+      baseSetOpen(next);
     },
-    [open, isControlled, onOpenChange],
+    [baseSetOpen],
   );
-
-  // `triggerDisabled` is a shared context flag that individual triggers can
-  // set via the `disabled` prop. Default `false` — the first trigger's choice
-  // wins if multiple triggers coexist (unusual pattern).
-  const [triggerDisabled, setTriggerDisabled] = useState(false);
 
   const value = useMemo<ContextMenuContextValue>(
     () => ({
@@ -171,29 +160,11 @@ export function ContextMenu({
       sideOffset,
       collisionPadding,
       closeOnScroll,
-      triggerDisabled,
     }),
-    [
-      open,
-      setOpen,
-      cursorPoint,
-      contentId,
-      sideOffset,
-      collisionPadding,
-      closeOnScroll,
-      triggerDisabled,
-    ],
+    [open, setOpen, cursorPoint, contentId, sideOffset, collisionPadding, closeOnScroll],
   );
 
-  // Expose setTriggerDisabled to trigger via a ref on value — but simpler: we
-  // let triggers mount their own state into the parent via an internal
-  // workaround. For E22 minimum viable: triggers do NOT write to context;
-  // each trigger checks its own `disabled` prop locally. The context flag is
-  // unused; remove to keep the context shape minimal.
-  // (Keeping the setter reference-stable for future expansion.)
-  void setTriggerDisabled;
-
-  return <ContextMenuContext.Provider value={value}>{children}</ContextMenuContext.Provider>;
+  return <ContextMenuContextProvider value={value}>{children}</ContextMenuContextProvider>;
 }
 
 // ──────────────────────────────────────────────────────────────────────────
@@ -272,7 +243,6 @@ export function ContextMenuContent({ children, className, ...rest }: ContextMenu
     ctx;
 
   const popperRef = useRef<HTMLDivElement | null>(null);
-  const previousActiveRef = useRef<HTMLElement | null>(null);
   const typeaheadBufferRef = useRef<string>('');
   const typeaheadTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -326,75 +296,32 @@ export function ContextMenuContent({ children, className, ...rest }: ContextMenu
     });
   }, [open, cursorPoint, sideOffset, collisionPadding]);
 
-  // Close helper that restores focus to the previously-focused element.
-  // Unlike DropdownMenu which restores to a specific trigger button, ContextMenu
-  // restores to whatever was focused at the moment the context menu opened.
-  const closeAndRestore = useCallback(() => {
-    const target = previousActiveRef.current;
-    setOpen(false);
-    if (target && target.isConnected && typeof target.focus === 'function') {
-      requestAnimationFrame(() => {
-        target.focus();
-      });
-    }
-  }, [setOpen]);
-
-  // Initial focus on open — capture pre-open activeElement (for focus restore
-  // later) and move focus to first non-disabled item via rAF.
-  useLayoutEffect(() => {
-    if (!open) return;
-    previousActiveRef.current = document.activeElement as HTMLElement | null;
-    const frame = requestAnimationFrame(() => {
-      const container = popperRef.current;
-      if (!container) return;
+  // Initial focus + focus restore via shared primitive. ContextMenu restores
+  // to the element that was focused BEFORE the context menu opened (captured
+  // automatically by useFloatingFocus as `previousActive`) — NOT to a trigger
+  // widget, because there is no trigger button. Pass no `getRestoreTarget`
+  // override so the default `previousActive` restore kicks in.
+  useFloatingFocus({
+    open,
+    contentRef: popperRef,
+    getFocusTarget: (container) => {
       const items = getMenuItems(container);
-      if (items.length === 0) {
-        container.focus();
-        return;
-      }
-      items[0]?.focus();
-    });
-    return () => cancelAnimationFrame(frame);
-  }, [open]);
+      return items[0] ?? null;
+    },
+  });
 
-  // Escape dismiss — document-level with defaultPrevented guard.
-  useEffect(() => {
-    if (!open) return;
-    const handleKey = (event: KeyboardEvent) => {
-      if (event.key === 'Escape' && !event.defaultPrevented) {
-        event.preventDefault();
-        closeAndRestore();
-      }
-    };
-    document.addEventListener('keydown', handleKey);
-    return () => document.removeEventListener('keydown', handleKey);
-  }, [open, closeAndRestore]);
-
-  // Outside-click dismiss — capture phase, skip scrollbar (Radix #R10 fix).
-  // Unlike DropdownMenu, there is no trigger element to exclude — we check
-  // containment against popperRef only.
-  useEffect(() => {
-    if (!open) return;
-    const handlePointerDown = (event: PointerEvent) => {
-      const target = event.target as Node | null;
-      if (!target) return;
-      if (target === document.documentElement || target === document.body) return;
-      if (popperRef.current?.contains(target)) return;
-      setOpen(false);
-    };
-    document.addEventListener('pointerdown', handlePointerDown, { capture: true });
-    return () =>
-      document.removeEventListener('pointerdown', handlePointerDown, { capture: true });
-  }, [open, setOpen]);
-
-  // Close on scroll — native OS context menu convention.
-  useEffect(() => {
-    if (!open || !closeOnScroll) return;
-    const handleScroll = () => setOpen(false);
-    window.addEventListener('scroll', handleScroll, { capture: true, passive: true });
-    return () =>
-      window.removeEventListener('scroll', handleScroll, { capture: true });
-  }, [open, closeOnScroll, setOpen]);
+  // Escape + outside-click + close-on-scroll dismiss via shared primitive.
+  // ContextMenu has no trigger widget — outside-click only excludes the
+  // popper itself (no triggerRef passed). `closeOnScroll` is the ContextMenu-
+  // specific opt-in matching native OS context menu behavior.
+  useFloatingDismiss({
+    open,
+    onDismiss: () => setOpen(false),
+    contentRef: popperRef,
+    closeOnEscape: true,
+    closeOnOutsideClick: true,
+    closeOnScroll,
+  });
 
   // Cleanup typeahead timer on unmount.
   useEffect(() => {
@@ -483,7 +410,6 @@ export function ContextMenuContent({ children, className, ...rest }: ContextMenu
   }, []);
 
   if (!open || !cursorPoint) return null;
-  if (typeof document === 'undefined') return null;
 
   // Before measurement, render off-screen via `visibility: hidden` so
   // offsetWidth/offsetHeight work for the effect measurement pass. Compare
@@ -500,22 +426,23 @@ export function ContextMenuContent({ children, className, ...rest }: ContextMenu
     visibility: isReady ? 'visible' : 'hidden',
   };
 
-  return createPortal(
-    <div ref={popperRef} className={styles.root} style={contentStyle}>
-      <div
-        id={contentId}
-        role="menu"
-        tabIndex={-1}
-        data-placement={position.placement}
-        className={cn(styles.content, className)}
-        onKeyDown={handleMenuKeyDown}
-        onContextMenu={handleContentContextMenu}
-        {...rest}
-      >
-        {children}
+  return (
+    <FloatingPortal>
+      <div ref={popperRef} className={styles.root} style={contentStyle}>
+        <div
+          id={contentId}
+          role="menu"
+          tabIndex={-1}
+          data-placement={position.placement}
+          className={cn(styles.content, className)}
+          onKeyDown={handleMenuKeyDown}
+          onContextMenu={handleContentContextMenu}
+          {...rest}
+        >
+          {children}
+        </div>
       </div>
-    </div>,
-    document.body,
+    </FloatingPortal>
   );
 }
 
@@ -545,15 +472,13 @@ export const ContextMenuItem = forwardRef<HTMLButtonElement, ContextMenuItemProp
   ) {
     const ctx = useContextMenuContext('<ContextMenuItem>');
     const { setOpen } = ctx;
-    const previousActiveRef = useRef<HTMLElement | null>(null);
 
     const handleActivate = useCallback(() => {
       const event = new CustomEvent('contextmenu-select', { cancelable: true });
-      // Capture focus restore target BEFORE onSelect runs — if onSelect moves
-      // focus elsewhere, we still want to restore to pre-menu-open focus.
-      previousActiveRef.current = document.activeElement as HTMLElement | null;
       onSelect?.(event);
       if (!event.defaultPrevented) {
+        // Closing the menu triggers useFloatingFocus cleanup, which restores
+        // focus to whatever was active before the context menu opened.
         setOpen(false);
       }
     }, [onSelect, setOpen]);
