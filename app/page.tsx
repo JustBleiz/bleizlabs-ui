@@ -279,6 +279,14 @@ const components: ComponentLink[] = [
     phase: 'Phase 10 — Complex Interactive',
     status: 'available',
   },
+  {
+    href: '/components/tabs',
+    name: 'Tabs',
+    description:
+      'E26 CI11 — accessible tabs widget per APG /tabs/. 4 compound flat exports (Tabs + TabsList + TabsTrigger + TabsContent). Self-contained — zero E23 floating primitives needed (content inline, not floating). Roving tabindex pattern reused from NavigationMenu via inline helper. 3 variants (underline default, pill, segmented iOS-style). Horizontal + vertical orientations. Automatic activation (default — tab activates on focus) OR manual (Space/Enter required, for async-loaded panels). Auto-generated IDs via useId wire aria-controls + aria-labelledby. Tabpanel tabindex={0} so Tab from active trigger moves focus INTO panel per APG composite widget contract. Disabled triggers skipped by arrow nav + Home/End. RTL support via dir prop. Modifier-key guard (Cmd/Ctrl/Alt/Shift + arrow not intercepted — browser hotkeys like Cmd+← back-nav take precedence, Radix TB-R04 fix).',
+    phase: 'Phase 10 — Complex Interactive',
+    status: 'available',
+  },
 ];
 
 export default function HomePage() {

@@ -107,6 +107,12 @@ import {
   NavigationMenuContent,
   NavigationMenuLink,
 } from '@/components/complex/NavigationMenu';
+import {
+  Tabs,
+  TabsList,
+  TabsTrigger,
+  TabsContent,
+} from '@/components/complex/Tabs';
 
 import styles from './page.module.scss';
 
@@ -948,7 +954,7 @@ export default function DemoPage() {
           Phase 10 — Complex Interactive
         </Heading>
         <Text color="muted">
-          Dialog (E15 CI1) + AlertDialog (E16 CI2) + Drawer (E17 CI3) + Sheet (E18 CI4) + Tooltip (E19 CI6) + Popover (E20 CI5) + DropdownMenu (E21 CI7) + ContextMenu (E22 CI8) + HoverCard (E24 CI9) + NavigationMenu (E25 CI10) — modal family, positioning engine family, accessible menu family, hover-triggered surface family, and navigation menubar family. **E23 FloatingRoot refactor sprint** extracted 5 composable primitives (createFloatingContext + useFloatingState + useFloatingDismiss + useFloatingFocus + FloatingPortal) into utils/floating/ — Popover/DropdownMenu/ContextMenu migrated as consumers; **HoverCard (E24)** + **NavigationMenu (E25)** are new-build consumers validating the primitives in production. Own build per WAI-ARIA APG (zero runtime UI deps, D5/D25). Remaining 12 components land per-Epic.
+          Dialog (E15 CI1) + AlertDialog (E16 CI2) + Drawer (E17 CI3) + Sheet (E18 CI4) + Tooltip (E19 CI6) + Popover (E20 CI5) + DropdownMenu (E21 CI7) + ContextMenu (E22 CI8) + HoverCard (E24 CI9) + NavigationMenu (E25 CI10) + Tabs (E26 CI11) — modal family, positioning engine family, accessible menu family, hover-triggered surface family, navigation menubar family, and tabs family. **E23 FloatingRoot refactor sprint** extracted 5 composable primitives (createFloatingContext + useFloatingState + useFloatingDismiss + useFloatingFocus + FloatingPortal) into utils/floating/ — Popover/DropdownMenu/ContextMenu migrated as consumers; **HoverCard (E24)** + **NavigationMenu (E25)** are new-build consumers validating the primitives in production. **Tabs (E26)** is self-contained — reuses the roving tabindex pattern from NavigationMenu via an inline helper, no floating primitives needed (tabpanel is inline). Own build per WAI-ARIA APG (zero runtime UI deps, D5/D25). Remaining 11 components land per-Epic.
         </Text>
 
         <div className={styles.grid}>
@@ -1168,6 +1174,35 @@ export default function DemoPage() {
                     </NavigationMenuItem>
                   </NavigationMenuList>
                 </NavigationMenu>
+              </Stack>
+            </CardBody>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <Heading level={3} size="lg">Tabs</Heading>
+            </CardHeader>
+            <CardBody>
+              <Stack gap={3}>
+                <Text variant="small" color="muted">
+                  Accessible tabs widget per APG /tabs/. 4 compound flat exports. Self-contained — zero floating primitives needed (content inline). 3 variants (underline / pill / segmented), horizontal + vertical orientations, automatic + manual activation modes. Roving tabindex pattern reused from NavigationMenu.
+                </Text>
+                <Tabs defaultValue="demo-overview">
+                  <TabsList aria-label="Demo tabs">
+                    <TabsTrigger value="demo-overview">Overview</TabsTrigger>
+                    <TabsTrigger value="demo-details">Details</TabsTrigger>
+                    <TabsTrigger value="demo-settings">Settings</TabsTrigger>
+                  </TabsList>
+                  <TabsContent value="demo-overview">
+                    <Text variant="small">Overview panel — high-level snapshot.</Text>
+                  </TabsContent>
+                  <TabsContent value="demo-details">
+                    <Text variant="small">Details panel — deeper dive.</Text>
+                  </TabsContent>
+                  <TabsContent value="demo-settings">
+                    <Text variant="small">Settings panel — configuration.</Text>
+                  </TabsContent>
+                </Tabs>
               </Stack>
             </CardBody>
           </Card>

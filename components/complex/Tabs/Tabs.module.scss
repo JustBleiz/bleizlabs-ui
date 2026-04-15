@@ -1,0 +1,238 @@
+@use '../../../styles/mixins' as mx;
+
+// Tabs — accessible tabs widget per APG /tabs/ (Phase 10 CI11).
+// Self-contained — no floating primitives. Reuses roving tabindex pattern
+// from NavigationMenu E25 via inline DOM helper.
+//
+// Three visual variants: underline (default, border-bottom with brand accent),
+// pill (pill-shaped buttons with filled active state), segmented (iOS-style
+// tight group with raised active button).
+
+// ──────────────────────────────────────────────────────────────────────────
+// .root — container for tablist + all tabpanels
+// ──────────────────────────────────────────────────────────────────────────
+
+.root {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+
+  &[data-orientation='vertical'] {
+    flex-direction: row;
+    gap: var(--space-5);
+  }
+}
+
+// ──────────────────────────────────────────────────────────────────────────
+// .list — `<div role="tablist">` — three variants below
+// ──────────────────────────────────────────────────────────────────────────
+
+.list {
+  display: flex;
+  flex-direction: row;
+
+  [data-orientation='vertical'] & {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  // Scoped to `:focus-visible` (not `:focus`) — the tablist `<div>` is
+  // not normally keyboard-focused (focus goes to child triggers) but if
+  // someone programmatically focuses it we still suppress the outline
+  // only for keyboard-triggered focus, letting JS focus show default.
+  &:focus-visible {
+    outline: none;
+  }
+}
+
+// ──────────────────────────────────────────────────────────────────────────
+// .trigger — `<button role="tab">` — shared base, variants override
+// ──────────────────────────────────────────────────────────────────────────
+
+.trigger {
+  // Reset button styles so variants own appearance.
+  all: unset;
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-4);
+  min-height: 40px;
+
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium, 500);
+  line-height: 1.2;
+  color: var(--color-text-muted);
+
+  cursor: pointer;
+  user-select: none;
+  white-space: nowrap;
+
+  transition:
+    color var(--duration-fast) var(--easing-default),
+    background-color var(--duration-fast) var(--easing-default),
+    border-color var(--duration-fast) var(--easing-default),
+    box-shadow var(--duration-fast) var(--easing-default);
+
+  // Touch target — ensure 44x44 minimum on coarse pointers (D13).
+  @media (pointer: coarse) {
+    @include mx.touch-target;
+  }
+
+  &:hover:not([aria-disabled='true']):not(:disabled) {
+    color: var(--color-text-primary);
+  }
+
+  &:focus-visible {
+    @include mx.focus-ring;
+  }
+
+  &:disabled,
+  &[aria-disabled='true'] {
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+}
+
+// ──────────────────────────────────────────────────────────────────────────
+// Variant 1: underline (default) — border-bottom with brand accent
+// ──────────────────────────────────────────────────────────────────────────
+
+.underline {
+  border-bottom: 1px solid var(--color-border-subtle);
+  gap: var(--space-1);
+
+  [data-orientation='vertical'] & {
+    border-bottom: none;
+    border-right: 1px solid var(--color-border-subtle);
+  }
+
+  .trigger {
+    position: relative;
+    padding: var(--space-3) var(--space-4);
+    border-bottom: 2px solid transparent;
+    // Pull border below the tablist's border-bottom so the active tab's
+    // border overlaps cleanly. This creates the classic "tab underlines
+    // replace tablist border" effect.
+    margin-bottom: -1px;
+
+    &[data-state='active'] {
+      color: var(--color-brand);
+      border-bottom-color: var(--color-brand);
+    }
+  }
+
+  [data-orientation='vertical'] & .trigger {
+    border-bottom: none;
+    border-right: 2px solid transparent;
+    margin-bottom: 0;
+    margin-right: -1px;
+    justify-content: flex-start;
+
+    &[data-state='active'] {
+      border-right-color: var(--color-brand);
+    }
+  }
+}
+
+// ──────────────────────────────────────────────────────────────────────────
+// Variant 2: pill — pill-shaped buttons with filled active state
+// ──────────────────────────────────────────────────────────────────────────
+
+.pill {
+  gap: var(--space-2);
+  padding: var(--space-1);
+
+  .trigger {
+    border-radius: var(--radius-md);
+    padding: var(--space-2) var(--space-4);
+
+    &:hover:not([aria-disabled='true']):not(:disabled):not([data-state='active']) {
+      background: var(--color-surface-hover, var(--color-surface-raised));
+    }
+
+    &[data-state='active'] {
+      background: var(--color-brand);
+      color: var(--color-text-on-brand, var(--color-surface));
+    }
+  }
+}
+
+// ──────────────────────────────────────────────────────────────────────────
+// Variant 3: segmented — iOS-style tight group with raised active button
+// ──────────────────────────────────────────────────────────────────────────
+
+// Segmented variant — iOS-style tight group. The 2px gap + 2px padding
+// + `calc(var(--radius-md) - 2px)` inner radius are intentional visual
+// hardcodes (not tokenized) because this variant's visual identity is a
+// hairline gap between triggers and a raised active button that sits
+// inside a 2px padded container. Token scale (--space-1 = 4px) is too
+// large for this specific iOS segmented-control look. Same pattern is
+// used in iOS UIKit and matches shadcn/ui segmented tabs.
+.segmented {
+  display: inline-flex;
+  gap: 2px;
+  padding: 2px;
+  background: var(--color-surface-hover, var(--color-surface-raised));
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-md);
+
+  [data-orientation='vertical'] & {
+    display: inline-flex;
+    border-radius: var(--radius-md);
+  }
+
+  .trigger {
+    flex: 1;
+    // Inner radius = outer - 2px padding so active button corners align
+    // flush with the outer container's inner edge.
+    border-radius: calc(var(--radius-md) - 2px);
+    padding: var(--space-2) var(--space-3);
+    min-height: 32px;
+
+    &[data-state='active'] {
+      background: var(--color-surface-raised);
+      color: var(--color-text-primary);
+      box-shadow: var(--shadow-sm);
+    }
+  }
+}
+
+// ──────────────────────────────────────────────────────────────────────────
+// .content — `<div role="tabpanel">` — inline content surface
+// ──────────────────────────────────────────────────────────────────────────
+
+.content {
+  color: var(--color-text-primary);
+  // Padding lives on `.content` so variants don't have to duplicate it.
+  padding: var(--space-2) 0;
+
+  &:focus-visible {
+    // The tabpanel is tabindex={0} so it receives focus from Tab. Show the
+    // focus ring via mixin (outline-offset handles inset appearance).
+    @include mx.focus-ring;
+  }
+
+  // Hidden state for forceMount — CSS attribute selector matches the
+  // `hidden` HTML attribute set by TabsContent when inactive.
+  &[hidden] {
+    display: none;
+  }
+
+  [data-orientation='vertical'] & {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+}
+
+// ──────────────────────────────────────────────────────────────────────────
+// prefers-reduced-motion
+// ──────────────────────────────────────────────────────────────────────────
+
+@media (prefers-reduced-motion: reduce) {
+  .trigger {
+    transition: none;
+  }
+}
