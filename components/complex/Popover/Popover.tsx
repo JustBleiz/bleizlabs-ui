@@ -8,10 +8,12 @@
  *   --shadow-lg, --radius-lg, --z-popover, --duration-normal, --easing-default,
  *   --space-3, --space-4, --space-5, --font-size-md
  * @deps zero runtime deps — positioning via `utils/position.ts` +
- *   `utils/useFloating.ts` (E19 primitive, E20 extended with `computeArrowPosition`
- *   + optional `arrow` ref in `useFloating`). Reuses `useFocusTrap` from
- *   `../Dialog/useFocusTrap` for modal mode. Own Slot primitive for `asChild`
- *   trigger wrapping. React 19 `createPortal`.
+ *   `utils/useFloating.ts` (E19 primitive, E20 extended with `computeArrowPosition`).
+ *   Dismiss + portal + focus management via `utils/floating/` composable
+ *   primitives (E23 refactor — `useFloatingState` + `useFloatingDismiss` +
+ *   `FloatingPortal` + `useFloatingFocus` + `createFloatingContext` +
+ *   `findFirstTabbable`). Reuses `useFocusTrap` from `../Dialog/useFocusTrap`
+ *   for modal mode. Own Slot primitive for `asChild` trigger wrapping.
  * @a11y `role="dialog"` + `aria-modal="false"` (non-modal default) or `"true"`
  *   (modal opt-in); `aria-labelledby` wired to optional title; `aria-describedby`
  *   wired to optional description (Radix #3007 — only set when element exists);
@@ -41,27 +43,31 @@
  */
 
 import {
-  createContext,
   forwardRef,
   useCallback,
-  useContext,
   useEffect,
   useId,
   useLayoutEffect,
   useMemo,
   useRef,
-  useState,
   type ButtonHTMLAttributes,
   type HTMLAttributes,
   type ReactNode,
   type RefObject,
 } from 'react';
-import { createPortal } from 'react-dom';
 import { Slot } from '../../utils/Slot';
 import { cn } from '../../utils/cn';
 import { mergeRefs } from '../../utils/mergeRefs';
 import { useFloating } from '../../utils/useFloating';
 import { type Placement } from '../../utils/position';
+import {
+  createFloatingContext,
+  useFloatingState,
+  useFloatingDismiss,
+  useFloatingFocus,
+  FloatingPortal,
+  findFirstTabbable,
+} from '../../utils/floating';
 import { Heading } from '../../typography/Heading';
 import { Text } from '../../typography/Text';
 import { useFocusTrap } from '../Dialog/useFocusTrap';
@@ -92,17 +98,8 @@ interface PopoverContextValue {
   maxWidth: string;
 }
 
-const PopoverContext = createContext<PopoverContextValue | null>(null);
-
-function usePopoverContext(component: string): PopoverContextValue {
-  const ctx = useContext(PopoverContext);
-  if (!ctx) {
-    throw new Error(
-      `${component} must be rendered inside a <Popover> parent.`,
-    );
-  }
-  return ctx;
-}
+const [PopoverContextProvider, usePopoverContext] =
+  createFloatingContext<PopoverContextValue>('Popover');
 
 // ──────────────────────────────────────────────────────────────────────────
 // Popover — state holder + context provider
@@ -181,18 +178,11 @@ export function Popover({
 
   const triggerRef = useRef<HTMLElement | null>(null);
 
-  const [uncontrolledOpen, setUncontrolledOpen] = useState(defaultOpen);
-  const isControlled = controlledOpen !== undefined;
-  const open = isControlled ? controlledOpen : uncontrolledOpen;
-
-  const setOpen = useCallback(
-    (next: boolean) => {
-      if (next === open) return;
-      if (!isControlled) setUncontrolledOpen(next);
-      onOpenChange?.(next);
-    },
-    [open, isControlled, onOpenChange],
-  );
+  const { open, setOpen } = useFloatingState({
+    controlledOpen,
+    defaultOpen,
+    onOpenChange,
+  });
 
   const value = useMemo<PopoverContextValue>(
     () => ({
@@ -232,7 +222,7 @@ export function Popover({
     ],
   );
 
-  return <PopoverContext.Provider value={value}>{children}</PopoverContext.Provider>;
+  return <PopoverContextProvider value={value}>{children}</PopoverContextProvider>;
 }
 
 // ──────────────────────────────────────────────────────────────────────────
@@ -399,34 +389,18 @@ export function PopoverContent({
     [setFloating],
   );
 
-  // Focus trap for modal mode only. In non-modal mode we manage focus manually
-  // below with a lighter useLayoutEffect that moves focus on open and restores
-  // it on close without trapping Tab.
+  // Focus trap for modal mode only. Non-modal focus management below uses
+  // the shared `useFloatingFocus` primitive which moves focus on open and
+  // restores it on close without trapping Tab.
   useFocusTrap(popperRef, open && modal, initialFocusRef);
 
-  // Non-modal focus management: move focus to first tabbable on open, restore
-  // to pre-open activeElement on close. Does NOT trap Tab — Tab exits freely.
-  useLayoutEffect(() => {
-    if (!open || modal) return;
-    const previousActive = document.activeElement as HTMLElement | null;
-
-    const frame = requestAnimationFrame(() => {
-      const container = popperRef.current;
-      if (!container) return;
-      const target =
-        initialFocusRef?.current ?? findFirstTabbable(container) ?? container;
-      target.focus();
-    });
-
-    return () => {
-      cancelAnimationFrame(frame);
-      if (restoreFocusOnClose && previousActive?.isConnected) {
-        requestAnimationFrame(() => {
-          previousActive.focus();
-        });
-      }
-    };
-  }, [open, modal, initialFocusRef, restoreFocusOnClose]);
+  useFloatingFocus({
+    open: open && !modal,
+    contentRef: popperRef,
+    getFocusTarget: (container) =>
+      initialFocusRef?.current ?? findFirstTabbable(container) ?? container,
+    restoreOnClose: restoreFocusOnClose,
+  });
 
   // Body scroll lock (modal mode only — non-modal popover leaves background scrollable).
   useEffect(() => {
@@ -462,111 +436,67 @@ export function PopoverContent({
     };
   }, [open, modal]);
 
-  // Escape key dismissal — document-level so nested Select / DropdownMenu can
-  // fire their own Escape handlers first and call preventDefault if needed.
-  useEffect(() => {
-    if (!open || !dismissable || !closeOnEscape) return;
-    const handleKey = (event: KeyboardEvent) => {
-      if (event.key === 'Escape' && !event.defaultPrevented) {
-        event.preventDefault();
-        setOpen(false);
-      }
-    };
-    document.addEventListener('keydown', handleKey);
-    return () => document.removeEventListener('keydown', handleKey);
-  }, [open, dismissable, closeOnEscape, setOpen]);
-
-  // Outside pointerdown dismissal — capture phase so it fires BEFORE React's
-  // click event delegation. This prevents a race where the trigger re-opens
-  // the popover via click while the document listener closes it.
-  useEffect(() => {
-    if (!open || !dismissable || !closeOnOutsideClick) return;
-    const handlePointerDown = (event: PointerEvent) => {
-      const target = event.target as Node | null;
-      if (!target) return;
-      // Skip if click landed on <html>/<body> (scrollbar click — Radix #7).
-      if (target === document.documentElement || target === document.body) return;
-      if (popperRef.current?.contains(target)) return;
-      if (triggerRef.current?.contains(target)) return;
-      setOpen(false);
-    };
-    document.addEventListener('pointerdown', handlePointerDown, { capture: true });
-    return () =>
-      document.removeEventListener('pointerdown', handlePointerDown, { capture: true });
-  }, [open, dismissable, closeOnOutsideClick, setOpen, triggerRef]);
+  // Escape + outside-click dismiss via shared primitive. `dismissable` is a
+  // blanket toggle that disables BOTH mechanisms; granular per-kind flags
+  // apply on top.
+  useFloatingDismiss({
+    open,
+    onDismiss: () => setOpen(false),
+    contentRef: popperRef,
+    triggerRef,
+    closeOnEscape: dismissable && closeOnEscape,
+    closeOnOutsideClick: dismissable && closeOnOutsideClick,
+  });
 
   if (!open) return null;
-  if (typeof document === 'undefined') return null;
 
-  return createPortal(
-    <div ref={mergedPopperRef} className={styles.root} style={floatingStyles}>
-      <div
-        id={contentId}
-        role="dialog"
-        aria-modal={modal ? 'true' : 'false'}
-        aria-labelledby={title ? titleId : undefined}
-        aria-describedby={description ? descId : undefined}
-        tabIndex={-1}
-        data-placement={actualPlacement}
-        className={cn(styles.content, className)}
-        style={{ maxWidth }}
-        {...rest}
-      >
-        {(title || description) && (
-          <div className={styles.header}>
-            {title && (
-              <Heading id={titleId} level={3} size="lg" className={styles.title}>
-                {title}
-              </Heading>
-            )}
-            {description && (
-              <Text
-                id={descId}
-                variant="small"
-                color="muted"
-                className={styles.description}
-              >
-                {description}
-              </Text>
-            )}
-          </div>
-        )}
-        {children && <div className={styles.body}>{children}</div>}
-        {footer && <div className={styles.footer}>{footer}</div>}
-      </div>
-      {showArrow && (
-        <span
-          ref={arrowRef}
-          className={styles.arrow}
+  return (
+    <FloatingPortal>
+      <div ref={mergedPopperRef} className={styles.root} style={floatingStyles}>
+        <div
+          id={contentId}
+          role="dialog"
+          aria-modal={modal ? 'true' : 'false'}
+          aria-labelledby={title ? titleId : undefined}
+          aria-describedby={description ? descId : undefined}
+          tabIndex={-1}
           data-placement={actualPlacement}
-          style={arrowStyles}
-          aria-hidden="true"
-        />
-      )}
-    </div>,
-    document.body,
+          className={cn(styles.content, className)}
+          style={{ maxWidth }}
+          {...rest}
+        >
+          {(title || description) && (
+            <div className={styles.header}>
+              {title && (
+                <Heading id={titleId} level={3} size="lg" className={styles.title}>
+                  {title}
+                </Heading>
+              )}
+              {description && (
+                <Text
+                  id={descId}
+                  variant="small"
+                  color="muted"
+                  className={styles.description}
+                >
+                  {description}
+                </Text>
+              )}
+            </div>
+          )}
+          {children && <div className={styles.body}>{children}</div>}
+          {footer && <div className={styles.footer}>{footer}</div>}
+        </div>
+        {showArrow && (
+          <span
+            ref={arrowRef}
+            className={styles.arrow}
+            data-placement={actualPlacement}
+            style={arrowStyles}
+            aria-hidden="true"
+          />
+        )}
+      </div>
+    </FloatingPortal>
   );
-}
-
-// ──────────────────────────────────────────────────────────────────────────
-// Helpers
-// ──────────────────────────────────────────────────────────────────────────
-
-const TABBABLE_SELECTOR = [
-  'a[href]',
-  'button:not([disabled])',
-  'input:not([disabled])',
-  'select:not([disabled])',
-  'textarea:not([disabled])',
-  '[tabindex]:not([tabindex="-1"])',
-].join(',');
-
-function findFirstTabbable(container: HTMLElement): HTMLElement | null {
-  const candidates = container.querySelectorAll<HTMLElement>(TABBABLE_SELECTOR);
-  for (const node of Array.from(candidates)) {
-    if (!node.hasAttribute('disabled') && node.getAttribute('aria-hidden') !== 'true') {
-      return node;
-    }
-  }
-  return null;
 }
