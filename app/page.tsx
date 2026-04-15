@@ -259,7 +259,15 @@ const components: ComponentLink[] = [
     href: '/components/context-menu',
     name: 'ContextMenu',
     description:
-      'E22 CI8 — right-click menu per APG /menu/. Inherits full DropdownMenu keyboard model + adds contextmenu event trigger, position-at-cursor via direct computePosition call (skip useFloating), native browser context menu suppression, close-on-scroll convention. 7 flat compound exports. Copy+layer from DropdownMenu (D-C1 Option B) — planned FloatingRoot extraction at E23+.',
+      'E22 CI8 — right-click menu per APG /menu/. Inherits full DropdownMenu keyboard model + adds contextmenu event trigger, position-at-cursor via direct computePosition call (skip useFloating), native browser context menu suppression, close-on-scroll convention. 7 flat compound exports. E23 floating primitives consumer (dismiss + portal + focus + state + context).',
+    phase: 'Phase 10 — Complex Interactive',
+    status: 'available',
+  },
+  {
+    href: '/components/hover-card',
+    name: 'HoverCard',
+    description:
+      'E24 CI9 — hover-triggered floating surface for rich contextual content (user profile previews, link previews). Compound flat API (HoverCard + Provider + Trigger + Content). FIRST validate-in-production consumer of E23 floating primitives (useFloatingState + FloatingPortal + createFloatingContext + useFloating). Skips useFloatingDismiss + useFloatingFocus (closes via mouseleave + grace area, not Escape; non-modal so no focus trap). Tooltip-style timer pattern + delay group + coarse pointer detection. SC 1.4.13 compliant. role="dialog" aria-modal="false" (NOT tooltip — interactive content). Desktop-only (touch users get focus path).',
     phase: 'Phase 10 — Complex Interactive',
     status: 'available',
   },

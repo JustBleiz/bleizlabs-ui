@@ -1,0 +1,95 @@
+@use '../../../styles/mixins' as mx;
+
+// HoverCard — non-modal floating dialog surface (Phase 10 CI9).
+//
+// E23 floating primitives consumer: state + portal + context. Skips
+// useFloatingDismiss + useFloatingFocus (HoverCard closes via mouseleave +
+// grace area timer, not Escape/outside-click; non-modal so no focus trap).
+//
+// Forked animation per Phase 10 component independence convention — copy-
+// to-project consumers can take HoverCard without dragging global keyframes.
+
+.root {
+  // Portal root positioned fixed by useFloating — no layout contribution.
+  z-index: var(--z-popover);
+  // Pointer events enabled on .content surface only — outer wrapper does
+  // not intercept clicks on elements visually underneath the HoverCard.
+  pointer-events: none;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  pointer-events: auto;
+
+  background: var(--color-surface-raised);
+  color: var(--color-text-primary);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+
+  padding: var(--space-4);
+  gap: var(--space-3);
+
+  font-size: var(--font-size-md);
+  line-height: 1.5;
+
+  // Long content wraps — positioning engine's shift middleware keeps the
+  // surface within viewport bounds. The inline `max-width` (default
+  // `min(360px, 90vw)`) sets the final cap.
+  word-wrap: break-word;
+
+  animation: hoverCardContentIn var(--duration-fast) var(--easing-default);
+
+  // Focusable container for keyboard users tabbing INTO content.
+  &:focus {
+    outline: none;
+  }
+  @include mx.focus-ring;
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.title {
+  margin: 0;
+}
+
+.description {
+  margin: 0;
+}
+
+.body {
+  // Body inherits content's gap but allows its own block layout.
+  display: block;
+}
+
+.footer {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--color-border-subtle);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+}
+
+@keyframes hoverCardContentIn {
+  from {
+    opacity: 0;
+    transform: scale(0.97) translateY(-2px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .content {
+    animation: none;
+  }
+}

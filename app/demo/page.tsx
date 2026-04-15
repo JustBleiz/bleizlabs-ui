@@ -94,6 +94,11 @@ import {
   ContextMenuItem,
   ContextMenuSeparator,
 } from '@/components/complex/ContextMenu';
+import {
+  HoverCard,
+  HoverCardTrigger,
+  HoverCardContent,
+} from '@/components/complex/HoverCard';
 
 import styles from './page.module.scss';
 
@@ -253,7 +258,7 @@ export default function DemoPage() {
             </Heading>
             <Text className={styles.intro}>
               Complete showcase of all 66 components — 47 atoms + 6 molecules +
-              5 Card presets + 8 complex interactive (Phase 10 in progress).
+              5 Card presets + 9 complex interactive (Phase 10 in progress).
               Toggle theme to inspect light + dark tokens. Per-component deep
               dives live under <Link href="/">/components/*</Link>.
             </Text>
@@ -935,7 +940,7 @@ export default function DemoPage() {
           Phase 10 — Complex Interactive
         </Heading>
         <Text color="muted">
-          Dialog (E15 CI1) + AlertDialog (E16 CI2) + Drawer (E17 CI3) + Sheet (E18 CI4) + Tooltip (E19 CI6) + Popover (E20 CI5) + DropdownMenu (E21 CI7) + ContextMenu (E22 CI8) — modal family, positioning engine family, and accessible menu family (DropdownMenu + ContextMenu both implement full APG /menu/ keyboard model + typeahead). ContextMenu inherits DropdownMenu semantics with contextmenu event trigger + position-at-cursor + close-on-scroll. Own build per WAI-ARIA APG (zero runtime UI deps, D5/D25). Remaining 14 components land per-Epic.
+          Dialog (E15 CI1) + AlertDialog (E16 CI2) + Drawer (E17 CI3) + Sheet (E18 CI4) + Tooltip (E19 CI6) + Popover (E20 CI5) + DropdownMenu (E21 CI7) + ContextMenu (E22 CI8) + HoverCard (E24 CI9) — modal family, positioning engine family, accessible menu family, and hover-triggered surface family. **E23 FloatingRoot refactor sprint** extracted 5 composable primitives (createFloatingContext + useFloatingState + useFloatingDismiss + useFloatingFocus + FloatingPortal) into utils/floating/ — Popover/DropdownMenu/ContextMenu migrated as consumers; **HoverCard (E24) is the first new-build consumer** validating the primitives in production. Own build per WAI-ARIA APG (zero runtime UI deps, D5/D25). Remaining 13 components land per-Epic.
         </Text>
 
         <div className={styles.grid}>
@@ -1093,6 +1098,33 @@ export default function DemoPage() {
                     <ContextMenuItem>Delete</ContextMenuItem>
                   </ContextMenuContent>
                 </ContextMenu>
+              </Stack>
+            </CardBody>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <Heading level={3} size="lg">HoverCard</Heading>
+            </CardHeader>
+            <CardBody>
+              <Stack gap={3}>
+                <Text variant="small" color="muted">
+                  Hover-triggered floating surface. First validate-in-production consumer of E23 floating primitives. SC 1.4.13 compliant — dismissable, hoverable, persistent. Desktop-only (touch users get focus path).
+                </Text>
+                <Text>
+                  Hover over{' '}
+                  <HoverCard>
+                    <HoverCardTrigger asChild>
+                      <a href="#" style={{ color: 'var(--color-brand)', textDecoration: 'underline' }}>@jane</a>
+                    </HoverCardTrigger>
+                    <HoverCardContent title="Jane Doe" description="Engineering @ Acme">
+                      <Text variant="small">
+                        Building copy-to-project component libraries. Loves SCSS Modules and zero-dep architecture.
+                      </Text>
+                    </HoverCardContent>
+                  </HoverCard>
+                  {' '}to preview the profile.
+                </Text>
               </Stack>
             </CardBody>
           </Card>
