@@ -3,9 +3,15 @@
 /**
  * FloatingPortal — SSR-safe portal wrapper for floating components.
  *
- * Wraps `createPortal(children, document.body)` with:
- *   - `typeof document === 'undefined'` guard for SSR
- *   - mount-effect gate so portal content only renders after client hydration
+ * Wraps `createPortal(children, document.body)` with a single
+ * `typeof document === 'undefined'` guard that short-circuits the SSR pass.
+ * No mount-effect gate is needed — consumers own the `if (!open) return null`
+ * short-circuit before rendering this component, so during SSR (with
+ * `open=false` by default) the parent returns `null` before reaching the
+ * portal, and on the client's first render the portal mounts directly.
+ * Next.js App Router portal hydration handles conditionally-rendered portals
+ * as a separate subtree with no hydration mismatch risk from skipping a
+ * `mounted`/`isClient` gate.
  *
  * Replaces the repeated inline pattern:
  *   if (!open) return null;
