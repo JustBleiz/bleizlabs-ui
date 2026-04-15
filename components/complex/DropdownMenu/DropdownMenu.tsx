@@ -10,11 +10,12 @@
  *   modeless floating panels), --duration-fast, --easing-default, --space-1..5,
  *   --font-size-sm, --font-size-xs
  * @deps zero runtime deps. Positioning via `utils/position.ts` + `utils/useFloating.ts`
- *   (E19/E20 primitive). Own Slot primitive for `asChild` trigger wrapping.
- *   React 19 `createPortal`. Does NOT reuse Popover directly — Popover hard-codes
- *   `role="dialog"` + `aria-haspopup="dialog"` with Omit types, so DropdownMenu
- *   implements its own compound API (D-D1 Option B: copy+layer). Plan to extract
- *   shared `FloatingRoot` primitive at E22+ once ContextMenu amortizes duplication.
+ *   (E19/E20 primitive). Dismiss + portal + focus + context via shared
+ *   `utils/floating/` composable primitives (E23 refactor). Own Slot primitive
+ *   for `asChild` trigger wrapping. Menu keyboard handler + typeahead remain
+ *   inline — they are menu-specific (not floating-root territory) and will be
+ *   extracted to a separate `useMenuKeyboard` hook in a later epic once a
+ *   second menu consumer (Select/Combobox) justifies it.
  * @a11y Trigger: `aria-haspopup="menu"` (NOT "dialog"), `aria-expanded` synced
  *   with open state, `aria-controls` pointing to menu id when open. Content:
  *   `role="menu"` (NOT "dialog"). Items: `role="menuitem"`, `aria-disabled="true"`
@@ -57,10 +58,8 @@
  */
 
 import {
-  createContext,
   forwardRef,
   useCallback,
-  useContext,
   useEffect,
   useId,
   useLayoutEffect,
@@ -72,12 +71,18 @@ import {
   type ReactNode,
   type RefObject,
 } from 'react';
-import { createPortal } from 'react-dom';
 import { Slot } from '../../utils/Slot';
 import { cn } from '../../utils/cn';
 import { mergeRefs } from '../../utils/mergeRefs';
 import { useFloating } from '../../utils/useFloating';
 import { type Placement } from '../../utils/position';
+import {
+  createFloatingContext,
+  useFloatingState,
+  useFloatingDismiss,
+  useFloatingFocus,
+  FloatingPortal,
+} from '../../utils/floating';
 import styles from './DropdownMenu.module.scss';
 
 export type DropdownMenuPlacement = Placement;
@@ -101,15 +106,8 @@ interface DropdownMenuContextValue {
   matchTriggerWidth: boolean;
 }
 
-const DropdownMenuContext = createContext<DropdownMenuContextValue | null>(null);
-
-function useDropdownMenuContext(component: string): DropdownMenuContextValue {
-  const ctx = useContext(DropdownMenuContext);
-  if (!ctx) {
-    throw new Error(`${component} must be rendered inside a <DropdownMenu> parent.`);
-  }
-  return ctx;
-}
+const [DropdownMenuContextProvider, useDropdownMenuContext] =
+  createFloatingContext<DropdownMenuContextValue>('DropdownMenu');
 
 // ──────────────────────────────────────────────────────────────────────────
 // DropdownMenu — state holder + context provider
@@ -156,19 +154,22 @@ export function DropdownMenu({
 
   const triggerRef = useRef<HTMLElement | null>(null);
 
-  const [uncontrolledOpen, setUncontrolledOpen] = useState(defaultOpen);
+  // Base controlled/uncontrolled hybrid via shared primitive. We wrap its
+  // `setOpen` in our own callback to also track `openReason` — the shared
+  // hook doesn't need to know about menu-specific state.
+  const { open, setOpen: baseSetOpen } = useFloatingState({
+    controlledOpen,
+    defaultOpen,
+    onOpenChange,
+  });
   const [openReason, setOpenReason] = useState<OpenReason>(null);
-  const isControlled = controlledOpen !== undefined;
-  const open = isControlled ? controlledOpen : uncontrolledOpen;
 
   const setOpen = useCallback(
     (next: boolean, reason: OpenReason = null) => {
-      if (next === open) return;
-      if (!isControlled) setUncontrolledOpen(next);
       setOpenReason(next ? reason : null);
-      onOpenChange?.(next);
+      baseSetOpen(next);
     },
-    [open, isControlled, onOpenChange],
+    [baseSetOpen],
   );
 
   const value = useMemo<DropdownMenuContextValue>(
@@ -197,7 +198,9 @@ export function DropdownMenu({
     ],
   );
 
-  return <DropdownMenuContext.Provider value={value}>{children}</DropdownMenuContext.Provider>;
+  return (
+    <DropdownMenuContextProvider value={value}>{children}</DropdownMenuContextProvider>
+  );
 }
 
 // ──────────────────────────────────────────────────────────────────────────
@@ -339,7 +342,6 @@ export function DropdownMenuContent({ children, className, ...rest }: DropdownMe
   } = ctx;
 
   const popperRef = useRef<HTMLDivElement | null>(null);
-  const previousActiveRef = useRef<HTMLElement | null>(null);
   const typeaheadBufferRef = useRef<string>('');
   const typeaheadTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [triggerWidth, setTriggerWidth] = useState<number | null>(null);
@@ -352,7 +354,7 @@ export function DropdownMenuContent({ children, className, ...rest }: DropdownMe
   });
   const { setReference, setFloating } = refs;
 
-  // Bridge triggerRef to useFloating's setReference after PopoverTrigger attaches.
+  // Bridge triggerRef to useFloating's setReference after trigger attaches.
   useLayoutEffect(() => {
     if (!open) return;
     if (triggerRef.current) setReference(triggerRef.current);
@@ -369,8 +371,6 @@ export function DropdownMenuContent({ children, className, ...rest }: DropdownMe
     const measure = () => setTriggerWidth(trigger.getBoundingClientRect().width);
     const observer =
       typeof ResizeObserver !== 'undefined' ? new ResizeObserver(measure) : null;
-    // Initial measurement happens inside the ResizeObserver callback when we
-    // observe the element — ResizeObserver fires once immediately on observe.
     observer?.observe(trigger);
     return () => observer?.disconnect();
   }, [open, matchTriggerWidth, triggerRef]);
@@ -384,67 +384,35 @@ export function DropdownMenuContent({ children, className, ...rest }: DropdownMe
     [setFloating],
   );
 
-  // Close helper that restores focus to trigger.
-  const closeAndRestore = useCallback(() => {
-    const target = triggerRef.current;
-    setOpen(false);
-    if (target && typeof (target as HTMLElement).focus === 'function') {
-      requestAnimationFrame(() => {
-        (target as HTMLElement).focus();
-      });
-    }
-  }, [setOpen, triggerRef]);
-
-  // Initial focus on open — focus first or last item based on open reason.
-  // Uses rAF so DOM is painted before querying menu items.
-  useLayoutEffect(() => {
-    if (!open) return;
-    previousActiveRef.current = document.activeElement as HTMLElement | null;
-    const frame = requestAnimationFrame(() => {
-      const container = popperRef.current;
-      if (!container) return;
+  // Initial focus on open + focus restore to trigger on close — via shared
+  // primitive. `getFocusTarget` picks first or last item based on openReason;
+  // `getRestoreTarget` returns the trigger button so Escape/item-select/Tab-out
+  // all restore focus there (Tab restores BEFORE the browser's own tab
+  // traversal, so effectively the trigger gets focus then Tab moves forward).
+  useFloatingFocus({
+    open,
+    contentRef: popperRef,
+    getFocusTarget: (container) => {
       const items = getMenuItems(container);
-      if (items.length === 0) {
-        container.focus();
-        return;
-      }
+      if (items.length === 0) return null;
       if (openReason === 'trigger-last') {
-        items[items.length - 1]?.focus();
-      } else {
-        items[0]?.focus();
+        return items[items.length - 1] ?? null;
       }
-    });
-    return () => cancelAnimationFrame(frame);
-  }, [open, openReason]);
+      return items[0] ?? null;
+    },
+    getRestoreTarget: () => triggerRef.current as HTMLElement | null,
+  });
 
-  // Escape dismiss — document-level so nested components can preventDefault first.
-  useEffect(() => {
-    if (!open) return;
-    const handleKey = (event: KeyboardEvent) => {
-      if (event.key === 'Escape' && !event.defaultPrevented) {
-        event.preventDefault();
-        closeAndRestore();
-      }
-    };
-    document.addEventListener('keydown', handleKey);
-    return () => document.removeEventListener('keydown', handleKey);
-  }, [open, closeAndRestore]);
-
-  // Outside-click dismiss — capture phase, skips scrollbar click (Radix #18).
-  useEffect(() => {
-    if (!open) return;
-    const handlePointerDown = (event: PointerEvent) => {
-      const target = event.target as Node | null;
-      if (!target) return;
-      if (target === document.documentElement || target === document.body) return;
-      if (popperRef.current?.contains(target)) return;
-      if (triggerRef.current?.contains(target)) return;
-      setOpen(false);
-    };
-    document.addEventListener('pointerdown', handlePointerDown, { capture: true });
-    return () =>
-      document.removeEventListener('pointerdown', handlePointerDown, { capture: true });
-  }, [open, setOpen, triggerRef]);
+  // Escape + outside-click dismiss via shared primitive. Menu does NOT
+  // close on scroll — that's ContextMenu-specific (native OS convention).
+  useFloatingDismiss({
+    open,
+    onDismiss: () => setOpen(false),
+    contentRef: popperRef,
+    triggerRef,
+    closeOnEscape: true,
+    closeOnOutsideClick: true,
+  });
 
   // Cleanup typeahead timer on unmount.
   useEffect(() => {
@@ -458,6 +426,8 @@ export function DropdownMenuContent({ children, className, ...rest }: DropdownMe
 
   // Keyboard handler on content — Arrow/Home/End/Tab/typeahead. Items handle
   // Enter/Space natively via their own <button> rendering + onClick wiring.
+  // Stays inline (not extracted to utils) — menu-specific, will be factored
+  // out with ContextMenu's copy when a third menu consumer arrives.
   const handleMenuKeyDown = useCallback(
     (event: React.KeyboardEvent<HTMLDivElement>) => {
       const container = popperRef.current;
@@ -511,7 +481,6 @@ export function DropdownMenuContent({ children, className, ...rest }: DropdownMe
         }, 500);
 
         const buffer = typeaheadBufferRef.current;
-        // Search starting AFTER current active index, wrapping to beginning.
         const searchFrom = activeIndex >= 0 ? activeIndex + (buffer.length === 1 ? 1 : 0) : 0;
         const rotated = [
           ...items.slice(searchFrom),
@@ -532,30 +501,30 @@ export function DropdownMenuContent({ children, className, ...rest }: DropdownMe
   );
 
   if (!open) return null;
-  if (typeof document === 'undefined') return null;
 
   const contentStyle: React.CSSProperties = {};
   if (matchTriggerWidth && triggerWidth !== null) {
     contentStyle.minWidth = triggerWidth;
   }
 
-  return createPortal(
-    <div ref={mergedPopperRef} className={styles.root} style={floatingStyles}>
-      <div
-        id={contentId}
-        role="menu"
-        aria-labelledby={ctx.triggerId}
-        tabIndex={-1}
-        data-placement={actualPlacement}
-        className={cn(styles.content, className)}
-        style={contentStyle}
-        onKeyDown={handleMenuKeyDown}
-        {...rest}
-      >
-        {children}
+  return (
+    <FloatingPortal>
+      <div ref={mergedPopperRef} className={styles.root} style={floatingStyles}>
+        <div
+          id={contentId}
+          role="menu"
+          aria-labelledby={ctx.triggerId}
+          tabIndex={-1}
+          data-placement={actualPlacement}
+          className={cn(styles.content, className)}
+          style={contentStyle}
+          onKeyDown={handleMenuKeyDown}
+          {...rest}
+        >
+          {children}
+        </div>
       </div>
-    </div>,
-    document.body,
+    </FloatingPortal>
   );
 }
 
@@ -589,23 +558,18 @@ export const DropdownMenuItem = forwardRef<HTMLButtonElement, DropdownMenuItemPr
     forwardedRef,
   ) {
     const ctx = useDropdownMenuContext('<DropdownMenuItem>');
-    const { setOpen, triggerRef } = ctx;
+    const { setOpen } = ctx;
 
     const handleActivate = useCallback(() => {
       const event = new CustomEvent('dropdownmenu-select', { cancelable: true });
       onSelect?.(event);
       if (!event.defaultPrevented) {
-        // Close menu and restore focus to trigger — rAF so React finishes the
-        // unmount before focus is moved.
+        // Closing the menu triggers `useFloatingFocus` cleanup, which restores
+        // focus to the trigger via `getRestoreTarget`. No explicit focus call
+        // needed here — the primitive owns focus restoration.
         setOpen(false);
-        const target = triggerRef.current;
-        if (target && typeof (target as HTMLElement).focus === 'function') {
-          requestAnimationFrame(() => {
-            (target as HTMLElement).focus();
-          });
-        }
       }
-    }, [onSelect, setOpen, triggerRef]);
+    }, [onSelect, setOpen]);
 
     const handleClick = useCallback(
       (event: React.MouseEvent<HTMLButtonElement>) => {
