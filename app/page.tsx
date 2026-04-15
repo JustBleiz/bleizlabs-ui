@@ -195,7 +195,7 @@ const components: ComponentLink[] = [
     href: '/demo',
     name: 'Demo showcase',
     description:
-      'E14 — one-stop showcase of all 58 components in 8 phase sections with runtime theme toggle.',
+      'E14 — one-stop showcase of all 63 components in 9 phase sections (incl. Phase 10 complex interactive) with runtime theme toggle.',
     phase: 'Phase 9 — Demo & Docs',
     status: 'available',
   },
@@ -228,6 +228,14 @@ const components: ComponentLink[] = [
     name: 'Sheet',
     description:
       'E18 CI4 — 4-directional side panel (left/right/top/bottom). Per-side animation, inner-corner border-radius, safe-area-inset. Horizontal uses width variants, vertical uses height. Closes the Drawer family. Reuses useFocusTrap.',
+    phase: 'Phase 10 — Complex Interactive',
+    status: 'available',
+  },
+  {
+    href: '/components/tooltip',
+    name: 'Tooltip',
+    description:
+      'E19 CI6 — modeless floating label on hover/focus. Own positioning engine (utils/position.ts + utils/useFloating.ts, zero deps), 12 placements with flip + shift, TooltipProvider delay group, SC 1.4.13 compliant (dismissable + hoverable + focus parity). APG /tooltip/.',
     phase: 'Phase 10 — Complex Interactive',
     status: 'available',
   },

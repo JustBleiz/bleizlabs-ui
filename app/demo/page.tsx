@@ -78,6 +78,7 @@ import { Dialog } from '@/components/complex/Dialog';
 import { AlertDialog } from '@/components/complex/AlertDialog';
 import { Drawer } from '@/components/complex/Drawer';
 import { Sheet } from '@/components/complex/Sheet';
+import { Tooltip, TooltipProvider } from '@/components/complex/Tooltip';
 
 import styles from './page.module.scss';
 
@@ -919,7 +920,7 @@ export default function DemoPage() {
           Phase 10 — Complex Interactive
         </Heading>
         <Text color="muted">
-          Dialog (E15 CI1) + AlertDialog (E16 CI2) + Drawer (E17 CI3) + Sheet (E18 CI4) — portal + focus trap + scroll lock + background inert. Own build per WAI-ARIA APG (zero runtime UI deps, D5/D25). Remaining 18 components land per-Epic.
+          Dialog (E15 CI1) + AlertDialog (E16 CI2) + Drawer (E17 CI3) + Sheet (E18 CI4) + Tooltip (E19 CI6) — portal + focus trap + scroll lock + background inert (modal family) and modeless positioning engine (Tooltip). Own build per WAI-ARIA APG (zero runtime UI deps, D5/D25 — Tooltip introduces own `utils/position.ts` + `utils/useFloating.ts` as shared positioning primitive). Remaining 17 components land per-Epic.
         </Text>
 
         <div className={styles.grid}>
@@ -977,6 +978,32 @@ export default function DemoPage() {
                   4-directional side panel. Per-side animation, inner-corner radius, safe-area-inset, sticky footer.
                 </Text>
                 <Button onClick={() => setSheetOpen(true)}>Open Sheet (right)</Button>
+              </Stack>
+            </CardBody>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <Heading level={3} size="lg">Tooltip</Heading>
+            </CardHeader>
+            <CardBody>
+              <Stack gap={3}>
+                <Text variant="small" color="muted">
+                  Modeless floating label on hover/focus. Own positioning engine (zero deps), 12 placements with flip + shift, SC 1.4.13 compliant. TooltipProvider for toolbar skip-delay.
+                </Text>
+                <TooltipProvider>
+                  <Inline gap={2}>
+                    <Tooltip content="Save file (Ctrl+S)">
+                      <Button>Save</Button>
+                    </Tooltip>
+                    <Tooltip content="Undo last action (Ctrl+Z)">
+                      <Button variant="secondary">Undo</Button>
+                    </Tooltip>
+                    <Tooltip content="Permanently delete.">
+                      <Button variant="warning">Delete</Button>
+                    </Tooltip>
+                  </Inline>
+                </TooltipProvider>
               </Stack>
             </CardBody>
           </Card>
@@ -1051,7 +1078,7 @@ export default function DemoPage() {
 
       <footer className={styles.footer}>
         <Text variant="small" color="muted">
-          62/80 components live · Phase 0-9 complete + Phase 10 in progress (4/22) · See{' '}
+          63/80 components live · Phase 0-9 complete + Phase 10 in progress (5/22) · See{' '}
           <Link href="/">dev index</Link> for per-component playgrounds.
         </Text>
       </footer>
