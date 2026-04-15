@@ -1,0 +1,285 @@
+@use '../../../styles/mixins' as mx;
+
+// Select — single-value dropdown form field (Phase 10 CI12).
+// Own compound flat API consuming E23 floating primitives (portal + dismiss +
+// context + state). Visual baseline mirrors Input (44px touch target, same
+// border/bg tokens) so Select feels like a form field. Listbox styling forks
+// DropdownMenu's surface tokens but uses `role="option"` / aria-activedescendant
+// highlight rather than roving focus.
+//
+// Own `selectContentIn` keyframe per copy-to-project independence precedent.
+
+// ============================================================================
+// TRIGGER — mirrors Input visual baseline
+// ============================================================================
+
+.trigger {
+  // Button reset — the trigger may be rendered as either a native <button>
+  // or a Slot-wrapped custom child, so we explicitly set every visual prop.
+  all: unset;
+  box-sizing: border-box;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  width: 100%;
+  padding: var(--space-3) var(--space-4);
+
+  background: var(--input-bg);
+  border: 1px solid var(--input-border);
+  border-radius: var(--radius-input);
+  color: var(--color-text-primary);
+  font-family: var(--font-secondary);
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-normal);
+  text-align: start;
+  cursor: pointer;
+  user-select: none;
+
+  transition:
+    border-color var(--duration-fast) var(--easing-default),
+    box-shadow var(--duration-fast) var(--easing-default);
+
+  // Touch target — 44x44 minimum on coarse pointer (D13, WCAG 2.2 AAA).
+  @include mx.touch-target;
+
+  &:hover:not([data-disabled]) {
+    border-color: var(--input-border-focus);
+  }
+
+  &:focus-visible {
+    border-color: var(--input-border-focus);
+    @include mx.focus-ring;
+  }
+
+  &[data-state='open'] {
+    border-color: var(--input-border-focus);
+    @include mx.focus-ring;
+  }
+
+  &[data-disabled] {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background: var(--input-bg);
+  }
+
+  &[aria-invalid='true'] {
+    border-color: var(--color-error);
+
+    &:focus-visible,
+    &[data-state='open'] {
+      @include mx.focus-ring-error;
+    }
+  }
+}
+
+// ============================================================================
+// VALUE — selected label / placeholder
+// ============================================================================
+
+.value {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-align: start;
+}
+
+.valuePlaceholder {
+  color: var(--color-text-muted);
+}
+
+// ============================================================================
+// ICON — chevron, rotates on open
+// ============================================================================
+
+.icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: var(--space-4);
+  height: var(--space-4);
+  color: var(--color-text-muted);
+  transition: transform var(--duration-fast) var(--easing-default);
+
+  > svg {
+    width: 100%;
+    height: 100%;
+  }
+
+  .trigger[data-state='open'] & {
+    transform: rotate(180deg);
+  }
+}
+
+// ============================================================================
+// CONTENT — portal wrapper + listbox surface
+// ============================================================================
+
+.contentRoot {
+  // Positioned by useFloating via inline styles — no layout contribution.
+  z-index: var(--z-popover);
+  pointer-events: none;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  pointer-events: auto;
+
+  background: var(--color-surface-raised);
+  color: var(--color-text-primary);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+
+  // Listbox rhythm — small vertical padding, items own their own horizontal
+  // padding so the surface edges stay flush with item hover backgrounds.
+  padding: var(--space-1) 0;
+  min-width: 200px;
+  max-width: min(360px, 90vw);
+
+  // Scrollable when the option list exceeds the viewport height.
+  max-height: min(320px, calc(100vh - var(--space-8)));
+  overflow-y: auto;
+
+  // Listbox itself never shows a focus ring — focus stays on the trigger
+  // under the aria-activedescendant pattern.
+  outline: none;
+
+  animation: selectContentIn var(--duration-fast) var(--easing-default);
+}
+
+// ============================================================================
+// GROUP / LABEL / SEPARATOR
+// ============================================================================
+
+.group {
+  display: flex;
+  flex-direction: column;
+}
+
+.label {
+  padding: var(--space-2) var(--space-3) var(--space-1);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  user-select: none;
+}
+
+.separator {
+  height: 1px;
+  background: var(--color-border-subtle);
+  margin: var(--space-1) 0;
+  border: none;
+}
+
+// ============================================================================
+// ITEM — role="option", highlight via data-highlighted, checked via data-state
+// ============================================================================
+
+.item {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  width: 100%;
+  padding: var(--space-2) var(--space-3);
+  min-height: 32px;
+  font-family: var(--font-secondary);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-normal);
+  color: var(--color-text-primary);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  user-select: none;
+  outline: none;
+
+  // Touch target — 44x44 minimum on coarse pointer (D13).
+  @include mx.touch-target;
+
+  &[data-highlighted='true'] {
+    background: var(--color-surface-hover, var(--color-surface-raised));
+  }
+
+  &[data-state='checked'] {
+    font-weight: var(--font-weight-semibold);
+  }
+
+  &[data-disabled] {
+    color: var(--color-text-muted);
+    cursor: not-allowed;
+    pointer-events: none;
+    opacity: 0.6;
+  }
+}
+
+.itemText {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.itemIndicator {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: var(--space-4);
+  height: var(--space-4);
+  color: var(--color-text-primary);
+  visibility: hidden;
+
+  > svg {
+    width: 100%;
+    height: 100%;
+  }
+
+  .item[data-state='checked'] & {
+    visibility: visible;
+  }
+}
+
+// ============================================================================
+// RTL — chevron mirrors automatically; no axis flipping needed for listbox
+// ============================================================================
+
+[dir='rtl'] .icon {
+  // Chevron is vertical (down arrow), so RTL doesn't rotate it — the rotate
+  // still flips open/closed correctly regardless of text direction. No
+  // override needed; rule kept as a documentation marker for future
+  // directional asymmetries.
+}
+
+// ============================================================================
+// ANIMATIONS
+// ============================================================================
+
+@keyframes selectContentIn {
+  from {
+    opacity: 0;
+    transform: translateY(-4px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .content {
+    animation: none;
+  }
+
+  .trigger,
+  .icon {
+    transition: none;
+  }
+}

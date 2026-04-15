@@ -113,6 +113,16 @@ import {
   TabsTrigger,
   TabsContent,
 } from '@/components/complex/Tabs';
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectGroup,
+  SelectLabel,
+  SelectItem,
+  SelectSeparator,
+} from '@/components/complex/Select';
 
 import styles from './page.module.scss';
 
@@ -1206,6 +1216,38 @@ export default function DemoPage() {
               </Stack>
             </CardBody>
           </Card>
+
+          <Card variant="default">
+            <CardHeader>
+              <Heading level={3} size="lg">Select</Heading>
+            </CardHeader>
+            <CardBody>
+              <Stack gap={3}>
+                <Text variant="small" color="muted">
+                  Accessible single-value dropdown per APG /combobox/ collapsed-listbox. 8 compound flat exports. First listbox sub-family — aria-activedescendant pattern (focus stays on trigger). Full keyboard: Space/Enter/Arrow open, Home/End, PageDown/Up, Enter commit, Escape no-commit, Tab commit + propagate, typeahead. Form participation via hidden input.
+                </Text>
+                <Select defaultValue="vercel-prod">
+                  <SelectTrigger>
+                    <SelectValue placeholder="Pick a target" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectGroup>
+                      <SelectLabel>Production</SelectLabel>
+                      <SelectItem value="vercel-prod">Vercel</SelectItem>
+                      <SelectItem value="netlify-prod">Netlify</SelectItem>
+                      <SelectItem value="aws-prod">AWS ECS</SelectItem>
+                    </SelectGroup>
+                    <SelectSeparator />
+                    <SelectGroup>
+                      <SelectLabel>Local</SelectLabel>
+                      <SelectItem value="docker">Docker Compose</SelectItem>
+                      <SelectItem value="dev-server">Dev server</SelectItem>
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+              </Stack>
+            </CardBody>
+          </Card>
         </div>
 
         <Dialog
@@ -1277,7 +1319,7 @@ export default function DemoPage() {
 
       <footer className={styles.footer}>
         <Text variant="small" color="muted">
-          66/80 components live · Phase 0-9 complete + Phase 10 in progress (8/22) · See{' '}
+          70/80 components live · Phase 0-9 complete + Phase 10 in progress (12/22) · See{' '}
           <Link href="/">dev index</Link> for per-component playgrounds.
         </Text>
       </footer>

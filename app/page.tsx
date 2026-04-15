@@ -287,6 +287,14 @@ const components: ComponentLink[] = [
     phase: 'Phase 10 — Complex Interactive',
     status: 'available',
   },
+  {
+    href: '/components/select',
+    name: 'Select',
+    description:
+      'E27 CI12 — accessible single-value dropdown form field per APG /combobox/ collapsed-listbox (select-only) + /listbox/. 8 compound flat exports (Select + Trigger + Value + Content + Group + Label + Item + Separator). FIRST listbox sub-family in Phase 10. aria-activedescendant pattern — focus stays on the trigger, highlighted option is virtual (differs from NavigationMenu/Tabs roving tabindex). E23 primitives consumed 4/5: useFloatingState + createFloatingContext + FloatingPortal + useFloatingDismiss; skips useFloatingFocus because focus never leaves trigger. Inline value state (string | null) and typeahead per E27 Phase 2 self-audit override — Rule of Three extraction deferred to E28 Combobox as 4th consumer. Full APG keyboard: Space/Enter/Arrow open, Home/End, PageDown/Up ±10, Enter/Space commit, Escape no-commit, Tab commit + propagate (Radix convention), Alt+ArrowUp no-commit, printable char typeahead 500ms reset. Form participation via hidden <input> synced to value when name prop provided. aria-disabled only (NOT native disabled) per NavigationMenu/Tabs precedent.',
+    phase: 'Phase 10 — Complex Interactive',
+    status: 'available',
+  },
 ];
 
 export default function HomePage() {
