@@ -99,6 +99,14 @@ import {
   HoverCardTrigger,
   HoverCardContent,
 } from '@/components/complex/HoverCard';
+import {
+  NavigationMenu,
+  NavigationMenuList,
+  NavigationMenuItem,
+  NavigationMenuTrigger,
+  NavigationMenuContent,
+  NavigationMenuLink,
+} from '@/components/complex/NavigationMenu';
 
 import styles from './page.module.scss';
 
@@ -257,8 +265,8 @@ export default function DemoPage() {
               bleizlabs-ui demo
             </Heading>
             <Text className={styles.intro}>
-              Complete showcase of all 66 components — 47 atoms + 6 molecules +
-              5 Card presets + 9 complex interactive (Phase 10 in progress).
+              Complete showcase of all 68 components — 47 atoms + 6 molecules +
+              5 Card presets + 10 complex interactive (Phase 10 in progress).
               Toggle theme to inspect light + dark tokens. Per-component deep
               dives live under <Link href="/">/components/*</Link>.
             </Text>
@@ -940,7 +948,7 @@ export default function DemoPage() {
           Phase 10 — Complex Interactive
         </Heading>
         <Text color="muted">
-          Dialog (E15 CI1) + AlertDialog (E16 CI2) + Drawer (E17 CI3) + Sheet (E18 CI4) + Tooltip (E19 CI6) + Popover (E20 CI5) + DropdownMenu (E21 CI7) + ContextMenu (E22 CI8) + HoverCard (E24 CI9) — modal family, positioning engine family, accessible menu family, and hover-triggered surface family. **E23 FloatingRoot refactor sprint** extracted 5 composable primitives (createFloatingContext + useFloatingState + useFloatingDismiss + useFloatingFocus + FloatingPortal) into utils/floating/ — Popover/DropdownMenu/ContextMenu migrated as consumers; **HoverCard (E24) is the first new-build consumer** validating the primitives in production. Own build per WAI-ARIA APG (zero runtime UI deps, D5/D25). Remaining 13 components land per-Epic.
+          Dialog (E15 CI1) + AlertDialog (E16 CI2) + Drawer (E17 CI3) + Sheet (E18 CI4) + Tooltip (E19 CI6) + Popover (E20 CI5) + DropdownMenu (E21 CI7) + ContextMenu (E22 CI8) + HoverCard (E24 CI9) + NavigationMenu (E25 CI10) — modal family, positioning engine family, accessible menu family, hover-triggered surface family, and navigation menubar family. **E23 FloatingRoot refactor sprint** extracted 5 composable primitives (createFloatingContext + useFloatingState + useFloatingDismiss + useFloatingFocus + FloatingPortal) into utils/floating/ — Popover/DropdownMenu/ContextMenu migrated as consumers; **HoverCard (E24)** + **NavigationMenu (E25)** are new-build consumers validating the primitives in production. Own build per WAI-ARIA APG (zero runtime UI deps, D5/D25). Remaining 12 components land per-Epic.
         </Text>
 
         <div className={styles.grid}>
@@ -1125,6 +1133,41 @@ export default function DemoPage() {
                   </HoverCard>
                   {' '}to preview the profile.
                 </Text>
+              </Stack>
+            </CardBody>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <Heading level={3} size="lg">NavigationMenu</Heading>
+            </CardHeader>
+            <CardBody>
+              <Stack gap={3}>
+                <Text variant="small" color="muted">
+                  Accessible navigation menubar per APG /menubar/. Roving tabindex, hover + click + keyboard, mixed dropdown + standalone link items. Validate-in-production #2 of E23 floating primitives — first to combine useFloatingFocus + useFloatingDismiss together.
+                </Text>
+                <NavigationMenu>
+                  <NavigationMenuList aria-label="Demo navigation">
+                    <NavigationMenuItem value="demo-products">
+                      <NavigationMenuTrigger>Products</NavigationMenuTrigger>
+                      <NavigationMenuContent>
+                        <NavigationMenuLink href="#demo-web">Web</NavigationMenuLink>
+                        <NavigationMenuLink href="#demo-mobile">Mobile</NavigationMenuLink>
+                        <NavigationMenuLink href="#demo-cli">CLI</NavigationMenuLink>
+                      </NavigationMenuContent>
+                    </NavigationMenuItem>
+                    <NavigationMenuItem value="demo-resources">
+                      <NavigationMenuTrigger>Resources</NavigationMenuTrigger>
+                      <NavigationMenuContent>
+                        <NavigationMenuLink href="#demo-docs">Docs</NavigationMenuLink>
+                        <NavigationMenuLink href="#demo-blog">Blog</NavigationMenuLink>
+                      </NavigationMenuContent>
+                    </NavigationMenuItem>
+                    <NavigationMenuItem value="demo-pricing">
+                      <NavigationMenuLink href="#demo-pricing">Pricing</NavigationMenuLink>
+                    </NavigationMenuItem>
+                  </NavigationMenuList>
+                </NavigationMenu>
               </Stack>
             </CardBody>
           </Card>

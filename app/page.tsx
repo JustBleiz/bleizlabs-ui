@@ -271,6 +271,14 @@ const components: ComponentLink[] = [
     phase: 'Phase 10 — Complex Interactive',
     status: 'available',
   },
+  {
+    href: '/components/navigation-menu',
+    name: 'NavigationMenu',
+    description:
+      'E25 CI10 — accessible navigation menubar per APG /menubar/. 7 named exports (NavigationMenu + List + Item + Trigger + Content + Link + Provider). Roving tabindex via DOM attribute updates (no React re-render). Right/Left arrow cycle menubar, Down/Enter/Space opens submenu first item, Up opens last, Escape returns to parent menubar item, Tab exits menubar entirely, Home/End scope-aware, typeahead 500ms reset. NavigationMenuProvider mirrors HoverCardProvider delay group. Hover (200ms default — snappier than HoverCard 700ms) + click + keyboard, coarse pointer skips hover. Validate-in-production #2 of E23 primitives — first consumer to combine useFloatingFocus + useFloatingDismiss together. Standalone Link items can render directly inside menubar without aria-haspopup (mixed dropdown + standalone navigation pattern).',
+    phase: 'Phase 10 — Complex Interactive',
+    status: 'available',
+  },
 ];
 
 export default function HomePage() {
