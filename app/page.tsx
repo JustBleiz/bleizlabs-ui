@@ -303,6 +303,14 @@ const components: ComponentLink[] = [
     phase: 'Phase 10 — Complex Interactive',
     status: 'available',
   },
+  {
+    href: '/components/slider',
+    name: 'Slider',
+    description:
+      'E33 CI14 — accessible single-thumb value selector per APG /slider/. 4 compound flat exports (Slider + SliderTrack + SliderRange + SliderThumb). FIRST drag-gesture primitive consumer in the library. Zero-dep drag via PointerEvent + setPointerCapture on track (React onPointer* handlers receive events via capture bubble even when pointer leaves visible bounds). role="slider" on thumb with aria-valuenow/min/max/orientation/valuetext. Keyboard: Arrow ±step, Shift+Arrow ±largeStep (default step×10 Radix convention), PageUp/Dn ±largeStep, Home/End → min/max. Modifier guard Ctrl/Meta/Alt skip (Shift IS largeStep). RTL horizontal mirror (ArrowLeft = increase when dir="rtl"); vertical Up always increases. `inverted` prop composable with RTL via XOR. Decimal-step precision-safe via Math.round((raw - min) / step) * step + min + toFixed(decimals). Disabled via aria-disabled only (focusable). ReadOnly focusable + no changes. Form participation via hidden <input type="range"> when name prop set. Touch target 44×44 via ::before pseudo at @media (pointer: coarse) — visible thumb 1.125rem. forced-colors: active HCM block. formatValue callback → aria-valuetext override. onValueCommit fires on pointerup + keyboard keyup. Pattern-parent for Carousel CI21 + future range slider + splitter + Drawer resize handle.',
+    phase: 'Phase 10 — Complex Interactive',
+    status: 'available',
+  },
 ];
 
 export default function HomePage() {
