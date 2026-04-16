@@ -295,6 +295,14 @@ const components: ComponentLink[] = [
     phase: 'Phase 10 — Complex Interactive',
     status: 'available',
   },
+  {
+    href: '/components/combobox',
+    name: 'Combobox',
+    description:
+      'E28 CI13 — accessible autocomplete input per APG /combobox/ editable variant. 8 compound flat exports (Combobox + Input + Content + Item + Empty + Group + Label + Separator). SECOND listbox sub-family — pattern-child of Select E27. Extends Select with text input trigger + case-insensitive contains filter on item textContent/textValue. Consumes 4/5 E23 primitives (same as Select — skips useFloatingFocus). Three filter modes: "auto" default (built-in substring match), false (consumer-controlled via search prop + pre-filtered items), or custom function (items, search) => items[]. Hidden items omitted from DOM when non-matching. Radix Strategy A blur — auto-commit on exact match + revert input to committed value label on mismatch. Escape (closed + non-empty search) clears search keeping value; Escape (open) closes + reverts search. Alt+ArrowDown opens showing ALL items ignoring filter. IME composition events (onCompositionStart/End) guard prevents mid-char opens for CJK users. acceptFreeText prop opt-in for tag-input patterns where Enter commits typed text on no-match. ComboboxEmpty slot renders when filter yields 0 matches. 4 state slots (open, value, search, highlightedId). Rule of Three extractions (useFloatingValueState<T> + useTypeahead<T>) DEFERRED to E29 dedicated refactor sprint per E23 FloatingRoot precedent.',
+    phase: 'Phase 10 — Complex Interactive',
+    status: 'available',
+  },
 ];
 
 export default function HomePage() {

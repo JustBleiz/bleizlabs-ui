@@ -123,6 +123,13 @@ import {
   SelectItem,
   SelectSeparator,
 } from '@/components/complex/Select';
+import {
+  Combobox,
+  ComboboxInput,
+  ComboboxContent,
+  ComboboxItem,
+  ComboboxEmpty,
+} from '@/components/complex/Combobox';
 
 import styles from './page.module.scss';
 
@@ -1248,6 +1255,33 @@ export default function DemoPage() {
               </Stack>
             </CardBody>
           </Card>
+
+          <Card variant="default">
+            <CardHeader>
+              <Heading level={3} size="lg">Combobox</Heading>
+            </CardHeader>
+            <CardBody>
+              <Stack gap={3}>
+                <Text variant="small" color="muted">
+                  Accessible autocomplete per APG /combobox/ editable. 8 compound flat exports. Second listbox sub-family — pattern-child of Select with case-insensitive substring filter. Type any letters to filter, ArrowDown/Up navigates, Enter commits, Escape clears. ComboboxEmpty slot for no-results state.
+                </Text>
+                <Combobox defaultValue={null}>
+                  <ComboboxInput placeholder="Search frameworks…" />
+                  <ComboboxContent>
+                    <ComboboxItem value="react">React</ComboboxItem>
+                    <ComboboxItem value="vue">Vue</ComboboxItem>
+                    <ComboboxItem value="svelte">Svelte</ComboboxItem>
+                    <ComboboxItem value="solid">SolidJS</ComboboxItem>
+                    <ComboboxItem value="angular">Angular</ComboboxItem>
+                    <ComboboxItem value="qwik">Qwik</ComboboxItem>
+                    <ComboboxItem value="astro">Astro</ComboboxItem>
+                    <ComboboxItem value="remix">Remix</ComboboxItem>
+                    <ComboboxEmpty>No framework matches your search.</ComboboxEmpty>
+                  </ComboboxContent>
+                </Combobox>
+              </Stack>
+            </CardBody>
+          </Card>
         </div>
 
         <Dialog
@@ -1319,7 +1353,7 @@ export default function DemoPage() {
 
       <footer className={styles.footer}>
         <Text variant="small" color="muted">
-          70/80 components live · Phase 0-9 complete + Phase 10 in progress (12/22) · See{' '}
+          71/80 components live · Phase 0-9 complete + Phase 10 in progress (13/22) · See{' '}
           <Link href="/">dev index</Link> for per-component playgrounds.
         </Text>
       </footer>

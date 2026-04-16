@@ -1,0 +1,401 @@
+@use '../../../styles/mixins' as mx;
+
+// Combobox — editable single-select form field (Phase 10 CI13). Pattern-
+// child of Select (E27) — visual baseline mirrors Input + Select trigger
+// (44px touch target, same border + bg tokens) so the field reads as a
+// form input. Listbox surface forks Select's `.content` token recipe — same
+// raised-surface + border-subtle + lg-shadow rhythm. Adds `.input`,
+// `.clearButton`, `.chevronButton`, `.empty` slots that Select does not
+// have (Select uses a `<button>` trigger with span+icon only).
+//
+// Own `comboboxContentIn` keyframe per copy-to-project independence
+// precedent — each complex component animates independently.
+
+// ============================================================================
+// TRIGGER WRAPPER — flex row holding input + clear + chevron
+// ============================================================================
+//
+// Mirrors Input's `.inputWrap` semantics — visual border + bg sit on the
+// wrapper, the bare `<input>` inside is transparent. focus-within (when
+// the input is focused or the chevron/clear is :focus-visible) drives the
+// focus ring on the wrapper. data-state='open' also forces the focus ring
+// so the wrapper visually "stays focused" while the listbox is up.
+
+.trigger {
+  position: relative;
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: stretch;
+  width: 100%;
+
+  background: var(--input-bg);
+  border: 1px solid var(--input-border);
+  border-radius: var(--radius-input);
+  overflow: hidden;
+  transition:
+    border-color var(--duration-fast) var(--easing-default),
+    box-shadow var(--duration-fast) var(--easing-default);
+
+  &:hover:not([data-disabled]) {
+    border-color: var(--input-border-focus);
+  }
+
+  &:focus-within {
+    border-color: var(--input-border-focus);
+    @include mx.focus-ring;
+  }
+
+  &[data-state='open'] {
+    border-color: var(--input-border-focus);
+    @include mx.focus-ring;
+  }
+
+  &[data-disabled] {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background: var(--input-bg);
+  }
+}
+
+.triggerInvalid {
+  border-color: var(--color-error);
+
+  &:focus-within,
+  &[data-state='open'] {
+    border-color: var(--color-error);
+    @include mx.focus-ring-error;
+  }
+}
+
+.triggerDisabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+// ============================================================================
+// INPUT — editable text field
+// ============================================================================
+//
+// Mirrors Input's `.input` rules: transparent background (the wrapper owns
+// the visual surface), no border (wrapper owns it), no outline (focus
+// ring lives on the wrapper via :focus-within). `min-width: 0` is required
+// so the input can shrink inside the flex row when the wrapper is narrow.
+
+.input {
+  flex: 1;
+  min-width: 0;
+  padding: var(--space-3) var(--space-4);
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--color-text-primary);
+  font-family: var(--font-secondary);
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-normal);
+  // Touch target — 44x44 minimum on coarse pointer (D13, WCAG 2.2 AAA).
+  @include mx.touch-target;
+
+  &::placeholder {
+    color: var(--color-text-muted);
+  }
+
+  &[aria-disabled='true'] {
+    cursor: not-allowed;
+    color: var(--color-text-muted);
+  }
+}
+
+// ============================================================================
+// CLEAR BUTTON — small X button shown when search/value is non-empty
+// ============================================================================
+//
+// Sits inside the trigger right side (before the chevron). tabIndex=-1 in
+// JSX so Tab from the input goes to the next form field, not to the clear
+// button — the clear button is reached via mousedown/click only. Hover
+// background uses `--color-surface-raised` for a subtle lift. The button
+// auto-shows/hides via React conditional render, no opacity transition
+// needed (avoids the "ghost button" stuck-at-50% state during open/close).
+
+.clearButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: var(--space-6);
+  height: var(--space-6);
+  margin: auto var(--space-1);
+  padding: 0;
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-sm);
+  color: var(--color-text-muted);
+  cursor: pointer;
+  transition:
+    background-color var(--duration-fast) var(--easing-default),
+    color var(--duration-fast) var(--easing-default);
+
+  > svg {
+    width: var(--space-4);
+    height: var(--space-4);
+  }
+
+  &:hover {
+    background: var(--color-surface-raised);
+    color: var(--color-text-primary);
+  }
+
+  &:focus-visible {
+    @include mx.focus-ring;
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+}
+
+// ============================================================================
+// CHEVRON BUTTON — toggle the listbox open/closed
+// ============================================================================
+//
+// Native `<button>` so it's keyboard-reachable IF a consumer overrides
+// tabIndex. Default tabIndex=-1 so Tab order goes input → next field
+// without an extra stop on the chevron. The chevron rotates 180deg when
+// the wrapper has data-state='open'.
+
+.chevronButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: var(--space-6);
+  height: var(--space-6);
+  margin: auto var(--space-2) auto var(--space-1);
+  padding: 0;
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-sm);
+  color: var(--color-text-muted);
+  cursor: pointer;
+  transition:
+    background-color var(--duration-fast) var(--easing-default),
+    color var(--duration-fast) var(--easing-default);
+
+  &:hover:not(:disabled) {
+    color: var(--color-text-primary);
+  }
+
+  &:focus-visible {
+    @include mx.focus-ring;
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+}
+
+.chevron {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--space-4);
+  height: var(--space-4);
+  transition: transform var(--duration-fast) var(--easing-default);
+
+  > svg {
+    width: 100%;
+    height: 100%;
+  }
+
+  .trigger[data-state='open'] & {
+    transform: rotate(180deg);
+  }
+}
+
+// ============================================================================
+// CONTENT — portal wrapper + listbox surface
+// ============================================================================
+//
+// Mirrors Select's `.contentRoot` / `.content` recipe verbatim — same
+// raised-surface + border-subtle + lg-shadow + scrollable max-height
+// rhythm. The listbox itself never shows a focus ring under the
+// aria-activedescendant pattern (focus stays on the editable input).
+
+.contentRoot {
+  z-index: var(--z-popover);
+  pointer-events: none;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  pointer-events: auto;
+
+  background: var(--color-surface-raised);
+  color: var(--color-text-primary);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+
+  padding: var(--space-1) 0;
+  min-width: 200px;
+  max-width: min(360px, 90vw);
+
+  // Scrollable when filtered list exceeds the viewport.
+  max-height: min(320px, calc(100vh - var(--space-8)));
+  overflow-y: auto;
+
+  outline: none;
+
+  animation: comboboxContentIn var(--duration-fast) var(--easing-default);
+}
+
+// ============================================================================
+// GROUP / LABEL / SEPARATOR
+// ============================================================================
+
+.group {
+  display: flex;
+  flex-direction: column;
+}
+
+.label {
+  padding: var(--space-2) var(--space-3) var(--space-1);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  user-select: none;
+}
+
+.separator {
+  height: 1px;
+  background: var(--color-border-subtle);
+  margin: var(--space-1) 0;
+  border: none;
+}
+
+// ============================================================================
+// ITEM — role="option", highlight via data-highlighted, checked via data-state
+// ============================================================================
+
+.item {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  width: 100%;
+  padding: var(--space-2) var(--space-3);
+  min-height: 32px;
+  font-family: var(--font-secondary);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-normal);
+  color: var(--color-text-primary);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  user-select: none;
+  outline: none;
+
+  // Touch target — 44x44 minimum on coarse pointer (D13).
+  @include mx.touch-target;
+
+  &[data-highlighted='true'] {
+    background: var(--color-surface-hover, var(--color-surface-raised));
+  }
+
+  &[data-state='checked'] {
+    font-weight: var(--font-weight-semibold);
+  }
+
+  &[data-disabled] {
+    color: var(--color-text-muted);
+    cursor: not-allowed;
+    pointer-events: none;
+    opacity: 0.6;
+  }
+}
+
+.itemText {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.itemIndicator {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: var(--space-4);
+  height: var(--space-4);
+  color: var(--color-text-primary);
+  visibility: hidden;
+
+  > svg {
+    width: 100%;
+    height: 100%;
+  }
+
+  .item[data-state='checked'] & {
+    visibility: visible;
+  }
+}
+
+// ============================================================================
+// EMPTY — "no results" centered message
+// ============================================================================
+//
+// Rendered when the filter matches zero items. Centered text, muted color,
+// small font — sits where the option list would have been.
+
+.empty {
+  padding: var(--space-4);
+  text-align: center;
+  font-family: var(--font-secondary);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-normal);
+  color: var(--color-text-muted);
+  user-select: none;
+}
+
+// ============================================================================
+// RTL — chevron is vertical so no axis flip; documented for symmetry
+// ============================================================================
+
+[dir='rtl'] .chevron {
+  // Chevron is a down arrow (vertical). RTL doesn't rotate it — the
+  // open/closed flip still works correctly. Rule kept as a documentation
+  // marker for future directional asymmetries.
+}
+
+// ============================================================================
+// ANIMATIONS
+// ============================================================================
+
+@keyframes comboboxContentIn {
+  from {
+    opacity: 0;
+    transform: translateY(-4px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .content {
+    animation: none;
+  }
+
+  .trigger,
+  .chevron,
+  .clearButton,
+  .chevronButton {
+    transition: none;
+  }
+}
