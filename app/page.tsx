@@ -327,6 +327,14 @@ const components: ComponentLink[] = [
     phase: 'Phase 10 — Complex Interactive',
     status: 'available',
   },
+  {
+    href: '/components/input-otp',
+    name: 'InputOTP',
+    description:
+      'E36 CI18 — one-time password / verification code entry. 4 compound flat exports (InputOTP + InputOTPGroup + InputOTPSlot + InputOTPSeparator). Single semantic <input> stretched absolutely across decorative slot cells (guilhermerodz input-otp zero-dep reimplementation per D5/D25). Real input transparent color/caret + ::selection → hidden but focusable; slots aria-hidden="true" decorative, read index from context + render value[index] char + fake CSS caret. Slot click → setSelectionRange(i,i) repositions caret driving active-slot highlight via data-active. Pattern filter — "numeric" (default), "alphanumeric", "alpha", or custom RegExp — invalid chars rejected silently via onBeforeInput preventDefault + onChange safety filter. IME composition guard (isComposingRef + key="Process" + keyCode=229) per E28 Combobox precedent. Paste handler strips whitespace/hyphens, filters by pattern, truncates at maxLength, splices at caret. onComplete fires ONCE per transition to full length via prevCompleteRef (initialized false — defaultValue full-length still triggers first user completion). autoComplete="one-time-code" DEFAULT enables iOS Safari 12+ + Android Chrome 84+ SMS autofill. inputMode derived from pattern. Auto-default Slots when no children via internal DefaultSlots component. Form participation via name on single real input. 44×44 touch target via @include touch-target mixin. forced-colors: active HCM block. prefers-reduced-motion disables caret blink + transitions. WCAG 2.1 SC 1.1.1 DEV-mode warning if missing both aria-label + aria-labelledby. Pattern-parent for future PinInput / ConfirmationCode / license-key entry.',
+    phase: 'Phase 10 — Complex Interactive',
+    status: 'available',
+  },
 ];
 
 export default function HomePage() {
