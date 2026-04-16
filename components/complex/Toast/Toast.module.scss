@@ -1,0 +1,314 @@
+@use '../../../styles/mixins' as mx;
+
+// Toast — accessible notification surface (Phase 10 CI15).
+// Singleton Toaster + imperative toast() API + ARIA live regions per /alert/.
+// Zero-dep queue via module-scoped event emitter + useSyncExternalStore.
+
+// ──────────────────────────────────────────────────────────────────────────
+// .toaster — fixed-position stack container
+// ──────────────────────────────────────────────────────────────────────────
+
+.toaster {
+  position: fixed;
+  z-index: var(--z-toast, 9000);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  margin: 0;
+  padding: var(--space-4);
+  list-style: none;
+  pointer-events: none; // container itself doesn't block; toasts re-enable
+  max-width: min(420px, calc(100vw - var(--space-6)));
+
+  // Empty state — landmark region stays mounted for reliable SR live-region
+  // announcements (Phase 5 IMP-5 fix). Zero-size + no visual footprint when
+  // queue is empty so it doesn't intercept events or consume layout.
+  &[data-empty='true'] {
+    padding: 0;
+    width: 0;
+    height: 0;
+    overflow: hidden;
+  }
+
+  &[data-position^='top'] {
+    top: 0;
+  }
+
+  &[data-position^='bottom'] {
+    bottom: 0;
+    flex-direction: column-reverse; // newest on top visually
+  }
+
+  &[data-position$='-left'] {
+    left: 0;
+    align-items: flex-start;
+  }
+
+  &[data-position$='-right'] {
+    right: 0;
+    align-items: flex-end;
+  }
+
+  &[data-position$='-center'] {
+    left: 50%;
+    transform: translateX(-50%);
+    align-items: center;
+  }
+}
+
+// ──────────────────────────────────────────────────────────────────────────
+// .toast — individual notification card
+// ──────────────────────────────────────────────────────────────────────────
+
+.toast {
+  pointer-events: auto; // re-enable interaction on the toast itself
+  display: grid;
+  grid-template-columns: auto 1fr auto auto;
+  align-items: start;
+  gap: var(--space-3);
+  width: 100%;
+  max-width: 420px;
+  padding: var(--space-3) var(--space-4);
+  background: var(--color-surface-raised);
+  color: var(--color-text-primary);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+  font-family: var(--font-sans);
+  font-size: var(--font-size-sm);
+  line-height: 1.4;
+  animation: toastIn var(--duration-normal, 220ms) var(--easing-default);
+
+  &[data-variant='success'] {
+    --toast-accent: var(--color-success);
+  }
+
+  &[data-variant='error'] {
+    --toast-accent: var(--color-error);
+  }
+
+  &[data-variant='warning'] {
+    --toast-accent: var(--color-warning);
+  }
+
+  &[data-variant='info'] {
+    --toast-accent: var(--color-info, var(--color-brand));
+  }
+
+  &[data-variant='default'] {
+    --toast-accent: var(--color-border-strong, var(--color-border-subtle));
+  }
+}
+
+// ──────────────────────────────────────────────────────────────────────────
+// .richColors — opt-in colored backgrounds per variant
+// ──────────────────────────────────────────────────────────────────────────
+
+.richColors {
+  .variantSuccess {
+    background: var(--color-success-subtle, var(--color-surface-raised));
+    border-color: var(--color-success);
+  }
+
+  .variantError {
+    background: var(--color-error-subtle, var(--color-surface-raised));
+    border-color: var(--color-error);
+  }
+
+  .variantWarning {
+    background: var(--color-warning-subtle, var(--color-surface-raised));
+    border-color: var(--color-warning);
+  }
+
+  .variantInfo {
+    background: var(--color-info-subtle, var(--color-surface-raised));
+    border-color: var(--color-info, var(--color-brand));
+  }
+}
+
+// Default (no-richColors) uses a left accent border keyed to variant.
+.variantSuccess,
+.variantError,
+.variantWarning,
+.variantInfo {
+  border-left: 3px solid var(--toast-accent);
+}
+
+// ──────────────────────────────────────────────────────────────────────────
+// .icon — leading variant icon
+// ──────────────────────────────────────────────────────────────────────────
+
+.icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.25rem;
+  height: 1.25rem;
+  margin-top: 0.125rem; // optical align with title baseline
+  color: var(--toast-accent, var(--color-text-muted));
+  flex-shrink: 0;
+}
+
+// ──────────────────────────────────────────────────────────────────────────
+// .content — title + description block
+// ──────────────────────────────────────────────────────────────────────────
+
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  min-width: 0;
+  word-break: break-word;
+}
+
+.title {
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+}
+
+.description {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+}
+
+// ──────────────────────────────────────────────────────────────────────────
+// .action — optional action button
+// ──────────────────────────────────────────────────────────────────────────
+
+.action {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--space-1) var(--space-2);
+  background: transparent;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-sm);
+  color: var(--color-text-primary);
+  font-family: inherit;
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  cursor: pointer;
+  white-space: nowrap;
+  transition:
+    background-color var(--duration-fast) var(--easing-default),
+    border-color var(--duration-fast) var(--easing-default);
+
+  &:hover {
+    background: var(--color-surface-hover);
+    border-color: var(--color-border-strong, var(--color-border-subtle));
+  }
+
+  &:focus-visible {
+    outline: none;
+    box-shadow: var(--focus-ring);
+  }
+}
+
+// ──────────────────────────────────────────────────────────────────────────
+// .close — dismiss button
+// ──────────────────────────────────────────────────────────────────────────
+
+.close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  margin-top: 0.0625rem;
+  padding: 0;
+  background: transparent;
+  border: 0;
+  border-radius: var(--radius-sm);
+  color: var(--color-text-muted);
+  cursor: pointer;
+  flex-shrink: 0;
+  transition:
+    background-color var(--duration-fast) var(--easing-default),
+    color var(--duration-fast) var(--easing-default);
+
+  &:hover {
+    background: var(--color-surface-hover);
+    color: var(--color-text-primary);
+  }
+
+  &:focus-visible {
+    outline: none;
+    box-shadow: var(--focus-ring);
+  }
+
+  @media (pointer: coarse) {
+    min-width: 2.75rem;
+    min-height: 2.75rem;
+  }
+}
+
+// ──────────────────────────────────────────────────────────────────────────
+// Animations
+// ──────────────────────────────────────────────────────────────────────────
+
+@keyframes toastIn {
+  from {
+    opacity: 0;
+    transform: translateY(-8px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+// ──────────────────────────────────────────────────────────────────────────
+// Reduced motion — opacity fade only, no transform
+// ──────────────────────────────────────────────────────────────────────────
+
+@media (prefers-reduced-motion: reduce) {
+  .toast {
+    animation: toastInFade var(--duration-fast) var(--easing-default);
+  }
+
+  .action,
+  .close {
+    transition: none;
+  }
+}
+
+@keyframes toastInFade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+// ──────────────────────────────────────────────────────────────────────────
+// Forced colors (Windows High Contrast Mode)
+// ──────────────────────────────────────────────────────────────────────────
+
+@media (forced-colors: active) {
+  .toast {
+    border-color: CanvasText;
+    box-shadow: none;
+  }
+
+  .variantError {
+    --toast-accent: Highlight;
+  }
+
+  .icon,
+  .variantSuccess,
+  .variantError,
+  .variantWarning,
+  .variantInfo {
+    border-left-color: CanvasText;
+  }
+
+  .close {
+    color: CanvasText;
+
+    &:focus-visible {
+      outline: 2px solid Highlight;
+      outline-offset: 1px;
+    }
+  }
+
+  .action {
+    border-color: CanvasText;
+    color: CanvasText;
+  }
+}
