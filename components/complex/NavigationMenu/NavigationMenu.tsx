@@ -14,10 +14,13 @@
  *   + `useFloatingFocus` + `useFloatingDismiss` + `FloatingPortal`. **Skipped**
  *   `useFloatingState` — NavigationMenu state is "which submenu value is open"
  *   (`string | null`), not the boolean shape that `useFloatingState` provides.
- *   Inline `useState<string | null>` + controlled/uncontrolled hybrid mirrors
- *   the primitive's API at the value-aware level. This is a meaningful signal
- *   for a future `useFloatingValueState<T>` extraction once Select/Combobox
- *   (CI12/CI13) bring two more value-state consumers. **Validate-in-production
+ *   Value-state (`openValue` / `setOpenValue`) now uses the shared
+ *   `useFloatingValueState<string>` primitive (E29 extraction — post-Tabs E26 /
+ *   Select E27 / Combobox E28, Rule of Three strict pass with 4 consumers).
+ *   Hook encapsulates the controlled/uncontrolled hybrid, identity-guarded
+ *   setter, and `latestValueRef` pattern that originally lived inline here.
+ *   Public `onValueChange` already accepts `string | null` (null = all closed),
+ *   so it passes through the hook boundary with no wrapper. **Validate-in-production
  *   #2** for E23 primitives (HoverCard E24 was #1) — first consumer to combine
  *   `useFloatingFocus` + `useFloatingDismiss` together. Inline timer logic +
  *   delay group + `useCoarsePointer` + roving tabindex DOM-attribute updates
@@ -109,6 +112,7 @@ import {
   createFloatingContext,
   useFloatingDismiss,
   useFloatingFocus,
+  useFloatingValueState,
   FloatingPortal,
 } from '../../utils/floating';
 import styles from './NavigationMenu.module.scss';
@@ -318,18 +322,16 @@ export function NavigationMenu({
   hoverTrigger = true,
   className,
 }: NavigationMenuProps) {
-  const isControlled = controlledValue !== undefined;
-  const [uncontrolledValue, setUncontrolledValue] = useState<string | null>(defaultValue);
-  const openValue = isControlled ? (controlledValue ?? null) : uncontrolledValue;
-
-  const setOpenValue = useCallback(
-    (next: string | null) => {
-      if (next === openValue) return;
-      if (!isControlled) setUncontrolledValue(next);
-      onValueChange?.(next);
-    },
-    [openValue, isControlled, onValueChange],
-  );
+  // E29: inline `useState<string | null>` + manual isControlled + latestValueRef
+  // pattern extracted into shared `useFloatingValueState<T>` once NavigationMenu
+  // (E25), Tabs (E26), Select (E27), and Combobox (E28) converged on the same
+  // shape. Public `onValueChange` already accepts `string | null` (null =
+  // closed submenu), so we pass it through directly — no boundary wrapper.
+  const { value: openValue, setValue: setOpenValue } = useFloatingValueState<string>({
+    controlledValue,
+    defaultValue: defaultValue ?? null,
+    onValueChange,
+  });
 
   const listRef = useRef<HTMLUListElement | null>(null);
   const closeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);

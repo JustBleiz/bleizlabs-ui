@@ -20,6 +20,11 @@ export {
   type FloatingStateResult,
 } from './useFloatingState';
 export {
+  useFloatingValueState,
+  type FloatingValueStateConfig,
+  type FloatingValueStateResult,
+} from './useFloatingValueState';
+export {
   useFloatingDismiss,
   type FloatingDismissConfig,
 } from './useFloatingDismiss';

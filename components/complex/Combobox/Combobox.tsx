@@ -18,15 +18,22 @@
  *   `utils/useFloating.ts` (E19/E20 primitive). Portal + dismiss + context via
  *   shared `utils/floating/` composable primitives (E23):
  *   `createFloatingContext` + `useFloatingState` (open/close) +
+ *   `useFloatingValueState` (committed value — E29 extraction) +
  *   `useFloatingDismiss` + `FloatingPortal`. **Skipped** `useFloatingFocus` —
  *   focus stays on the editable input (the trigger IS the input under the
  *   APG editable-combobox pattern), so there is no focus target inside the
  *   listbox to move to. Highlight is exposed via `aria-activedescendant` on
- *   the input. Value state (`string | null`) and search state (`string`) are
- *   inlined in the root mirror Select's NavigationMenu/Select hybrid pattern;
- *   extraction to `useFloatingValueState<T>` is deferred to E29 (per Phase 2
- *   override — the second listbox consumer arrives in E28 itself but a
- *   dedicated refactor sprint is the lower-risk integration point).
+ *   the input. Value state (`string | null`) now flows through the shared
+ *   `useFloatingValueState<string>` primitive (E29 — post-Tabs E26 / Select E27,
+ *   Rule of Three strict pass with NavigationMenu E25 + Combobox E28 as the
+ *   fourth consumer). Hook owns the controlled/uncontrolled hybrid, identity-
+ *   guarded setter, and `latestValueRef` pattern that originally lived inline
+ *   here. Public `onValueChange` narrows to `(value: string) => void` (null
+ *   transitions do NOT fire the callback — consumers observe null via
+ *   controlled mode, mirroring Radix + Select), so we wrap the hook's
+ *   `onValueChange` at the boundary to filter nulls. Search state (`string`,
+ *   never null) stays inline — different semantics, empty string is a valid
+ *   state and the hook's `T | null` shape does not fit.
  *
  * @a11y APG /combobox/ editable-listbox + /listbox/:
  *   Input: `role="combobox"` + `aria-autocomplete="list"` + `aria-expanded` +
@@ -213,6 +220,7 @@ import { type Placement } from '../../utils/position';
 import {
   createFloatingContext,
   useFloatingState,
+  useFloatingValueState,
   useFloatingDismiss,
   FloatingPortal,
 } from '../../utils/floating';
@@ -468,20 +476,29 @@ export function Combobox({
     onOpenChange,
   });
 
-  // Controlled/uncontrolled value — same hybrid pattern as Select. Inlined
-  // per Phase 2 override; extraction to `useFloatingValueState<T>` deferred
-  // to E29 dedicated refactor sprint.
-  const isValueControlled = controlledValue !== undefined;
-  const [uncontrolledValue, setUncontrolledValue] = useState<string | null>(defaultValue);
-  const value = isValueControlled ? (controlledValue ?? null) : uncontrolledValue;
-
-  // Latest-value ref — `selectValue` and blur logic read from here so the
-  // callback identity does not churn on every value change. This is critical
-  // for avoiding mass re-registration of ComboboxItems (their useLayoutEffect
-  // depends on registerItem/unregisterItem identity via context).
-  const valueRef = useRef<string | null>(value);
-  useLayoutEffect(() => {
-    valueRef.current = value;
+  // Controlled/uncontrolled value — routed through shared `useFloatingValueState`
+  // primitive (E29 extraction). Hook owns the controlled/uncontrolled hybrid,
+  // the identity-guarded setter (no-ops when `next === valueRef.current`), and
+  // the `latestValueRef` pattern that was critical for avoiding mass re-
+  // registration of ComboboxItems — their `useLayoutEffect` depends on
+  // `registerItem`/`unregisterItem` identity via context, which in turn
+  // depends on `selectValue` identity, which MUST stay stable across value
+  // changes. Public `onValueChange` narrows to `(value: string) => void`
+  // (null transitions do NOT fire — consumers observe them via controlled
+  // mode, mirroring Radix + Select), so wrap at the boundary to filter nulls.
+  // The wrapper is memoized so the hook sees a stable callback identity —
+  // otherwise `setValue` would churn on every render and defeat the
+  // `latestValueRef` guarantee that keeps item registrations stable.
+  const handleValueChange = useCallback(
+    (next: string | null) => {
+      if (next !== null) onValueChange?.(next);
+    },
+    [onValueChange],
+  );
+  const { value, setValue: selectValue, valueRef } = useFloatingValueState<string>({
+    controlledValue,
+    defaultValue: defaultValue ?? null,
+    onValueChange: handleValueChange,
   });
 
   // Controlled/uncontrolled search — second hybrid slot, same pattern.
@@ -503,17 +520,6 @@ export function Combobox({
       onSearchChange?.(next);
     },
     [isSearchControlled, onSearchChange],
-  );
-
-  const selectValue = useCallback(
-    (next: string | null) => {
-      if (next === valueRef.current) return;
-      if (!isValueControlled) setUncontrolledValue(next);
-      // Null transitions do NOT fire onValueChange — consumers who need to
-      // observe them should use controlled mode. Matches Radix + Select.
-      if (next !== null) onValueChange?.(next);
-    },
-    [isValueControlled, onValueChange],
   );
 
   // Item registry — stored in a ref so register/unregister mutations do NOT
@@ -640,7 +646,7 @@ export function Combobox({
       setUncontrolledSearch(record.textContent);
       initialSearchSyncRef.current = true;
     }
-  }, [registryVersion, isSearchControlled]);
+  }, [registryVersion, isSearchControlled, valueRef]);
 
   const contextValue = useMemo<ComboboxContextValue>(
     () => ({
@@ -675,6 +681,7 @@ export function Combobox({
       open,
       setOpen,
       value,
+      valueRef,
       selectValue,
       search,
       updateSearch,

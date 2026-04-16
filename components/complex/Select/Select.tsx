@@ -157,6 +157,7 @@ import { type Placement } from '../../utils/position';
 import {
   createFloatingContext,
   useFloatingState,
+  useFloatingValueState,
   useFloatingDismiss,
   FloatingPortal,
 } from '../../utils/floating';
@@ -223,10 +224,11 @@ interface SelectContextValue {
    * Live ref mirror of `value` — used inside callbacks that should not
    * re-memoize on every value change (e.g. `selectValue`, `commitHighlighted`).
    * Readers should always `valueRef.current`, never the memoized `value`.
+   * Sourced from `useFloatingValueState<string>` hook (E29).
    */
   valueRef: MutableRefObject<string | null>;
   /** Commit a new value — fires onValueChange when the value differs. */
-  selectValue: (next: string | null) => void;
+  selectValue: (next: string) => void;
   /** ID pair for ARIA wiring. */
   triggerId: string;
   contentId: string;
@@ -386,35 +388,34 @@ export function Select({
     onOpenChange,
   });
 
-  // Controlled/uncontrolled value — mirrors NavigationMenu pattern (E25) at
-  // the string|null layer. Inlined per E27 Phase 2 self-audit override;
-  // extraction to `useFloatingValueState<T>` deferred to E28 Combobox.
-  const isValueControlled = controlledValue !== undefined;
-  const [uncontrolledValue, setUncontrolledValue] = useState<string | null>(
-    defaultValue,
-  );
-  const value = isValueControlled ? (controlledValue ?? null) : uncontrolledValue;
-
-  // Latest-value ref (NavigationMenu E25 pattern) — `selectValue` reads from
-  // here instead of closing over `value`, so the callback identity does not
-  // churn on every value change. This is critical for avoiding mass
-  // re-registration of SelectItems (their useLayoutEffect depends on
-  // registerItem/unregisterItem identity via context).
-  const valueRef = useRef<string | null>(value);
-  useLayoutEffect(() => {
-    valueRef.current = value;
-  });
-
-  const selectValue = useCallback(
+  // Controlled/uncontrolled value via useFloatingValueState<string> (E29).
+  // The hook owns the latest-value ref + identity-guarded setter so
+  // SelectItems' useLayoutEffect registrations don't churn across selections.
+  // Null transitions do NOT fire onValueChange — matches Radix semantics;
+  // consumers who need the null transition should use controlled mode.
+  // Filter null at boundary: Select's public onValueChange is (string) => void
+  // (consumers who need null-transitions use controlled `value` prop). Hook
+  // fires (string | null) — null would happen on Escape-with-value-cleared but
+  // Select's Escape path reverts without firing; drop null defensively. Wrapper
+  // memoized via useCallback per Combobox E28 precedent so hook's selectValue
+  // identity stays stable across unrelated parent re-renders (not just
+  // value-change renders) — matches the latestValueRef stability goal E29 was
+  // extracted to enforce.
+  const handleValueChange = useCallback(
     (next: string | null) => {
-      if (next === valueRef.current) return;
-      if (!isValueControlled) setUncontrolledValue(next);
-      // Null transitions do NOT fire onValueChange — consumers who need to
-      // observe them should use controlled mode. Matches Radix semantics.
       if (next !== null) onValueChange?.(next);
     },
-    [isValueControlled, onValueChange],
+    [onValueChange],
   );
+  const {
+    value,
+    setValue: selectValue,
+    valueRef,
+  } = useFloatingValueState<string>({
+    controlledValue,
+    defaultValue,
+    onValueChange: handleValueChange,
+  });
 
   // Item registry — stored in a ref so register/unregister mutations do NOT
   // trigger re-renders of every context consumer (Radix + React 19
@@ -505,6 +506,7 @@ export function Select({
       open,
       setOpen,
       value,
+      valueRef,
       selectValue,
       triggerId,
       contentId,

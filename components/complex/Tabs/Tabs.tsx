@@ -82,7 +82,6 @@ import {
   useLayoutEffect,
   useMemo,
   useRef,
-  useState,
   type ButtonHTMLAttributes,
   type HTMLAttributes,
   type ReactNode,
@@ -90,6 +89,7 @@ import {
 } from 'react';
 import { Slot } from '../../utils/Slot';
 import { cn } from '../../utils/cn';
+import { useFloatingValueState } from '../../utils/floating';
 import styles from './Tabs.module.scss';
 
 export type TabsOrientation = 'horizontal' | 'vertical';
@@ -196,20 +196,27 @@ export const Tabs = forwardRef<HTMLDivElement, TabsProps>(function Tabs(
   forwardedRef,
 ) {
   const baseId = useId();
-  const isControlled = controlledValue !== undefined;
-  const [uncontrolledValue, setUncontrolledValue] = useState<string | null>(
-    defaultValue ?? null,
-  );
-  const value = isControlled ? (controlledValue ?? null) : uncontrolledValue;
-
-  const setValue = useCallback(
-    (next: string) => {
-      if (next === value) return;
-      if (!isControlled) setUncontrolledValue(next);
-      onValueChange?.(next);
+  // Controlled/uncontrolled value via shared primitive (E29). `setValue` is
+  // identity-guarded (no-op when next === current) via the hook's internal
+  // `valueRef` and is stable across value changes — safe to include in the
+  // context memo dep list without churning every SelectItem / TabsTrigger
+  // child's useLayoutEffect registrations.
+  // Filter null at boundary: Tabs' public onValueChange is (string) => void;
+  // hook fires (string | null) → we drop nulls (never happens in Tabs anyway,
+  // but the type narrow is required). Wrapper memoized via useCallback per
+  // Combobox E28 precedent so hook's setValue identity stays stable across
+  // unrelated parent re-renders (not just value-change renders).
+  const handleValueChange = useCallback(
+    (next: string | null) => {
+      if (next !== null) onValueChange?.(next);
     },
-    [value, isControlled, onValueChange],
+    [onValueChange],
   );
+  const { value, setValue } = useFloatingValueState<string>({
+    controlledValue,
+    defaultValue: defaultValue ?? null,
+    onValueChange: handleValueChange,
+  });
 
   const getTriggerId = useCallback(
     (v: string) => `${baseId}-trigger-${v}`,
