@@ -311,6 +311,14 @@ const components: ComponentLink[] = [
     phase: 'Phase 10 — Complex Interactive',
     status: 'available',
   },
+  {
+    href: '/components/carousel',
+    name: 'Carousel',
+    description:
+      'E34 CI21 — accessible auto-rotating content slider per APG /carousel/. 6 compound flat exports (Carousel + CarouselViewport + CarouselSlide + CarouselPrev + CarouselNext + CarouselPause). SECOND drag-gesture primitive consumer + FIRST auto-rotation + FIRST live-region component. role="region" aria-roledescription="carousel" + required aria-label; slides role="group" aria-roledescription="slide" aria-label="N of M" + aria-hidden when not current. WCAG 2.2.2 pause control — CarouselPause button aria-pressed toggle required when autoRotate (renders null otherwise). WCAG 1.4.13 pause on hover/focus/visibilitychange + prefers-reduced-motion reactive via pauseReasons Set state (React 19 refs-rule compliant — state not ref so derived isPaused/isReducedMotion/shouldRotate are safe during render). Live region role="status" aria-live="polite" aria-atomic="true" announces "Slide N of M" on index change; silent during auto-rotation by default, opt-in via announceAutoRotate. Initial mount silent via render-time prop-sync sentinel (E31 precedent). Drag via PointerEvent + setPointerCapture on viewport — 2nd consumer reusing Slider E33 pattern. Snap threshold max(viewportWidth * 0.2, 40px). touch-action: pan-y blocks horizontal swipe stealing without blocking vertical page scroll. Keyboard on viewport (tabIndex=0): ArrowLeft/Right prev/next (RTL-mirrored), Home/End, modifier-key guard. Linear clamp default; `loop?` wraps. Nav buttons aria-disabled at edges or total ≤ 1. Phase 5 CRIT fix: prefers-reduced-motion transition suppression MUST live in JS inline trackStyle (CSS !important cannot override inline style — dead rule removed from SCSS). Drag INLINE per Rule of Three — extraction to utils/gesture/usePointerDrag.ts deferred until 3rd consumer (ScrollArea thumb CI20). Pattern-parent for future multi-slide variant + grouped picker.',
+    phase: 'Phase 10 — Complex Interactive',
+    status: 'available',
+  },
 ];
 
 export default function HomePage() {
