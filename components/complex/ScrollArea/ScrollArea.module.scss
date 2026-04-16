@@ -1,0 +1,153 @@
+@use '../../../styles/mixins' as mx;
+
+// ScrollArea — custom scrollbar wrapper (Phase 10 CI20).
+// Compound flat API: .root + .viewport + .scrollbar (.vertical/.horizontal)
+// + .thumb + .corner. Native scroll preserved via hidden native scrollbars;
+// our scrollbars are visual + pointer-drag only.
+
+// ──────────────────────────────────────────────────────────────────────────
+// .root — relative container; scrollbars positioned absolute inside
+// ──────────────────────────────────────────────────────────────────────────
+
+.root {
+  position: relative;
+  overflow: hidden;
+  // Root sizes from its container — consumer controls height/width.
+}
+
+// ──────────────────────────────────────────────────────────────────────────
+// .viewport — clipping + native overflow with hidden native scrollbars
+// ──────────────────────────────────────────────────────────────────────────
+
+.viewport {
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  // Firefox: hide native scrollbar entirely.
+  scrollbar-width: none;
+  // Legacy Edge/IE.
+  -ms-overflow-style: none;
+  // WebKit/Chromium (Chrome, Safari, new Edge).
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
+  // Focus-ring when keyboard-focused so user can see "I'm keyboarding here"
+  // for PageUp/Dn/Arrow/Home/End.
+  &:focus-visible {
+    @include mx.focus-ring;
+  }
+}
+
+// ──────────────────────────────────────────────────────────────────────────
+// .scrollbar — visual track
+// ──────────────────────────────────────────────────────────────────────────
+
+.scrollbar {
+  position: absolute;
+  background: transparent;
+  border-radius: var(--radius-full);
+  user-select: none;
+  touch-action: none;
+  // Visible toggle via data-visible attribute.
+  opacity: 0;
+  transition: opacity var(--duration-fast) var(--easing-default);
+  pointer-events: none;
+
+  &[data-visible='true'] {
+    opacity: 1;
+    pointer-events: auto;
+  }
+}
+
+.vertical {
+  top: 2px;
+  right: 2px;
+  bottom: 2px;
+  width: 10px;
+}
+
+.horizontal {
+  left: 2px;
+  right: 2px;
+  bottom: 2px;
+  height: 10px;
+}
+
+// ──────────────────────────────────────────────────────────────────────────
+// .thumb — draggable indicator; size + position via inline style
+// ──────────────────────────────────────────────────────────────────────────
+
+.thumb {
+  position: relative;
+  background-color: var(--color-border);
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  transition: background-color var(--duration-fast) var(--easing-default);
+
+  &[data-orientation='vertical'] {
+    width: 100%;
+  }
+
+  &[data-orientation='horizontal'] {
+    height: 100%;
+  }
+
+  &:hover {
+    background-color: var(--color-text-muted);
+  }
+}
+
+// Slightly darker when dragging.
+.root[data-dragging='true'] .thumb {
+  background-color: var(--color-text-muted);
+}
+
+// ──────────────────────────────────────────────────────────────────────────
+// .corner — intersection cell between vertical + horizontal scrollbars
+// ──────────────────────────────────────────────────────────────────────────
+
+.corner {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 14px;
+  height: 14px;
+  background: transparent;
+  pointer-events: none;
+}
+
+// ──────────────────────────────────────────────────────────────────────────
+// Motion preferences — instant transitions for PRM users.
+// Thumb position is already inline style without transition (drag is
+// realtime); only opacity transition is affected here.
+// ──────────────────────────────────────────────────────────────────────────
+
+@media (prefers-reduced-motion: reduce) {
+  .scrollbar,
+  .thumb {
+    transition: none;
+  }
+}
+
+// ──────────────────────────────────────────────────────────────────────────
+// Forced colors (Windows High Contrast Mode) — preserve native feel
+// ──────────────────────────────────────────────────────────────────────────
+
+@media (forced-colors: active) {
+  .thumb {
+    background-color: ButtonText;
+    border: 1px solid ButtonText;
+  }
+
+  .thumb:hover,
+  .root[data-dragging='true'] .thumb {
+    background-color: Highlight;
+    border-color: Highlight;
+  }
+
+  .viewport:focus-visible {
+    outline: 2px solid Highlight;
+    outline-offset: 2px;
+  }
+}

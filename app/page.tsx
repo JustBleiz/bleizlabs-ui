@@ -319,6 +319,14 @@ const components: ComponentLink[] = [
     phase: 'Phase 10 — Complex Interactive',
     status: 'available',
   },
+  {
+    href: '/components/scroll-area',
+    name: 'ScrollArea',
+    description:
+      'E35 CI20 — custom-scrollbar wrapper preserving native scroll. 5 compound flat exports (ScrollArea + ScrollAreaViewport + ScrollAreaScrollbar + ScrollAreaThumb + ScrollAreaCorner). THIRD drag-gesture primitive consumer → TRIGGERS Rule of Three for utils/gesture/usePointerDrag.ts extraction (deferred to E36 refactor Epic per E23 FloatingRoot + E29 useFloatingValueState precedent). No APG pattern (scroll regions implicit browser behavior); WCAG 2.1.1 satisfied via viewport tabIndex=0 preserving native PageUp/Dn/Arrow/Home/End/Space keyboard scroll. Native scrollbars hidden (scrollbar-width: none + ::-webkit-scrollbar display:none + -ms-overflow-style: none). Our scrollbars VISUAL + POINTER-DRAG only, not keyboard-focusable. 4 visibility modes: always (design tools) + scroll DEFAULT (auto-hide 600ms linger OS convention) + hover (desktop minimalist) + auto (pointer:fine scroll mode, pointer:coarse entirely hidden so mobile native takes over). Proportional thumb size clientSize/scrollSize * trackSize with 24px floor. Drag via setPointerCapture + ratio-based scrollTo({behavior:instant}) method call (NOT direct viewport.scrollTop=X assignment per React 19 react-hooks/immutability rule). Track click-to-page scrollBy({behavior:smooth|instant}) PRM-reactive. Single ResizeObserver on viewport + first content child; metrics state prev/next comparison avoids redundant re-renders. Auto-default children via React.Children type-check traversal (Phase 5 CRIT bug fix — initial truthy check was broken because ReactElement is truthy). usePointerCoarse + useReducedMotion via useSyncExternalStore/matchMedia reactive. forced-colors HCM block. Pattern-parent for future DataTable.',
+    phase: 'Phase 10 — Complex Interactive',
+    status: 'available',
+  },
 ];
 
 export default function HomePage() {
