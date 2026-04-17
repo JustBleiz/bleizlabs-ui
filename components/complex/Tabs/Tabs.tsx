@@ -4,10 +4,14 @@
  * Tabs — accessible tabs widget per WAI-ARIA APG /tabs/.
  *
  * @layer complex-interactive (Phase 10 CI11)
- * @tokens --color-surface-raised, --color-surface-hover, --color-text-primary,
- *   --color-text-muted, --color-border-subtle, --color-brand, --focus-ring,
- *   --duration-fast, --easing-default, --space-2..5, --radius-sm, --radius-md,
- *   --font-size-sm, --font-weight-medium, --font-weight-semibold, --shadow-sm
+ * @tokens --color-surface, --color-surface-raised, --color-surface-hover,
+ *   --color-text-primary, --color-text-muted, --color-text-on-brand,
+ *   --color-border-subtle, --color-brand, --focus-ring, --duration-fast,
+ *   --easing-default, --space-{1,2,3,4,5}, --radius-md, --font-size-sm,
+ *   --font-weight-medium, --shadow-sm. Fallback tokens wired defensively
+ *   via `var(--X, var(--Y))` syntax (hover → surface-raised fallback,
+ *   on-brand text → surface fallback) to degrade gracefully if consumer
+ *   skips optional tokens.
  * @deps zero runtime deps. **Self-contained** — no E23 floating primitives
  *   consumed (Tabs content is inline, not floating — no portal, no positioning,
  *   no dismiss, no Escape, no hover, no Provider). Reuses the roving tabindex
