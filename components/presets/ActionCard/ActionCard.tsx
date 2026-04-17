@@ -24,6 +24,41 @@ const SEVERITY_MAP: Record<ActionCardSeverity, SeverityMapping> = {
   critical: { accent: 'var(--color-error)', iconVariant: 'error' },
 };
 
+/**
+ * ActionCard — promotional / alert CTA preset composing Card + slots (Phase 8, E13).
+ *
+ * Severity-driven accent border (`info` → info color, `warning` → warning color,
+ * `critical` → error color) + optional leading IconBox with severity-matched variant.
+ * Required `cta` slot renders in CardFooter action mode for prominent placement.
+ * `variant`, `accentColor`, `accentPosition`, `direction`, `children`, and Card's
+ * own `title` are owned by the preset — consumer cannot override via spread
+ * (TS-enforced Omit). Use ActionCard's own `title` prop for the heading slot.
+ *
+ * @layer   preset
+ * @tokens  --space-1 (.headerText gap), --space-3 (.body gap, .footer gap),
+ *          --space-4 (.header gap); --color-info / --color-warning /
+ *          --color-error applied via Card `accentColor` prop through
+ *          runtime SEVERITY_MAP (tsx-side token reference)
+ * @deps    Card (variant="accent", accentColor, accentPosition="left", padding,
+ *          radius, CardProps type), CardBody, CardFooter (action flag enforced),
+ *          IconBox (icon, variant, size="lg", IconBoxVariant type),
+ *          Heading (level={3}, size="lg"), Text (variant="body", color="muted"),
+ *          cn, React: `forwardRef`, `ReactNode`
+ * @a11y    Semantic Card `<div>` root. Title + description achieve semantic
+ *          `<h3>` / `<p>` ONLY when the caller passes scalar strings/numbers —
+ *          wrapTitle auto-wraps in `<Heading level={3}>` and wrapDescription
+ *          in `<Text variant="body">` (renders `<p>` by default). Pass-through
+ *          `ReactNode` preserves caller's semantics. Consumer may add
+ *          `role="alert"` / `aria-live` via spread for assertive announcements.
+ * @notes   CardFooter `action` mode is hard-enforced by the preset (full-bleed
+ *          raised-bg footer) — do not attempt to override. ActionCard's own
+ *          `title` slot replaces Card's `title` prop (Omit-excluded).
+ * @example
+ * <ActionCard severity="warning" icon={<AlertIcon />}
+ *             title="Storage almost full"
+ *             description="You're using 92% of your quota."
+ *             cta={<Button>Upgrade plan</Button>} />
+ */
 export interface ActionCardProps
   extends Omit<
     CardProps,
@@ -72,26 +107,6 @@ function wrapDescription(description: ReactNode): ReactNode {
   return description;
 }
 
-/**
- * ActionCard — promotional / alert CTA preset composing Card + slots (Phase 8, E13).
- *
- * Severity-driven accent border (`info` → info color, `warning` → warning color,
- * `critical` → error color) + optional leading IconBox with severity-matched variant.
- * Required `cta` slot renders in CardFooter action mode for prominent placement.
- * `variant`, `accentColor`, and `accentPosition` are owned by the preset — consumer
- * cannot override via spread (TS-enforced Omit).
- *
- * @layer   preset
- * @tokens  --color-info, --color-warning, --color-error (via Card accentColor)
- * @deps    Card, CardBody, CardFooter, IconBox, Heading, Text
- * @a11y    Semantic Card `<div>` + `<h3>` title + `<p>` description. Consumer may
- *          add `role="alert"` / `aria-live` via spread for assertive announcements.
- * @example
- * <ActionCard severity="warning" icon={<AlertIcon />}
- *             title="Storage almost full"
- *             description="You're using 92% of your quota."
- *             cta={<Button>Upgrade plan</Button>} />
- */
 export const ActionCard = forwardRef<HTMLDivElement, ActionCardProps>(
   function ActionCard(
     {
