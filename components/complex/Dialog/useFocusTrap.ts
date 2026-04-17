@@ -27,8 +27,29 @@ function getFirstTabbable(container: HTMLElement): HTMLElement | null {
  *   trigger element via `requestAnimationFrame` (prevents race with React
  *   unmount — Radix issue #1891 fix).
  *
- * Zero runtime dependencies per D25. Used by Dialog (and future AlertDialog,
- * Drawer, Sheet, Popover).
+ * Zero runtime dependencies per D25. Shared across the dialog family:
+ * Dialog (CI1), AlertDialog (CI2), Drawer (CI3), Sheet (CI4) — and also
+ * consumed by Sidebar (CI22) mobile drawer mode and Command (CI19) palette.
+ *
+ * @layer       complex-interactive (shared primitive)
+ * @apg         https://www.w3.org/WAI/ARIA/apg/patterns/dialog-modal/
+ * @deps        none (React only, zero runtime deps per D25)
+ * @a11y        APG focus management — trap cycle on Tab/Shift+Tab with wrap,
+ *              `requestAnimationFrame` defer for both initial focus and
+ *              restore to avoid React reconciliation races.
+ * @tested      Consumed by Dialog, AlertDialog, Drawer, Sheet, Sidebar,
+ *              Command. Focus trap behavior tested via each consumer's
+ *              regression specs (Dialog R01-R21 cover trap edge cases).
+ * @regressions Implements fixes for Radix closed issues: #1891 (focus stuck
+ *              after unmount — rAF defer on restore), #2047 (Safari Tab wrap),
+ *              #2544 (focus trap disable race), #3353 (Shadow DOM focus
+ *              traversal), #2270 (multi-trigger focus return — fresh
+ *              `document.activeElement` capture per enable), #1546
+ *              (conditional focus target via `initialFocusRef`).
+ * @example
+ * const contentRef = useRef<HTMLDivElement | null>(null);
+ * useFocusTrap(contentRef, open, initialFocusRef);
+ * return open ? <div ref={contentRef}>...</div> : null;
  */
 export function useFocusTrap(
   containerRef: RefObject<HTMLElement | null>,

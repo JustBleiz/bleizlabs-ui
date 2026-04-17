@@ -1,11 +1,13 @@
 // Dialog — Phase 10 Complex Interactive (E15)
-// First Phase 10 component. Renders via portal to document.body — overlay
-// covers viewport, content centers inside. Semantic tokens only per D25.
+// First Phase 10 component. Renders via portal to document.body.
+// `.root` is the outermost portal-rendered element (serves as overlay backdrop)
+// per D11 naming convention — dialog-family siblings (AlertDialog, Drawer,
+// Sheet) follow the same pattern. Semantic tokens only per D25.
 // prefers-reduced-motion disables both transitions + transforms.
 
 @use 'mixins' as mx;
 
-.overlay {
+.root {
   position: fixed;
   inset: 0;
   z-index: var(--z-modal);
@@ -140,7 +142,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .overlay,
+  .root,
   .content {
     animation: none;
   }

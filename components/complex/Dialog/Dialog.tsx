@@ -17,40 +17,6 @@ import { cn } from '../../utils/cn';
 import { useFocusTrap } from './useFocusTrap';
 import styles from './Dialog.module.scss';
 
-/**
- * Dialog — accessible modal dialog (Phase 10 CI1, first Complex Interactive).
- *
- * @layer    complex-interactive
- * @tokens   --color-surface, --color-border-subtle, --color-overlay,
- *           --radius-lg, --shadow-2xl, --duration-normal, --easing-default,
- *           --space-4, --space-5, --z-modal, --focus-ring
- * @deps     cn, Heading, Text, useFocusTrap (own hook, shared by modal family)
- * @a11y     Implements WAI-ARIA APG `/dialog-modal/` pattern. Composes
- *           `createPortal(document.body)` + overlay + focus-trapped content.
- *           Own `useFocusTrap` hook — Tab/Shift+Tab cycle via fresh
- *           `querySelectorAll` per keypress (dynamic-content safe), initial
- *           focus via `requestAnimationFrame` defer, focus restore to saved
- *           `document.activeElement` on disable. Escape handler on `document`
- *           to allow nested Select handlers to fire first (Radix #1951 fix).
- *           Body scroll lock only when open (Radix #998 fix). SSR-safe via
- *           `typeof document === 'undefined'` guard before portal. Required
- *           `title` prop enforces APG compliance at type level. `description`
- *           optional — conditional `aria-describedby` wiring (Radix #3007 fix).
- * @apg      https://www.w3.org/WAI/ARIA/apg/patterns/dialog-modal/
- * @tested   tsc + eslint + next build (Playwright/NVDA/axe deferred per
- *           E15 scope — 21 regression cases documented in
- *           `tests/Dialog.regression.spec.md`).
- * @regressions See `tests/Dialog.regression.spec.md` DL-R01..R21.
- *
- * @example
- * const [open, setOpen] = useState(false);
- * return (
- *   <Dialog open={open} onOpenChange={setOpen} title="Delete project">
- *     <Text>Are you sure? This cannot be undone.</Text>
- *   </Dialog>
- * );
- */
-
 export type DialogSize = 'sm' | 'md' | 'lg' | 'xl';
 
 export interface DialogProps
@@ -107,33 +73,55 @@ const SIZE_CLASS: Record<DialogSize, string> = {
 };
 
 /**
- * Dialog — modal dialog composing portal + overlay + focus-trapped content (Phase 10 CI1, E15).
+ * Dialog — modal dialog composing portal + overlay + focus-trapped content
+ * (Phase 10 CI1, E15, first Complex Interactive — foundation of the dialog
+ * family: AlertDialog CI2, Drawer CI3, Sheet CI4 all reuse `useFocusTrap` and
+ * follow the same portal + overlay + inert + scroll-lock pattern).
  *
- * First Phase 10 Complex Interactive component. Renders via `createPortal` to
- * `document.body` when `open=true`. Owns its own focus trap (`useFocusTrap`),
- * Escape handler, scroll lock, and focus restore on close. Content element
- * carries `role="dialog"` + `aria-modal="true"` + `aria-labelledby={titleId}`
- * + optional `aria-describedby={descId}`. Required `title` prop enforces APG
- * compliance at type level.
+ * Renders via `createPortal` to `document.body` when `open=true`. Owns its own
+ * focus trap (`useFocusTrap`), Escape handler, scroll lock, background `inert`
+ * toggle, and focus restore on close. Content element carries `role="dialog"` +
+ * `aria-modal="true"` + `aria-labelledby={titleId}` + optional
+ * `aria-describedby={descId}`. Required `title` prop enforces APG compliance
+ * at type level.
  *
- * @layer        complex interactive (Phase 10)
+ * @layer        complex-interactive (Phase 10)
  * @apg          https://www.w3.org/WAI/ARIA/apg/patterns/dialog-modal/
- * @tokens       --color-overlay, --color-surface, --color-border-subtle,
- *               --radius-lg, --shadow-2xl, --shadow-overlay, --space-5,
- *               --duration-normal, --easing-default, --z-modal, --focus-ring
- * @deps         Heading, Text, cn, createPortal, useFocusTrap
- * @a11y         role="dialog" + aria-modal="true" + aria-labelledby (required) +
- *               aria-describedby (conditional per Radix #3007). Tab/Shift+Tab
- *               focus cycle via useFocusTrap. Escape closes. Focus restored to
- *               trigger on close. Body scroll-locked while open. Overlay click
- *               closes only when target === overlay (no content bubbling).
- *               Close button has explicit aria-label.
- * @tested       DEFERRED — Playwright specs written in `tests/` (keyboard, focus,
- *               aria, regression) but execution deferred to first consumer adoption
- *               per E15 scope decision 2 (no browser env in build agent). Manual
- *               NVDA sweep deferred — documented in `docs/a11y-pipeline.md`.
- *               axe-core zero-violations spec pending consumer adoption.
- * @regressions  21 Radix closed issues mapped to `tests/Dialog.regression.spec.ts`:
+ * @tokens       --color-surface, --color-surface-raised, --color-border-subtle,
+ *               --color-overlay, --color-brand, --color-text-muted,
+ *               --color-text-primary, --radius-lg, --radius-md, --shadow-2xl,
+ *               --duration-normal, --easing-default, --space-{3,4,6,8},
+ *               --z-modal
+ * @deps         Heading, Text, cn, createPortal, useFocusTrap (own hook,
+ *               shared with AlertDialog/Drawer/Sheet via local import)
+ * @a11y         role="dialog" + aria-modal="true" + aria-labelledby (required,
+ *               drives from `title`) + aria-describedby (conditional per Radix
+ *               #3007 — only set when `description` provided). Tab/Shift+Tab
+ *               focus cycle via useFocusTrap (fresh `querySelectorAll` per
+ *               keypress → dynamic-content safe). Initial focus via
+ *               `requestAnimationFrame` defer. Focus restored to trigger on
+ *               close. Escape handler on `document` (nested Select handlers
+ *               fire first — Radix #1951). Body scroll-locked while open
+ *               (Radix #998). Background `inert` toggle on all <body> direct
+ *               children except portal root blocks AT virtual cursor / Browse
+ *               Mode from reaching background content (progressive enhancement
+ *               beyond focus trap). Overlay click closes only when target ===
+ *               overlay (no content bubbling). Close button has explicit
+ *               aria-label. SSR-safe via `typeof document === 'undefined'`
+ *               guard before portal.
+ * @tested       PARTIAL — static a11y verified, runtime a11y deferred:
+ *               ✓ `tsc --noEmit` clean (TypeScript strict, no any, proper Omit)
+ *               ✓ `npm run lint` clean (eslint-plugin-jsx-a11y via
+ *                 eslint-config-next catches missing aria-label, invalid ARIA
+ *                 attrs, accessible-name-required violations)
+ *               ✓ Build clean — Next.js static prerender PASS
+ *               DEFERRED (first consumer adoption, per E15 scope decision 2):
+ *               - Playwright execution of 4 `.spec.md` files (keyboard, focus,
+ *                 aria, regression) — specs ready, no browser env in build agent
+ *               - axe-core runtime zero-violations sweep (requires live page)
+ *               - Manual NVDA sweep (requires real AT)
+ *               - a11y pipeline documented in `docs/a11y-pipeline.md`
+ * @regressions  21 Radix closed issues mapped to `tests/Dialog.regression.spec.md`:
  *               #2690 (nested toast click), #1951 (Escape inside Select), #2450
  *               (Escape bubble), #2961 (Select reopen), #2355 (Dropdown reopen),
  *               #1249 (nested Dialog Escape), #1891 (focus stuck after unmount),
@@ -208,6 +196,27 @@ export function Dialog({
     };
   }, [open]);
 
+  // Background `inert` — blocks AT virtual cursor / Browse Mode from reaching
+  // background content while the dialog is open (progressive enhancement beyond
+  // focus trap). Toggles `inert` on all direct children of <body> except the
+  // portal root itself. Canonical pattern for the dialog family — AlertDialog,
+  // Drawer, Sheet all inherit this.
+  useEffect(() => {
+    if (!open) return;
+    const portalRoot = contentRef.current?.parentElement;
+    if (!portalRoot) return;
+    const siblings = Array.from(document.body.children).filter(
+      (el) => el !== portalRoot,
+    );
+    const hadInert = siblings.map((el) => el.hasAttribute('inert'));
+    siblings.forEach((el) => el.setAttribute('inert', ''));
+    return () => {
+      siblings.forEach((el, i) => {
+        if (!hadInert[i]) el.removeAttribute('inert');
+      });
+    };
+  }, [open]);
+
   const handleOverlayClick = useCallback(
     (event: MouseEvent<HTMLDivElement>) => {
       if (!closeOnOverlayClick) return;
@@ -231,7 +240,7 @@ export function Dialog({
 
   return createPortal(
     <div
-      className={styles.overlay}
+      className={styles.root}
       onClick={handleOverlayClick}
       data-state={open ? 'open' : 'closed'}
     >
