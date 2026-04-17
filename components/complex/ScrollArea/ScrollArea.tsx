@@ -26,9 +26,11 @@ import styles from './ScrollArea.module.scss';
  * ScrollArea — accessible custom-scrollbar wrapper (Phase 10 CI20).
  *
  * @layer    complex-interactive
- * @tokens   --color-border, --color-border-subtle, --color-text-muted,
- *           --focus-ring, --radius-full, --duration-fast, --easing-default
- * @deps     cn, mergeRefs
+ * @tokens   --color-border, --color-text-muted, --focus-ring (via mixin),
+ *           --radius-full, --duration-fast, --easing-default
+ * @deps     cn, mergeRefs, usePointerDrag (E39 — 3rd drag consumer,
+ *           triggered Rule of Three extraction), useMatchMedia (E40 —
+ *           coarse pointer + PRM detection)
  * @apg      N/A — no APG pattern for scroll regions; WCAG 2.1.1 satisfied via
  *           viewport `tabIndex={0}` preserving native keyboard scroll.
  * @a11y     No specific APG pattern — scroll regions are implicit browser
@@ -47,7 +49,9 @@ import styles from './ScrollArea.module.scss';
  *           refactor Epic (E23/E29 precedent: extract AFTER all 3
  *           consumers ship with stable semantics).
  * @tested   tsc + eslint + next build (Playwright/NVDA/axe deferred per E15).
- * @regressions See `docs/_tmp/scroll-area-spec.md` SA-R01..SA-R20.
+ * @regressions tests/ScrollArea.{keyboard,focus,aria,regression}.spec.md —
+ *           20 regression cases SA-R01..SA-R20 in
+ *           `docs/specs/scroll-area-spec.md` (promoted from `_tmp` in E42).
  *
  * @example
  * // Auto-default children (both scrollbars + viewport)
