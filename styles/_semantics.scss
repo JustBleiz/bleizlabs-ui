@@ -258,17 +258,21 @@
   // ==========================================================================
   // SEMANTIC SURFACE ALIASES — hover + muted (theme-aware via base tokens)
   // ==========================================================================
-  // `--color-surface-hover` — interactive hover state for menu items, pickers,
-  // tabs, and similar list-style surfaces. Resolves to `--color-surface-raised`
-  // by default (consistent with the prior fallback pattern across
-  // DropdownMenu, ContextMenu, NavigationMenu, Select, Combobox, Tabs).
-  // `--color-surface-muted` — subtle highlight surface for track fills, focused
-  // input slots, and hierarchical background variations (Slider track, Command
-  // selected item, InputOTP focused slot). Resolves to `--color-surface-raised`
-  // for the default palette; projects can override per theme to introduce a
-  // distinct muted shade.
-  --color-surface-hover: var(--color-surface-raised);
-  --color-surface-muted: var(--color-surface-raised);
+  // Theme-aware hover + muted shades derived from the neutral scale so they
+  // stay visually distinct from `--color-surface-raised` (which most menu /
+  // dropdown / popover surfaces use as their background). Previously these
+  // aliased to --color-surface-raised which made hover invisible on menu
+  // items — the hover state had the exact same background as the container
+  // (E136 bugs 1-2). Light theme uses neutral-200 (slightly darker than
+  // raised-100); dark theme uses neutral-700 (lighter than raised-800,
+  // "lifts" further on interaction). Default below targets `$seed-mode`.
+  @if $seed-mode == dark {
+    --color-surface-hover: #{map.get($neutral, 700)};
+    --color-surface-muted: #{map.get($neutral, 900)};
+  } @else {
+    --color-surface-hover: #{map.get($neutral, 200)};
+    --color-surface-muted: #{map.get($neutral, 200)};
+  }
 
   // ==========================================================================
   // INPUT TOKENS — Phase 4 Simple Interactive (E07) + addons (E08)
@@ -374,6 +378,10 @@
   --color-success-strong: #{map.get($success, 700)};
   --color-info-subtle: #{map.get($info, 100)};
   --color-info-strong: #{map.get($info, 700)};
+
+  // Theme-aware hover/muted surfaces — light theme darkens raised slightly.
+  --color-surface-hover: #{map.get($neutral, 200)};
+  --color-surface-muted: #{map.get($neutral, 200)};
 }
 
 // ============================================================================
@@ -407,6 +415,12 @@
   --color-success-strong: #{map.get($success, 300)};
   --color-info-subtle: #{map.get($info, 950)};
   --color-info-strong: #{map.get($info, 300)};
+
+  // Theme-aware hover/muted surfaces — dark theme lifts raised further on
+  // interaction (raised=neutral-800, hover=neutral-700), muted recedes
+  // (neutral-900) for track / focused-input-slot backgrounds.
+  --color-surface-hover: #{map.get($neutral, 700)};
+  --color-surface-muted: #{map.get($neutral, 900)};
 }
 
 // ============================================================================

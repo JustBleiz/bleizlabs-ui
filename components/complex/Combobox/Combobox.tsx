@@ -330,6 +330,12 @@ interface ComboboxContextValue {
   /** Returns the record for a given option value, or undefined. */
   getItemByValue: (value: string | null) => ComboboxItemRecord | undefined;
   /**
+   * Cache-aware label lookup — prefers live registry, falls back to the
+   * persistent label cache so ComboboxInput keeps the selected label
+   * visible after the listbox closes and items unmount. E136 bug 5.
+   */
+  getLabelByValue: (value: string | null) => string | undefined;
+  /**
    * Set of item ids that pass the current filter. Items consult this to
    * decide whether to render. Computed at the root so the filter logic is
    * a single source of truth across mount, search change, and registry
@@ -532,10 +538,18 @@ export function Combobox({
   // trigger re-renders of every context consumer. Companion `registryVersion`
   // bumps on every (un)register so visibility computation re-runs.
   const itemsRef = useRef<Map<string, ComboboxItemRecord>>(new Map());
+  // Label cache — survives ComboboxContent unmount so ComboboxInput keeps
+  // reading the display label ("France") after the user picks an option
+  // and the listbox closes, dropping live item registrations. Writes on
+  // register only; unregister never evicts so the cache persists across
+  // open/close cycles. E136 bug 5 — matches Select's fix for bug 3 (same
+  // unmount-on-close pattern shared by all listbox-family components).
+  const labelCacheRef = useRef<Map<string, string>>(new Map());
   const [registryVersion, setRegistryVersion] = useState(0);
 
   const registerItem = useCallback((key: string, record: ComboboxItemRecord) => {
     itemsRef.current.set(key, record);
+    labelCacheRef.current.set(record.value, record.textContent);
     setRegistryVersion((v) => v + 1);
   }, []);
 
@@ -562,6 +576,21 @@ export function Combobox({
         if (record.value === target) return record;
       }
       return undefined;
+    },
+    [],
+  );
+
+  // Cache-aware label lookup — prefer live registry, fall back to
+  // labelCacheRef when items have unmounted (closed listbox). Every
+  // ComboboxInput display-value branch reads via this helper instead of
+  // inlining `getItemByValue(x)?.textContent ?? ''`.
+  const getLabelByValue = useCallback(
+    (target: string | null): string | undefined => {
+      if (target === null) return undefined;
+      for (const record of itemsRef.current.values()) {
+        if (record.value === target) return record.textContent;
+      }
+      return labelCacheRef.current.get(target);
     },
     [],
   );
@@ -675,6 +704,7 @@ export function Combobox({
       registryVersion,
       getOrderedItems,
       getItemByValue,
+      getLabelByValue,
       visibleItemIds,
       matchCount,
       listboxKeyHandlerRef,
@@ -701,6 +731,7 @@ export function Combobox({
       registryVersion,
       getOrderedItems,
       getItemByValue,
+      getLabelByValue,
       visibleItemIds,
       matchCount,
       acceptFreeText,
@@ -812,7 +843,7 @@ export const ComboboxInput = forwardRef<HTMLInputElement, ComboboxInputProps>(
       disabled,
       required,
       getOrderedItems,
-      getItemByValue,
+      getLabelByValue,
       listboxKeyHandlerRef,
       acceptFreeText,
     } = ctx;
@@ -979,7 +1010,7 @@ export const ComboboxInput = forwardRef<HTMLInputElement, ComboboxInputProps>(
             // Strict mode: revert search to the current committed value's
             // label (or empty when nothing is selected). This keeps the
             // input visually consistent with `value` at rest.
-            const committed = currentValue ? getItemByValue(currentValue)?.textContent ?? '' : '';
+            const committed = currentValue ? getLabelByValue(currentValue) ?? '' : '';
             updateSearch(committed);
           }
           if (openRef.current) setOpen(false);
@@ -992,7 +1023,7 @@ export const ComboboxInput = forwardRef<HTMLInputElement, ComboboxInputProps>(
         searchRef,
         valueRef,
         getOrderedItems,
-        getItemByValue,
+        getLabelByValue,
         selectValue,
         updateSearch,
         acceptFreeText,
@@ -1231,7 +1262,7 @@ export function ComboboxContent({ children, className, ...rest }: ComboboxConten
     inputId,
     inputRef,
     getOrderedItems,
-    getItemByValue,
+    getLabelByValue,
     visibleItemIds,
     listboxKeyHandlerRef,
     acceptFreeText,
@@ -1324,7 +1355,7 @@ export function ComboboxContent({ children, className, ...rest }: ComboboxConten
         selectValue(trimmed);
       } else {
         const committed = valueRef.current
-          ? getItemByValue(valueRef.current)?.textContent ?? ''
+          ? getLabelByValue(valueRef.current) ?? ''
           : '';
         updateSearch(committed);
       }
@@ -1461,7 +1492,7 @@ export function ComboboxContent({ children, className, ...rest }: ComboboxConten
             event.preventDefault();
             setOpen(false);
             const committed = valueRef.current
-              ? getItemByValue(valueRef.current)?.textContent ?? ''
+              ? getLabelByValue(valueRef.current) ?? ''
               : '';
             updateSearch(committed);
             inputRef.current?.focus();
@@ -1544,7 +1575,7 @@ export function ComboboxContent({ children, className, ...rest }: ComboboxConten
           // of truth for Escape inside the listbox (matches Select).
           event.preventDefault();
           const committed = valueRef.current
-            ? getItemByValue(valueRef.current)?.textContent ?? ''
+            ? getLabelByValue(valueRef.current) ?? ''
             : '';
           updateSearch(committed);
           setOpen(false);
@@ -1576,7 +1607,7 @@ export function ComboboxContent({ children, className, ...rest }: ComboboxConten
       highlightedId,
       visibleItemIds,
       getOrderedItems,
-      getItemByValue,
+      getLabelByValue,
       valueRef,
       updateSearch,
       setOpen,

@@ -259,6 +259,13 @@ interface SelectContextValue {
    */
   getItemByValue: (value: string | null) => SelectItemRecord | undefined;
   /**
+   * Returns the display label for a given value. Falls back to the label
+   * cache (E136 bug 3) — SelectContent unmounts SelectItems while closed,
+   * so after a user picks an option the live registry is empty and the
+   * raw value string would leak into SelectValue without this cache.
+   */
+  getLabelByValue: (value: string | null) => string | undefined;
+  /**
    * Shared typeahead buffer for Trigger (closed state) + Content (open
    * state). Single source of truth so switching between closed → open mid
    * word preserves the buffer, and repeat keys cycle via `lastIndex`.
@@ -425,10 +432,18 @@ export function Select({
   // on every (un)register so SelectValue — which needs to re-read the
   // registry for the display label — can subscribe to a value that changes.
   const itemsRef = useRef<Map<string, SelectItemRecord>>(new Map());
+  // Label cache — survives SelectContent unmount so SelectValue keeps
+  // reading the display label ("France") after the user picks an option
+  // and the listbox closes, dropping live item registrations. Keyed by
+  // value, holds textContent. E136 bug 3. Writes happen on register, never
+  // on unregister — unmount must NOT evict the cached label, otherwise the
+  // close animation finishes showing the raw code string again.
+  const labelCacheRef = useRef<Map<string, string>>(new Map());
   const [registryVersion, setRegistryVersion] = useState(0);
 
   const registerItem = useCallback((key: string, record: SelectItemRecord) => {
     itemsRef.current.set(key, record);
+    labelCacheRef.current.set(record.value, record.textContent);
     setRegistryVersion((v) => v + 1);
   }, []);
 
@@ -459,6 +474,19 @@ export function Select({
         if (record.value === target) return record;
       }
       return undefined;
+    },
+    [],
+  );
+
+  const getLabelByValue = useCallback(
+    (target: string | null): string | undefined => {
+      if (target === null) return undefined;
+      // Prefer the live registry — picks up any in-flight children change.
+      for (const record of itemsRef.current.values()) {
+        if (record.value === target) return record.textContent;
+      }
+      // Fallback to cache — items unmount with SelectContent when closed.
+      return labelCacheRef.current.get(target);
     },
     [],
   );
@@ -496,6 +524,7 @@ export function Select({
       registryVersion,
       getOrderedItems,
       getItemByValue,
+      getLabelByValue,
       typeaheadRef,
       listboxKeyHandlerRef,
       placement,
@@ -518,6 +547,7 @@ export function Select({
       registryVersion,
       getOrderedItems,
       getItemByValue,
+      getLabelByValue,
       placement,
       sideOffset,
       collisionPadding,
@@ -879,12 +909,12 @@ export function SelectValue({
   // Without this, the first paint before items have registered would show
   // the raw value string (e.g. "pl") instead of the display label
   // ("Poland"). Phase 5 CRIT-3.
-  const { value, getItemByValue, registryVersion } = ctx;
+  const { value, getLabelByValue, registryVersion } = ctx;
   void registryVersion;
 
-  const record = getItemByValue(value);
   const hasValue = value !== null;
-  const display = children ?? (hasValue ? record?.textContent ?? value : placeholder);
+  const label = getLabelByValue(value);
+  const display = children ?? (hasValue ? label ?? value : placeholder);
 
   return (
     <span

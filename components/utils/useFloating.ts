@@ -141,7 +141,20 @@ export function useFloating(options: UseFloatingOptions): UseFloatingResult {
       padding,
     });
 
-    setCoords(result);
+    // Bail-out guard (E136 bug 4): computePosition returns a fresh object
+    // on every call even when the x/y/placement values are identical. Passing
+    // a new object reference to setCoords forces React to re-render, which
+    // runs the ref-setter callbacks and setReference/setFloating which call
+    // update() again — classic "Maximum update depth exceeded" loop that
+    // fires as soon as ResizeObserver or ref re-attachment ticks the cycle.
+    // Comparing primitives here lets setCoords return the previous
+    // reference when nothing changed — React's Object.is check then skips
+    // the re-render entirely and the loop terminates.
+    setCoords((prev) =>
+      prev.x === result.x && prev.y === result.y && prev.placement === result.placement
+        ? prev
+        : result,
+    );
 
     // Optional arrow pass — skipped entirely when `arrow` option is omitted.
     if (arrowRef?.current) {
@@ -158,7 +171,12 @@ export function useFloating(options: UseFloatingOptions): UseFloatingResult {
         placement: result.placement,
         padding: arrowPadding,
       });
-      setArrowCoords(arrowResult);
+      // Same bail-out rationale as coords above — arrow computations produce
+      // a fresh object each call; without guarding, any coords update would
+      // cascade into an arrow update and keep the loop alive.
+      setArrowCoords((prev) =>
+        prev.x === arrowResult.x && prev.y === arrowResult.y ? prev : arrowResult,
+      );
     }
   }, [placement, offset, padding, arrowRef, arrowPadding]);
 
