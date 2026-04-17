@@ -11,6 +11,37 @@ import { Text } from '../../typography/Text';
 import { cn } from '../../utils/cn';
 import styles from './ContentCard.module.scss';
 
+/**
+ * ContentCard — text-heavy content preset composing Card + slots (Phase 8, E13).
+ *
+ * Flagship defaults for long-form article / documentation / blog cards:
+ * `padding={5}` (20px) + `radius="lg"`. All Card props pass through except
+ * `direction`, `children`, and Card's own `title` (replaced by preset's own
+ * `title` slot). `children` is the body content slot.
+ *
+ * @layer   preset
+ * @tokens  --space-1 (.header inter-line gap: title ↔ description),
+ *          --space-3 (.body inner gap, .footer inner gap); Card atom handles
+ *          its own outer padding / radius / border tokens
+ * @deps    Card (padding, radius, CardProps type), CardHeader (border flag),
+ *          CardBody, CardFooter, Heading (level={3}, size="lg"),
+ *          Text (variant="body", color="muted"), cn,
+ *          React: `forwardRef`, `ReactNode`
+ * @a11y    Inherits Card semantic `<div>` root. Title + description achieve
+ *          semantic `<h3>` / `<p>` ONLY when caller passes scalar
+ *          strings/numbers — wrapTitle auto-wraps in `<Heading level={3}>`,
+ *          wrapDescription in `<Text variant="body">` (renders `<p>` by
+ *          default). Pass-through `ReactNode` preserves caller's semantics
+ *          (caller owns heading level + element type in that path).
+ * @notes   `direction`, `children`, and Card's `title` are preset-owned
+ *          (TS-enforced Omit). Use ContentCard's own `title` / `description`
+ *          / `footer` slots + body via `children`. `headerBorder` toggles
+ *          CardHeader's top divider for visual separation from body.
+ * @example
+ * <ContentCard title="Readme" description="Project overview">
+ *   <Text>Body content...</Text>
+ * </ContentCard>
+ */
 export interface ContentCardProps
   extends Omit<CardProps, 'direction' | 'children' | 'title'> {
   /** Heading slot. Scalar strings/numbers auto-wrap in `<Heading level={3} size="lg">`; ReactNode passes through. */
@@ -49,22 +80,6 @@ function wrapDescription(description: ReactNode): ReactNode {
   return description;
 }
 
-/**
- * ContentCard — text-heavy content preset composing Card + slots (Phase 8, E13).
- *
- * Flagship defaults for long-form article / documentation / blog cards:
- * `padding={5}` (20px) + `radius="lg"`. All Card props pass through except
- * `direction` and `children` (children is the body slot).
- *
- * @layer   preset
- * @tokens  Inherited from Card atom (`--card-padding`, `--radius-card`, etc.)
- * @deps    Card, CardHeader, CardBody, CardFooter, Heading, Text
- * @a11y    Inherits Card semantic `<div>`. Title slot renders as `<h3>` when string/number.
- * @example
- * <ContentCard title="Readme" description="Project overview">
- *   <Text>Body content...</Text>
- * </ContentCard>
- */
 export const ContentCard = forwardRef<HTMLDivElement, ContentCardProps>(
   function ContentCard(
     {
