@@ -18,7 +18,8 @@ import styles from './Accordion.module.scss';
  *          --color-border-subtle, --color-text-primary,
  *          --color-text-secondary, --focus-ring, --radius-md,
  *          --space-{2..5}, --duration-normal, --easing-default
- * @deps    cn
+ * @deps    cn, React: `forwardRef`, `useId`, `useState`, type imports
+ *          `HTMLAttributes<HTMLDivElement>`, `ReactNode`
  * @a11y    Renders a `<button aria-expanded aria-controls>` trigger
  *          coupled to a `<div role="region" aria-labelledby>` panel via
  *          auto-generated ids. Native button gives keyboard Space/Enter

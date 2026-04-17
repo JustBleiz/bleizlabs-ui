@@ -24,7 +24,10 @@ import styles from './ToggleGroup.module.scss';
  * @tokens  none of its own — children (Toggle) supply their own styles;
  *          the `joined-group` SCSS mixin (also used by ButtonGroup) handles
  *          the visual joining: collapsed inner radii + deduped 1px borders.
- * @deps    Toggle (type only), cn, joined-group SCSS mixin
+ * @deps    Toggle atom (ToggleProps type only), cn, `joined-group` SCSS mixin,
+ *          React: `Children`, `cloneElement`, `forwardRef`, `isValidElement`,
+ *          `useCallback`, `useState`, type imports
+ *          `HTMLAttributes<HTMLDivElement>`, `ReactElement`, `ReactNode`
  * @a11y    Renders `role="group"` with required `aria-label`. Children are
  *          native `<button aria-pressed>` toggles — keyboard Tab/Space and
  *          assistive-tech press semantics work via Toggle's own a11y.

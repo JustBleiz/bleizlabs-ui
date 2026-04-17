@@ -19,7 +19,9 @@ import styles from './Button.module.scss';
  *          --color-text-primary, --color-text-inverse, --color-warning,
  *          --focus-ring, --radius-input, --radius-md, --space-{2..5},
  *          --font-secondary, --font-size-{sm,base,lg}, --font-weight-medium
- * @deps    Slot, cn
+ * @deps    Slot (own primitive, asChild boundary), cn, React: `forwardRef`,
+ *          type imports `AnchorHTMLAttributes`, `ButtonHTMLAttributes`,
+ *          `CSSProperties`, `ReactNode`
  * @a11y    Renders native `<button>` by default (carries focusable +
  *          keyboard semantics for free). Renders `<a>` automatically when
  *          `href` is provided. `asChild` projects onto a single ReactElement

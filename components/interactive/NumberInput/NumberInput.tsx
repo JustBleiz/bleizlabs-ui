@@ -22,7 +22,9 @@ import styles from './NumberInput.module.scss';
  *          --radius-input, --space-{2..4}, --font-secondary,
  *          --font-size-{xs,base}, --font-variant-numeric, --duration-fast,
  *          --easing-default
- * @deps    Label, cn, native Intl.NumberFormat (Baseline since 2017)
+ * @deps    Label atom, cn, native `Intl.NumberFormat` (Baseline since 2017),
+ *          React: `forwardRef`, `useId`, `useMemo`, `useState`, type import
+ *          `InputHTMLAttributes<HTMLInputElement>`
  * @a11y    Native `<input type="text" inputmode="decimal">` (NOT
  *          `type="number"` — we own formatting and don't want the
  *          browser's native spinner conflicting with our locale display).

@@ -9,7 +9,8 @@ import { MASK_PRESETS, type MaskPreset } from '@/components/utils/masks';
  *
  * @layer   atom (interactive)
  * @tokens  inherits from MaskedInput (same shell)
- * @deps    MaskedInput, masks.ts MASK_PRESETS
+ * @deps    MaskedInput atom (MaskedInputProps type), `masks.ts`
+ *          (MASK_PRESETS, MaskPreset type), React: `forwardRef`
  * @a11y    Uses native `<input type="tel">` semantics indirectly via
  *          MaskedInput's mask-driven formatting. The `inputmode="tel"`
  *          override ensures mobile users get the phone keypad even

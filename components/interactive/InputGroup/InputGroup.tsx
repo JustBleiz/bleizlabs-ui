@@ -14,7 +14,8 @@ import styles from './InputGroup.module.scss';
  *          their own border-radius via component tokens, and the
  *          `joined-group` SCSS mixin (the same one used by ButtonGroup and
  *          ToggleGroup) collapses inner radii + dedupes 1px borders.
- * @deps    cn, joined-group SCSS mixin
+ * @deps    cn, `joined-group` SCSS mixin, React: `forwardRef`, type imports
+ *          `HTMLAttributes<HTMLDivElement>`, `ReactNode`
  * @a11y    Renders `<div role="group">` with optional `aria-label` (or
  *          `aria-labelledby` if the group is labelled by an external
  *          element). Each child keeps its own native semantics — Input

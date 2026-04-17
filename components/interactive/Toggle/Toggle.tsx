@@ -16,7 +16,8 @@ import styles from './Toggle.module.scss';
  * @tokens  --color-brand, --color-surface, --color-surface-raised,
  *          --color-border, --color-text-primary, --color-text-secondary,
  *          --focus-ring, --radius-input, --space-{2..4}, --duration-fast
- * @deps    cn
+ * @deps    cn, React: `forwardRef`, `useState`, type imports
+ *          `ButtonHTMLAttributes<HTMLButtonElement>`, `ReactNode`
  * @a11y    Native `<button type="button" aria-pressed="...">` — provides
  *          press semantics for assistive tech and keyboard Space/Enter
  *          activation for free.

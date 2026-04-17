@@ -21,7 +21,8 @@ import styles from './Input.module.scss';
  *          --color-text-secondary, --focus-ring, --focus-ring-error,
  *          --radius-input, --space-{2..4}, --font-secondary,
  *          --font-size-{xs,base}, --duration-fast, --easing-default
- * @deps    Label, cn
+ * @deps    Label atom, cn, React: `forwardRef`, `useId`, `useState`, type
+ *          imports `InputHTMLAttributes<HTMLInputElement>`, `ReactNode`
  * @a11y    Native `<input>` with `id` ↔ `htmlFor` association via Label.
  *          `aria-invalid` set when `error` is provided. `aria-describedby`
  *          links the error message, helper text, AND counter (when

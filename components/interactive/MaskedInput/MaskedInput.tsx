@@ -28,7 +28,10 @@ import styles from './MaskedInput.module.scss';
  *          --focus-ring, --focus-ring-error, --radius-input,
  *          --space-{2..4}, --font-secondary, --font-size-base,
  *          --font-variant-numeric, --duration-fast, --easing-default
- * @deps    Label, cn, masks.ts (applyMask, unmask, countPlaceholders, MASK_PRESETS)
+ * @deps    Label atom, cn, `masks.ts` (applyMask, unmask, countPlaceholders,
+ *          maskMaxLength, MASK_PRESETS, MaskPreset type), React:
+ *          `forwardRef`, `useId`, `useMemo`, `useState`, type import
+ *          `InputHTMLAttributes<HTMLInputElement>`
  * @a11y    Native `<input type="text" inputmode="numeric">` when the
  *          active mask is all-digit (common case: NIP, PESEL, postcode,
  *          credit card, date, phone) — gives mobile users the numeric

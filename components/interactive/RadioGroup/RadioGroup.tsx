@@ -20,7 +20,9 @@ import styles from './RadioGroup.module.scss';
  * @tokens  --color-brand, --color-surface, --color-surface-raised,
  *          --color-border, --color-text-primary, --color-text-secondary,
  *          --focus-ring, --radius-md, --space-{2..4}, --duration-fast
- * @deps    cn, RadioGroupContext (internal)
+ * @deps    cn, `RadioGroupContext` (internal), React: `createContext`,
+ *          `forwardRef`, `useCallback`, `useContext`, `useId`, `useState`,
+ *          type imports `HTMLAttributes<HTMLDivElement>`, `ReactNode`
  * @a11y    Renders `role="radiogroup"` wrapper + native
  *          `<input type="radio">` per item (visually hidden). Native
  *          radios already give arrow-key navigation via the browser,
@@ -123,7 +125,8 @@ export const RadioGroup = forwardRef<HTMLDivElement, RadioGroupProps>(
  * @tokens  --color-brand, --color-surface, --color-surface-raised,
  *          --color-border, --color-border-strong, --color-text-primary,
  *          --color-text-secondary, --focus-ring, --radius-md, --space-{1..6}
- * @deps    cn, useRadioGroupContext (internal)
+ * @deps    cn, `useRadioGroupContext` (internal), React: `forwardRef`,
+ *          type imports `HTMLAttributes<HTMLLabelElement>`, `ReactNode`
  * @a11y    Native `<input type="radio">` (visually hidden via sr-only mixin)
  *          wrapped in a `<label htmlFor>` so the entire card is clickable.
  *          Arrow-key roving navigation between items comes for free from

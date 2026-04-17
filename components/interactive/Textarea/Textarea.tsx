@@ -17,7 +17,8 @@ import styles from './Textarea.module.scss';
  *          --color-text-primary, --color-text-muted, --focus-ring,
  *          --focus-ring-error, --radius-input, --space-{2..4},
  *          --font-secondary, --font-size-base
- * @deps    Label, cn
+ * @deps    Label atom, cn, React: `forwardRef`, `useId`, type import
+ *          `TextareaHTMLAttributes<HTMLTextAreaElement>`
  * @a11y    Native `<textarea>` with `id` ↔ `htmlFor` association via Label.
  *          `aria-invalid` set when `error` is provided. `aria-describedby`
  *          links the error message and helper text. Auto-generated `id`

@@ -13,7 +13,8 @@ import styles from './ButtonGroup.module.scss';
  * @tokens  none of its own — children (Button) supply their border-radius
  *          via component tokens, and the `joined-group` mixin in
  *          `_mixins.scss` collapses inner radii + dedupes 1px borders.
- * @deps    cn, joined-group SCSS mixin
+ * @deps    cn, `joined-group` SCSS mixin, React: `forwardRef`, type imports
+ *          `HTMLAttributes<HTMLDivElement>`, `ReactNode`
  * @a11y    Renders `<div role="group">` with required `aria-label`. The
  *          group itself does NOT manage roving focus or arrow-key nav —
  *          each child Button keeps its own focus and tab order. For

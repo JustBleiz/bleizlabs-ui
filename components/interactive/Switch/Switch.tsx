@@ -16,7 +16,8 @@ import styles from './Switch.module.scss';
  * @tokens  --color-brand, --color-surface, --color-surface-raised,
  *          --color-border, --color-text-primary, --color-text-muted,
  *          --focus-ring, --shadow-sm, --duration-fast
- * @deps    cn
+ * @deps    cn, React: `forwardRef`, `useId`, `useState`, type import
+ *          `InputHTMLAttributes<HTMLInputElement>`
  * @a11y    Native `<input type="checkbox" role="switch">` (visually hidden)
  *          wrapped in a `<label>` so the entire control is clickable.
  *          Keyboard Space toggles via native semantics. Visible track +

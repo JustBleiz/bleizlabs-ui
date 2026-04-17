@@ -22,7 +22,8 @@ import styles from './PasswordInput.module.scss';
  *          --focus-ring-error, --radius-input, --radius-sm,
  *          --space-{1..6}, --font-secondary, --font-size-{xs,base},
  *          --duration-fast, --easing-default
- * @deps    Label, cn
+ * @deps    Label atom, cn, React: `forwardRef`, `useId`, `useMemo`,
+ *          `useState`, type import `InputHTMLAttributes<HTMLInputElement>`
  * @a11y    Native `<input type="password">` switches to `type="text"`
  *          when the visibility toggle is activated. The eye button is
  *          a keyboard-reachable `<button type="button">` with an

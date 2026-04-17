@@ -16,7 +16,8 @@ import styles from './Checkbox.module.scss';
  * @tokens  --color-brand, --hover-brand, --color-surface, --color-border,
  *          --color-text-primary, --color-text-muted, --focus-ring,
  *          --radius-sm, --space-{2,3}, --duration-fast
- * @deps    cn
+ * @deps    cn, React: `forwardRef`, `useId`, type imports
+ *          `InputHTMLAttributes<HTMLInputElement>`, `ReactNode`
  * @a11y    Native `<input type="checkbox">` (visually hidden) wrapped in a
  *          `<label>` so the entire control area is clickable. Keyboard
  *          Space toggles via native semantics. The visible checkbox box

@@ -13,7 +13,8 @@ import styles from './Label.module.scss';
  * @layer   atom (interactive)
  * @tokens  --font-secondary, --font-size-sm, --font-weight-medium,
  *          --color-text-primary, --color-text-muted, --color-error
- * @deps    Slot, cn
+ * @deps    Slot (own primitive, asChild boundary), cn, React: `forwardRef`,
+ *          type imports `LabelHTMLAttributes<HTMLLabelElement>`, `ReactNode`
  * @a11y    Renders native `<label>` with `htmlFor` association. The visual
  *          `*` indicator for required fields is decorated with
  *          `aria-hidden="true"` because screen readers should pick up the
