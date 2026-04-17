@@ -1,5 +1,14 @@
 'use client';
 
+// Why `'use client'`: Slot merges arbitrary props — including event handlers
+// (onClick, onPointerDown, onFocus, etc.) passed by consumers via `asChild`.
+// Functions can't cross the RSC serialization boundary, so Slot must execute
+// on the client side to accept handler props. This creates a client boundary
+// at every `asChild` call site; Next.js 16 + React 19 dev mode can emit a
+// hydration-diff warning for the SSR'd wrapper element, which is benign
+// (SSR output and client re-render are functionally identical) and does not
+// occur in production. Making Slot RSC breaks any component whose playground
+// or consumer passes handlers through asChild.
 import {
   cloneElement,
   forwardRef,

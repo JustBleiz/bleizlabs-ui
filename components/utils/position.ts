@@ -18,6 +18,13 @@
  *   - Nested overflow container boundary detection (always uses window viewport)
  *   - Sticky scroll ancestor handling (window.scroll captures parent scroll)
  *
+ * SSR behavior: `computePosition` reads `window.innerWidth/innerHeight` for the
+ * default viewport. On the server (no `window`), it falls back to a static
+ * 1024x768 viewport so the function stays framework-agnostic and callable from
+ * non-DOM contexts. Consumers doing server-side layout pre-computation should
+ * pass an explicit `viewport` argument to avoid the default. Client-side code
+ * is unaffected — the fallback only activates when `typeof window === 'undefined'`.
+ *
  * Per D5/D25 "first floating component prototype" exception clause —
  * hand-rolled to stay zero-runtime-dependency (decisions.md:69, user override
  * at E19 plan gate: "też w całym projekcie unikaliśmy używania jakichkolwiek

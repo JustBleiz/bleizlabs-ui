@@ -79,9 +79,12 @@ export interface UseFloatingResult {
   /** Inline styles to apply to the floating element — `position: fixed` + computed `top`/`left`. */
   floatingStyles: CSSProperties;
   /**
-   * Inline styles to apply to the arrow element — populated only when the
-   * `arrow` option is provided. Contains `position: absolute` + `left` or
-   * `top` (depending on placement axis) in pixels.
+   * Inline styles to apply to the arrow element — populated when the `arrow`
+   * option is provided AND the arrow node has been measured (offsetWidth/Height
+   * read by the positioning pass). Remains `undefined` during initial render
+   * before the arrow mounts, or if the arrow node has zero measured dimensions.
+   * Contains `position: absolute` + `left` or `top` (depending on placement
+   * axis) in pixels when populated.
    */
   arrowStyles: CSSProperties | undefined;
   /** Actual placement after flip resolution (may differ from preferred). */
@@ -92,8 +95,16 @@ export interface UseFloatingResult {
 
 /**
  * Connects a reference element + floating element to the positioning engine.
- * Automatically updates on window scroll, window resize, and ResizeObserver
- * events on both elements. No-ops while `open` is false to avoid wasted work.
+ * Automatically updates on window scroll, window resize, and — where available —
+ * ResizeObserver events on both elements. No-ops while `open` is false to avoid
+ * wasted work.
+ *
+ * Browser compatibility: ResizeObserver is guarded with `typeof ResizeObserver
+ * !== 'undefined'`. In environments without ResizeObserver (older browsers,
+ * jsdom without polyfill), static positioning (scroll + resize) still works,
+ * but dynamic content-size changes on the floating or reference element won't
+ * trigger repositioning. Call the returned `update()` manually after any known
+ * content-size change if targeting those environments.
  */
 export function useFloating(options: UseFloatingOptions): UseFloatingResult {
   const { open, placement = 'top', offset = 6, padding = 8, arrow } = options;

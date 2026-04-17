@@ -596,10 +596,17 @@ export const CarouselSlide = forwardRef<HTMLDivElement, CarouselSlideProps>(
     const generatedId = useId();
     const slideId = `slide-${generatedId}`;
 
+    // Only depend on the stable `registerSlide` reference (useCallback with
+    // empty deps at line ~277) — NOT the whole `ctx` object. The context value
+    // re-memos whenever `slideIds` changes (because `getSlideIndex` depends on
+    // it), and using `ctx` as a dep here would cause register → setSlideIds →
+    // new ctx identity → effect re-runs → unregister → setSlideIds → infinite
+    // render loop (observed as "Maximum update depth exceeded").
+    const { registerSlide } = ctx;
     useLayoutEffect(() => {
-      const unregister = ctx.registerSlide(slideId);
+      const unregister = registerSlide(slideId);
       return unregister;
-    }, [ctx, slideId]);
+    }, [registerSlide, slideId]);
 
     const myIndex = ctx.getSlideIndex(slideId);
     const isCurrent = myIndex !== -1 && myIndex === ctx.index;
