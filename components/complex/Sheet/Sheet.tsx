@@ -17,6 +17,36 @@ import { cn } from '../../utils/cn';
 import { useFocusTrap } from '../Dialog';
 import styles from './Sheet.module.scss';
 
+/**
+ * Sheet — 4-directional side panel modal (Phase 10 CI4 — closes Drawer family).
+ *
+ * @layer    complex-interactive
+ * @tokens   --color-surface, --color-border-subtle, --color-overlay,
+ *           --radius-lg, --shadow-2xl, --duration-normal, --easing-default,
+ *           --space-{4,5,8}, --z-modal, --focus-ring
+ * @deps     cn, Heading, Text, useFocusTrap (from Dialog E15)
+ * @a11y     Visual modifier of WAI-ARIA APG `/dialog-modal/` (`role="dialog"`).
+ *           Reuses `useFocusTrap` from Dialog. `side` prop (left/right/top/
+ *           bottom) drives 5 per-side lookup tables: SIDE_CLASS (flex align),
+ *           RADIUS_CLASS (inner corners), BORDER_CLASS (outer edge removal),
+ *           SAFEAREA_CLASS (iOS env insets matched to side), ANIMATION_CLASS
+ *           (4 slide-in keyframes). Discriminated size: horizontal (l/r) =
+ *           width variants (sm 320 / md 420 / lg 560); vertical (t/b) =
+ *           height variants (sm 240 / md 360 / lg 80dvh fallback). Default
+ *           `side="right"`, default `showCloseButton=true` (sheets are
+ *           long-lived panels). Reuses Drawer's sticky footer pattern. Close
+ *           button `aria-label={\`Close ${title}\`}` — title-scoped per APG.
+ * @apg      https://www.w3.org/WAI/ARIA/apg/patterns/dialog-modal/
+ * @tested   tsc + eslint + next build (Playwright/NVDA/axe deferred per
+ *           E15 scope — 41 regression cases).
+ * @regressions See `tests/Sheet.regression.spec.md` SH-R01..R41.
+ *
+ * @example
+ * <Sheet open={open} onOpenChange={setOpen} side="right" title="Settings">
+ *   <SettingsForm />
+ * </Sheet>
+ */
+
 export type SheetSide = 'left' | 'right' | 'top' | 'bottom';
 export type SheetSize = 'sm' | 'md' | 'lg';
 

@@ -18,6 +18,35 @@ import { cn } from '../../utils/cn';
 import { useFocusTrap } from '../Dialog';
 import styles from './AlertDialog.module.scss';
 
+/**
+ * AlertDialog — accessible blocking confirmation (Phase 10 CI2).
+ *
+ * @layer    complex-interactive
+ * @tokens   --color-surface, --color-border-subtle, --color-overlay,
+ *           --color-status-{info,warning,critical}, --radius-lg,
+ *           --shadow-2xl, --duration-normal, --easing-default, --space-4,
+ *           --space-5, --z-modal, --focus-ring
+ * @deps     cn, Heading, Text, Button, useFocusTrap (imported from Dialog E15)
+ * @a11y     WAI-ARIA APG `/alertdialog/`. Blocking modal alert with
+ *           destructive-action semantics. Reuses `useFocusTrap` from Dialog.
+ *           Adds alert-specific: `role="alertdialog"`, REQUIRED
+ *           `aria-describedby` (type-enforced via non-optional `description`),
+ *           least-destructive initial focus (Cancel default per APG safety),
+ *           `closeOnOverlayClick` default `false` (enforces explicit action),
+ *           Escape calls `onCancel` not `onConfirm`, background `inert`
+ *           toggle (blocks AT virtual cursor). Severity (info/warning/
+ *           critical) drives border glow + default `confirmVariant`.
+ * @apg      https://www.w3.org/WAI/ARIA/apg/patterns/alertdialog/
+ * @tested   tsc + eslint + next build (Playwright/NVDA/axe deferred per
+ *           E15 scope — 41 regression cases documented).
+ * @regressions See `tests/AlertDialog.regression.spec.md` AD-R01..R41.
+ *
+ * @example
+ * <AlertDialog open={open} onOpenChange={setOpen}
+ *   title="Delete account?" description="All data will be erased."
+ *   severity="critical" onConfirm={handleDelete} onCancel={() => setOpen(false)} />
+ */
+
 export type AlertDialogSize = 'sm' | 'md' | 'lg';
 export type AlertDialogSeverity = 'info' | 'warning' | 'critical';
 

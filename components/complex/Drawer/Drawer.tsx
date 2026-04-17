@@ -17,6 +17,33 @@ import { cn } from '../../utils/cn';
 import { useFocusTrap } from '../Dialog';
 import styles from './Drawer.module.scss';
 
+/**
+ * Drawer — bottom-positioned modal sheet (Phase 10 CI3).
+ *
+ * @layer    complex-interactive
+ * @tokens   --color-surface, --color-border-subtle, --color-overlay,
+ *           --radius-lg, --shadow-2xl, --duration-normal, --easing-default,
+ *           --space-{4,5,8}, --z-modal, --focus-ring
+ * @deps     cn, Heading, Text, useFocusTrap (from Dialog E15)
+ * @a11y     Visual modifier of WAI-ARIA APG `/dialog-modal/` (`role="dialog"`).
+ *           Reuses `useFocusTrap` from Dialog. Bottom-anchored, slide-up
+ *           keyframe, top-only border-radius, iOS env(safe-area-inset-bottom)
+ *           padding, sticky footer via overflow on `.body` (not `.content`).
+ *           Height variants sm 360 / md 560 / lg min(80vh, calc(100vh -
+ *           space-8)) with 80dvh fallback. `description?` optional,
+ *           `closeOnOverlayClick` default true, `showCloseButton?` default
+ *           false (drawers are action-driven).
+ * @apg      https://www.w3.org/WAI/ARIA/apg/patterns/dialog-modal/
+ * @tested   tsc + eslint + next build (Playwright/NVDA/axe deferred per
+ *           E15 scope — 41 regression cases).
+ * @regressions See `tests/Drawer.regression.spec.md` DR-R01..R41.
+ *
+ * @example
+ * <Drawer open={open} onOpenChange={setOpen} title="Menu" size="md">
+ *   <nav>...</nav>
+ * </Drawer>
+ */
+
 export type DrawerSize = 'sm' | 'md' | 'lg';
 
 export interface DrawerProps

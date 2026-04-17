@@ -17,6 +17,40 @@ import { cn } from '../../utils/cn';
 import { useFocusTrap } from './useFocusTrap';
 import styles from './Dialog.module.scss';
 
+/**
+ * Dialog — accessible modal dialog (Phase 10 CI1, first Complex Interactive).
+ *
+ * @layer    complex-interactive
+ * @tokens   --color-surface, --color-border-subtle, --color-overlay,
+ *           --radius-lg, --shadow-2xl, --duration-normal, --easing-default,
+ *           --space-4, --space-5, --z-modal, --focus-ring
+ * @deps     cn, Heading, Text, useFocusTrap (own hook, shared by modal family)
+ * @a11y     Implements WAI-ARIA APG `/dialog-modal/` pattern. Composes
+ *           `createPortal(document.body)` + overlay + focus-trapped content.
+ *           Own `useFocusTrap` hook — Tab/Shift+Tab cycle via fresh
+ *           `querySelectorAll` per keypress (dynamic-content safe), initial
+ *           focus via `requestAnimationFrame` defer, focus restore to saved
+ *           `document.activeElement` on disable. Escape handler on `document`
+ *           to allow nested Select handlers to fire first (Radix #1951 fix).
+ *           Body scroll lock only when open (Radix #998 fix). SSR-safe via
+ *           `typeof document === 'undefined'` guard before portal. Required
+ *           `title` prop enforces APG compliance at type level. `description`
+ *           optional — conditional `aria-describedby` wiring (Radix #3007 fix).
+ * @apg      https://www.w3.org/WAI/ARIA/apg/patterns/dialog-modal/
+ * @tested   tsc + eslint + next build (Playwright/NVDA/axe deferred per
+ *           E15 scope — 21 regression cases documented in
+ *           `tests/Dialog.regression.spec.md`).
+ * @regressions See `tests/Dialog.regression.spec.md` DL-R01..R21.
+ *
+ * @example
+ * const [open, setOpen] = useState(false);
+ * return (
+ *   <Dialog open={open} onOpenChange={setOpen} title="Delete project">
+ *     <Text>Are you sure? This cannot be undone.</Text>
+ *   </Dialog>
+ * );
+ */
+
 export type DialogSize = 'sm' | 'md' | 'lg' | 'xl';
 
 export interface DialogProps
