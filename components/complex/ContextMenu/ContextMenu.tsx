@@ -6,8 +6,8 @@
  * @layer complex-interactive (Phase 10 CI8)
  * @tokens --color-surface-raised, --color-surface-hover, --color-text-primary,
  *   --color-text-muted, --color-border-subtle, --shadow-lg, --radius-md, --radius-sm,
- *   --z-popover, --duration-fast, --easing-default, --space-1..5, --font-size-sm,
- *   --font-size-xs
+ *   --z-popover, --duration-fast, --easing-default, --space-{1,2,3,8},
+ *   --font-size-sm, --font-size-xs, --font-weight-semibold
  * @deps zero runtime deps. Positioning via direct `computePosition` call from
  *   `utils/position.ts` (D-C2 Option C — skip `useFloating` hook since
  *   ContextMenu closes on scroll and never needs to "follow" a reference).
