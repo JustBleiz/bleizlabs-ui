@@ -16,14 +16,13 @@ import styles from './Card.module.scss';
  *          --shadow-card, --shadow-lg, --space-{0..20}, --radius-{sm..2xl},
  *          --color-brand, --focus-ring, --duration-fast, --easing-default,
  *          --color-text-primary, --padding-card (base padding fallback),
- *          --radius-card (base radius fallback).
+ *          --radius-card (base radius fallback),
+ *          --card-bg-glass + --card-blur (theme-aware semantic tokens
+ *          defined in `_semantics.scss` — dark: `rgba(255,255,255,0.04)`,
+ *          light: `rgba(255,255,255,0.6)`, blur: `12px` global; consumer
+ *          can override via `[data-theme]` or inline style cascade).
  *          Local channels (not tokens themselves): --card-{direction,width,
- *          padding,radius,accent-color} injected by tsx.
- *          Glass variant channels: --card-bg-glass + --card-blur are
- *          consumed by `.variantGlass` with SCSS fallbacks
- *          (`rgba(255,255,255,0.06)` + `12px`) — glass variant works
- *          out-of-the-box; consumers can override via inline style or
- *          parent cascade for custom glass theming.
+ *          padding,radius,accent-color} injected by tsx per-prop.
  * @deps    Slot (own primitive, asChild boundary), cn, SpaceIndex type,
  *          React: `forwardRef`, type imports `CSSProperties`,
  *          `HTMLAttributes<HTMLDivElement>`

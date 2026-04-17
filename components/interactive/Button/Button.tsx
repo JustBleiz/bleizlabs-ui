@@ -37,6 +37,16 @@ import styles from './Button.module.scss';
  *          disabled is forwarded as BOTH `aria-disabled="true"` AND
  *          `data-disabled` so consumer-rendered elements stay accessible
  *          to assistive tech (WCAG 4.1.2 Name/Role/Value).
+ *          `variant="warning"` is intentionally VISUAL-ONLY — it signals
+ *          destructive/caution actions (e.g., "Delete permanently") through
+ *          color alone. NO `aria-live`, `role="alert"`, or runtime semantic
+ *          injection is applied because Button is a user-triggered action,
+ *          not a notification: the accessible name IS the button's label
+ *          text (announced by SR on focus), which must itself convey the
+ *          warning meaning (e.g., "Delete" not "Submit"). Consumers are
+ *          responsible for writing label text that matches the visual
+ *          warning — per WCAG 1.4.1 Use of Color, warning meaning must
+ *          not be communicated by color alone.
  * @notes   The Button file itself has no `'use client'` directive — the
  *          `<button>` and `<a>` render paths are fully RSC-compatible
  *          (no internal state, no event handler injection). The

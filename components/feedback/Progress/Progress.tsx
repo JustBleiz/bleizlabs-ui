@@ -43,6 +43,13 @@ import styles from './Progress.module.scss';
  *          `--stack-gap`). The actual `width` declaration lives in
  *          `.bar` in the SCSS module. The percent is clamped to [0, 100]
  *          in JS so assistive tech sees sane `aria-valuenow` values.
+ *          Internal type hygiene: `ProgressPropsFlat` is an internal
+ *          non-exported flat shape used purely for destructuring the
+ *          discriminated union (`ProgressStagesProps | ProgressPercentProps`)
+ *          in a single statement. Call-site type safety is enforced by the
+ *          exported `ProgressProps` discriminated union; the runtime guard
+ *          `stages !== undefined` re-establishes the mode after the flat
+ *          cast, so the cast is safe by construction.
  *
  * @example
  * // Stages mode
