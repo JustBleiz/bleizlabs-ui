@@ -33,7 +33,7 @@ import styles from './Command.module.scss';
  *           --color-border, --color-border-subtle, --color-brand,
  *           --color-text-primary, --color-text-muted, --color-overlay,
  *           --focus-ring (via mx.focus-ring mixin), --radius-md, --radius-lg,
- *           --shadow-lg, --duration-base, --duration-fast, --easing-default,
+ *           --shadow-lg, --duration-normal, --duration-fast, --easing-default,
  *           --space-{1,2,3,4,6}, --z-modal, --font-mono,
  *           --font-size-xs, --font-size-sm, --font-size-base
  * @deps     cn, mergeRefs, FloatingPortal (E23), useFocusTrap (Dialog E15)

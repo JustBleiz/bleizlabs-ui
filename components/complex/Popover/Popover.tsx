@@ -6,8 +6,8 @@
  * @layer complex-interactive (Phase 10 CI5)
  * @tokens --color-surface-raised, --color-text-primary, --color-border-subtle,
  *   --shadow-lg, --radius-lg, --z-popover, --duration-normal, --easing-default,
- *   --space-{1,2,3,4}, --font-size-md, --popover-arrow-size (consumer-tunable
- *   override scoped to `.arrow` element, defaults to 10px)
+ *   --space-{1,2,3,4}, --font-size-base, --popover-arrow-size (semantic token
+ *   in _semantics.scss, defaults to 12px; consumer-tunable via CSS cascade)
  * @deps zero runtime deps — positioning via `utils/position.ts` +
  *   `utils/useFloating.ts` (E19 primitive, E20 extended with `computeArrowPosition`).
  *   Dismiss + portal + focus management via `utils/floating/` composable

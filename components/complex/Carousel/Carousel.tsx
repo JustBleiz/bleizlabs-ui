@@ -31,7 +31,7 @@ import styles from './Carousel.module.scss';
  *
  * @layer    complex-interactive
  * @tokens   --color-brand, --color-surface, --color-surface-raised,
- *           --color-border, --color-text-primary, --color-text-on-brand,
+ *           --color-border, --color-text-primary, --color-text-inverse,
  *           --focus-ring (via mx.focus-ring mixin), --duration-fast,
  *           --easing-default, --radius-full, --radius-lg, --space-3
  * @deps     cn, mergeRefs, usePointerDrag (E39 gesture primitive),
@@ -563,7 +563,7 @@ export const CarouselViewport = forwardRef<HTMLDivElement, CarouselViewportProps
       transition:
         ctx.isDragging || ctx.isReducedMotion
           ? 'none'
-          : 'transform var(--duration-base) var(--easing-default)',
+          : 'transform var(--duration-normal) var(--easing-default)',
     };
 
     return (

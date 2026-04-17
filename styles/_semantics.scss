@@ -226,6 +226,34 @@
   --card-blur: 12px;
 
   // ==========================================================================
+  // FLOATING UI — arrow dimensions (Popover, HoverCard, Tooltip)
+  // ==========================================================================
+  --popover-arrow-size: 12px;
+
+  // ==========================================================================
+  // FONT FAMILY ALIASES — semantic naming alongside primary/secondary
+  // ==========================================================================
+  // `--font-sans` is the idiomatic alias for `--font-secondary` (the body font);
+  // components that prefer sans-serif naming (Calendar, DatePicker, Toast) use
+  // this alias so the intent is explicit at the call site.
+  --font-sans: var(--font-secondary);
+
+  // ==========================================================================
+  // SEMANTIC SURFACE ALIASES — hover + muted (theme-aware via base tokens)
+  // ==========================================================================
+  // `--color-surface-hover` — interactive hover state for menu items, pickers,
+  // tabs, and similar list-style surfaces. Resolves to `--color-surface-raised`
+  // by default (consistent with the prior fallback pattern across
+  // DropdownMenu, ContextMenu, NavigationMenu, Select, Combobox, Tabs).
+  // `--color-surface-muted` — subtle highlight surface for track fills, focused
+  // input slots, and hierarchical background variations (Slider track, Command
+  // selected item, InputOTP focused slot). Resolves to `--color-surface-raised`
+  // for the default palette; projects can override per theme to introduce a
+  // distinct muted shade.
+  --color-surface-hover: var(--color-surface-raised);
+  --color-surface-muted: var(--color-surface-raised);
+
+  // ==========================================================================
   // INPUT TOKENS — Phase 4 Simple Interactive (E07) + addons (E08)
   // ==========================================================================
   // Semantic aliases for form controls (Input, Textarea, Checkbox, Switch,

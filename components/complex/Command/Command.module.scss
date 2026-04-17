@@ -36,9 +36,9 @@
 .overlay {
   position: fixed;
   inset: 0;
-  background-color: var(--color-overlay, rgba(0, 0, 0, 0.5));
+  background-color: var(--color-overlay);
   pointer-events: auto;
-  animation: cmd-overlay-in var(--duration-base) var(--easing-default);
+  animation: cmd-overlay-in var(--duration-normal) var(--easing-default);
 }
 
 // ──────────────────────────────────────────────────────────────────────────
@@ -58,7 +58,7 @@
   box-shadow: var(--shadow-lg);
   overflow: hidden;
   pointer-events: auto;
-  animation: cmd-content-in var(--duration-base) var(--easing-default);
+  animation: cmd-content-in var(--duration-normal) var(--easing-default);
 
   &:focus {
     outline: none;
@@ -215,7 +215,7 @@
     color var(--duration-fast) var(--easing-default);
 
   &[data-highlighted='true'] {
-    background-color: var(--color-surface-muted, var(--color-surface));
+    background-color: var(--color-surface-muted);
     color: var(--color-brand);
   }
 

@@ -6,7 +6,7 @@
  * @layer complex-interactive (Phase 10 CI9)
  * @tokens --color-surface-raised, --color-text-primary, --color-text-muted,
  *   --color-border-subtle, --shadow-lg, --radius-lg, --z-popover, --duration-fast,
- *   --easing-default, --space-3, --space-4, --font-size-sm, --font-size-md
+ *   --easing-default, --space-3, --space-4, --font-size-sm, --font-size-base
  * @deps zero runtime deps. Positioning via `utils/position.ts` + `utils/useFloating.ts`
  *   (E19/E20 primitive). State + portal + context via shared `utils/floating/`
  *   composable primitives (E23 refactor): `useFloatingState` + `FloatingPortal`

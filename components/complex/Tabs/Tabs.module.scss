@@ -150,12 +150,12 @@
     padding: var(--space-2) var(--space-4);
 
     &:hover:not([aria-disabled='true']):not(:disabled):not([data-state='active']) {
-      background: var(--color-surface-hover, var(--color-surface-raised));
+      background: var(--color-surface-hover);
     }
 
     &[data-state='active'] {
       background: var(--color-brand);
-      color: var(--color-text-on-brand, var(--color-surface));
+      color: var(--color-text-inverse);
     }
   }
 }
@@ -175,7 +175,7 @@
   display: inline-flex;
   gap: 2px;
   padding: 2px;
-  background: var(--color-surface-hover, var(--color-surface-raised));
+  background: var(--color-surface-hover);
   border: 1px solid var(--color-border-subtle);
   border-radius: var(--radius-md);
 

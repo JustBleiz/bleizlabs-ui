@@ -100,7 +100,7 @@
   &:hover:not([data-disabled='true']) {
     background: var(--color-brand);
     border-color: var(--color-brand);
-    color: var(--color-text-on-brand);
+    color: var(--color-text-inverse);
   }
 
   &:active:not([data-disabled='true']) {
@@ -147,7 +147,7 @@
   &:hover {
     background: var(--color-brand);
     border-color: var(--color-brand);
-    color: var(--color-text-on-brand);
+    color: var(--color-text-inverse);
   }
 
   &:focus-visible {
@@ -157,7 +157,7 @@
   &[aria-pressed='true'] {
     background: var(--color-brand);
     border-color: var(--color-brand);
-    color: var(--color-text-on-brand);
+    color: var(--color-text-inverse);
   }
 
   @media (pointer: coarse) {

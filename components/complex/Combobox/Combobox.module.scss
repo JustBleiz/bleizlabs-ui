@@ -302,7 +302,7 @@
   @include mx.touch-target;
 
   &[data-highlighted='true'] {
-    background: var(--color-surface-hover, var(--color-surface-raised));
+    background: var(--color-surface-hover);
   }
 
   &[data-state='checked'] {

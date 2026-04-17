@@ -89,17 +89,17 @@
   }
 
   &:hover:not([aria-disabled='true']) {
-    background: var(--color-surface-hover, var(--color-surface-raised));
+    background: var(--color-surface-hover);
   }
 
   &:focus-visible {
-    background: var(--color-surface-hover, var(--color-surface-raised));
+    background: var(--color-surface-hover);
     @include mx.focus-ring;
   }
 
   // Open state — distinct visual so users see which submenu is active.
   &[data-state='open'] {
-    background: var(--color-surface-hover, var(--color-surface-raised));
+    background: var(--color-surface-hover);
     color: var(--color-text-primary);
   }
 
@@ -189,11 +189,11 @@
   }
 
   &:hover:not([aria-disabled='true']) {
-    background: var(--color-surface-hover, var(--color-surface-raised));
+    background: var(--color-surface-hover);
   }
 
   &:focus-visible {
-    background: var(--color-surface-hover, var(--color-surface-raised));
+    background: var(--color-surface-hover);
     @include mx.focus-ring;
   }
 
@@ -211,7 +211,7 @@
 
   // Subtle accent in submenu context.
   .content & {
-    background: var(--color-surface-hover, var(--color-surface-raised));
+    background: var(--color-surface-hover);
   }
 }
 
