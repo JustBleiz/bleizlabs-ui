@@ -13,11 +13,18 @@ import styles from './Heading.module.scss';
  * Heading — semantic heading element with decoupled visual size.
  *
  * @layer   atom (typography)
- * @tokens  --font-primary, --font-size-{sm..5xl}, --font-weight-{regular,medium,semibold,bold},
- *          --line-height-tight, --color-text-{primary,secondary,muted}, --color-brand-500.
- *          The CSS layout/text-align values written into `--heading-align`
- *          (`start`, `center`, `end`) are CSS keywords, not design tokens.
- * @deps    Slot (own primitive, asChild boundary), cn
+ * @tokens  --font-primary (.root font-family), --line-height-tight (.root);
+ *          --font-size-{sm,base,lg,xl,2xl,3xl,4xl,5xl} (size variants — note
+ *          that sizeMd class resolves to `--font-size-base`, not `--font-size-md`);
+ *          --font-weight-{regular,medium,semibold,bold} (tsx WEIGHT_VAR);
+ *          --color-text-{primary,secondary,muted} + --color-brand-500 (tsx COLOR_VAR).
+ *          Component-local CSS variables `--heading-{color,weight,align}` carry
+ *          the computed values into the .root selector with design-token
+ *          fallbacks. `--heading-align` accepts CSS keywords (`start` /
+ *          `center` / `end`), not design tokens.
+ * @deps    Slot (own primitive, asChild boundary), cn, React: `forwardRef`,
+ *          type imports `CSSProperties`, `HTMLAttributes<HTMLHeadingElement>`,
+ *          `ReactNode`, `Ref`
  * @a11y    Renders `<h1>..<h6>` per `level` prop. Decoupled `size` prop
  *          controls visual scale only — semantic hierarchy stays in `level`.
  *          Authors should pick `level` for document outline, `size` for
