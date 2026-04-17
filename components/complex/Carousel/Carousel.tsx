@@ -30,10 +30,12 @@ import styles from './Carousel.module.scss';
  * Carousel — accessible auto-rotating content slider (Phase 10 CI21).
  *
  * @layer    complex-interactive
- * @tokens   --color-brand, --color-surface, --color-surface-muted, --color-surface-raised,
- *           --color-border, --color-text-primary, --color-text-muted, --focus-ring,
- *           --shadow-sm, --duration-fast, --duration-base, --easing-default
- * @deps     cn, mergeRefs
+ * @tokens   --color-brand, --color-surface, --color-surface-raised,
+ *           --color-border, --color-text-primary, --color-text-on-brand,
+ *           --focus-ring (via mx.focus-ring mixin), --duration-fast,
+ *           --easing-default, --radius-full, --radius-lg, --space-3
+ * @deps     cn, mergeRefs, usePointerDrag (E39 gesture primitive),
+ *           useMatchMedia (E40 match-media primitive)
  * @a11y     `role="region"` + `aria-roledescription="carousel"` on root per APG.
  *           Each slide `role="group" aria-roledescription="slide" aria-label="N of M"`;
  *           non-current slides `aria-hidden="true"`. WCAG 2.2.2 pause control required
@@ -47,7 +49,9 @@ import styles from './Carousel.module.scss';
  *           drag inline per Rule of Three (extract at 3rd consumer).
  * @apg      https://www.w3.org/WAI/ARIA/apg/patterns/carousel/
  * @tested   tsc + eslint + next build (Playwright/NVDA/axe deferred per E15 scope).
- * @regressions See `docs/_tmp/carousel-spec.md` CAR-R01..CAR-R25 (25 cases).
+ * @regressions tests/Carousel.{keyboard,focus,aria,regression}.spec.md —
+ *           25 regression cases CAR-R01..R25 in `docs/specs/carousel-spec.md`
+ *           (promoted from `_tmp` in E42).
  *
  * @example
  * // Basic with auto-rotate + pause control
