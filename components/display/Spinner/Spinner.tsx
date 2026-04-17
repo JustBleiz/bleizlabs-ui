@@ -7,7 +7,10 @@ import styles from './Spinner.module.scss';
  *
  * @layer   atom (display)
  * @tokens  --color-brand, --color-text-muted, --duration-slow,
- *          --easing-default, spin keyframe
+ *          spin keyframe (from _animations.scss).
+ *          Note: easing is hardcoded `linear` in SCSS (not a token) because
+ *          constant-velocity rotation is the intentional visual choice —
+ *          design-token easing would produce jank at keyframe boundaries.
  * @deps    cn, React: `forwardRef`, type import
  *          `HTMLAttributes<HTMLSpanElement>`
  * @a11y    `role="status"` + visually hidden text label so screen readers

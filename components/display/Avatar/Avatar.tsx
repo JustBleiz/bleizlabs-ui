@@ -11,9 +11,12 @@ import styles from './Avatar.module.scss';
  * Avatar — user identity image with text-initials fallback (Phase 3 D5).
  *
  * @layer   atom (display)
- * @tokens  --color-surface-raised, --color-border-subtle,
- *          --color-text-secondary, --color-{success,warning,error,brand},
- *          --radius-{lg,full}, --font-weight-semibold
+ * @tokens  --color-surface-raised, --color-bg,
+ *          --color-text-{secondary,muted}, --color-{success,warning,error},
+ *          --radius-{lg,full}, --font-weight-semibold.
+ *          Literal px dimensions (24/32/40/56/80 width+height; 10/12/14/18/26
+ *          font-size) encode the Avatar size scale directly — not tokens,
+ *          intentional design choice for fixed-scale identity avatars.
  * @deps    Slot (own primitive, asChild boundary), cn, React: `forwardRef`,
  *          type imports `CSSProperties`, `HTMLAttributes<HTMLSpanElement>`
  * @a11y    Renders `<span>` (inline) by default. The image (when present)

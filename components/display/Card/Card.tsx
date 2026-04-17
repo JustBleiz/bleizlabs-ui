@@ -13,9 +13,16 @@ import styles from './Card.module.scss';
  *
  * @layer   atom (display)
  * @tokens  --color-surface, --color-border, --color-border-subtle,
- *          --shadow-card, --shadow-lg, --card-bg-glass, --card-blur,
- *          --space-{0..20}, --radius-{sm..2xl}, --color-brand,
- *          --focus-ring, --duration-fast, --easing-default
+ *          --shadow-card, --shadow-lg, --space-{0..20}, --radius-{sm..2xl},
+ *          --color-brand, --focus-ring, --duration-fast, --easing-default,
+ *          --color-text-primary, --padding-card (base padding fallback),
+ *          --radius-card (base radius fallback).
+ *          Local channels (not tokens themselves): --card-{direction,width,
+ *          padding,radius,accent-color} injected by tsx. Special:
+ *          --card-bg-glass + --card-blur are consumed by `.variantGlass`
+ *          SCSS but NOT injected by tsx and lack SCSS fallbacks — consumers
+ *          must provide them via parent style or global cascade for glass
+ *          variant to render visibly (see Odchylenia note).
  * @deps    Slot (own primitive, asChild boundary), cn, SpaceIndex type,
  *          React: `forwardRef`, type imports `CSSProperties`,
  *          `HTMLAttributes<HTMLDivElement>`
