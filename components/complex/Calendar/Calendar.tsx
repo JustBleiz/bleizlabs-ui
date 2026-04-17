@@ -4,12 +4,12 @@
  * Calendar — accessible single-date calendar grid per WAI-ARIA APG `/grid/`.
  *
  * @layer complex-interactive (Phase 10 CI16 — FIRST grid-pattern component)
- * @tokens --color-surface-raised, --color-surface-hover, --color-surface-sunken,
- *   --color-text-primary, --color-text-muted, --color-border-subtle,
- *   --color-brand, --color-brand-foreground, --focus-ring, --duration-fast,
- *   --easing-default, --space-1..5, --radius-sm, --radius-md, --radius-lg,
- *   --font-size-xs, --font-size-sm, --font-size-base, --font-weight-medium,
- *   --font-weight-semibold
+ * @tokens --color-surface-raised, --color-surface-hover, --color-text-primary,
+ *   --color-text-muted, --color-border-subtle, --color-border-strong,
+ *   --color-brand, --color-brand-foreground, --color-brand-hover,
+ *   --focus-ring (via mx.focus-ring mixin), --duration-fast, --easing-default,
+ *   --space-{1,2,3}, --radius-sm, --radius-lg, --font-sans, --font-size-xs,
+ *   --font-size-sm, --font-weight-medium, --font-weight-semibold
  * @deps zero runtime deps per D5/D25. Native `Date` + `Intl.DateTimeFormat`
  *   for all date math and formatting — NO date-fns, dayjs, luxon, moment.
  *   Date helpers in `utils/date.ts` (E30 addition). Reuses
@@ -69,9 +69,11 @@
  * @tested tsc --noEmit ✓ | eslint + jsx-a11y via eslint-config-next ✓ |
  *   next build ✓ — DEFERRED: Playwright execution (per E15 scope decision),
  *   axe-core runtime sweep, manual NVDA sweep.
- * @regressions CAL-R01..R22+ edge cases documented in
- *   `docs/_tmp/calendar-spec.md` — RTL arrow mirror, DST seamless nav,
- *   year boundary (Dec → Jan), leap year Feb 29, locale week-start
+ * @regressions tests/Calendar.{keyboard,focus,aria,regression}.spec.md —
+ *   24 regression cases (CAL-R01..R24) documented in
+ *   `docs/specs/calendar-spec.md` (promoted from `_tmp` in E42) — RTL arrow
+ *   mirror, DST seamless nav, year boundary (Dec → Jan), leap year Feb 29,
+ *   locale week-start
  *   (PL=Mon, US=Sun, ar-SA=Sat), min/max clamp, disabled predicate skip,
  *   today marker only when today in grid, multi-instance independent
  *   roving.
