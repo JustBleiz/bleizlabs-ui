@@ -1,10 +1,15 @@
 .root {
+  // `overflow` must NOT live on .root — the status dot is positioned slightly
+  // outside the avatar's rounded clip region (right: 4%, bottom: 4%) and any
+  // clip on root erases it. Instead .image and .fallback each inherit the
+  // root's border-radius and carry their own `overflow: hidden` so the image
+  // itself stays clipped to the avatar shape while the status dot remains
+  // free to overlap the edge.
   position: relative;
   display: inline-flex;
   flex-shrink: 0;
   align-items: center;
   justify-content: center;
-  overflow: hidden;
   background: var(--color-surface-raised);
   color: var(--color-text-secondary);
   font-weight: var(--font-weight-semibold);
@@ -16,6 +21,8 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
+  border-radius: inherit;
+  overflow: hidden;
 }
 
 .fallback {
@@ -25,6 +32,8 @@
   width: 100%;
   height: 100%;
   text-transform: uppercase;
+  border-radius: inherit;
+  overflow: hidden;
 }
 
 // ============================================================================

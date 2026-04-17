@@ -137,21 +137,38 @@
   // ==========================================================================
   // STATUS COLORS — error / warning / success / info
   // ==========================================================================
-  --color-error-subtle: #{map.get($error, 100)};
+  // `*-subtle` and `*-strong` are theme-aware — they need to flip shade per
+  // theme so Alerts (and any consumer using them for bg + title) stay
+  // legible on both light and dark surfaces. The base `*` (500 scale) is
+  // theme-independent — the vivid "this is error" hue reads on both
+  // surfaces and drives accent/stripe/icon usage. Default values below
+  // target the `$seed-mode` theme; `:root[data-theme='light']` and
+  // `:root[data-theme='dark']` blocks below override them.
+
   --color-error: #{map.get($error, 500)};
-  --color-error-strong: #{map.get($error, 700)};
-
-  --color-warning-subtle: #{map.get($warning, 100)};
   --color-warning: #{map.get($warning, 500)};
-  --color-warning-strong: #{map.get($warning, 700)};
-
-  --color-success-subtle: #{map.get($success, 100)};
   --color-success: #{map.get($success, 500)};
-  --color-success-strong: #{map.get($success, 700)};
-
-  --color-info-subtle: #{map.get($info, 100)};
   --color-info: #{map.get($info, 500)};
-  --color-info-strong: #{map.get($info, 700)};
+
+  @if $seed-mode == dark {
+    --color-error-subtle: #{map.get($error, 950)};
+    --color-error-strong: #{map.get($error, 300)};
+    --color-warning-subtle: #{map.get($warning, 950)};
+    --color-warning-strong: #{map.get($warning, 300)};
+    --color-success-subtle: #{map.get($success, 950)};
+    --color-success-strong: #{map.get($success, 300)};
+    --color-info-subtle: #{map.get($info, 950)};
+    --color-info-strong: #{map.get($info, 300)};
+  } @else {
+    --color-error-subtle: #{map.get($error, 100)};
+    --color-error-strong: #{map.get($error, 700)};
+    --color-warning-subtle: #{map.get($warning, 100)};
+    --color-warning-strong: #{map.get($warning, 700)};
+    --color-success-subtle: #{map.get($success, 100)};
+    --color-success-strong: #{map.get($success, 700)};
+    --color-info-subtle: #{map.get($info, 100)};
+    --color-info-strong: #{map.get($info, 700)};
+  }
 
   // ==========================================================================
   // NEUTRAL SCALE (raw access if needed; prefer semantic tokens below)
@@ -346,6 +363,17 @@
   --color-text-inverse: #{$light-text-inverse};
 
   --card-bg-glass: rgba(255, 255, 255, 0.6);
+
+  // Theme-aware status subtle/strong — light theme uses low-number (tinted)
+  // backgrounds + high-number (dark) titles for contrast on light surface.
+  --color-error-subtle: #{map.get($error, 100)};
+  --color-error-strong: #{map.get($error, 700)};
+  --color-warning-subtle: #{map.get($warning, 100)};
+  --color-warning-strong: #{map.get($warning, 700)};
+  --color-success-subtle: #{map.get($success, 100)};
+  --color-success-strong: #{map.get($success, 700)};
+  --color-info-subtle: #{map.get($info, 100)};
+  --color-info-strong: #{map.get($info, 700)};
 }
 
 // ============================================================================
@@ -368,6 +396,17 @@
   --color-text-inverse: #{$dark-text-inverse};
 
   --card-bg-glass: rgba(255, 255, 255, 0.04);
+
+  // Theme-aware status subtle/strong — dark theme uses high-number (deep)
+  // backgrounds + low-number (light) titles for contrast on dark surface.
+  --color-error-subtle: #{map.get($error, 950)};
+  --color-error-strong: #{map.get($error, 300)};
+  --color-warning-subtle: #{map.get($warning, 950)};
+  --color-warning-strong: #{map.get($warning, 300)};
+  --color-success-subtle: #{map.get($success, 950)};
+  --color-success-strong: #{map.get($success, 300)};
+  --color-info-subtle: #{map.get($info, 950)};
+  --color-info-strong: #{map.get($info, 300)};
 }
 
 // ============================================================================

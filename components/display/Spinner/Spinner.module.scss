@@ -2,6 +2,10 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  // Prevent flex parents (Inline, Stack, Button row) from squeezing the
+  // spinner horizontally — size classes set explicit width/height but the
+  // default `flex-shrink: 1` can override them in tight rows.
+  flex-shrink: 0;
 }
 
 .ring {
@@ -11,7 +15,21 @@
   border: 2px solid currentcolor;
   border-top-color: transparent;
   border-radius: 50%;
-  animation: spin var(--duration-slow) linear infinite;
+  // Local @keyframes because CSS Modules scope animation-name identifiers
+  // — referencing a globally defined `spin` from _animations.scss silently
+  // no-ops under Turbopack + Next.js 16 CSS Modules. Each component module
+  // that needs a shared keyframe copies the tiny rule block locally (matches
+  // the Popover/Dialog/Sheet/Drawer precedent in this library).
+  animation: spinRotate var(--duration-slow) linear infinite;
+}
+
+@keyframes spinRotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 // ============================================================================

@@ -80,6 +80,12 @@
 .panel {
   display: grid;
   grid-template-rows: 1fr;
+  // `overflow: hidden` on the panel (not .panelInner) is what makes the
+  // `1fr → 0fr` transition visually clip the content gradually as the grid
+  // row shrinks. Without it, the inner content (including its padding)
+  // paints above the collapsing row — the animation looks like "text shows
+  // first, then card snaps" (reported in E134 bug 5).
+  overflow: hidden;
   border-top: 1px solid var(--color-border-subtle);
   transition:
     grid-template-rows var(--duration-normal) var(--easing-default),
@@ -102,7 +108,10 @@
 }
 
 .panelInner {
-  overflow: hidden;
+  // min-height:0 lets the grid row drive the inner size — without it,
+  // the inner content's intrinsic min-height would floor the row at its
+  // content height and defeat the 0fr collapse.
+  min-height: 0;
   padding: var(--space-4) var(--space-5);
   color: var(--color-text-secondary);
   line-height: var(--line-height-normal);

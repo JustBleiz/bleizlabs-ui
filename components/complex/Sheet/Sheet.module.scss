@@ -54,6 +54,18 @@
   box-shadow: var(--shadow-2xl);
   // overflow isolated on .body so footer stays sticky (Drawer precedent)
   overflow: hidden;
+  // `box-sizing: border-box` so the size-variant `height`/`width` values
+  // include our padding + border. Without it, a top/bottom Sheet declared
+  // at 240px actually rendered at ~290px (240px content + 2×24px padding
+  // + 2×1px border), pushing the footer past the viewport when stacked
+  // with safe-area insets — reported as "Sheet pionowy > 100vh, nie
+  // klikniesz dolnego przycisku" in E134.
+  box-sizing: border-box;
+  // Hard cap on viewport height so vertical sheets never exceed the visible
+  // area even when their fixed size + safe-area insets would otherwise push
+  // the footer offscreen. dvh accounts for mobile browser chrome collapse.
+  max-height: 100vh;
+  max-height: 100dvh;
 
   &:focus {
     outline: none;

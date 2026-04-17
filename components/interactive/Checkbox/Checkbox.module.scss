@@ -56,7 +56,23 @@
 }
 
 .input:checked + .box .check {
-  animation: checkmark var(--duration-fast) var(--easing-default) forwards;
+  // Local @keyframes — CSS Modules scope animation-name identifiers, so
+  // referencing the global `checkmark` keyframe from _animations.scss
+  // silently no-ops under Turbopack + Next.js 16. Each animation-consuming
+  // module owns a tiny local copy (matches Spinner + RadioGroup fixes and
+  // the Popover/Sheet/Drawer precedent in this library).
+  animation: checkboxTick var(--duration-fast) var(--easing-default) forwards;
+}
+
+@keyframes checkboxTick {
+  from {
+    opacity: 0;
+    transform: scale(0);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 
 .label {

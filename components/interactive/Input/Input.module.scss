@@ -18,7 +18,12 @@
   width: 100%;
   background: var(--input-bg);
   border: 1px solid var(--input-border);
-  border-radius: var(--radius-input);
+  // `--input-wrap-radius` is an override channel read via CSS custom
+  // property inheritance from an ancestor (e.g. InputGroup collapses the
+  // radii of the inner inputWrap when it sits next to an addon / sibling
+  // in the joined widget). Default resolves to `--radius-input` so the
+  // standalone Input is unchanged.
+  border-radius: var(--input-wrap-radius, var(--radius-input));
   overflow: hidden;
   transition:
     border-color var(--duration-fast) var(--easing-default),
@@ -86,6 +91,13 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  // Center-align within the input-wrap cross axis — the wrap uses
+  // `align-items: stretch` so the addonText can fill height (segmented-
+  // control look); slots with explicit width/height fall back to
+  // flex-start on the cross-axis without an explicit `align-self: center`
+  // (browsers resolve "stretch" to "start" when the item has an intrinsic
+  // size and cannot be stretched).
+  align-self: center;
   width: var(--space-5);
   height: var(--space-5);
   color: var(--color-text-muted);
@@ -155,6 +167,7 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  align-self: center;
   margin-right: var(--space-3);
   flex-shrink: 0;
 }
@@ -163,6 +176,7 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  align-self: center;
   width: var(--space-6);
   height: var(--space-6);
   margin-right: var(--space-2);

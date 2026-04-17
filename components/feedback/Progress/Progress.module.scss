@@ -46,13 +46,18 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-width: 1.25em;
-  padding: 0 var(--space-1);
+  min-width: 1.5em;
+  min-height: 1.5em;
+  // Symmetric padding so the numeric badge reads as a proper circular
+  // pill — the earlier `0 var(--space-1)` only padded horizontally so
+  // numbers sat flush against the top/bottom edge of the badge.
+  padding: var(--space-1);
   border-radius: var(--radius-full);
   background: var(--color-surface);
   color: inherit;
   font-weight: var(--font-weight-semibold);
   font-variant-numeric: tabular-nums;
+  line-height: 1;
 }
 
 .stageLabel {

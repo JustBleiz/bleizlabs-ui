@@ -77,7 +77,22 @@
 }
 
 .itemChecked .dot {
-  animation: radioFill var(--duration-fast) var(--easing-default) forwards;
+  // Local @keyframes — CSS Modules scope animation-name identifiers, so
+  // referencing the global `radioFill` keyframe from _animations.scss
+  // silently no-ops under Turbopack + Next.js 16. Mirrors Checkbox + Spinner
+  // fixes (E134) and the Popover/Sheet/Drawer in-module precedent.
+  animation: radioDotFill var(--duration-fast) var(--easing-default) forwards;
+}
+
+@keyframes radioDotFill {
+  from {
+    opacity: 0;
+    transform: scale(0);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 
 .itemIcon {
