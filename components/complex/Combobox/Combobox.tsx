@@ -10,9 +10,10 @@
  * @tokens --input-bg, --input-border, --input-border-focus, --color-text-primary,
  *   --color-text-muted, --color-surface-raised, --color-surface-hover,
  *   --color-border-subtle, --shadow-lg, --radius-input, --radius-md, --radius-sm,
- *   --z-popover, --duration-fast, --easing-default, --focus-ring,
- *   --focus-ring-error, --color-error, --space-1..6, --font-size-sm,
- *   --font-size-xs, --font-size-base, --font-secondary, --font-weight-semibold,
+ *   --z-popover, --duration-fast, --easing-default, --focus-ring (via
+ *   mx.focus-ring mixin), --focus-ring-error (via mx.focus-ring-error mixin),
+ *   --color-error, --space-{1,2,3,4,6,8}, --font-size-sm, --font-size-xs,
+ *   --font-size-base, --font-secondary, --font-weight-semibold,
  *   --line-height-normal
  * @deps zero runtime deps. Positioning via `utils/position.ts` +
  *   `utils/useFloating.ts` (E19/E20 primitive). Portal + dismiss + context via
@@ -176,6 +177,11 @@
  *   DEFERRED: Playwright execution, axe-core runtime sweep, manual NVDA /
  *   VoiceOver / JAWS sweep, iOS / Android device testing (per E15 scope
  *   decision, to be completed during Phase 6 Integration / Phase 7 audit).
+ * @regressions tests/Combobox.{keyboard,focus,aria,regression}.spec.md — 28
+ *   regression cases planned (docs/specs/combobox-spec.md §Regression Cases),
+ *   highest-risk 6 currently covered (CB-R02 SSR, CB-R03 filter race,
+ *   CB-R06 blur commit, CB-R07 IME composition guard, CB-R16 SSR portal,
+ *   CB-R17 Escape bubble). Full enumeration deferred to consumer adoption.
  * @example
  *   <Combobox name="country" defaultValue="pl" onValueChange={(v) => ...}>
  *     <ComboboxInput placeholder="Search a country..." aria-label="Country" />
