@@ -25,7 +25,7 @@ import styles from './Alert.module.scss';
  *          `HTMLAttributes<HTMLDivElement>`, `MouseEvent<HTMLButtonElement>`,
  *          `ReactNode`
  * @a11y    `variant="critical"` → `role="alert"` + `aria-live="assertive"`
- *          (interrupts SR immediately). Pozostałe warianty → `role="status"`
+ *          (interrupts SR immediately). Other variants → `role="status"`
  *          + `aria-live="polite"` (waits for next pause). `href` renders the
  *          title/body block as an `<a>` (whole body clickable) — close button
  *          stays outside the link so it remains independently operable.

@@ -7,9 +7,11 @@ import styles from './Empty.module.scss';
  *
  * @layer   atom (feedback)
  * @tokens  --color-text-{primary,secondary,muted}, --color-border-subtle,
- *          --space-{2,3,4,6}, --font-size-{base,lg}, --font-weight-semibold,
- *          --line-height-snug, --radius-md, --duration-normal, --easing-default,
- *          fadeIn keyframe
+ *          --space-{1,2,3,4,6,10} (gap + padding + icon-sizing + margins),
+ *          --font-size-{base,lg}, --font-weight-semibold,
+ *          --line-height-{snug,normal} (snug=title, normal=description),
+ *          --radius-md, --duration-normal, --easing-default,
+ *          fadeIn keyframe (from global _animations.scss)
  * @deps    cn, React: `forwardRef`, type imports
  *          `HTMLAttributes<HTMLDivElement>`, `ReactNode`
  * @a11y    Renders `<div>`. Server-safe. Optional `role="status"` +

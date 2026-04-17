@@ -27,7 +27,11 @@ import styles from './Inline.module.scss';
  * @notes   Server-Component safe. The `collapseBelow` prop swaps
  *          flex-direction to column at viewports below the named
  *          breakpoint and back to row at/above it — useful for
- *          nav rows that should stack on mobile.
+ *          nav rows that should stack on mobile. Breakpoint switching
+ *          is implemented via `@use 'mixins' as mx` + `@include
+ *          mx.bp-{sm,md,lg}` in Inline.module.scss (SCSS-side dep
+ *          not surfaced in @deps — @deps is tsx-imports-only per
+ *          library convention).
  *
  * @example
  * <Inline gap={3}>

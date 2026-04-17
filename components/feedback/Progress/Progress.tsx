@@ -21,11 +21,14 @@ import styles from './Progress.module.scss';
  *
  * @layer   atom (feedback)
  * @tokens  --color-brand, --color-brand-subtle, --color-brand-strong,
- *          --color-surface-raised, --color-border-subtle,
- *          --color-text-{primary,secondary,muted},
- *          --space-{1,2,3}, --font-size-xs, --font-weight-{medium,semibold},
- *          --letter-spacing-wider, --radius-{sm,full},
- *          --duration-normal, --easing-default
+ *          --color-surface, --color-surface-raised, --color-border-subtle,
+ *          --color-text-{primary,secondary},
+ *          --space-{1,2}, --font-size-xs, --font-weight-{medium,semibold},
+ *          --letter-spacing-wider, --radius-full,
+ *          --duration-normal, --easing-default.
+ *          Component-local `--progress-value` (set via tsx inline style as
+ *          percent string) drives `.bar` width in percent mode — design-token
+ *          channel, not a token itself.
  * @deps    cn, React: `forwardRef`, type imports `CSSProperties`,
  *          `HTMLAttributes<HTMLDivElement>`
  * @a11y    Stages mode: `<ol aria-label={label}>` + `<li aria-current="step">`
