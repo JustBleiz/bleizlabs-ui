@@ -33,7 +33,7 @@
  * @regressions tests/Tooltip.{keyboard,focus,aria,regression}.spec.md — 20
  *   Radix closed-issue cases mapped (#620, #705, #617, #1691, #1914, #1077,
  *   #2029, #2372, #1920, #1573, #2589, #1351, #2959, #2665, #899, #1010,
- *   #1476, #1612, #3081, #2727). ~10 marked test.skip with PLAYGROUND-DEP
+ *   #1476, #1612, #3081, #2727). 11 marked test.skip with PLAYGROUND-DEP
  *   rationale (require Dialog/DropdownMenu/touch device to exercise).
  * @example
  *   // Standalone (uncontrolled)
