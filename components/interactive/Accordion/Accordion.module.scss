@@ -77,28 +77,34 @@
   transform: rotate(180deg);
 }
 
+// Panel expand/collapse uses classic `max-height` transition (0 ↔ large
+// ceiling) instead of the `grid-template-rows: 0fr ↔ 1fr` trick. Reason
+// (E135, follow-up to E134 bug 5): the grid-fractional-unit approach
+// interpolates poorly across browsers — Chromium has measurable jank
+// between frames when computing the `1fr` target from a `0fr` start for
+// grids with a single auto-sized child (the first frame often snaps to
+// the target height, making the content text appear at full height
+// before the row-height transition actually runs). max-height with a
+// sufficiently large ceiling (1000px covers typical FAQ / form panel
+// content) transitions linearly and predictably in every major browser.
+// The practical downside — transition duration scales with ceiling, not
+// content height — is imperceptible at 250-300ms durations.
 .panel {
-  display: grid;
-  grid-template-rows: 1fr;
-  // `overflow: hidden` on the panel (not .panelInner) is what makes the
-  // `1fr → 0fr` transition visually clip the content gradually as the grid
-  // row shrinks. Without it, the inner content (including its padding)
-  // paints above the collapsing row — the animation looks like "text shows
-  // first, then card snaps" (reported in E134 bug 5).
+  max-height: 1000px;
   overflow: hidden;
   border-top: 1px solid var(--color-border-subtle);
   transition:
-    grid-template-rows var(--duration-normal) var(--easing-default),
+    max-height var(--duration-normal) var(--easing-default),
     border-top-color var(--duration-fast) var(--easing-default);
 }
 
-// Closed state — collapsed via grid-template-rows trick (modern, performant
-// alternative to max-height keyframe). The `1fr → 0fr` transition animates
-// reliably because the element stays in the layout tree (no `display: none`
-// or `hidden` attribute that would suppress the starting frame).
-// `aria-hidden="true"` (set by the .tsx) keeps SR consistent with visibility.
+// Closed state — max-height 0 + border-top-color transparent + pointer-events
+// off. `visibility: hidden` on the inner (applied via .panelClosed below)
+// keeps the subtree out of the accessibility tree and tab order without
+// removing it from the layout tree (removing it would cancel the start
+// frame of the open transition).
 .panelClosed {
-  grid-template-rows: 0fr;
+  max-height: 0;
   border-top-color: transparent;
   pointer-events: none;
 }
@@ -108,10 +114,6 @@
 }
 
 .panelInner {
-  // min-height:0 lets the grid row drive the inner size — without it,
-  // the inner content's intrinsic min-height would floor the row at its
-  // content height and defeat the 0fr collapse.
-  min-height: 0;
   padding: var(--space-4) var(--space-5);
   color: var(--color-text-secondary);
   line-height: var(--line-height-normal);
