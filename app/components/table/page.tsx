@@ -254,46 +254,44 @@ export default function TablePlayground() {
           top border automatically. Uses <code>as=&quot;th&quot;</code>{' '}
           <code>scope=&quot;row&quot;</code> on label cells.
         </Text>
-        <div className={styles.framed}>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableCell as="th" scope="col">
-                  Invoice
-                </TableCell>
-                <TableCell as="th" scope="col">
-                  Customer
-                </TableCell>
-                <TableCell as="th" scope="col" align="end">
-                  Amount
-                </TableCell>
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableCell as="th" scope="col">
+                Invoice
+              </TableCell>
+              <TableCell as="th" scope="col">
+                Customer
+              </TableCell>
+              <TableCell as="th" scope="col" align="end">
+                Amount
+              </TableCell>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {INVOICES.map((inv) => (
+              <TableRow key={inv.id}>
+                <TableCell>{inv.id}</TableCell>
+                <TableCell>{inv.customer}</TableCell>
+                <TableCell align="end">{formatMoney(inv.amount)}</TableCell>
               </TableRow>
-            </TableHeader>
-            <TableBody>
-              {INVOICES.map((inv) => (
-                <TableRow key={inv.id}>
-                  <TableCell>{inv.id}</TableCell>
-                  <TableCell>{inv.customer}</TableCell>
-                  <TableCell align="end">{formatMoney(inv.amount)}</TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-            <TableFooter>
-              <TableRow>
-                <TableCell as="th" scope="row" colSpan={2}>
-                  Paid total
-                </TableCell>
-                <TableCell align="end">{formatMoney(paidTotal)}</TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell as="th" scope="row" colSpan={2}>
-                  Grand total
-                </TableCell>
-                <TableCell align="end">{formatMoney(total)}</TableCell>
-              </TableRow>
-            </TableFooter>
-          </Table>
-        </div>
+            ))}
+          </TableBody>
+          <TableFooter>
+            <TableRow>
+              <TableCell as="th" scope="row" colSpan={2}>
+                Paid total
+              </TableCell>
+              <TableCell align="end">{formatMoney(paidTotal)}</TableCell>
+            </TableRow>
+            <TableRow>
+              <TableCell as="th" scope="row" colSpan={2}>
+                Grand total
+              </TableCell>
+              <TableCell align="end">{formatMoney(total)}</TableCell>
+            </TableRow>
+          </TableFooter>
+        </Table>
       </section>
 
       {/* ─────────────────────────────────────────── */}

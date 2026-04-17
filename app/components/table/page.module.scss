@@ -44,15 +44,6 @@
   font-size: var(--font-size-sm);
 }
 
-// Card-framed table wrapper — overflow hidden clips the native cell
-// backgrounds to the Card's radius. Demonstrates the composition pattern
-// for consumers who want a rounded outer shell.
-.framed {
-  overflow: hidden;
-  border: 1px solid var(--color-border-subtle);
-  border-radius: var(--radius-md);
-}
-
 .codeBlock {
   display: block;
   padding: var(--space-3) var(--space-4);

@@ -108,11 +108,21 @@
   --color-brand-900: #{map.get($brand, 900)};
   --color-brand-950: #{map.get($brand, 950)};
 
-  // Semantic brand aliases
+  // Semantic brand aliases (theme-aware for subtle + strong — same pattern as
+  // status colors fixed in E134 bug 7; prevents brand-100 from rendering
+  // near-white on dark surfaces where it becomes indistinguishable from the
+  // default light theme look). `--color-brand` and `--color-brand-light`
+  // stay theme-independent (vivid brand accent reads on both surfaces).
   --color-brand: var(--color-brand-500);
-  --color-brand-subtle: var(--color-brand-100);
   --color-brand-light: var(--color-brand-400);
-  --color-brand-strong: var(--color-brand-700);
+
+  @if $seed-mode == dark {
+    --color-brand-subtle: var(--color-brand-900);
+    --color-brand-strong: var(--color-brand-300);
+  } @else {
+    --color-brand-subtle: var(--color-brand-100);
+    --color-brand-strong: var(--color-brand-700);
+  }
 
   // ==========================================================================
   // ACCENT COLOR SCALE
@@ -382,6 +392,11 @@
   // Theme-aware hover/muted surfaces — light theme darkens raised slightly.
   --color-surface-hover: #{map.get($neutral, 200)};
   --color-surface-muted: #{map.get($neutral, 200)};
+
+  // Theme-aware brand subtle/strong — light theme uses tinted (100) for bg
+  // and deep (700) for text so selected/accented rows pop without washing out.
+  --color-brand-subtle: var(--color-brand-100);
+  --color-brand-strong: var(--color-brand-700);
 }
 
 // ============================================================================
@@ -421,6 +436,14 @@
   // (neutral-900) for track / focused-input-slot backgrounds.
   --color-surface-hover: #{map.get($neutral, 700)};
   --color-surface-muted: #{map.get($neutral, 900)};
+
+  // Theme-aware brand subtle/strong — dark theme uses deep brand-900 as bg
+  // (reads clearly on dark surface) and light brand-300 as accent text.
+  // Prior brand-100 default made "selected" highlights render near-white
+  // in dark mode (reported in E138-followup: Table row `selected` looked
+  // washed-out / same as default light theme).
+  --color-brand-subtle: var(--color-brand-900);
+  --color-brand-strong: var(--color-brand-300);
 }
 
 // ============================================================================
