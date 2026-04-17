@@ -1,0 +1,338 @@
+@use '../../../styles/mixins' as mx;
+
+/* ============================================================================
+ * SiteHeader — Phase 12 CP1 (Composition Presets kickoff, E141)
+ *
+ * Composition preset — zero new tokens. Heights inlined as component-local
+ * `--site-header-height` CSS var toggled by `.sm`/`.md`/`.lg` size classes.
+ * Blur variant reuses `--card-blur` from _semantics.scss.
+ *
+ * Section order per scss-conventions.md: positioning → display → box model →
+ * visual → typography → transitions → states → responsive → reduced motion →
+ * forced colors.
+ * ========================================================================== */
+
+/* --------------------------------------------------------------------------
+ * WRAPPER (outer <header> from Section tag="header")
+ * -------------------------------------------------------------------------- */
+
+.wrapper {
+  /* POSITIONING applied via .sticky / .static modifier classes */
+
+  /* DISPLAY */
+  display: block;
+  width: 100%;
+
+  /* VISUAL (variant-driven — .solid / .blur apply background + backdrop-filter) */
+
+  /* TRANSITIONS */
+  transition:
+    background var(--duration-normal) var(--easing-default),
+    backdrop-filter var(--duration-normal) var(--easing-default),
+    box-shadow var(--duration-normal) var(--easing-default);
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+  }
+}
+
+/* --------------------------------------------------------------------------
+ * VARIANTS (flat classes)
+ * -------------------------------------------------------------------------- */
+
+.solid {
+  background: var(--color-surface);
+}
+
+.blur {
+  /* color-mix keeps the surface hue but drops opacity so content below shows through. */
+  background: color-mix(in srgb, var(--color-surface) 72%, transparent);
+  backdrop-filter: blur(var(--card-blur, 10px)) saturate(180%);
+  -webkit-backdrop-filter: blur(var(--card-blur, 10px)) saturate(180%);
+}
+
+.bordered {
+  border-block-end: 1px solid var(--color-border-subtle);
+}
+
+/* --------------------------------------------------------------------------
+ * POSITION
+ * -------------------------------------------------------------------------- */
+
+.sticky {
+  position: sticky;
+  inset-block-start: 0;
+  z-index: var(--z-sticky);
+}
+
+.static {
+  position: relative;
+}
+
+/* --------------------------------------------------------------------------
+ * SIZE (sets component-local height var consumed by .bar)
+ * -------------------------------------------------------------------------- */
+
+.sm {
+  --site-header-height: 64px;
+}
+.md {
+  --site-header-height: 72px;
+}
+.lg {
+  --site-header-height: 88px;
+}
+
+/* --------------------------------------------------------------------------
+ * BAR (inner horizontal flex row — lives inside Container)
+ * -------------------------------------------------------------------------- */
+
+.bar {
+  /* DISPLAY */
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+
+  /* BOX MODEL */
+  width: 100%;
+  min-height: var(--site-header-height, 72px);
+}
+
+/* Per-size bar nudges (paddings/typography adjust with height). */
+.bar-sm {
+  padding-block: var(--space-2);
+  font-size: var(--font-size-sm, 14px);
+}
+.bar-md {
+  padding-block: var(--space-3);
+  font-size: var(--font-size-base, 16px);
+}
+.bar-lg {
+  padding-block: var(--space-4);
+  font-size: var(--font-size-base, 16px);
+}
+
+/* --------------------------------------------------------------------------
+ * BRAND SLOT (left — flexible width, never shrinks)
+ * -------------------------------------------------------------------------- */
+
+.brand {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+/* --------------------------------------------------------------------------
+ * NAV SLOT — render-twice pattern
+ *
+ * .navDesktop — inside header bar; hidden on mobile, shown from md breakpoint up.
+ * .navSheet   — inside Sheet portal; vertical stack, always visible while Sheet
+ *               is open (Sheet itself controls the surrounding visibility via
+ *               mount / unmount).
+ * -------------------------------------------------------------------------- */
+
+.nav {
+  color: var(--color-text-secondary);
+
+  /* Nav gap comes from --site-header-nav-gap inline var, set by component */
+
+  /* Default link affordances for unstyled <a href> children */
+  & a {
+    color: inherit;
+    text-decoration: none;
+    padding-inline: var(--space-3);
+    padding-block: var(--space-2);
+    border-radius: var(--radius-md);
+    transition:
+      color var(--duration-fast) var(--easing-default),
+      background var(--duration-fast) var(--easing-default);
+
+    &:hover {
+      color: var(--color-text-primary);
+      background: var(--color-surface-hover);
+    }
+
+    &:focus-visible {
+      @include mx.focus-ring;
+    }
+
+    &[aria-current='page'] {
+      color: var(--color-text-primary);
+      font-weight: 600;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      transition: none;
+    }
+  }
+}
+
+.navDesktop {
+  display: none;
+  flex: 1;
+  justify-content: center;
+  align-items: center;
+  gap: var(--site-header-nav-gap, var(--space-4));
+
+  @include mx.bp-md {
+    display: flex;
+  }
+}
+
+.navSheet {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: var(--site-header-nav-gap, var(--space-3));
+  padding-block-start: var(--space-2);
+
+  & a {
+    display: flex;
+    align-items: center;
+    min-height: 44px; /* touch target enforcement inside Sheet */
+    padding-inline: var(--space-4);
+    padding-block: var(--space-3);
+  }
+}
+
+/* --------------------------------------------------------------------------
+ * ACTIONS SLOT (right — pushes to end when Nav is hidden on mobile)
+ * -------------------------------------------------------------------------- */
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: var(--site-header-actions-gap, var(--space-2));
+  flex-shrink: 0;
+  margin-inline-start: auto;
+}
+
+/* --------------------------------------------------------------------------
+ * MOBILE TOGGLE (hidden on desktop)
+ * -------------------------------------------------------------------------- */
+
+.mobileToggle {
+  /* DISPLAY */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  /* BOX MODEL */
+  width: 44px;
+  height: 44px;
+  padding: 0;
+
+  /* VISUAL */
+  background: transparent;
+  color: var(--color-text-primary);
+  border: 1px solid transparent;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+
+  /* TRANSITIONS */
+  transition:
+    background var(--duration-fast) var(--easing-default),
+    border-color var(--duration-fast) var(--easing-default),
+    color var(--duration-fast) var(--easing-default);
+
+  /* STATES */
+  &:hover {
+    background: var(--color-surface-hover);
+  }
+
+  &:focus-visible {
+    @include mx.focus-ring;
+  }
+
+  &:active {
+    background: var(--color-surface-muted);
+  }
+
+  /* RESPONSIVE — hidden from md breakpoint up */
+  @include mx.bp-md {
+    display: none;
+  }
+
+  /* TOUCH TARGET — already 44×44 baseline; mixin asserts on coarse pointer */
+  @include mx.touch-target;
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+  }
+}
+
+/* --------------------------------------------------------------------------
+ * HAMBURGER ICON (CSS-only morph to ✕ on open)
+ * -------------------------------------------------------------------------- */
+
+.toggleIcon {
+  position: relative;
+  display: inline-block;
+  width: 20px;
+  height: 14px;
+  pointer-events: none;
+}
+
+.toggleBar {
+  position: absolute;
+  inset-inline: 0;
+  height: 2px;
+  background: currentColor;
+  border-radius: 1px;
+  transition:
+    transform var(--duration-fast) var(--easing-default),
+    opacity var(--duration-fast) var(--easing-default),
+    top var(--duration-fast) var(--easing-default);
+
+  &:nth-child(1) {
+    top: 0;
+  }
+  &:nth-child(2) {
+    top: 6px;
+  }
+  &:nth-child(3) {
+    top: 12px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+  }
+}
+
+.toggleIcon[data-open='true'] {
+  .toggleBar {
+    &:nth-child(1) {
+      top: 6px;
+      transform: rotate(45deg);
+    }
+    &:nth-child(2) {
+      opacity: 0;
+    }
+    &:nth-child(3) {
+      top: 6px;
+      transform: rotate(-45deg);
+    }
+  }
+}
+
+/* --------------------------------------------------------------------------
+ * FORCED COLORS (HCM — high contrast mode)
+ * -------------------------------------------------------------------------- */
+
+@media (forced-colors: active) {
+  .wrapper {
+    border: 1px solid CanvasText;
+  }
+  .bordered {
+    border-block-end-color: CanvasText;
+  }
+  .nav a[aria-current='page'] {
+    outline: 2px solid CanvasText;
+    outline-offset: 2px;
+  }
+  .mobileToggle {
+    border-color: CanvasText;
+  }
+}
