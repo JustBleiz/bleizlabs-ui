@@ -343,6 +343,14 @@ const components: ComponentLink[] = [
     phase: 'Phase 10 — Complex Interactive',
     status: 'available',
   },
+  {
+    href: '/components/sidebar',
+    name: 'Sidebar',
+    description:
+      'E38 CI22 FINISHER — lands 80/80 Phase 10 COMPLETE. Composition — APG /disclosure/ (trigger + collapsible panel with aria-expanded/aria-controls) + plain navigation (<nav> + <a> + aria-current="page"). 9 compound flat exports (SidebarProvider + Sidebar + SidebarTrigger + SidebarHeader + SidebarContent + SidebarFooter + SidebarGroup + SidebarItem + SidebarSeparator) + useSidebar hook. Responsive: desktop fixed <aside> rail (sticky, border, 280px) + mobile drawer via FloatingPortal E23 + useFocusTrap (Dialog E15) + scroll lock + inert siblings + Escape + backdrop dismiss (all inline — single dispatch, no outside-click hook). Mobile breakpoint default 768px (overridable) via useSyncExternalStore + matchMedia (Carousel E34 / ScrollArea E35 precedent — triggers Rule of Three for useMatchMedia<T> extraction deferred to post-Phase 10 refactor). Opt-in cookie persistence (persist prop + cookieName) — consumer reads cookie in Server Component layout and passes to defaultOpen for SSR-friendly no-flash hydration. SidebarItem polymorphic via asChild (Next.js Link wrappers), isActive → aria-current="page" + data-active, disabled → aria-disabled + tabIndex=-1 + onClick preventDefault (link stays focusable per Tabs/NavigationMenu/Select precedent; native disabled invalid on <a>). SidebarTrigger polymorphic, default renders hamburger SVG that flips on open state. SidebarGroup role="group" + optional label prop auto-wires aria-labelledby. SidebarSeparator role="separator" aria-orientation="horizontal". side="left" | "right" explicit (no RTL auto-mirror). collapseMode "offcanvas" (default — desktop hides fully, mobile drawer) | "none" (always visible). 44×44 touch target on Trigger + Item via @include touch-target mixin. forced-colors: active HCM block (Canvas/CanvasText/LinkText/Highlight/HighlightText/GrayText/ButtonText). prefers-reduced-motion disables drawer animations + transitions. Cmd+B shortcut NOT built-in — consumer opts in via useSidebar() hook + own window keydown listener (D8 separation of concerns). WCAG 2.1 SC 1.1.1 DEV-mode warn if missing aria-label + aria-labelledby. Defers icon collapse mode (needs Tooltip E19), SidebarRail drag-resize, floating/inset variants, nested submenus — YAGNI / post-Phase-10 scope. Pattern-parent for future dashboard layouts + admin shells + settings panes.',
+    phase: 'Phase 10 — Complex Interactive',
+    status: 'available',
+  },
 ];
 
 export default function HomePage() {
