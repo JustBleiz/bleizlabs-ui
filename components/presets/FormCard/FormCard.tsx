@@ -16,6 +16,49 @@ import { Text } from '../../typography/Text';
 import { cn } from '../../utils/cn';
 import styles from './FormCard.module.scss';
 
+/**
+ * FormCard — semantic form wrapper preset composing Card + slots (Phase 8, E13).
+ *
+ * Renders `<form>` by default (`asForm=true`) so native browser form submission,
+ * validation, and autofill all work correctly. Pass `asForm={false}` to render as
+ * a plain Card `<div>` when form semantics are not needed. Default layout mirrors
+ * ContentCard (`padding={5}` + `radius="lg"`). Footer slot uses CardFooter action
+ * mode for submit button placement.
+ *
+ * @layer   preset
+ * @tokens  --space-1 (.header inter-line gap), --space-4 (.body inner gap:
+ *          larger than ContentCard for form field breathing room),
+ *          --space-3 (.footer gap — matches ContentCard for consistency);
+ *          Card atom handles outer padding/radius/border tokens
+ * @deps    Card (padding, radius, CardProps type), CardHeader (border flag),
+ *          CardBody, CardFooter (action flag), Heading (level={3}, size="lg"),
+ *          Text (variant="body", color="muted"), cn,
+ *          React: `forwardRef`, `ReactNode`, type imports
+ *          `FormEventHandler<HTMLFormElement>`, `Ref`
+ * @a11y    Default (`asForm=true`) renders semantic `<form>` wrapper with full
+ *          native submit / validation / autofill semantics — consumer provides
+ *          label association via `title` slot + optional `aria-labelledby` on
+ *          the form itself via spread. **When `asForm=false`, the wrapper
+ *          degrades to a plain Card `<div>` with zero form semantics** — use
+ *          only for form-look without form behavior. Title + description
+ *          achieve semantic `<h3>` / `<p>` ONLY when caller passes scalar
+ *          strings/numbers (wrapTitle/wrapDescription auto-wrap); ReactNode
+ *          pass-through preserves caller semantics.
+ * @notes   Six native `<form>` attributes (`onSubmit`, `action`, `method`,
+ *          `encType`, `noValidate`, `autoComplete`) are Omit-excluded from
+ *          CardProps and redeclared on FormCardProps so the preset owns their
+ *          semantics. `name` is preset-only (Card has no equivalent). The
+ *          `forwardRef<HTMLElement, ...>` signature covers both branches:
+ *          `Ref<HTMLFormElement>` when `asForm=true`, `Ref<HTMLDivElement>`
+ *          when `asForm=false`. Outer `.formWrapper` uses `display: contents`
+ *          so the `<form>` is semantic-only with zero layout impact; Card
+ *          remains the visual chrome owner.
+ * @example
+ * <FormCard title="Account" description="Update your profile" onSubmit={handler}
+ *           footer={<Button type="submit">Save</Button>}>
+ *   <Input label="Name" />
+ * </FormCard>
+ */
 export interface FormCardProps
   extends Omit<
     CardProps,
@@ -84,26 +127,6 @@ function wrapDescription(description: ReactNode): ReactNode {
   return description;
 }
 
-/**
- * FormCard — semantic form wrapper preset composing Card + slots (Phase 8, E13).
- *
- * Renders `<form>` by default (`asForm=true`) so native browser form submission,
- * validation, and autofill all work correctly. Pass `asForm={false}` to render as
- * a plain Card `<div>` when form semantics are not needed. Default layout mirrors
- * ContentCard (`padding={5}` + `radius="lg"`). Footer slot uses CardFooter action
- * mode for submit button placement.
- *
- * @layer   preset
- * @tokens  Inherited from Card atom
- * @deps    Card, CardHeader, CardBody, CardFooter, Heading, Text
- * @a11y    Semantic `<form>` element. Consumer provides label association via
- *          `title` slot + optional `aria-labelledby` on form itself via spread.
- * @example
- * <FormCard title="Account" description="Update your profile" onSubmit={handler}
- *           footer={<Button type="submit">Save</Button>}>
- *   <Input label="Name" />
- * </FormCard>
- */
 export const FormCard = forwardRef<HTMLElement, FormCardProps>(function FormCard(
   {
     title,
