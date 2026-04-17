@@ -11,13 +11,19 @@ import styles from './Alert.module.scss';
  * Alert — semantic feedback notification with 4 variants (Phase 5 F2).
  *
  * @layer   atom (feedback)
- * @tokens  --color-{error,warning,info,success}-{subtle,strong},
- *          --color-surface, --color-surface-raised,
- *          --color-text-{primary,secondary,muted},
- *          --space-{1,2,3,4}, --font-size-{xs,sm,base}, --font-weight-semibold,
- *          --line-height-{snug,normal}, --radius-{sm,md}, --duration-{fast,normal},
- *          --easing-default, --focus-ring, fadeIn keyframe
- * @deps    cn
+ * @tokens  --color-{error,warning,info,success} (border-left-color per variant),
+ *          --color-{error,warning,info,success}-{subtle,strong} (border +
+ *          background + title color per variant);
+ *          --color-surface (base bg), --color-surface-raised (closeButton hover);
+ *          --color-text-{primary,secondary,muted};
+ *          --space-{1,3,4} (gap + padding + timestamp margin);
+ *          --font-size-{xs,sm,base}, --font-weight-semibold;
+ *          --line-height-{snug,normal}, --radius-{sm,md},
+ *          --duration-{fast,normal}, --easing-default, --focus-ring;
+ *          `fadeIn` keyframe animation.
+ * @deps    cn, React: `forwardRef`, type imports
+ *          `HTMLAttributes<HTMLDivElement>`, `MouseEvent<HTMLButtonElement>`,
+ *          `ReactNode`
  * @a11y    `variant="critical"` → `role="alert"` + `aria-live="assertive"`
  *          (interrupts SR immediately). Pozostałe warianty → `role="status"`
  *          + `aria-live="polite"` (waits for next pause). `href` renders the

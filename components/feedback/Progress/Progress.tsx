@@ -26,7 +26,8 @@ import styles from './Progress.module.scss';
  *          --space-{1,2,3}, --font-size-xs, --font-weight-{medium,semibold},
  *          --letter-spacing-wider, --radius-{sm,full},
  *          --duration-normal, --easing-default
- * @deps    cn
+ * @deps    cn, React: `forwardRef`, type imports `CSSProperties`,
+ *          `HTMLAttributes<HTMLDivElement>`
  * @a11y    Stages mode: `<ol aria-label={label}>` + `<li aria-current="step">`
  *          on active stage. Completed and pending stages carry no role/state
  *          beyond their text — `aria-label` scopes the list for SR.

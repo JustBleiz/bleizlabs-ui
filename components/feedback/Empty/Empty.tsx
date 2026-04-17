@@ -10,7 +10,8 @@ import styles from './Empty.module.scss';
  *          --space-{2,3,4,6}, --font-size-{base,lg}, --font-weight-semibold,
  *          --line-height-snug, --radius-md, --duration-normal, --easing-default,
  *          fadeIn keyframe
- * @deps    cn
+ * @deps    cn, React: `forwardRef`, type imports
+ *          `HTMLAttributes<HTMLDivElement>`, `ReactNode`
  * @a11y    Renders `<div>`. Server-safe. Optional `role="status"` +
  *          `aria-live="polite"` supported via spread props — pass them when
  *          the empty state appears asynchronously (e.g., after filter / delete)
