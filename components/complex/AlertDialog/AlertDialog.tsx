@@ -18,35 +18,6 @@ import { cn } from '../../utils/cn';
 import { useFocusTrap } from '../Dialog';
 import styles from './AlertDialog.module.scss';
 
-/**
- * AlertDialog — accessible blocking confirmation (Phase 10 CI2).
- *
- * @layer    complex-interactive
- * @tokens   --color-surface, --color-border-subtle, --color-overlay,
- *           --color-status-{info,warning,critical}, --radius-lg,
- *           --shadow-2xl, --duration-normal, --easing-default, --space-4,
- *           --space-5, --z-modal, --focus-ring
- * @deps     cn, Heading, Text, Button, useFocusTrap (imported from Dialog E15)
- * @a11y     WAI-ARIA APG `/alertdialog/`. Blocking modal alert with
- *           destructive-action semantics. Reuses `useFocusTrap` from Dialog.
- *           Adds alert-specific: `role="alertdialog"`, REQUIRED
- *           `aria-describedby` (type-enforced via non-optional `description`),
- *           least-destructive initial focus (Cancel default per APG safety),
- *           `closeOnOverlayClick` default `false` (enforces explicit action),
- *           Escape calls `onCancel` not `onConfirm`, background `inert`
- *           toggle (blocks AT virtual cursor). Severity (info/warning/
- *           critical) drives border glow + default `confirmVariant`.
- * @apg      https://www.w3.org/WAI/ARIA/apg/patterns/alertdialog/
- * @tested   tsc + eslint + next build (Playwright/NVDA/axe deferred per
- *           E15 scope — 41 regression cases documented).
- * @regressions See `tests/AlertDialog.regression.spec.md` AD-R01..R41.
- *
- * @example
- * <AlertDialog open={open} onOpenChange={setOpen}
- *   title="Delete account?" description="All data will be erased."
- *   severity="critical" onConfirm={handleDelete} onCancel={() => setOpen(false)} />
- */
-
 export type AlertDialogSize = 'sm' | 'md' | 'lg';
 export type AlertDialogSeverity = 'info' | 'warning' | 'critical';
 
@@ -138,7 +109,7 @@ const DEFAULT_CONFIRM_VARIANT: Record<AlertDialogSeverity, ButtonVariant> = {
  * @tokens       --color-overlay, --color-surface, --color-border-subtle,
  *               --color-info, --color-warning, --color-error,
  *               --color-info-subtle, --color-warning-subtle, --color-error-subtle,
- *               --radius-lg, --shadow-2xl, --space-{3,4,5,6}, --duration-normal,
+ *               --radius-lg, --shadow-2xl, --space-{3,4,5,8}, --duration-normal,
  *               --easing-default, --z-modal, --focus-ring
  * @deps         Heading, Text, Button, cn, createPortal, useFocusTrap (from Dialog)
  * @a11y         role="alertdialog" + aria-modal="true" + aria-labelledby (required) +
@@ -154,16 +125,16 @@ const DEFAULT_CONFIRM_VARIANT: Record<AlertDialogSeverity, ButtonVariant> = {
  *               aria, regression) but execution deferred to first consumer adoption
  *               per E15 scope decision 2 (no browser env in build agent). Manual
  *               NVDA sweep deferred — documented in `docs/a11y-pipeline.md`.
- * @regressions  41 Radix closed issues mapped in `tests/AlertDialog.regression.spec.md`
+ * @regressions  41 regression cases mapped in `tests/AlertDialog.regression.spec.md`
  *               (`.spec.md` wraps typed Playwright fences — deferred execution, same
- *               format as Dialog/tests/). 21 inherited from Dialog (same portal+trap+
- *               scroll lock primitives) + 20 AlertDialog-specific (required
- *               aria-describedby, least-destructive focus, overlay click blocking,
- *               destructive styling, form submission isolation, nested Select
- *               interaction, mobile pointer-events timing). ~12 tests `test.skip`
- *               with `PLAYGROUND-DEP:` rationale — unskip when the referenced
- *               playground scenario lands (typically when another Phase 10
- *               component like Select/Toast provides the nested primitive).
+ *               format as Dialog/tests/). 29 active `test(...)` + 12 `test.skip(...)`
+ *               with `PLAYGROUND-DEP:` rationale. Coverage: Dialog-inherited primitives
+ *               (portal + focus trap + scroll lock + inert) + AlertDialog-specific
+ *               (required aria-describedby, least-destructive focus, overlay click
+ *               blocking, destructive styling, form submission isolation, nested Select
+ *               interaction, mobile pointer-events timing). Skipped tests unskip when
+ *               the referenced playground scenario lands (typically when another Phase
+ *               10 component like Select/Toast provides the nested primitive).
  * @example
  * const [open, setOpen] = useState(false);
  * <>
