@@ -17,33 +17,6 @@ import { cn } from '../../utils/cn';
 import { useFocusTrap } from '../Dialog';
 import styles from './Drawer.module.scss';
 
-/**
- * Drawer — bottom-positioned modal sheet (Phase 10 CI3).
- *
- * @layer    complex-interactive
- * @tokens   --color-surface, --color-border-subtle, --color-overlay,
- *           --radius-lg, --shadow-2xl, --duration-normal, --easing-default,
- *           --space-{4,5,8}, --z-modal, --focus-ring
- * @deps     cn, Heading, Text, useFocusTrap (from Dialog E15)
- * @a11y     Visual modifier of WAI-ARIA APG `/dialog-modal/` (`role="dialog"`).
- *           Reuses `useFocusTrap` from Dialog. Bottom-anchored, slide-up
- *           keyframe, top-only border-radius, iOS env(safe-area-inset-bottom)
- *           padding, sticky footer via overflow on `.body` (not `.content`).
- *           Height variants sm 360 / md 560 / lg min(80vh, calc(100vh -
- *           space-8)) with 80dvh fallback. `description?` optional,
- *           `closeOnOverlayClick` default true, `showCloseButton?` default
- *           false (drawers are action-driven).
- * @apg      https://www.w3.org/WAI/ARIA/apg/patterns/dialog-modal/
- * @tested   tsc + eslint + next build (Playwright/NVDA/axe deferred per
- *           E15 scope — 41 regression cases).
- * @regressions See `tests/Drawer.regression.spec.md` DR-R01..R41.
- *
- * @example
- * <Drawer open={open} onOpenChange={setOpen} title="Menu" size="md">
- *   <nav>...</nav>
- * </Drawer>
- */
-
 export type DrawerSize = 'sm' | 'md' | 'lg';
 
 export interface DrawerProps
@@ -128,9 +101,11 @@ function CloseIcon() {
  *
  * @layer        complex interactive (Phase 10)
  * @apg          https://www.w3.org/WAI/ARIA/apg/patterns/dialog-modal/ (bottom-positioned modifier)
- * @tokens       --color-overlay, --color-surface, --color-border-subtle,
- *               --radius-lg, --shadow-2xl, --space-{3,4,5,8},
- *               --duration-normal, --easing-default, --z-modal, --focus-ring
+ * @tokens       --color-surface, --color-surface-raised, --color-border-subtle,
+ *               --color-overlay, --color-text-primary, --color-text-muted,
+ *               --radius-lg, --radius-md, --shadow-2xl, --duration-normal,
+ *               --duration-fast, --easing-default, --space-{3,4,5,8},
+ *               --z-modal, --focus-ring
  * @deps         Heading, Text, cn, createPortal, useFocusTrap (from ../Dialog)
  * @a11y         role="dialog" + aria-modal="true" + aria-labelledby (required) +
  *               aria-describedby (optional, conditional). Tab/Shift+Tab focus
@@ -153,7 +128,7 @@ function CloseIcon() {
  *                 aria, regression) — specs ready, no browser env in build agent
  *               - axe-core runtime zero-violations sweep (requires live page)
  *               - Manual NVDA sweep + iOS device testing (requires devices)
- *               - ~15 regression tests `test.skip` with PLAYGROUND-DEP rationale
+ *               - 17 regression tests `test.skip` with PLAYGROUND-DEP rationale
  *                 (iOS-specific quirks, multi-drawer stacking, nested Select/Toast
  *                 scenarios pending other Phase 10 components)
  * @regressions  41 cases mapped in `tests/Drawer.regression.spec.md`: 21 inherited
