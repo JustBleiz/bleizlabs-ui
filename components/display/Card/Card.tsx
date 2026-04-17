@@ -18,11 +18,12 @@ import styles from './Card.module.scss';
  *          --color-text-primary, --padding-card (base padding fallback),
  *          --radius-card (base radius fallback).
  *          Local channels (not tokens themselves): --card-{direction,width,
- *          padding,radius,accent-color} injected by tsx. Special:
- *          --card-bg-glass + --card-blur are consumed by `.variantGlass`
- *          SCSS but NOT injected by tsx and lack SCSS fallbacks — consumers
- *          must provide them via parent style or global cascade for glass
- *          variant to render visibly (see Odchylenia note).
+ *          padding,radius,accent-color} injected by tsx.
+ *          Glass variant channels: --card-bg-glass + --card-blur are
+ *          consumed by `.variantGlass` with SCSS fallbacks
+ *          (`rgba(255,255,255,0.06)` + `12px`) — glass variant works
+ *          out-of-the-box; consumers can override via inline style or
+ *          parent cascade for custom glass theming.
  * @deps    Slot (own primitive, asChild boundary), cn, SpaceIndex type,
  *          React: `forwardRef`, type imports `CSSProperties`,
  *          `HTMLAttributes<HTMLDivElement>`

@@ -40,10 +40,10 @@
 }
 
 .variantGlass {
-  background: var(--card-bg-glass);
+  background: var(--card-bg-glass, rgba(255, 255, 255, 0.06));
   border: 1px solid var(--color-border-subtle);
-  backdrop-filter: blur(var(--card-blur));
-  -webkit-backdrop-filter: blur(var(--card-blur));
+  backdrop-filter: blur(var(--card-blur, 12px));
+  -webkit-backdrop-filter: blur(var(--card-blur, 12px));
 }
 
 // ============================================================================
