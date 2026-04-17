@@ -28,8 +28,10 @@ import styles from './Slider.module.scss';
  *
  * @layer    complex-interactive
  * @tokens   --color-brand, --color-surface-muted, --color-surface-raised,
- *           --color-border, --focus-ring, --duration-fast, --easing-default
- * @deps     cn, mergeRefs
+ *           --color-border, --focus-ring (via mx.focus-ring mixin),
+ *           --duration-fast, --easing-default, --radius-full, --shadow-sm,
+ *           --space-3
+ * @deps     cn, mergeRefs, usePointerDrag (E39 shared gesture primitive)
  * @a11y     `role="slider"` on SliderThumb with `aria-valuenow` / `aria-valuemin` /
  *           `aria-valuemax` / `aria-orientation`. Keyboard per APG `/slider/`:
  *           Arrow ±step / Shift+Arrow ±largeStep / PageUp/Dn ±largeStep /
@@ -39,7 +41,9 @@ import styles from './Slider.module.scss';
  *           Tab order stays intact for SR discovery.
  * @apg      https://www.w3.org/WAI/ARIA/apg/patterns/slider/
  * @tested   tsc + eslint + next build (Playwright/NVDA/axe deferred per E15 scope).
- * @regressions See `docs/_tmp/slider-spec.md` Radix regression cases SL-R01..SL-R29 (29 total).
+ * @regressions tests/Slider.{keyboard,focus,aria,regression}.spec.md —
+ *           29 regression cases (SL-R01..SL-R29) mapped from
+ *           `docs/specs/slider-spec.md` (promoted from `_tmp` in E42).
  *
  * @example
  * // Basic uncontrolled
