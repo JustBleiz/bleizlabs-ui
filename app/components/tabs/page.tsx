@@ -20,12 +20,13 @@ export default function TabsPlayground() {
     <main className={styles.page}>
       <header className={styles.header}>
         <Heading level={1} size="2xl">
-          Tabs — Phase 10 CI11
+          Tabs
         </Heading>
         <Text variant="lead" color="muted">
-          Accessible tabs widget per WAI-ARIA APG <code>/tabs/</code>. 4 compound flat exports
-          (Tabs + TabsList + TabsTrigger + TabsContent). Self-contained — zero E23 floating
-          primitives. Roving tabindex pattern reused from NavigationMenu.
+          Accessible tabs for switching between related panels. Three visual
+          variants (underline, pill, segmented), horizontal or vertical
+          orientation, automatic or manual activation, and RTL support.
+          Roving tabindex keeps the tab sequence clean for keyboard users.
         </Text>
       </header>
 

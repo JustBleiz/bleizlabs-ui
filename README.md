@@ -1,144 +1,269 @@
 # bleizlabs-ui
 
-> Universal fully-styled React component library for BleizLabs.
-> Zero runtime UI dependencies. Seed-based design tokens. Copy-to-project model.
+> A zero-dependency, fully-styled React component library with seed-based design tokens.
+> 81 components, WAI-ARIA compliant, SCSS Modules, React 19 + Next.js 16.
 
-## Status
+---
 
-**Phase 0 ✓ + Phase 1 Layout ✓ + Phase 2 Typography ✓ + Phase 3 Display ✓ + Phase 4 Simple Interactive ✓ + Phase 4 Production Hardening ✓ + Phase 5 Feedback ✓ + Phase 6 Specialized ✓ + Phase 7 Molecules ✓ + Phase 8 Card Presets ✓ + Phase 9 Demo & Docs ✓ + Phase 10 COMPLETE (Dialog ✓ + AlertDialog ✓ + Drawer ✓ + Sheet ✓ + Tooltip ✓ + Popover ✓ + DropdownMenu ✓ + ContextMenu ✓ + HoverCard ✓ + NavigationMenu ✓ + Tabs ✓ + Select ✓ + Combobox ✓ + Calendar ✓ + DatePicker ✓ + Toast ✓ + Slider ✓ + Carousel ✓ + ScrollArea ✓ + InputOTP ✓ + Command ✓) + E23 FloatingRoot + E29 useFloatingValueState<T> refactor sprints ✓** (delivered 2026-04-14/17 in Epics E03-E37). **47/47 simple atoms + 6/6 molecules + 5/5 Card presets + 22/22 complex interactive = 80/80 total components (Phase 10 COMPLETE)** + **6 shared floating primitives in `components/utils/floating/`** + **1 date primitives module in `components/utils/date.ts` (E30)** + **1 notification queue module in `components/complex/Toast/toastStore.ts` (E32)**.
+## Why another component library?
 
-- Phase 0: 7 SCSS fundament files for design tokens (`styles/`) — including `joined-group` mixin (E07) and `--input-*` + `--input-addon-*` semantic aliases (E07 + E08)
-- Phase 1: 4 layout atoms — Stack, Inline, Container, Section (`components/layout/`)
-- Phase 2: 2 typography atoms — Heading, Text (`components/typography/`)
-- Phase 3: 12 display atoms — Card + 4 slots (CardHeader, CardBody, CardFooter, CardSection), Badge, Separator, IconBox, Avatar, Skeleton, Spinner, AspectRatio (`components/display/`)
-- Phase 4 (E07): 12 simple interactive atoms — Button, ButtonGroup, Input, Label, Textarea, Checkbox, RadioGroup + RadioGroupItem, Toggle, ToggleGroup, Switch, Accordion (`components/interactive/`)
-- Phase 4 (E08 Production Hardening): 6 form-input atoms — InputGroup, InputGroupText, NumberInput, MaskedInput, PhoneInput, PasswordInput (+ Input hardened with prefix/suffix/showCounter/clearable/loading). D26 3-layer architecture.
-- Phase 5 (E09): 3 feedback atoms — Empty, Alert, Progress (`components/feedback/`)
-- Phase 6 Tier A (E10): 5 specialized atoms — Dot, MetricBar, AnimatedCounter, Breadcrumb, Pagination (`components/specialized/`)
-- Phase 6 Tier B (E11): 3 specialized atoms — **UsageDonut** (multi-segment SVG donut z `stroke-dasharray` math + track circle + `centerLabel` slot + default color cycle), **AvailabilityBar** (day-by-day status strip z computed `aria-label` summary + native `title` tooltips + CSS Grid `--availability-cells`), **Kbd** (native semantic `<kbd>` + outlined pill via `--font-mono`) (`components/specialized/`)
-- Phase 7 (E12): 6 molecules — **DataRow** (label/value responsive via Inline collapseBelow), **BackLink** (ghost Button wrapper + inline SVG arrow), **SectionDivider** (gradient Separator + Text + 3 align positions), **AccordionGroup** (single/multiple mode + React.cloneElement injection + rAF-deferred state), **ToggleGroupFilter** (thin controlled ToggleGroup wrapper with options array mapping), **DeadlineBadge** (hydration-safe Intl.RelativeTimeFormat + Date.now inside useEffect+rAF, Badge asChild `<time>` projection) (`components/molecules/`)
-- Phase 8 (E13): 5 Card presets — **ContentCard** (flagship `padding={5}` + `radius="lg"` + title/description/footer slots with scalar auto-wrap), **SidebarCard** (glass variant default + optional uppercase label slot + `padding={4}` + `radius="md"`), **FormCard** (renders semantic `<form>` by default via `asForm=true` + 7 native form props top-level + CardFooter action mode for submit), **StatsCard** (discriminated union `layout: 'stacked' | 'inline' | 'icon-lead'` with TS-enforced icon requirement for icon-lead + IconBox composition), **ActionCard** (required `severity: 'info' | 'warning' | 'critical'` + required `cta` + internal SEVERITY_MAP driving accentColor + IconBox variant) (`components/presets/`)
-- Plus: Slot primitive + cn + mergeRefs + `masks.ts` + **`position.ts` (E19 `computePosition`, E20 added `computeArrowPosition`)** + **`useFloating.ts` (E19 base, E20 extended with optional `arrow: { ref }` option — shared by Tooltip/Popover/DropdownMenu/ContextMenu/HoverCard/NavigationMenu/Select/Combobox; Tabs does NOT use it — self-contained)** + **6 shared floating primitives in `components/utils/floating/` (E23 + E29: createFloatingContext + useFloatingState + useFloatingValueState + useFloatingDismiss + useFloatingFocus + FloatingPortal + findFirstTabbable helper) + 1 shared gesture primitive in `components/utils/gesture/` (E39: usePointerDrag — Slider/Carousel/ScrollArea drag) + 1 shared match-media primitive in `components/utils/match-media/` (E40: useMatchMedia — Carousel/ScrollArea/Sidebar matchMedia queries)** (`components/utils/`), `SpaceIndex` type (`components/types/`), Next.js 16.2.3 dev playground with 45 per-component routes (incl. `/components/command` E37 + `/components/input-otp` E36 + `/components/scroll-area` E35 + `/components/carousel` E34 + `/components/slider` E33 + `/components/toast` E32 + `/components/date-picker` E31 + `/components/calendar` E30) + `/demo` showcase route (`app/`)
-- Phase 9 (E14): **`/demo` showcase page** — single `'use client'` page rendering all components across phase sections (originally 58 at E14 launch; now 80 post-E38 Phase 10 COMPLETE including all Phase 10 complex interactive components delivered so far) with runtime theme toggle (`[data-theme]` swap via `useEffect`), anchor nav, inline SVG sun/moon icons (zero deps per D25). Opens at `/demo` in dev server.
-- Phase 10 (E15): **Dialog (CI1)** — first Complex Interactive component. Modal dialog per APG `/dialog-modal/` pattern composing `createPortal(document.body)` + overlay + focus-trapped content. Own `useFocusTrap` hook (Tab/Shift+Tab cycle + initial focus + restore on close via `rAF`), Escape handler (listener on `document` so nested Select handlers fire first), body scroll lock only when open, 4 size variants (sm 420 / md 560 / lg 720 / xl 960), `prefers-reduced-motion` fallback, close button with `touch-target` mixin (44×44 mobile). Required `title` prop enforces APG compliance at type level. 21 Radix closed issues documented as regression cases in `components/complex/Dialog/tests/*.spec.md` — Playwright execution + manual NVDA sweep deferred to first consumer adoption per E15 scope decision. (`components/complex/Dialog/`)
-- Phase 10 (E16): **AlertDialog (CI2)** — second Complex Interactive. Blocking modal alert per APG `/alertdialog/`. Reuses `useFocusTrap` from Dialog (imported, not duplicated). Adds alert-specific semantics: `role="alertdialog"`, REQUIRED `aria-describedby` (not optional — type-enforced via non-optional `description: string` prop), least-destructive initial focus (Cancel by default), `closeOnOverlayClick` default `false` (enforces explicit action), Escape calls `onCancel` not `onConfirm`, **background `inert` toggle** (progressive enhancement beyond focus trap — blocks AT virtual cursor / Browse Mode). Severity system (`info`/`warning`/`critical`) drives border glow + default `confirmVariant`. 3 sizes narrower than Dialog (sm 360 / md 480 / lg 600). `.root` base class per D11. 41 Radix regression cases mapped in `tests/*.spec.md` (21 inherited from Dialog + 20 AlertDialog-specific) — ~12 marked `test.skip` with `PLAYGROUND-DEP:` rationale (unskip when nested Select/Toast/form/shadow-DOM scenarios land). (`components/complex/AlertDialog/`)
-- Phase 10 (E17): **Drawer (CI3)** — third Complex Interactive. Bottom-positioned modal sheet. Visual modifier of APG `/dialog-modal/` pattern (uses `role="dialog"`, not `alertdialog` — generic container). Reuses `useFocusTrap` from Dialog. SCSS forked from AlertDialog's `.root` + `.content` pattern with bottom-anchored layout (`align-items: flex-end`), slide-up keyframe (`translateY(100% → 0)`), top-only border-radius, iOS `env(safe-area-inset-bottom)` padding, and **sticky footer via `overflow-y: auto` on `.body`** (not `.content`) so only body scrolls while header/footer stay pinned. Height variants (sm 360 / md 560 / lg `min(80vh, calc(100vh - space-8))` with `80dvh` progressive override for iOS Safari address bar collapse) — differs from Dialog/AlertDialog which use width variants. `description?` optional (Dialog parity, NOT AlertDialog strictness), `closeOnOverlayClick` default `true` (Dialog parity). Optional `showCloseButton?` default `false` (drawers are action-driven, opt-in X icon). 41 regression cases mapped (21 inherited + 20 Drawer-specific: bottom anchor, top-only radius, dvh fallback, safe-area-inset, sticky footer, iOS viewport/scroll/keyboard quirks, multi-drawer stacking) — ~15 marked `test.skip` with `PLAYGROUND-DEP:` rationale. (`components/complex/Drawer/`)
-- Phase 10 (E28): **Combobox (CI13)** — thirteenth Complex Interactive, **SECOND LISTBOX SUB-FAMILY + pattern-child Select E27**. Accessible autocomplete input per APG `/combobox/` editable variant. 8 compound flat exports per D24: `Combobox` (root — 4 state slots open/value/search/highlightedId; filter computation via useLayoutEffect+useState producing visibleItemIds Set + matchCount respecting 3 modes `'auto'|false|function`; `initialSearchSyncRef` one-shot effect syncs uncontrolled search to committed value's label after first registry fill — iter 1 fix IMP-4), `ComboboxInput` (self-contained trigger wrapper with input + clear X + chevron; `<input role="combobox" aria-autocomplete="list">` NO native disabled; aria-activedescendant declarative in JSX via ComboboxContentContext; single React onKeyDown for closed/open state via listboxKeyHandlerRef; `onBlur` Radix Strategy A — setTimeout microtask + relatedTarget check + exact-match lookup commit else revert; IME composition handling via isComposingRef + key='Process' + keyCode=229 guards — critical for CJK users per Radix closed issues), `ComboboxContent` (portal listbox mirror SelectContent with closeOnEscape:false + closeOnOutsideClick:true; `if (!open) return null` SSR-stable; publishes listbox key handler via useLayoutEffect), `ComboboxItem` (`role="option"` with asChild Slot; register uses `textContent: textValue ?? deriveTextFromChildren(children)` — derives from React children NOT DOM per iter 1 fix IMP-2 so items mounting inside hidden sentinel branch still register correct text; returns hidden `<div>` sentinel when not in visibleItemIds preserving registry for blur lookup; wrapped in React.memo), `ComboboxEmpty` (`role="presentation"` rendered when matchCount === 0 via content context subscription), `ComboboxGroup` + `ComboboxLabel` (plain `<div id>` no role) + `ComboboxSeparator` (role="none"). **Konsumuje 4/5 E23 primitives** (same as Select — skips useFloatingFocus). **Filter default = `'auto'` case-insensitive CONTAINS** (substring match, per Phase 2 override over Explore's startsWith — shadcn precedent, user expectation "an" finds Canada/Austria/Andorra). **APG editable-combobox 100% keyboard**: closed typing opens+filters, ArrowDown/Up open+init highlight, Alt+ArrowDown opens showing ALL items (Radix bypass convention), Escape+non-empty clears search keeps value, Escape+empty no-op bubble, Enter no-op form-submit bubbles. Open: arrow wrap + Home/End + PageDown/Up; Enter commit; Enter+empty-matches+acceptFreeText commits typed text; **Enter+empty-matches+!acceptFreeText preventDefault + stay open** (iter 1 fix IMP-1); Escape close+revert search; Tab commit+close+propagate; Alt+ArrowUp close no-commit; Alt+ArrowDown open = documented no-op per E28 Phase 5 simplification. Modifier-key guard passes Cmd/Ctrl/Shift+arrow to browser for standard text-input nav. **acceptFreeText** opt-in prop (default false) for tag-input patterns. **No typeahead logic** — search IS the filter; deletes Select's typeaheadRef/findTypeaheadMatch/lastIndex machinery. Pattern reuse from Select ~80% (item registry + registryVersion, latestValueRef, listboxKeyHandlerRef slot, highlightedId React state + ContentContext, React.memo, scrollIntoView, commit pattern, form participation, disabled-via-aria-only). Phase 4 Evaluator iter 1 FAIL 0 CRIT + 5 IMP + 6 NIT (Enter form-submit leak, stale hidden-mount textContent, missing type exports, defaultValue search sync, Alt+ArrowDown open undocumented) → iter 2 PASS in 1 fix iteration (6 surgical fixes). 22 regression cases mapped (CB-R01..R22). **Rule of Three accumulating** (for E29 refactor sprint): useFloatingValueState<T> (NavigationMenu + Tabs + Select + Combobox = **4 consumers**, Combobox has TWO slots value+search so signal stronger), useFloatingItemRegistry<T> (Select + Combobox = 2 consumers), useListboxKeyboardNav (Select + Combobox = 2 consumers ~90% identical). **Pattern-parent for DatePicker (CI17)** which will extend Combobox with Calendar popover content. ~1846 TSX LOC (1478 code + 254 JSDoc) + 401 SCSS + 20 index = 2267 total. (`components/complex/Combobox/`)
+We shipped across a growing portfolio of products — internal tools, client deliverables, the BleizLabs website, admin panels — and kept hitting the same three walls:
 
-- Phase 10 (E27): **Select (CI12)** — twelfth Complex Interactive, **FIRST LISTBOX SUB-FAMILY**. Accessible single-value dropdown form field per APG `/combobox/` collapsed-listbox (select-only variant) + `/listbox/`. 8 compound flat exports per D24: `Select` (root state holder — owns open state via `useFloatingState` E23 primitive + value state `string | null` via inline `useState` controlled/uncontrolled hybrid + item registry `Map<id, record>` via ref with `registryVersion` state bumped on register/unregister so SelectValue re-renders after initial mount + shared `typeaheadRef` with `lastIndex` for cycling across closed and open states + `listboxKeyHandlerRef` slot for Trigger→Content handler routing + `valueRef` latest-value ref eliminating context churn + renders hidden `<input type="hidden" name value>` when `name` prop provided for form participation), `SelectTrigger` (`<button role="combobox" aria-haspopup="listbox" aria-expanded aria-controls aria-activedescendant aria-disabled>` with `asChild` Slot polymorphism, **NO native `disabled`** per APG focusable — only `aria-disabled`, single React onKeyDown handles BOTH closed-state AND open-state via `listboxKeyHandlerRef.current(event.nativeEvent)` route, `aria-activedescendant` declarative in JSX so React reconciliation cannot strip), `SelectValue` (reads `value` + `registryVersion` from context + looks up display label from registry + falls back to `placeholder` on null with muted class, `void registryVersion` suppresses unused-var while maintaining subscription), `SelectContent` (portal listbox via `FloatingPortal` + `useFloating` default `placement='bottom-start'`, consumes `useFloatingDismiss` with `closeOnEscape: false` + outside-click only; owns `highlightedId` React useState + `setHighlight(id, source)` that does `scrollIntoView({ block: 'nearest' })` only on `source === 'keyboard'`; publishes listbox key handler via `useLayoutEffect`; creates plain nullable `SelectContentContext` — NOT via `createFloatingContext` because Trigger reads conditionally and returns null while closed), `SelectGroup` (`role="group" aria-labelledby`), `SelectLabel` (plain `<div id>` — NO `role="presentation"` per iter 1 fix because ARIA invalid for aria-labelledby target), `SelectItem` (`role="option" aria-selected aria-disabled data-highlighted data-state tabIndex={-1}` with `asChild` Slot, registers via `useLayoutEffect`, onMouseDown prevents default for trigger focus stay, onMouseMove sets highlight, **wrapped in `React.memo`** so only 2 toggled items re-render materially on arrow nav), `SelectSeparator` (`role="none"` — NOT `"separator"` per iter 1 fix, listbox children must be option/group/presentation only). **Konsumuje 4 z 5 E23 primitives**: useFloatingState + createFloatingContext + FloatingPortal + useFloatingDismiss. **Skips** useFloatingFocus — APG combobox pattern keeps focus on trigger the entire time (virtual activedescendant highlight), nothing to focus inside content. **First Phase 10 component to validate that useFloatingFocus is truly opt-in rather than baseline**. **APG combobox-select-only keyboard 100% match**: closed (focus on trigger) ArrowDown/Up/Enter/Space/Home/End open + init highlight, printable char typeahead commit with cycling; open (focus STAYS on trigger) ArrowDown/Up next/prev enabled with wraparound + scrollIntoView keyboard-only, Home/End first/last enabled, PageDown/Up ±10 enabled, Enter/Space commit + close + onValueChange + restore focus, Escape close no-commit, Tab commit + close + propagate (Radix convention — `commitHighlighted(restoreFocus: false)` parameter), Alt+ArrowUp close no-commit, printable char typeahead with 500ms shared buffer + lastIndex cycling, modifier-key guard Cmd/Ctrl/Shift/Alt+arrow passes through (except Alt+ArrowUp special case). **Value state `string | null` INLINE** — Rule of Three extraction (NavigationMenu + Tabs + Select = 3 consumers) TRIGGERED but DEFERRED per E27 Phase 2 self-audit override: refactoring stable shipped components mid-E27 is risk with zero user benefit; extraction to `useFloatingValueState<T>` will land in E28 Combobox as 4th consumer when signature is battle-tested. **Typeahead INLINE** — Rule of Three (DropdownMenu + ContextMenu + Select = 3 consumers) TRIGGERED but DEFERRED similarly. Form participation via hidden `<input type="hidden" name value>` synced to value when `name` provided; `required` + `disabled` propagate to hidden input for native form validation; `aria-required` on trigger when required. Phase 4 Evaluator iter 1 FAIL with 5 CRIT + 8 IMP + 6 NIT (CRIT-1 dual keydown handler bridge, CRIT-2 Tab focus race in commitHighlighted, CRIT-3 SelectValue stale label on initial mount, CRIT-4 context churn from selectValue stale closure, CRIT-5 closed-state typeahead doesn't cycle, IMP-1 closeOnEscape should be false, IMP-2 explicit aria-multiselectable, IMP-3 aria-activedescendant React reconciliation strip, IMP-4 SelectLabel role="presentation" ARIA invalid, IMP-5 SelectSeparator role="separator" invalid inside listbox, IMP-9 data-disabled convention) → iter 2 PASS in 1 fix iteration (all 11 fixes verified correct, tsc + lint PASS). 22 regression cases mapped (SL-R01..R22). **Pattern-parent for Combobox (CI13)** which will extend Select with a text input trigger + search filter on item registry. (`components/complex/Select/`)
+1. **Headless libraries** (Radix, Headless UI) leave styling to every consumer, so every project re-invents the design system and drifts from the rest.
+2. **Styled libraries** (MUI, Chakra) lock us into their design language, their tokens, and a runtime dependency that's painful to customise deeply.
+3. **Copy-paste systems** (shadcn/ui) are excellent starting points, but every project forks forever — a bug fix in one consumer doesn't propagate anywhere else.
 
-- Phase 10 (E26): **Tabs (CI11)** — eleventh Complex Interactive, **FIRST SELF-CONTAINED** (zero E23 floating primitives consumed). Accessible tabs widget per APG `/tabs/`. 4 compound flat exports per D24: `Tabs` (state holder + context provider, inline `useState<string | null>` controlled/uncontrolled hybrid, auto-generated IDs via `useId` wire `aria-controls` + `aria-labelledby` automatically), `TabsList` (`<div role="tablist">` flex container + roving tabindex via inline helper `setRovingTabindex(tabs, idx)` + `getTabs(list)` querySelectorAll pattern replicated from NavigationMenu E25, Right/Left or Down/Up arrow cycle with wraparound, Home/End scope-aware, Space/Enter manual activation with event.target role guard, **modifier-key guard** Cmd/Ctrl/Alt/Shift+arrow skipped so browser hotkeys like Cmd+← back-nav preserved — Radix TB-R04 fix, mergedRef via stable `useCallback` wrapper, `useLayoutEffect([value, listRef])` reactive to controlled-mode value changes, dev-mode console.warn if `aria-label` + `aria-labelledby` both missing via stable primitive deps), `TabsTrigger` (`<button role="tab" aria-selected aria-controls aria-disabled>` with `asChild` Slot polymorphism, **NO native `disabled`** per APG focusable requirement — only `aria-disabled`, handler types `HTMLElement` not `HTMLButtonElement` for asChild type safety, `handleClick` + `handleFocus` both trigger setValue in automatic mode with identity guard against infinite loops), `TabsContent` (`<div role="tabpanel" aria-labelledby tabIndex={isActive ? 0 : -1}>` — tabIndex CONDITIONAL so inactive forceMount panels stay out of Tab sequence per APG, unmounts when inactive unless `forceMount={true}` then uses `hidden` attribute + CSS `[hidden] { display: none }`). **Zero E23 primitives consumed** — Tabs is structurally simpler than NavigationMenu because TabsContent is inline not floating (no portal/positioning/dismiss/Escape/hover/Provider, 1-layer state shape). Reuses **pattern** from NavigationMenu (setRovingTabindex helper ~5 LOC + getTabs DOM query + useLayoutEffect sync) but not any hook or context-type. **Activation modes**: `automatic` default (Radix convention) + `manual` (Space/Enter required for async panels). **Orientations**: horizontal default + vertical (keyboard axis swap + visual `[data-orientation='vertical']` cascade). **3 visual variants**: `underline` default (border-bottom with brand-colored active underline pulled below tablist border via `margin-bottom: -1px` clean overlap), `pill` (rounded buttons with filled brand active state), `segmented` (iOS-style tight group with 2px gap + 2px padding + raised active button via `var(--shadow-sm)` — documented visual necessity not tokenized because token scale too large for this iOS look). **RTL** support via `dir` prop reversing Right/Left semantics horizontal. 22 regression cases mapped (TB-R01..R22): 8 NavigationMenu-pattern regressions + 14 Tabs-specific Radix closed issues. **Phase 4 Evaluator iter 1 FAIL** with 3 CRIT + 6 IMP (native `disabled` button, `tabIndex={0}` hardcoded, `useEffect([rest])` new-object deps, `useLayoutEffect` mount-only, `mergeRefs` stability, handler types HTMLButtonElement, focus not focus-visible, 2px undocumented) → **iter 2 PASS** in 1 fix iteration. (`components/complex/Tabs/`)
-- Phase 10 (E25): **NavigationMenu (CI10)** — tenth Complex Interactive, **SECOND E23 primitives new-build consumer + FIRST to combine `useFloatingFocus` + `useFloatingDismiss` together**. Accessible navigation menubar per APG `/menubar/`. 7 named exports per D24: `NavigationMenu` (root state holder + close-delay timer + Provider integration + context provider, owns `openValue: string | null` controlled/uncontrolled hybrid via inline `useState` because primitive `useFloatingState` is boolean-only), `NavigationMenuList` (`<ul role="menubar" aria-label aria-orientation>` flex container with TS-required `aria-label` per APG menubar mandate; owns Right/Left arrow cycle, Home/End jump, menubar-scope typeahead 500ms reset; manages roving tabindex via DOM `tabindex` attribute updates initialized once on mount via `useLayoutEffect(..., [])`), `NavigationMenuItem` (`<li role="none">` wrapper with per-item context + `hasSubmenu` boolean set synchronously via `useLayoutEffect(registerSubmenu, [])` BEFORE first paint to avoid flash-of-wrong-state for sibling Link), `NavigationMenuTrigger` (`<button role="menuitem" aria-haspopup="menu" aria-expanded aria-controls>` with `asChild` Slot polymorphism — **NO native `disabled` attribute** per APG focusable requirement, only `aria-disabled` + handler guards; writes `data-open-reason="first|last"` before opening for Content's `getFocusTarget` to pick first or last submenu link), `NavigationMenuContent` (`<div role="menu">` portal submenu via `useFloating`; consumes `useFloatingFocus` with `getFocusTarget` reading data-open-reason + `getRestoreTarget: () => triggerRef.current` for automatic focus restoration; consumes `useFloatingDismiss` with `closeOnEscape: false` + `closeOnOutsideClick: true` — Escape handled INLINE in `handleSubmenuKeyDown` React onKeyDown for single-dispatch + matches DropdownMenu/HoverCard precedent; submenu keyboard handler covers Escape/ArrowDown/ArrowUp/Home/End/Tab + ArrowRight/ArrowLeft cross-menubar navigation via DOM query), `NavigationMenuLink` (`<a role="menuitem" href>` for both standalone menubar items AND submenu items — when parent NavigationMenuItem has no Trigger the Link IS the menubar item; `active?` wires `aria-current="page"`; `asChild?` for Next.js `<Link>` polymorphism), `NavigationMenuProvider` (optional delay-group coordinator mirroring HoverCardProvider EXACTLY — `lastCloseRef` + `openCountRef` LIVE inside provider closure per React 19 immutability rule, default `openDelay=200` snappier than HoverCard's 700 because nav menus expect faster reveal). **Konsumuje 4 z 5 E23 primitives** (createFloatingContext + useFloatingFocus + useFloatingDismiss + FloatingPortal). **Skipped useFloatingState** — NavigationMenu state shape `string | null` not boolean; signal for future `useFloatingValueState<T>` extraction once Select/Combobox arrive. Hover (200ms default, opt-out via `hoverTrigger?`) + click + keyboard, touch (`pointer: coarse`) skips hover. Mixed dropdown + standalone link items in same menubar (NavigationMenuItem with Trigger+Content vs only NavigationMenuLink). Phase 4 Evaluator iter 1 FAIL with 2 CRITICAL + 3 IMPORTANT (native `disabled` on button contradicting APG `aria-disabled` policy, `useLayoutEffect` no deps running every render, inline document Escape listener instead of React onKeyDown, missing `aria-haspopup === 'menu'` guard in List ArrowRight/Left causing stale openValue, `useEffect` for `registerSubmenu` causing flash-of-wrong-state) → iter 2 PASS (zero new issues, fix loop closed in 1 iteration). 22 regression cases mapped (NM-R01..R22). (`components/complex/NavigationMenu/`)
-- Phase 10 (E24): **HoverCard (CI9)** — ninth Complex Interactive, **FIRST E23 PRIMITIVES NEW-BUILD CONSUMER**. Hover-triggered floating surface for rich contextual content (user profile previews, link previews, hover-on-link enrichment). 4 named exports per D24: `HoverCard` (state holder + timer logic + context provider), `HoverCardProvider` (optional delay-group coordinator mirroring TooltipProvider), `HoverCardTrigger` (Slot-or-`<span>` wrapper with hover/focus/blur handlers + ARIA), `HoverCardContent` (portal + positioning + grace area pointer handlers + relatedTarget-aware blur). **Validate-in-production for E23 floating primitives** — first new-build consumer (Popover/DropdownMenu/ContextMenu were migrations). Consumes `useFloatingState` + `FloatingPortal` + `createFloatingContext` + `useFloating` (4 of 5 E23 primitives). **Skips** `useFloatingDismiss` (HoverCard closes via mouseleave + grace area, not Escape/outside-click — Escape is a separate document-level handler that closes WITHOUT losing trigger focus per SC 1.4.13) and `useFloatingFocus` (non-modal, no focus trap, no focus restore — focus stays where the user left it). Inline timer logic mirrors Tooltip: `openTimerRef`/`closeTimerRef`/`scheduleOpen`/`scheduleClose`/`openImmediate`/`closeImmediate`/`clearTimers`/`cancelPendingOpen` callbacks, document-level Escape + visibilitychange + window blur handlers, `useCoarsePointer` via `useSyncExternalStore`. **`relatedTarget`-aware blur logic**: `HoverCardTrigger.onBlur` checks if focus moved INTO popper content → skip close (Tab into HoverCard keeps surface open); `HoverCardContent.onBlur` checks BOTH popper AND trigger → close only if focus left both. **`HoverCardProvider`** mirrors `TooltipProvider` exactly — `lastCloseRef` + `openCountRef` LIVE inside provider closure, exposes `onOpen`/`onClose`/`shouldSkipDelay` callbacks (React 19 immutability rule). Default `openDelay=700`/`closeDelay=300` (Radix conventions). `role="dialog"` + `aria-modal="false"` (NOT `role="tooltip"` — HoverCard contains interactive content like links/buttons). WCAG SC 1.4.13 compliant (dismissable via Escape + hoverable via grace area + persistent until pointer leaves) + WCAG SC 2.1.1 keyboard parity (focus instant open via `openImmediate`). Touch handling: `(pointer: coarse)` skips hover handlers entirely → desktop-only feature, touch users get focus path. Fork `hoverCardContentIn` keyframe `scale(0.97) translateY(-2px) → scale(1) translateY(0)`. 15 regression cases mapped (HC-R01..R15: hover delay timing, grace area cancel by content pointer enter, focus parity instant open, blur relatedTarget in content, Escape closes without losing focus, visibilitychange/window blur close, coarse pointer skip, Provider skip-delay window, controlled mode, placement flip, aria-expanded sync, aria-labelledby wired only when title, nested HoverCard PLAYGROUND-DEP, transformed parent PLAYGROUND-DEP). **Pattern-parent for NavigationMenu (CI10)** hover trigger behavior downstream. (`components/complex/HoverCard/`)
-- Phase 10 (E22): **ContextMenu (CI8)** — eighth Complex Interactive, **FIRST RIGHT-CLICK MENU**. Extends DropdownMenu pattern with `contextmenu` event trigger + position-at-cursor via direct `computePosition` call (skip `useFloating` hook since menu closes on scroll and never needs live repositioning) + native browser context menu suppression + close-on-scroll convention (native OS parity). 7 flat compound exports. Copy+layer from DropdownMenu (D-C1 Option B) — DropdownMenuContext hard-codes `triggerRef` incompatible with cursor-point positioning. `ContextMenuTrigger` defaults `asChild={true}` so it wraps `<tr>`/`<li>`/`<td>` without breaking DOM structure. Focus restore target is pre-open `activeElement` snapshot (not a trigger widget). `computedFor: CursorPoint | null` state guard prevents flicker at old position when user re-right-clicks at new coordinates. **E22 marks the 3rd floating-menu consumer** (Popover + DropdownMenu + ContextMenu) — FloatingRoot shared primitive extraction now cost-effective, planned for E23+. 15 Radix regression cases mapped, ~5 `test.skip` with `PLAYGROUND-DEP:` / `TOUCH-DEFERRED:` rationale. (`components/complex/ContextMenu/`)
-- Phase 10 (E21): **DropdownMenu (CI7)** — seventh Complex Interactive, **FIRST ACCESSIBLE MENU**. Full APG `/menu/` keyboard model: Enter/Space/ArrowDown on trigger opens first item, ArrowUp opens last, Arrow keys cycle with wraparound (skipping disabled), Home/End jump, typeahead single+multi-char with 500ms buffer reset, Escape + item-select restore focus to trigger, Tab closes without restore (APG convention). 7 flat compound exports per D24 (`DropdownMenu` + `DropdownMenuTrigger` + `DropdownMenuContent` + `DropdownMenuItem` + `DropdownMenuSeparator` + `DropdownMenuLabel` + `DropdownMenuGroup`). Does NOT reuse Popover directly (D-D1 Option B: copy+layer) — Popover hard-codes `role="dialog"` incompatible with `role="menu"`. Plan to extract shared `FloatingRoot` primitive at E22+ once ContextMenu amortizes duplication. `onSelect` cancelable `CustomEvent` pattern enables future CheckboxItem/RadioItem. `matchTriggerWidth` prop (Radix #17 fix) forces content min-width to trigger width. 20 Radix regression cases mapped, ~6 `test.skip` with `PLAYGROUND-DEP:` / `SUBMENU-DEFERRED:` rationale. **Pattern-parent for ContextMenu (CI8 — trivial reuse), NavigationMenu (CI10), and informs Select (CI12) / Combobox (CI13) listbox nav patterns.** (`components/complex/DropdownMenu/`)
-- Phase 10 (E20): **Popover (CI5)** — sixth Complex Interactive, **FIRST COMPOUND FLAT API**. Floating panel anchored to a trigger for contextual content per APG `/dialog-modal/` non-modal variant. Closes the slot skipped in E19. Three named exports per D24: `Popover` (state holder + context), `PopoverTrigger` (Slot-or-button with merged ARIA), `PopoverContent` (portal + positioning + focus + dismiss). Pattern-parent for DropdownMenu / HoverCard / ContextMenu / Select / Combobox / NavigationMenu (all 6 downstream floating components inherit the compound API shape). **Extends E19 positioning engine**: added `computeArrowPosition()` as separate utility in `utils/position.ts` (zero-cost opt-out), added optional `arrow: { ref, padding? }` option in `useFloating` that populates `arrowStyles?` in result. **New dismiss primitive**: outside-click via `document.addEventListener('pointerdown', h, { capture: true })` — capture phase prevents trigger-close-reopen race, skips `documentElement`/`body` targets (scrollbar click fix, Radix #7), containment checks via `popperRef.contains()` + `triggerRef.contains()`. **Hybrid focus management**: non-modal default (lightweight first-tabbable + restore, no trap) vs opt-in `modal=true` (imports `useFocusTrap` from Dialog + background `inert` toggle + body scroll lock). SCSS: `.root` + `.content` 2-level, `.arrow` rotated square with 4 placement-keyed rotations, fork `popoverContentIn` keyframe. 20 Radix regression cases mapped, ~6 `test.skip` with `PLAYGROUND-DEP:` rationale. (`components/complex/Popover/`, shared utils `components/utils/position.ts` extended, `components/utils/useFloating.ts` extended)
-- Phase 10 (E19): **Tooltip (CI6)** — fifth Complex Interactive, **FIRST MODELESS**. Modeless floating label on hover/focus per APG `/tooltip/`. Out-of-ROADMAP-order pick (skipped CI5 Popover) as engineering risk mitigation — simplest positioning case to validate the new primitive. **Introduces shared own positioning engine** (`components/utils/position.ts` pure math + `components/utils/useFloating.ts` React hook) — zero runtime deps (user E19 override rejected `@floating-ui/react`: "w całym projekcie unikaliśmy używania jakichkolwiek bibliotek"). Positioning: `computePosition()` applies offset → flip (opposite-side retry on overflow) → shift (cross-axis clamp). `useFloating` hook wraps with scroll/resize/ResizeObserver autoUpdate. `TooltipProvider` context for toolbar skip-delay groups (Radix #2372 pattern). SC 1.4.13 full compliance: Escape hides without losing trigger focus (dismissable), grace area close delay for pointer travel into content (hoverable), focus path always wired (keyboard parity with hover). `useCoarsePointer` via `useSyncExternalStore` suppresses hover listeners on touch devices while keeping aria-describedby for AT access. Provider exposes callbacks (onOpen/onClose/shouldSkipDelay) instead of mutable refs to satisfy React 19's `react-hooks/immutability` rule. Fork `tooltipContentIn` keyframe. 20 Radix regression cases mapped (#620, #705, #617, #1691, #1914, #1077, #2029, #2372, #1920, #1573, #2589, #1351, #2959, #2665, #899, #1010, #1476, #1612, #3081, #2727) — ~10 `test.skip` with `PLAYGROUND-DEP:` rationale. (`components/complex/Tooltip/`, shared utils in `components/utils/position.ts` + `components/utils/useFloating.ts`)
-- Phase 10 (E18): **Sheet (CI4)** — fourth Complex Interactive. 4-directional side panel — closes the Drawer family. `side: 'left' | 'right' | 'top' | 'bottom'` prop drives 5 per-side lookup tables: `SIDE_CLASS` (flex alignment), `RADIUS_CLASS` (inner corners only), `BORDER_CLASS` (outer edge removed), `SAFEAREA_CLASS` (iOS `env(safe-area-inset-*)` matched to side), `ANIMATION_CLASS` (4 distinct slide-in keyframes: `sheetContentInLeft/Right/Top/Bottom` with `translateX/Y(±100% → 0)`). Discriminated size lookup: horizontal (l/r) uses width variants (sm 320 / md 420 / lg 560), vertical (t/b) uses height variants (sm 240 / md 360 / lg `min(80vh, calc(100vh - space-8))` with `80dvh` override). Reuses `useFocusTrap` from Dialog + Drawer's sticky footer pattern (`.body` owns overflow, `.footer` flex-shrink: 0). Default `side="right"` (desktop nav pattern), default `showCloseButton=true` (sheets are long-lived panels, X ergonomic — differs from Drawer). Close button `aria-label={\`Close ${title}\`}` — title-scoped per APG for uniquely identifiable action in stacked modal scenarios. 41 regression cases (21 inherited + 20 Sheet-specific: 4-side anchor verification, per-side border-radius inner-only, horizontal vs vertical size variants, safe-area per side, showCloseButton on/off, sticky footer, reduced-motion). `.root` base class per D11. (`components/complex/Sheet/`)
+`bleizlabs-ui` is our answer: **fully styled**, **zero runtime UI dependencies**, **semantic-token driven**, and **designed to be reskinned by changing five to ten seed values**. One source of truth, 81 components across every tier — layout, typography, display, interactive, feedback, complex, molecules, card presets.
 
-- Phase 10 (E33): **Slider (CI14)** — seventeenth Complex Interactive, **FIRST drag-gesture primitive consumer**. Accessible single-thumb value selector per APG `/slider/`. 4 compound flat exports per D24: `Slider` (root — owns value state controlled/uncontrolled hybrid via inline `useState`, context provider, keyboard handler on thumb, pointer-capture + move/up/cancel handlers attached to track via React onPointer*), `SliderTrack` (click-to-jump + drag tracking via pointer-capture bubble), `SliderRange` (dynamic `left`/`right`/`width` or `top`/`bottom`/`height` via inline style — layout math not expressible via CSS tokens alone — with RTL + inverted XOR for start-edge selection), `SliderThumb` (`role="slider"` focusable handle with aria-valuenow/min/max/orientation/valuetext). **Zero-dep drag gesture** via `PointerEvent` + `setPointerCapture` on track. Phase 5 CRIT-1 fix: React `onPointerMove`/`onPointerUp`/`onPointerCancel` attached to track element instead of document listeners — pointer capture re-targets events to capturing element, which then receives them even when pointer leaves visible bounds, cleaner than document-level listeners + avoids cleanup leak concerns. APG `/slider/` 100% keyboard match: Arrow ±step, Shift+Arrow ±largeStep (default step×10 per Radix convention), PageUp/Dn ±largeStep, Home/End → min/max. Modifier guard Ctrl/Meta/Alt skip (Shift IS largeStep modifier). **RTL horizontal mirror** — ArrowLeft = increase when `dir="rtl"`; vertical always Up = increase regardless of coordinate system. **`inverted` prop** composable with RTL via XOR semantics for layout math. **Decimal step precision-safe** via `Math.round((raw - min) / step) * step + min` with `toFixed(decimals)` where decimals = step decimal places. **Disabled via `aria-disabled` only** per Tabs/NavigationMenu/Calendar precedent (thumb stays focusable for SR discovery) + `tabIndex={-1}`. **ReadOnly** = keyboard + drag no-op, thumb focusable. **Form participation** via hidden `<input type="range" name value min max step>` when `name` prop set (D26 architecture). **Touch target 44×44** via `::before` pseudo-element at `@media (pointer: coarse)` — visible thumb 1.125rem, invisible hit zone 2.75rem. **`forced-colors: active`** block maps Canvas/CanvasText/Highlight/HighlightText/ButtonFace/ButtonText/GrayText for Windows HCM. `prefers-reduced-motion` disables transforms + transitions. **`formatValue` callback** → aria-valuetext override (percentage, currency, unit labels). `onValueCommit?` fires on pointerup + keyboard keyup for debounced side-effects. **Auto-defaults children** — `<Slider value={v} />` renders default Track+Range+Thumb; `<Slider><SliderTrack>...</SliderTrack></Slider>` opt-in composition slot. Phase 4 Evaluator iter 1 FAIL 1 CRIT + 1 IMP + 1 NIT → iter 2 PASS in 1 fix iteration (CRIT-1 React onPointer* handlers on track replacing document listeners; IMP-1 playground `aria-labelledby` id wiring fix replacing broken `htmlFor` pairs; NIT-1 scientific-notation precision edge case deferred as documented limitation). 29 regression cases (SL-R01..SL-R29: 22 Radix-mapped + 7 bespoke) in `docs/_tmp/slider-spec.md`, Playwright execution deferred per E15 scope. ~1348 LOC (713 Slider.tsx + 241 SCSS + 14 index + 326 demo + 54 demo SCSS). **Pattern-parent for Carousel (CI21) + future range slider + splitter + Drawer resize handle.** First drag-gesture primitive consumer — `utils/gesture/usePointerDrag.ts` extraction deferred until 3rd consumer per Rule of Three (E23 FloatingRoot precedent). (`components/complex/Slider/`)
+---
 
-- Phase 10 (E34): **Carousel (CI21)** — eighteenth Complex Interactive, **SECOND drag-gesture primitive consumer + FIRST auto-rotation + FIRST live-region component**. Accessible content slider per WAI-ARIA APG `/carousel/`. 6 compound flat exports per D24: `Carousel` (root state + context + pause-reasons Set state + slide registry + live region + `<section role="region" aria-roledescription="carousel">` wrapper; required `aria-label` accessible name; controlled/uncontrolled index hybrid), `CarouselViewport` (`tabIndex={0}` clipping container with `overflow: hidden` + `touch-action: pan-y` + ArrowLeft/Right keyboard + PointerEvent drag gesture with setPointerCapture + translate transform on inner track with inline transition that respects `isReducedMotion`), `CarouselSlide` (registers via useLayoutEffect on mount; gets `role="group" aria-roledescription="slide" aria-label="N of M" aria-hidden` per current state), `CarouselPrev` / `CarouselNext` (buttons with `aria-label` + `aria-controls` pointing to viewport + `aria-disabled` at edges when linear or total ≤ 1; chevron icons mirror in RTL), `CarouselPause` (returns `null` when autoRotate disabled; `<button aria-pressed={isPaused}>` with dynamic play/pause icon — WCAG 2.2.2 compliance). **Konsumuje zero E23 floating primitives** (carousel content is inline, not floating). **2nd drag-gesture primitive consumer** — reuses Slider E33's PointerEvent + setPointerCapture pattern with React onPointer* handlers on viewport (capture bubble receives events outside visible bounds); drag snap threshold `max(viewportWidth * 0.2, 40px)`. Drag INLINE per Rule of Three (extraction to `utils/gesture/usePointerDrag.ts` deferred until 3rd consumer — ScrollArea scrollbar thumb CI20). Drag mid-session adds ephemeral `'drag'` pause reason cleared on pointerup/cancel. **WCAG 2.2.2 pause control** — CarouselPause required when `autoRotate={true}`; APG recommends FIRST in tab sequence (consumer orders JSX). **WCAG 1.4.13 pause on hover/focus** — native DOM `focusin`/`focusout` (with `relatedTarget` containment guard) + `pointerenter`/`pointerleave` on root element; `document.visibilitychange` adds `'visibility'` reason when tab hidden; `matchMedia('(prefers-reduced-motion: reduce)')` listener adds/removes `'reduced-motion'` reason reactive to preference changes. PauseReasons Set is **state not ref** per React 19 `react-hooks/refs` rule (each add/delete creates new Set instance to trigger re-render of derived `isPaused`/`shouldRotate`/`isReducedMotion`). **Live region** `<div role="status" aria-live="polite" aria-atomic="true">Slide N of M</div>` announces index change; silent during auto-rotation by default, opt-in via `announceAutoRotate` prop. Initial mount silent via **render-time prop-sync pattern** (prevIndex sentinel state per E31 DatePicker precedent — avoids React 19 `react-hooks/set-state-in-effect` rule). Keyboard on viewport (tabIndex=0): ArrowLeft/Right prev/next (RTL-mirrored), Home/End first/last, modifier-key guard (Ctrl/Meta/Alt skip). Linear clamp default; `loop?: boolean` wraps prev-at-0 → last + next-at-last → 0. Nav buttons `aria-disabled="true"` at edges when linear OR when `total <= 1` (empty + singleton edge cases). **Phase 5 CRIT fix:** `prefers-reduced-motion` transition suppression MUST live in JS (inline `trackStyle.transition = 'none'` when `isReducedMotion`) — CSS `transition: none !important` on `.track` is a DEAD RULE because CSS `!important` cannot override inline styles in any browser; dead `!important` removed from SCSS with documenting comment. Phase 3 build fixes: 3 React 19 lint errors resolved (pauseReasons ref→state for `react-hooks/refs`; live region effect→render-time prop-sync for `react-hooks/set-state-in-effect`; bumpPause version ref removed). Phase 4 Evaluator iter 1 FAIL 0C+1I+1N → iter 2 PASS (1 real IMP fix for reduced-motion inline style + 1 NIT cleanup for single-arg `mergeRefs` no-op in CarouselSlide). 25 regression cases (CAR-R01..R25: 21 Radix/embla-mapped + 4 bespoke — empty carousel, singleton, RTL+vertical not-applicable-horizontal-only-MVP, loop mid-session flip). Playwright/NVDA/axe deferred per E15 scope. `touch-action: pan-y` on viewport allows vertical page scroll while blocking horizontal swipe stealing. Touch target 44×44 on nav + pause buttons via `@media (pointer: coarse)`. `forced-colors: active` HCM block (Canvas/ButtonFace/Highlight/HighlightText/GrayText mapping). Inline SVG icons (chevrons, play, pause). ~1477 total LOC — 835 Carousel.tsx + 226 SCSS + 17 index + 321 demo + 78 demo SCSS. **Pattern-parent for future multi-slide carousel (slidesPerView > 1) + grouped picker variant**. (`components/complex/Carousel/`)
+## Highlights
 
-- Phase 10 (E37): **Command (CI19)** — twenty-first Complex Interactive, **SECOND composition Epic** (after DatePicker E31). Cmd+K command palette combining APG `/combobox/` editable (text input + filtered listbox) with `/dialog-modal/` (modal shell, focus trap, Escape close, backdrop dismiss, scroll lock, inert siblings). 9 compound flat exports per D24: `Command` (root state + built-in Dialog shell — controlled open/search + item registry via STATE Map + filter + first-visible-enabled auto-highlight via render-time prop-sync sentinel state per E34 precedent), `CommandInput` (`role="combobox" aria-expanded="true" aria-controls aria-activedescendant aria-autocomplete="list"` + IME composition guard per E28 + Escape/Enter inline handlers + Arrow/Home/End/PageDown/Up routed to list via state callback), `CommandList` (`role="listbox" aria-labelledby={inputId}` + registers keyboard handler via `setListKeyHandler` state callback — NOT context-reachable ref slot per React 19 immutability rule), `CommandEmpty` (renders when `matchCount === 0` + not loading; `role="presentation"`), `CommandGroup` (`role="group" aria-labelledby` + auto-hides when all children filter out via group-visibility sub-context; `forceMount?` opt-out), `CommandItem` (`role="option" aria-selected aria-disabled id` + hidden-sentinel render when not visible + registers in ctx via useLayoutEffect with `deriveTextFromChildren` helper + listens for synthetic `cmd-select` CustomEvent dispatched by `commitHighlighted`), `CommandSeparator` (`role="none"`), `CommandShortcut` (inline `<kbd>` pill, `aria-hidden="true"` decorative), `CommandLoading` (`role="status" aria-live="polite"`). Plus `useCommandShortcut(key, callback)` hook binding Cmd+<key>/Ctrl+<key> globally. **Reuses Dialog E15 `useFocusTrap` hook** + **FloatingPortal E23**. **Does NOT compose Combobox E28 code** — E28 carries floating machinery (useFloating + useFloatingDismiss + trigger+popup separation) that Command doesn't need. Reimplements filter + item registry + listbox keyboard nav with shared **PATTERNS** from E28 (substring filter default, hidden-sentinel for non-matching, aria-activedescendant, IME guard, deriveTextFromChildren). Item registry STATE Map (new Map on mutation) per React 19 `react-hooks/refs` rule — filter reads state directly in useMemo render pass, no ref reads during render. `listKeyHandler` as state callback (setListKeyHandler) not context-ref-slot per React 19 immutability rule. Filter modes: `'auto'` substring default, `false` (consumer-owned via pre-filtered items), or custom `(items, search) => visibleIds[]` function. Hidden registry renders children in `display:none` wrapper when closed so consumer item state preserved across open-close cycles (aria-hidden=true on wrapper prevents SR announcement). Scroll lock + inert siblings via `aria-hidden="true"` on body children (Dialog E15 pattern). Escape inline + backdrop click dismiss inline (not useFloatingDismiss — no floating positioning). WCAG 2.1 SC 1.1.1 dev-mode `console.warn` guard if missing both `aria-label`/`aria-labelledby` per E36 pattern. `prefers-reduced-motion` disables dialog entry/overlay animations + item transitions. `forced-colors: active` HCM block (Canvas/ButtonText/Highlight/HighlightText/GrayText). 44×44 touch target on items via `@include mx.touch-target`. Phase 4 Evaluator iter 1 FAIL 2C+3I+4N → PASS via 3 real fixes + 2 dismissed (CRIT-1 @apg URLs for composing patterns; CRIT-2 DEV-mode aria-label warn; IMP-1 `.content` → `.root` rename per D11; IMP-2 prefers-contrast-more dismissed as no Phase 10 precedent; IMP-3 mergedRef [ref] deps dismissed as matches InputOTP/Slider precedent). 22 regression cases (CMD-R01..R22). Playwright/NVDA/axe deferred per E15 scope. ~1800 LOC total. **Pattern-parent for future SearchBar (non-modal header combobox) + Spotlight (floating search overlay) + Admin Center (nested pages)**. `useCommandShortcut` hook precedent for future global keyboard binding helpers. (`components/complex/Command/`)
+- **81 components** across 10 categories — from `<Stack>` to `<Combobox>`, `<DatePicker>`, `<Command>` (⌘K palette), `<Toast>`, `<Sidebar>`
+- **Zero runtime UI dependencies** — no Radix, no Floating UI, no date-fns. Every floating primitive, every focus trap, every keyboard model is built in-house against the WAI-ARIA Authoring Practices Guide
+- **Seed-based design tokens** — override 5–10 seed values (brand color, radius, spacing scale) and the entire library reskins consistently across light + dark themes
+- **SCSS Modules** — no Tailwind, no CSS-in-JS, no runtime style computation. Components read CSS custom properties that consumers override at the `:root` level
+- **Accessibility-first** — every interactive component maps to a documented APG pattern, with keyboard models, focus management, and screen-reader semantics verified against Radix closed-issue catalogues
+- **Copy-to-project today, installable tomorrow** — see [Distribution](#distribution) below
+- **Built for React 19 + Next.js 16** with Turbopack, App Router, and Server Components in mind
 
-- Phase 10 (E36): **InputOTP (CI18)** — twentieth Complex Interactive. One-time password / verification code entry. 4 compound flat exports per D24: `InputOTP` (root state + real input + context), `InputOTPGroup` (cells row), `InputOTPSlot` (decorative cell reading `index` prop from context, renders `value[index]` char + CSS-animated fake caret when active), `InputOTPSeparator` (decorative divider between Groups for XXX-XXX layout). **Zero-dep reimplementation** of guilhermerodz `input-otp` idiom per D5/D25 — single semantic `<input>` positioned `absolute inset-0` across slot container, hidden via transparent color/caret + `::selection { color: transparent }` while preserving focus + native keyboard + `autocomplete="one-time-code"` SMS autofill (iOS Safari 12+, Android Chrome 84+). Slots `aria-hidden="true"` decorative; SR reads ONE field, not N cells. Slot click → `input.setSelectionRange(i, i)` repositions caret driving `data-active` highlight. Pattern filter — `'numeric'` (default), `'alphanumeric'`, `'alpha'`, or custom RegExp — via `onBeforeInput` preventDefault + `onChange` safety re-filter. **IME composition guard** (`isComposingRef` + `key === 'Process'` + `keyCode === 229` + `onCompositionStart/End`) per E28 Combobox precedent. Paste handler strips whitespace/hyphens (`/[\s_-]+/g`), filters by pattern, truncates at maxLength, splices at current caret. Consumer `onPaste` invoked FIRST — `event.defaultPrevented` check allows override. `onComplete` fires ONCE per transition to full length via `prevCompleteRef` (init `false` — mount not a transition, so `defaultValue` full-length still fires first user-driven completion). Auto-default Slots when `children === undefined` via internal `<DefaultSlots />` (renders `maxLength` slots in one Group). `inputMode` default derived from pattern (`numeric` for numeric, `text` otherwise). Form participation via `name` on real input. Focus indicator DELEGATED to active slot's `data-active` styling (`.input { outline: none }` intentional; `caretStart === index && isFocused` → border-color + focus-ring on slot). WCAG 2.1 SC 1.1.1 dev-mode `console.warn` guard if missing both `aria-label`/`aria-labelledby`. `prefers-reduced-motion: reduce` disables caret blink + transitions. `forced-colors: active` HCM block (Canvas/ButtonText/Highlight/Mark/GrayText). Touch target 44×44 via `@include mx.touch-target` mixin + base cell 2.75rem at pointer:fine. Phase 4 Evaluator iter 1 FAIL 2C+4I+5N → PASS after triage: CRIT-1 real (added dev-mode aria-name warn); CRIT-2 false positive (test file authoring per E15 scope — zero `.spec.ts` files across 19 earlier Phase 10 components confirms convention); IMP-1 real (`prevCompleteRef` init false not `value.length === maxLength` to handle defaultValue full-length edge case); IMP-2 dismissed (matches Slider E33 useMemo-ref precedent); IMP-3+IMP-4 real (JSDoc expansion documenting onPaste protocol + focus-visible delegation); NIT-3 real (`0.25rem` → `var(--space-1)`). 20 regression cases (OTP-R01..R20). Playwright/NVDA/axe deferred per E15 scope. ~1050 total LOC — 598 InputOTP.tsx + 236 SCSS + 16 index + 305 demo + 94 demo SCSS. **Pattern-parent for future PinInput / ConfirmationCode / license-key entry** (segmented-input primitive extraction deferred until 3rd consumer per Rule of Three). (`components/complex/InputOTP/`)
+---
 
-- Phase 10 (E35): **ScrollArea (CI20)** — nineteenth Complex Interactive, **THIRD drag-gesture primitive consumer → TRIGGERS Rule of Three for `utils/gesture/usePointerDrag.ts` extraction (deferred to E36 refactor Epic per E23 FloatingRoot + E29 useFloatingValueState precedent — extract AFTER consumers ship)**. Custom-scrollbar wrapper preserving native scroll. 5 compound flat exports per D24: `ScrollArea` (root + context + metrics state + visibility-mode timer + pointer-coarse detection + reduced-motion detection + ResizeObserver), `ScrollAreaViewport` (clipping container with `overflow: auto` + hidden native scrollbars via `scrollbar-width: none` + `::-webkit-scrollbar display:none` + `-ms-overflow-style: none`; `tabIndex={0}` so native PageUp/Dn/Arrow/Home/End/Space keyboard scroll works), `ScrollAreaScrollbar` (visual track with `orientation` prop + track click-to-page via `scrollBy({ behavior: 'smooth'|'instant' })` PRM-reactive), `ScrollAreaThumb` (proportional size `clientSize/scrollSize * trackSize` with 24px minimum floor + drag gesture via `setPointerCapture` + ratio-based `scrollTo({ behavior: 'instant' })` method call NOT direct `viewport.scrollTop=X` per React 19 `react-hooks/immutability` rule), `ScrollAreaCorner` (intersection cell rendered only when both axes overflow + not `(pointer: coarse) + visibility='auto'`). **Konsumuje zero E23 floating primitives** (scroll regions are structural, not floating). No specific APG pattern — scroll regions are implicit browser behavior. WCAG 1.4.4 (Resize 200%) preserved by native overflow. WCAG 2.1.1 satisfied via viewport tabIndex. 4 visibility modes: `always` (design tools/dev UIs), `scroll` DEFAULT (visible while scrolling + 600ms linger per OS convention), `hover` (desktop minimalist), `auto` (scroll on `(pointer: fine)` + entirely hidden on `(pointer: coarse)` so mobile uses native browser scrollbars). `usePointerCoarse` via `useSyncExternalStore` reactive to pointer type changes (iPad + keyboard). `useReducedMotion` via `matchMedia` reactive for track click scroll behavior. Single ResizeObserver observes viewport + first content child; metrics state (scrollTop/scrollLeft/clientSize/scrollSize) compares prev vs next before setState to avoid redundant re-renders. `hasVerticalScroll`/`hasHorizontalScroll` derived from metrics with 1px tolerance against subpixel edge cases. **Auto-default children via React.Children type-check traversal** (Phase 5 CRIT bug fix — initial `!children || children === undefined` truthy-check was broken because ReactElement is truthy): `Children.toArray(children).some(c => isValidElement(c) && c.type === ScrollAreaViewport)` detects explicit composition vs bare content; bare usage auto-wraps content in viewport + appends both scrollbars + corner. Phase 3 React Compiler lint fixes: `mergeRefs` inline arrow extracted to `useCallback([])` `setTrackEl` so `useMemo([ref, setTrackEl])` deps match inferred; `trackRef` added to `useMemo([orientation, trackRef])` deps per `react-hooks/preserve-manual-memoization` rule. `forced-colors: active` HCM block maps ButtonText/Highlight. Phase 4 Evaluator iter 1 FAIL 0C+2I+3N → iter 2 PASS in 1 fix iteration (4 surgical fixes: `@apg N/A` JSDoc + auto-default children React.Children detection + redundant `|| undefined` cleanup + CSS `background` → `background-color` property consistency). 20 regression cases (SA-R01..R20: viewport min-width configuration, React 19 ref compat, display:table CSS conflicts, thumb drag scrollTop precision, auto-hide during drag, RTL horizontal, multiple nested ScrollAreas, SSR hydration, keyboard preservation, corner cell rendering, touch fling preservation, ResizeObserver coverage, thumb-track-end precision). Playwright/NVDA/axe deferred per E15 scope. ~1205 total LOC — 734 ScrollArea.tsx + 153 SCSS + 17 index + 226 demo + 75 demo SCSS. **Pattern-parent for future DataTable** (styled data grids need custom scrollbar preserving native scroll behavior). (`components/complex/ScrollArea/`)
+## Component catalogue
 
-**Next:** Phase 10 **Phase 10 COMPLETE — all 22 Complex Interactive components delivered (E15-E38).** Post-Phase-10 refactor Epics queued: usePointerDrag extraction (Rule of Three at E35) + useMatchMedia<T> extraction (Rule of Three at E38). E19-E22 established the floating-family + accessible menu sub-family. **E23 FloatingRoot refactor sprint** extracted 5 composable primitives to `utils/floating/`. **E24/E25/E27/E28/E30/E31** are new-build consumers of E23 primitives. **E29 focused refactor sprint** extracted `useFloatingValueState<T>` as 6th primitive. **E30 Calendar** added FIRST grid-pattern component + new `utils/date.ts` zero-dep date primitives module. **E31 DatePicker** is the **FIRST composition Epic**. **E32 Toast** is the **FIRST notification-layer sub-family** — zero-dep queue via module-scoped event emitter + `useSyncExternalStore` (bypasses Context), imperative `toast()` API + singleton `<Toaster>`, ARIA live regions per `/alert/`, pause on hover/focus/visibilitychange. **E36 InputOTP** closed (CI18) — zero-dep OTP input (guilhermerodz idiom reimplementation), single hidden real input + decorative slots, `autocomplete="one-time-code"` SMS autofill default, pattern filter + IME guard + paste distribution. **E37 Command** closed (CI19) — SECOND composition Epic (Cmd+K palette), 9 exports + `useCommandShortcut` hook, reuses Dialog useFocusTrap + FloatingPortal E23, reimplements filter + listbox with shared patterns from Combobox E28, item registry via STATE Map per React 19 rules, render-time prop-sync highlight reset, group auto-hide when all items filter out. Next: **Sidebar (CI22)** disclosure + menubar composition (dashboard-critical finisher → 80/80 Phase 10 complete). Refactor Epic candidate (post-Phase 10): `utils/gesture/usePointerDrag.ts` extraction — Rule of Three fired (Slider + Carousel + ScrollArea all shipped with stable drag semantics).
+### Layout (4)
+`Container` · `Section` · `Stack` · `Inline`
 
-## Demo showcase
+### Typography (2)
+`Heading` · `Text`
 
-Run `npm run dev` and open [`http://localhost:3000/demo`](http://localhost:3000/demo) to see all 80 components in one page. The demo has a theme toggle button that swaps `[data-theme]` on `<html>` — inspect both light and dark tokens in place.
+### Display (13)
+`Card` (+ `CardHeader`, `CardBody`, `CardFooter`, `CardSection`) · `Badge` · `Separator` · `IconBox` · `Avatar` · `Skeleton` · `Spinner` · `AspectRatio` · `Table` (+ `TableHeader`, `TableBody`, `TableFooter`, `TableRow`, `TableCell`)
 
-Per-component deep dives live under `/components/{category}` (e.g., `/components/card`, `/components/input-production`). Dev index at `/` links to all playgrounds + the demo.
+### Interactive (18)
+`Button` · `ButtonGroup` · `Input` · `Textarea` · `Label` · `Checkbox` · `RadioGroup` · `Toggle` · `ToggleGroup` · `Switch` · `Accordion` · `InputGroup` · `NumberInput` · `MaskedInput` · `PhoneInput` · `PasswordInput`
 
-For the full design rationale and decisions log, see `../docs/decisions.md` and `../docs/component-standards.md`.
-For the roadmap see `../ROADMAP.md`.
-For the component registry (props, tokens, usage) see `../COMPONENT_REGISTRY.md`.
+### Feedback (3)
+`Empty` · `Alert` · `Progress`
 
-## Prerequisites
+### Specialized (8)
+`Dot` · `MetricBar` · `AnimatedCounter` · `Breadcrumb` · `Pagination` · `UsageDonut` · `AvailabilityBar` · `Kbd`
 
-- Node.js 20+
-- npm (or yarn/pnpm)
+### Molecules (6)
+`DataRow` · `BackLink` · `SectionDivider` · `AccordionGroup` · `ToggleGroupFilter` · `DeadlineBadge`
 
-## Setup
+### Card presets (5)
+`ContentCard` · `SidebarCard` · `FormCard` · `StatsCard` · `ActionCard`
+
+### Complex interactive (22)
+`Dialog` · `AlertDialog` · `Drawer` · `Sheet` · `Tooltip` · `Popover` · `DropdownMenu` · `ContextMenu` · `HoverCard` · `NavigationMenu` · `Tabs` · `Select` · `Combobox` · `Calendar` · `DatePicker` · `Toast` · `Slider` · `Carousel` · `ScrollArea` · `InputOTP` · `Command` · `Sidebar`
+
+Browse every component with live examples at `http://localhost:3000` (see [Running the playground](#running-the-playground)).
+
+For a per-component props reference, see [`COMPONENT_REGISTRY.md`](../COMPONENT_REGISTRY.md).
+
+---
+
+## Quick start
+
+### Prerequisites
+
+- Node.js 20 or newer
+- npm, yarn, or pnpm
+- A React 19 + Next.js 16 host project (or any React 19 bundler with SCSS Modules)
+
+### Installation (current — copy-to-project)
+
+While the library is pre-1.0 and stabilising against real consumer projects, installation is copy-based:
 
 ```bash
-cd dev
-npm install
+# In your consumer project root
+cp -r path/to/bleizlabs-ui/dev/styles      ./styles
+cp -r path/to/bleizlabs-ui/dev/components  ./components
 ```
 
-## Phase 0 — Style tokens
+Then configure your host project:
 
-The SCSS fundament lives in `styles/`:
-
-```
-styles/
-├── _project-settings.scss    ← seed values (change these per project)
-├── _generator.scss           ← auto-generates scales from seeds (do not edit)
-├── _semantics.scss           ← CSS custom properties (--color-*, --gap-*, etc.)
-├── _component-tokens.scss    ← per-component overrides (lazy, filled during Phase 1+)
-├── _mixins.scss              ← breakpoints, touch-target, typography helpers
-├── _animations.scss          ← 16 keyframes + infinite modifier
-├── _project-overrides.scss   ← optional manual CSS variable overrides
-└── index.scss                ← main entry (@forward all above)
-```
-
-To consume tokens from a React component:
-
-```scss
-// Card.module.scss (Phase 1+)
-@use 'path/to/styles/mixins' as mx;
-
-.root {
-  background: var(--color-surface);
-  padding: var(--padding-card);
-  border-radius: var(--radius-card);
-
-  @include mx.bp-md {
-    padding: var(--gap-card);
+```ts
+// tsconfig.json — add path aliases
+{
+  "compilerOptions": {
+    "paths": {
+      "@/components/*": ["./components/*"],
+      "@/styles/*":     ["./styles/*"]
+    }
   }
 }
 ```
 
-Components **never** reference primitive tokens — always semantic CSS variables (`var(--color-brand)`, not `$brand-500`). See `../docs/component-standards.md` §3.5.
-
-## Playground — visual QA
-
-A minimal sass compile script lives in `playground/`. Use it to verify the token generator produces expected output.
-
-```bash
-npm run build    # compiles styles/index.scss → playground/compiled.css
+```scss
+// app/globals.scss — import the token system at the top
+@use './styles' as *;
 ```
 
-Open `playground/playground.html` in a browser to inspect tokens visually in both light and dark themes. Toggle via the theme button (flips `[data-theme]` on `<html>`).
+### Installation (upcoming — private npm package)
 
-## Forking this library for your project
-
-**Do not** `npm install bleizlabs-ui` — this library follows copy-to-project pattern (per D2).
+In the next release, the library will publish to GitHub Packages as `@bleizlabs/ui`:
 
 ```bash
-# In your consumer project
-cp -r path/to/bleizlabs-ui/dev/styles your-project/styles
-cp -r path/to/bleizlabs-ui/dev/components your-project/components  # Phase 1+
+# .npmrc
+@bleizlabs:registry=https://npm.pkg.github.com
+
+# install
+npm install @bleizlabs/ui
 ```
 
-Then edit `your-project/styles/_project-settings.scss` — change seed values (brand color, accent, radius, spacing defaults). The generator cascades every change through the entire design system automatically.
+```tsx
+import { Button, Card, CardHeader, CardBody } from '@bleizlabs/ui';
+import '@bleizlabs/ui/styles';
+```
 
-## Architecture
+This preserves full styling customisation (all tokens are CSS custom properties that consumers override) while enabling `npm update @bleizlabs/ui` to propagate bug fixes and new components across every project at once. See [Distribution](#distribution) for the full strategy.
 
-- **SCSS Modules only** (D1) — no Tailwind, no CSS-in-JS
-- **Copy-to-project** (D2) — no runtime dependency
-- **Seed-based tokens** (D3) — 5-10 seeds generate the full system
-- **Fully styled** (D4) — not headless, but fully themed via semantic tokens
-- **Zero runtime UI dependencies** (D5 updated, D25) — including complex interactive (Dialog, Popover, Tooltip, etc.), built from scratch against WAI-ARIA APG
-- **Shadcn-aligned naming** (D24) — flat pattern (CardHeader not Card.Header, Input not InputField)
-- **Spacing scale** (D9) — Tailwind-style 4px unit (index × 4 = px), indexes 0-20
+---
 
-Full rationale: `../docs/decisions.md`.
+## Running the playground
+
+The repository includes a Next.js playground with one route per component plus a combined showcase page.
+
+```bash
+cd dev
+npm install
+npm run dev
+```
+
+Open `http://localhost:3000` for the component index, `http://localhost:3000/demo` for the combined showcase, or `http://localhost:3000/components/<name>` for per-component deep dives (e.g. `/components/button`, `/components/combobox`, `/components/table`).
+
+The showcase includes a light/dark theme toggle — every component is dual-theme from day one.
+
+---
+
+## Customisation
+
+### The seed system
+
+Every token in the library is derived from a small set of seed values. Change a seed, and the generator cascades the change through every color scale, shadow, glow, hover state, and semantic alias.
+
+```scss
+// styles/_project-settings.scss — this is where you reskin
+$seed-brand:       #0ea5e9;   // anchor for brand-50 … brand-900 scale
+$seed-accent:      #f97316;   // anchor for accent scale
+$seed-radius:      8px;       // base radius; md/lg/xl multiply from here
+$seed-space-unit:  4px;       // spacing scale unit (index × unit = px)
+$seed-font-primary: 'Inter';
+$seed-font-secondary: 'JetBrains Mono';
+```
+
+### CSS custom property overrides
+
+For finer control without touching SCSS, override semantic tokens in your host app's global stylesheet:
+
+```scss
+:root {
+  --color-brand:   #00E0B8;
+  --radius-md:     12px;
+  --font-primary:  'YourFont', system-ui, sans-serif;
+}
+
+[data-theme='dark'] {
+  --color-surface: #0a0a0a;
+  --color-text-primary: #fafafa;
+}
+```
+
+All 81 components read from semantic CSS variables — no component needs to be patched.
+
+### Per-project variants
+
+If a pattern recurs in a consumer project but isn't in the library, compose locally first:
+
+```tsx
+<Button className={styles.ghostGlow}>...</Button>
+```
+
+If the pattern repeats across two or more projects, it becomes a candidate for upstream promotion as a new variant.
+
+---
+
+## Architecture principles
+
+- **SCSS Modules only** — scoped class names, zero runtime style computation, standard tooling
+- **Zero runtime UI dependencies** — every interactive primitive (positioning, focus trap, dismiss, drag, match-media, date math) is written in-house
+- **Semantic tokens over primitives** — components reference `var(--color-brand)`, never `$brand-500`, so consumers can reskin without forking
+- **Compound flat API** — `<Card>` + `<CardHeader>` + `<CardBody>` as siblings, not `<Card.Header>` (shadcn-aligned, IDE-friendly, tree-shakeable)
+- **Polymorphism via `asChild`** — pass-through rendering for Next.js `<Link>`, HTML `<button>`, or any custom element using an in-house `Slot` primitive
+- **APG-first accessibility** — every interactive component has a documented keyboard model, ARIA contract, and regression catalogue against closed Radix issues
+- **Seed-based theming** — 5–10 seed values generate the full token system; consumers change seeds, not individual tokens
+
+---
+
+## Tech stack
+
+| Layer | Choice |
+|---|---|
+| Framework | React 19 + Next.js 16.2 (App Router, Turbopack default) |
+| Language | TypeScript 5.6 (strict) |
+| Styling | SCSS Modules + CSS custom properties |
+| Tokens | Seed-based generator (Sass `@use`/`@forward`) |
+| Polymorphism | In-house `Slot` primitive (Radix-style `asChild`) |
+| Positioning | In-house `useFloating` + `computePosition` (no Floating UI) |
+| Date math | In-house `utils/date.ts` using native `Date` + `Intl.DateTimeFormat` (no date-fns) |
+| Focus management | In-house `useFocusTrap` + `FloatingPortal` + `findFirstTabbable` |
+| Drag gestures | In-house pointer-capture pattern (`Slider`, `Carousel`, `ScrollArea`) |
+
+No external UI library is imported at runtime.
+
+---
+
+## Distribution
+
+We are moving the library towards a **private-npm-first** model with a **copy-snapshot** escape hatch for client deliverables.
+
+### Today: copy-to-project
+
+The library is copied into each consumer at project start. This is fine for 1–3 consumers, but breaks down at scale: a bug fix in one consumer has to be re-applied manually everywhere else.
+
+### Next release: `@bleizlabs/ui` on GitHub Packages (private)
+
+The library will publish to GitHub Packages as a private scoped package, consumed by internal BleizLabs projects via `npm install @bleizlabs/ui`. One bug fix → one `npm publish` → `npm update` in every consumer.
+
+### Client deliverables: hybrid
+
+For client projects that need full code ownership, a `copy-snapshot` workflow will freeze the current library version into the client repository at handoff time, so the client owns the code without an ongoing dependency on our registry.
+
+Full implementation lands in the next release.
+
+---
+
+## Roadmap
+
+- **Now:** Table primitives shipped, library at 81/81. Internal documentation and distribution preparation in progress.
+- **Next — consumer adoption:** First end-to-end consumption by BleizLabs website v2 and the internal admin panel. This is where real-world reskinning and edge cases get discovered.
+- **Later — post-consumer refactor:** Rule-of-three extractions — `usePointerDrag`, `useMatchMedia<T>` — land once all three consumers ship stable semantics.
+- **Future — additional primitives:** Form orchestrator, Chart primitives, Rich editor (evaluation, not commitment).
+
+---
 
 ## License
 
 MIT — see `LICENSE` (added with first public release).
+
+---
+
+## Internal documentation
+
+The following live in the project root (`internal/bleizlabs-ui/`) and are intended for contributors, not external consumers:
+
+- [`COMPONENT_REGISTRY.md`](../COMPONENT_REGISTRY.md) — props, tokens, and usage per component
+- [`ROADMAP.md`](../ROADMAP.md) — phase-by-phase component sequencing and pending Epics
+- [`docs/decisions.md`](../docs/decisions.md) — architectural decisions log (D1–D26+)
+- [`docs/component-standards.md`](../docs/component-standards.md) — authoring conventions
+- [`docs/token-architecture.md`](../docs/token-architecture.md) — seed generator internals
+- [`docs/a11y-pipeline.md`](../docs/a11y-pipeline.md) — accessibility testing workflow
+- [`docs/scss-conventions.md`](../docs/scss-conventions.md) — SCSS module conventions
+- [`docs/naming-conventions.md`](../docs/naming-conventions.md) — component and prop naming rules
+- [`devlog.md`](../devlog.md) — session-by-session execution journal
+
+---
+
+<sub>Built by [BleizLabs](https://bleizlabs.com). Feedback and issues welcome.</sub>

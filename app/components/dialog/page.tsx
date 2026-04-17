@@ -33,17 +33,9 @@ export default function DialogPlaygroundPage() {
           Dialog
         </Heading>
         <Text className={styles.intro}>
-          Phase 10 CI1 (E15) — first Complex Interactive component. Modal
-          dialog composing portal + overlay + focus-trapped content. APG{' '}
-          <a
-            href="https://www.w3.org/WAI/ARIA/apg/patterns/dialog-modal/"
-            target="_blank"
-            rel="noreferrer"
-          >
-            /dialog-modal/
-          </a>{' '}
-          pattern with 21 Radix regression cases documented in{' '}
-          <code>components/complex/Dialog/tests/</code>.
+          Accessible modal dialog for focused tasks and confirmations. Traps
+          focus, locks background scroll, closes on Escape or overlay click,
+          and restores focus to the trigger on dismiss.
         </Text>
       </header>
 

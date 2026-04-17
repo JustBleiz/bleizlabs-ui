@@ -11,8 +11,8 @@ export default function SeparatorPlaygroundPage() {
         <Link href="/" className={styles.back}>← back</Link>
         <Heading level={1} size="4xl">Separator</Heading>
         <p className={styles.intro}>
-          Divider line atom (ex Divider, D24 rename). Three variants (subtle, gradient, brand),
-          horizontal/vertical orientation, and optional custom color override.
+          Divider line with three variants (subtle, gradient, brand),
+          horizontal or vertical orientation, and an optional custom color.
         </p>
       </header>
 

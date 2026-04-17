@@ -28,19 +28,10 @@ export default function DrawerPlaygroundPage() {
           Drawer
         </Heading>
         <Text className={styles.intro}>
-          Phase 10 CI3 (E17) — bottom-positioned modal sheet. Visual modifier
-          of APG{' '}
-          <a
-            href="https://www.w3.org/WAI/ARIA/apg/patterns/dialog-modal/"
-            target="_blank"
-            rel="noreferrer"
-          >
-            /dialog-modal/
-          </a>{' '}
-          pattern. Reuses <code>useFocusTrap</code> from Dialog. Slide-up
-          keyframe, top-only border-radius, iOS safe-area-inset padding. 41
-          regression cases documented in{' '}
-          <code>components/complex/Drawer/tests/</code>.
+          Bottom-anchored modal sheet, optimised for mobile-first flows where a
+          full dialog would feel heavy. Slides up from the edge, respects iOS
+          safe-area insets, and keeps header and footer pinned while the body
+          scrolls.
         </Text>
       </header>
 

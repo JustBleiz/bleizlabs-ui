@@ -43,20 +43,10 @@ export default function ContextMenuPlaygroundPage() {
           ContextMenu
         </Heading>
         <Text className={styles.intro}>
-          Phase 10 CI8 (E22) — right-click menu per WAI-ARIA APG{' '}
-          <a
-            href="https://www.w3.org/WAI/ARIA/apg/patterns/menu/"
-            target="_blank"
-            rel="noreferrer"
-          >
-            /menu/
-          </a>
-          . Inherits the full DropdownMenu keyboard model (arrow nav + wraparound,
-          Home/End, typeahead, Escape, Tab closes) but adds: right-click trigger via{' '}
-          <code>contextmenu</code> event, position-at-cursor via direct{' '}
-          <code>computePosition</code> call (skip <code>useFloating</code> hook — menu
-          closes on scroll so no live repositioning needed), native browser context
-          menu suppression, close-on-scroll convention. 7 flat compound exports per D24.
+          Right-click menu anchored to the pointer position. Shares the full
+          keyboard model with DropdownMenu, suppresses the native browser menu,
+          and closes on scroll to match OS conventions. Wrap any element —
+          table rows, cards, tree nodes — with <code>ContextMenuTrigger</code>.
         </Text>
         <Button
           variant="secondary"

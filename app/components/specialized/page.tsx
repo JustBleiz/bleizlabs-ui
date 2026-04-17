@@ -99,9 +99,12 @@ export default function SpecializedPlaygroundPage() {
           Specialized
         </Heading>
         <Text className={styles.intro}>
-          Phase 6 — Tier A (E10: Dot, MetricBar, AnimatedCounter, Breadcrumb,
-          Pagination) + Tier B (E11: UsageDonut, AvailabilityBar, Kbd). Domain
-          + navigation + utility atoms. Phase 6 COMPLETE.
+          Eight focused primitives for data display and navigation —{' '}
+          <code>Dot</code>, <code>MetricBar</code>, <code>AnimatedCounter</code>,{' '}
+          <code>Breadcrumb</code>, <code>Pagination</code>,{' '}
+          <code>UsageDonut</code>, <code>AvailabilityBar</code>, and{' '}
+          <code>Kbd</code>. Each solves one problem well, composes with the
+          rest of the library, and reads from the shared token system.
         </Text>
       </header>
 
@@ -113,8 +116,8 @@ export default function SpecializedPlaygroundPage() {
           Dot
         </Heading>
         <Text>
-          Status indicator z 6 kolorami (spójne z Badge), 3 rozmiarami,
-          opcjonalnym pulse + sr-only label.
+          Status indicator with 6 colors (aligned with Badge), 3 sizes, and an
+          optional pulse animation plus sr-only label.
         </Text>
 
         <div className={styles.row}>
@@ -173,19 +176,19 @@ export default function SpecializedPlaygroundPage() {
         </Text>
 
         <div className={styles.metricGrid}>
-          <MetricBar used={42} total={100} unit="GB" label="Zużycie dysku" />
-          <MetricBar used={1450} total={2000} unit="MB" label="Pamięć RAM" />
+          <MetricBar used={42} total={100} unit="GB" label="Disk usage" />
+          <MetricBar used={1450} total={2000} unit="MB" label="Memory (RAM)" />
           <MetricBar
             used={87}
             total={100}
             unit="%"
-            label="CPU (bez formatera)"
+            label="CPU (no formatter)"
           />
           <MetricBar
             used={12500}
             total={50000}
-            unit="zł"
-            label="Budżet projektu"
+            unit="$"
+            label="Project budget"
             formatValue={formatNumber}
           />
           <MetricBar
@@ -205,10 +208,11 @@ export default function SpecializedPlaygroundPage() {
           AnimatedCounter
         </Heading>
         <Text>
-          Count-up 0→value via <code>requestAnimationFrame</code> +
-          easeOutCubic. <code>Intl.NumberFormat</code> (pl-PL domyślnie).
-          <code>prefers-reduced-motion</code> → instant jump.{' '}
-          <code>start</code> gate dla intersection/custom triggerów.
+          Count-up from 0 to value via <code>requestAnimationFrame</code> with
+          an easeOutCubic curve. Formats with <code>Intl.NumberFormat</code>{' '}
+          (pl-PL by default). Respects <code>prefers-reduced-motion</code>{' '}
+          (instant jump) and exposes a <code>start</code> gate for intersection
+          or custom triggers.
         </Text>
 
         <div className={styles.row}>
@@ -266,24 +270,25 @@ export default function SpecializedPlaygroundPage() {
           Breadcrumb
         </Heading>
         <Text>
-          Semantyczna nawigacja <code>&lt;nav&gt; + &lt;ol&gt; + &lt;li&gt;</code>.
-          Ostatni element zawsze <code>aria-current=&quot;page&quot;</code>.
-          Separator slot z default chevronem.
+          Semantic <code>&lt;nav&gt; + &lt;ol&gt; + &lt;li&gt;</code>{' '}
+          navigation. The last item always carries{' '}
+          <code>aria-current=&quot;page&quot;</code>. Separator slot with a
+          default chevron.
         </Text>
 
         <div className={styles.stack}>
           <Breadcrumb
             items={[
               { label: 'Panel', href: '/panel' },
-              { label: 'Projekty', href: '/panel/projects' },
-              { label: 'Strona WWW' },
+              { label: 'Projects', href: '/panel/projects' },
+              { label: 'Website' },
             ]}
           />
 
           <Breadcrumb
             items={[
               { label: 'Home', href: '/', icon: <HomeIcon /> },
-              { label: 'Usługi', href: '/services' },
+              { label: 'Services', href: '/services' },
               { label: 'Web Design', href: '/services/web-design' },
               { label: 'Portfolio' },
             ]}
@@ -313,11 +318,11 @@ export default function SpecializedPlaygroundPage() {
           Pagination
         </Heading>
         <Text>
-          Dwumodalna nawigacja stron — <code>variant=&quot;full&quot;</code>{' '}
-          (numerowana z ellipsisem) lub <code>&quot;compact&quot;</code>{' '}
-          (prev/next + &ldquo;Page X of Y&rdquo;). Native{' '}
-          <code>&lt;button&gt;</code> z <code>aria-current=&quot;page&quot;</code>
-          .
+          Two-mode page navigation.{' '}
+          <code>variant=&quot;full&quot;</code> renders a numbered list with
+          ellipsis; <code>&quot;compact&quot;</code> shows prev/next plus{' '}
+          &ldquo;Page X of Y&rdquo;. Native <code>&lt;button&gt;</code>{' '}
+          elements with <code>aria-current=&quot;page&quot;</code>.
         </Text>
 
         <div className={styles.stack}>
@@ -380,7 +385,7 @@ export default function SpecializedPlaygroundPage() {
 
         <div className={styles.row}>
           <UsageDonut
-            label="Budżet projektu"
+            label="Project budget"
             size="md"
             total={60}
             segments={[
@@ -432,15 +437,15 @@ export default function SpecializedPlaygroundPage() {
           AvailabilityBar <span className={styles.tierTag}>Tier B</span>
         </Heading>
         <Text>
-          Day-by-day status strip z native <code>title</code> tooltipami (hover
-          nad komórkami). <code>role=&quot;img&quot;</code> na wrapperze z
-          computed summary. CSS Grid +{' '}
+          Day-by-day status strip with native <code>title</code> tooltips on
+          hover. <code>role=&quot;img&quot;</code> on the wrapper carries a
+          computed summary. CSS Grid layout driven by the{' '}
           <code>--availability-cells</code> custom property.
         </Text>
 
         <div className={styles.stack}>
           <AvailabilityBar
-            label="API uptime — ostatnie 30 dni"
+            label="API uptime — last 30 days"
             segments={availabilityHistory}
             showLabels
           />
@@ -459,9 +464,10 @@ export default function SpecializedPlaygroundPage() {
           Kbd <span className={styles.tierTag}>Tier B</span>
         </Heading>
         <Text>
-          Native semantyczny <code>&lt;kbd&gt;</code> z outlined pill styling.
-          Konsument przekazuje raw text (Ctrl, ⌘, Enter). Kombinacje składane
-          poprzez wiele &lt;Kbd&gt; z separatorem + po stronie konsumenta.
+          Native semantic <code>&lt;kbd&gt;</code> with outlined pill styling.
+          Consumers pass raw text (Ctrl, ⌘, Enter). Combinations are composed
+          by rendering multiple <code>&lt;Kbd&gt;</code> with separators on
+          the consumer side.
         </Text>
 
         <div className={styles.stack}>

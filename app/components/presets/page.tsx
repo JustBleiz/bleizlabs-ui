@@ -98,9 +98,12 @@ export default function PresetsPlaygroundPage() {
           Card Presets
         </Heading>
         <Text className={styles.intro}>
-          Phase 8 (E13) — ContentCard, SidebarCard, FormCard, StatsCard, ActionCard.
-          Compositional presets on top of the Card atom + its slots. Each preset
-          codifies a repeatable Card use-case with opinionated defaults.
+          Five opinionated Card presets for common product surfaces —{' '}
+          <code>ContentCard</code> for articles and blocks,{' '}
+          <code>SidebarCard</code> for dashboard rails,{' '}
+          <code>FormCard</code> for native forms with submit actions,{' '}
+          <code>StatsCard</code> for numeric displays, and{' '}
+          <code>ActionCard</code> for notifications that demand a response.
         </Text>
       </header>
 

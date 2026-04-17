@@ -33,9 +33,11 @@ export default function InputPlaygroundPage() {
           Input + Label + Textarea
         </Heading>
         <Text className={styles.intro}>
-          Phase 4 I2 / I2.5 / I3. Client components for form state
-          (controlled or uncontrolled). Auto-generated id couples Label
-          via htmlFor; aria-invalid + aria-describedby wire up errors.
+          Core form field primitives — <code>Input</code>, <code>Label</code>,
+          and <code>Textarea</code>. Controlled or uncontrolled, auto-generated
+          ids wire Label to field, and error states propagate through{' '}
+          <code>aria-invalid</code> and <code>aria-describedby</code>{' '}
+          automatically.
         </Text>
       </header>
 

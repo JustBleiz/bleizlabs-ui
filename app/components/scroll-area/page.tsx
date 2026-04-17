@@ -57,15 +57,13 @@ export default function ScrollAreaPlayground() {
     <main className={styles.page}>
       <header className={styles.header}>
         <Heading level={1} size="2xl">
-          ScrollArea — Phase 10 CI20
+          ScrollArea
         </Heading>
         <Text variant="lead" color="muted">
-          Custom-scrollbar wrapper preserving native scroll behavior. 5 compound
-          flat exports (ScrollArea + Viewport + Scrollbar + Thumb + Corner).
-          Zero-dep pointer drag (3rd consumer — Slider E33 + Carousel E34).
-          Native keyboard scroll (PageUp/Dn/Arrow/Home/End/Space) works via
-          viewport <code>tabIndex=0</code>; scrollbars are VISUAL + POINTER-DRAG
-          only.
+          Custom-styled scrollbars that preserve native scroll behaviour — so
+          keyboard scroll, momentum, and touch fling all keep working. Four
+          visibility modes cover design tools, product UIs, and mobile-first
+          layouts.
         </Text>
         <Inline gap={2} wrap>
           <Badge color="success">native scroll preserved</Badge>
@@ -73,7 +71,6 @@ export default function ScrollAreaPlayground() {
           <Badge color="brand">ResizeObserver</Badge>
           <Badge color="brand">auto-hide</Badge>
           <Badge color="default">RTL</Badge>
-          <Badge color="warning">3rd drag-gesture consumer</Badge>
         </Inline>
       </header>
 

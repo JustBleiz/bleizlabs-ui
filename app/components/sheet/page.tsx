@@ -28,19 +28,10 @@ export default function SheetPlaygroundPage() {
           Sheet
         </Heading>
         <Text className={styles.intro}>
-          Phase 10 CI4 (E18) — 4-directional side panel. Visual modifier of APG{' '}
-          <a
-            href="https://www.w3.org/WAI/ARIA/apg/patterns/dialog-modal/"
-            target="_blank"
-            rel="noreferrer"
-          >
-            /dialog-modal/
-          </a>{' '}
-          pattern. Reuses <code>useFocusTrap</code> from Dialog. Per-side
-          animation direction, border-radius (inner corners only), safe-area-inset.
-          Horizontal sides (l/r) use width variants, vertical sides (t/b) use height
-          variants. Closes the Drawer family (Drawer = bottom-only, Sheet = 4 sides).
-          41 regression cases documented in <code>components/complex/Sheet/tests/</code>.
+          Side-anchored modal panel that can slide in from the left, right,
+          top, or bottom edge. Useful for navigation, filters, and detail views
+          that shouldn&apos;t take over the full viewport. Inner corners round,
+          outer edge sits flush, and per-side animations are wired for you.
         </Text>
       </header>
 

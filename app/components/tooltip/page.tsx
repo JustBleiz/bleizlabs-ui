@@ -37,20 +37,10 @@ export default function TooltipPlaygroundPage() {
           Tooltip
         </Heading>
         <Text className={styles.intro}>
-          Phase 10 CI6 (E19) — modeless floating label shown on hover or keyboard focus.
-          Implements WAI-ARIA APG{' '}
-          <a
-            href="https://www.w3.org/WAI/ARIA/apg/patterns/tooltip/"
-            target="_blank"
-            rel="noreferrer"
-          >
-            /tooltip/
-          </a>{' '}
-          pattern. Zero runtime deps — positioning math lives in{' '}
-          <code>utils/position.ts</code> + <code>utils/useFloating.ts</code>. Uses own Slot
-          primitive for <code>asChild</code> trigger pattern. SC 1.4.13 compliant
-          (dismissable via <span className={styles.kbd}>Esc</span>, hoverable via grace area,
-          focus parity with hover).
+          Short contextual label shown on hover or keyboard focus. Dismissable
+          with Escape, hoverable via a grace area so the pointer can travel
+          into the content, and fully keyboard-accessible — focus and hover
+          behave identically.
         </Text>
       </header>
 

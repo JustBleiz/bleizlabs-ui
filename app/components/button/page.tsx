@@ -27,10 +27,10 @@ export default function ButtonPlaygroundPage() {
           Button + ButtonGroup
         </Heading>
         <Text className={styles.intro}>
-          Phase 4 I1 / I1.5. Server-safe Button (no &quot;use client&quot;)
-          with 5 variants, 3 sizes, icon support, href fallback, asChild
-          polymorphism. ButtonGroup wraps them with collapsed inner radii
-          via the joined-group SCSS mixin (also reused by ToggleGroup).
+          Server-safe Button with five variants, three sizes, optional icon,
+          and polymorphic rendering via <code>asChild</code> (use as a Next.js
+          Link, anchor, or any custom element). ButtonGroup wraps siblings
+          into a single joined control with collapsed inner radii.
         </Text>
       </header>
 

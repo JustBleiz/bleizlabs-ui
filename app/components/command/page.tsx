@@ -44,15 +44,12 @@ export default function CommandPlayground() {
     <main className={styles.page}>
       <header className={styles.header}>
         <Heading level={1} size="2xl">
-          Command — Phase 10 CI19
+          Command
         </Heading>
         <Text variant="lead" color="muted">
-          Cmd+K / Ctrl+K command palette — searchable action launcher. SECOND
-          composition Epic combining APG <code>/combobox/</code> (editable
-          search) + <code>/dialog-modal/</code> (modal shell). Reimplements
-          filter + listbox with shared patterns from Combobox E28; reuses
-          Dialog E15 <code>useFocusTrap</code> + E23{' '}
-          <code>FloatingPortal</code>.
+          Cmd+K command palette — a modal, searchable action launcher. Type
+          to filter, arrow keys to navigate, Enter to run. Groups, shortcuts,
+          loading states, and custom filter functions are built in.
         </Text>
         {lastAction !== null ? (
           <Inline gap={2} align="center">

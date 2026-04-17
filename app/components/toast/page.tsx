@@ -28,13 +28,14 @@ export default function ToastPlayground() {
     <main className={styles.page}>
       <header className={styles.header}>
         <Heading level={1} size="2xl">
-          Toast — Phase 10 CI15
+          Toast
         </Heading>
         <Text variant="lead" color="muted">
-          Accessible notification surface per WAI-ARIA APG <code>/alert/</code> + live regions.
-          Singleton <code>&lt;Toaster /&gt;</code> + imperative <code>toast()</code> API.
-          Zero-dep queue via module-scoped event emitter + <code>useSyncExternalStore</code>.
-          FIRST notification-layer sub-family.
+          Transient notifications with an imperative API — call{' '}
+          <code>toast(...)</code> from anywhere, a single{' '}
+          <code>&lt;Toaster /&gt;</code> mounted once renders the queue. Pauses
+          on hover, focus, or tab visibility loss; integrates with promises
+          for async feedback.
         </Text>
         <Inline gap={2} wrap>
           <Badge color="success">ARIA live regions</Badge>

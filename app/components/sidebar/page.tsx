@@ -25,16 +25,13 @@ export default function SidebarPlayground() {
     <main className={styles.page}>
       <header className={styles.header}>
         <Heading level={1} size="2xl">
-          Sidebar — Phase 10 CI22 FINISHER
+          Sidebar
         </Heading>
         <Text variant="lead" color="muted">
-          Composition — APG <code>/disclosure/</code> (trigger + collapsible
-          panel) + plain navigation (<code>&lt;nav&gt;</code> + <code>&lt;a&gt;</code>{' '}
-          + <code>aria-current=&quot;page&quot;</code>). Responsive: desktop
-          fixed aside + mobile drawer via <code>FloatingPortal</code> +{' '}
-          <code>useFocusTrap</code> (Dialog E15). Opt-in cookie persistence for
-          SSR-friendly state. Lands the library at 80/80 components (Phase 10
-          COMPLETE).
+          Responsive application sidebar — a fixed aside on desktop, a modal
+          drawer on mobile. Groups, items, separators, and an optional hamburger
+          trigger compose however the product needs. Opt-in cookie persistence
+          keeps the open state across reloads without hydration flash.
         </Text>
       </header>
 

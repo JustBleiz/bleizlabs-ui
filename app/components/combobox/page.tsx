@@ -67,14 +67,13 @@ export default function ComboboxPlayground() {
     <main className={styles.page}>
       <header className={styles.header}>
         <Heading level={1} size="2xl">
-          Combobox — Phase 10 CI13
+          Combobox
         </Heading>
         <Text variant="lead" color="muted">
-          Accessible autocomplete input per WAI-ARIA APG <code>/combobox/</code> editable
-          variant. 8 compound flat exports. <strong>Second listbox sub-family</strong> —
-          pattern-child of Select E27. Extends Select with text input trigger + search
-          filter (case-insensitive substring). Consumes 4/5 E23 primitives (skips
-          useFloatingFocus — focus stays on input via aria-activedescendant).
+          Autocomplete input with a filtered listbox. Type any substring to
+          narrow results (case-insensitive contains), navigate with arrow keys,
+          Enter to commit, Escape to revert. Supports free-text mode for
+          tag-input patterns.
         </Text>
       </header>
 

@@ -37,14 +37,13 @@ export default function InputOTPPlayground() {
     <main className={styles.page}>
       <header className={styles.header}>
         <Heading level={1} size="2xl">
-          InputOTP — Phase 10 CI18
+          InputOTP
         </Heading>
         <Text variant="lead" color="muted">
-          One-time password / verification code entry. Single semantic input
-          stretched across decorative cells. Zero-dep reimplementation of the
-          guilhermerodz <code>input-otp</code> idiom per D5/D25. Native
-          iOS/Android SMS autofill via{' '}
-          <code>autoComplete=&quot;one-time-code&quot;</code>.
+          One-time password and verification code entry. A single semantic
+          input is rendered underneath decorative slot cells, so screen readers
+          see one field and native SMS autofill works on iOS and Android out
+          of the box.
         </Text>
       </header>
 

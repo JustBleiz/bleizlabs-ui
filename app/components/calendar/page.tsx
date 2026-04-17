@@ -64,13 +64,13 @@ export default function CalendarPlayground() {
     <main className={styles.page}>
       <header className={styles.header}>
         <Heading level={1} size="2xl">
-          Calendar — Phase 10 CI16
+          Calendar
         </Heading>
         <Text variant="lead" color="muted">
-          Accessible single-date calendar grid per WAI-ARIA APG <code>/grid/</code>. 6 compound
-          flat exports (Calendar + CalendarHeader + CalendarGrid + CalendarGridHead +
-          CalendarGridBody + CalendarCell). Zero runtime deps — native <code>Date</code> +
-          <code>Intl.DateTimeFormat</code> only (D5/D25). First grid-pattern Phase 10 component.
+          Single-date calendar grid with locale-aware day headers, 2D keyboard
+          navigation, and RTL support. All date math uses native{' '}
+          <code>Date</code> and <code>Intl.DateTimeFormat</code> — no date-fns,
+          no dayjs, no moment.
         </Text>
         <Inline gap={2} wrap>
           <Badge color="success">APG /grid/</Badge>

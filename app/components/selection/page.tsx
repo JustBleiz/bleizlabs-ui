@@ -22,10 +22,10 @@ export default function SelectionPlaygroundPage() {
           Checkbox + RadioGroup
         </Heading>
         <Text className={styles.intro}>
-          Phase 4 I4 / I5. Native form inputs visually hidden under
-          custom-styled boxes. Animations: checkmark scale-in for
-          Checkbox, radioFill dot for RadioGroupItem (both keyframes from
-          E03). Both client components for controlled / uncontrolled state.
+          Custom-styled selection controls backed by native inputs — so
+          keyboard, form submission, and assistive tech all work as expected.
+          Controlled or uncontrolled, with smooth check and dot animations
+          that respect <code>prefers-reduced-motion</code>.
         </Text>
       </header>
 

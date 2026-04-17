@@ -44,15 +44,16 @@ export default function InputProductionPlaygroundPage() {
           &larr; back
         </Link>
         <Heading level={1} size="4xl">
-          Input Production Hardening
+          Production form inputs
         </Heading>
         <Text className={styles.intro}>
-          Phase 4 expansion (E08). Bootstrap-level form input feature parity
-          for CRM / platform production use. Three layers per D26:
-          Layer 1 = Input prefix/suffix/counter/clearable/loading props,
-          Layer 2 = InputGroup + InputGroupText widgets, Layer 3 =
-          specialized inputs (NumberInput, MaskedInput, PhoneInput,
-          PasswordInput).
+          Everything a real CRM or admin product needs from its text fields.
+          Layer 1 adds prefix/suffix, character counter, clear button, and
+          loading state to <code>Input</code>. Layer 2 composes fields and
+          buttons into grouped controls via <code>InputGroup</code>. Layer 3
+          ships specialised inputs — <code>NumberInput</code>,{' '}
+          <code>MaskedInput</code>, <code>PhoneInput</code>, and{' '}
+          <code>PasswordInput</code>.
         </Text>
       </header>
 

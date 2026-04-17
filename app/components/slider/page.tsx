@@ -25,14 +25,13 @@ export default function SliderPlayground() {
     <main className={styles.page}>
       <header className={styles.header}>
         <Heading level={1} size="2xl">
-          Slider — Phase 10 CI14
+          Slider
         </Heading>
         <Text variant="lead" color="muted">
-          Accessible single-thumb value selector per WAI-ARIA APG{' '}
-          <code>/slider/</code>. Compound flat API (Slider + SliderTrack +
-          SliderRange + SliderThumb). Zero-dep drag gesture via PointerEvent +
-          setPointerCapture. Keyboard: Arrow ±step, Shift+Arrow ±largeStep,
-          PageUp/Dn, Home/End.
+          Accessible single-thumb value selector. Drag with pointer, or
+          navigate with Arrow (±step), Shift+Arrow (±large step), PageUp/Down,
+          Home/End. Supports RTL, vertical orientation, inverted layout, and
+          form submission via a hidden input.
         </Text>
         <Inline gap={2} wrap>
           <Badge color="success">role=&quot;slider&quot;</Badge>

@@ -18,10 +18,10 @@ import { Text } from '@/components/typography/Text';
 import styles from './page.module.scss';
 
 const STATUS_OPTIONS: ToggleGroupFilterOption[] = [
-  { value: 'active', label: 'Aktywne' },
-  { value: 'paused', label: 'Wstrzymane' },
-  { value: 'done', label: 'Zakończone' },
-  { value: 'archived', label: 'Archiwum' },
+  { value: 'active', label: 'Active' },
+  { value: 'paused', label: 'Paused' },
+  { value: 'done', label: 'Done' },
+  { value: 'archived', label: 'Archived' },
 ];
 
 // Deterministic future dates relative to a fixed session date.
@@ -47,9 +47,12 @@ export default function MoleculesPlaygroundPage() {
           Molecules
         </Heading>
         <Text className={styles.intro}>
-          Phase 7 (E12) — DataRow, BackLink, SectionDivider, AccordionGroup,
-          ToggleGroupFilter, DeadlineBadge. Compositional molecules on top of
-          existing atoms — zero new primitives.
+          Six composite components built from the atom layer —{' '}
+          <code>DataRow</code>, <code>BackLink</code>,{' '}
+          <code>SectionDivider</code>, <code>AccordionGroup</code>,{' '}
+          <code>ToggleGroupFilter</code>, and <code>DeadlineBadge</code>.
+          They codify recurring patterns so consumers don&apos;t reinvent
+          them per project.
         </Text>
       </header>
 
@@ -61,19 +64,19 @@ export default function MoleculesPlaygroundPage() {
           DataRow
         </Heading>
         <Text>
-          Label/value pair z <code>responsive</code> prop (default true —
-          collapse do kolumny poniżej md breakpoint). <code>value</code> i{' '}
-          <code>children</code> są zamienne; ReactNode przechodzi, scalary
-          auto-wrapped w Text.
+          Label / value pair with a <code>responsive</code> prop (default true
+          — collapses to a column below the md breakpoint).{' '}
+          <code>value</code> and <code>children</code> are interchangeable;
+          ReactNode passes through, scalars are auto-wrapped in <code>Text</code>.
         </Text>
 
         <div className={styles.panel}>
           <div className={styles.stack}>
-            <DataRow label="Status" value="Aktywne" />
-            <DataRow label="Klient" value="BleizLabs Studio" />
-            <DataRow label="Wartość" value="12 500 PLN" />
+            <DataRow label="Status" value="Active" />
+            <DataRow label="Client" value="BleizLabs Studio" />
+            <DataRow label="Amount" value="$12,500" />
             <DataRow label="Deadline">
-              <Badge color="warning" label="za 3 dni" />
+              <Badge color="warning" label="in 3 days" />
             </DataRow>
             <DataRow
               label="Non-responsive"
@@ -92,14 +95,15 @@ export default function MoleculesPlaygroundPage() {
           BackLink
         </Heading>
         <Text>
-          Ghost Button wrapper z leading arrow icon. Consumer przekazuje{' '}
-          <code>href</code> lub <code>asChild</code> dla next/link.
+          Ghost Button wrapper with a leading arrow icon. Pass{' '}
+          <code>href</code> directly, or use <code>asChild</code> for{' '}
+          <code>next/link</code>.
         </Text>
 
         <div className={styles.row}>
           <BackLink href="/components" />
-          <BackLink href="/panel" label="Do panelu" />
-          <BackLink href="/docs" label="Dokumentacja" />
+          <BackLink href="/panel" label="Back to panel" />
+          <BackLink href="/docs" label="Documentation" />
         </div>
       </section>
 
@@ -111,14 +115,15 @@ export default function MoleculesPlaygroundPage() {
           SectionDivider
         </Heading>
         <Text>
-          Labeled separator z 3 pozycjami. <code>role=&quot;separator&quot;</code>{' '}
-          na wrapperze, gradient Separator lines po bokach.
+          Labeled separator with 3 label positions.{' '}
+          <code>role=&quot;separator&quot;</code> on the wrapper, gradient
+          Separator lines on each side.
         </Text>
 
         <div className={styles.stack}>
-          <SectionDivider>Detale zlecenia</SectionDivider>
-          <SectionDivider align="left">Sekcja po lewej</SectionDivider>
-          <SectionDivider align="right">Sekcja po prawej</SectionDivider>
+          <SectionDivider>Order details</SectionDivider>
+          <SectionDivider align="left">Left-aligned section</SectionDivider>
+          <SectionDivider align="right">Right-aligned section</SectionDivider>
         </div>
       </section>
 
@@ -130,32 +135,35 @@ export default function MoleculesPlaygroundPage() {
           AccordionGroup
         </Heading>
         <Text>
-          FAQ wrapper z group-level open state. <code>mode=&quot;single&quot;</code>{' '}
-          (only one open) lub <code>&quot;multiple&quot;</code>. Internal{' '}
-          <code>Set&lt;number&gt;</code> state, injects open/onOpenChange do
-          każdego Accordion child przez React.cloneElement.
+          FAQ wrapper with group-level open state.{' '}
+          <code>mode=&quot;single&quot;</code> opens one panel at a time;{' '}
+          <code>mode=&quot;multiple&quot;</code> allows several open in
+          parallel. Group injects open state and change handlers into each
+          child Accordion.
         </Text>
 
         <Text>
           <strong>Single mode</strong> (default, first panel open):
         </Text>
         <AccordionGroup mode="single" defaultOpen={0}>
-          <Accordion question="Jak działa biblioteka?">
+          <Accordion question="How do I install the library?">
             <Text>
-              Copy-to-project model — kopiujesz bazę, zmieniasz seedy, tree-
-              shaking w Next.js. Zero npm dependency.
+              Copy <code>styles/</code> and <code>components/</code> into your
+              project, import the token system, and start composing. No npm
+              dependency required today.
             </Text>
           </Accordion>
-          <Accordion question="Czy mogę nadpisać kolory?">
+          <Accordion question="Can I override the colors?">
             <Text>
-              Tak — edytuj <code>_project-settings.scss</code> i generator
-              kaskaduje zmianę przez cały design system.
+              Yes — edit <code>_project-settings.scss</code> seed values and
+              the generator cascades the change through the entire design
+              system, light and dark.
             </Text>
           </Accordion>
-          <Accordion question="Jak z a11y complex interactive?">
+          <Accordion question="What about accessibility?">
             <Text>
-              Phase 10 ma extended pipeline oparty o WAI-ARIA APG + Radix
-              issues + NVDA + Playwright + axe-core.
+              Every interactive component maps to a documented WAI-ARIA APG
+              pattern with a full keyboard model and regression catalogue.
             </Text>
           </Accordion>
         </AccordionGroup>
@@ -189,13 +197,13 @@ export default function MoleculesPlaygroundPage() {
           ToggleGroupFilter
         </Heading>
         <Text>
-          Thin composition nad ToggleGroup type=&quot;multiple&quot;. Flat
-          options array → Toggle children. Consumer owns controlled state.
-          <code>groupLabel</code> prop dla visible uppercase caption.
+          Thin composition over <code>ToggleGroup type=&quot;multiple&quot;</code>.
+          Flat options array → Toggle children. Consumer owns controlled state.
+          <code>groupLabel</code> prop for a visible uppercase caption.
         </Text>
 
         <ToggleGroupFilter
-          label="Filtr statusów zleceń"
+          label="Order status filter"
           groupLabel="Status"
           options={STATUS_OPTIONS}
           value={statuses}
@@ -203,22 +211,22 @@ export default function MoleculesPlaygroundPage() {
         />
 
         <Text>
-          <strong>Zaznaczone:</strong>{' '}
-          {statuses.length > 0 ? statuses.join(', ') : '(brak)'}
+          <strong>Selected:</strong>{' '}
+          {statuses.length > 0 ? statuses.join(', ') : '(none)'}
         </Text>
 
         <div className={styles.controls}>
           <button type="button" onClick={() => setStatuses([])}>
-            Wyczyść
+            Clear
           </button>
           <button type="button" onClick={() => setStatuses(['active', 'paused'])}>
-            Aktywne + wstrzymane
+            Active + paused
           </button>
           <button
             type="button"
             onClick={() => setStatuses(STATUS_OPTIONS.map((o) => o.value))}
           >
-            Wszystkie
+            All
           </button>
         </div>
       </section>
@@ -231,10 +239,11 @@ export default function MoleculesPlaygroundPage() {
           DeadlineBadge
         </Heading>
         <Text>
-          Badge z Intl.RelativeTimeFormat. Hydration-safe — SSR renderuje
-          absolute date, po hydracji swap do relative label via useEffect +
-          requestAnimationFrame. Color mapping: overdue → error, ≤ threshold
-          → warning, else → success.
+          Badge wrapping <code>Intl.RelativeTimeFormat</code>. Hydration-safe —
+          SSR renders the absolute date, then a <code>useEffect</code> +{' '}
+          <code>requestAnimationFrame</code> pair swaps in the relative label
+          after hydration. Color mapping: overdue → error, ≤ threshold →
+          warning, else → success.
         </Text>
 
         <div className={styles.stack}>

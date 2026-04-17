@@ -42,23 +42,10 @@ export default function DropdownMenuPlaygroundPage() {
           DropdownMenu
         </Heading>
         <Text className={styles.intro}>
-          Phase 10 CI7 (E21) — accessible menu per WAI-ARIA APG{' '}
-          <a
-            href="https://www.w3.org/WAI/ARIA/apg/patterns/menu/"
-            target="_blank"
-            rel="noreferrer"
-          >
-            /menu/
-          </a>
-          . Compound flat API (D24): <code>DropdownMenu</code> +{' '}
-          <code>DropdownMenuTrigger</code> + <code>DropdownMenuContent</code> +{' '}
-          <code>DropdownMenuItem</code> + <code>DropdownMenuSeparator</code> +{' '}
-          <code>DropdownMenuLabel</code> + <code>DropdownMenuGroup</code>. Full keyboard model:
-          Enter/Space/ArrowDown on trigger opens + focuses first item, ArrowUp opens + focuses
-          last, Arrow keys cycle with wraparound (skipping disabled), Home/End jump, typeahead
-          by first character (multi-char buffer, 500ms reset), Escape closes + restores focus
-          to trigger, Tab closes (APG convention — differs from Dialog trap). Roving tabindex
-          + `onSelect` cancelable event for future checkbox/radio items.
+          Accessible menu triggered from a button. Full keyboard model out of
+          the box — arrow navigation with wraparound, Home and End jumps,
+          typeahead search, Escape and Tab to close. Items, labels, separators,
+          and groups are standard.
         </Text>
         {lastAction && (
           <Text variant="small" color="brand">

@@ -62,15 +62,13 @@ export default function DatePickerPlayground() {
     <main className={styles.page}>
       <header className={styles.header}>
         <Heading level={1} size="2xl">
-          DatePicker — Phase 10 CI17
+          DatePicker
         </Heading>
         <Text variant="lead" color="muted">
-          Accessible date input + Calendar popup composition per WAI-ARIA APG{' '}
-          <code>/combobox/</code> editable + <code>/grid/</code> inside{' '}
-          <code>/dialog-modal/</code>. 3 compound flat exports (DatePicker +
-          DatePickerInput + DatePickerContent). Composes Combobox E28 input pattern +
-          Calendar E30 popup. Zero runtime deps (D5/D25). ISO <code>yyyy-mm-dd</code>
-          input format.
+          Type an ISO date directly or pick one from the calendar popover.
+          Combines the text-input ergonomics of Combobox with the grid
+          navigation of Calendar. Parses <code>yyyy-mm-dd</code> input, reverts
+          malformed entries on blur.
         </Text>
         <Inline gap={2} wrap>
           <Badge color="success">APG composition</Badge>

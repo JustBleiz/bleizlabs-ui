@@ -39,7 +39,7 @@ export default function FeedbackPlaygroundPage() {
   const [uploadValue, setUploadValue] = useState(42);
   const [stageIndex, setStageIndex] = useState(1);
 
-  const STAGES = ['Planowanie', 'Projekt', 'Development', 'Testy', 'Release'];
+  const STAGES = ['Planning', 'Design', 'Development', 'Testing', 'Release'];
 
   const dismissAlert = (variant: AlertVariant) => {
     setVisibleAlerts((prev) => {
@@ -61,9 +61,11 @@ export default function FeedbackPlaygroundPage() {
           Feedback
         </Heading>
         <Text className={styles.intro}>
-          Phase 5 (E09) — Empty, Alert, Progress. Placeholder slot dla pustych
-          list, semantyczne notifications z opt-in dismiss i href body,
-          dwumodalny progress (stages XOR percent).
+          Three feedback primitives. <code>Empty</code> fills placeholder space
+          for empty lists and zero-result states. <code>Alert</code> presents
+          semantic notifications with optional dismiss. <code>Progress</code>{' '}
+          renders either a continuous percent bar or a multi-step stage
+          indicator.
         </Text>
       </header>
 
@@ -75,19 +77,19 @@ export default function FeedbackPlaygroundPage() {
           Empty
         </Heading>
         <Text>
-          Placeholder dla zero-result. Icon + title + description + cta slot.
-          Opcjonalne <code>role=&quot;status&quot;</code> via spread (dla
-          async-rendered empty states).
+          Placeholder surface for zero-result states. Icon + title +
+          description + CTA slot. Add <code>role=&quot;status&quot;</code> via
+          spread for async-rendered empty states.
         </Text>
 
         <div className={styles.stack}>
           <Empty
             icon={<InboxIcon />}
-            title="Brak zgłoszeń"
-            description="Nie masz jeszcze żadnych wiadomości. Utwórz pierwsze zgłoszenie aby zacząć."
-            cta={<Button>Utwórz zgłoszenie</Button>}
+            title="No tickets yet"
+            description="You don&rsquo;t have any messages. Create your first ticket to get started."
+            cta={<Button>Create ticket</Button>}
           />
-          <Empty title="Lista jest pusta" />
+          <Empty title="This list is empty" />
         </div>
       </section>
 
@@ -99,9 +101,10 @@ export default function FeedbackPlaygroundPage() {
           Alert
         </Heading>
         <Text>
-          4 warianty (critical/warning/info/success). Critical →{' '}
-          <code>role=&quot;alert&quot;</code>, pozostałe → <code>status</code>.
-          Opt-in dismiss, opcjonalny href na body, opcjonalny timestamp.
+          Four variants (critical / warning / info / success). Critical uses{' '}
+          <code>role=&quot;alert&quot;</code>, the others use{' '}
+          <code>status</code>. Optional dismiss, href on body, and timestamp
+          slots.
         </Text>
 
         <div className={styles.stack}>
@@ -111,7 +114,7 @@ export default function FeedbackPlaygroundPage() {
                 key={variant}
                 variant={variant}
                 title={`${variant[0]!.toUpperCase()}${variant.slice(1)} alert`}
-                description="Przykładowa treść notyfikacji dla tego wariantu. Może mieć długi opis lub inline link."
+                description="Example notification body for this variant. Descriptions can be long or include inline links."
                 onClose={() => dismissAlert(variant)}
               />
             ) : null,
@@ -119,22 +122,22 @@ export default function FeedbackPlaygroundPage() {
 
           <Alert
             variant="info"
-            title="Nowa wersja biblioteki"
-            description="Kliknij aby zobaczyć changelog w nowej karcie."
+            title="New library version available"
+            description="Click to view the changelog in a new tab."
             href="#changelog"
             timestamp="2026-04-14T14:30:00Z"
           />
 
           <Alert
             variant="warning"
-            title="Persistent warning (bez onClose)"
-            description="Nie może być zamknięty przez użytkownika — bez onClose nie renderuje się przycisk X."
+            title="Persistent warning (no onClose)"
+            description="Cannot be dismissed by the user — without onClose, the close button isn&rsquo;t rendered."
           />
         </div>
 
         <div className={styles.controls}>
           <Button variant="secondary" size="sm" onClick={resetAlerts}>
-            Przywróć wszystkie alerty
+            Restore all alerts
           </Button>
         </div>
       </section>
@@ -147,13 +150,13 @@ export default function FeedbackPlaygroundPage() {
           Progress — Stages
         </Heading>
         <Text>
-          Horizontal pill strip, <code>&lt;ol aria-label&gt;</code> +{' '}
-          <code>aria-current=&quot;step&quot;</code> na aktywnym elemencie.
+          Horizontal pill strip rendered as <code>&lt;ol aria-label&gt;</code>{' '}
+          with <code>aria-current=&quot;step&quot;</code> on the active step.
         </Text>
 
         <div className={styles.stack}>
           <Progress
-            label="Postęp projektu klienta"
+            label="Client project progress"
             stages={STAGES}
             currentStage={stageIndex}
           />
@@ -166,7 +169,7 @@ export default function FeedbackPlaygroundPage() {
             onClick={() => setStageIndex((i) => Math.max(0, i - 1))}
             disabled={stageIndex === 0}
           >
-            ← Poprzedni etap
+            ← Previous stage
           </Button>
           <Button
             variant="secondary"
@@ -176,7 +179,7 @@ export default function FeedbackPlaygroundPage() {
             }
             disabled={stageIndex === STAGES.length - 1}
           >
-            Następny etap →
+            Next stage →
           </Button>
         </div>
       </section>
@@ -189,15 +192,16 @@ export default function FeedbackPlaygroundPage() {
           Progress — Percent
         </Heading>
         <Text>
-          Linear bar, <code>role=&quot;progressbar&quot;</code> +{' '}
-          <code>aria-valuenow/min/max</code>. Width injection via
-          <code> --progress-value</code> CSS variable. Value clamped do [0, max].
+          Linear bar rendered with <code>role=&quot;progressbar&quot;</code>{' '}
+          and <code>aria-valuenow/min/max</code>. Width is injected via the{' '}
+          <code>--progress-value</code> CSS variable. Values are clamped to{' '}
+          [0, max].
         </Text>
 
         <div className={styles.stack}>
-          <Progress label="Upload pliku" value={uploadValue} max={100} />
+          <Progress label="File upload" value={uploadValue} max={100} />
           <Progress label="Task completion" value={87} max={100} />
-          <Progress label="Kwota (clamp test)" value={150} max={100} />
+          <Progress label="Overflow (clamp test)" value={150} max={100} />
         </div>
 
         <div className={styles.controls}>

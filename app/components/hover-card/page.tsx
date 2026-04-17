@@ -58,23 +58,10 @@ export default function HoverCardPlaygroundPage() {
           HoverCard
         </Heading>
         <Text className={styles.intro}>
-          Phase 10 CI9 (E24) — hover-triggered floating surface for rich contextual content.
-          Implements WAI-ARIA APG{' '}
-          <a
-            href="https://www.w3.org/WAI/ARIA/apg/patterns/dialog-modal/"
-            target="_blank"
-            rel="noreferrer"
-          >
-            /dialog-modal/
-          </a>{' '}
-          non-modal modifier (NOT <code>role=&quot;tooltip&quot;</code>, because HoverCard may
-          contain interactive content). Compound flat API (D24):{' '}
-          <code>HoverCard</code> + <code>HoverCardTrigger</code> + <code>HoverCardContent</code>.
-          First validate-in-production consumer of E23 floating primitives —{' '}
-          <code>useFloatingState</code> + <code>FloatingPortal</code> +{' '}
-          <code>createFloatingContext</code> + <code>useFloating</code>. Skips{' '}
-          <code>useFloatingDismiss</code> and <code>useFloatingFocus</code> (closes via
-          mouseleave + grace area, not Escape/outside-click; non-modal so no focus trap).
+          Floating surface that opens on hover or focus, for rich previews like
+          user cards, link metadata, or product details. Unlike Tooltip,
+          HoverCard can contain interactive content — links, buttons, nested
+          components — and supports a grace area for pointer travel.
         </Text>
       </header>
 
@@ -158,7 +145,7 @@ export default function HoverCardPlaygroundPage() {
         <Text>
           Wrap a feed/sidebar in <code>HoverCardProvider</code>. Once one HoverCard opens,
           siblings open instantly within the <code>skipDelayDuration</code> window (default
-          300ms). Mirror of <code>TooltipProvider</code> from E19 — same callback-based pattern
+          300ms). Mirror of <code>TooltipProvider</code> — same callback-based pattern
           for delay-group coordination.
         </Text>
         <HoverCardProvider>

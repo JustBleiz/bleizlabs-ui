@@ -32,14 +32,13 @@ export default function CarouselPlayground() {
     <main className={styles.page}>
       <header className={styles.header}>
         <Heading level={1} size="2xl">
-          Carousel — Phase 10 CI21
+          Carousel
         </Heading>
         <Text variant="lead" color="muted">
-          Accessible auto-rotating content slider per WAI-ARIA APG{' '}
-          <code>/carousel/</code>. Compound flat API: Carousel + CarouselViewport
-          + CarouselSlide + CarouselPrev + CarouselNext + CarouselPause.
-          Zero-dep drag gesture (2nd consumer after Slider E33). WCAG 2.2.2
-          pause control + 1.4.13 pause-on-hover/focus + prefers-reduced-motion.
+          Content slider with optional auto-rotation, pointer drag, and
+          keyboard navigation. Pauses automatically on hover, focus, tab
+          visibility loss, or reduced-motion preference — and exposes an
+          explicit pause button whenever auto-rotation is active.
         </Text>
         <Inline gap={2} wrap>
           <Badge color="success">role=&quot;region&quot;</Badge>
@@ -48,7 +47,6 @@ export default function CarouselPlayground() {
           <Badge color="brand">WCAG 1.4.13 hover-pause</Badge>
           <Badge color="default">RTL mirror</Badge>
           <Badge color="default">loop</Badge>
-          <Badge color="warning">2nd drag-gesture consumer</Badge>
         </Inline>
       </header>
 

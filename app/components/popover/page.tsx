@@ -39,20 +39,11 @@ export default function PopoverPlaygroundPage() {
           Popover
         </Heading>
         <Text className={styles.intro}>
-          Phase 10 CI5 (E20) — floating panel anchored to a trigger for contextual content.
-          Implements WAI-ARIA APG{' '}
-          <a
-            href="https://www.w3.org/WAI/ARIA/apg/patterns/dialog-modal/"
-            target="_blank"
-            rel="noreferrer"
-          >
-            /dialog-modal/
-          </a>{' '}
-          non-modal variant. Compound flat API (D24): <code>Popover</code> +{' '}
-          <code>PopoverTrigger</code> + <code>PopoverContent</code>. Zero runtime deps — extends
-          E19 positioning engine with new <code>computeArrowPosition</code> utility + optional
-          <code>arrow</code> ref in <code>useFloating</code>. Non-modal by default, optional{' '}
-          <code>modal=true</code> reuses <code>useFocusTrap</code> from Dialog.
+          Floating panel anchored to a trigger, for contextual content that
+          needs more room than a tooltip. Non-modal by default; set{' '}
+          <code>modal</code> to trap focus for richer interactions like forms.
+          Includes flip and shift placement, optional arrow, and pointer /
+          keyboard dismiss.
         </Text>
       </header>
 

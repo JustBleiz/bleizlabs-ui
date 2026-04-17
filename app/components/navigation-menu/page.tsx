@@ -23,12 +23,13 @@ export default function NavigationMenuPlayground() {
     <main className={styles.page}>
       <header className={styles.header}>
         <Heading level={1} size="2xl">
-          NavigationMenu — Phase 10 CI10
+          NavigationMenu
         </Heading>
         <Text variant="lead" color="muted">
-          Accessible navigation menubar per WAI-ARIA APG <code>/menubar/</code>. Compound flat
-          API, hover + click + keyboard, roving tabindex, optional Provider for delay-group
-          coordination.
+          Horizontal menubar with dropdown submenus — the pattern used by most
+          product navigation headers. Hover, click, and full keyboard nav are
+          wired. An optional Provider coordinates open/close delays across
+          sibling menus so the whole bar feels responsive.
         </Text>
       </header>
 

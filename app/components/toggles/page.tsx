@@ -27,12 +27,11 @@ export default function TogglesPlaygroundPage() {
           Toggle + ToggleGroup + Switch + Accordion
         </Heading>
         <Text className={styles.intro}>
-          Phase 4 I6 / I7 / I8 / I9. State-heavy interactives with
-          controlled / uncontrolled support. ToggleGroup reuses the
-          joined-group SCSS mixin from ButtonGroup. Switch uses the
-          switchSlide thumb pattern (CSS transition on left position).
-          Accordion implements the WAI-ARIA APG disclosure pattern with
-          aria-expanded + aria-controls + region role.
+          Four state-heavy interactive primitives. <code>Toggle</code> is a
+          press-state button; <code>ToggleGroup</code> joins toggles into a
+          single segmented control; <code>Switch</code> is an on/off preference
+          control; <code>Accordion</code> is an expand/collapse disclosure
+          panel. All support controlled and uncontrolled usage.
         </Text>
       </header>
 

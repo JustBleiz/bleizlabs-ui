@@ -32,14 +32,13 @@ export default function SelectPlayground() {
     <main className={styles.page}>
       <header className={styles.header}>
         <Heading level={1} size="2xl">
-          Select — Phase 10 CI12
+          Select
         </Heading>
         <Text variant="lead" color="muted">
-          Accessible single-value dropdown form field per WAI-ARIA APG{' '}
-          <code>/combobox/</code> collapsed-listbox (select-only) + <code>/listbox/</code>.
-          8 compound flat exports. <strong>aria-activedescendant pattern</strong> — focus
-          stays on the trigger, highlighted option is virtual. Full form participation via
-          hidden input. Typeahead with 500ms reset. First listbox sub-family.
+          Single-value dropdown form field with full keyboard support —
+          typeahead, arrow navigation, Home/End, PageUp/Down. Participates in
+          native forms via a hidden input, so you get validation and submission
+          for free.
         </Text>
       </header>
 

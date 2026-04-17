@@ -29,19 +29,10 @@ export default function AlertDialogPlaygroundPage() {
           AlertDialog
         </Heading>
         <Text className={styles.intro}>
-          Phase 10 CI2 (E16) — second Complex Interactive component. Modal
-          alert dialog composing portal + overlay + focus-trapped content with
-          alert-specific semantics. APG{' '}
-          <a
-            href="https://www.w3.org/WAI/ARIA/apg/patterns/alertdialog/"
-            target="_blank"
-            rel="noreferrer"
-          >
-            /alertdialog/
-          </a>{' '}
-          pattern. Reuses <code>useFocusTrap</code> from Dialog. 41 Radix
-          regression cases documented in{' '}
-          <code>components/complex/AlertDialog/tests/</code>.
+          Blocking confirmation dialog for destructive or irreversible actions.
+          Requires an explicit Confirm or Cancel choice — overlay click and
+          Escape default to Cancel. Severity prop drives tone (info / warning /
+          critical) and the default confirm button style.
         </Text>
         <div className={styles.counters}>
           <span data-testid="confirm-count">confirm: {confirmCount}</span>

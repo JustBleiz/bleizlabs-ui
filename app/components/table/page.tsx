@@ -62,15 +62,13 @@ export default function TablePlayground() {
           ← back
         </Link>
         <Heading level={1} size="4xl">
-          Table — Phase 11 CI23
+          Table
         </Heading>
         <p className={styles.intro}>
-          Semantic <code>&lt;table&gt;</code> primitives. Zero-dep by design —
-          sorting, filtering, pagination, virtualization, row selection logic
-          all belong in consumer projects (compose with TanStack Table v8 or
-          similar headless engine). Library provides the 6 structural atoms
-          (Table / Header / Body / Footer / Row / Cell) + stripe / bordered /
-          compact variants + interactive row states.
+          Semantic table primitives — six atoms (Table, Header, Body, Footer,
+          Row, Cell) plus striped, bordered, and compact variants. Sorting,
+          filtering, and pagination deliberately live in consumer projects,
+          typically via a headless engine like TanStack Table.
         </p>
       </header>
 
