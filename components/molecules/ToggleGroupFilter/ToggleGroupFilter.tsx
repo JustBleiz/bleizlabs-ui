@@ -1,8 +1,8 @@
 import { forwardRef, type HTMLAttributes, type ReactNode } from 'react';
-import { ToggleGroup } from '@/components/interactive/ToggleGroup';
-import { Toggle } from '@/components/interactive/Toggle';
-import { Text } from '@/components/typography/Text';
-import { cn } from '@/components/utils/cn';
+import { ToggleGroup } from '../../interactive/ToggleGroup';
+import { Toggle } from '../../interactive/Toggle';
+import { Text } from '../../typography/Text';
+import { cn } from '../../utils/cn';
 import styles from './ToggleGroupFilter.module.scss';
 
 /**

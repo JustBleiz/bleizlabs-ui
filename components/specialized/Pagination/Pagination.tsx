@@ -1,7 +1,7 @@
 'use client';
 
 import { forwardRef, useMemo, type HTMLAttributes } from 'react';
-import { cn } from '@/components/utils/cn';
+import { cn } from '../../utils/cn';
 import styles from './Pagination.module.scss';
 
 /**

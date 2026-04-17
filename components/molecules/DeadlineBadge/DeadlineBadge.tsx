@@ -7,9 +7,9 @@ import {
   useState,
   type HTMLAttributes,
 } from 'react';
-import { Badge, type BadgeColor } from '@/components/display/Badge';
-import { Text } from '@/components/typography/Text';
-import { cn } from '@/components/utils/cn';
+import { Badge, type BadgeColor } from '../../display/Badge';
+import { Text } from '../../typography/Text';
+import { cn } from '../../utils/cn';
 import styles from './DeadlineBadge.module.scss';
 
 /**

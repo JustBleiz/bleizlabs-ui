@@ -44,3 +44,6 @@ coverage/
 
 # TypeScript (Phase 1+)
 *.tsbuildinfo
+
+# npm pack artifacts (generated locally for test consumers)
+*.tgz

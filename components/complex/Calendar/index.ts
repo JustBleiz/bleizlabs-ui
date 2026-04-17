@@ -9,7 +9,7 @@
  *     CalendarGridHead,
  *     CalendarGridBody,
  *     CalendarCell,
- *   } from '@/components/complex/Calendar';
+ *   } from './';
  */
 
 export {

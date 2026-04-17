@@ -7,7 +7,7 @@ import {
   type HTMLAttributes,
   type ReactNode,
 } from 'react';
-import { cn } from '@/components/utils/cn';
+import { cn } from '../../utils/cn';
 import styles from './Accordion.module.scss';
 
 /**

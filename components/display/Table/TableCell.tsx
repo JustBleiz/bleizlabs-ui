@@ -3,7 +3,7 @@ import {
   type TdHTMLAttributes,
   type ThHTMLAttributes,
 } from 'react';
-import { cn } from '@/components/utils/cn';
+import { cn } from '../../utils/cn';
 import styles from './TableCell.module.scss';
 
 /**

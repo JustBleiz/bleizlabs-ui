@@ -174,7 +174,7 @@ function useCalendarContext(component: string): CalendarContextValue {
   const ctx = useContext(CalendarContext);
   if (!ctx) {
     throw new Error(
-      `<${component}> must be rendered inside <Calendar>. Import Calendar from '@/components/complex/Calendar'.`,
+      `<${component}> must be rendered inside <Calendar>. Import Calendar from './'.`,
     );
   }
   return ctx;

@@ -6,7 +6,7 @@ import {
   type ButtonHTMLAttributes,
   type ReactNode,
 } from 'react';
-import { cn } from '@/components/utils/cn';
+import { cn } from '../../utils/cn';
 import styles from './Toggle.module.scss';
 
 /**

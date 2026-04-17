@@ -9,7 +9,7 @@
  *     DatePicker,
  *     DatePickerInput,
  *     DatePickerContent,
- *   } from '@/components/complex/DatePicker';
+ *   } from './';
  *
  *   <DatePicker value={date} onValueChange={setDate}>
  *     <DatePickerInput />

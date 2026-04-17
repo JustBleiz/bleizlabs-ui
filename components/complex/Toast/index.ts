@@ -6,7 +6,7 @@
  * Context per zero-dep singleton architecture.
  *
  *   // app/layout.tsx
- *   import { Toaster } from '@/components/complex/Toast';
+ *   import { Toaster } from './';
  *   export default function RootLayout({ children }) {
  *     return (
  *       <html>
@@ -19,7 +19,7 @@
  *   }
  *
  *   // any component / helper / utility
- *   import { toast } from '@/components/complex/Toast';
+ *   import { toast } from './';
  *   await saveData();
  *   toast.success('Saved');
  */

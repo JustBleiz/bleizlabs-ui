@@ -1,0 +1,60 @@
+name: Publish to GitHub Packages
+
+# Triggered on semver tag push (v0.1.0, v0.1.1, v1.0.0, ...).
+# Manual workflow runs are also available via workflow_dispatch for
+# re-running a failed publish without re-tagging.
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Existing tag to publish (e.g. v0.1.0)'
+        required: true
+        type: string
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.inputs.tag || github.ref }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          registry-url: 'https://npm.pkg.github.com'
+          scope: '@bleizlabs'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Type-check
+        run: npm run typecheck
+
+      - name: Build playground (smoke test)
+        run: npm run build
+
+      - name: Verify package version matches tag
+        run: |
+          PKG_VERSION="v$(node -p "require('./package.json').version")"
+          TAG="${{ github.event.inputs.tag || github.ref_name }}"
+          echo "Tag: $TAG, Package: $PKG_VERSION"
+          if [ "$PKG_VERSION" != "$TAG" ]; then
+            echo "ERROR: package.json version ($PKG_VERSION) does not match tag ($TAG)"
+            exit 1
+          fi
+
+      - name: Publish
+        run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

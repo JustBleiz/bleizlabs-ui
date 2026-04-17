@@ -3,7 +3,7 @@
 // `.root` base class per D11. Semantic tokens only per D25.
 // Touch target via mx.touch-target on item / trigger (coarse pointer only).
 
-@use 'mixins' as mx;
+@use '../../../styles/mixins' as mx;
 
 // ============================================================================
 // Layout wrapper (SidebarProvider host)

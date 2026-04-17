@@ -11,7 +11,7 @@
 // `.root` is the outermost portal-rendered element per D11. Touch target
 // enforcement on footer/action buttons delegated to Button atom.
 
-@use 'mixins' as mx;
+@use '../../../styles/mixins' as mx;
 
 .root {
   position: fixed;

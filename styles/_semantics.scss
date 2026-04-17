@@ -12,8 +12,8 @@
 // Default load (before JS) uses $seed-mode value — no flash-of-wrong-theme.
 
 @use 'sass:map';
-@use 'project-settings' as *;
-@use 'generator' as *;
+@use './project-settings' as *;
+@use './generator' as *;
 
 :root {
   // ==========================================================================

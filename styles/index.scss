@@ -13,10 +13,10 @@
 //   6. animations        — 16 keyframes + global prefers-reduced-motion guard
 //   7. project-overrides — last-layer escape hatch (empty by default)
 
-@forward 'project-settings';
-@forward 'generator';
-@forward 'semantics';
-@forward 'component-tokens';
-@forward 'mixins';
-@forward 'animations';
-@forward 'project-overrides';
+@forward './project-settings';
+@forward './generator';
+@forward './semantics';
+@forward './component-tokens';
+@forward './mixins';
+@forward './animations';
+@forward './project-overrides';

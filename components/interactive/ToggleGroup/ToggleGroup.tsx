@@ -12,8 +12,8 @@ import {
   type ReactElement,
   type ReactNode,
 } from 'react';
-import { cn } from '@/components/utils/cn';
-import { type ToggleProps } from '@/components/interactive/Toggle';
+import { cn } from '../../utils/cn';
+import { type ToggleProps } from '../Toggle';
 import styles from './ToggleGroup.module.scss';
 
 /**

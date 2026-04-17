@@ -17,7 +17,7 @@
 @use 'sass:color';
 @use 'sass:map';
 @use 'sass:math';
-@use 'project-settings' as *;
+@use './project-settings' as *;
 
 // ============================================================================
 // COLOR SCALE FUNCTIONS — tint (lighten) and shade (darken)

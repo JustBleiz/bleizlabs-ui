@@ -1,7 +1,7 @@
 import { forwardRef, type HTMLAttributes, type ReactNode } from 'react';
-import { Inline } from '@/components/layout/Inline';
-import { Text } from '@/components/typography/Text';
-import { cn } from '@/components/utils/cn';
+import { Inline } from '../../layout/Inline';
+import { Text } from '../../typography/Text';
+import { cn } from '../../utils/cn';
 import styles from './DataRow.module.scss';
 
 /**

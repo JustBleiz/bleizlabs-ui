@@ -1,23 +1,66 @@
 {
-  "name": "bleizlabs-ui",
-  "version": "0.1.0-dev",
-  "description": "Universal fully-styled React component library for BleizLabs. Zero runtime UI dependencies. Seed-based design tokens. Copy-to-project model.",
-  "private": true,
+  "name": "@bleizlabs/ui",
+  "version": "0.1.0",
+  "description": "Universal fully-styled React component library for BleizLabs. Zero runtime UI dependencies. Seed-based design tokens. 81 components across 10 categories.",
   "license": "MIT",
-  "author": "BleizLabs",
+  "author": "BleizLabs <hello@bleizlabs.eu>",
+  "homepage": "https://github.com/BleizLabs/bleizlabs-ui#readme",
+  "bugs": "https://github.com/BleizLabs/bleizlabs-ui/issues",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/BleizLabs/bleizlabs-ui.git",
+    "directory": "dev"
+  },
+  "keywords": [
+    "react",
+    "nextjs",
+    "component-library",
+    "ui",
+    "scss",
+    "design-system",
+    "zero-dependency",
+    "wai-aria",
+    "a11y"
+  ],
+  "type": "module",
+  "main": "./components/index.ts",
+  "module": "./components/index.ts",
+  "types": "./components/index.ts",
+  "exports": {
+    ".": {
+      "types": "./components/index.ts",
+      "default": "./components/index.ts"
+    },
+    "./styles": "./styles/index.scss",
+    "./styles/project-settings": "./styles/_project-settings.scss",
+    "./styles/*": "./styles/*",
+    "./components/*": "./components/*"
+  },
+  "sideEffects": [
+    "*.scss",
+    "*.css",
+    "**/*.module.scss"
+  ],
+  "files": [
+    "components",
+    "styles",
+    "README.md",
+    "LICENSE"
+  ],
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
     "lint:fix": "eslint --fix",
+    "typecheck": "tsc --noEmit",
     "tokens:build": "node playground/build.mjs",
-    "tokens:verify": "node playground/build.mjs"
+    "tokens:verify": "node playground/build.mjs",
+    "prepublishOnly": "npm run typecheck && npm run build"
   },
-  "dependencies": {
-    "next": "^16.2.3",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+  "peerDependencies": {
+    "react": ">=19.0.0",
+    "react-dom": ">=19.0.0"
   },
   "devDependencies": {
     "@types/node": "^20.11.0",
@@ -25,7 +68,17 @@
     "@types/react-dom": "^19.0.0",
     "eslint": "^9.0.0",
     "eslint-config-next": "^16.2.3",
+    "next": "^16.2.3",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
     "sass": "^1.83.0",
     "typescript": "^5.6.0"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "publishConfig": {
+    "access": "restricted",
+    "registry": "https://npm.pkg.github.com"
   }
 }

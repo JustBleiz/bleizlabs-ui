@@ -72,56 +72,101 @@ For a per-component props reference, see [`COMPONENT_REGISTRY.md`](../COMPONENT_
 - npm, yarn, or pnpm
 - A React 19 + Next.js 16 host project (or any React 19 bundler with SCSS Modules)
 
-### Installation — today (copy-to-project)
+### Installation — private npm package (recommended)
 
-The library is currently pre-1.0 and consumed by copying the source into a host project. This works, but does not scale past a few consumers because bug fixes do not propagate automatically. A private npm package is the next milestone — see [Distribution](#distribution) below.
+`@bleizlabs/ui` publishes to GitHub Packages as a private scoped package. One install, `npm update` to propagate bug fixes across every consumer.
+
+**Step 1 — authenticate to GitHub Packages.** Create a `.npmrc` in your consumer project root (or `~/.npmrc` globally):
+
+```ini
+@bleizlabs:registry=https://npm.pkg.github.com
+//npm.pkg.github.com/:_authToken=${GITHUB_TOKEN}
+```
+
+`GITHUB_TOKEN` is a personal access token (classic) with the `read:packages` scope. Export it in your shell or add it to your project's secrets manager.
+
+**Step 2 — install.**
 
 ```bash
-# In your consumer project root
+npm install @bleizlabs/ui
+```
+
+**Step 3 — configure Next.js.** The library ships TypeScript + SCSS source (no pre-build step), so two small additions to `next.config.mjs` are required:
+
+```js
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  transpilePackages: ['@bleizlabs/ui'],
+  sassOptions: {
+    loadPaths: [
+      path.resolve(__dirname, 'node_modules/@bleizlabs/ui/styles'),
+    ],
+  },
+};
+
+export default nextConfig;
+```
+
+- `transpilePackages` tells Next.js to compile the library's `.ts/.tsx` files.
+- `sassOptions.loadPaths` resolves the library's internal SCSS partials — needed because `resolve-url-loader` in Next.js strips `./` prefixes from `@use`/`@forward` inside `node_modules`.
+
+**Step 4 — import styles + components.**
+
+```scss
+// app/globals.scss — loads tokens, generator output, mixins, keyframes
+@use '@bleizlabs/ui/styles';
+```
+
+```tsx
+// app/layout.tsx
+import './globals.scss';
+
+export default function RootLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <html lang="en" data-theme="dark">
+      <body>{children}</body>
+    </html>
+  );
+}
+```
+
+```tsx
+// app/page.tsx
+import { Button, Card, CardHeader, CardBody, Heading } from '@bleizlabs/ui';
+
+export default function Page() {
+  return (
+    <Card>
+      <CardHeader><Heading level={1} size="2xl">Hello</Heading></CardHeader>
+      <CardBody><Button variant="primary">Click me</Button></CardBody>
+    </Card>
+  );
+}
+```
+
+Reskin the library for your project via the [Customisation](#customisation) section.
+
+### Installation — copy-to-project (alternative, e.g. for client offboarding)
+
+For projects that need the library fully embedded in their own repository (client deliverables handed off without a registry dependency), copying source into the consumer still works:
+
+```bash
 cp -r path/to/bleizlabs-ui/dev/styles      ./styles
 cp -r path/to/bleizlabs-ui/dev/components  ./components
 ```
 
-Then configure your host project:
-
-```ts
-// tsconfig.json — add path aliases
-{
-  "compilerOptions": {
-    "paths": {
-      "@/components/*": ["./components/*"],
-      "@/styles/*":     ["./styles/*"]
-    }
-  }
-}
-```
+Wire up `@/components/*` and `@/styles/*` path aliases in `tsconfig.json` and import:
 
 ```scss
-// app/globals.scss — import the token system at the top
 @use './styles' as *;
 ```
 
-Use the [Customisation](#customisation) section next to reskin the library for your project.
-
-### Installation — next release (private npm package)
-
-The next release publishes to GitHub Packages as `@bleizlabs/ui`. Once shipped, this becomes the recommended path for internal BleizLabs projects — installed once, updated with `npm update` across every consumer.
-
-```bash
-# .npmrc  (one-time setup per consumer project)
-@bleizlabs:registry=https://npm.pkg.github.com
-//npm.pkg.github.com/:_authToken=${GITHUB_TOKEN}
-
-# install
-npm install @bleizlabs/ui
-```
-
-```tsx
-import { Button, Card, CardHeader, CardBody } from '@bleizlabs/ui';
-import '@bleizlabs/ui/styles';
-```
-
-Full styling customisation is preserved because tokens are CSS custom properties — see [Customisation](#customisation).
+Once copied the source is owned by the consumer — updates from upstream no longer propagate automatically.
 
 ---
 
@@ -191,21 +236,33 @@ All 81 components pick up the change automatically — no component needs to be 
 
 The full token reference lives in [`styles/_semantics.scss`](styles/_semantics.scss).
 
-### Option B — deep reskin via seeds (copy-to-project installs)
+### Option B — deep reskin via seeds (works for both install modes)
 
-When you copy the library into your project, you gain access to the seed generator. Change the seeds once and every color scale, shadow, hover state, and semantic alias cascades from them:
+Override seed values before the generator runs. Every color scale, shadow, hover state, and semantic alias cascades from them.
+
+**For npm installs** — configure the library's SCSS entry with the `@use ... with (...)` syntax:
 
 ```scss
-// styles/_project-settings.scss — edit these, rebuild, everything follows
-$seed-brand:          #0ea5e9;   // anchor for --color-brand-50 … --color-brand-900
-$seed-accent:         #f97316;   // anchor for accent scale
-$seed-radius:         8px;       // base radius; md/lg/xl multiply from here
-$seed-space-unit:     4px;       // spacing unit (index × unit = px)
-$seed-font-primary:   'Inter';
-$seed-font-secondary: 'JetBrainsMono';
+// app/globals.scss
+@use '@bleizlabs/ui/styles' with (
+  $seed-brand:          #00E0B8,
+  $seed-accent:         #7C3AED,
+  $seed-font-primary:   ('YourFont', system-ui, sans-serif),
+  $seed-font-secondary: ('YourBodyFont', system-ui, sans-serif)
+);
 ```
 
-This is the most powerful option — you are redefining the whole design-system scale, not just individual tokens. Use it when you need a full rebrand rather than a tweak.
+Every seed value in [`styles/_project-settings.scss`](styles/_project-settings.scss) carries `!default`, so any subset can be overridden — pass only the seeds you care about.
+
+**For copy-to-project installs** — edit `styles/_project-settings.scss` directly and rebuild:
+
+```scss
+$seed-brand:          #0ea5e9;
+$seed-accent:         #f97316;
+$seed-font-primary:   'Inter';
+```
+
+Option B is the most powerful choice — you are redefining the whole design-system scale, not just individual tokens. Use it when you need a full rebrand rather than a tweak.
 
 ### Option C — custom variants per project
 
@@ -270,27 +327,23 @@ No external UI library is imported at runtime.
 
 ## Distribution
 
-We are moving the library towards a **private-npm-first** model with a **copy-snapshot** escape hatch for client deliverables.
+The library follows a **private-npm-first** model with a **copy-snapshot** escape hatch for client deliverables.
 
-### Today: copy-to-project
+### Primary: `@bleizlabs/ui` on GitHub Packages (private)
 
-The library is copied into each consumer at project start. This is fine for 1–3 consumers, but breaks down at scale: a bug fix in one consumer has to be re-applied manually everywhere else.
+Internal BleizLabs projects install via `npm install @bleizlabs/ui` from the GitHub Packages private registry. One bug fix → one `npm publish` → `npm update` propagates across every consumer. Source ships as TypeScript + SCSS, consumers transpile via Next.js.
 
-### Next release: `@bleizlabs/ui` on GitHub Packages (private)
+Publishing is driven by the `.github/workflows/publish.yml` workflow — push a `v*.*.*` tag, CI type-checks, builds the playground as a smoke test, verifies the tag matches `package.json` version, and publishes.
 
-The library will publish to GitHub Packages as a private scoped package, consumed by internal BleizLabs projects via `npm install @bleizlabs/ui`. One bug fix → one `npm publish` → `npm update` in every consumer.
+### Escape hatch: copy-to-project
 
-### Client deliverables: hybrid
-
-For client projects that need full code ownership, a `copy-snapshot` workflow will freeze the current library version into the client repository at handoff time, so the client owns the code without an ongoing dependency on our registry.
-
-Full implementation lands in the next release.
+Client deliverables that need full code ownership copy `styles/` and `components/` directly into their repository at handoff. The client owns the source outright, with no ongoing registry dependency — at the cost of losing automatic bug-fix propagation.
 
 ---
 
 ## Roadmap
 
-- **Now:** Table primitives shipped, library at 81/81. Internal documentation and distribution preparation in progress.
+- **Now:** 81/81 components shipped, `@bleizlabs/ui@0.1.0` published to GitHub Packages, consumer adoption path unblocked.
 - **Next — consumer adoption:** First end-to-end consumption by BleizLabs website v2 and the internal admin panel. This is where real-world reskinning and edge cases get discovered.
 - **Later — post-consumer refactor:** Rule-of-three extractions — `usePointerDrag`, `useMatchMedia<T>` — land once all three consumers ship stable semantics.
 - **Future — additional primitives:** Form orchestrator, Chart primitives, Rich editor (evaluation, not commitment).

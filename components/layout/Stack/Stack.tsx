@@ -6,9 +6,9 @@ import {
   type HTMLAttributes,
   type ReactNode,
 } from 'react';
-import { Slot } from '@/components/utils/Slot';
-import { cn } from '@/components/utils/cn';
-import type { SpaceIndex } from '@/components/types/spacing';
+import { Slot } from '../../utils/Slot';
+import { cn } from '../../utils/cn';
+import type { SpaceIndex } from '../../types/spacing';
 import styles from './Stack.module.scss';
 
 /**

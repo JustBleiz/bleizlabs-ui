@@ -9,7 +9,7 @@
 // per D11 naming convention. Touch target enforcement on action buttons is
 // delegated to Button atom (which applies mx.touch-target mixin at pointer: coarse).
 
-@use 'mixins' as mx;
+@use '../../../styles/mixins' as mx;
 
 .root {
   position: fixed;

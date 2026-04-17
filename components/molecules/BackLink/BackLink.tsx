@@ -1,6 +1,6 @@
 import { forwardRef, type ComponentRef, type ReactNode } from 'react';
-import { Button, type ButtonProps } from '@/components/interactive/Button';
-import { cn } from '@/components/utils/cn';
+import { Button, type ButtonProps } from '../../interactive/Button';
+import { cn } from '../../utils/cn';
 import styles from './BackLink.module.scss';
 
 /**

@@ -14,10 +14,10 @@ import {
 import {
   Accordion,
   type AccordionProps,
-} from '@/components/interactive/Accordion';
-import { Stack } from '@/components/layout/Stack';
-import type { SpaceIndex } from '@/components/types/spacing';
-import { cn } from '@/components/utils/cn';
+} from '../../interactive/Accordion';
+import { Stack } from '../../layout/Stack';
+import type { SpaceIndex } from '../../types/spacing';
+import { cn } from '../../utils/cn';
 import styles from './AccordionGroup.module.scss';
 
 /**

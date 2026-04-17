@@ -14,7 +14,7 @@
 // `.root` base class per D11. Semantic tokens only per D25. Touch target
 // delegation: action buttons via Button atom; close button via mx.touch-target.
 
-@use 'mixins' as mx;
+@use '../../../styles/mixins' as mx;
 
 .root {
   position: fixed;

@@ -4,7 +4,7 @@
 // typography helpers. Components @use this file via `@use '../styles/mixins' as mx`
 // and reference mixins as `@include mx.bp-md { ... }`.
 
-@use 'project-settings' as *;
+@use './project-settings' as *;
 
 // ============================================================================
 // BREAKPOINTS — mobile-first (min-width) per D12

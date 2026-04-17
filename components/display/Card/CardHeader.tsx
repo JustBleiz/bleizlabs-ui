@@ -1,6 +1,6 @@
 import { forwardRef, type HTMLAttributes } from 'react';
-import { Slot } from '@/components/utils/Slot';
-import { cn } from '@/components/utils/cn';
+import { Slot } from '../../utils/Slot';
+import { cn } from '../../utils/cn';
 import styles from './CardHeader.module.scss';
 
 /**

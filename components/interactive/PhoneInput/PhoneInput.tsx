@@ -1,8 +1,8 @@
 'use client';
 
 import { forwardRef } from 'react';
-import { MaskedInput, type MaskedInputProps } from '@/components/interactive/MaskedInput';
-import { MASK_PRESETS, type MaskPreset } from '@/components/utils/masks';
+import { MaskedInput, type MaskedInputProps } from '../MaskedInput';
+import { MASK_PRESETS, type MaskPreset } from '../../utils/masks';
 
 /**
  * PhoneInput — telephone number input with mask presets (Phase 4 expansion E08, Layer 3 of D26).

@@ -70,7 +70,7 @@
  *   </body>
  *
  *   // Anywhere else (any depth, any framework boundary):
- *   import { toast } from '@/components/complex/Toast';
+ *   import { toast } from './';
  *   toast.success('Saved successfully');
  *   toast.error({ title: 'Failed to save', description: err.message });
  *   toast({

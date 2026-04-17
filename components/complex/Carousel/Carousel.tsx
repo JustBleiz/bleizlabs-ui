@@ -17,13 +17,13 @@ import {
   type KeyboardEvent as ReactKeyboardEvent,
   type ReactNode,
 } from 'react';
-import { cn } from '@/components/utils/cn';
-import { mergeRefs } from '@/components/utils/mergeRefs';
+import { cn } from '../../utils/cn';
+import { mergeRefs } from '../../utils/mergeRefs';
 import {
   usePointerDrag,
   type UsePointerDragHandlers,
-} from '@/components/utils/gesture';
-import { useMatchMedia } from '@/components/utils/match-media';
+} from '../../utils/gesture';
+import { useMatchMedia } from '../../utils/match-media';
 import styles from './Carousel.module.scss';
 
 /**

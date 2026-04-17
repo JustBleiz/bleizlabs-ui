@@ -16,10 +16,10 @@ import {
   type PointerEvent as ReactPointerEvent,
   type ReactNode,
 } from 'react';
-import { cn } from '@/components/utils/cn';
-import { mergeRefs } from '@/components/utils/mergeRefs';
-import { usePointerDrag } from '@/components/utils/gesture';
-import { useMatchMedia } from '@/components/utils/match-media';
+import { cn } from '../../utils/cn';
+import { mergeRefs } from '../../utils/mergeRefs';
+import { usePointerDrag } from '../../utils/gesture';
+import { useMatchMedia } from '../../utils/match-media';
 import styles from './ScrollArea.module.scss';
 
 /**

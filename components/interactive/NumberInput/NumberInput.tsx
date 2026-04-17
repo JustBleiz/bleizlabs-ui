@@ -7,8 +7,8 @@ import {
   useState,
   type InputHTMLAttributes,
 } from 'react';
-import { cn } from '@/components/utils/cn';
-import { Label } from '@/components/interactive/Label';
+import { cn } from '../../utils/cn';
+import { Label } from '../Label';
 import styles from './NumberInput.module.scss';
 
 /**

@@ -1,7 +1,7 @@
 import { forwardRef, type HTMLAttributes, type ReactNode } from 'react';
-import { Separator } from '@/components/display/Separator';
-import { Text } from '@/components/typography/Text';
-import { cn } from '@/components/utils/cn';
+import { Separator } from '../../display/Separator';
+import { Text } from '../../typography/Text';
+import { cn } from '../../utils/cn';
 import styles from './SectionDivider.module.scss';
 
 /**

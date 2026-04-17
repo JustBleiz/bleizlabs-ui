@@ -19,10 +19,10 @@ import {
   type MouseEvent as ReactMouseEvent,
   type ReactNode,
 } from 'react';
-import { cn } from '@/components/utils/cn';
-import { mergeRefs } from '@/components/utils/mergeRefs';
-import { FloatingPortal } from '@/components/utils/floating';
-import { useFocusTrap } from '@/components/complex/Dialog/useFocusTrap';
+import { cn } from '../../utils/cn';
+import { mergeRefs } from '../../utils/mergeRefs';
+import { FloatingPortal } from '../../utils/floating';
+import { useFocusTrap } from '../Dialog/useFocusTrap';
 import styles from './Command.module.scss';
 
 /**

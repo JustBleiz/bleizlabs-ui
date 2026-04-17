@@ -5,5 +5,5 @@ export {
   unmask,
   countPlaceholders,
   MASK_PRESETS,
-} from '@/components/utils/masks';
-export type { MaskPreset } from '@/components/utils/masks';
+} from '../../utils/masks';
+export type { MaskPreset } from '../../utils/masks';

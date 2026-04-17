@@ -5,7 +5,7 @@
 // Sheet) follow the same pattern. Semantic tokens only per D25.
 // prefers-reduced-motion disables both transitions + transforms.
 
-@use 'mixins' as mx;
+@use '../../../styles/mixins' as mx;
 
 .root {
   position: fixed;

@@ -22,8 +22,8 @@ import {
   type PointerEvent as ReactPointerEvent,
   type ReactNode,
 } from 'react';
-import { cn } from '@/components/utils/cn';
-import { mergeRefs } from '@/components/utils/mergeRefs';
+import { cn } from '../../utils/cn';
+import { mergeRefs } from '../../utils/mergeRefs';
 import styles from './InputOTP.module.scss';
 
 /**
