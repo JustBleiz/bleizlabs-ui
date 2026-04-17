@@ -19,6 +19,7 @@ import {
 } from 'react';
 import { cn } from '@/components/utils/cn';
 import { mergeRefs } from '@/components/utils/mergeRefs';
+import { usePointerDrag } from '@/components/utils/gesture';
 import styles from './ScrollArea.module.scss';
 
 /**
@@ -531,8 +532,6 @@ export const ScrollAreaThumb = forwardRef<HTMLDivElement, ScrollAreaThumbProps>(
     const { orientation, trackRef } = useScrollbarContext();
 
     // Drag state refs.
-    const isDraggingRef = useRef(false);
-    const activePointerIdRef = useRef<number | null>(null);
     const dragStartPointerRef = useRef(0);
     const dragStartScrollRef = useRef(0);
 
@@ -581,14 +580,10 @@ export const ScrollAreaThumb = forwardRef<HTMLDivElement, ScrollAreaThumbProps>(
       ctx.metrics.scrollLeft,
     ]);
 
-    const handlePointerDown = useCallback(
-      (event: ReactPointerEvent<HTMLDivElement>) => {
-        if (event.button !== undefined && event.button !== 0) return;
-        const target = event.currentTarget;
-        if (!target) return;
-        target.setPointerCapture(event.pointerId);
-        activePointerIdRef.current = event.pointerId;
-        isDraggingRef.current = true;
+    // Drag via shared `usePointerDrag` primitive (E39 refactor).
+    const { handlers: thumbDragHandlers } = usePointerDrag<HTMLDivElement>({
+      onDragStart: (event) => {
+        if (event.button !== undefined && event.button !== 0) return false;
         dragStartPointerRef.current =
           orientation === 'vertical' ? event.clientY : event.clientX;
         dragStartScrollRef.current =
@@ -598,13 +593,7 @@ export const ScrollAreaThumb = forwardRef<HTMLDivElement, ScrollAreaThumbProps>(
         ctx.setIsDraggingThumb(true);
         event.stopPropagation();
       },
-      [ctx, orientation],
-    );
-
-    const handlePointerMove = useCallback(
-      (event: ReactPointerEvent<HTMLDivElement>) => {
-        if (!isDraggingRef.current) return;
-        if (event.pointerId !== activePointerIdRef.current) return;
+      onDragMove: (event) => {
         const track = trackRef.current;
         if (!track) return;
         const trackRect = track.getBoundingClientRect();
@@ -661,36 +650,13 @@ export const ScrollAreaThumb = forwardRef<HTMLDivElement, ScrollAreaThumbProps>(
           });
         }
       },
-      [ctx, orientation, trackRef],
-    );
-
-    const handlePointerUp = useCallback(
-      (event: ReactPointerEvent<HTMLDivElement>) => {
-        if (event.pointerId !== activePointerIdRef.current) return;
-        isDraggingRef.current = false;
-        activePointerIdRef.current = null;
-        const target = event.currentTarget;
-        if (target && target.hasPointerCapture(event.pointerId)) {
-          target.releasePointerCapture(event.pointerId);
-        }
+      onDragEnd: () => {
         ctx.setIsDraggingThumb(false);
       },
-      [ctx],
-    );
-
-    const handlePointerCancel = useCallback(
-      (event: ReactPointerEvent<HTMLDivElement>) => {
-        if (event.pointerId !== activePointerIdRef.current) return;
-        isDraggingRef.current = false;
-        activePointerIdRef.current = null;
-        const target = event.currentTarget;
-        if (target && target.hasPointerCapture(event.pointerId)) {
-          target.releasePointerCapture(event.pointerId);
-        }
+      onDragCancel: () => {
         ctx.setIsDraggingThumb(false);
       },
-      [ctx],
-    );
+    });
 
     return (
       <div
@@ -700,10 +666,7 @@ export const ScrollAreaThumb = forwardRef<HTMLDivElement, ScrollAreaThumbProps>(
         data-scroll-area-thumb=""
         data-orientation={orientation}
         style={{ ...thumbStyle, ...style }}
-        onPointerDown={handlePointerDown}
-        onPointerMove={handlePointerMove}
-        onPointerUp={handlePointerUp}
-        onPointerCancel={handlePointerCancel}
+        {...thumbDragHandlers}
       />
     );
   },

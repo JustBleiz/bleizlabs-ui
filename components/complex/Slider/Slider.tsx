@@ -5,7 +5,6 @@ import {
   forwardRef,
   useCallback,
   useContext,
-  useEffect,
   useId,
   useLayoutEffect,
   useMemo,
@@ -14,11 +13,14 @@ import {
   type CSSProperties,
   type HTMLAttributes,
   type KeyboardEvent as ReactKeyboardEvent,
-  type PointerEvent as ReactPointerEvent,
   type ReactNode,
 } from 'react';
 import { cn } from '@/components/utils/cn';
 import { mergeRefs } from '@/components/utils/mergeRefs';
+import {
+  usePointerDrag,
+  type UsePointerDragHandlers,
+} from '@/components/utils/gesture';
 import styles from './Slider.module.scss';
 
 /**
@@ -186,10 +188,7 @@ interface SliderContextValue {
   thumbRef: React.RefObject<HTMLSpanElement | null>;
   trackRef: React.RefObject<HTMLSpanElement | null>;
   handleThumbKeyDown: (event: ReactKeyboardEvent<HTMLSpanElement>) => void;
-  handleTrackPointerDown: (event: ReactPointerEvent<HTMLSpanElement>) => void;
-  handleTrackPointerMove: (event: ReactPointerEvent<HTMLSpanElement>) => void;
-  handleTrackPointerUp: (event: ReactPointerEvent<HTMLSpanElement>) => void;
-  handleTrackPointerCancel: (event: ReactPointerEvent<HTMLSpanElement>) => void;
+  trackDragHandlers: UsePointerDragHandlers<HTMLSpanElement>;
   registerTrack: (node: HTMLSpanElement | null) => void;
 }
 
@@ -274,8 +273,6 @@ export const Slider = forwardRef<HTMLSpanElement, SliderProps>(function Slider(
 
   const thumbRef = useRef<HTMLSpanElement | null>(null);
   const trackRef = useRef<HTMLSpanElement | null>(null);
-  const isDraggingRef = useRef(false);
-  const activePointerIdRef = useRef<number | null>(null);
   const latestValueRef = useRef(value);
 
   useLayoutEffect(() => {
@@ -333,72 +330,26 @@ export const Slider = forwardRef<HTMLSpanElement, SliderProps>(function Slider(
     [orientation, dir, inverted, safeMin, safeMax, safeStep],
   );
 
-  const handleTrackPointerDown = useCallback(
-    (event: ReactPointerEvent<HTMLSpanElement>) => {
-      if (disabled || readOnly) return;
-      if (event.button !== undefined && event.button !== 0) return;
-      const target = event.currentTarget;
-      if (!target) return;
-      target.setPointerCapture(event.pointerId);
-      activePointerIdRef.current = event.pointerId;
-      isDraggingRef.current = true;
+  // Drag via shared `usePointerDrag` primitive (E39 refactor). Pattern:
+  // React `onPointer*` handlers on the capturing element (track) — setPointerCapture
+  // re-targets events so they bubble to the track even outside visible bounds.
+  // No document-level listeners = clean unmount semantics.
+  const { handlers: trackDragHandlers } = usePointerDrag<HTMLSpanElement>({
+    enabled: !disabled && !readOnly,
+    onDragStart: (event) => {
+      if (event.button !== undefined && event.button !== 0) return false;
       const next = valueFromPointer(event.clientX, event.clientY);
       commit(next);
       thumbRef.current?.focus({ preventScroll: true });
     },
-    [disabled, readOnly, valueFromPointer, commit],
-  );
-
-  // Move/up/cancel handlers attached to the capturing element (track) via React.
-  // setPointerCapture re-targets pointer events to the capturing element, so
-  // the React onPointer* handlers on the track receive them even when the
-  // pointer leaves the track's visible bounds. No document-level listeners
-  // needed — avoids leak concerns from evaluator + cleaner unmount semantics.
-  const handleTrackPointerMove = useCallback(
-    (event: ReactPointerEvent<HTMLSpanElement>) => {
-      if (!isDraggingRef.current) return;
-      if (event.pointerId !== activePointerIdRef.current) return;
+    onDragMove: (event) => {
       const next = valueFromPointer(event.clientX, event.clientY);
       commit(next);
     },
-    [valueFromPointer, commit],
-  );
-
-  const handleTrackPointerUp = useCallback(
-    (event: ReactPointerEvent<HTMLSpanElement>) => {
-      if (event.pointerId !== activePointerIdRef.current) return;
-      if (!isDraggingRef.current) return;
-      isDraggingRef.current = false;
-      activePointerIdRef.current = null;
-      const target = event.currentTarget;
-      if (target && target.hasPointerCapture(event.pointerId)) {
-        target.releasePointerCapture(event.pointerId);
-      }
+    onDragEnd: () => {
       commitFinal(latestValueRef.current);
     },
-    [commitFinal],
-  );
-
-  const handleTrackPointerCancel = useCallback(
-    (event: ReactPointerEvent<HTMLSpanElement>) => {
-      if (event.pointerId !== activePointerIdRef.current) return;
-      isDraggingRef.current = false;
-      activePointerIdRef.current = null;
-      const target = event.currentTarget;
-      if (target && target.hasPointerCapture(event.pointerId)) {
-        target.releasePointerCapture(event.pointerId);
-      }
-    },
-    [],
-  );
-
-  // Cleanup pointer capture state if component unmounts mid-drag.
-  useEffect(() => {
-    return () => {
-      isDraggingRef.current = false;
-      activePointerIdRef.current = null;
-    };
-  }, []);
+  });
 
   const handleThumbKeyDown = useCallback(
     (event: ReactKeyboardEvent<HTMLSpanElement>) => {
@@ -492,10 +443,7 @@ export const Slider = forwardRef<HTMLSpanElement, SliderProps>(function Slider(
       thumbRef,
       trackRef,
       handleThumbKeyDown,
-      handleTrackPointerDown,
-      handleTrackPointerMove,
-      handleTrackPointerUp,
-      handleTrackPointerCancel,
+      trackDragHandlers,
       registerTrack,
     }),
     [
@@ -514,10 +462,7 @@ export const Slider = forwardRef<HTMLSpanElement, SliderProps>(function Slider(
       ariaLabelledBy,
       valueText,
       handleThumbKeyDown,
-      handleTrackPointerDown,
-      handleTrackPointerMove,
-      handleTrackPointerUp,
-      handleTrackPointerCancel,
+      trackDragHandlers,
       registerTrack,
     ],
   );
@@ -594,10 +539,7 @@ export const SliderTrack = forwardRef<HTMLSpanElement, SliderTrackProps>(
         className={cn(styles.track, className)}
         data-orientation={ctx.orientation}
         data-disabled={ctx.disabled ? 'true' : undefined}
-        onPointerDown={ctx.handleTrackPointerDown}
-        onPointerMove={ctx.handleTrackPointerMove}
-        onPointerUp={ctx.handleTrackPointerUp}
-        onPointerCancel={ctx.handleTrackPointerCancel}
+        {...ctx.trackDragHandlers}
       >
         {children ?? (
           <>

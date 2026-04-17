@@ -15,11 +15,14 @@ import {
   type CSSProperties,
   type HTMLAttributes,
   type KeyboardEvent as ReactKeyboardEvent,
-  type PointerEvent as ReactPointerEvent,
   type ReactNode,
 } from 'react';
 import { cn } from '@/components/utils/cn';
 import { mergeRefs } from '@/components/utils/mergeRefs';
+import {
+  usePointerDrag,
+  type UsePointerDragHandlers,
+} from '@/components/utils/gesture';
 import styles from './Carousel.module.scss';
 
 /**
@@ -156,10 +159,7 @@ interface CarouselContextValue {
   viewportRef: React.RefObject<HTMLDivElement | null>;
   setViewportEl: (el: HTMLDivElement | null) => void;
   handleViewportKeyDown: (event: ReactKeyboardEvent<HTMLDivElement>) => void;
-  handleViewportPointerDown: (event: ReactPointerEvent<HTMLDivElement>) => void;
-  handleViewportPointerMove: (event: ReactPointerEvent<HTMLDivElement>) => void;
-  handleViewportPointerUp: (event: ReactPointerEvent<HTMLDivElement>) => void;
-  handleViewportPointerCancel: (event: ReactPointerEvent<HTMLDivElement>) => void;
+  viewportDragHandlers: UsePointerDragHandlers<HTMLDivElement>;
   addPauseReason: (reason: PauseReason) => void;
   removePauseReason: (reason: PauseReason) => void;
 }
@@ -331,50 +331,26 @@ export const Carousel = forwardRef<HTMLElement, CarouselProps>(function Carousel
   }, []);
 
   // Drag state (refs — don't trigger re-render until commit).
-  const isDraggingRef = useRef(false);
   const dragStartXRef = useRef(0);
   const dragStartIndexRef = useRef(0);
-  const activePointerIdRef = useRef<number | null>(null);
   const [dragOffset, setDragOffset] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
 
-  const handleViewportPointerDown = useCallback(
-    (event: ReactPointerEvent<HTMLDivElement>) => {
-      if (!dragEnabled || total <= 1) return;
-      if (event.button !== undefined && event.button !== 0) return;
-      const target = event.currentTarget;
-      if (!target) return;
-      target.setPointerCapture(event.pointerId);
-      activePointerIdRef.current = event.pointerId;
-      isDraggingRef.current = true;
+  // Drag via shared `usePointerDrag` primitive (E39 refactor).
+  const { handlers: viewportDragHandlers } = usePointerDrag<HTMLDivElement>({
+    enabled: dragEnabled && total > 1,
+    onDragStart: (event) => {
+      if (event.button !== undefined && event.button !== 0) return false;
       dragStartXRef.current = event.clientX;
       dragStartIndexRef.current = latestIndexRef.current;
       addPauseReason('drag');
     },
-    [dragEnabled, total, addPauseReason],
-  );
-
-  const handleViewportPointerMove = useCallback(
-    (event: ReactPointerEvent<HTMLDivElement>) => {
-      if (!isDraggingRef.current) return;
-      if (event.pointerId !== activePointerIdRef.current) return;
+    onDragMove: (event) => {
       const delta = event.clientX - dragStartXRef.current;
       if (Math.abs(delta) > 2 && !isDragging) setIsDragging(true);
       setDragOffset(delta);
     },
-    [isDragging],
-  );
-
-  const handleViewportPointerUp = useCallback(
-    (event: ReactPointerEvent<HTMLDivElement>) => {
-      if (event.pointerId !== activePointerIdRef.current) return;
-      if (!isDraggingRef.current) return;
-      isDraggingRef.current = false;
-      activePointerIdRef.current = null;
-      const target = event.currentTarget;
-      if (target && target.hasPointerCapture(event.pointerId)) {
-        target.releasePointerCapture(event.pointerId);
-      }
+    onDragEnd: (event) => {
       const viewport = viewportRef.current;
       const width = viewport?.getBoundingClientRect().width ?? 1;
       const delta = event.clientX - dragStartXRef.current;
@@ -388,24 +364,12 @@ export const Carousel = forwardRef<HTMLElement, CarouselProps>(function Carousel
       const rtlMirror = dir === 'rtl' ? -1 : 1;
       commit(latestIndexRef.current + direction * rtlMirror);
     },
-    [commit, dir, dragSnapThreshold, removePauseReason],
-  );
-
-  const handleViewportPointerCancel = useCallback(
-    (event: ReactPointerEvent<HTMLDivElement>) => {
-      if (event.pointerId !== activePointerIdRef.current) return;
-      isDraggingRef.current = false;
-      activePointerIdRef.current = null;
-      const target = event.currentTarget;
-      if (target && target.hasPointerCapture(event.pointerId)) {
-        target.releasePointerCapture(event.pointerId);
-      }
+    onDragCancel: () => {
       setDragOffset(0);
       setIsDragging(false);
       removePauseReason('drag');
     },
-    [removePauseReason],
-  );
+  });
 
   const handleViewportKeyDown = useCallback(
     (event: ReactKeyboardEvent<HTMLDivElement>) => {
@@ -493,10 +457,7 @@ export const Carousel = forwardRef<HTMLElement, CarouselProps>(function Carousel
       viewportRef,
       setViewportEl,
       handleViewportKeyDown,
-      handleViewportPointerDown,
-      handleViewportPointerMove,
-      handleViewportPointerUp,
-      handleViewportPointerCancel,
+      viewportDragHandlers,
       addPauseReason,
       removePauseReason,
     }),
@@ -521,10 +482,7 @@ export const Carousel = forwardRef<HTMLElement, CarouselProps>(function Carousel
       getSlideIndex,
       setViewportEl,
       handleViewportKeyDown,
-      handleViewportPointerDown,
-      handleViewportPointerMove,
-      handleViewportPointerUp,
-      handleViewportPointerCancel,
+      viewportDragHandlers,
       addPauseReason,
       removePauseReason,
     ],
@@ -613,10 +571,7 @@ export const CarouselViewport = forwardRef<HTMLDivElement, CarouselViewportProps
         style={style}
         tabIndex={0}
         onKeyDown={ctx.handleViewportKeyDown}
-        onPointerDown={ctx.dragEnabled ? ctx.handleViewportPointerDown : undefined}
-        onPointerMove={ctx.dragEnabled ? ctx.handleViewportPointerMove : undefined}
-        onPointerUp={ctx.dragEnabled ? ctx.handleViewportPointerUp : undefined}
-        onPointerCancel={ctx.dragEnabled ? ctx.handleViewportPointerCancel : undefined}
+        {...ctx.viewportDragHandlers}
         data-dragging={ctx.isDragging ? 'true' : undefined}
       >
         <div className={styles.track} style={trackStyle}>
