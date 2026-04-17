@@ -919,12 +919,21 @@ export const CommandItem = forwardRef<HTMLDivElement, CommandItemProps>(
       [textValue, children],
     );
 
+    // Depend only on the stable register/unregister callbacks (useCallback
+    // with empty deps in the root Command). Using the full `ctx` object as a
+    // dependency re-runs the effect on every Command re-render — the context
+    // value re-memos whenever the registry state changes (registry drives
+    // visibleItemIds / highlightedId), creating a register → setRegistry →
+    // ctx re-memo → effect re-runs → unregister → setRegistry infinite loop.
+    // Reported in E137 bug 2 ("Maximum update depth exceeded" at line 319's
+    // setRegistry). Same trap as Carousel registerSlide, fixed in E132.
+    const { registerItem, unregisterItem } = ctx;
     useLayoutEffect(() => {
-      ctx.registerItem({ id, value, textContent: derivedText, disabled });
+      registerItem({ id, value, textContent: derivedText, disabled });
       return () => {
-        ctx.unregisterItem(id);
+        unregisterItem(id);
       };
-    }, [ctx, id, value, derivedText, disabled]);
+    }, [registerItem, unregisterItem, id, value, derivedText, disabled]);
 
     const isVisible = ctx.visibleItemIds.has(id);
     const isHighlighted = ctx.highlightedId === id;

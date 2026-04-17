@@ -53,7 +53,7 @@ export default function SidebarPlayground() {
 // ============================================================================
 
 function BasicDemo() {
-  const [lastClicked, setLastClicked] = useState<string | null>(null);
+  const [active, setActive] = useState<string>('Dashboard');
 
   return (
     <section className={styles.section}>
@@ -65,14 +65,12 @@ function BasicDemo() {
           Default uncontrolled sidebar with header, grouped items, and footer.
           Resize viewport below 768px to see mobile drawer mode.
         </Text>
-        {lastClicked ? (
-          <Inline gap={2} align="center">
-            <Badge label="clicked" color="brand" />
-            <Text variant="small" className={styles.mono}>
-              {lastClicked}
-            </Text>
-          </Inline>
-        ) : null}
+        <Inline gap={2} align="center">
+          <Badge label="active" color="brand" />
+          <Text variant="small" className={styles.mono}>
+            {active}
+          </Text>
+        </Inline>
       </header>
       <div className={styles.previewShell}>
         <SidebarProvider defaultOpen={true}>
@@ -84,28 +82,30 @@ function BasicDemo() {
               <SidebarGroup label="Workspace">
                 <SidebarItem
                   href="#dashboard"
-                  isActive
+                  isActive={active === 'Dashboard'}
                   onClick={(e) => {
                     e.preventDefault();
-                    setLastClicked('Dashboard');
+                    setActive('Dashboard');
                   }}
                 >
                   Dashboard
                 </SidebarItem>
                 <SidebarItem
                   href="#reports"
+                  isActive={active === 'Reports'}
                   onClick={(e) => {
                     e.preventDefault();
-                    setLastClicked('Reports');
+                    setActive('Reports');
                   }}
                 >
                   Reports
                 </SidebarItem>
                 <SidebarItem
                   href="#settings"
+                  isActive={active === 'Settings'}
                   onClick={(e) => {
                     e.preventDefault();
-                    setLastClicked('Settings');
+                    setActive('Settings');
                   }}
                 >
                   Settings
@@ -122,7 +122,7 @@ function BasicDemo() {
             <Inline gap={3} align="center">
               <SidebarTrigger aria-label="Toggle sidebar" />
               <Text variant="small" color="muted">
-                Click trigger ↑ or resize viewport.
+                Click an item — active highlight follows. Trigger ↑ toggles.
               </Text>
             </Inline>
           </div>
