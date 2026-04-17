@@ -10,16 +10,21 @@ import styles from './ToggleGroupFilter.module.scss';
  * (Phase 7 M5, server-safe).
  *
  * @layer   molecule
- * @tokens  --space-{1,2,3}
- * @deps    ToggleGroup atom (type="multiple"), Toggle atom (value, children,
- *          icon), Text atom (caption uppercase), cn
- * @a11y    Delegates the `role="group"` + `aria-label` landmark to the
- *          inner ToggleGroup. `label` (required) is forwarded as
- *          ToggleGroup's `aria-label`. The optional `groupLabel`
- *          renders as a visible uppercase caption above the toggle row
- *          — it is **independent** from the accessible `label` so the
- *          visual heading and the ARIA name can differ, or the visual
- *          heading can be omitted entirely without losing accessibility.
+ * @tokens  --space-2 (.root column gap) — ToggleGroup handles its own
+ *          flex/wrap layout tokens internally
+ * @deps    ToggleGroup atom (type="multiple", value, onValueChange,
+ *          aria-label), Toggle atom (value, icon, children), Text atom
+ *          (variant="caption", color="muted", uppercase), cn,
+ *          React: `forwardRef`
+ * @a11y    The wrapping `<div>` (ToggleGroupFilter's own root) is a
+ *          presentational container; the semantic `role="group"` +
+ *          `aria-label` landmark is owned by the inner ToggleGroup atom.
+ *          `label` (required) is forwarded as ToggleGroup's `aria-label`.
+ *          The optional `groupLabel` renders as a visible uppercase
+ *          caption above the toggle row — it is **independent** from the
+ *          accessible `label` so the visual heading and the ARIA name can
+ *          differ, or the visual heading can be omitted entirely without
+ *          losing accessibility.
  * @notes   Thin wrapper over `ToggleGroup type="multiple"` — controlled
  *          only (consumer owns `value` + `onValueChange` state). Maps
  *          the flat `options` array to `Toggle` children internally so
