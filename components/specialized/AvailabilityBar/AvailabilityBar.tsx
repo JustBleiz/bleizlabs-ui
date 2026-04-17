@@ -7,9 +7,12 @@ import styles from './AvailabilityBar.module.scss';
  *
  * @layer   atom (specialized)
  * @tokens  --color-{success,warning,error}, --color-surface-raised,
- *          --color-border-subtle, --color-text-{primary,secondary,muted},
- *          --space-{1,2,3}, --font-size-xs, --font-weight-medium,
- *          --line-height-snug, --radius-sm
+ *          --color-text-{secondary,muted}, --space-{2,4} (gap + strip
+ *          height), --font-size-xs, --font-weight-medium, --line-height-snug,
+ *          --radius-sm.
+ *          Component-local `--availability-cells` channel (default 30,
+ *          overridable via tsx CSSProperties) drives `repeat(N, minmax(0,1fr))`
+ *          grid column count — scales the strip for any day count.
  * @deps    cn, React: `forwardRef`, `useMemo`, type import
  *          `HTMLAttributes<HTMLDivElement>`
  * @a11y    Outer `<div>` wrapper carries `role="img"` + `aria-label` so

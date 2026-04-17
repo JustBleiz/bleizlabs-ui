@@ -6,8 +6,7 @@ import styles from './Kbd.module.scss';
  * Kbd — keyboard shortcut key display (Phase 6 P8, Tier B, server-safe).
  *
  * @layer   atom (specialized)
- * @tokens  --color-surface, --color-surface-raised, --color-border,
- *          --color-border-subtle, --color-text-{primary,secondary},
+ * @tokens  --color-surface-raised, --color-border, --color-text-primary,
  *          --space-{1,2}, --font-mono, --font-size-{xs,sm},
  *          --font-weight-medium, --line-height-snug, --radius-sm
  * @deps    cn, React: `forwardRef`, type imports

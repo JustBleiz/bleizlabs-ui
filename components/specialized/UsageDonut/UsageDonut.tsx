@@ -11,9 +11,13 @@ import styles from './UsageDonut.module.scss';
  * UsageDonut — multi-segment SVG donut chart (Phase 6 P6, Tier B, server-safe).
  *
  * @layer   atom (specialized)
- * @tokens  --color-{brand,success,warning,info,error}, --color-surface-raised,
- *          --color-border-subtle, --color-text-{primary,secondary,muted},
- *          --space-{1,2}, --font-size-xs, --font-weight-{medium,semibold}
+ * @tokens  --color-{brand,success,warning,info,error} (tsx DEFAULT_COLORS
+ *          cycle for unlabeled segments — runtime injection via SVG stroke),
+ *          --color-surface-raised (track circle stroke for remainder),
+ *          --color-text-primary (root + centerLabel color),
+ *          --space-{1,2,20} (center gap + padding + sizeSm base; sizeMd/Lg
+ *          scale via calc(--space-20 * 1.75) and calc(--space-20 * 2.5)),
+ *          --font-size-{xs,sm,base} (size variants).
  * @deps    cn, React: `forwardRef`, `useMemo`, type imports
  *          `HTMLAttributes<HTMLDivElement>`, `ReactNode`
  * @a11y    Renders a `<div>` wrapper (so consumers can compose a `centerLabel`
