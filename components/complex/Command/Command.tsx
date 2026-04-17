@@ -31,11 +31,11 @@ import styles from './Command.module.scss';
  * @layer    complex-interactive
  * @tokens   --color-surface, --color-surface-raised, --color-surface-muted,
  *           --color-border, --color-border-subtle, --color-brand,
- *           --color-text-primary, --color-text-secondary, --color-text-muted,
- *           --color-overlay, --focus-ring, --radius-md, --radius-lg,
+ *           --color-text-primary, --color-text-muted, --color-overlay,
+ *           --focus-ring (via mx.focus-ring mixin), --radius-md, --radius-lg,
  *           --shadow-lg, --duration-base, --duration-fast, --easing-default,
- *           --space-1, --space-2, --space-3, --space-4, --z-modal,
- *           --font-size-sm, --font-size-base, --font-size-xs
+ *           --space-{1,2,3,4,6}, --z-modal, --font-mono,
+ *           --font-size-xs, --font-size-sm, --font-size-base
  * @deps     cn, mergeRefs, FloatingPortal (E23), useFocusTrap (Dialog E15)
  * @a11y     SECOND composition Epic after DatePicker E31. Combines APG
  *           `/combobox/` editable (text input + filtered listbox) with
@@ -74,7 +74,9 @@ import styles from './Command.module.scss';
  *           keyboard + ARIA conform to both pattern intersections).
  * @tested   tsc + eslint + next build (Playwright/NVDA/axe deferred per
  *           E15 scope).
- * @regressions See `docs/_tmp/command-spec.md` cases CMD-R01..R22 (22 total).
+ * @regressions tests/Command.{keyboard,focus,aria,regression}.spec.md —
+ *           22 regression cases CMD-R01..R22 in `docs/specs/command-spec.md`
+ *           (promoted from `_tmp` in E42).
  *
  * @example
  * // Basic controlled
