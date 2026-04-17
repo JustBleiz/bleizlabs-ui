@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import Link from 'next/link';
 
 // Layout (Phase 1)
@@ -133,52 +133,6 @@ import {
 
 import styles from './page.module.scss';
 
-type Theme = 'light' | 'dark';
-
-function SunIcon() {
-  return (
-    <svg
-      width="18"
-      height="18"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-    >
-      <circle cx="12" cy="12" r="4" />
-      <path d="M12 2v2" />
-      <path d="M12 20v2" />
-      <path d="m4.93 4.93 1.41 1.41" />
-      <path d="m17.66 17.66 1.41 1.41" />
-      <path d="M2 12h2" />
-      <path d="M20 12h2" />
-      <path d="m6.34 17.66-1.41 1.41" />
-      <path d="m19.07 4.93-1.41 1.41" />
-    </svg>
-  );
-}
-
-function MoonIcon() {
-  return (
-    <svg
-      width="18"
-      height="18"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-    >
-      <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
-    </svg>
-  );
-}
-
 function ChartIcon() {
   return (
     <svg
@@ -258,12 +212,6 @@ const AVAILABILITY_DAYS = Array.from({ length: 21 }, (_, i) => {
 });
 
 export default function DemoPage() {
-  const [theme, setTheme] = useState<Theme>('dark');
-
-  useEffect(() => {
-    document.documentElement.setAttribute('data-theme', theme);
-  }, [theme]);
-
   const [checked, setChecked] = useState(true);
   const [switched, setSwitched] = useState(true);
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -288,21 +236,13 @@ export default function DemoPage() {
               bleizlabs-ui demo
             </Heading>
             <Text className={styles.intro}>
-              Complete showcase of all 68 components — 47 atoms + 6 molecules +
-              5 Card presets + 10 complex interactive (Phase 10 in progress).
-              Toggle theme to inspect light + dark tokens. Per-component deep
-              dives live under <Link href="/">/components/*</Link>.
+              Complete showcase of all 81 components — 47 atoms + 6 molecules
+              + 5 Card presets + 22 complex interactive + Table primitives.
+              Use the floating theme toggle in the top right to inspect light
+              and dark tokens. Per-component deep dives live under{' '}
+              <Link href="/">/components/*</Link>.
             </Text>
           </div>
-          <button
-            type="button"
-            onClick={() => setTheme((t) => (t === 'dark' ? 'light' : 'dark'))}
-            className={styles.themeToggle}
-            aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} theme`}
-          >
-            {theme === 'dark' ? <SunIcon /> : <MoonIcon />}
-            <span>{theme === 'dark' ? 'Light' : 'Dark'}</span>
-          </button>
         </div>
 
         <nav aria-label="Phase sections" className={styles.anchorNav}>
