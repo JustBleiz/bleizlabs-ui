@@ -29,15 +29,13 @@ import styles from './Sidebar.module.scss';
  * Sidebar — Phase 10 CI22 FINISHER (80/80 Phase 10 COMPLETE).
  *
  * @layer    complex-interactive
- * @tokens   --color-surface, --color-surface-raised, --color-surface-muted,
- *           --color-border, --color-border-subtle, --color-brand,
+ * @tokens   --color-surface, --color-surface-raised, --color-border-subtle,
  *           --color-text-primary, --color-text-secondary, --color-text-muted,
- *           --color-overlay, --focus-ring, --radius-md, --radius-lg,
- *           --shadow-lg, --shadow-2xl, --duration-base, --duration-normal,
- *           --duration-fast, --easing-default, --space-1, --space-2, --space-3,
- *           --space-4, --space-5, --z-modal, --font-size-sm, --font-size-base,
- *           --font-size-xs
- * @deps     cn, mergeRefs, Slot, FloatingPortal (E23), useFocusTrap (Dialog E15)
+ *           --color-overlay, --radius-md, --radius-lg, --shadow-2xl,
+ *           --duration-normal, --duration-fast, --easing-default,
+ *           --space-{1,2,3,4}, --z-modal, --font-size-xs, --font-size-sm
+ * @deps     cn, mergeRefs, Slot, FloatingPortal (E23), useFocusTrap (Dialog E15),
+ *           useMatchMedia (E40 — breakpoint detection)
  * @a11y     Composition — disclosure (trigger + panel with aria-expanded /
  *           aria-controls) + plain navigation (<nav> + <a> + aria-current).
  *           Explicitly NOT menubar APG: route links ≠ app menus; plain Tab
@@ -66,7 +64,9 @@ import styles from './Sidebar.module.scss';
  *           APG per WCAG H48/ARIA11 guidance for site navigation)
  * @tested   tsc + eslint + next build (Playwright/NVDA/axe deferred per E15
  *           scope — consistent across 21 prior Phase 10 components).
- * @regressions See `docs/_tmp/sidebar-spec.md` cases SB-R01..R24 (24 total).
+ * @regressions tests/Sidebar.{keyboard,focus,aria,regression}.spec.md —
+ *           24 regression cases SB-R01..R24 in `docs/specs/sidebar-spec.md`
+ *           (promoted from `_tmp` in E42).
  *
  * @example
  * // Basic desktop + mobile responsive
