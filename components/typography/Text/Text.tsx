@@ -12,11 +12,22 @@ import styles from './Text.module.scss';
  * Text — universal body text component.
  *
  * @layer   atom (typography)
- * @tokens  --font-secondary, --font-size-{xs..lg}, --font-weight-{regular..bold},
- *          --line-height-{normal,relaxed}, --color-text-{primary,secondary,muted},
- *          --color-brand-500. CSS keyword values written into `--text-align`
- *          (`start`, `center`, `end`) are CSS layout primitives, not tokens.
- * @deps    Slot (own primitive, asChild boundary), cn
+ * @tokens  --font-secondary (.root);
+ *          --font-size-{xs,sm,base,lg} per variant (xs=caption, sm=small,
+ *          base=body/body-strong, lg=lead);
+ *          --font-weight-{regular,medium,semibold,bold} (tsx WEIGHT_VAR +
+ *          variant defaults via --text-weight fallbacks);
+ *          --line-height-{normal,relaxed} (relaxed=lead, normal=others);
+ *          --color-text-{primary,secondary,muted} + --color-brand-500 (tsx
+ *          COLOR_VAR; `inherit` is a CSS keyword, not a token).
+ *          Component-local vars `--text-{color,align,weight}` carry computed
+ *          values into .root with design-token fallbacks. `--text-align`
+ *          accepts CSS keywords (`start`/`center`/`end`), not tokens.
+ *          Tracking literals (0.01em in .caption, 0.06em in .uppercase) are
+ *          CSS values, not design tokens.
+ * @deps    Slot (own primitive, asChild boundary), cn, React: `forwardRef`,
+ *          type imports `CSSProperties`, `HTMLAttributes<HTMLParagraphElement>`,
+ *          `ReactNode`
  * @a11y    Renders `<p>` by default. Use `asChild` for inline elements
  *          (`<span>`) or block elements (`<div>`) when paragraph semantics
  *          are wrong. `color='inherit'` lets Text adopt the surrounding
