@@ -76,10 +76,10 @@
 
 // Arrow — rotated square positioned by useFloating via inline `left`/`top`.
 // Direction via data-placement attribute decides which edge of .content the
-// arrow aligns with. The `--popover-arrow-size` custom property lets consumers
-// tweak size without overriding the whole selector.
+// arrow aligns with. The `--popover-arrow-size` semantic token (10px global
+// in _semantics.scss) lets consumers tweak size via cascade override without
+// touching component internals.
 .arrow {
-  --popover-arrow-size: 10px;
   position: absolute;
   width: var(--popover-arrow-size);
   height: var(--popover-arrow-size);

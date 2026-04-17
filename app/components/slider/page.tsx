@@ -312,7 +312,7 @@ export default function SliderPlayground() {
               padding: 'var(--space-3) var(--space-5)',
               border: '1px solid var(--color-brand)',
               background: 'var(--color-brand)',
-              color: 'var(--color-text-on-brand)',
+              color: 'var(--color-text-inverse)',
               borderRadius: 'var(--radius-md)',
               cursor: 'pointer',
             }}
