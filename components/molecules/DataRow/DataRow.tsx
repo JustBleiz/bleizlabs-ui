@@ -8,8 +8,10 @@ import styles from './DataRow.module.scss';
  * DataRow — label/value pair molecule (Phase 7 M1, server-safe).
  *
  * @layer   molecule
- * @tokens  --color-text-{primary,muted}, --space-{2,3}
- * @deps    Inline atom (gap, justify, collapseBelow), Text atom (variant, color), cn
+ * @tokens  --color-text-primary (used in .value; label + gaps inherit from
+ *          Text/Inline atom tokens)
+ * @deps    Inline atom (gap, align, justify, collapseBelow), Text atom
+ *          (variant, color), cn
  * @a11y    Pure presentational layout — no role or aria-*. Consumer places
  *          DataRow inside a semantic container (Card, Section, `<dl>` if
  *          needed). The label is rendered with `Text variant="caption"`
