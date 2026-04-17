@@ -2,6 +2,7 @@ import {
   forwardRef,
   type CSSProperties,
   type HTMLAttributes,
+  type ReactNode,
 } from 'react';
 import { Slot } from '@/components/utils/Slot';
 import { cn } from '@/components/utils/cn';
@@ -12,8 +13,16 @@ import styles from './Container.module.scss';
  * Container — max-width centered wrapper layout atom.
  *
  * @layer   atom (layout)
- * @tokens  --container-{sm,md,lg,xl}, --space-{0..20}
- * @deps    Slot, cn, SpaceIndex
+ * @tokens  --container-{sm,md,lg,xl} (tsx size→var(--container-*) computed);
+ *          --space-{0..20} (padding via tsx computed `var(--space-${padding})`);
+ *          Component-local `--container-{max,padding-x,margin-x}` carry the
+ *          computed values into .root with design-token fallbacks
+ *          (--container-lg + --space-4 + `auto` respectively). `size="fluid"`
+ *          bypasses --container-* with `100%` literal; `padding="none"` uses
+ *          `0` literal (both are CSS primitives, not tokens).
+ * @deps    Slot (own primitive, asChild boundary), cn, SpaceIndex type,
+ *          React: `forwardRef`, type imports `CSSProperties`,
+ *          `HTMLAttributes<HTMLDivElement>`, `ReactNode`
  * @a11y    Pure layout primitive. Renders `<div>` by default. Use
  *          `asChild` to project onto `<main>`, `<article>`, etc.
  * @notes   Server-Component safe. `size='fluid'` skips max-width
@@ -43,7 +52,7 @@ export interface ContainerProps extends HTMLAttributes<HTMLDivElement> {
   /** Render as the single child element via Slot. */
   asChild?: boolean;
   /** Container content. */
-  children?: React.ReactNode;
+  children?: ReactNode;
 }
 
 export const Container = forwardRef<HTMLDivElement, ContainerProps>(

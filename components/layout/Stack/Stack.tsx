@@ -15,11 +15,13 @@ import styles from './Stack.module.scss';
  * Stack — vertical flex layout atom.
  *
  * @layer   atom (layout)
- * @tokens  --space-{0..20} (the only design-token values used). The flex
- *          keyword values written into `--stack-align` / `--stack-justify`
- *          (`flex-start`, `space-between`, …) are CSS layout primitives,
- *          not design tokens, and are intentionally not abstracted.
- * @deps    Slot (own primitive, asChild boundary), cn, SpaceIndex
+ * @tokens  --space-{0..20} (tsx computed `var(--space-${gap})` threaded
+ *          through component-local `--stack-gap`). Flex keyword values
+ *          written into `--stack-align` / `--stack-justify` (via ALIGN_MAP
+ *          / JUSTIFY_MAP) are CSS layout primitives, not design tokens.
+ * @deps    Slot (own primitive, asChild boundary), cn, SpaceIndex type,
+ *          React: `Children`, `Fragment`, `forwardRef`, type imports
+ *          `CSSProperties`, `HTMLAttributes<HTMLDivElement>`, `ReactNode`
  * @a11y    Pure layout primitive. Renders `<div>` by default, no role/aria.
  *          Use `asChild` to project the layout onto a semantic element
  *          (`<ul>`, `<nav>`, `<section>`).

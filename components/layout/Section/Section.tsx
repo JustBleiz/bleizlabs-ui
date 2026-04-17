@@ -3,6 +3,7 @@ import {
   type CSSProperties,
   type ElementType,
   type HTMLAttributes,
+  type ReactNode,
   type Ref,
 } from 'react';
 import { Slot } from '@/components/utils/Slot';
@@ -14,9 +15,17 @@ import styles from './Section.module.scss';
  * Section — full-width semantic band layout atom.
  *
  * @layer   atom (layout)
- * @tokens  --color-surface, --color-surface-raised, --color-brand-50,
- *          --space-{0..20}, --container-lg
- * @deps    Slot, cn, SpaceIndex
+ * @tokens  --color-surface, --color-surface-raised, --color-brand-50 (tsx
+ *          BG_MAP; `transparent`/`none` resolve to CSS `transparent` keyword);
+ *          --space-{0..20} (tsx computed `var(--space-${py})` + `--space-4`
+ *          literal padding-x when `fullBleed=false`); --container-lg (self-
+ *          contained max-width when `fullBleed=false`).
+ *          Component-local `--section-{bg,py,max-width,padding-x,margin-x}`
+ *          carry the computed values into .root. fullBleed-off literals
+ *          (`none`, `0`, `auto`) are CSS keywords, not tokens.
+ * @deps    Slot (own primitive, asChild boundary), cn, SpaceIndex type,
+ *          React: `forwardRef`, type imports `CSSProperties`, `ElementType`,
+ *          `HTMLAttributes<HTMLElement>`, `ReactNode`, `Ref`
  * @a11y    Renders `<section>` by default — semantic band element.
  *          Use `tag` to swap to another intrinsic semantic element
  *          (`<header>`, `<main>`, `<footer>`, `<aside>`, `<nav>`).
@@ -55,7 +64,7 @@ export interface SectionProps extends HTMLAttributes<HTMLElement> {
   /** Render as the single child element via Slot (overrides `tag`). */
   asChild?: boolean;
   /** Section content. */
-  children?: React.ReactNode;
+  children?: ReactNode;
 }
 
 const BG_MAP: Record<NonNullable<SectionProps['bg']>, string> = {

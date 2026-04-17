@@ -2,6 +2,7 @@ import {
   forwardRef,
   type CSSProperties,
   type HTMLAttributes,
+  type ReactNode,
 } from 'react';
 import { Slot } from '@/components/utils/Slot';
 import { cn } from '@/components/utils/cn';
@@ -12,10 +13,15 @@ import styles from './Inline.module.scss';
  * Inline — horizontal flex layout atom.
  *
  * @layer   atom (layout)
- * @tokens  --space-{0..20} (the only design-token values used). Flex keyword
- *          values written into `--inline-align`, `--inline-justify`,
- *          `--inline-wrap` are CSS layout primitives, not design tokens.
- * @deps    Slot (own primitive, asChild boundary), cn, SpaceIndex
+ * @tokens  --space-{0..20} (tsx computed `var(--space-${gap})` threaded
+ *          through component-local `--inline-gap`). Flex keyword values
+ *          written into `--inline-{align,justify,wrap}` (via ALIGN_MAP /
+ *          JUSTIFY_MAP / wrap ternary) are CSS layout primitives, not design
+ *          tokens. `collapseBelow` uses `data-collapse-below` attribute (not
+ *          a token; queried in .module.scss via attribute selector).
+ * @deps    Slot (own primitive, asChild boundary), cn, SpaceIndex type,
+ *          React: `forwardRef`, type imports `CSSProperties`,
+ *          `HTMLAttributes<HTMLDivElement>`, `ReactNode`
  * @a11y    Pure layout primitive. Renders `<div>` by default. Use
  *          `asChild` for semantic projection (`<nav>`, `<ul>`, `<menu>`).
  * @notes   Server-Component safe. The `collapseBelow` prop swaps
@@ -53,7 +59,7 @@ export interface InlineProps extends HTMLAttributes<HTMLDivElement> {
   /** Render as the single child element via Slot. */
   asChild?: boolean;
   /** Inline content. */
-  children?: React.ReactNode;
+  children?: ReactNode;
 }
 
 const ALIGN_MAP: Record<NonNullable<InlineProps['align']>, string> = {
