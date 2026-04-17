@@ -16,10 +16,11 @@ import styles from './DeadlineBadge.module.scss';
  * DeadlineBadge — relative countdown badge (Phase 7 M6, `'use client'`).
  *
  * @layer   molecule
- * @tokens  --space-2, color tokens inherited via Badge variants
+ * @tokens  --space-2 (used in .root gap; color tokens are applied by
+ *          Badge atom's variants, not directly here)
  * @deps    Badge atom (color, asChild), Text atom (caption), cn,
- *          native `Intl.RelativeTimeFormat`, React hooks (useState,
- *          useEffect, useMemo)
+ *          native `Intl.RelativeTimeFormat` + `Intl.DateTimeFormat`,
+ *          React: `forwardRef`, `useState`, `useEffect`, `useMemo`
  * @a11y    The relative countdown is wrapped in a semantic `<time
  *          dateTime={iso}>` element via Badge's `asChild` projection —
  *          assistive tech exposes both the ISO machine-readable value
