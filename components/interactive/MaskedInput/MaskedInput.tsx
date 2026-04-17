@@ -25,9 +25,13 @@ import styles from './MaskedInput.module.scss';
  * @layer   atom (interactive)
  * @tokens  --input-bg, --input-border, --input-border-focus,
  *          --color-error, --color-text-primary, --color-text-muted,
- *          --focus-ring, --focus-ring-error, --radius-input,
- *          --space-{2..4}, --font-secondary, --font-size-base,
- *          --font-variant-numeric, --duration-fast, --easing-default
+ *          --focus-ring, --focus-ring-error (both consumed via
+ *          `@include mx.focus-ring*`), --radius-input, --space-{2..4},
+ *          --font-secondary, --font-size-{xs,base}, --font-weight-medium,
+ *          --line-height-normal, --duration-fast, --easing-default.
+ *          `tabular-nums` is a CSS keyword for font-variant-numeric
+ *          (intentional — stable digit width for mask alignment), not
+ *          a design token.
  * @deps    Label atom, cn, `masks.ts` (applyMask, unmask, countPlaceholders,
  *          maskMaxLength, MASK_PRESETS, MaskPreset type), React:
  *          `forwardRef`, `useId`, `useMemo`, `useState`, type import

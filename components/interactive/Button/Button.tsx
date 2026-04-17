@@ -16,9 +16,13 @@ import styles from './Button.module.scss';
  * @layer   atom (interactive)
  * @tokens  --color-brand, --hover-brand, --active-brand, --shadow-brand,
  *          --color-surface, --color-surface-raised, --color-border,
- *          --color-text-primary, --color-text-inverse, --color-warning,
- *          --focus-ring, --radius-input, --radius-md, --space-{2..5},
- *          --font-secondary, --font-size-{sm,base,lg}, --font-weight-medium
+ *          --color-border-strong (variantSecondary hover), --color-text-primary,
+ *          --color-text-inverse, --color-warning, --focus-ring (consumed via
+ *          `@include mx.focus-ring`), --radius-input, --space-{2..5},
+ *          --font-secondary, --font-size-{sm,base,lg}, --font-weight-medium,
+ *          --duration-fast, --easing-default.
+ *          Component-local channels (not tokens): --button-padding-{x,y} +
+ *          --button-font-size injected by size variants.
  * @deps    Slot (own primitive, asChild boundary), cn, React: `forwardRef`,
  *          type imports `AnchorHTMLAttributes`, `ButtonHTMLAttributes`,
  *          `CSSProperties`, `ReactNode`

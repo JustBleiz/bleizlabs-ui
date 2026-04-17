@@ -11,8 +11,9 @@ import styles from './Label.module.scss';
  * Label — form-coupled label element (Phase 4 I2.5, moved from Phase 2 in E05).
  *
  * @layer   atom (interactive)
- * @tokens  --font-secondary, --font-size-sm, --font-weight-medium,
- *          --color-text-primary, --color-text-muted, --color-error
+ * @tokens  --font-secondary, --font-size-sm, --font-weight-{medium,bold},
+ *          --line-height-normal, --color-text-{primary,muted}, --color-error,
+ *          --space-1 (required-indicator gap)
  * @deps    Slot (own primitive, asChild boundary), cn, React: `forwardRef`,
  *          type imports `LabelHTMLAttributes<HTMLLabelElement>`, `ReactNode`
  * @a11y    Renders native `<label>` with `htmlFor` association. The visual

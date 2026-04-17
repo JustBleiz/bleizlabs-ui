@@ -18,9 +18,12 @@ import styles from './Input.module.scss';
  * @tokens  --input-bg, --input-border, --input-border-focus,
  *          --input-addon-bg, --input-addon-text, --input-addon-border,
  *          --color-error, --color-text-primary, --color-text-muted,
- *          --color-text-secondary, --focus-ring, --focus-ring-error,
- *          --radius-input, --space-{2..4}, --font-secondary,
- *          --font-size-{xs,base}, --duration-fast, --easing-default
+ *          --color-text-secondary, --color-surface-raised (clear-button
+ *          hover), --focus-ring, --focus-ring-error (both consumed via
+ *          `@include mx.focus-ring*`), --radius-{input,sm}, --space-{2..6}
+ *          (padding + addon sizing), --font-secondary,
+ *          --font-size-{xs,base}, --font-weight-medium, --line-height-normal,
+ *          --duration-{fast,slow} (slow=spinner), --easing-default
  * @deps    Label atom, cn, React: `forwardRef`, `useId`, `useState`, type
  *          imports `InputHTMLAttributes<HTMLInputElement>`, `ReactNode`
  * @a11y    Native `<input>` with `id` ↔ `htmlFor` association via Label.

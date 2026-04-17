@@ -16,8 +16,10 @@ import styles from './Accordion.module.scss';
  * @layer   atom (interactive)
  * @tokens  --color-surface, --color-surface-raised, --color-border,
  *          --color-border-subtle, --color-text-primary,
- *          --color-text-secondary, --focus-ring, --radius-md,
- *          --space-{2..5}, --duration-normal, --easing-default
+ *          --color-text-secondary, --focus-ring (consumed via
+ *          `@include mx.focus-ring`), --radius-md, --space-{3,4,5},
+ *          --duration-{fast,normal}, --easing-default, --font-secondary,
+ *          --font-size-{sm,base}, --font-weight-medium, --line-height-normal
  * @deps    cn, React: `forwardRef`, `useId`, `useState`, type imports
  *          `HTMLAttributes<HTMLDivElement>`, `ReactNode`
  * @a11y    Renders a `<button aria-expanded aria-controls>` trigger

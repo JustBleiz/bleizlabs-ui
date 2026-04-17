@@ -15,8 +15,10 @@ import styles from './Textarea.module.scss';
  * @layer   atom (interactive)
  * @tokens  --input-bg, --input-border, --input-border-focus, --color-error,
  *          --color-text-primary, --color-text-muted, --focus-ring,
- *          --focus-ring-error, --radius-input, --space-{2..4},
- *          --font-secondary, --font-size-base
+ *          --focus-ring-error (both consumed via `@include mx.focus-ring*`),
+ *          --radius-input, --space-{2..4}, --font-secondary,
+ *          --font-size-{xs,base}, --font-weight-medium, --line-height-normal,
+ *          --duration-fast, --easing-default
  * @deps    Label atom, cn, React: `forwardRef`, `useId`, type import
  *          `TextareaHTMLAttributes<HTMLTextAreaElement>`
  * @a11y    Native `<textarea>` with `id` ↔ `htmlFor` association via Label.
