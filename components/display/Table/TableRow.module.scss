@@ -18,27 +18,32 @@
   }
 }
 
-// Selected — brand tint on every cell in the row. `--color-brand-subtle`
-// is theme-aware (dark: brand-900 deep, light: brand-100 tinted) so the
-// "selected" highlight reads clearly on both themes — the token fix
-// landed alongside this component per user report that selected rows
-// looked near-white in dark mode (E138-followup).
+// Selected — SOLID `--color-brand` + inverse text. Bold vivid accent so
+// the selected row is unmistakably distinct from default and hover rows
+// (E138b-followup: subtle brand shades were too close to default surface
+// in dark mode — "ciężko jest odróżnić selected od nie klikniętego").
+// The token `--color-brand` is theme-independent (vivid brand-500) so
+// the highlight reads the same across both themes. `--color-text-inverse`
+// is the text color designed to contrast with brand surfaces.
 .selected > td,
 .selected > th {
-  background: var(--color-brand-subtle);
-  color: var(--color-brand-strong);
-}
-
-// Hover on an already-selected row — escalate to solid brand + inverse
-// text so pointer-over a selected row produces a visible state change
-// (prior version kept the selected bg unchanged on hover → no feedback,
-// reported as "po najechaniu nic nie widać"). The `.selected` + `.hoverable`
-// combo naturally out-specifies `.selected` alone (two classes vs one)
-// so the default selected rule is overridden cleanly without !important.
-.selected.hoverable:hover > td,
-.selected.hoverable:hover > th {
   background: var(--color-brand);
   color: var(--color-text-inverse);
+  // Inherit via context — consumers can nest Badges etc. that'll need
+  // to pick their own colors (brand Badge on brand row would vanish).
+  --color-text-primary: var(--color-text-inverse);
+  --color-text-secondary: var(--color-text-inverse);
+}
+
+// Hover on an already-selected row — shift bg to `--color-brand-strong`
+// (theme-aware: dark=brand-300 lighter, light=brand-700 darker). Both
+// directions read as "more emphatic brand" so pointer-over an already-
+// selected row produces a visible, intentional state change regardless
+// of theme. `.selected.hoverable` two-class specificity out-specifies
+// `.selected` alone without !important.
+.selected.hoverable:hover > td,
+.selected.hoverable:hover > th {
+  background: var(--color-brand-strong);
 }
 
 .disabled {
