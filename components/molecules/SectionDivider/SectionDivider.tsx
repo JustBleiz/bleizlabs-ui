@@ -8,8 +8,12 @@ import styles from './SectionDivider.module.scss';
  * SectionDivider — labeled visual section break (Phase 7 M3, server-safe).
  *
  * @layer   molecule
- * @tokens  --space-{3,4}, --color-text-secondary, typography tokens inherited from Text
- * @deps    Separator atom (variant="gradient"), Text atom, cn
+ * @tokens  --space-3 (.root gap), --space-8 (.line min-width) — label
+ *          color + typography come from Text atom, line rendering from
+ *          Separator atom
+ * @deps    Separator atom (variant="gradient", orientation="horizontal",
+ *          decorative), Text atom (variant="caption", color="secondary",
+ *          uppercase), cn, React: `forwardRef`
  * @a11y    Renders `<div role="separator" aria-orientation="horizontal">`
  *          with the visible label as its text content — screen readers
  *          announce the text and know a visual section break follows.
