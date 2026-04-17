@@ -11,7 +11,6 @@ import {
   useMemo,
   useRef,
   useState,
-  useSyncExternalStore,
   type CSSProperties,
   type HTMLAttributes,
   type PointerEvent as ReactPointerEvent,
@@ -20,6 +19,7 @@ import {
 import { cn } from '@/components/utils/cn';
 import { mergeRefs } from '@/components/utils/mergeRefs';
 import { usePointerDrag } from '@/components/utils/gesture';
+import { useMatchMedia } from '@/components/utils/match-media';
 import styles from './ScrollArea.module.scss';
 
 /**
@@ -157,40 +157,6 @@ const DEFAULT_METRICS: ScrollAreaMetrics = {
   scrollWidth: 0,
 };
 
-function pointerCoarseSubscribe(notify: () => void): () => void {
-  if (typeof window === 'undefined') return () => {};
-  const media = window.matchMedia('(pointer: coarse)');
-  media.addEventListener('change', notify);
-  return () => media.removeEventListener('change', notify);
-}
-function pointerCoarseGetSnapshot(): boolean {
-  if (typeof window === 'undefined') return false;
-  return window.matchMedia('(pointer: coarse)').matches;
-}
-function pointerCoarseGetServerSnapshot(): boolean {
-  return false;
-}
-
-function usePointerCoarse(): boolean {
-  return useSyncExternalStore(
-    pointerCoarseSubscribe,
-    pointerCoarseGetSnapshot,
-    pointerCoarseGetServerSnapshot,
-  );
-}
-
-function useReducedMotion(): boolean {
-  const [reducedMotion, setReducedMotion] = useState(false);
-  useEffect(() => {
-    if (typeof window === 'undefined') return;
-    const media = window.matchMedia('(prefers-reduced-motion: reduce)');
-    const apply = () => setReducedMotion(media.matches);
-    apply();
-    media.addEventListener('change', apply);
-    return () => media.removeEventListener('change', apply);
-  }, []);
-  return reducedMotion;
-}
 
 export const ScrollArea = forwardRef<HTMLDivElement, ScrollAreaProps>(
   function ScrollArea(
@@ -209,8 +175,8 @@ export const ScrollArea = forwardRef<HTMLDivElement, ScrollAreaProps>(
     const [isScrolling, setIsScrolling] = useState(false);
     const [isHovering, setIsHovering] = useState(false);
     const [isDraggingThumb, setIsDraggingThumb] = useState(false);
-    const isPointerCoarse = usePointerCoarse();
-    const reducedMotion = useReducedMotion();
+    const isPointerCoarse = useMatchMedia('(pointer: coarse)');
+    const reducedMotion = useMatchMedia('(prefers-reduced-motion: reduce)');
 
     const hideTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 

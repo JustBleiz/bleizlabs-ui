@@ -23,6 +23,7 @@ import {
   usePointerDrag,
   type UsePointerDragHandlers,
 } from '@/components/utils/gesture';
+import { useMatchMedia } from '@/components/utils/match-media';
 import styles from './Carousel.module.scss';
 
 /**
@@ -244,19 +245,18 @@ export const Carousel = forwardRef<HTMLElement, CarouselProps>(function Carousel
   const isReducedMotion = pauseReasons.has('reduced-motion');
   const shouldRotate = autoRotate && pauseReasons.size === 0 && total > 1;
 
-  // Reduced-motion detection via matchMedia, reactive to user preference changes.
-  useEffect(() => {
-    if (typeof window === 'undefined') return;
-    const media = window.matchMedia('(prefers-reduced-motion: reduce)');
-    const apply = (matches: boolean) => {
-      if (matches) addPauseReason('reduced-motion');
-      else removePauseReason('reduced-motion');
-    };
-    apply(media.matches);
-    const listener = (e: MediaQueryListEvent) => apply(e.matches);
-    media.addEventListener('change', listener);
-    return () => media.removeEventListener('change', listener);
-  }, [addPauseReason, removePauseReason]);
+  // Reduced-motion detection via shared useMatchMedia primitive (E40 refactor).
+  // Sync matchMedia boolean → pauseReasons Set via render-time prop-sync
+  // pattern (E31 DatePicker / E34 Carousel live region precedent) to
+  // satisfy React 19 `react-hooks/set-state-in-effect` rule — direct
+  // setState-in-effect would trigger cascading renders per React docs.
+  const prefersReducedMotion = useMatchMedia('(prefers-reduced-motion: reduce)');
+  const [prevPRM, setPrevPRM] = useState(prefersReducedMotion);
+  if (prevPRM !== prefersReducedMotion) {
+    setPrevPRM(prefersReducedMotion);
+    if (prefersReducedMotion) addPauseReason('reduced-motion');
+    else removePauseReason('reduced-motion');
+  }
 
   // Visibilitychange — pause auto-rotation when tab hidden.
   useEffect(() => {

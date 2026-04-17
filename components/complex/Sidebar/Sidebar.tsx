@@ -10,7 +10,6 @@ import {
   useMemo,
   useRef,
   useState,
-  useSyncExternalStore,
   type AnchorHTMLAttributes,
   type ButtonHTMLAttributes,
   type HTMLAttributes,
@@ -22,6 +21,7 @@ import { cn } from '@/components/utils/cn';
 import { mergeRefs } from '@/components/utils/mergeRefs';
 import { Slot } from '@/components/utils/Slot';
 import { FloatingPortal } from '@/components/utils/floating';
+import { useMatchMedia } from '@/components/utils/match-media';
 import { useFocusTrap } from '@/components/complex/Dialog/useFocusTrap';
 import styles from './Sidebar.module.scss';
 
@@ -223,37 +223,6 @@ export function useSidebar(): UseSidebarReturn {
 }
 
 // ============================================================================
-// matchMedia helpers — useSyncExternalStore pattern (ScrollArea E35 precedent)
-// ============================================================================
-
-function createBreakpointSubscribe(query: string) {
-  return (notify: () => void): (() => void) => {
-    if (typeof window === 'undefined') return () => {};
-    const media = window.matchMedia(query);
-    media.addEventListener('change', notify);
-    return () => media.removeEventListener('change', notify);
-  };
-}
-
-function createBreakpointGetSnapshot(query: string): () => boolean {
-  return () => {
-    if (typeof window === 'undefined') return false;
-    return window.matchMedia(query).matches;
-  };
-}
-
-function breakpointGetServerSnapshot(): boolean {
-  return false;
-}
-
-function useIsMobile(breakpoint: number): boolean {
-  const query = `(max-width: ${breakpoint - 1}px)`;
-  const subscribe = useMemo(() => createBreakpointSubscribe(query), [query]);
-  const getSnapshot = useMemo(() => createBreakpointGetSnapshot(query), [query]);
-  return useSyncExternalStore(subscribe, getSnapshot, breakpointGetServerSnapshot);
-}
-
-// ============================================================================
 // Cookie helpers
 // ============================================================================
 
@@ -287,7 +256,7 @@ export const SidebarProvider = forwardRef<HTMLDivElement, SidebarProviderProps>(
     const [uncontrolledOpen, setUncontrolledOpen] = useState(defaultOpen);
     const open = isControlled ? controlledOpen : uncontrolledOpen;
 
-    const isMobile = useIsMobile(breakpoint);
+    const isMobile = useMatchMedia(`(max-width: ${breakpoint - 1}px)`);
 
     const generatedId = useId();
     const sidebarId = `sidebar-${generatedId}`;
