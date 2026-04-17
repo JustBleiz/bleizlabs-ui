@@ -30,10 +30,12 @@ import styles from './InputOTP.module.scss';
  * InputOTP — one-time password / verification code entry (Phase 10 CI18).
  *
  * @layer   complex-interactive
- * @tokens  --color-surface, --color-surface-raised, --color-border,
- *          --color-brand, --color-text-primary, --color-text-muted,
- *          --color-error, --focus-ring, --radius-md, --duration-fast,
- *          --easing-default, --space-2, --space-3
+ * @tokens  --color-surface, --color-surface-raised, --color-surface-muted,
+ *          --color-border, --color-brand, --color-text-primary, --color-text-muted,
+ *          --color-error, --focus-ring (via mx.focus-ring mixin),
+ *          --focus-ring-error (via mx.focus-ring-error mixin), --radius-md,
+ *          --duration-fast, --easing-default, --font-secondary, --font-size-lg,
+ *          --space-{1,2,3}
  * @deps    cn, mergeRefs
  * @a11y    Single semantic `<input>` stretched across decorative slot cells
  *          (guilhermerodz `input-otp` zero-dep reimplementation). Real input
@@ -70,8 +72,10 @@ import styles from './InputOTP.module.scss';
  *          single-input-with-decorative-slots idiom, reimplemented zero-dep
  *          per D5/D25.
  * @tested  tsc + eslint + next build (Playwright/NVDA/axe deferred per E15 scope).
- * @regressions See `docs/_tmp/input-otp-spec.md` cases OTP-R01..OTP-R20 (20 total:
- *              15 Radix/input-otp-mapped + 5 bespoke).
+ * @regressions tests/InputOTP.{keyboard,focus,aria,regression}.spec.md —
+ *              20 regression cases OTP-R01..OTP-R20 (15 Radix/input-otp
+ *              mapped + 5 bespoke) in `docs/specs/input-otp-spec.md`
+ *              (promoted from `_tmp` in E42).
  *
  * @example
  * // Basic uncontrolled, 6-digit numeric
