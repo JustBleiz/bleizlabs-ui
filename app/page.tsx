@@ -344,6 +344,14 @@ const components: ComponentLink[] = [
     status: 'available',
   },
   {
+    href: '/components/table',
+    name: 'Table',
+    description:
+      'E138 CI23 — semantic <table> primitives (zero-dep) — Table + TableHeader + TableBody + TableFooter + TableRow + TableCell (6 compound flat exports). Variants: striped (alternate body rows), bordered (full-grid), compact (reduced padding). TableRow: hoverable + selected + disabled states with aria-selected / aria-disabled. TableCell: as="td"|"th" + align="start"|"center"|"end" + width prop. Per Table decision v2 in devlog: complex DataTable (sorting/filtering/pagination) lives per consumer project (TanStack Table v8 composed against these primitives) — library stays zero-runtime-dep. Pattern-parent for admin dashboards, invoice lines, analytics readouts.',
+    phase: 'Phase 11 — Display',
+    status: 'available',
+  },
+  {
     href: '/components/sidebar',
     name: 'Sidebar',
     description:

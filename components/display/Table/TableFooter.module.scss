@@ -1,0 +1,11 @@
+// TableFooter — muted background + semi-bold cells for totals/summary.
+
+.root {
+  background: var(--color-surface-raised);
+
+  & > tr > th,
+  & > tr > td {
+    color: var(--color-text-secondary);
+    font-weight: var(--font-weight-medium);
+  }
+}

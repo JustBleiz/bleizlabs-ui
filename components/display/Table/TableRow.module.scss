@@ -1,0 +1,39 @@
+// TableRow — interactive row states (hover / selected / disabled). Hover is
+// opt-in via the `hoverable` prop so header/footer rows stay static by
+// default; consumers set hoverable on body rows that have click handlers
+// or selection targets.
+
+.root {
+  transition:
+    background-color var(--duration-fast) var(--easing-default),
+    color var(--duration-fast) var(--easing-default);
+}
+
+.hoverable {
+  &:hover > td,
+  &:hover > th {
+    background: var(--color-surface-hover);
+    cursor: pointer;
+  }
+}
+
+// Selected — brand tint on every cell in the row. `!important`-free
+// specificity wins over striped:nth-child bg via the .selected class
+// being on .root while striped targets :nth-child — equal specificity
+// but selected rules appear later in source and cascade wins.
+.selected > td,
+.selected > th {
+  background: var(--color-brand-subtle);
+  color: var(--color-brand-strong);
+}
+
+.disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+
+  &:hover > td,
+  &:hover > th {
+    background: inherit;
+    cursor: not-allowed;
+  }
+}

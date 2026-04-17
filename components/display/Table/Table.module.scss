@@ -1,0 +1,71 @@
+// Table primitives — zero-dep semantic <table> atoms (Phase 11 CI23).
+// Styling only — no sorting/filtering/pagination logic. Consumer projects
+// build DataTable wrappers on top of these primitives + TanStack Table v8
+// (or similar headless engine). Per Table decision v2 in devlog: library
+// stays zero-runtime-dep, Table complex features live per-project.
+//
+// Cross-component styling lives here (child selectors) so TableRow +
+// TableCell remain thin — variant behavior is driven by the root .root
+// class having .striped / .bordered / .compact modifiers.
+
+.root {
+  width: 100%;
+  border-collapse: collapse;
+  border-spacing: 0;
+  font-family: var(--font-secondary);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-primary);
+  background: var(--color-surface);
+  // Rounded outer shell works with border-collapse via overflow clip on
+  // a wrapping container or via per-cell radii. Consumers that want a
+  // card-framed table wrap <Table> in a <Card padding={0}> — the cleanest
+  // composition pattern and keeps Table primitive-minimal.
+}
+
+// ============================================================================
+// STRIPED — alternate row background on TableBody > TableRow:nth-child(even)
+// ============================================================================
+// Targets even rows inside TableBody specifically so TableHeader + TableFooter
+// never get striped. Uses --color-surface-raised which is the theme-aware
+// raised surface (E132 fix) — so striping flips correctly between themes.
+
+.striped :global(tbody) > :global(tr):nth-child(even) > :global(td),
+.striped :global(tbody) > :global(tr):nth-child(even) > :global(th) {
+  background: var(--color-surface-raised);
+}
+
+// ============================================================================
+// BORDERED — full-grid borders between cells + rows
+// ============================================================================
+
+.bordered :global(td),
+.bordered :global(th) {
+  border: 1px solid var(--color-border-subtle);
+}
+
+// Non-bordered fallback — only horizontal row separators
+.root :global(tbody) > :global(tr):not(:last-child) > :global(td),
+.root :global(tbody) > :global(tr):not(:last-child) > :global(th) {
+  border-bottom: 1px solid var(--color-border-subtle);
+}
+
+// TableHeader always carries a bottom border to separate from body
+.root :global(thead) > :global(tr):last-child > :global(td),
+.root :global(thead) > :global(tr):last-child > :global(th) {
+  border-bottom: 1px solid var(--color-border);
+}
+
+// TableFooter always carries a top border
+.root :global(tfoot) > :global(tr):first-child > :global(td),
+.root :global(tfoot) > :global(tr):first-child > :global(th) {
+  border-top: 1px solid var(--color-border);
+}
+
+// ============================================================================
+// COMPACT — reduced cell padding for dense data displays
+// ============================================================================
+
+.compact :global(td),
+.compact :global(th) {
+  padding: var(--space-1) var(--space-2);
+}

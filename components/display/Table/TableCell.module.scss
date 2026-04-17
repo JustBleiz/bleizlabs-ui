@@ -1,0 +1,31 @@
+// TableCell — padding + alignment + vertical alignment. Used by both
+// `<td>` (default) and `<th>` (when `as="th"`).
+
+.root {
+  padding: var(--space-3) var(--space-4);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-normal);
+  color: inherit;
+  // Align content to the top of the cell so multi-line content in one
+  // row doesn't vertically center-float away from numeric cells on the
+  // same row. Consumers needing center-vertical override via className.
+  vertical-align: top;
+}
+
+// ============================================================================
+// HORIZONTAL ALIGNMENT
+// ============================================================================
+// `start` / `end` (RTL-aware) are preferred over `left` / `right`. The
+// TableCell prop normalizes to these so consumers don't think about direction.
+
+.alignStart {
+  text-align: start;
+}
+
+.alignCenter {
+  text-align: center;
+}
+
+.alignEnd {
+  text-align: end;
+}
