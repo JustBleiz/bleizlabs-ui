@@ -19,11 +19,14 @@
  * @layer complex-interactive (Phase 10 CI15 — FIRST notification sub-family)
  * @tokens --color-surface-raised, --color-surface-hover, --color-text-primary,
  *   --color-text-muted, --color-border-subtle, --color-border-strong,
- *   --color-brand, --color-success, --color-error, --color-warning,
- *   --color-info, --shadow-lg, --radius-md, --radius-sm, --z-toast (new —
- *   consumer-overridable, defaults to var(--z-popover) + 1), --duration-fast,
- *   --duration-normal, --easing-default, --focus-ring, --space-2..5,
- *   --font-size-xs/sm, --font-weight-medium/semibold
+ *   --color-brand, --color-success, --color-success-subtle, --color-error,
+ *   --color-error-subtle, --color-warning, --color-warning-subtle,
+ *   --color-info, --color-info-subtle, --shadow-lg, --radius-md, --radius-sm,
+ *   --z-toast (consumer-overridable, defaults to var(--z-popover) + 1),
+ *   --duration-fast, --duration-normal, --easing-default, --focus-ring,
+ *   --space-{1,2,3,4,6}, --font-sans, --font-size-xs, --font-size-sm,
+ *   --font-weight-medium, --font-weight-semibold, --toast-accent (internal
+ *   per-variant accent token composed to --color-{success,error,warning,info})
  * @deps zero runtime deps per D5/D25. `useSyncExternalStore` (React 18+),
  *   module-scoped queue + `setTimeout` (see `toastStore.ts`), `FloatingPortal`
  *   (E23). Own inline SVG icons for each variant. No Radix Toast, no Sonner,
@@ -53,10 +56,12 @@
  * @tested tsc --noEmit ✓ | eslint + jsx-a11y ✓ | next build ✓ — DEFERRED:
  *   Playwright execution (per E15 scope decision), axe-core runtime sweep,
  *   manual NVDA sweep.
- * @regressions TST-R01..R22+ edge cases documented in
- *   `docs/_tmp/toast-spec.md` — dedup by id, promise transitions, auto-
- *   dismiss, pause on hover/focus/visibilitychange, Infinity duration,
- *   ARIA role per variant, no focus-steal, reduced-motion, RTL, SSR safe.
+ * @regressions tests/Toast.{keyboard,focus,aria,regression}.spec.md —
+ *   TST-R01..R22+ edge cases documented in `docs/specs/toast-spec.md`
+ *   (promoted from `docs/_tmp/` in E42). Covers dedup by id, promise
+ *   transitions, auto-dismiss, pause on hover/focus/visibilitychange,
+ *   Infinity duration, ARIA role per variant, no focus-steal, reduced-
+ *   motion, RTL, SSR safe.
  * @example
  *   // In root layout:
  *   <body>
