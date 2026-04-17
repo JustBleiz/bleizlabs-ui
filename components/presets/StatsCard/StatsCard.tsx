@@ -10,6 +10,46 @@ import { Text } from '../../typography/Text';
 import { cn } from '../../utils/cn';
 import styles from './StatsCard.module.scss';
 
+/**
+ * StatsCard — metric display preset composing Card + slots (Phase 8, E13).
+ *
+ * Three layouts via discriminated union:
+ * - `stacked` (default): label → value → change stacked vertically
+ * - `inline`: label | value on one row, change below
+ * - `icon-lead`: IconBox on the left, (label + value + change) stacked on the right
+ *
+ * `icon-lead` requires an `icon` prop (TS-enforced via discriminated union);
+ * other layouts forbid `icon` + `iconVariant` (`never` type).
+ *
+ * @layer   preset
+ * @tokens  --space-1 (.iconLeadContent gap: label ↔ value ↔ change in icon-lead
+ *          right column), --space-2 (.body column gap + .change inner gap),
+ *          --space-3 (.inlineRow gap between label + value),
+ *          --space-4 (.iconLead gap between IconBox + content cluster);
+ *          Card atom handles outer padding/radius/border tokens
+ * @deps    Card (padding, radius, CardProps type), CardBody,
+ *          IconBox (icon, variant, size="lg", IconBoxVariant type),
+ *          Heading (level={3}, size="2xl" — largest of all presets),
+ *          Text (variant="caption", color="muted"), cn,
+ *          React: `forwardRef`, `ReactNode`
+ * @a11y    Semantic Card `<div>` root. Value auto-wraps as `<h3>` (via Heading
+ *          level={3}) ONLY when caller passes scalar strings/numbers —
+ *          wrapValue preserves ReactNode pass-through (e.g. `<AnimatedCounter>`
+ *          keeps its own semantics). Label always renders as Text `<p>`
+ *          (muted caption). `change` is presentational — consumer owns its
+ *          element type (typically `<Badge>` for colored delta).
+ * @notes   Discriminated union props — `layout="icon-lead"` requires `icon`
+ *          (compile-time enforced), while `layout="stacked" | "inline"` forbid
+ *          it via `icon?: never`. Internal cast to `StatsCardPropsInternal`
+ *          after destructure is a controlled widening for shared render path;
+ *          external API preserves discrimination. Largest heading size across
+ *          presets (`size="2xl"`) — intentional: metric value is the focal
+ *          element, larger type reinforces visual hierarchy in dashboard grids.
+ * @example
+ * <StatsCard label="Monthly revenue" value="$12,345" change={<Badge>+12%</Badge>} />
+ * <StatsCard layout="icon-lead" icon={<UsersIcon />} iconVariant="brand"
+ *            label="Users" value={1247} />
+ */
 export type StatsCardLayout = 'stacked' | 'inline' | 'icon-lead';
 
 interface StatsCardCommonProps
@@ -59,25 +99,6 @@ function wrapValue(value: ReactNode): ReactNode {
   return value;
 }
 
-/**
- * StatsCard — metric display preset composing Card + slots (Phase 8, E13).
- *
- * Three layouts via discriminated union:
- * - `stacked` (default): label → value → change stacked vertically
- * - `inline`: label | value on one row, change below
- * - `icon-lead`: IconBox on the left, (label + value + change) stacked on the right
- *
- * `icon-lead` requires an `icon` prop (TS-enforced); other layouts forbid it.
- *
- * @layer   preset
- * @tokens  Inherited from Card atom
- * @deps    Card, CardBody, IconBox, Heading, Text
- * @a11y    Semantic Card `<div>` with `<h3>` for scalar value, `<p>` for label/change.
- * @example
- * <StatsCard label="Monthly revenue" value="$12,345" change={<Badge>+12%</Badge>} />
- * <StatsCard layout="icon-lead" icon={<UsersIcon />} iconVariant="brand"
- *            label="Users" value={1247} />
- */
 export const StatsCard = forwardRef<HTMLDivElement, StatsCardProps>(
   function StatsCard(props, ref) {
     const {
