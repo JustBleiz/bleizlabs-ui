@@ -6,9 +6,9 @@
  * @layer complex-interactive (Phase 10 CI7)
  * @tokens --color-surface-raised, --color-surface-hover, --color-text-primary,
  *   --color-text-muted, --color-border-subtle, --shadow-lg, --radius-md,
- *   --radius-lg, --z-popover (shares stacking with Popover since menus are
- *   modeless floating panels), --duration-fast, --easing-default, --space-1..5,
- *   --font-size-sm, --font-size-xs
+ *   --radius-sm, --z-popover (shares stacking with Popover since menus are
+ *   modeless floating panels), --duration-fast, --easing-default,
+ *   --space-{1,2,3,8}, --font-size-sm, --font-size-xs, --font-weight-semibold
  * @deps zero runtime deps. Positioning via `utils/position.ts` + `utils/useFloating.ts`
  *   (E19/E20 primitive). Dismiss + portal + focus + context via shared
  *   `utils/floating/` composable primitives (E23 refactor). Own Slot primitive
