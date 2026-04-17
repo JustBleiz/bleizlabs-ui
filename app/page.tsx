@@ -335,6 +335,14 @@ const components: ComponentLink[] = [
     phase: 'Phase 10 — Complex Interactive',
     status: 'available',
   },
+  {
+    href: '/components/command',
+    name: 'Command',
+    description:
+      'E37 CI19 — Cmd+K command palette. SECOND composition Epic after DatePicker E31. 9 compound flat exports (Command + CommandInput + CommandList + CommandEmpty + CommandGroup + CommandItem + CommandSeparator + CommandShortcut + CommandLoading) + useCommandShortcut hook. Combines APG /combobox/ editable (text input + filtered listbox) + /dialog-modal/ (modal shell with focus trap, Escape close, backdrop dismiss, scroll lock, inert siblings). Reuses Dialog E15 useFocusTrap + FloatingPortal E23 — does NOT compose Combobox E28 code (E28 carries floating machinery Command doesn\'t need; reimplements filter + listbox with shared PATTERNS: IME guard, deriveTextFromChildren, aria-activedescendant, first-visible-enabled auto-highlight). Item registry via STATE Map (new Map on mutation) per React 19 react-hooks/refs rule. Render-time prop-sync highlight reset (E34 Carousel precedent) when open/search/visible items change. Filter modes: "auto" substring default, false (consumer-owned items), or custom (items, search) => visibleIds[] function. Group heading auto-hides when all children filter out (forceMount prop opts out). CommandShortcut = decorative inline kbd pill (aria-hidden). commitHighlighted dispatches synthetic "cmd-select" CustomEvent on item element; item listens via addEventListener for controller-style commit. List key handler registered via setState callback (not context-reachable ref slot per React 19 immutability). useCommandShortcut hook optional — binds Cmd+K/Ctrl+K globally to toggle open state (consumer-owned per D8 separation of concerns). Keyboard: type filters live, ArrowDown/Up navigates with wraparound + skip disabled, Home/End first/last, PageDown/Up ±10, Enter commits highlighted, Escape closes + restore focus, Tab cycles focus trap, backdrop click dismisses. WCAG 2.1 SC 1.1.1 DEV-mode warn if missing aria-label + aria-labelledby. Pattern-parent for SearchBar (non-modal combobox in header) + Spotlight (floating search) + Admin Center (nested pages).',
+    phase: 'Phase 10 — Complex Interactive',
+    status: 'available',
+  },
 ];
 
 export default function HomePage() {
