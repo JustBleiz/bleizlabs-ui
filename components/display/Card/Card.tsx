@@ -16,7 +16,9 @@ import styles from './Card.module.scss';
  *          --shadow-card, --shadow-lg, --card-bg-glass, --card-blur,
  *          --space-{0..20}, --radius-{sm..2xl}, --color-brand,
  *          --focus-ring, --duration-fast, --easing-default
- * @deps    Slot, cn, SpaceIndex
+ * @deps    Slot (own primitive, asChild boundary), cn, SpaceIndex type,
+ *          React: `forwardRef`, type imports `CSSProperties`,
+ *          `HTMLAttributes<HTMLDivElement>`
  * @a11y    Renders `<div>` by default — non-semantic surface. Use `asChild`
  *          to project onto `<article>`, `<section>`, or `<a>`. When
  *          `hoverable=true`, the card gains pointer + focus-visible styling

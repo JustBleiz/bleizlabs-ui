@@ -13,7 +13,8 @@ import styles from './Separator.module.scss';
  * @layer   atom (display)
  * @tokens  --color-border-subtle, --color-border, --color-brand,
  *          --space-{0..20}
- * @deps    Slot, cn
+ * @deps    Slot (own primitive, asChild boundary), cn, React: `forwardRef`,
+ *          type imports `CSSProperties`, `HTMLAttributes<HTMLElement>`
  * @a11y    Renders `<hr>` by default for horizontal, role-presentation
  *          `<div>` for vertical (HR has no vertical mode in CSS). When
  *          `decorative` (default), the separator is purely visual — it

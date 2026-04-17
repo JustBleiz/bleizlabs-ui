@@ -12,8 +12,12 @@ import styles from './AspectRatio.module.scss';
  * AspectRatio — media container with fixed aspect ratio (Phase 3 D8, Tier B).
  *
  * @layer   atom (display)
- * @tokens  none — pure layout primitive
- * @deps    Slot, cn
+ * @tokens  none — pure layout primitive. Component-local `--aspect-ratio`
+ *          carries the tsx-computed numeric ratio into .root's native CSS
+ *          `aspect-ratio` property.
+ * @deps    Slot (own primitive, asChild boundary), cn, React: `forwardRef`,
+ *          type imports `CSSProperties`, `HTMLAttributes<HTMLDivElement>`,
+ *          `ReactNode`
  * @a11y    Renders `<div>` by default. Pure layout primitive — no role.
  *          The contained image / video / iframe owns its own a11y
  *          (alt, title, aria-label).

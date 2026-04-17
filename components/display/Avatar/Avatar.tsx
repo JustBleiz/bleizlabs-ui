@@ -14,7 +14,8 @@ import styles from './Avatar.module.scss';
  * @tokens  --color-surface-raised, --color-border-subtle,
  *          --color-text-secondary, --color-{success,warning,error,brand},
  *          --radius-{lg,full}, --font-weight-semibold
- * @deps    Slot, cn
+ * @deps    Slot (own primitive, asChild boundary), cn, React: `forwardRef`,
+ *          type imports `CSSProperties`, `HTMLAttributes<HTMLSpanElement>`
  * @a11y    Renders `<span>` (inline) by default. The image (when present)
  *          carries the `alt` attribute; the fallback initials are
  *          decorated with `aria-hidden` because the visible text duplicates

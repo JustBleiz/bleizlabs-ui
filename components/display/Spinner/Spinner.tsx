@@ -8,7 +8,8 @@ import styles from './Spinner.module.scss';
  * @layer   atom (display)
  * @tokens  --color-brand, --color-text-muted, --duration-slow,
  *          --easing-default, spin keyframe
- * @deps    cn
+ * @deps    cn, React: `forwardRef`, type import
+ *          `HTMLAttributes<HTMLSpanElement>`
  * @a11y    `role="status"` + visually hidden text label so screen readers
  *          can announce loading state. Pass a custom `label` for context
  *          ("Saving changes", "Loading results", …). Reduced-motion users

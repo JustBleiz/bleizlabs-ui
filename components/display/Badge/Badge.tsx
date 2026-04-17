@@ -15,7 +15,8 @@ import styles from './Badge.module.scss';
  *          --color-border-subtle, --color-text-{primary,secondary},
  *          --space-{1,2}, --font-size-xs, --font-weight-medium,
  *          --letter-spacing-wider, --radius-{sm,full,badge}
- * @deps    Slot, cn
+ * @deps    Slot (own primitive, asChild boundary), cn, React: `forwardRef`,
+ *          type imports `HTMLAttributes<HTMLSpanElement>`, `ReactNode`
  * @a11y    Renders `<span>` by default — inline neutral element.
  *          Use `asChild` to project onto `<time dateTime="...">` for
  *          semantic timestamps. Color is decorative only — meaning

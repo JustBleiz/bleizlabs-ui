@@ -11,11 +11,13 @@ import styles from './IconBox.module.scss';
  * IconBox — square icon container with bg + color variants (Phase 3 D4).
  *
  * @layer   atom (display)
- * @tokens  --color-{brand,error,info}-{subtle,strong},
- *          --color-surface, --color-border-subtle,
- *          --color-text-{primary,secondary,muted},
- *          --radius-md, --space-{2,3,4}
- * @deps    Slot, cn
+ * @tokens  --color-{brand,success,error}-{subtle,strong} (per variant map —
+ *          note: IconBoxVariant is `default|brand|success|error|plain`, no info);
+ *          --color-surface, --color-border-subtle;
+ *          --color-text-{primary,secondary,muted};
+ *          --radius-md, --space-{2,3,4} (size variants sm/md/lg)
+ * @deps    Slot (own primitive, asChild boundary), cn, React: `forwardRef`,
+ *          type imports `HTMLAttributes<HTMLDivElement>`, `ReactNode`
  * @a11y    Renders `<div>` by default. Icons are decorative — caller
  *          owns aria-label on the icon itself if it carries meaning.
  *          Use `asChild` to project onto a `<button>` if interactive.

@@ -13,7 +13,8 @@ import styles from './Skeleton.module.scss';
  * @tokens  --color-surface-raised, --color-border-subtle,
  *          --space-2, --radius-{sm,full}, --duration-slow,
  *          shimmer + pulse keyframes
- * @deps    cn
+ * @deps    cn, React: `forwardRef`, type imports `CSSProperties`,
+ *          `HTMLAttributes<HTMLDivElement>`
  * @a11y    `role="status"` + `aria-busy="true"` so screen readers announce
  *          the loading state. Provide a hidden text label via `label` prop
  *          (defaults to "Loading"). Reduced-motion users get a static
