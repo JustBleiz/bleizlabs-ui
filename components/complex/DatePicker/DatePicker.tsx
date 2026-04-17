@@ -10,8 +10,8 @@
  *   --color-surface-raised, --color-surface-hover, --color-text-primary,
  *   --color-text-muted, --color-border-subtle, --color-brand,
  *   --shadow-lg, --radius-input, --radius-md, --radius-sm, --z-popover,
- *   --duration-fast, --easing-default, --focus-ring, --space-1..5,
- *   --font-size-xs, --font-size-sm, --font-weight-medium/semibold
+ *   --duration-fast, --easing-default, --focus-ring (via mx.focus-ring),
+ *   --space-{1,2,3}, --font-sans, --font-size-sm, --font-weight-medium
  * @deps zero runtime deps per D5/D25. Native `Date` + `Intl.DateTimeFormat`
  *   only — NO date-fns/dayjs/luxon/moment. Reuses E30 `utils/date.ts`
  *   (`parseIsoDateString`, `toIsoDateString`, `isDateInRange`, `isSameDay`,
@@ -85,8 +85,9 @@
  * @tested tsc --noEmit ✓ | eslint + jsx-a11y ✓ | next build ✓ —
  *   DEFERRED: Playwright execution (per E15 scope decision), axe-core
  *   runtime sweep, manual NVDA sweep.
- * @regressions DP-R01..R22+ edge cases documented in
- *   `docs/_tmp/datepicker-spec.md` — ISO parse always, invalid date
+ * @regressions tests/DatePicker.{keyboard,focus,aria,regression}.spec.md —
+ *   22+ regression cases DP-R01..R22 in `docs/specs/datepicker-spec.md`
+ *   (promoted from `_tmp` in E42) — ISO parse always, invalid date
  *   reject, min/max clamp BOTH input + Calendar, disabled predicate
  *   blocks typed + Calendar, Alt+ArrowDown opens, Escape closes +
  *   keeps focus, click Calendar day closes + syncs input, blur commit
