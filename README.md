@@ -72,9 +72,9 @@ For a per-component props reference, see [`COMPONENT_REGISTRY.md`](../COMPONENT_
 - npm, yarn, or pnpm
 - A React 19 + Next.js 16 host project (or any React 19 bundler with SCSS Modules)
 
-### Installation (current — copy-to-project)
+### Installation — today (copy-to-project)
 
-While the library is pre-1.0 and stabilising against real consumer projects, installation is copy-based:
+The library is currently pre-1.0 and consumed by copying the source into a host project. This works, but does not scale past a few consumers because bug fixes do not propagate automatically. A private npm package is the next milestone — see [Distribution](#distribution) below.
 
 ```bash
 # In your consumer project root
@@ -101,13 +101,16 @@ Then configure your host project:
 @use './styles' as *;
 ```
 
-### Installation (upcoming — private npm package)
+Use the [Customisation](#customisation) section next to reskin the library for your project.
 
-In the next release, the library will publish to GitHub Packages as `@bleizlabs/ui`:
+### Installation — next release (private npm package)
+
+The next release publishes to GitHub Packages as `@bleizlabs/ui`. Once shipped, this becomes the recommended path for internal BleizLabs projects — installed once, updated with `npm update` across every consumer.
 
 ```bash
-# .npmrc
+# .npmrc  (one-time setup per consumer project)
 @bleizlabs:registry=https://npm.pkg.github.com
+//npm.pkg.github.com/:_authToken=${GITHUB_TOKEN}
 
 # install
 npm install @bleizlabs/ui
@@ -118,7 +121,7 @@ import { Button, Card, CardHeader, CardBody } from '@bleizlabs/ui';
 import '@bleizlabs/ui/styles';
 ```
 
-This preserves full styling customisation (all tokens are CSS custom properties that consumers override) while enabling `npm update @bleizlabs/ui` to propagate bug fixes and new components across every project at once. See [Distribution](#distribution) for the full strategy.
+Full styling customisation is preserved because tokens are CSS custom properties — see [Customisation](#customisation).
 
 ---
 
@@ -140,48 +143,98 @@ The showcase includes a light/dark theme toggle — every component is dual-them
 
 ## Customisation
 
-### The seed system
+Every component reads from CSS custom properties, and every CSS custom property is derived from a small set of seed values. This means you have two tiers of customisation — a quick CSS-variable override for per-project tweaks, and a deeper seed-level reskin for full design-system reshaping. Both work regardless of whether you installed the library by copying the source or via npm.
 
-Every token in the library is derived from a small set of seed values. Change a seed, and the generator cascades the change through every color scale, shadow, glow, hover state, and semantic alias.
+### Option A — quick reskin (works for copy and npm installs)
 
-```scss
-// styles/_project-settings.scss — this is where you reskin
-$seed-brand:       #0ea5e9;   // anchor for brand-50 … brand-900 scale
-$seed-accent:      #f97316;   // anchor for accent scale
-$seed-radius:      8px;       // base radius; md/lg/xl multiply from here
-$seed-space-unit:  4px;       // spacing scale unit (index × unit = px)
-$seed-font-primary: 'Inter';
-$seed-font-secondary: 'JetBrains Mono';
-```
-
-### CSS custom property overrides
-
-For finer control without touching SCSS, override semantic tokens in your host app's global stylesheet:
+For most projects, overriding a handful of CSS custom properties is enough. Add a global stylesheet to your app and set the values you want to change:
 
 ```scss
+// app/globals.scss (Next.js) or src/styles/overrides.scss
 :root {
-  --color-brand:   #00E0B8;
-  --radius-md:     12px;
-  --font-primary:  'YourFont', system-ui, sans-serif;
+  /* brand identity */
+  --color-brand:        #00E0B8;
+  --color-accent:       #7C3AED;
+
+  /* shape */
+  --radius-md:          12px;
+  --radius-lg:          20px;
+
+  /* typography */
+  --font-primary:       'YourFont', system-ui, sans-serif;
+  --font-secondary:     'JetBrainsMono', monospace;
 }
 
+/* dark theme overrides — applied when <html data-theme='dark'> is set */
 [data-theme='dark'] {
-  --color-surface: #0a0a0a;
-  --color-text-primary: #fafafa;
+  --color-surface:        #0a0a0a;
+  --color-surface-raised: #141414;
+  --color-text-primary:   #fafafa;
 }
 ```
 
-All 81 components read from semantic CSS variables — no component needs to be patched.
+All 81 components pick up the change automatically — no component needs to be patched, nothing needs to be rebuilt.
 
-### Per-project variants
+**Common tokens you can override:**
 
-If a pattern recurs in a consumer project but isn't in the library, compose locally first:
+| Token | Meaning |
+|---|---|
+| `--color-brand` | Primary brand color |
+| `--color-accent` | Secondary accent |
+| `--color-surface` / `--color-surface-raised` | Background layers |
+| `--color-text-primary` / `--color-text-secondary` / `--color-text-muted` | Text hierarchy |
+| `--color-success` / `--color-warning` / `--color-error` / `--color-info` | Semantic statuses |
+| `--radius-sm` / `--radius-md` / `--radius-lg` / `--radius-xl` | Corner radii |
+| `--space-1` … `--space-20` | 4-pixel spacing scale |
+| `--font-primary` / `--font-secondary` / `--font-mono` | Font families |
+| `--shadow-sm` / `--shadow-md` / `--shadow-lg` | Elevation |
+
+The full token reference lives in [`styles/_semantics.scss`](styles/_semantics.scss).
+
+### Option B — deep reskin via seeds (copy-to-project installs)
+
+When you copy the library into your project, you gain access to the seed generator. Change the seeds once and every color scale, shadow, hover state, and semantic alias cascades from them:
+
+```scss
+// styles/_project-settings.scss — edit these, rebuild, everything follows
+$seed-brand:          #0ea5e9;   // anchor for --color-brand-50 … --color-brand-900
+$seed-accent:         #f97316;   // anchor for accent scale
+$seed-radius:         8px;       // base radius; md/lg/xl multiply from here
+$seed-space-unit:     4px;       // spacing unit (index × unit = px)
+$seed-font-primary:   'Inter';
+$seed-font-secondary: 'JetBrainsMono';
+```
+
+This is the most powerful option — you are redefining the whole design-system scale, not just individual tokens. Use it when you need a full rebrand rather than a tweak.
+
+### Option C — custom variants per project
+
+If your project needs a visual pattern the library does not ship (say, a gradient button for a marketing surface), do not fork the library — compose locally:
 
 ```tsx
-<Button className={styles.ghostGlow}>...</Button>
+// components/ui/GradientButton.module.scss
+.gradient {
+  background: linear-gradient(135deg, #00E0B8, #7C3AED);
+  color: #fff;
+}
 ```
 
-If the pattern repeats across two or more projects, it becomes a candidate for upstream promotion as a new variant.
+```tsx
+import { Button } from '@bleizlabs/ui'; // or '@/components/interactive/Button'
+import styles from './GradientButton.module.scss';
+
+<Button className={styles.gradient}>Launch</Button>
+```
+
+If the same variant reappears in two or more consumer projects, it becomes a candidate for upstream promotion as a new `variant` on the base component.
+
+### Quick checklist — after install
+
+1. Add a global stylesheet and override the CSS variables you care about (Option A — covers 90% of cases).
+2. Set `<html data-theme='dark'>` at runtime if you want dark mode; the library ships both themes out of the box.
+3. For deeper rebrands on a copy-to-project install, edit `styles/_project-settings.scss` (Option B).
+4. For one-off visual patterns, compose locally via `className` or wrap the component (Option C).
+5. Inspect live in the playground first — run `npm run dev` inside the library repo and tweak `:root` in the browser DevTools to preview before committing.
 
 ---
 
@@ -266,4 +319,4 @@ The following live in the project root (`internal/bleizlabs-ui/`) and are intend
 
 ---
 
-<sub>Built by [BleizLabs](https://bleizlabs.com). Feedback and issues welcome.</sub>
+<sub>Built by [BleizLabs](https://bleizlabs.eu). Feedback and issues welcome.</sub>
