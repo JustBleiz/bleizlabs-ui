@@ -137,6 +137,7 @@ function BasicDemo() {
 // ============================================================================
 
 function GroupsDemo() {
+  const [active, setActive] = useState<string>('p1');
   return (
     <section className={styles.section}>
       <header className={styles.sectionHeader}>
@@ -156,19 +157,47 @@ function GroupsDemo() {
             </SidebarHeader>
             <SidebarContent aria-label="Project navigation">
               <SidebarGroup label="Recent">
-                <SidebarItem href="#p1" isActive onClick={(e) => e.preventDefault()}>
+                <SidebarItem
+                  href="#p1"
+                  isActive={active === 'p1'}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setActive('p1');
+                  }}
+                >
                   Project Alpha
                 </SidebarItem>
-                <SidebarItem href="#p2" onClick={(e) => e.preventDefault()}>
+                <SidebarItem
+                  href="#p2"
+                  isActive={active === 'p2'}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setActive('p2');
+                  }}
+                >
                   Project Beta
                 </SidebarItem>
-                <SidebarItem href="#p3" onClick={(e) => e.preventDefault()}>
+                <SidebarItem
+                  href="#p3"
+                  isActive={active === 'p3'}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setActive('p3');
+                  }}
+                >
                   Project Gamma
                 </SidebarItem>
               </SidebarGroup>
               <SidebarSeparator />
               <SidebarGroup label="Archived">
-                <SidebarItem href="#a1" onClick={(e) => e.preventDefault()}>
+                <SidebarItem
+                  href="#a1"
+                  isActive={active === 'a1'}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setActive('a1');
+                  }}
+                >
                   Legacy tool
                 </SidebarItem>
                 <SidebarItem href="#a2" disabled>
@@ -277,6 +306,7 @@ function ShortcutInner() {
 }
 
 function ShortcutDemo() {
+  const [active, setActive] = useState<string>('home');
   return (
     <section className={styles.section}>
       <header className={styles.sectionHeader}>
@@ -297,10 +327,24 @@ function ShortcutDemo() {
             </SidebarHeader>
             <SidebarContent aria-label="Hotkey navigation">
               <SidebarGroup>
-                <SidebarItem href="#home" isActive onClick={(e) => e.preventDefault()}>
+                <SidebarItem
+                  href="#home"
+                  isActive={active === 'home'}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setActive('home');
+                  }}
+                >
                   Home
                 </SidebarItem>
-                <SidebarItem href="#docs" onClick={(e) => e.preventDefault()}>
+                <SidebarItem
+                  href="#docs"
+                  isActive={active === 'docs'}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setActive('docs');
+                  }}
+                >
                   Docs
                 </SidebarItem>
               </SidebarGroup>
