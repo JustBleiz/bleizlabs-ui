@@ -41,7 +41,10 @@ jobs:
       - name: Type-check
         run: npm run typecheck
 
-      - name: Build playground (smoke test)
+      - name: Barrel completeness check
+        run: npm run check:barrel
+
+      - name: Build playground (smoke test — playground scope only; barrel exports are validated by the previous two steps)
         run: npm run build
 
       - name: Verify package version matches tag

@@ -1,8 +1,10 @@
 // index.scss
 //
 // Main entry for bleizlabs-ui style fundament.
-// Consumers:
-//   @use 'path/to/bleizlabs-ui/styles/index' as bui;
+// npm consumers:
+//   @use '@bleizlabs/ui/styles' as *;
+// copy-to-project consumers:
+//   @use './styles' as *;
 //
 // Load order matters:
 //   1. project-settings  — seed values (source of truth)

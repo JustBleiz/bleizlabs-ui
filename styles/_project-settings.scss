@@ -11,11 +11,20 @@
 // "fresh template" signal. Fork projects should swap $seed-brand with their
 // actual brand color as the first customization step.
 //
-// `!default` on every seed enables consumer override from npm installs:
-//   @use '@bleizlabs/ui/styles/project-settings' with (
-//     $seed-brand: #00E0B8,
-//     $seed-radius-scale: (md: 12, lg: 20),
-//   );
+// `!default` on every seed enables consumer override. Do NOT `@use` this
+// settings file directly from a consumer — that loads only the seeds and
+// will double-load when `styles/index.scss` then forwards them again. The
+// correct consumer patterns are:
+//
+//   npm install:
+//     @use '@bleizlabs/ui/styles' with (
+//       $seed-brand: #00E0B8,
+//       $seed-accent: #7C3AED
+//     );
+//
+//   copy-to-project install — edit this file directly:
+//     $seed-brand: #00E0B8;
+//     $seed-accent: #7C3AED;
 //
 // Architectural context: ../../docs/decisions.md (D1-D26)
 //   D3  — seed-based token generation

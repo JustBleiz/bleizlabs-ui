@@ -38,10 +38,12 @@ We shipped across a growing portfolio of products — internal tools, client del
 `Heading` · `Text`
 
 ### Display (13)
-`Card` (+ `CardHeader`, `CardBody`, `CardFooter`, `CardSection`) · `Badge` · `Separator` · `IconBox` · `Avatar` · `Skeleton` · `Spinner` · `AspectRatio` · `Table` (+ `TableHeader`, `TableBody`, `TableFooter`, `TableRow`, `TableCell`)
+`Card` · `CardHeader` · `CardBody` · `CardFooter` · `CardSection` · `Badge` · `Separator` · `IconBox` · `Avatar` · `Skeleton` · `Spinner` · `AspectRatio` · `Table`
+
+Table ships as a family — `TableHeader`, `TableBody`, `TableFooter`, `TableRow`, `TableCell` are all exported alongside `Table` but counted as one Table primitive for the total tally.
 
 ### Interactive (18)
-`Button` · `ButtonGroup` · `Input` · `Textarea` · `Label` · `Checkbox` · `RadioGroup` · `Toggle` · `ToggleGroup` · `Switch` · `Accordion` · `InputGroup` · `NumberInput` · `MaskedInput` · `PhoneInput` · `PasswordInput`
+`Button` · `ButtonGroup` · `Input` · `Textarea` · `Label` · `Checkbox` · `RadioGroup` · `RadioGroupItem` · `Toggle` · `ToggleGroup` · `Switch` · `Accordion` · `InputGroup` · `InputGroupText` · `NumberInput` · `MaskedInput` · `PhoneInput` · `PasswordInput`
 
 ### Feedback (3)
 `Empty` · `Alert` · `Progress`

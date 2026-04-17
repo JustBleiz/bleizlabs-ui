@@ -1,6 +1,57 @@
 # Changelog — bleizlabs-ui
 
-All notable releases of this component library. Follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) format. This library uses copy-to-project distribution (D5/D25) — no npm package versions. Versions below mark library maturity milestones for consumer adoption reference.
+All notable releases of this component library. Follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) format. As of `0.1.0`, the library publishes to the private `@bleizlabs/ui` scope on GitHub Packages (https://npm.pkg.github.com/) and is installable via `npm install @bleizlabs/ui`. Copy-to-project remains available as an escape hatch for client deliverables. Entries below `0.1.0` are pre-package maturity milestones that preceded the npm release.
+
+---
+
+## [0.1.1] — 2026-04-17
+
+### Added
+- `LICENSE` file (MIT) — missing from `0.1.0` tarball despite `package.json` declaring `"license": "MIT"`.
+
+### Fixed
+- `styles/_project-settings.scss` inline usage comment showed an incorrect `@use '@bleizlabs/ui/styles/project-settings' with (...)` pattern that would double-load the module when consumers also imported `@bleizlabs/ui/styles`. Replaced with the correct `@use '@bleizlabs/ui/styles' with (...)` pattern.
+- `README.md` Interactive category now lists all 18 exported components (previously missed `RadioGroupItem` and `InputGroupText`).
+- `README.md` Display category methodology note clarified — Table ships as a family but counts as one primitive for the tally, matching the Card counting convention.
+
+### Docs
+- `context.md` Status, Scope, and "Poza zakresem" sections updated to reflect npm-primary distribution and `81/81 + @bleizlabs/ui@0.1.0` current reality.
+- `ROADMAP.md` component counts bumped `80 → 81`, Phase 11 entry added, E140 listed as delivered.
+- `CHANGELOG.md` header rewritten to reflect npm distribution.
+
+## [0.1.0] — 2026-04-17
+
+### Added — first private npm release (`@bleizlabs/ui@0.1.0` on GitHub Packages)
+
+The library is now installable via `npm install @bleizlabs/ui` from the BleizLabs-scoped GitHub Packages registry. This closes Epic E140 (distribution sprint) and unblocks consumer adoption for internal BleizLabs projects.
+
+**Package:**
+- `name: @bleizlabs/ui`, `version: 0.1.0`, `publishConfig.registry: https://npm.pkg.github.com`, restricted access
+- Ship-source model: TypeScript + SCSS published as-is, consumer transpiles via Next.js `transpilePackages`. No pre-compiled build step — changes ship verbatim, SCSS seeds remain overridable.
+- `exports` map: root (`.`), `./styles` (all tokens), `./styles/project-settings` (seeds alone), `./styles/*` + `./components/*` passthrough.
+- Peer dependencies: `react >= 19`, `react-dom >= 19`. Zero runtime UI dependencies.
+- `files` whitelist: `components/`, `styles/`, `README.md`, `LICENSE` (playground excluded). 365 files, 389.8 kB packed, 1.6 MB unpacked.
+- Root `components/index.ts` barrel re-exports all 81 components + utilities (`Slot`, `cn`, `mergeRefs`) + shared types (`SpaceIndex`, `ClassValue`, `SlotProps`).
+
+**Consumer setup (documented in README):**
+1. `.npmrc` with `@bleizlabs:registry=https://npm.pkg.github.com` + personal access token with `read:packages` scope.
+2. `npm install @bleizlabs/ui`.
+3. `next.config.mjs`: `transpilePackages: ['@bleizlabs/ui']` + `sassOptions.loadPaths: [path.resolve(__dirname, 'node_modules/@bleizlabs/ui/styles')]` (second entry works around a known Next.js sass-loader + resolve-url-loader quirk that strips `./` prefixes from `@use`/`@forward` inside `node_modules`).
+4. Import styles via `@use '@bleizlabs/ui/styles'` in a global SCSS file; import components from `'@bleizlabs/ui'`.
+
+**Customisation:**
+- Option A — override CSS custom properties in a `:root` block (works for every install mode).
+- Option B — pass seed values via `@use '@bleizlabs/ui/styles' with ($seed-brand: X, $seed-accent: Y, ...)` for a deep rebrand that cascades through every generated scale. All 35 `$seed-*` variables carry `!default`.
+
+**CI:**
+- `.github/workflows/publish.yml` triggers on `v*.*.*` tag push — checks out the tag, installs deps with `npm ci`, type-checks, runs `next build` as a playground smoke test, verifies `package.json` version matches the tag, and publishes to GitHub Packages with `NODE_AUTH_TOKEN=${{ secrets.GITHUB_TOKEN }}`. Workflow dispatch supported for re-running failed publishes.
+
+**Internal refactors required to enable publish:**
+- 134 internal `@/components/...` imports rewritten to relative paths across 70 files (path aliases don't resolve in consumer projects).
+- 17 internal SCSS `@use 'mixins'`/`@forward 'project-settings'` imports rewritten to relative paths across 10 files (bare-name resolution fails inside consumer's `node_modules`).
+- 35 `$seed-*` seeds tagged with `!default` to enable consumer-side `@use with (...)` overrides.
+
+**Verified via throwaway test consumer** (`D:/tmp/bui-consumer/`) — local-tarball install + named imports + SCSS seed override + CSS variable override + Next.js 16.2 Turbopack build all green end-to-end before publish.
 
 ---
 
