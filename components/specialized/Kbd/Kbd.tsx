@@ -10,7 +10,8 @@ import styles from './Kbd.module.scss';
  *          --color-border-subtle, --color-text-{primary,secondary},
  *          --space-{1,2}, --font-mono, --font-size-{xs,sm},
  *          --font-weight-medium, --line-height-snug, --radius-sm
- * @deps    cn
+ * @deps    cn, React: `forwardRef`, type imports
+ *          `HTMLAttributes<HTMLElement>`, `ReactNode`
  * @a11y    Renders the native semantic `<kbd>` element, which assistive
  *          tech already announces as "keyboard input". No extra ARIA
  *          roles or labels are added — the native element is its own

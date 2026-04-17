@@ -10,7 +10,8 @@ import styles from './AvailabilityBar.module.scss';
  *          --color-border-subtle, --color-text-{primary,secondary,muted},
  *          --space-{1,2,3}, --font-size-xs, --font-weight-medium,
  *          --line-height-snug, --radius-sm
- * @deps    cn, React `useMemo`
+ * @deps    cn, React: `forwardRef`, `useMemo`, type import
+ *          `HTMLAttributes<HTMLDivElement>`
  * @a11y    Outer `<div>` wrapper carries `role="img"` + `aria-label` so
  *          assistive tech gets a single summary sentence (built from the
  *          passed `label` + counts of each status). Inside, the strip

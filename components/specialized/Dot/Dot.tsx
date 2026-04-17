@@ -11,7 +11,8 @@ import styles from './Dot.module.scss';
  *          --color-border-strong (default), --color-surface,
  *          --space-{1,2,3}, --radius-full, --duration-normal,
  *          pulse keyframe
- * @deps    Slot, cn
+ * @deps    Slot (own primitive, asChild boundary), cn, React: `forwardRef`,
+ *          type import `HTMLAttributes<HTMLSpanElement>`
  * @a11y    Renders `<span>` by default (inline, decorative).
  *          Color alone never conveys meaning — pair with visible text in
  *          context, or pass the `label` prop for a `.sr-only` inner span so

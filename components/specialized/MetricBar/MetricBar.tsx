@@ -18,7 +18,8 @@ import styles from './MetricBar.module.scss';
  *          --font-size-{xs,sm}, --font-weight-{medium,semibold},
  *          --line-height-snug, --radius-full, --duration-normal,
  *          --easing-default
- * @deps    cn
+ * @deps    cn, React: `forwardRef`, type imports `CSSProperties`,
+ *          `HTMLAttributes<HTMLDivElement>`
  * @a11y    `role="progressbar"` + `aria-valuenow` (used, clamped) +
  *          `aria-valuemin=0` + `aria-valuemax` (total) + `aria-valuetext`
  *          (human-readable `"42 / 100 GB"`) + `aria-label` (from `label`

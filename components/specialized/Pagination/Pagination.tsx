@@ -13,7 +13,8 @@ import styles from './Pagination.module.scss';
  *          --color-text-{primary,secondary,muted},
  *          --space-{1,2,3}, --font-size-sm, --font-weight-{medium,semibold},
  *          --radius-md, --duration-fast, --easing-default, --focus-ring
- * @deps    cn, React hooks (useMemo)
+ * @deps    cn, React: `forwardRef`, `useMemo`, type import
+ *          `HTMLAttributes<HTMLElement>`
  * @a11y    Renders `<nav aria-label>` > `<ul role="list">` > `<li>` > native
  *          `<button type="button">`. Active page button carries
  *          `aria-current="page"` (per ARIA 1.2 spec for current navigation

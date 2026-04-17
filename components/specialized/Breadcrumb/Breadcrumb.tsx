@@ -9,7 +9,8 @@ import styles from './Breadcrumb.module.scss';
  * @tokens  --color-text-{primary,secondary,muted}, --color-brand,
  *          --space-{1,2}, --font-size-sm, --line-height-snug,
  *          --radius-sm, --duration-fast, --easing-default, --focus-ring
- * @deps    cn
+ * @deps    cn, React: `forwardRef`, type imports
+ *          `HTMLAttributes<HTMLElement>`, `ReactNode`
  * @a11y    Renders `<nav aria-label>` > `<ol>` > `<li>`. Items with `href`
  *          become `<a>` for keyboard navigation; items without `href`
  *          become `<span>`. The **last item is always

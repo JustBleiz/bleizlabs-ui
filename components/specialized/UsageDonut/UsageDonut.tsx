@@ -14,7 +14,8 @@ import styles from './UsageDonut.module.scss';
  * @tokens  --color-{brand,success,warning,info,error}, --color-surface-raised,
  *          --color-border-subtle, --color-text-{primary,secondary,muted},
  *          --space-{1,2}, --font-size-xs, --font-weight-{medium,semibold}
- * @deps    cn, React `useMemo`
+ * @deps    cn, React: `forwardRef`, `useMemo`, type imports
+ *          `HTMLAttributes<HTMLDivElement>`, `ReactNode`
  * @a11y    Renders a `<div>` wrapper (so consumers can compose a `centerLabel`
  *          slot) containing a single `<svg role="img">` with an `aria-label`
  *          and a first-child `<title>` element (the traditional SVG accessor

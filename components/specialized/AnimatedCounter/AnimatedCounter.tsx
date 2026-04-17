@@ -16,8 +16,9 @@ import styles from './AnimatedCounter.module.scss';
  *
  * @layer   atom (specialized)
  * @tokens  --color-text-primary (inherited), font tokens inherited from context
- * @deps    cn, React hooks (useState, useEffect, useRef, useMemo),
- *          `Intl.NumberFormat` (native, zero deps per D25)
+ * @deps    cn, React: `forwardRef`, `useState`, `useEffect`, `useRef`,
+ *          `useMemo`, type import `HTMLAttributes<HTMLSpanElement>`;
+ *          native `Intl.NumberFormat` (zero deps per D25)
  * @a11y    Renders `<span>` with **no role** and **no `aria-live`** —
  *          rapidly-changing intermediate values would spam assistive tech.
  *          SR users hear the final static text after animation completes.
