@@ -11,6 +11,44 @@ import { Text } from '../../typography/Text';
 import { cn } from '../../utils/cn';
 import styles from './SidebarCard.module.scss';
 
+/**
+ * SidebarCard — navigation/filter container preset composing Card + slots (Phase 8, E13).
+ *
+ * Glass variant by default for sidebar-specific look. Optional uppercase `label`
+ * caption rendered above the header slot. Smaller defaults (`padding={4}` +
+ * `radius="md"`) suitable for narrower sidebar viewports. `variant` can be
+ * overridden (e.g. `"accent"`, `"flat"`) when the consumer wants a non-glass
+ * treatment — Omit excludes Card's `variant` but `SidebarCardProps` redeclares
+ * it with its own default.
+ *
+ * @layer   preset
+ * @tokens  --space-1 (.header gap: label ↔ title ↔ description stack),
+ *          --space-2 (.body gap: nav/filter items close to header),
+ *          --letter-spacing-wider (.label — matches Badge uppercase tracking);
+ *          Card glass variant handles `--card-bg-glass` / `--card-blur` outer
+ *          chrome internally
+ * @deps    Card (variant, padding, radius, CardProps + CardVariant types),
+ *          CardHeader, CardBody, Heading (level={3}, size="md"),
+ *          Text (variant="caption", color="muted", uppercase), cn,
+ *          React: `forwardRef`, `ReactNode`
+ * @a11y    Semantic Card `<div>` root. `label` is visual-only — it is NOT
+ *          exposed as an ARIA name. Consumer sets landmark semantics via
+ *          spread: `role="navigation"` for nav sidebars, `role="complementary"`
+ *          for aside-style sidebars, optional `aria-labelledby` pointing to
+ *          an id on the title node. Title + description achieve semantic
+ *          `<h3>` / `<p>` ONLY when caller passes scalar strings/numbers
+ *          (wrapTitle/wrapDescription auto-wrap); ReactNode pass-through
+ *          preserves caller semantics.
+ * @notes   `direction`, `children`, Card's `variant`, and Card's `title` are
+ *          preset-owned (TS-enforced Omit), then `variant` is re-exposed with
+ *          preset default `'glass'`. Smaller `size="md"` heading vs ActionCard
+ *          / ContentCard (`size="lg"`) — intentional for narrower sidebar
+ *          viewport where a compact heading reads better.
+ * @example
+ * <SidebarCard label="Navigation" title="Account">
+ *   <Stack>{links}</Stack>
+ * </SidebarCard>
+ */
 export interface SidebarCardProps
   extends Omit<CardProps, 'direction' | 'children' | 'variant' | 'title'> {
   /** Optional uppercase caption rendered above the header (e.g., "NAVIGATION", "FILTERS"). */
@@ -49,23 +87,6 @@ function wrapDescription(description: ReactNode): ReactNode {
   return description;
 }
 
-/**
- * SidebarCard — navigation/filter container preset composing Card + slots (Phase 8, E13).
- *
- * Glass variant by default for sidebar-specific look. Optional uppercase `label`
- * caption rendered above the header slot. Smaller defaults (`padding={4}` +
- * `radius="md"`) suitable for narrower sidebar viewports.
- *
- * @layer   preset
- * @tokens  Inherited from Card glass variant (`--card-bg-glass`, `--card-blur`)
- * @deps    Card, CardHeader, CardBody, Heading, Text
- * @a11y    Semantic Card `<div>`. Label is visual only (not aria-label); consumer sets
- *          landmark via `role="navigation"` or `role="complementary"` if needed via spread.
- * @example
- * <SidebarCard label="Navigation" title="Account">
- *   <Stack>{links}</Stack>
- * </SidebarCard>
- */
 export const SidebarCard = forwardRef<HTMLDivElement, SidebarCardProps>(
   function SidebarCard(
     {
