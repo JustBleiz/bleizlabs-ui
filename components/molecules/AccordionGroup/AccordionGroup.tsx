@@ -27,7 +27,8 @@ import styles from './AccordionGroup.module.scss';
  * @tokens  inherited via Stack atom (gap scale)
  * @deps    Accordion atom (controlled mode via `open` + `onOpenChange`),
  *          Stack atom (gap prop), `SpaceIndex` type, cn,
- *          React.Children, React.cloneElement
+ *          React: `Children`, `cloneElement`, `isValidElement`,
+ *          `forwardRef`, `useCallback`, `useState`
  * @a11y    Optional `role="region"` + `aria-label` supported via spread
  *          props when the consumer wants the group announced as a
  *          landmark. No extra ARIA is forced — each Accordion child
