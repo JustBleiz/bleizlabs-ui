@@ -1,7 +1,9 @@
 # bleizlabs-ui
 
 > A zero-dependency, fully-styled React component library with seed-based design tokens.
-> 81 components, WAI-ARIA compliant, SCSS Modules, React 19 + Next.js 16.
+> 81 components, WAI-ARIA compliant, runtime-test-verified, SCSS Modules, React 19 + Next.js 16.
+>
+> **Current version: [`@bleizlabs/ui@0.2.0`](https://github.com/BleizLabs/bleizlabs-ui/pkgs/npm/ui)** — runtime-test-verified across 84 Playwright `.spec.ts` suites + 23 NVDA sweep protocols. See [CHANGELOG.md](CHANGELOG.md) for the full v0.2.0 release notes.
 
 ---
 
@@ -24,7 +26,9 @@ We shipped across a growing portfolio of products — internal tools, client del
 - **Seed-based design tokens** — override 5–10 seed values (brand color, radius, spacing scale) and the entire library reskins consistently across light + dark themes
 - **SCSS Modules** — no Tailwind, no CSS-in-JS, no runtime style computation. Components read CSS custom properties that consumers override at the `:root` level
 - **Accessibility-first** — every interactive component maps to a documented APG pattern, with keyboard models, focus management, and screen-reader semantics verified against Radix closed-issue catalogues
-- **Copy-to-project today, installable tomorrow** — see [Distribution](#distribution) below
+- **Runtime-test-verified** — 84 Playwright `.spec.ts` suites × 4 dimensions (keyboard / focus / aria / regression), full `@axe-core/playwright` WCAG 2.1 AA sweep on 49 playground routes, **824 passing tests on every release tag via CI gate**
+- **NVDA-ready** — 23 pre-written manual sweep protocols (`.nvda.sweep.md` per component) for screen-reader validation
+- **Private npm package** — installable via `npm install @bleizlabs/ui` from GitHub Packages; copy-to-project escape hatch still available for client offboarding
 - **Built for React 19 + Next.js 16** with Turbopack, App Router, and Server Components in mind
 
 ---
@@ -309,6 +313,32 @@ If the same variant reappears in two or more consumer projects, it becomes a can
 
 ---
 
+## Testing & Quality
+
+Every release passes a three-stage quality gate via CI before `npm publish` fires:
+
+### Stage 1 — `tests/smoke.spec.ts` (49 routes)
+Full library-wide `@axe-core/playwright` WCAG 2.1 AA scan (tags `wcag2a wcag2aa wcag21a wcag21aa`) against every public playground route. Runs against a **production build** (`next build && next start`) to catch consumer-realistic issues dev mode masks. Blocks CI publish if any route reports violations.
+
+### Stage 2 — Per-component runtime suites (84 `.spec.ts`)
+Every interactive component has 4 test files covering:
+- **Keyboard** — every APG-mandated key (Enter/Space/Arrows/Home/End/Escape/Tab/typeahead)
+- **Focus** — initial landing, focus trap (where applicable), restore target, roving tabindex
+- **ARIA** — role/name/state attributes, `aria-activedescendant`, live-region timing, plus per-component `@axe-core/playwright` scan in OPEN state
+- **Regression** — Radix closed-issue catalogue mapped to bleizlabs-ui assertions (e.g., `NM-R09` typeahead wrapping, `CM-R04` second-menu-closes-first)
+
+Full suite: **824 passed / 157 skipped / 0 failed** on `v0.2.0` in ~55s across 12 parallel workers.
+
+### Stage 3 — NVDA sweep protocols (23 checklists)
+Each component ships a `<Name>.nvda.sweep.md` checklist for manual validation against NVDA 2024+ on Firefox. Covers role/name/state announcements, keyboard activation, focus management, live-region timing, and known NVDA-specific quirks. Ready for human tester execution post-release.
+
+### What this means for consumers
+- Every tagged release is **axe-clean** on 49 routes AND **regression-tested** across 84 per-component suites
+- Any new bug found in production gets codified as a regression test before the fix commits
+- Screen-reader behavior is explicitly documented per component, not assumed from APG compliance
+
+---
+
 ## Tech stack
 
 | Layer | Choice |
@@ -345,10 +375,13 @@ Client deliverables that need full code ownership copy `styles/` and `components
 
 ## Roadmap
 
-- **Now:** 81/81 components shipped, `@bleizlabs/ui@0.1.0` published to GitHub Packages, consumer adoption path unblocked.
-- **Next — consumer adoption:** First end-to-end consumption by BleizLabs website v2 and the internal admin panel. This is where real-world reskinning and edge cases get discovered.
-- **Later — post-consumer refactor:** Rule-of-three extractions — `usePointerDrag`, `useMatchMedia<T>` — land once all three consumers ship stable semantics.
-- **Future — additional primitives:** Form orchestrator, Chart primitives, Rich editor (evaluation, not commitment).
+- **Now — v0.2.0 shipped:** 81/81 components, 84 runtime test suites, 23 NVDA sweep protocols, 15 library bug fixes applied (Combobox/Select `aria-activedescendant` context lift, Select first-key listbox open, Toast list semantics, HoverCard escapeStack, + 11 more — see [CHANGELOG.md](CHANGELOG.md) v0.2.0). **Production-safe for consumer adoption.**
+- **Next — consumer rollout:** BleizLabs website v2, saas-ideator UI, leadhunter-intelligence surface, client projects. Real-world reskinning + API stress-testing → feedback loop for v0.2.1 patches and v0.3.0 component additions.
+- **Next — NVDA human execution:** 23 protocols awaiting a physical tester (~8h across 3 batches of 8 components). Any CRITICAL findings → v0.2.1 patch; otherwise **v0.2.0 gets "NVDA-qualified" label**.
+- **Later — shared NVDA protocol extraction:** `_nvda-shared/{modal-focus, menu-navigation, combobox-listbox}.md` consolidation (~400 LOC redundancy reduction across families that share APG patterns).
+- **Later — deferred contrast token decision:** `.groupHeading` (Command) + `.description` (Toast) share muted-on-raised contrast issue. Pending a shared `--color-text-muted-on-raised` token decision.
+- **Later — post-consumer refactor:** Rule-of-three extractions (`usePointerDrag`, `useMatchMedia<T>`) after 3 consumer deployments ship stable semantics.
+- **Future — v1.0.0 stabilization:** API freeze after 2-3 consumer projects validate real-world usage. Additional primitives (Form orchestrator, Chart primitives, Rich editor) as evaluation targets, not commitments.
 
 ---
 
