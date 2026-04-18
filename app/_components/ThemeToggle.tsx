@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useCallback, useSyncExternalStore } from 'react';
 import styles from './ThemeToggle.module.scss';
 
 type Theme = 'light' | 'dark';
@@ -42,44 +42,73 @@ function MoonIcon() {
   );
 }
 
+// --- External theme store (React 19 idiomatic: useSyncExternalStore) ---
+//
+// Pre-E142-L1 version used useState + useEffect to sync theme from localStorage
+// on mount — that violated React 19 `react-hooks/set-state-in-effect` rule.
+// This version subscribes to a module-scoped listener set + cross-tab storage
+// events; getSnapshot reads localStorage/data-theme lazily; getServerSnapshot
+// returns 'dark' as SSR default (matches initial render).
+
+const listeners = new Set<() => void>();
+
+function notifyListeners(): void {
+  for (const listener of listeners) listener();
+}
+
+function subscribeTheme(callback: () => void): () => void {
+  listeners.add(callback);
+  const onStorage = (event: StorageEvent) => {
+    if (event.key === STORAGE_KEY) callback();
+  };
+  if (typeof window !== 'undefined') {
+    window.addEventListener('storage', onStorage);
+  }
+  return () => {
+    listeners.delete(callback);
+    if (typeof window !== 'undefined') {
+      window.removeEventListener('storage', onStorage);
+    }
+  };
+}
+
+function getSnapshot(): Theme {
+  if (typeof window === 'undefined') return 'dark';
+  const stored = window.localStorage.getItem(STORAGE_KEY);
+  if (stored === 'light' || stored === 'dark') return stored;
+  const current = document.documentElement.getAttribute('data-theme');
+  return current === 'light' ? 'light' : 'dark';
+}
+
+function getServerSnapshot(): Theme {
+  return 'dark';
+}
+
+function persistTheme(next: Theme): void {
+  document.documentElement.setAttribute('data-theme', next);
+  try {
+    window.localStorage.setItem(STORAGE_KEY, next);
+  } catch {
+    /* private mode / quota exceeded — persistence is best-effort */
+  }
+  notifyListeners();
+}
+
 export function ThemeToggle() {
-  const [theme, setTheme] = useState<Theme>('dark');
-  const [mounted, setMounted] = useState(false);
+  const theme = useSyncExternalStore(subscribeTheme, getSnapshot, getServerSnapshot);
 
-  useEffect(() => {
-    const stored =
-      typeof window !== 'undefined'
-        ? (window.localStorage.getItem(STORAGE_KEY) as Theme | null)
-        : null;
-    if (stored === 'light' || stored === 'dark') {
-      setTheme(stored);
-    } else {
-      const current = document.documentElement.getAttribute('data-theme');
-      if (current === 'light' || current === 'dark') {
-        setTheme(current);
-      }
-    }
-    setMounted(true);
-  }, []);
+  const toggle = useCallback(() => {
+    persistTheme(theme === 'dark' ? 'light' : 'dark');
+  }, [theme]);
 
-  useEffect(() => {
-    if (!mounted) return;
-    document.documentElement.setAttribute('data-theme', theme);
-    try {
-      window.localStorage.setItem(STORAGE_KEY, theme);
-    } catch {
-      /* private mode / quota exceeded — persistence is best-effort */
-    }
-  }, [theme, mounted]);
-
-  const nextTheme = theme === 'dark' ? 'light' : 'dark';
+  const nextTheme: Theme = theme === 'dark' ? 'light' : 'dark';
   const label = `Switch to ${nextTheme} theme`;
 
   return (
     <button
       type="button"
       className={styles.toggle}
-      onClick={() => setTheme(nextTheme)}
+      onClick={toggle}
       aria-label={label}
       title={label}
       suppressHydrationWarning

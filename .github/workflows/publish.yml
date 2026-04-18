@@ -47,6 +47,12 @@ jobs:
       - name: Build playground (smoke test — playground scope only; barrel exports are validated by the previous two steps)
         run: npm run build
 
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium
+
+      - name: Run Playwright smoke suite (E142 L1 — 51 routes + axe-core gate)
+        run: npm run test:smoke
+
       - name: Verify package version matches tag
         run: |
           PKG_VERSION="v$(node -p "require('./package.json').version")"

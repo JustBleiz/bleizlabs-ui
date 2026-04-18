@@ -10,6 +10,11 @@ build/
 playground/compiled.css
 playground/compiled.css.map
 
+# Playwright (E142 L1)
+/playwright-report/
+/test-results/
+/playwright/.cache/
+
 # Next.js
 .next/
 out/
