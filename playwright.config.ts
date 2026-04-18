@@ -40,11 +40,16 @@ export default defineConfig({
       use: { ...devices['Desktop Chrome'] },
     },
   ],
+  // Smoke runs against the PRODUCTION build (`next build` + `next start`), not
+  // `next dev`. Rationale: Next.js dev emits React hydration-mismatch warnings
+  // via `pageerror` for Slot/Turbopack edge cases that never reach consumers
+  // of a published tarball. Production-built HTML matches consumer reality.
+  // Local re-runs skip the build when a server is already up on :3000.
   webServer: {
-    command: 'npm run dev',
+    command: 'npm run build && npm run start',
     url: 'http://localhost:3000',
     reuseExistingServer: !process.env.CI,
-    timeout: 120_000,
+    timeout: 180_000,
     stdout: 'ignore',
     stderr: 'pipe',
   },

@@ -29,7 +29,7 @@
 
 .back {
   @include mx.body-small;
-  color: var(--color-text-muted);
+  color: var(--color-text-secondary);
   text-decoration: none;
   width: fit-content;
 
@@ -77,7 +77,7 @@
 
 .label {
   @include mx.body-small;
-  color: var(--color-text-muted);
+  color: var(--color-text-secondary);
   font-family: var(--font-mono);
 }
 

@@ -67,10 +67,14 @@ export interface SectionProps extends HTMLAttributes<HTMLElement> {
   children?: ReactNode;
 }
 
+// E142 L2 a11y: `brand-subtle` uses the theme-aware token
+// `--color-brand-subtle` (= brand-100 in light, brand-900 in dark) so
+// text-primary always meets WCAG AA. Previously hardcoded `--color-brand-50`
+// rendered a pale teal tint in dark mode that clashed with light text.
 const BG_MAP: Record<NonNullable<SectionProps['bg']>, string> = {
   surface: 'var(--color-surface)',
   raised: 'var(--color-surface-raised)',
-  'brand-subtle': 'var(--color-brand-50)',
+  'brand-subtle': 'var(--color-brand-subtle)',
   transparent: 'transparent',
   none: 'transparent',
 };

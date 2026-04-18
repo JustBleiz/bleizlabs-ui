@@ -58,7 +58,7 @@ export default function SelectPlayground() {
               Framework
             </Text>
             <Select defaultValue="react">
-              <SelectTrigger>
+              <SelectTrigger aria-label="Select option">
                 <SelectValue placeholder="Pick a framework" />
               </SelectTrigger>
               <SelectContent>
@@ -90,7 +90,7 @@ export default function SelectPlayground() {
               Deploy target
             </Text>
             <Select defaultValue="vercel-prod">
-              <SelectTrigger>
+              <SelectTrigger aria-label="Select option">
                 <SelectValue placeholder="Pick a target" />
               </SelectTrigger>
               <SelectContent>
@@ -135,7 +135,7 @@ export default function SelectPlayground() {
               Pricing tier
             </Text>
             <Select value={controlledValue} onValueChange={setControlledValue}>
-              <SelectTrigger>
+              <SelectTrigger aria-label="Select option">
                 <SelectValue placeholder="Pick a tier" />
               </SelectTrigger>
               <SelectContent>
@@ -182,7 +182,7 @@ export default function SelectPlayground() {
               Region
             </Text>
             <Select defaultValue="eu-west-1">
-              <SelectTrigger>
+              <SelectTrigger aria-label="Select option">
                 <SelectValue placeholder="Pick a region" />
               </SelectTrigger>
               <SelectContent>
@@ -220,7 +220,7 @@ export default function SelectPlayground() {
               Country
             </Text>
             <Select defaultValue={null}>
-              <SelectTrigger>
+              <SelectTrigger aria-label="Select option">
                 <SelectValue placeholder="Pick a country" />
               </SelectTrigger>
               <SelectContent>
@@ -287,7 +287,7 @@ export default function SelectPlayground() {
                   Country
                 </Text>
                 <Select name="country" required defaultValue="pl">
-                  <SelectTrigger>
+                  <SelectTrigger aria-label="Select option">
                     <SelectValue placeholder="Pick a country" />
                   </SelectTrigger>
                   <SelectContent>
@@ -330,7 +330,7 @@ export default function SelectPlayground() {
               Plan (locked)
             </Text>
             <Select disabled defaultValue="pro">
-              <SelectTrigger>
+              <SelectTrigger aria-label="Select option">
                 <SelectValue placeholder="Pick a plan" />
               </SelectTrigger>
               <SelectContent>

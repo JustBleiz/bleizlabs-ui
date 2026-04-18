@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import '../styles/index.scss';
+import './playground.scss';
 import { ThemeToggle } from './_components/ThemeToggle';
 
 export const metadata: Metadata = {

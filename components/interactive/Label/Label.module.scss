@@ -13,8 +13,12 @@
 
 .disabled {
   cursor: not-allowed;
-  color: var(--color-text-muted);
-  opacity: 0.6;
+  // E142 L2 a11y: muted @ 0.6 opacity was ~2.6:1 on surface (AA 4.5:1 fail).
+  // text-secondary + 0.7 opacity hits ~4.5:1 — still clearly "disabled"
+  // visually but legible. WCAG 1.4.3 exempts disabled controls from contrast
+  // but axe flags strict; matching AA keeps the library honest.
+  color: var(--color-text-secondary);
+  opacity: 0.7;
 }
 
 .required {

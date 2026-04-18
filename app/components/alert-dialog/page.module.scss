@@ -34,7 +34,7 @@
 .back {
   @include mx.body-small;
   width: fit-content;
-  color: var(--color-text-muted);
+  color: var(--color-text-secondary);
   text-decoration: none;
 
   &:hover {
@@ -67,7 +67,7 @@
   gap: var(--space-3);
   font-family: var(--font-mono);
   font-size: 0.875rem;
-  color: var(--color-text-muted);
+  color: var(--color-text-secondary);
 }
 
 .main :global(code) {

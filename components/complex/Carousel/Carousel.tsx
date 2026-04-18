@@ -623,7 +623,12 @@ export const CarouselSlide = forwardRef<HTMLDivElement, CarouselSlideProps>(
         role="group"
         aria-roledescription="slide"
         aria-label={label}
-        aria-hidden={!isCurrent ? 'true' : undefined}
+        // E142 L2 a11y: `inert` on non-current slides makes them
+        // non-focusable AND hides them from the a11y tree — replaces
+        // `aria-hidden="true"`, which WCAG 4.1.2 forbids on elements
+        // containing focusable descendants (axe: aria-hidden-focus).
+        // inert is baseline across Chromium 102+, Firefox 112+, Safari 15.5+.
+        inert={!isCurrent}
         data-current={isCurrent ? 'true' : undefined}
       >
         {children}

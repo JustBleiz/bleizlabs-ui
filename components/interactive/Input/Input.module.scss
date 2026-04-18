@@ -248,7 +248,10 @@
   margin: 0;
   font-family: var(--font-secondary);
   font-size: var(--font-size-xs);
-  color: var(--color-error);
+  // E142 L2 a11y: --color-error (red-500) was ~3.7:1 on dark surface.
+  // --color-error-strong is theme-aware (red-700 light / red-300 dark)
+  // and keeps the semantic "error red" while hitting AA.
+  color: var(--color-error-strong);
   font-weight: var(--font-weight-medium);
   line-height: var(--line-height-normal);
 }

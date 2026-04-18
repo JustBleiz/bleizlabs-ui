@@ -25,7 +25,7 @@
 .back {
   @include mx.body-small;
   width: fit-content;
-  color: var(--color-text-muted);
+  color: var(--color-text-secondary);
   text-decoration: none;
 
   &:hover {

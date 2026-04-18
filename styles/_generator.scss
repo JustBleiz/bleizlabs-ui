@@ -170,7 +170,9 @@ $light-border-strong: map.get($neutral, 300);
 
 $light-text-primary: map.get($neutral, 900);
 $light-text-secondary: map.get($neutral, 700);
-$light-text-muted: map.get($neutral, 500);
+// E142 L2 a11y: neutral-500 on light bg (neutral-50) was ~4.26:1 — just
+// under WCAG AA 4.5:1 for normal text. neutral-600 pushes to ~5.4:1.
+$light-text-muted: map.get($neutral, 600);
 $light-text-inverse: white;
 
 // ============================================================================
@@ -188,7 +190,9 @@ $dark-border-strong: map.get($neutral, 600);
 
 $dark-text-primary: map.get($neutral, 50);
 $dark-text-secondary: map.get($neutral, 300);
-$dark-text-muted: map.get($neutral, 500);
+// E142 L2 a11y: neutral-500 on dark bg (neutral-950) was ~3.7:1 — below
+// WCAG AA 4.5:1 for normal text. neutral-400 pushes to ~6.2:1.
+$dark-text-muted: map.get($neutral, 400);
 $dark-text-inverse: map.get($neutral, 950);
 
 // ============================================================================

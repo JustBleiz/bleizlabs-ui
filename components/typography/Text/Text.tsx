@@ -73,11 +73,16 @@ const VARIANT_CLASS: Record<TextVariant, string> = {
   caption: styles.caption!,
 };
 
+// E142 L2 a11y: `brand` previously pinned to `--color-brand-500`, the raw
+// seed. On mid-tone seeds (e.g. teal-500) the 500 step failed AA against
+// surface-raised / card bgs (~3.9:1). `--color-brand-strong` is the
+// theme-aware strong token — brand-700 on light, brand-300 on dark —
+// which the design system already tunes for legibility on both themes.
 const COLOR_VAR: Record<NonNullable<TextProps['color']>, string> = {
   primary: 'var(--color-text-primary)',
   secondary: 'var(--color-text-secondary)',
   muted: 'var(--color-text-muted)',
-  brand: 'var(--color-brand-500)',
+  brand: 'var(--color-brand-strong)',
   inherit: 'inherit',
 };
 

@@ -63,7 +63,10 @@
   font-size: var(--font-size-sm);
   font-weight: var(--font-weight-medium, 500);
   line-height: 1.2;
-  color: var(--color-text-muted);
+  // E142 L2 a11y: text-muted on tablist surface failed AA for inactive tab
+  // labels. text-secondary gives AA across both tablist and page-bg contexts
+  // while still reading as clearly "inactive" vs active (primary) tabs.
+  color: var(--color-text-secondary);
 
   cursor: pointer;
   user-select: none;

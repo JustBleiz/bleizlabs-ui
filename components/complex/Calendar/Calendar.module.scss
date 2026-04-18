@@ -110,7 +110,9 @@
   padding: var(--space-2) 0;
   font-size: var(--font-size-xs);
   font-weight: var(--font-weight-medium);
-  color: var(--color-text-muted);
+  // E142 L2 a11y: text-muted on surface-raised (popover/card bg) was ~3.9:1.
+  // text-secondary (neutral-300) pushes to ~6.4:1 on dark, ~6.8:1 on light.
+  color: var(--color-text-secondary);
   text-align: center;
   text-transform: uppercase;
   letter-spacing: 0.05em;
@@ -187,10 +189,13 @@
   font-weight: var(--font-weight-semibold);
 }
 
-// Selected — filled brand bg + brand-foreground text
+// Selected — filled brand bg + brand-foreground text.
+// E142 L2 a11y: previous `--color-surface-raised` fallback was ~4.3:1 on
+// brand bg (~AA edge). `--color-text-inverse` matches Button.variantPrimary
+// precedent (dark text in dark theme → 7:1 on brand) for consistency.
 .cellButtonSelected {
   background: var(--color-brand);
-  color: var(--color-brand-foreground, var(--color-surface-raised));
+  color: var(--color-text-inverse);
   border-color: var(--color-brand);
   font-weight: var(--font-weight-semibold);
 
@@ -199,17 +204,23 @@
   }
 }
 
-// Outside-month day — dimmed to show it's not the primary month
+// Outside-month day — dimmed to show it's not the primary month.
+// E142 L2 a11y: previous `muted + opacity 0.55` failed AA (~2.6:1 on
+// popover surface). Swap to text-secondary + 0.85 opacity — still clearly
+// dimmer than primary-month days but legible at ~5:1.
 .cellButtonOutside {
-  color: var(--color-text-muted);
-  opacity: 0.55;
+  color: var(--color-text-secondary);
+  opacity: 0.85;
 }
 
 // Disabled cell — still focusable (APG) but visually + cursor-wise blocked.
 // aria-disabled='true' is the semantic source of truth; this is presentation.
+// E142 L2 a11y: WCAG 1.4.3 exempts disabled controls from contrast, but
+// keeping the color legible benefits users who can still perceive state.
+// Line-through is the primary disabled signal; color slightly dimmed.
 .cellButtonDisabled {
-  color: var(--color-text-muted);
-  opacity: 0.4;
+  color: var(--color-text-secondary);
+  opacity: 0.75;
   cursor: not-allowed;
   text-decoration: line-through;
 

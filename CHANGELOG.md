@@ -4,6 +4,34 @@ All notable releases of this component library. Follows [Keep a Changelog](https
 
 ---
 
+## [0.1.2] — 2026-04-19
+
+**Accessibility safety net — WCAG 2.1 AA zero-violations baseline for all 49 demo routes.**
+
+### Added
+- `tests/smoke.spec.ts` — Playwright + `@axe-core/playwright` smoke suite iterating every demo route with `wcag2a` + `wcag2aa` + `wcag21a` + `wcag21aa` tag set. Runs on `push` + `pull_request` via `.github/workflows/test.yml` and gates `publish.yml` before `npm publish`. Dev-only: `@playwright/test` `^1.59.1` + `@axe-core/playwright` + `@axe-core/react` land in `devDependencies` — consumer tarball unchanged (D5/D25 preserved).
+- `app/playground.scss` — new playground-only entry that sets `$seed-brand: #06b6d4` + `$seed-accent: #8b5cf6` and ships shared prose styles (`<code>`, raw `<a>`) that the bare library doesn't own. Keeps the shipped fresh-template monochromatic seed intact for consumers while letting the dev playground render realistic AA-safe colors.
+- `playwright.config.ts` — single Chromium project, `webServer: 'npm run build && npm run start'` (production build exercised, not dev HMR output), 180s cold-start timeout, CI-aware `workers: 4` + `retries: 2`.
+
+### Fixed — library (ship in tarball)
+- `components/layout/Section` — `bg="brand-subtle"` now resolves to theme-aware `var(--color-brand-subtle)` (brand-100 light / brand-900 dark) instead of the static `--color-brand-50` that rendered a pale teal band with light text in dark mode (~3.5:1).
+- `components/complex/Carousel` — non-current slides use `inert` instead of `aria-hidden="true"`. Previous pattern violated WCAG 4.1.2 whenever slides contained focusable descendants (links, buttons). `inert` removes them from the a11y tree AND focus order in one attribute.
+- `components/complex/Calendar` — weekday headers, selected cells, outside-month cells, and disabled cells retuned for AA: weekday → `text-secondary`, selected → `text-inverse` on brand (consistent with Button.variantPrimary), outside → `text-secondary + opacity 0.85`, disabled → `text-secondary + opacity 0.75 + line-through`.
+- `components/complex/Tabs` — inactive trigger labels → `text-secondary` (was `text-muted`; failed AA on tablist surface-raised bg).
+- `components/interactive/Label` — `.disabled` → `text-secondary + opacity 0.7` (was `muted + 0.6` = ~2.6:1; WCAG 1.4.3 exempts disabled but we match AA anyway).
+- `components/interactive/Input` + `components/interactive/Textarea` — error messages use theme-aware `--color-error-strong` (red-700 light / red-300 dark) instead of raw `--color-error` (red-500 was ~3.7:1 on dark surface).
+- `components/typography/Text` — `color="brand"` now resolves to theme-aware `--color-brand-strong` instead of raw `--color-brand-500`. Brand-strong is brand-700 in light, brand-300 in dark — keeps the semantic "brand tint" while hitting AA on card/raised surfaces.
+- `styles/_generator.scss` — `$dark-text-muted` (neutral-500 → neutral-400) and `$light-text-muted` (neutral-500 → neutral-600) so `--color-text-muted` meets AA on page bg by default.
+
+### Infrastructure
+- `.github/workflows/test.yml` — 6-job DAG: `typecheck` + `lint` + `build` + `barrel` (parallel) → `smoke` (needs first three) → `e2e` (needs smoke; push-to-main only). Artifact upload for failing smoke runs.
+- `.github/workflows/publish.yml` — extended with Playwright browser install + `npm run test:smoke` gate inserted between build and publish steps. Tag pushes now block on smoke green before `npm publish`.
+- `app/_components/ThemeToggle.tsx` — refactor `useState`+`useEffect` → `useSyncExternalStore` (React 19 idiom; removes `react-hooks/set-state-in-effect` ESLint violation that blocked CI green state during L1 infrastructure setup).
+
+### Notes
+- Smoke runs against the production build (`next build && next start`), not `next dev`. React hydration warnings that only surface in dev HMR don't gate CI; dedicated per-component suites in the upcoming L3a-L3e batches exercise dev-mode hydration behavior.
+- This release closes the first half of the D25 debt (static-verified → smoke-guarded). Full "NVDA-qualified" signal lands in `0.2.0` after all 23 Phase 10+ components ship `.spec.ts` conversions (E142 L3-L5).
+
 ## [0.1.1] — 2026-04-17
 
 ### Added

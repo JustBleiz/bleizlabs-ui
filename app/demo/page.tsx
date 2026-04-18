@@ -473,7 +473,7 @@ export default function DemoPage() {
                   justifyContent: 'center',
                 }}
               >
-                <Text variant="small" color="muted">
+                <Text variant="small" color="secondary">
                   16:9
                 </Text>
               </div>
@@ -1174,7 +1174,7 @@ export default function DemoPage() {
                   Accessible single-value dropdown per APG /combobox/ collapsed-listbox. 8 compound flat exports. First listbox sub-family — aria-activedescendant pattern (focus stays on trigger). Full keyboard: Space/Enter/Arrow open, Home/End, PageDown/Up, Enter commit, Escape no-commit, Tab commit + propagate, typeahead. Form participation via hidden input.
                 </Text>
                 <Select defaultValue="vercel-prod">
-                  <SelectTrigger>
+                  <SelectTrigger aria-label="Select option">
                     <SelectValue placeholder="Pick a target" />
                   </SelectTrigger>
                   <SelectContent>

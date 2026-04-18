@@ -205,7 +205,7 @@ export default function PresetsPlaygroundPage() {
             noValidate
             footer={
               <>
-                <Text variant="small" color="muted">
+                <Text variant="small" color="secondary">
                   We never share your info.
                 </Text>
                 <Button type="submit">Save</Button>
