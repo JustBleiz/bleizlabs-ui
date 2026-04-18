@@ -247,45 +247,57 @@ function ToastCard({ item, closeButton }: ToastCardProps) {
     [item.action, item.id],
   );
 
+  // E142 L4 F3 — wrap the alert/status role on an INNER div rather than
+  // directly on the <li>. role="alert" / role="status" strips <li>'s
+  // implicit `listitem` role, leaving the <ol> with disallowed children
+  // and failing axe-core `list` rule (wcag2a / wcag131). Keeping the
+  // roles on the inner element preserves both the list semantics for SR
+  // landmark navigation AND the live-region announcement contract.
   return (
     <li
-      role={role}
-      aria-live={ariaLive}
-      aria-atomic="true"
-      className={cn(styles.toast, styles[variantClass(item.variant)])}
+      className={styles.toast}
       data-variant={item.variant}
       data-sticky={!Number.isFinite(item.duration) || undefined}
     >
-      {icon ? (
-        <span aria-hidden="true" className={styles.icon}>
-          {icon}
-        </span>
-      ) : null}
-      <div className={styles.content}>
-        {item.title ? <div className={styles.title}>{item.title}</div> : null}
-        {item.description ? (
-          <div className={styles.description}>{item.description}</div>
+      <div
+        role={role}
+        aria-live={ariaLive}
+        aria-atomic="true"
+        className={cn(styles.toastBody, styles[variantClass(item.variant)])}
+        data-variant={item.variant}
+        data-sticky={!Number.isFinite(item.duration) || undefined}
+      >
+        {icon ? (
+          <span aria-hidden="true" className={styles.icon}>
+            {icon}
+          </span>
+        ) : null}
+        <div className={styles.content}>
+          {item.title ? <div className={styles.title}>{item.title}</div> : null}
+          {item.description ? (
+            <div className={styles.description}>{item.description}</div>
+          ) : null}
+        </div>
+        {item.action ? (
+          <button
+            type="button"
+            className={styles.action}
+            onClick={handleActionClick}
+          >
+            {item.action.label}
+          </button>
+        ) : null}
+        {item.closable && closeButton ? (
+          <button
+            type="button"
+            className={styles.close}
+            aria-label="Dismiss notification"
+            onClick={handleClose}
+          >
+            <CloseIcon />
+          </button>
         ) : null}
       </div>
-      {item.action ? (
-        <button
-          type="button"
-          className={styles.action}
-          onClick={handleActionClick}
-        >
-          {item.action.label}
-        </button>
-      ) : null}
-      {item.closable && closeButton ? (
-        <button
-          type="button"
-          className={styles.close}
-          aria-label="Dismiss notification"
-          onClick={handleClose}
-        >
-          <CloseIcon />
-        </button>
-      ) : null}
     </li>
   );
 }

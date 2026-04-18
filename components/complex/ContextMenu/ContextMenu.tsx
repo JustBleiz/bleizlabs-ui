@@ -58,6 +58,7 @@ import {
   useRef,
   useState,
   type HTMLAttributes,
+  type MutableRefObject,
   type ReactNode,
   type ButtonHTMLAttributes,
   type CSSProperties,
@@ -91,6 +92,15 @@ interface ContextMenuContextValue {
   sideOffset: number;
   collisionPadding: number;
   closeOnScroll: boolean;
+  /**
+   * Snapshot of `document.activeElement` captured on trigger's `pointerdown`
+   * BEFORE the browser's mousedown blurs the currently focused element.
+   * ContextMenuContent reads this to restore focus on close (E142 L4 F7).
+   * Reading `document.activeElement` only inside
+   * `useFloatingFocus`'s `useLayoutEffect(open=true)` would always see
+   * `<body>` because mousedown has already fired a blur by then.
+   */
+  preOpenFocusRef: MutableRefObject<HTMLElement | null>;
 }
 
 const [ContextMenuContextProvider, useContextMenuContext] =
@@ -142,6 +152,10 @@ export function ContextMenu({
   });
   const [cursorPoint, setCursorPoint] = useState<CursorPoint | null>(null);
 
+  // Focus-restore snapshot — populated by ContextMenuTrigger on pointerdown
+  // (E142 L4 F7). See ContextMenuContextValue JSDoc.
+  const preOpenFocusRef = useRef<HTMLElement | null>(null);
+
   const setOpen = useCallback(
     (next: boolean, point?: CursorPoint) => {
       if (next && point) setCursorPoint(point);
@@ -160,6 +174,7 @@ export function ContextMenu({
       sideOffset,
       collisionPadding,
       closeOnScroll,
+      preOpenFocusRef,
     }),
     [open, setOpen, cursorPoint, contentId, sideOffset, collisionPadding, closeOnScroll],
   );
@@ -197,7 +212,25 @@ export function ContextMenuTrigger({
   className,
 }: ContextMenuTriggerProps) {
   const ctx = useContextMenuContext('<ContextMenuTrigger>');
-  const { setOpen } = ctx;
+  const { setOpen, preOpenFocusRef } = ctx;
+
+  // Snapshot `document.activeElement` on pointerdown — BEFORE the browser's
+  // mousedown blurs it. `useFloatingFocus`'s default capture runs in a
+  // `useLayoutEffect(open=true)` AFTER React commits the open transition,
+  // by which time activeElement is `<body>`. Right-click does not fire
+  // focus on the trigger (ContextMenu has no trigger widget), so the
+  // snapshot from pointerdown is the ONLY reliable restore anchor.
+  // Pointerdown fires BEFORE contextmenu on every major browser so this
+  // handler runs before `setOpen(true)` dispatches the open. E142 L4 F7.
+  const handlePointerDown = useCallback(
+    (event: React.PointerEvent<HTMLElement>) => {
+      if (event.button !== 2) return; // right-click only
+      const active = document.activeElement;
+      preOpenFocusRef.current =
+        active instanceof HTMLElement && active !== document.body ? active : null;
+    },
+    [preOpenFocusRef],
+  );
 
   const handleContextMenu = useCallback(
     (event: React.MouseEvent<HTMLElement>) => {
@@ -209,11 +242,19 @@ export function ContextMenuTrigger({
   );
 
   if (asChild) {
-    return <Slot onContextMenu={handleContextMenu}>{children}</Slot>;
+    return (
+      <Slot onPointerDown={handlePointerDown} onContextMenu={handleContextMenu}>
+        {children}
+      </Slot>
+    );
   }
 
   return (
-    <div className={className} onContextMenu={handleContextMenu}>
+    <div
+      className={className}
+      onPointerDown={handlePointerDown}
+      onContextMenu={handleContextMenu}
+    >
       {children}
     </div>
   );
@@ -239,8 +280,16 @@ export interface ContextMenuContentProps
 
 export function ContextMenuContent({ children, className, ...rest }: ContextMenuContentProps) {
   const ctx = useContextMenuContext('<ContextMenuContent>');
-  const { open, setOpen, cursorPoint, contentId, sideOffset, collisionPadding, closeOnScroll } =
-    ctx;
+  const {
+    open,
+    setOpen,
+    cursorPoint,
+    contentId,
+    sideOffset,
+    collisionPadding,
+    closeOnScroll,
+    preOpenFocusRef,
+  } = ctx;
 
   const popperRef = useRef<HTMLDivElement | null>(null);
   const typeaheadBufferRef = useRef<string>('');
@@ -297,10 +346,9 @@ export function ContextMenuContent({ children, className, ...rest }: ContextMenu
   }, [open, cursorPoint, sideOffset, collisionPadding]);
 
   // Initial focus + focus restore via shared primitive. ContextMenu restores
-  // to the element that was focused BEFORE the context menu opened (captured
-  // automatically by useFloatingFocus as `previousActive`) — NOT to a trigger
-  // widget, because there is no trigger button. Pass no `getRestoreTarget`
-  // override so the default `previousActive` restore kicks in.
+  // to the element captured on pointerdown by ContextMenuTrigger (E142 L4 F7).
+  // Reading `document.activeElement` inside `useFloatingFocus` would always
+  // yield `<body>` because mousedown fires a blur before the open effect.
   useFloatingFocus({
     open,
     contentRef: popperRef,
@@ -308,6 +356,7 @@ export function ContextMenuContent({ children, className, ...rest }: ContextMenu
       const items = getMenuItems(container);
       return items[0] ?? null;
     },
+    getRestoreTarget: () => preOpenFocusRef.current,
   });
 
   // Escape + outside-click + close-on-scroll dismiss via shared primitive.

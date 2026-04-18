@@ -19,25 +19,34 @@ test.describe('NavigationMenu — focus management', () => {
     await page.goto('/components/navigation-menu');
   });
 
-  test.skip('NM-R16 — focus on trigger opens instantly (SC 2.1.1 keyboard parity) [NOTE-FOR-LIB: handleFocus does NOT call openImmediate]', async () => {
-    // NOTE-FOR-LIB: NavigationMenu.tsx:932-948 `handleFocus` only updates
-    // roving tabindex — it does not call `openImmediate` despite the
-    // component docblock line 61 claiming "Focus on trigger: openImmediate
-    // (no delay — SC 2.1.1 explicit intent)". Focus on a trigger does NOT
-    // open its submenu in the current implementation. Either the docblock is
-    // stale OR the focus-opens-on-intent behavior was dropped. For WCAG
-    // SC 2.1.1 parity, keyboard users must use Enter/Space/ArrowDown to
-    // activate — which works. Flag for L4/L5 library decision: update
-    // docblock to match behavior, OR wire openImmediate into handleFocus.
+  test('NM-R16 — focus on trigger does NOT open submenu (F5, docblock corrected)', async ({
+    page,
+  }) => {
+    // E142 L4 F5 resolved by docblock correction (option B): NavigationMenu
+    // deliberately does NOT open on focus because that pattern pops every
+    // submenu during Tab-through and breaks the Escape-restore flow (focus
+    // returns to the parent trigger → submenu re-opens immediately, user
+    // never escapes). Keyboard opens are via Enter/Space/ArrowDown.
+    const menubar = page.getByRole('menubar', { name: 'Main' });
+    const trigger = menubar.getByRole('menuitem', { name: 'Products' });
+    await trigger.focus();
+    // No submenu open yet — focus is only supposed to update roving tabindex.
+    await expect(trigger).toHaveAttribute('aria-expanded', 'false');
+    await expect(page.getByRole('menu')).toHaveCount(0);
   });
 
-  test.skip('NM-R17 — blur with relatedTarget inside content keeps open [NOTE-FOR-LIB: depends on NM-R16]', async () => {
-    // NOTE-FOR-LIB: Scenario assumes submenu already open via focus (NM-R16),
-    // then Tab-into-content keeps it open. Since NM-R16's focus-opens
-    // behavior is not implemented, the predicate has no setup path through
-    // keyboard alone (only via click/Enter/Space). Blur semantics on click-
-    // opened submenu are already implicit in other tests (submenu stays open
-    // across keyboard navigation inside it).
+  test('NM-R17 — blur with relatedTarget inside content keeps open (via click-open path)', async ({
+    page,
+  }) => {
+    const menubar = page.getByRole('menubar', { name: 'Main' });
+    const trigger = menubar.getByRole('menuitem', { name: 'Products' });
+    await trigger.click();
+    const submenu = page.getByRole('menu');
+    await expect(submenu).toBeVisible();
+    const firstLink = submenu.getByRole('menuitem').first();
+    await firstLink.focus();
+    // Focus inside content — submenu stays visible.
+    await expect(submenu).toBeVisible();
   });
 
   test('roving tabindex: first menubar item has tabindex=0 on mount', async ({ page }) => {

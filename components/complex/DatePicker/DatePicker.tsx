@@ -177,6 +177,8 @@ interface DatePickerContextValue {
   setSearch: (next: string) => void;
   commitSearch: () => void;
   revertSearch: () => void;
+  /** Flipped to `true` when commitSearch rejects the typed string. */
+  hasValidationError: boolean;
   openPopup: (focusCalendar?: boolean) => void;
   closePopup: (returnFocus?: boolean) => void;
   inputRef: React.RefObject<HTMLInputElement | null>;
@@ -333,8 +335,17 @@ export const DatePicker = forwardRef<HTMLDivElement, DatePickerProps>(function D
     [min, max, disabledDates],
   );
 
+  // Internal validation error state — auto-set when commitSearch encounters
+  // an unparseable or out-of-range typed date, cleared as soon as the user
+  // edits the search. Exposed through context + merged with the explicit
+  // `invalid` prop via OR inside DatePickerInput's ariaProps (E142 L4 F10).
+  const [hasValidationError, setHasValidationError] = useState(false);
+
   const setSearch = useCallback((next: string) => {
     setSearchState(next);
+    // Typing clears the validation flag — error only persists until the
+    // user acknowledges the revert by editing.
+    setHasValidationError(false);
   }, []);
 
   const commitSearch = useCallback(() => {
@@ -342,6 +353,7 @@ export const DatePicker = forwardRef<HTMLDivElement, DatePickerProps>(function D
     if (trimmed === '') {
       if (value !== null) setValue(null);
       setSearchState('');
+      setHasValidationError(false);
       return;
     }
     const parsed = parseIsoDateString(trimmed);
@@ -351,9 +363,12 @@ export const DatePicker = forwardRef<HTMLDivElement, DatePickerProps>(function D
         setValue(normalized);
       }
       setSearchState(toIsoDateString(normalized));
+      setHasValidationError(false);
     } else {
-      // Revert to current value's ISO (or empty)
+      // Revert to current value's ISO (or empty) and flag aria-invalid
+      // for AT users (E142 L4 F10 — DP-R11 expectation).
       setSearchState(value ? toIsoDateString(value) : '');
+      setHasValidationError(true);
     }
   }, [search, value, setValue, isDisabledDate]);
 
@@ -426,6 +441,7 @@ export const DatePicker = forwardRef<HTMLDivElement, DatePickerProps>(function D
       setSearch,
       commitSearch,
       revertSearch,
+      hasValidationError,
       openPopup,
       closePopup,
       inputRef,
@@ -454,6 +470,7 @@ export const DatePicker = forwardRef<HTMLDivElement, DatePickerProps>(function D
       setSearch,
       commitSearch,
       revertSearch,
+      hasValidationError,
       openPopup,
       closePopup,
       disabled,
@@ -502,6 +519,12 @@ export interface DatePickerInputProps
   showCalendarIcon?: boolean;
   /** Accessible label for the calendar icon button. Default `"Open calendar"`. */
   calendarIconLabel?: string;
+  /**
+   * External validation error state. When `true`, `aria-invalid="true"` is
+   * set unconditionally. Auto-detected parse failures from the input also
+   * flip aria-invalid (E142 L4 F10) — this prop ORs with the internal flag.
+   */
+  invalid?: boolean;
 }
 
 export const DatePickerInput = forwardRef<HTMLInputElement, DatePickerInputProps>(
@@ -511,6 +534,7 @@ export const DatePickerInput = forwardRef<HTMLInputElement, DatePickerInputProps
       calendarIconLabel = 'Open calendar',
       placeholder = 'YYYY-MM-DD',
       className,
+      invalid = false,
       onKeyDown,
       onBlur,
       onFocus,
@@ -533,7 +557,10 @@ export const DatePickerInput = forwardRef<HTMLInputElement, DatePickerInputProps
       required,
       inputId,
       contentId,
+      hasValidationError,
     } = ctx;
+
+    const effectiveInvalid = invalid || hasValidationError;
 
     const mergedRef = useMemo(
       () => mergeRefs<HTMLInputElement>(inputRef, forwardedRef),
@@ -653,6 +680,7 @@ export const DatePickerInput = forwardRef<HTMLInputElement, DatePickerInputProps
           aria-controls={open ? contentId : undefined}
           aria-required={required || undefined}
           aria-disabled={isDisabled || undefined}
+          aria-invalid={effectiveInvalid || undefined}
           aria-autocomplete="none"
           placeholder={placeholder}
           className={cn(styles.input, className)}

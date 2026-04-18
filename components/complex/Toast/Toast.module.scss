@@ -57,27 +57,17 @@
 }
 
 // ──────────────────────────────────────────────────────────────────────────
-// .toast — individual notification card
+// .toast — individual notification <li> wrapper
 // ──────────────────────────────────────────────────────────────────────────
+//
+// E142 L4 F3: `<li>` is the list-semantic container; the inner `.toastBody`
+// carries `role="status"` / `role="alert"` for live-region announcements.
+// Using `display: contents` on the `<li>` preserves list semantics (axe
+// `list` rule passes) without inserting a redundant layout box, so the
+// grid layout runs on `.toastBody` unchanged.
 
 .toast {
-  pointer-events: auto; // re-enable interaction on the toast itself
-  display: grid;
-  grid-template-columns: auto 1fr auto auto;
-  align-items: start;
-  gap: var(--space-3);
-  width: 100%;
-  max-width: 420px;
-  padding: var(--space-3) var(--space-4);
-  background: var(--color-surface-raised);
-  color: var(--color-text-primary);
-  border: 1px solid var(--color-border-subtle);
-  border-radius: var(--radius-md);
-  box-shadow: var(--shadow-lg);
-  font-family: var(--font-sans);
-  font-size: var(--font-size-sm);
-  line-height: 1.4;
-  animation: toastIn var(--duration-normal, 220ms) var(--easing-default);
+  display: contents;
 
   &[data-variant='success'] {
     --toast-accent: var(--color-success);
@@ -98,6 +88,26 @@
   &[data-variant='default'] {
     --toast-accent: var(--color-border-strong, var(--color-border-subtle));
   }
+}
+
+.toastBody {
+  pointer-events: auto; // re-enable interaction on the toast itself
+  display: grid;
+  grid-template-columns: auto 1fr auto auto;
+  align-items: start;
+  gap: var(--space-3);
+  width: 100%;
+  max-width: 420px;
+  padding: var(--space-3) var(--space-4);
+  background: var(--color-surface-raised);
+  color: var(--color-text-primary);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+  font-family: var(--font-sans);
+  font-size: var(--font-size-sm);
+  line-height: 1.4;
+  animation: toastIn var(--duration-normal, 220ms) var(--easing-default);
 }
 
 // ──────────────────────────────────────────────────────────────────────────
@@ -261,7 +271,7 @@
 // ──────────────────────────────────────────────────────────────────────────
 
 @media (prefers-reduced-motion: reduce) {
-  .toast {
+  .toastBody {
     animation: toastInFade var(--duration-fast) var(--easing-default);
   }
 
@@ -281,7 +291,7 @@
 // ──────────────────────────────────────────────────────────────────────────
 
 @media (forced-colors: active) {
-  .toast {
+  .toastBody {
     border-color: CanvasText;
     box-shadow: none;
   }

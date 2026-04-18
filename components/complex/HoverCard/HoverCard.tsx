@@ -94,6 +94,7 @@ import {
   useFloatingState,
   FloatingPortal,
 } from '../../utils/floating';
+import { escapeStack } from '../Dialog/escapeStack';
 import { Heading } from '../../typography/Heading';
 import { Text } from '../../typography/Text';
 import styles from './HoverCard.module.scss';
@@ -391,12 +392,19 @@ export function HoverCard({
     return () => clearTimers();
   }, [clearTimers]);
 
-  // Escape on document — does NOT steal focus from trigger (SC 1.4.13).
+  // Escape on document — routes through the shared Dialog escapeStack
+  // (E142 L4 F4) so nested modal scenarios (Dialog + HoverCard) dismiss the
+  // topmost surface only. Does NOT steal focus from trigger (SC 1.4.13).
   // Window blur + visibilitychange — hide on tab switch (Tooltip precedent).
   useEffect(() => {
     if (!open) return;
+    const close = () => closeImmediate();
+    escapeStack.push(close);
     const handleKey = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') closeImmediate();
+      if (event.key !== 'Escape') return;
+      if (escapeStack[escapeStack.length - 1] !== close) return;
+      event.preventDefault();
+      close();
     };
     const handleVisibility = () => {
       if (document.visibilityState === 'hidden') closeImmediate();
@@ -408,6 +416,8 @@ export function HoverCard({
       document.removeEventListener('keydown', handleKey);
       document.removeEventListener('visibilitychange', handleVisibility);
       window.removeEventListener('blur', closeImmediate);
+      const idx = escapeStack.indexOf(close);
+      if (idx !== -1) escapeStack.splice(idx, 1);
     };
   }, [open, closeImmediate]);
 

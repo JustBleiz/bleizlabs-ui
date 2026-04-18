@@ -132,11 +132,9 @@
  */
 
 import {
-  createContext,
   forwardRef,
   memo,
   useCallback,
-  useContext,
   useEffect,
   useId,
   useLayoutEffect,
@@ -280,6 +278,18 @@ interface SelectContextValue {
    * in a useLayoutEffect. Fixes CRIT-1.
    */
   listboxKeyHandlerRef: MutableRefObject<((event: SelectKeyEvent) => void) | null>;
+  /**
+   * Highlighted option id — root-owned React state so both SelectTrigger
+   * (which sits OUTSIDE SelectContent in the render tree) and SelectContent
+   * can subscribe to it. Prior to E142 L4 this state lived on a
+   * Content-scoped provider rendered as a child of FloatingPortal — but the
+   * Trigger is a sibling, so sibling→sibling context propagation never
+   * happened and `aria-activedescendant` was silently undefined (WCAG SC
+   * 4.1.3 fail). Hoisted to the root context so both consumers can read it.
+   */
+  highlightedId: string | null;
+  /** Request a highlight change. `source` selects scroll behavior. */
+  setHighlight: (id: string | null, source: 'mouse' | 'keyboard') => void;
   /** Positioning — consumed by SelectContent's useFloating call. */
   placement: SelectPlacement;
   sideOffset: number;
@@ -288,39 +298,6 @@ interface SelectContextValue {
 
 const [SelectContextProvider, useSelectContext] =
   createFloatingContext<SelectContextValue>('Select');
-
-// ──────────────────────────────────────────────────────────────────────────
-// Content context — highlight state shared Content → Trigger → Item
-// ──────────────────────────────────────────────────────────────────────────
-//
-// Lives separately from the root context because the highlighted option is
-// only meaningful while the listbox is open. After Phase 5 fix IMP-3 the
-// highlighted id is tracked as React state (not a ref + direct DOM writes)
-// so React owns `aria-activedescendant` declaratively on the Trigger and
-// cannot strip it on re-render. Items are wrapped in `React.memo` so only
-// the two actually-toggled items re-render when the highlight moves.
-
-interface SelectContentContextValue {
-  /** Current highlighted option id, or null when nothing is highlighted. */
-  highlightedId: string | null;
-  /** Request a highlight change. `source` selects scroll behavior. */
-  setHighlight: (id: string | null, source: 'mouse' | 'keyboard') => void;
-}
-
-// Plain React context (not createFloatingContext) so Trigger can read it
-// OPTIONALLY — it must not throw while the listbox is closed (content
-// unmounted). Items use the non-null assertion since they only render as
-// descendants of SelectContent.
-const SelectContentContext = createContext<SelectContentContextValue | null>(null);
-SelectContentContext.displayName = 'SelectContentContext';
-
-function useRequiredSelectContentContext(componentName: string): SelectContentContextValue {
-  const ctx = useContext(SelectContentContext);
-  if (!ctx) {
-    throw new Error(`${componentName} must be rendered inside a <SelectContent> parent.`);
-  }
-  return ctx;
-}
 
 // ──────────────────────────────────────────────────────────────────────────
 // Select root — state holder, item registry, context provider
@@ -506,6 +483,29 @@ export function Select({
   // previous native addEventListener bridge (CRIT-1).
   const listboxKeyHandlerRef = useRef<((event: SelectKeyEvent) => void) | null>(null);
 
+  // Highlighted option id — root-owned state. Hoisted from the former
+  // SelectContentContext (which sat inside FloatingPortal → sibling of
+  // Trigger → unreachable via React context) so SelectTrigger's
+  // `aria-activedescendant` reconciles correctly (E142 L4 F1).
+  const [highlightedId, setHighlightedId] = useState<string | null>(null);
+
+  const setHighlight = useCallback(
+    (nextId: string | null, source: 'mouse' | 'keyboard') => {
+      setHighlightedId((prev) => {
+        if (prev === nextId) return prev;
+        if (nextId && source === 'keyboard') {
+          // Defer scroll to after React commits the new highlighted state
+          // so the element's data-highlighted attribute is already set.
+          const items = getOrderedItems();
+          const record = items.find((it) => it.id === nextId);
+          record?.element.scrollIntoView({ block: 'nearest' });
+        }
+        return nextId;
+      });
+    },
+    [getOrderedItems],
+  );
+
   const contextValue = useMemo<SelectContextValue>(
     () => ({
       open,
@@ -527,6 +527,8 @@ export function Select({
       getLabelByValue,
       typeaheadRef,
       listboxKeyHandlerRef,
+      highlightedId,
+      setHighlight,
       placement,
       sideOffset,
       collisionPadding,
@@ -548,6 +550,8 @@ export function Select({
       getOrderedItems,
       getItemByValue,
       getLabelByValue,
+      highlightedId,
+      setHighlight,
       placement,
       sideOffset,
       collisionPadding,
@@ -681,15 +685,8 @@ export const SelectTrigger = forwardRef<HTMLElement, SelectTriggerProps>(
       getOrderedItems,
       typeaheadRef,
       listboxKeyHandlerRef,
+      highlightedId,
     } = ctx;
-
-    // Subscribe to Content's context only while the listbox is mounted
-    // (open). When closed, `contentCtx` is null — we can't call hooks
-    // conditionally, so we always read the context but fall back to null
-    // when there is no provider. This is why SelectContentContext is a
-    // plain nullable React context (not createFloatingContext).
-    const contentCtx = useContext(SelectContentContext);
-    const highlightedId = contentCtx?.highlightedId ?? null;
 
     const setTriggerNode = useCallback(
       (node: HTMLElement | null) => {
@@ -740,12 +737,14 @@ export const SelectTrigger = forwardRef<HTMLElement, SelectTriggerProps>(
         const hasModifier =
           event.ctrlKey || event.metaKey || event.altKey || event.shiftKey;
 
-        const orderedItems = getOrderedItems();
-        const enabled = orderedItems.filter((it) => !it.disabled);
-        if (enabled.length === 0) return;
-
-        // ArrowDown / ArrowUp / Enter / Space / Home / End / Alt+ArrowDown → open.
-        // Letter char → typeahead open.
+        // Open-intent keys (ArrowDown/Up/Enter/Space/Home/End) must always
+        // open the listbox regardless of whether items have registered yet
+        // — SelectItems only mount inside SelectContent (open-gated), so
+        // on the very first keydown the registry is empty (E142 L4 F2).
+        // APG /combobox/ collapsed-listbox requires these keys to open.
+        // Only AFTER this switch do we read the registry for typeahead,
+        // which requires enabled items to exist (closed typeahead = instant
+        // select, no-op when registry is empty).
         switch (event.key) {
           case 'ArrowDown':
           case 'ArrowUp': {
@@ -771,6 +770,10 @@ export const SelectTrigger = forwardRef<HTMLElement, SelectTriggerProps>(
           default:
             break;
         }
+
+        const orderedItems = getOrderedItems();
+        const enabled = orderedItems.filter((it) => !it.disabled);
+        if (enabled.length === 0) return;
 
         // Printable character typeahead (CLOSED state) — instant-select,
         // matches Radix + shadcn + native <select>. Shares the root
@@ -956,6 +959,8 @@ export function SelectContent({
     getOrderedItems,
     typeaheadRef,
     listboxKeyHandlerRef,
+    highlightedId,
+    setHighlight,
     placement,
     sideOffset,
     collisionPadding,
@@ -963,31 +968,6 @@ export function SelectContent({
 
   const popperRef = useRef<HTMLDivElement | null>(null);
   const listboxRef = useRef<HTMLDivElement | null>(null);
-
-  // Highlighted option id is React state now (Phase 5 IMP-3). Previously
-  // this was a ref + direct DOM attribute writes, which meant React could
-  // strip `aria-activedescendant` on any re-render of Trigger. With React
-  // state the attribute is reconciled declaratively on Trigger, and
-  // `SelectItem` is wrapped in `React.memo` so only the two items actually
-  // toggled by a highlight move re-render (not the whole option list).
-  const [highlightedId, setHighlightedId] = useState<string | null>(null);
-
-  const setHighlight = useCallback(
-    (nextId: string | null, source: 'mouse' | 'keyboard') => {
-      setHighlightedId((prev) => {
-        if (prev === nextId) return prev;
-        if (nextId && source === 'keyboard') {
-          // Defer scroll to after React commits the new highlighted state
-          // so the element's data-highlighted attribute is already set.
-          const items = getOrderedItems();
-          const record = items.find((it) => it.id === nextId);
-          record?.element.scrollIntoView({ block: 'nearest' });
-        }
-        return nextId;
-      });
-    },
-    [getOrderedItems],
-  );
 
   // Floating positioning.
   const { refs, floatingStyles, placement: actualPlacement } = useFloating({
@@ -1061,12 +1041,11 @@ export function SelectContent({
     const initial = currentRecord ?? enabled[0];
     if (!initial) return;
 
-    // eslint-disable-next-line react-hooks/set-state-in-effect -- see block comment above
     setHighlight(initial.id, 'keyboard');
 
     const typeaheadState = typeaheadRef.current;
     return () => {
-      setHighlightedId(null);
+      setHighlight(null, 'keyboard');
       if (typeaheadState.timer) {
         clearTimeout(typeaheadState.timer);
         typeaheadState.timer = null;
@@ -1290,38 +1269,31 @@ export function SelectContent({
     };
   }, [handleListboxKeyDown, listboxKeyHandlerRef]);
 
-  const contentContextValue = useMemo<SelectContentContextValue>(
-    () => ({ highlightedId, setHighlight }),
-    [highlightedId, setHighlight],
-  );
-
   if (!open) return null;
 
   return (
-    <SelectContentContext.Provider value={contentContextValue}>
-      <FloatingPortal>
+    <FloatingPortal>
+      <div
+        ref={mergedPopperRef}
+        className={styles.contentRoot}
+        style={floatingStyles}
+      >
         <div
-          ref={mergedPopperRef}
-          className={styles.contentRoot}
-          style={floatingStyles}
+          ref={listboxRef}
+          id={contentId}
+          role="listbox"
+          aria-labelledby={triggerId}
+          aria-multiselectable={false}
+          tabIndex={-1}
+          data-state="open"
+          data-placement={actualPlacement}
+          className={cn(styles.content, className)}
+          {...rest}
         >
-          <div
-            ref={listboxRef}
-            id={contentId}
-            role="listbox"
-            aria-labelledby={triggerId}
-            aria-multiselectable={false}
-            tabIndex={-1}
-            data-state="open"
-            data-placement={actualPlacement}
-            className={cn(styles.content, className)}
-            {...rest}
-          >
-            {children}
-          </div>
+          {children}
         </div>
-      </FloatingPortal>
-    </SelectContentContext.Provider>
+      </div>
+    </FloatingPortal>
   );
 }
 
@@ -1415,9 +1387,16 @@ function SelectItemImpl({
   ...rest
 }: SelectItemProps) {
   const ctx = useSelectContext('<SelectItem>');
-  const { value: selectedValue, selectValue, setOpen, registerItem, unregisterItem, triggerRef } = ctx;
-  const contentCtx = useRequiredSelectContentContext('<SelectItem>');
-  const { highlightedId, setHighlight } = contentCtx;
+  const {
+    value: selectedValue,
+    selectValue,
+    setOpen,
+    registerItem,
+    unregisterItem,
+    triggerRef,
+    highlightedId,
+    setHighlight,
+  } = ctx;
 
   const reactId = useId();
   const itemId = `${reactId}-option`;

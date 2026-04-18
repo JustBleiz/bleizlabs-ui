@@ -58,7 +58,12 @@
  *   - PointerEnter on content: clearTimers (grace area for pointer travel)
  *   - PointerLeave on content: scheduleClose
  *   - Touch (`pointer: coarse`): hover skipped entirely → focus path only
- *   - Focus on trigger: openImmediate (no delay — SC 2.1.1 explicit intent)
+ *   - Focus on trigger: updates roving tabindex only; does NOT open the
+ *     submenu. Keyboard users open via Enter/Space/ArrowDown for SC 2.1.1
+ *     parity (matches Radix NavigationMenu behavior — focus-open would
+ *     pop every submenu during Tab-through, breaking the Escape-restore
+ *     flow that relies on the parent trigger staying closed once focus
+ *     returns to it).
  *   - Inside `NavigationMenuProvider`: skip-delay window mirrors HoverCardProvider
  * @apg https://www.w3.org/WAI/ARIA/apg/patterns/menubar/
  * @tested tsc --noEmit ✓ | eslint + jsx-a11y via eslint-config-next ✓ |
@@ -361,6 +366,24 @@ export function NavigationMenu({
   useEffect(() => {
     return () => cancelClose();
   }, [cancelClose]);
+
+  // Auto-close on `document.visibilitychange → hidden` and `window.blur`
+  // (E142 L4 F13, Radix parity). Prevents a stuck-open submenu when the
+  // user alt-tabs / switches tabs mid-hover. Only active while a submenu
+  // is actually open.
+  useEffect(() => {
+    if (openValue === null) return;
+    const handleVisibility = () => {
+      if (document.visibilityState === 'hidden') setOpenValue(null);
+    };
+    const handleBlur = () => setOpenValue(null);
+    document.addEventListener('visibilitychange', handleVisibility);
+    window.addEventListener('blur', handleBlur);
+    return () => {
+      document.removeEventListener('visibilitychange', handleVisibility);
+      window.removeEventListener('blur', handleBlur);
+    };
+  }, [openValue, setOpenValue]);
 
   const group = useContext(NavigationMenuGroupContext);
 
@@ -1159,6 +1182,11 @@ export function NavigationMenuContent({
         case 'ArrowRight': {
           if (!isHorizontal) return;
           event.preventDefault();
+          // E142 L4 F6: stopPropagation so the submenu's handler is the sole
+          // actor — without it, the event bubbles to NavigationMenuList
+          // handleKeyDown which advances ONE more step, ending with
+          // openValue pointing at the wrong menubar item.
+          event.stopPropagation();
           // Close current submenu, advance to next menubar item, open if it
           // has a submenu (matches APG: "Right closes submenu, moves to next
           // menubar item, opens its submenu if exists").
@@ -1185,6 +1213,7 @@ export function NavigationMenuContent({
         case 'ArrowLeft': {
           if (!isHorizontal) return;
           event.preventDefault();
+          event.stopPropagation();
           if (!list) return;
           const items = getMenubarItems(list);
           const currentIdx = items.findIndex(
@@ -1208,6 +1237,9 @@ export function NavigationMenuContent({
         case 'Tab': {
           // APG: Tab closes submenu + lets browser propagate. Do NOT
           // preventDefault — browser moves focus to next document tabbable.
+          // stopPropagation so the list-level handler doesn't double-process
+          // (E142 L4 F6).
+          event.stopPropagation();
           setOpenValue(null);
           return;
         }

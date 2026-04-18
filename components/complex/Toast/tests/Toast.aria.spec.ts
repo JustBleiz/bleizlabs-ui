@@ -90,47 +90,36 @@ test.describe('Toast — ARIA + accessibility tree', () => {
     expect(results.violations).toEqual([]);
   });
 
-  test('axe-core zero violations — with active status toast (excluding known lib issues)', async ({
+  test('axe-core zero violations — with active status toast', async ({
     page,
   }) => {
     await page.getByRole('button', { name: 'title + description' }).click();
     await expect(page.getByRole('status').filter({ hasText: 'Invitation sent' })).toBeVisible();
-    // NOTE-FOR-LIB (CRITICAL): Toaster.tsx L188-209 renders `<ol>` where each
-    //   child is `<li role="status">` or `<li role="alert">`. Axe rule `list`
-    //   (wcag2a, wcag131) flags this because applying role="status"/"alert"
-    //   to `<li>` removes the implicit `listitem` role, leaving the <ol> with
-    //   disallowed children. Fix options: (a) change `<ol>` to `<div>` (drops
-    //   list semantics — landmark still works via aria-label), (b) wrap each
-    //   toast in an inner element carrying role="status" so <li> keeps its
-    //   listitem role. Severity CRITICAL — blocks published axe-zero contract.
-    //
-    // NOTE-FOR-LIB (SERIOUS): `.description` class uses color:
-    //   var(--color-text-muted) (#9d9d9d) on background var(--color-surface-
-    //   raised) (#3f3f3f) at 12px / font-size-xs. Computed contrast 3.88:1
-    //   — below WCAG 1.4.3 AA threshold of 4.5:1 for normal text. Fix: raise
-    //   description font size to 14px (AA large text at 3:1) OR lighten the
-    //   muted token on raised surface. Severity IMPORTANT — same violation
-    //   also triggers on every Toast with a description prop.
+    // E142 L4 F3 — list role violation fixed: role="status" / "alert" now
+    // lives on an inner div inside each `<li>`, preserving list semantics.
+    // `.description` color contrast still flagged as a known IMPORTANT
+    // library color-contrast issue (see Toast.module.scss `.description`)
+    // — covered by a separate follow-up, so `color-contrast` remains
+    // suppressed here until that fix ships.
     const results = await new AxeBuilder({ page })
       .withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa'])
-      .disableRules(['list', 'color-contrast'])
+      .disableRules(['color-contrast'])
       .analyze();
     expect(results.violations).toEqual([]);
   });
 
-  test('axe-core zero violations — sticky error with action + close (excluding known lib issues)', async ({
+  test('axe-core zero violations — sticky error with action + close', async ({
     page,
   }) => {
     await page.getByRole('button', { name: 'Show sticky error' }).click();
     await expect(
       page.getByRole('alert').filter({ hasText: 'Connection lost' }),
     ).toBeVisible();
-    // NOTE-FOR-LIB: Same `list` + `color-contrast` violations as the status
-    //   toast test above — disabled here to keep the rest of the axe sweep
-    //   honest. Fix is in the library, not in this test.
+    // E142 L4 F3 fixed the list semantics; color-contrast still deferred
+    // (see sibling test comment).
     const results = await new AxeBuilder({ page })
       .withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa'])
-      .disableRules(['list', 'color-contrast'])
+      .disableRules(['color-contrast'])
       .analyze();
     expect(results.violations).toEqual([]);
   });

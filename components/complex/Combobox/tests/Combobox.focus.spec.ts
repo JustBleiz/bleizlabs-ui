@@ -23,11 +23,12 @@ test.describe('Combobox — focus behavior', () => {
     const input = page.getByRole('combobox').first();
     await input.focus();
     await input.fill('a');
-    await expect(page.getByRole('listbox').first()).toBeVisible();
+    const listbox = page.getByRole('listbox').first();
+    await expect(listbox).toBeVisible();
     await expect(input).toBeFocused();
-    // NOTE-FOR-LIB: ideally we'd assert aria-activedescendant; currently the
-    // attribute is unreachable due to sibling-context bug — see keyboard spec.
-    await expect(page.getByRole('listbox').first().locator('[data-highlighted]')).toHaveCount(1);
+    // E142 L4 F1 — aria-activedescendant now reconciles on the input.
+    const firstId = await listbox.getByRole('option').first().getAttribute('id');
+    await expect(input).toHaveAttribute('aria-activedescendant', firstId as string);
     await page.keyboard.press('ArrowDown');
     await expect(input).toBeFocused();
   });

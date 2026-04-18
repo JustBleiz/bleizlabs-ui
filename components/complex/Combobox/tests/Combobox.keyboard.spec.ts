@@ -1,10 +1,10 @@
 /**
  * Combobox keyboard interaction spec — APG `/combobox/` editable-listbox
- * (E142 L3d1).
+ * (E142 L3d1 + L4 F1 library fix).
  *
  * Coverage:
  * - Printable char opens + filters
- * - ArrowDown opens + seeds highlight (tracked via data-highlighted)
+ * - ArrowDown opens + seeds highlight (aria-activedescendant on input)
  * - ArrowDown/Up navigate visible enabled items
  * - Home/End jump
  * - Enter commits highlighted (filter → highlight → Enter)
@@ -13,19 +13,11 @@
  * - Modifier-arrow pass-through
  * - IME composition guard
  *
- * NOTE-FOR-LIB (L4/L5): aria-activedescendant on <ComboboxInput> never
- * gets wired to the current highlight — ComboboxContentContext.Provider
- * is a SIBLING of ComboboxInput in the render tree (Provider wraps
- * FloatingPortal), so the Input's useContext(ComboboxContentContext)
- * always reads `null` and its ariaProps compute
- * `'aria-activedescendant': open && highlightedId ? ... : undefined`
- * as undefined. The internal highlight state IS tracked correctly
- * (option gets data-highlighted=""), but WCAG SC 4.1.3 + APG
- * editable-combobox require aria-activedescendant on the role=combobox
- * element. Tests assert via data-highlighted as a proxy; aria-active-
- * descendant assertions are marked test.skip with NOTE-FOR-LIB until
- * the library lifts Content context above Input (or switches to a
- * root-level highlight context). Same bug confirmed in Select E27.
+ * E142 L4 F1 hoisted the highlight state from ComboboxContentContext
+ * (which lived inside FloatingPortal — sibling of the input → context
+ * propagation impossible) to the root ComboboxContext. Input now reads
+ * `highlightedId` from the root and `aria-activedescendant` reconciles
+ * correctly (WCAG SC 4.1.3 + APG /combobox/ restored).
  *
  * Playground: /components/combobox (click input does NOT open — ArrowDown
  * or typing does).
@@ -50,7 +42,7 @@ test.describe('Combobox — keyboard interactions', () => {
     expect(optionsCount).toBeGreaterThan(0);
   });
 
-  test('ArrowDown + type opens listbox + seeds highlight (via data-highlighted)', async ({
+  test('ArrowDown + type opens listbox + seeds highlight (aria-activedescendant)', async ({
     page,
   }) => {
     const input = page.getByRole('combobox').first();
@@ -58,30 +50,25 @@ test.describe('Combobox — keyboard interactions', () => {
     await input.fill('a');
     const listbox = page.getByRole('listbox').first();
     await expect(listbox).toBeVisible();
-    // Highlight is seeded on open — first visible item gets data-highlighted=""
-    // NOTE-FOR-LIB: should additionally populate aria-activedescendant on input.
-    await expect(listbox.locator('[data-highlighted]')).toHaveCount(1);
+    // Highlight is seeded on open — first visible item becomes the active
+    // descendant on the input (role=combobox) per APG editable-combobox.
+    const firstId = await listbox.getByRole('option').first().getAttribute('id');
+    await expect(input).toHaveAttribute('aria-activedescendant', firstId as string);
   });
 
-  test('ArrowDown moves highlight forward (data-highlighted marker follows)', async ({
+  test('ArrowDown moves highlight forward (aria-activedescendant follows)', async ({
     page,
   }) => {
     const input = page.getByRole('combobox').first();
     await input.focus();
     await input.fill('a');
     const listbox = page.getByRole('listbox').first();
-    await expect(listbox.locator('[data-highlighted]')).toHaveCount(1);
-    const first = listbox.getByRole('option').first();
-    const firstId = await first.getAttribute('id');
-    // Initial highlight is on the first visible option
-    await expect(first).toHaveAttribute('data-highlighted', '');
+    const firstId = await listbox.getByRole('option').first().getAttribute('id');
+    await expect(input).toHaveAttribute('aria-activedescendant', firstId as string);
     await page.keyboard.press('ArrowDown');
-    // Highlight has moved off first
-    await expect(first).not.toHaveAttribute('data-highlighted', '');
-    const nowHighlighted = listbox.locator('[data-highlighted]').first();
-    const nowId = await nowHighlighted.getAttribute('id');
-    expect(nowId).toBeTruthy();
-    expect(nowId).not.toBe(firstId);
+    const currentActive = await input.getAttribute('aria-activedescendant');
+    expect(currentActive).toBeTruthy();
+    expect(currentActive).not.toBe(firstId);
   });
 
   test('End / Home navigate to last / first visible enabled option', async ({
@@ -92,8 +79,6 @@ test.describe('Combobox — keyboard interactions', () => {
     await input.fill('a');
     const listbox = page.getByRole('listbox').first();
     await expect(listbox).toBeVisible();
-    await expect(listbox.locator('[data-highlighted]')).toHaveCount(1);
-    // End — find last enabled option
     await page.keyboard.press('End');
     const options = listbox.getByRole('option');
     const optsCount = await options.count();
@@ -107,13 +92,10 @@ test.describe('Combobox — keyboard interactions', () => {
       }
     }
     expect(lastEnabledId).toBeTruthy();
-    const highlighted = listbox.locator('[data-highlighted]').first();
-    await expect(highlighted).toHaveAttribute('id', lastEnabledId as string);
-    // Home
+    await expect(input).toHaveAttribute('aria-activedescendant', lastEnabledId as string);
     await page.keyboard.press('Home');
     const firstId = await listbox.getByRole('option').first().getAttribute('id');
-    const hlAfterHome = listbox.locator('[data-highlighted]').first();
-    await expect(hlAfterHome).toHaveAttribute('id', firstId as string);
+    await expect(input).toHaveAttribute('aria-activedescendant', firstId as string);
   });
 
   test('Enter commits highlighted option (filter → highlight → Enter)', async ({

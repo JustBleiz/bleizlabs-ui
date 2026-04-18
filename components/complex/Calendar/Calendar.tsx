@@ -458,6 +458,14 @@ export const CalendarHeader = forwardRef<HTMLDivElement, CalendarHeaderProps>(
 
     const labelId = `${baseId}-label`;
 
+    // E142 L4 F15 (NITPICK): chevrons intentionally use native `disabled`
+    // rather than `aria-disabled`, unlike the grid cells. Cells carry
+    // aria-disabled because APG /grid/ requires focusable disabled cells
+    // for virtual-cursor discovery; chevrons are NOT grid cells, and using
+    // native `disabled` correctly removes them from the Tab sequence when
+    // `min`/`max` bounds the month range. Keeping them consistent with the
+    // cells would require a focus-but-guard handler just to restore a
+    // Tab-skip behavior the native attribute already delivers — net loss.
     return (
       <div ref={ref} className={cn(styles.header, className)} {...rest}>
         <button

@@ -187,19 +187,21 @@ test.describe('NavigationMenu — keyboard interactions', () => {
     await expect(last).toBeFocused();
   });
 
-  test.skip('ArrowRight inside submenu advances to next menubar item [NOTE-FOR-LIB: double-handler bubble bug]', async () => {
-    // NOTE-FOR-LIB: NavigationMenuContent handleSubmenuKeyDown (line 1159-1184)
-    // calls event.preventDefault() + setOpenValue(nextValue) for ArrowRight,
-    // but does NOT call event.stopPropagation(). The event bubbles up to
-    // NavigationMenuList handleKeyDown which then advances one MORE step,
-    // ending with openValue pointing at the wrong item (skips one menubar
-    // item). Expected: ArrowRight inside Products submenu opens Solutions.
-    // Actual: ArrowRight inside Products submenu ends up with Resources
-    // focused AND/OR Products stays open (race-dependent) because the
-    // submenu handler's setOpenValue is overwritten by the list handler's
-    // setOpenValue. Fix: add `event.stopPropagation()` inside the submenu
-    // handler's ArrowRight/ArrowLeft/Tab branches. Defer to L4/L5 library
-    // refactor batch.
+  test('ArrowRight inside submenu advances to the NEXT menubar item (F6)', async ({
+    page,
+  }) => {
+    // E142 L4 F6 — submenu ArrowRight now calls stopPropagation so the
+    // list-level handler cannot also advance (previously doubled up).
+    const menubar = page.getByRole('menubar', { name: 'Main' });
+    await menubar.getByRole('menuitem', { name: 'Products' }).click();
+    const submenu = page.getByRole('menu');
+    await submenu.getByRole('menuitem').first().focus();
+    await page.keyboard.press('ArrowRight');
+    // Products submenu closed, next menubar item (Solutions) is focused AND
+    // its submenu is open (matches APG: close current, advance one step,
+    // open next submenu if it has one).
+    const solutions = menubar.getByRole('menuitem', { name: 'Solutions' });
+    await expect(solutions).toBeFocused();
   });
 
   test('Tab inside submenu closes submenu + exits menubar', async ({ page }) => {

@@ -19,14 +19,12 @@ test.describe('ContextMenu — focus management', () => {
     await expect(page.getByRole('menuitem').first()).toBeFocused();
   });
 
-  test('on close via Escape: menu closes (focus restore best-effort)', async ({
+  test('on close via Escape: focus restores to the pre-right-click focused element (F7)', async ({
     page,
   }) => {
-    // NOTE-FOR-LIB: Spec asserted focus restores to pre-right-click
-    // activeElement. In practice, mousedown on the trigger div blurs the
-    // previously focused button before contextmenu fires; previousActiveRef
-    // captures document.body as restore target. Assert the observable
-    // user-facing contract: menu closes on Escape.
+    // E142 L4 F7 — preOpenFocusRef captures document.activeElement on
+    // pointerdown (BEFORE mousedown blurs it), so Escape restore lands on
+    // the button that was focused when the user right-clicked.
     const anchor = page.getByRole('button', { name: /Focus anchor/ });
     await anchor.scrollIntoViewIfNeeded();
     await anchor.focus();
@@ -36,6 +34,7 @@ test.describe('ContextMenu — focus management', () => {
     await expect(page.getByRole('menu')).toBeVisible();
     await page.keyboard.press('Escape');
     await expect(page.getByRole('menu')).not.toBeVisible();
+    await expect(anchor).toBeFocused();
   });
 
   test('on close via item select: menu closes', async ({ page }) => {

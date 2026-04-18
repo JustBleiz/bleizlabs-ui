@@ -116,6 +116,15 @@ export interface CommandItemRecord {
   value: string;
   textContent: string;
   disabled: boolean;
+  /**
+   * Direct React-side select handler. Previously commit used a DOM
+   * `CustomEvent('cmd-select')` bridge between commitHighlighted and
+   * CommandItem's `useEffect`-attached listener — that path lost events
+   * whenever the listener-attach timing raced with Enter-keydown. The
+   * registry now carries a stable onSelect reference so Enter commits
+   * directly through React state (E142 L4 F8).
+   */
+  onSelect: ((value: string) => void) | undefined;
 }
 
 export interface CommandProps
@@ -436,13 +445,13 @@ export const Command = forwardRef<HTMLDivElement, CommandProps>(function Command
     if (highlightedId === null) return;
     const record = registry.get(highlightedId);
     if (!record || record.disabled) return;
-    // Dispatch to item's onSelect via event bubbling. The CommandItem
-    // renders with data-cmd-item-id — we find the element and dispatch a
-    // native 'cmd-select' event that the item handler listens for.
-    const element = document.getElementById(highlightedId);
-    element?.dispatchEvent(
-      new CustomEvent('cmd-select', { bubbles: false }),
-    );
+    // Direct React-side dispatch (E142 L4 F8). The previous DOM-CustomEvent
+    // bridge through `document.getElementById(...).dispatchEvent` raced
+    // with CommandItem's `useEffect`-attached listener — Enter keydown
+    // fires before the effect commits, and Playwright exposed the race
+    // 100% of the time. Invoking the registry's onSelect directly removes
+    // the listener-attach timing window.
+    record.onSelect?.(record.value);
   }, [highlightedId, registry]);
 
   // Focus trap — reuses Dialog E15 hook when dialog is open.
@@ -927,13 +936,31 @@ export const CommandItem = forwardRef<HTMLDivElement, CommandItemProps>(
     // ctx re-memo → effect re-runs → unregister → setRegistry infinite loop.
     // Reported in E137 bug 2 ("Maximum update depth exceeded" at line 319's
     // setRegistry). Same trap as Carousel registerSlide, fixed in E132.
+    //
+    // onSelect is held in a ref + read through `onSelectLatest` so we can
+    // pass a stable function identity into `registerItem` without churning
+    // the registry on every consumer re-render (E142 L4 F8). The ref mirror
+    // is updated on every render so the latest onSelect is always invoked.
     const { registerItem, unregisterItem } = ctx;
+    const onSelectLatestRef = useRef(onSelect);
     useLayoutEffect(() => {
-      registerItem({ id, value, textContent: derivedText, disabled });
+      onSelectLatestRef.current = onSelect;
+    });
+    const stableOnSelect = useCallback((v: string) => {
+      onSelectLatestRef.current?.(v);
+    }, []);
+    useLayoutEffect(() => {
+      registerItem({
+        id,
+        value,
+        textContent: derivedText,
+        disabled,
+        onSelect: disabled ? undefined : stableOnSelect,
+      });
       return () => {
         unregisterItem(id);
       };
-    }, [registerItem, unregisterItem, id, value, derivedText, disabled]);
+    }, [registerItem, unregisterItem, id, value, derivedText, disabled, stableOnSelect]);
 
     const isVisible = ctx.visibleItemIds.has(id);
     const isHighlighted = ctx.highlightedId === id;
@@ -947,23 +974,11 @@ export const CommandItem = forwardRef<HTMLDivElement, CommandItemProps>(
       };
     }, [group, id, isVisible]);
 
-    // Listen for synthetic cmd-select event from commitHighlighted().
     const elementRef = useRef<HTMLDivElement | null>(null);
     const mergedRef = useMemo(
       () => mergeRefs(ref, elementRef),
       [ref],
     );
-
-    useEffect(() => {
-      const element = elementRef.current;
-      if (!element) return;
-      const handler = () => {
-        if (disabled) return;
-        onSelect?.(value);
-      };
-      element.addEventListener('cmd-select', handler);
-      return () => element.removeEventListener('cmd-select', handler);
-    }, [disabled, onSelect, value]);
 
     const handleMouseMove = useCallback(
       (event: ReactMouseEvent<HTMLDivElement>) => {

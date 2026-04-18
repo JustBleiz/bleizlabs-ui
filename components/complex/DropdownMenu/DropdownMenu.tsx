@@ -29,8 +29,12 @@
  *   Home/End jump to first/last non-disabled, typeahead by single char or
  *   multi-char buffer (500ms reset), Escape closes + restores focus to trigger,
  *   Enter/Space on item fires `onSelect` (cancelable `CustomEvent`) then closes,
- *   Tab closes menu without focus restore (browser Tab takes over — APG
- *   convention differs from Dialog trap). Items render as `<button type="button">`
+ *   Tab closes menu and restores focus to the trigger (via useFloatingFocus
+ *   `getRestoreTarget`) BEFORE the browser's own Tab traversal — net effect
+ *   is that the next tabbable after the trigger receives focus. Fixed in
+ *   E142 L4 F14 docblock correction — earlier text claimed "without focus
+ *   restore" but lines 389-391 and the runtime describe this trigger-first
+ *   pattern. Items render as `<button type="button">`
  *   for native Enter/Space + disabled handling. `onSelect` can `event.preventDefault()`
  *   to keep menu open (future CheckboxItem/RadioItem pattern).
  * @apg https://www.w3.org/WAI/ARIA/apg/patterns/menu/

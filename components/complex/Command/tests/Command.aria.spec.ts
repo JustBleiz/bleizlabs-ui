@@ -128,9 +128,6 @@ test.describe('Command — ARIA + accessibility tree', () => {
   test('axe-core zero violations — filtered listbox with matches', async ({
     page,
   }) => {
-    // Use basic palette (idx 0) — no CommandShortcut usage. The grouped
-    // demo's .shortcut text fails WCAG 1.4.3 (3.88:1) even though
-    // aria-hidden is set; flagged as NOTE-FOR-LIB-CONTRAST below.
     await page.getByRole('button', { name: 'Open palette' }).click();
     const input = page.getByRole('combobox');
     await expect(input).toBeFocused();
@@ -142,14 +139,23 @@ test.describe('Command — ARIA + accessibility tree', () => {
     expect(results.violations).toEqual([]);
   });
 
-  // NOTE-FOR-LIB (L4/L5): CommandShortcut text (`.shortcut` class) uses
-  // #9d9d9d on #3f3f3f background → contrast 3.88:1, fails WCAG 1.4.3
-  // (requires ≥4.5:1 for 12px text). Even though the element has
-  // aria-hidden="true", axe-core still flags it as a color-contrast
-  // violation because aria-hidden does not exempt content from WCAG SC
-  // 1.4.3 (the information is still visually conveyed to sighted users).
-  // Recommend bumping shortcut text to ≥#b8b8b8 on current surface or
-  // raising surface contrast.
+  test('F9 — CommandShortcut uses text-secondary (theme-aware ≥4.5:1, not text-muted)', async ({
+    page,
+  }) => {
+    // E142 L4 F9 — CommandShortcut color bumped from --color-text-muted
+    // (#9d9d9d on surface-raised ~3.88:1) to --color-text-secondary
+    // (theme-aware, ≥4.5:1). Assert the shortcut span resolves to the
+    // theme-aware token value rather than the muted one.
+    await page.getByRole('button', { name: 'Open grouped palette' }).click();
+    await expect(page.getByRole('dialog')).toBeVisible();
+    const shortcut = page.getByRole('dialog').locator('[class*="shortcut"]').first();
+    const resolved = await shortcut.evaluate((el) =>
+      window.getComputedStyle(el).color,
+    );
+    // Dark theme --color-text-secondary = neutral-300 = #c7c7c7.
+    // Browsers report as rgb(199, 199, 199).
+    expect(resolved).toBe('rgb(199, 199, 199)');
+  });
 
   test.skip(
     'CMD-R13 — dev-mode warn when no aria-label [PLAYGROUND-DEP: all demos provide aria-label]',

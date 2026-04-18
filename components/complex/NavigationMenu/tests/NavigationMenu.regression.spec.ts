@@ -102,9 +102,11 @@ test.describe('NavigationMenu — regression (closed-issue coverage)', () => {
     // covered by static review of effectiveOpenDelay (NavigationMenu.tsx:370).
   });
 
-  test('NM-R20 — visibilitychange (tab hidden) does not keep menu stuck open', async ({
+  test('NM-R20 — visibilitychange (tab hidden) auto-closes menu (F13)', async ({
     page,
   }) => {
+    // E142 L4 F13 — NavigationMenu subscribes to document.visibilitychange
+    // while a submenu is open and auto-closes when the tab becomes hidden.
     const menubar = page.getByRole('menubar', { name: 'Main' });
     await menubar.getByRole('menuitem', { name: 'Products' }).click();
     await expect(page.getByRole('menu')).toBeVisible();
@@ -115,24 +117,16 @@ test.describe('NavigationMenu — regression (closed-issue coverage)', () => {
       });
       document.dispatchEvent(new Event('visibilitychange'));
     });
-    // NOTE-FOR-LIB: bleizlabs-ui NavigationMenu does not subscribe to
-    // visibilitychange to auto-close (Radix does). Menu stays open on tab hide.
-    // Document current behavior rather than assert closure.
-    // Menu should still be in the DOM (not crashed)
-    await expect(page.getByRole('menu')).toBeVisible();
+    await expect(page.getByRole('menu')).not.toBeVisible();
   });
 
-  test('NM-R21 — window blur does not keep menu stuck open (click to close still works)', async ({
-    page,
-  }) => {
+  test('NM-R21 — window blur auto-closes menu (F13)', async ({ page }) => {
+    // E142 L4 F13 — NavigationMenu subscribes to window.blur and auto-closes.
     const menubar = page.getByRole('menubar', { name: 'Main' });
     const trigger = menubar.getByRole('menuitem', { name: 'Products' });
     await trigger.click();
     await expect(page.getByRole('menu')).toBeVisible();
     await page.evaluate(() => window.dispatchEvent(new Event('blur')));
-    // NOTE-FOR-LIB: bleizlabs-ui NavigationMenu does not auto-close on blur
-    // (Radix does). Click trigger again to toggle closed.
-    await trigger.click();
     await expect(page.getByRole('menu')).not.toBeVisible();
   });
 

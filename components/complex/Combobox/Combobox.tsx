@@ -202,11 +202,9 @@
  */
 
 import {
-  createContext,
   forwardRef,
   memo,
   useCallback,
-  useContext,
   useEffect,
   useId,
   useLayoutEffect,
@@ -350,6 +348,17 @@ interface ComboboxContextValue {
    * Select Phase 5 CRIT-1.
    */
   listboxKeyHandlerRef: MutableRefObject<((event: ComboboxKeyEvent) => void) | null>;
+  /**
+   * Highlighted option id — root-owned React state. Hoisted from the former
+   * ComboboxContentContext provider (which sat inside FloatingPortal —
+   * sibling of ComboboxInput, unreachable via React context propagation).
+   * Both ComboboxInput (reads to wire `aria-activedescendant`) and
+   * ComboboxContent (reads for navigation) consume it from the root
+   * context. E142 L4 F1 fix — restores WCAG SC 4.1.3.
+   */
+  highlightedId: string | null;
+  /** Request a highlight change. `source` selects scroll behavior. */
+  setHighlight: (id: string | null, source: 'mouse' | 'keyboard') => void;
   /** Whether free-text Enter commit + free-text blur commit is allowed. */
   acceptFreeText: boolean;
   /** Positioning — consumed by ComboboxContent's useFloating call. */
@@ -360,39 +369,6 @@ interface ComboboxContextValue {
 
 const [ComboboxContextProvider, useComboboxContext] =
   createFloatingContext<ComboboxContextValue>('Combobox');
-
-// ──────────────────────────────────────────────────────────────────────────
-// Content context — highlight state shared Content → Input → Item
-// ──────────────────────────────────────────────────────────────────────────
-//
-// Lives separately from the root context because the highlighted option is
-// only meaningful while the listbox is open. Inherited from Select Phase 5
-// IMP-3: highlightedId is React state (not a ref + direct DOM writes) so
-// React owns `aria-activedescendant` declaratively on the input. Items are
-// wrapped in `React.memo` so only the two actually-toggled items re-render
-// when the highlight moves. Plain nullable React context (not
-// `createFloatingContext`) so ComboboxInput can read it OPTIONALLY — when
-// the listbox is closed there is no Content provider in the tree.
-
-interface ComboboxContentContextValue {
-  /** Current highlighted option id, or null when nothing is highlighted. */
-  highlightedId: string | null;
-  /** Request a highlight change. `source` selects scroll behavior. */
-  setHighlight: (id: string | null, source: 'mouse' | 'keyboard') => void;
-  /** Popper element ref — used by Input's blur logic to detect intra-popup focus moves. */
-  popperRef: RefObject<HTMLDivElement | null>;
-}
-
-const ComboboxContentContext = createContext<ComboboxContentContextValue | null>(null);
-ComboboxContentContext.displayName = 'ComboboxContentContext';
-
-function useRequiredComboboxContentContext(componentName: string): ComboboxContentContextValue {
-  const ctx = useContext(ComboboxContentContext);
-  if (!ctx) {
-    throw new Error(`${componentName} must be rendered inside a <ComboboxContent> parent.`);
-  }
-  return ctx;
-}
 
 // ──────────────────────────────────────────────────────────────────────────
 // Combobox root — state holder, item registry, filter logic, context provider
@@ -647,6 +623,36 @@ export function Combobox({
   // event handler discipline inherited from Select Phase 5 CRIT-1.
   const listboxKeyHandlerRef = useRef<((event: ComboboxKeyEvent) => void) | null>(null);
 
+  // Highlighted option id — root-owned state so both ComboboxInput (sits
+  // OUTSIDE ComboboxContent in the render tree, sibling of FloatingPortal)
+  // and ComboboxContent can consume it. Prior to E142 L4 F1 this state was
+  // owned by ComboboxContentContext — but that provider wrapped the portal
+  // subtree, so the input's `useContext` always read `null` and
+  // `aria-activedescendant` was silently undefined (WCAG SC 4.1.3 fail).
+  const [highlightedId, setHighlightedId] = useState<string | null>(null);
+
+  const setHighlight = useCallback(
+    (nextId: string | null, source: 'mouse' | 'keyboard') => {
+      setHighlightedId((prev) => {
+        if (prev === nextId) return prev;
+        if (nextId && source === 'keyboard') {
+          const items = itemsRef.current;
+          // Look up the record via the Map directly — getOrderedItems
+          // recomputes DOM order on every call; for highlight-scroll we
+          // only need the element reference, so walk the Map values.
+          for (const record of items.values()) {
+            if (record.id === nextId) {
+              record.element.scrollIntoView({ block: 'nearest' });
+              break;
+            }
+          }
+        }
+        return nextId;
+      });
+    },
+    [],
+  );
+
   // One-shot initial search sync (E28 Phase 5 IMP-4): when the consumer
   // passes `defaultValue="pl"` without `defaultSearch`, the input initially
   // shows '' because items haven't registered yet. After the first registry
@@ -708,6 +714,8 @@ export function Combobox({
       visibleItemIds,
       matchCount,
       listboxKeyHandlerRef,
+      highlightedId,
+      setHighlight,
       acceptFreeText,
       placement,
       sideOffset,
@@ -734,6 +742,8 @@ export function Combobox({
       getLabelByValue,
       visibleItemIds,
       matchCount,
+      highlightedId,
+      setHighlight,
       acceptFreeText,
       placement,
       sideOffset,
@@ -845,23 +855,15 @@ export const ComboboxInput = forwardRef<HTMLInputElement, ComboboxInputProps>(
       getOrderedItems,
       getLabelByValue,
       listboxKeyHandlerRef,
+      highlightedId,
       acceptFreeText,
     } = ctx;
 
-    // Subscribe to Content's context only while the listbox is mounted
-    // (open). When closed, `contentCtx` is null — we can't call hooks
-    // conditionally, so we always read the context but fall back to null
-    // when there is no provider.
-    const contentCtx = useContext(ComboboxContentContext);
-    const highlightedId = contentCtx?.highlightedId ?? null;
-    // Note: ComboboxInput intentionally does NOT consume `popperRef` from
-    // ComboboxContentContext. The blur handler resolves the popper element
-    // via `document.getElementById(contentId)` instead, because
+    // Blur handler resolves the popper element via
+    // `document.getElementById(contentId)` rather than reading a ref, because
     // React 19's `react-hooks/preserve-manual-memoization` rule flags
     // `ref?.current` reads inside `useCallback` deps as memoization-
-    // breaking. DOM lookup keeps the callback ref-free. The `popperRef`
-    // is still published on the context for any future consumer that
-    // needs a stable element handle.
+    // breaking. DOM lookup keeps the callback ref-free.
 
     const setInputNode = useCallback(
       (node: HTMLInputElement | null) => {
@@ -1265,6 +1267,8 @@ export function ComboboxContent({ children, className, ...rest }: ComboboxConten
     getLabelByValue,
     visibleItemIds,
     listboxKeyHandlerRef,
+    highlightedId,
+    setHighlight,
     acceptFreeText,
     placement,
     sideOffset,
@@ -1273,25 +1277,6 @@ export function ComboboxContent({ children, className, ...rest }: ComboboxConten
 
   const popperRef = useRef<HTMLDivElement | null>(null);
   const listboxRef = useRef<HTMLDivElement | null>(null);
-
-  // Highlighted option id — React state per Select Phase 5 IMP-3.
-  const [highlightedId, setHighlightedId] = useState<string | null>(null);
-
-  const setHighlight = useCallback(
-    (nextId: string | null, source: 'mouse' | 'keyboard') => {
-      setHighlightedId((prev) => {
-        if (prev === nextId) return prev;
-        if (nextId && source === 'keyboard') {
-          // Defer scroll to after React commits the new highlight.
-          const items = getOrderedItems();
-          const record = items.find((it) => it.id === nextId);
-          record?.element.scrollIntoView({ block: 'nearest' });
-        }
-        return nextId;
-      });
-    },
-    [getOrderedItems],
-  );
 
   // Floating positioning.
   const { refs, floatingStyles, placement: actualPlacement } = useFloating({
@@ -1382,8 +1367,7 @@ export function ComboboxContent({ children, className, ...rest }: ComboboxConten
     const items = getOrderedItems();
     const visible = items.filter((it) => visibleItemIds.has(it.id) && !it.disabled);
     if (visible.length === 0) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect -- subscribe-to-external-system pattern (item registry); see Select E27 precedent
-      setHighlightedId(null);
+      setHighlight(null, 'mouse');
       return;
     }
 
@@ -1405,7 +1389,7 @@ export function ComboboxContent({ children, className, ...rest }: ComboboxConten
     setHighlight(initial.id, 'keyboard');
 
     return () => {
-      setHighlightedId(null);
+      setHighlight(null, 'mouse');
     };
   }, [open, search, valueRef, visibleItemIds, getOrderedItems, setHighlight]);
 
@@ -1636,38 +1620,31 @@ export function ComboboxContent({ children, className, ...rest }: ComboboxConten
     };
   }, []);
 
-  const contentContextValue = useMemo<ComboboxContentContextValue>(
-    () => ({ highlightedId, setHighlight, popperRef }),
-    [highlightedId, setHighlight],
-  );
-
   if (!open) return null;
 
   return (
-    <ComboboxContentContext.Provider value={contentContextValue}>
-      <FloatingPortal>
+    <FloatingPortal>
+      <div
+        ref={mergedPopperRef}
+        className={styles.contentRoot}
+        style={floatingStyles}
+      >
         <div
-          ref={mergedPopperRef}
-          className={styles.contentRoot}
-          style={floatingStyles}
+          ref={listboxRef}
+          id={contentId}
+          role="listbox"
+          aria-labelledby={inputId}
+          aria-multiselectable={false}
+          tabIndex={-1}
+          data-state="open"
+          data-placement={actualPlacement}
+          className={cn(styles.content, className)}
+          {...rest}
         >
-          <div
-            ref={listboxRef}
-            id={contentId}
-            role="listbox"
-            aria-labelledby={inputId}
-            aria-multiselectable={false}
-            tabIndex={-1}
-            data-state="open"
-            data-placement={actualPlacement}
-            className={cn(styles.content, className)}
-            {...rest}
-          >
-            {children}
-          </div>
+          {children}
         </div>
-      </FloatingPortal>
-    </ComboboxContentContext.Provider>
+      </div>
+    </FloatingPortal>
   );
 }
 
@@ -1804,9 +1781,9 @@ function ComboboxItemImpl({
     unregisterItem,
     visibleItemIds,
     inputRef,
+    highlightedId,
+    setHighlight,
   } = ctx;
-  const contentCtx = useRequiredComboboxContentContext('<ComboboxItem>');
-  const { highlightedId, setHighlight } = contentCtx;
 
   const reactId = useId();
   const itemId = `${reactId}-option`;

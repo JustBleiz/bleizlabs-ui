@@ -344,7 +344,19 @@ export const Slider = forwardRef<HTMLSpanElement, SliderProps>(function Slider(
       if (event.button !== undefined && event.button !== 0) return false;
       const next = valueFromPointer(event.clientX, event.clientY);
       commit(next);
-      thumbRef.current?.focus({ preventScroll: true });
+      // E142 L4 F12: defer thumb focus until the browser has finished its
+      // own pointerdown focus-dispatch cycle. Calling `.focus()` inline
+      // races with the browser: in the prod bundle the browser-dispatched
+      // focus (typically on the descendant span receiving the click)
+      // overrides the thumb focus. rAF pushes the focus call onto the
+      // next frame, AFTER the click-dispatched focus settles on its
+      // default target — so the thumb wins.
+      const thumb = thumbRef.current;
+      if (thumb) {
+        requestAnimationFrame(() => {
+          thumb.focus({ preventScroll: true });
+        });
+      }
     },
     onDragMove: (event) => {
       const next = valueFromPointer(event.clientX, event.clientY);
@@ -635,7 +647,11 @@ export const SliderThumb = forwardRef<HTMLSpanElement, SliderThumbProps>(
         id={ctx.thumbId}
         className={cn(styles.thumb, className)}
         role="slider"
-        tabIndex={ctx.disabled ? -1 : 0}
+        // E142 L4 F11: always tabIndex=0 so disabled sliders stay Tab-
+        // reachable for SR discovery (matches library convention used by
+        // Select, NavigationMenu, Tabs — aria-disabled with focus preserved).
+        // Pointer/keyboard handlers already short-circuit on `disabled`.
+        tabIndex={0}
         aria-orientation={ctx.orientation}
         aria-valuenow={ctx.value}
         aria-valuemin={ctx.min}

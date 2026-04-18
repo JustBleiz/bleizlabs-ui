@@ -249,7 +249,11 @@
   gap: var(--space-1);
   font-family: var(--font-mono, monospace);
   font-size: var(--font-size-xs);
-  color: var(--color-text-muted);
+  // E142 L4 F9: --color-text-muted (#9d9d9d) on surface-raised (#3f3f3f)
+  // computes 3.88:1 — fails WCAG 1.4.3 AA (4.5:1 required for small text).
+  // --color-text-secondary is theme-aware: light neutral-700 / dark
+  // neutral-300 on card surfaces, hitting ≥4.5:1 across modes.
+  color: var(--color-text-secondary);
   letter-spacing: 0.04em;
 }
 

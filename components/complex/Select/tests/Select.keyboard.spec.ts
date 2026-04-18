@@ -1,10 +1,10 @@
 /**
  * Select keyboard interaction spec — APG `/combobox/` combobox-select-only
- * (E142 L3d1).
+ * (E142 L3d1 + L4 library fixes F1/F2).
  *
  * Coverage:
- * - Space/Enter/ArrowDown/ArrowUp open listbox
- * - ArrowDown/Up navigate enabled options (data-highlighted proxy)
+ * - Space/Enter/ArrowDown/ArrowUp open listbox (first-key-ever included)
+ * - ArrowDown/Up navigate enabled options (aria-activedescendant assertions)
  * - Home/End jump
  * - PageDown/PageUp ±10
  * - Enter/Space commit highlighted → close + fire onValueChange
@@ -14,17 +14,12 @@
  * - Disabled item skipped by arrow nav
  * - Modifier-arrow pass-through
  *
- * NOTE-FOR-LIB (L4/L5): Same as Combobox — the trigger's
- * `aria-activedescendant` is never wired because SelectContentContext.Provider
- * sits INSIDE SelectContent (below FloatingPortal), while SelectTrigger
- * reads via useContext from a sibling position. Attribute resolves to
- * undefined. Tests assert highlight via `data-highlighted=""` on option
- * elements as the observable substitute. WCAG SC 4.1.3 + APG combobox
- * require aria-activedescendant on the role=combobox element — flagged
- * for L4/L5 refactor (lift Content context to root, OR move highlight
- * state into root ComboboxContext so both sides can read it).
+ * E142 L4 F1 fixed the root-context highlight state, so `aria-activedescendant`
+ * on the trigger now reconciles correctly and tests assert it directly.
+ * E142 L4 F2 fixed the first-key-ever guard so ArrowDown/ArrowUp/Home/End on
+ * a fresh closed trigger opens the listbox without needing a workaround click.
  *
- * Playground: /components/select (click trigger opens listbox).
+ * Playground: /components/select.
  */
 
 import { test, expect } from '@playwright/test';
@@ -49,41 +44,61 @@ test.describe('Select — keyboard interactions', () => {
     await expect(page.getByRole('listbox').first()).toBeVisible();
   });
 
-  // NOTE-FOR-LIB (CRITICAL): First-ever ArrowDown/ArrowUp on a closed Select
-  // trigger does NOT open the listbox — the handler guards with
-  // `if (enabled.length === 0) return;` BEFORE the switch that would call
-  // setOpen. Items only mount inside SelectContent (open===true gated), so
-  // on first keydown the registry is empty and the keys are swallowed.
-  // Space/Enter work only because the native <button> click fallback fires.
-  // APG /combobox/ collapsed-listbox REQUIRES all of Space/Enter/ArrowDown/
-  // ArrowUp/Home/End to open the listbox. Tests below use `trigger.click()`
-  // or `Space` to work around the bug; the ArrowDown-opens path is flagged
-  // here for L4/L5 remediation.
-  test('Click opens listbox + seeds highlight on current value', async ({
+  test('First-ever ArrowDown on closed trigger opens the listbox (F2)', async ({
+    page,
+  }) => {
+    const trigger = page.getByRole('combobox').first();
+    await trigger.focus();
+    await page.keyboard.press('ArrowDown');
+    await expect(page.getByRole('listbox').first()).toBeVisible();
+  });
+
+  test('First-ever ArrowUp on closed trigger opens the listbox (F2)', async ({
+    page,
+  }) => {
+    const trigger = page.getByRole('combobox').first();
+    await trigger.focus();
+    await page.keyboard.press('ArrowUp');
+    await expect(page.getByRole('listbox').first()).toBeVisible();
+  });
+
+  test('First-ever Home on closed trigger opens the listbox (F2)', async ({
+    page,
+  }) => {
+    const trigger = page.getByRole('combobox').first();
+    await trigger.focus();
+    await page.keyboard.press('Home');
+    await expect(page.getByRole('listbox').first()).toBeVisible();
+  });
+
+  test('Click opens listbox + seeds highlight on current value (aria-activedescendant)', async ({
     page,
   }) => {
     const trigger = page.getByRole('combobox').first();
     await trigger.click();
     const listbox = page.getByRole('listbox').first();
     await expect(listbox).toBeVisible();
-    await expect(listbox.locator('[data-highlighted]')).toHaveCount(1);
-    // Default value = "react" → React option is highlighted
     const reactOpt = listbox.getByRole('option', { name: 'React', exact: true });
-    await expect(reactOpt).toHaveAttribute('data-highlighted', '');
+    const reactId = await reactOpt.getAttribute('id');
+    expect(reactId).toBeTruthy();
+    await expect(trigger).toHaveAttribute('aria-activedescendant', reactId as string);
   });
 
-  test('ArrowDown/ArrowUp navigate enabled options (post-open)', async ({ page }) => {
+  test('ArrowDown/ArrowUp navigate enabled options (aria-activedescendant)', async ({
+    page,
+  }) => {
     const trigger = page.getByRole('combobox').first();
     await trigger.click();
     const listbox = page.getByRole('listbox').first();
-    await expect(listbox.locator('[data-highlighted]')).toHaveCount(1);
     const reactOpt = listbox.getByRole('option', { name: 'React', exact: true });
-    await expect(reactOpt).toHaveAttribute('data-highlighted', '');
-    await page.keyboard.press('ArrowDown');
     const vueOpt = listbox.getByRole('option', { name: 'Vue', exact: true });
-    await expect(vueOpt).toHaveAttribute('data-highlighted', '');
+    const reactId = await reactOpt.getAttribute('id');
+    const vueId = await vueOpt.getAttribute('id');
+    await expect(trigger).toHaveAttribute('aria-activedescendant', reactId as string);
+    await page.keyboard.press('ArrowDown');
+    await expect(trigger).toHaveAttribute('aria-activedescendant', vueId as string);
     await page.keyboard.press('ArrowUp');
-    await expect(reactOpt).toHaveAttribute('data-highlighted', '');
+    await expect(trigger).toHaveAttribute('aria-activedescendant', reactId as string);
   });
 
   test('Home / End jump to first / last enabled option', async ({ page }) => {
@@ -92,11 +107,11 @@ test.describe('Select — keyboard interactions', () => {
     const listbox = page.getByRole('listbox').first();
     const options = listbox.getByRole('option');
     await page.keyboard.press('End');
-    const last = options.last();
-    await expect(last).toHaveAttribute('data-highlighted', '');
+    const lastId = await options.last().getAttribute('id');
+    await expect(trigger).toHaveAttribute('aria-activedescendant', lastId as string);
     await page.keyboard.press('Home');
-    const first = options.first();
-    await expect(first).toHaveAttribute('data-highlighted', '');
+    const firstId = await options.first().getAttribute('id');
+    await expect(trigger).toHaveAttribute('aria-activedescendant', firstId as string);
   });
 
   test('SL-R11 — PageDown / PageUp ±10 within listbox', async ({ page }) => {
@@ -109,11 +124,11 @@ test.describe('Select — keyboard interactions', () => {
     await page.keyboard.press('Home');
     await page.keyboard.press('PageDown');
     const options = listbox.getByRole('option');
-    const tenth = options.nth(10);
-    await expect(tenth).toHaveAttribute('data-highlighted', '');
+    const tenthId = await options.nth(10).getAttribute('id');
+    await expect(trigger).toHaveAttribute('aria-activedescendant', tenthId as string);
     await page.keyboard.press('PageUp');
-    const zero = options.nth(0);
-    await expect(zero).toHaveAttribute('data-highlighted', '');
+    const zeroId = await options.nth(0).getAttribute('id');
+    await expect(trigger).toHaveAttribute('aria-activedescendant', zeroId as string);
   });
 
   test('SL-R05 — Escape closes listbox + restores focus to trigger', async ({
@@ -146,10 +161,10 @@ test.describe('Select — keyboard interactions', () => {
     await page.keyboard.press('Space'); // open without commit
     await expect(page.getByRole('listbox').first()).toBeVisible();
     await page.keyboard.type('c');
-    // First option starting with "c" is Canada
     const listbox = page.getByRole('listbox').first();
     const canada = listbox.getByRole('option', { name: 'Canada', exact: true });
-    await expect(canada).toHaveAttribute('data-highlighted', '');
+    const canadaId = await canada.getAttribute('id');
+    await expect(trigger).toHaveAttribute('aria-activedescendant', canadaId as string);
   });
 
   test('SL-R12 — typeahead single-char repeat cycles through siblings (post-buffer-reset)', async ({
@@ -163,13 +178,15 @@ test.describe('Select — keyboard interactions', () => {
     await page.keyboard.type('c'); // highlights Canada
     const listbox = page.getByRole('listbox').first();
     const canada = listbox.getByRole('option', { name: 'Canada', exact: true });
-    await expect(canada).toHaveAttribute('data-highlighted', '');
+    const canadaId = await canada.getAttribute('id');
+    await expect(trigger).toHaveAttribute('aria-activedescendant', canadaId as string);
     // Wait past the 500ms buffer reset so next 'c' starts a fresh single-char
     // search (which advances past lastIndex to cycle to Chile).
     await page.waitForTimeout(600);
     await page.keyboard.type('c');
     const chile = listbox.getByRole('option', { name: 'Chile', exact: true });
-    await expect(chile).toHaveAttribute('data-highlighted', '');
+    const chileId = await chile.getAttribute('id');
+    await expect(trigger).toHaveAttribute('aria-activedescendant', chileId as string);
   });
 
   test('SL-R08 — disabled items skipped by End (lands on last ENABLED)', async ({
@@ -183,10 +200,10 @@ test.describe('Select — keyboard interactions', () => {
     const trigger = disabled.getByRole('combobox');
     await trigger.click();
     const listbox = page.getByRole('listbox').first();
-    await expect(listbox.locator('[data-highlighted]')).toHaveCount(1);
     await page.keyboard.press('End');
     const usWest = listbox.getByRole('option', { name: /US West/ });
-    await expect(usWest).toHaveAttribute('data-highlighted', '');
+    const usWestId = await usWest.getAttribute('id');
+    await expect(trigger).toHaveAttribute('aria-activedescendant', usWestId as string);
   });
 
   test('SL-R07 — Tab from open listbox closes + advances to next focusable', async ({

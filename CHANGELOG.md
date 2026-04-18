@@ -4,6 +4,43 @@ All notable releases of this component library. Follows [Keep a Changelog](https
 
 ---
 
+## [0.2.0] — 2026-04-19
+
+**Library polish aggregate — 14 findings surfaced by E142 L3 runtime test conversion, fixed in one batch.** Ships `aria-activedescendant` on editable comboboxes + selects (restoring WCAG SC 4.1.3), unblocks first-key keyboard activation on Select, fixes axe `list` violation on Toast, wires HoverCard into the shared Dialog escape stack, and resolves seven IMPORTANT keyboard / aria / focus-restore regressions discovered during L3a-L3e spec conversion.
+
+### Fixed — library (ship in tarball)
+
+#### CRITICAL (4)
+- **F1 `components/complex/Combobox` + `components/complex/Select`** — hoisted `highlightedId` state from the former Content-scope provider (which rendered inside `FloatingPortal`, sibling of the trigger → sibling→sibling context propagation impossible) to the root context. `aria-activedescendant` on `<ComboboxInput>` / `<SelectTrigger>` now reconciles correctly on every highlight move. Restores WCAG SC 4.1.3 + APG `/combobox/`.
+- **F2 `components/complex/Select`** — closed-state keyboard handler was early-returning on empty registry BEFORE the switch that would open the listbox, so the first-ever ArrowDown/ArrowUp/Home/End on a fresh trigger was silently swallowed (SelectItems only mount inside open-gated SelectContent, registry empty on first key). Guard reordered after open-intent cases. Open-intent keys now unconditionally set `open=true` per APG.
+- **F3 `components/complex/Toast/Toaster`** — `<ol aria-label="Notifications">` held `<li role="status">` / `<li role="alert">` children. `role="alert"`/`"status"` strips `<li>`'s implicit `listitem` role, leaving the `<ol>` with disallowed children (axe rule `list`, wcag2a / wcag131). Fix: moved the status/alert role + `aria-live` + `aria-atomic` onto an INNER `<div>` inside each `<li>`; `<li>` uses `display: contents` so list semantics survive without altering the visual grid layout.
+- **F4 `components/complex/HoverCard`** — inline `document.addEventListener('keydown')` Escape listener replaced with the shared `components/complex/Dialog/escapeStack` push/pop pattern. Nested modal scenarios (Dialog → HoverCard) now dismiss topmost-only on Escape, matching Dialog / AlertDialog / Drawer / Sheet behavior.
+
+#### IMPORTANT (7)
+- **F5 `components/complex/NavigationMenu`** — docblock claim "Focus on trigger: openImmediate" corrected to match runtime (focus updates roving tabindex only; opens are via Enter/Space/ArrowDown). Focus-open pattern rejected because it pops every submenu during Tab-through and collapses the Escape-restore flow.
+- **F6 `components/complex/NavigationMenu`** — submenu-level `handleSubmenuKeyDown` ArrowRight/ArrowLeft/Tab branches now call `event.stopPropagation()`. Previously the event bubbled to the list-level handler and advanced an extra step, skipping a menubar item.
+- **F7 `components/complex/ContextMenu`** — `previousActiveRef` focus-restore target was captured inside `useFloatingFocus` layout effect, which runs AFTER `mousedown` blurs the previously focused element (restore target was always `<body>`). New `preOpenFocusRef` snapshot fires on trigger `pointerdown` (button 2 only) BEFORE the blur, passed into `useFloatingFocus` via `getRestoreTarget`.
+- **F8 `components/complex/Command`** — `commitHighlighted()` replaced the DOM `CustomEvent('cmd-select')` dispatch path with a direct React-side call through the registry's `onSelect` reference. The listener-attach race that lost Enter keydowns under Playwright (and by extension any automated harness or timing-sensitive user interaction) is gone.
+- **F9 `components/complex/Command/Command.module.scss`** — `.shortcut` text color bumped from `var(--color-text-muted)` (#9d9d9d on surface-raised 3.88:1) to `var(--color-text-secondary)` (theme-aware, ≥4.5:1). Passes WCAG 1.4.3 AA.
+- **F10 `components/complex/DatePicker`** — added internal `hasValidationError` state toggled by `commitSearch`'s invalid-parse branch, cleared on next user edit, merged into `aria-invalid` on the input (ORed with the explicit `invalid` prop). Auto-exposes bad-parse state to AT without consumer plumbing.
+- **F11 `components/complex/Slider`** — `SliderThumb` `tabIndex` is always `0` regardless of `disabled`. Aligns runtime with the `@a11y` docblock and with the library convention (Select / Tabs / NavigationMenu): disabled-via-aria elements stay Tab-reachable for SR discovery.
+- **F12 `components/complex/Slider`** — track-click thumb focus call (`onDragStart`) now wraps `thumb.focus({ preventScroll: true })` in `requestAnimationFrame`. Prevents the browser's own pointerdown focus dispatch (which can land on a descendant span) from winning over the thumb focus in prod bundles.
+
+#### NITPICK (3)
+- **F13 `components/complex/NavigationMenu`** — added `document.visibilitychange` + `window.blur` auto-close effect (active only while a submenu is open). Matches Radix NavigationMenu behavior, prevents stuck-open menus on alt-tab / tab-switch.
+- **F14 `components/complex/DropdownMenu`** — docblock corrected: "Tab closes menu without focus restore" replaced with an accurate description of the trigger-first restore that `useFloatingFocus.getRestoreTarget` already performs. Doc-only.
+- **F15 `components/complex/Calendar`** — intentional inconsistency between chevron buttons (native `disabled`) and grid cells (`aria-disabled`) documented with an inline comment explaining why the chevrons correctly keep the native attribute (they are not grid cells; native `disabled` delivers the Tab-skip behavior for free).
+
+### Tests
+- Replaced `data-highlighted` proxy assertions with real `aria-activedescendant` assertions across Combobox + Select suites (no longer needed after F1).
+- Unskipped previously deferred tests: Select first-key-ever keyboard opens (F2), ContextMenu focus-restore (F7), DatePicker DP-R11 aria-invalid (F10), Slider SL-R05 track-click focus + SL-R22 disabled tabIndex (F11/F12), NavigationMenu NM-R20/R21 visibility+blur (F13), NavigationMenu ArrowRight-in-submenu (F6), Command CMD-R02 Enter commit (F8).
+- Removed `.disableRules(['list'])` from Toast aria sweep (F3). Color-contrast rule still suppressed on `.description` pending a follow-up fix.
+
+### Version bump
+Minor bump (0.1.2 → 0.2.0): new tarball contents include semantic a11y changes to `SelectContext` / `ComboboxContext` (consumers reading the context type through re-exports would see the new `highlightedId` / `setHighlight` fields), new `preOpenFocusRef` on `ContextMenuContext`, and `hasValidationError` on `DatePickerContext`. Private contexts but strict minor-bump discipline applied.
+
+---
+
 ## [0.1.2] — 2026-04-19
 
 **Accessibility safety net — WCAG 2.1 AA zero-violations baseline for all 49 demo routes.**

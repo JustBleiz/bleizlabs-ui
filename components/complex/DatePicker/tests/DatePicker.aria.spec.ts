@@ -142,13 +142,20 @@ test.describe('DatePicker — ARIA + accessibility tree', () => {
     expect(results.violations).toEqual([]);
   });
 
-  test.skip(
-    'DP-R11 — aria-invalid=true on invalid date input [LIB-BEHAVIOR: aria-invalid only toggled via explicit invalid prop]',
-    async () => {
-      // Current implementation: `aria-invalid` only set when consumer passes
-      // `invalid={true}` prop on DatePickerInput (via `rest` spread). The
-      // component does not auto-validate typed input and set aria-invalid
-      // on bad parse — spec expectation diverges from implementation.
-    },
-  );
+  test('DP-R11 — aria-invalid="true" on invalid date input (F10)', async ({
+    page,
+  }) => {
+    // E142 L4 F10 — commitSearch now flips an internal hasValidationError
+    // flag when the typed string fails to parse, and DatePickerInput ORs
+    // that flag with the explicit `invalid` prop when writing aria-invalid.
+    const input = page.getByRole('combobox').first();
+    await input.focus();
+    await input.fill('not-a-date');
+    await input.blur();
+    await expect(input).toHaveAttribute('aria-invalid', 'true');
+    // Typing again clears the flag.
+    await input.focus();
+    await input.fill('2026-05-01');
+    await expect(input).not.toHaveAttribute('aria-invalid', 'true');
+  });
 });

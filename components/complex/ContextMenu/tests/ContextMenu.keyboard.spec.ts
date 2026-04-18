@@ -21,16 +21,12 @@ test.describe('ContextMenu — keyboard interactions', () => {
     await expect(page.getByRole('menuitem').first()).toBeFocused();
   });
 
-  test('Escape closes menu (focus restore best-effort — body may take over)', async ({
+  test('Escape closes menu and restores focus to the pre-open focused element (F7)', async ({
     page,
   }) => {
-    // Spec asked: after right-click + Escape, focus restores to pre-open
-    // activeElement. In practice Playwright's mousedown on the trigger div
-    // blurs the prior button; contextmenu fires with activeElement=body,
-    // so the restore target becomes body. This is library behavior
-    // (NOTE-FOR-LIB: could snapshot activeElement on pointerdown instead of
-    // on open). We assert the invariant that actually matters for a user
-    // dismiss loop: menu closes on Escape.
+    // E142 L4 F7 — preOpenFocusRef snapshots activeElement on pointerdown
+    // (before the browser's mousedown blurs it), so Escape restore lands
+    // on the element that was focused BEFORE the right-click.
     const focusTarget = page.getByRole('button', { name: /Focus anchor/ });
     await focusTarget.scrollIntoViewIfNeeded();
     await focusTarget.focus();
@@ -40,6 +36,7 @@ test.describe('ContextMenu — keyboard interactions', () => {
     await expect(page.getByRole('menu')).toBeVisible();
     await page.keyboard.press('Escape');
     await expect(page.getByRole('menu')).not.toBeVisible();
+    await expect(focusTarget).toBeFocused();
   });
 
   test('ArrowDown cycles with wraparound', async ({ page }) => {
