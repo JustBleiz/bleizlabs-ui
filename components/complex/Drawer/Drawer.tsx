@@ -14,7 +14,7 @@ import { createPortal } from 'react-dom';
 import { Heading } from '../../typography/Heading';
 import { Text } from '../../typography/Text';
 import { cn } from '../../utils/cn';
-import { useFocusTrap } from '../Dialog';
+import { useFocusTrap, escapeStack } from '../Dialog';
 import styles from './Drawer.module.scss';
 
 export type DrawerSize = 'sm' | 'md' | 'lg';
@@ -178,18 +178,26 @@ export function Drawer({
 
   useFocusTrap(contentRef, open, initialFocusRef);
 
-  // Escape handler — listens on document so nested Select/Combobox Escape
-  // handlers fire first (Radix #1951 pattern, inherited from Dialog).
+  // Escape handler — stack-based so only the topmost open modal handles Escape
+  // (Radix #1249 fix, shared with the dialog family via `escapeStack`). Document
+  // listener means nested Select/Combobox browser-level Escape still fires first
+  // (Radix #1951 pattern inherited from Dialog).
   useEffect(() => {
     if (!open || !closeOnEscape) return;
+    const close = () => onOpenChange(false);
+    escapeStack.push(close);
     function handleEscape(event: KeyboardEvent) {
-      if (event.key === 'Escape') {
-        event.preventDefault();
-        onOpenChange(false);
-      }
+      if (event.key !== 'Escape') return;
+      if (escapeStack[escapeStack.length - 1] !== close) return;
+      event.preventDefault();
+      close();
     }
     document.addEventListener('keydown', handleEscape);
-    return () => document.removeEventListener('keydown', handleEscape);
+    return () => {
+      document.removeEventListener('keydown', handleEscape);
+      const idx = escapeStack.indexOf(close);
+      if (idx !== -1) escapeStack.splice(idx, 1);
+    };
   }, [open, closeOnEscape, onOpenChange]);
 
   // Scroll lock (Radix #998 fix — only while open).

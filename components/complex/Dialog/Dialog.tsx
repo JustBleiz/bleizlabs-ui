@@ -15,6 +15,7 @@ import { Heading } from '../../typography/Heading';
 import { Text } from '../../typography/Text';
 import { cn } from '../../utils/cn';
 import { useFocusTrap } from './useFocusTrap';
+import { escapeStack } from './escapeStack';
 import styles from './Dialog.module.scss';
 
 export type DialogSize = 'sm' | 'md' | 'lg' | 'xl';
@@ -172,18 +173,28 @@ export function Dialog({
 
   useFocusTrap(contentRef, open, initialFocusRef);
 
-  // Escape handler (Radix #1951 fix — nested Select's own Escape handler must run first;
-  // we listen on document so capture order is deterministic with document listeners).
+  // Escape handler — stack-based so only the TOPMOST open dialog handles Escape
+  // (Radix #1249 fix: nested dialogs). Each Dialog pushes its close callback onto
+  // `escapeStack` on open and pops on close. The document-level listener ignores
+  // the event unless its handler sits at the top of the stack at firing time.
+  // Radix #1951: document-phase listeners still let nested native Select swallow
+  // Escape first (the select's own browser handler runs before document).
   useEffect(() => {
     if (!open || !closeOnEscape) return;
+    const close = () => onOpenChange(false);
+    escapeStack.push(close);
     function handleEscape(event: KeyboardEvent) {
-      if (event.key === 'Escape') {
-        event.preventDefault();
-        onOpenChange(false);
-      }
+      if (event.key !== 'Escape') return;
+      if (escapeStack[escapeStack.length - 1] !== close) return;
+      event.preventDefault();
+      close();
     }
     document.addEventListener('keydown', handleEscape);
-    return () => document.removeEventListener('keydown', handleEscape);
+    return () => {
+      document.removeEventListener('keydown', handleEscape);
+      const idx = escapeStack.indexOf(close);
+      if (idx !== -1) escapeStack.splice(idx, 1);
+    };
   }, [open, closeOnEscape, onOpenChange]);
 
   // Scroll lock (Radix #998 fix — only lock while open, never on forceMount).

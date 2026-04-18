@@ -15,7 +15,7 @@ import { Heading } from '../../typography/Heading';
 import { Text } from '../../typography/Text';
 import { Button, type ButtonVariant } from '../../interactive/Button';
 import { cn } from '../../utils/cn';
-import { useFocusTrap } from '../Dialog';
+import { useFocusTrap, escapeStack } from '../Dialog';
 import styles from './AlertDialog.module.scss';
 
 export type AlertDialogSize = 'sm' | 'md' | 'lg';
@@ -187,18 +187,27 @@ export function AlertDialog({
     }
   }, [onCancel, onOpenChange]);
 
-  // Escape handler — calls onCancel (not onConfirm) per APG safety.
-  // Listens on document (Radix #1951 fix — nested Select Escape fires first).
+  // Escape handler — stack-based so only the topmost open modal handles Escape
+  // (Radix #1249 fix, shared across the dialog family via `escapeStack`).
+  // APG safety: Escape calls `onCancel`, not `onConfirm`.
+  // Radix #1951: document-level listener still lets nested native Select swallow
+  // Escape first (browser handles focused select before document listeners fire).
   useEffect(() => {
     if (!open || !closeOnEscape) return;
+    const close = handleCancel;
+    escapeStack.push(close);
     function handleEscape(event: KeyboardEvent) {
-      if (event.key === 'Escape') {
-        event.preventDefault();
-        handleCancel();
-      }
+      if (event.key !== 'Escape') return;
+      if (escapeStack[escapeStack.length - 1] !== close) return;
+      event.preventDefault();
+      close();
     }
     document.addEventListener('keydown', handleEscape);
-    return () => document.removeEventListener('keydown', handleEscape);
+    return () => {
+      document.removeEventListener('keydown', handleEscape);
+      const idx = escapeStack.indexOf(close);
+      if (idx !== -1) escapeStack.splice(idx, 1);
+    };
   }, [open, closeOnEscape, handleCancel]);
 
   // Scroll lock (Radix #998 fix — only while open).
