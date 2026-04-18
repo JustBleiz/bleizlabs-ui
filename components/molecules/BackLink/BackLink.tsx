@@ -23,7 +23,7 @@ import styles from './BackLink.module.scss';
  *          `href` and `asChild` are mutually exclusive (Button constraint).
  *
  * @example
- * <BackLink href="/projekty" />
+ * <BackLink href="/projekty" label="Back to projects" />
  *
  * <BackLink href="/panel" label="Do panelu" />
  *
@@ -36,7 +36,15 @@ export interface BackLinkProps
     ButtonProps,
     'href' | 'asChild' | 'className' | 'onClick' | 'id' | 'children'
   > {
-  /** Visible label text. Default `'Wstecz'`. Ignored when `asChild` is used. */
+  /**
+   * Visible label text. Ignored when `asChild` is used (consumer provides
+   * the anchor text via children).
+   *
+   * v0.3.0 F_B8 BREAKING: previously defaulted to Polish `'Wstecz'`. Now
+   * required — removes a Polish-locale default baked into the library.
+   * Consumers must pass `label` explicitly (per project locale) unless
+   * they use `asChild`.
+   */
   label?: string;
 }
 
@@ -64,9 +72,11 @@ type BackLinkRef = ComponentRef<typeof Button>;
 
 export const BackLink = forwardRef<BackLinkRef, BackLinkProps>(
   function BackLink(
-    { href, asChild = false, label = 'Wstecz', className, children, ...rest },
+    { href, asChild = false, label, className, children, ...rest },
     ref,
   ) {
+    // v0.3.0 F_B8: `label` is now required (no Polish default). When
+    // `asChild` is used, children provide the text and `label` is ignored.
     const content: ReactNode = asChild ? children : label;
 
     return (

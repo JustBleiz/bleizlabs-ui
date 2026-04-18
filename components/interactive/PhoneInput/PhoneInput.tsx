@@ -3,6 +3,8 @@
 import { forwardRef } from 'react';
 import { MaskedInput, type MaskedInputProps } from '../MaskedInput';
 import { MASK_PRESETS, type MaskPreset } from '../../utils/masks';
+import { cn } from '../../utils/cn';
+import styles from './PhoneInput.module.scss';
 
 /**
  * PhoneInput — telephone number input with mask presets (Phase 4 expansion E08, Layer 3 of D26).
@@ -77,7 +79,7 @@ export interface PhoneInputProps
 }
 
 export const PhoneInput = forwardRef<HTMLInputElement, PhoneInputProps>(
-  function PhoneInput({ preset = 'phonePL', mask, ...rest }, ref) {
+  function PhoneInput({ preset = 'phonePL', mask, className, ...rest }, ref) {
     // Resolve mask: raw `mask` prop wins over preset (escape hatch).
     const resolvedMask = mask ?? MASK_PRESETS[preset];
     return (
@@ -86,6 +88,7 @@ export const PhoneInput = forwardRef<HTMLInputElement, PhoneInputProps>(
         mask={resolvedMask}
         inputMode="tel"
         autoComplete="tel"
+        className={cn(styles.root, className)}
         {...rest}
       />
     );

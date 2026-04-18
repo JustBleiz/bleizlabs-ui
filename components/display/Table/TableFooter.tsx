@@ -9,6 +9,9 @@ import styles from './TableFooter.module.scss';
  * @tokens  --color-surface-raised, --color-text-secondary, --font-weight-medium
  * @a11y    Native `<tfoot>`. Screen readers announce footer cells after
  *          body rows — keep summary/total lines here for semantic clarity.
+ *
+ * @example
+ * <TableFooter><TableRow><TableCell align="end">Total: $420</TableCell></TableRow></TableFooter>
  */
 export type TableFooterProps = HTMLAttributes<HTMLTableSectionElement>;
 

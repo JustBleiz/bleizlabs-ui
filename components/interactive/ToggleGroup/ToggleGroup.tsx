@@ -31,8 +31,13 @@ import styles from './ToggleGroup.module.scss';
  * @a11y    Renders `role="group"` with required `aria-label`. Children are
  *          native `<button aria-pressed>` toggles — keyboard Tab/Space and
  *          assistive-tech press semantics work via Toggle's own a11y.
- *          Arrow-key roving focus is intentionally NOT implemented in
- *          Phase 4 (deferred to Phase 10 a11y pass).
+ *
+ *          Missing arrow-key roving focus per APG toolbar pattern. Deferred
+ *          to v0.4.0 — tracked in roadmap. Current behavior: each toggle is
+ *          independently tabbable. Rationale: proper roving-focus requires
+ *          composition refactor (focus manager + tabindex shuffling on
+ *          Arrow/Home/End) + regression risk; shipping as a known
+ *          limitation with docs is preferred over silent broken.
  * @notes   Client Component (`'use client'`) for controlled/uncontrolled
  *          state. `type="single"` selects one child at a time (string
  *          value); `type="multiple"` allows any subset (string[] value).

@@ -101,7 +101,7 @@ export default function MoleculesPlaygroundPage() {
         </Text>
 
         <div className={styles.row}>
-          <BackLink href="/components" />
+          <BackLink href="/components" label="Back to components" />
           <BackLink href="/panel" label="Back to panel" />
           <BackLink href="/docs" label="Documentation" />
         </div>

@@ -19,6 +19,13 @@ import styles from './Skeleton.module.scss';
  *          the loading state. Provide a hidden text label via `label` prop
  *          (defaults to "Loading"). Reduced-motion users get a static
  *          surface (no animation) per global guard.
+ *
+ *          Default: no `aria-live`. Opt-in via `ariaLive` prop to avoid
+ *          announcement storms when rendering many skeletons at once —
+ *          N skeletons with `aria-live="polite"` each = N announcements
+ *          per layout change. Typical pattern: set `ariaLive="polite"` on
+ *          a single top-level Skeleton (or a container status region) and
+ *          leave the rest silent.
  * @notes   Variants: `text` (one or more lines), `rect` (filled box),
  *          `circle` (1:1 radius full). Animation: `pulse` (default,
  *          opacity sweep) or `shimmer` (gradient sweep, more visually
@@ -30,9 +37,11 @@ import styles from './Skeleton.module.scss';
  * <Skeleton variant="rect" height={120} />
  * <Skeleton variant="circle" width={48} />
  * <Skeleton variant="rect" animation="shimmer" height={200} />
+ * <Skeleton ariaLive="polite" variant="rect" height={200} />
  */
 export type SkeletonVariant = 'text' | 'rect' | 'circle';
 export type SkeletonAnimation = 'pulse' | 'shimmer' | 'none';
+export type SkeletonAriaLive = 'off' | 'polite' | 'assertive';
 
 export interface SkeletonProps extends HTMLAttributes<HTMLDivElement> {
   /** Shape variant. Default `text`. */
@@ -47,6 +56,12 @@ export interface SkeletonProps extends HTMLAttributes<HTMLDivElement> {
   animation?: SkeletonAnimation;
   /** Hidden screen-reader label. Default `Loading`. */
   label?: string;
+  /**
+   * Explicit `aria-live` level. Default `undefined` (no attribute emitted)
+   * to avoid announcement storms when rendering many skeletons — opt-in per
+   * loading region. Typical usage: set `polite` on one wrapping Skeleton.
+   */
+  ariaLive?: SkeletonAriaLive;
 }
 
 const ANIMATION_CLASS: Record<SkeletonAnimation, string | undefined> = {
@@ -69,6 +84,7 @@ export const Skeleton = forwardRef<HTMLDivElement, SkeletonProps>(
       lines = 1,
       animation = 'pulse',
       label = 'Loading',
+      ariaLive,
       className,
       style,
       ...rest
@@ -85,7 +101,7 @@ export const Skeleton = forwardRef<HTMLDivElement, SkeletonProps>(
           ref={ref}
           role="status"
           aria-busy="true"
-          aria-live="polite"
+          {...(ariaLive !== undefined ? { 'aria-live': ariaLive } : {})}
           className={cn(styles.textGroup, className)}
           style={style}
           {...rest}
@@ -118,7 +134,7 @@ export const Skeleton = forwardRef<HTMLDivElement, SkeletonProps>(
         ref={ref}
         role="status"
         aria-busy="true"
-        aria-live="polite"
+        {...(ariaLive !== undefined && { 'aria-live': ariaLive })}
         className={cn(
           styles.root,
           variant === 'circle' ? styles.circle : styles.rect,

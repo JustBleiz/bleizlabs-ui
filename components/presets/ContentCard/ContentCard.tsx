@@ -33,6 +33,9 @@ import styles from './ContentCard.module.scss';
  *          wrapDescription in `<Text variant="body">` (renders `<p>` by
  *          default). Pass-through `ReactNode` preserves caller's semantics
  *          (caller owns heading level + element type in that path).
+ * @apg          N/A — composition preset, no new ARIA semantics; inherited via composed atoms.
+ * @tested       tsc + eslint + next build clean. No runtime a11y suite (presets transitively covered by atom tests).
+ * @regressions  N/A — preset composition. Bug fixes land in composed atoms.
  * @notes   `direction`, `children`, and Card's `title` are preset-owned
  *          (TS-enforced Omit). Use ContentCard's own `title` / `description`
  *          / `footer` slots + body via `children`. `headerBorder` toggles

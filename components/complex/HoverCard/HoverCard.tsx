@@ -49,7 +49,10 @@
  *   single-fire, HC-R11 placement flip on viewport overflow, HC-R12
  *   aria-expanded sync on trigger, HC-R13 aria-labelledby wired only when
  *   title prop set, HC-R14 nested HoverCard PLAYGROUND-DEP, HC-R15 portal
- *   positioning under transformed parent PLAYGROUND-DEP).
+ *   positioning under transformed parent PLAYGROUND-DEP). **Fewer cases
+ *   than Tooltip/Popover (<20): HoverCard primitive has limited Radix
+ *   history; regression net carries only shared escapeStack + nested-modal
+ *   APG patterns proven in E142 L3e.**
  * @example
  *   // Standalone
  *   <HoverCard>

@@ -49,7 +49,11 @@
   line-height: var(--line-height-normal);
 
   &::placeholder {
-    color: var(--color-text-muted);
+    // E142 v0.3.0 a11y: --color-text-muted fails 4.5:1 on --color-surface-raised.
+    // Placeholder text is informational (shows expected format) so must meet
+    // WCAG 1.4.3 AA; --color-text-secondary is the lightest token that clears
+    // the ratio on both light and dark surfaces.
+    color: var(--color-text-secondary);
   }
 
   &:disabled {

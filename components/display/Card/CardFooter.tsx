@@ -16,6 +16,9 @@ import styles from './CardFooter.module.scss';
  *          `justify-content: space-between` (typical "info on left, CTA
  *          on right" pattern). Caller still owns interactivity — no
  *          implicit role is added.
+ *
+ * @example
+ * <CardFooter border action><Text small>Updated 2m ago</Text><Button>View</Button></CardFooter>
  */
 export interface CardFooterProps extends HTMLAttributes<HTMLDivElement> {
   /** Add a top border separator. Default `false`. */

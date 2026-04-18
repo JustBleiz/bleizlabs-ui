@@ -272,10 +272,15 @@ export const PasswordInput = forwardRef<HTMLInputElement, PasswordInputProps>(
               aria-valuenow={strength}
               className={cn(styles.strengthBar, STRENGTH_CLASS[strength])}
             >
-              <span className={styles.strengthSegment} data-filled={strength >= 1 || undefined} />
-              <span className={styles.strengthSegment} data-filled={strength >= 2 || undefined} />
-              <span className={styles.strengthSegment} data-filled={strength >= 3 || undefined} />
-              <span className={styles.strengthSegment} data-filled={strength >= 4 || undefined} />
+              {/*
+                v0.3.0 F_B11: `data-state="filled"` (was `data-filled="true"`)
+                aligns with the library-wide `data-state` attribute convention
+                used by Accordion, Switch, Dialog, Popover, etc.
+              */}
+              <span className={styles.strengthSegment} data-state={strength >= 1 ? 'filled' : undefined} />
+              <span className={styles.strengthSegment} data-state={strength >= 2 ? 'filled' : undefined} />
+              <span className={styles.strengthSegment} data-state={strength >= 3 ? 'filled' : undefined} />
+              <span className={styles.strengthSegment} data-state={strength >= 4 ? 'filled' : undefined} />
             </div>
             {/*
               `aria-live` is scoped to just the label span (NOT the whole

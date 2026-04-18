@@ -39,6 +39,12 @@
 // ============================================================================
 // SIZES — square boxes, SVG always 100x100 viewBox
 // ============================================================================
+// Multipliers (1.75 and 2.5) are derived from the donut ratio needed for the
+// center label to remain legible at each size: `md` is ~1.75× the `sm` so the
+// center text fits the 3-line stat + label + delta layout; `lg` pushes to
+// 2.5× for charts used in hero/dashboard contexts. Tokenizing these
+// multipliers via `--usage-donut-scale-{md,lg}` would obscure the ratio
+// relationship; keeping them inline documents the geometry at the call site.
 
 .sizeSm {
   width: var(--space-20);
@@ -47,12 +53,16 @@
 }
 
 .sizeMd {
+  // 1.75× sm — chosen so center-label 3-line layout (stat + label + delta)
+  // fits without truncation at 14px body text.
   width: calc(var(--space-20) * 1.75);
   height: calc(var(--space-20) * 1.75);
   font-size: var(--font-size-sm);
 }
 
 .sizeLg {
+  // 2.5× sm — hero/dashboard use; leaves breathing room around the center
+  // label and makes the arc readable at 4-5m viewing distance on a laptop.
   width: calc(var(--space-20) * 2.5);
   height: calc(var(--space-20) * 2.5);
   font-size: var(--font-size-base);

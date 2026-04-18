@@ -50,6 +50,9 @@ const SEVERITY_MAP: Record<ActionCardSeverity, SeverityMapping> = {
  *          in `<Text variant="body">` (renders `<p>` by default). Pass-through
  *          `ReactNode` preserves caller's semantics. Consumer may add
  *          `role="alert"` / `aria-live` via spread for assertive announcements.
+ * @apg          N/A — composition preset, no new ARIA semantics; inherited via composed atoms.
+ * @tested       tsc + eslint + next build clean. No runtime a11y suite (presets transitively covered by atom tests).
+ * @regressions  N/A — preset composition. Bug fixes land in composed atoms.
  * @notes   CardFooter `action` mode is hard-enforced by the preset (full-bleed
  *          raised-bg footer) — do not attempt to override. ActionCard's own
  *          `title` slot replaces Card's `title` prop (Omit-excluded).

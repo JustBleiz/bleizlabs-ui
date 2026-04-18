@@ -58,7 +58,11 @@
   text-align: right;
 
   &::placeholder {
-    color: var(--color-text-muted);
+    // E142 v0.3.0 a11y: --color-text-muted fails 4.5:1 on --color-surface-raised.
+    // Placeholder text is informational (shows expected format) so must meet
+    // WCAG 1.4.3 AA; --color-text-secondary is the lightest token that clears
+    // the ratio on both light and dark surfaces.
+    color: var(--color-text-secondary);
   }
 
   &:disabled {
@@ -106,7 +110,10 @@
   margin: 0;
   font-family: var(--font-secondary);
   font-size: var(--font-size-xs);
-  color: var(--color-error);
+  // E142 L2 a11y: --color-error (red-500) was ~3.7:1 on dark surface.
+  // --color-error-strong is theme-aware (red-700 light / red-300 dark)
+  // and keeps the semantic "error red" while hitting AA.
+  color: var(--color-error-strong);
   font-weight: var(--font-weight-medium);
   line-height: var(--line-height-normal);
 }

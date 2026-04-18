@@ -38,6 +38,9 @@ import styles from './StatsCard.module.scss';
  *          keeps its own semantics). Label always renders as Text `<p>`
  *          (muted caption). `change` is presentational — consumer owns its
  *          element type (typically `<Badge>` for colored delta).
+ * @apg          N/A — composition preset, no new ARIA semantics; inherited via composed atoms.
+ * @tested       tsc + eslint + next build clean. No runtime a11y suite (presets transitively covered by atom tests).
+ * @regressions  N/A — preset composition. Bug fixes land in composed atoms.
  * @notes   Discriminated union props — `layout="icon-lead"` requires `icon`
  *          (compile-time enforced), while `layout="stacked" | "inline"` forbid
  *          it via `icon?: never`. Internal cast to `StatsCardPropsInternal`

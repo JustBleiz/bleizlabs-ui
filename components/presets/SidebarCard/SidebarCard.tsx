@@ -39,6 +39,9 @@ import styles from './SidebarCard.module.scss';
  *          `<h3>` / `<p>` ONLY when caller passes scalar strings/numbers
  *          (wrapTitle/wrapDescription auto-wrap); ReactNode pass-through
  *          preserves caller semantics.
+ * @apg          N/A — composition preset, no new ARIA semantics; inherited via composed atoms.
+ * @tested       tsc + eslint + next build clean. No runtime a11y suite (presets transitively covered by atom tests).
+ * @regressions  N/A — preset composition. Bug fixes land in composed atoms.
  * @notes   `direction`, `children`, Card's `variant`, and Card's `title` are
  *          preset-owned (TS-enforced Omit), then `variant` is re-exposed with
  *          preset default `'glass'`. Smaller `size="md"` heading vs ActionCard

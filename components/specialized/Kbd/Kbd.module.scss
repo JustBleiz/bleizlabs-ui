@@ -6,8 +6,16 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  // `em`-based min-width scales with the caller's font-size — correct for a
+  // "keycap" that sits inline in running text and should resize with its
+  // surrounding copy. Tokenizing in px would decouple the pill from local
+  // type scale.
   min-width: 1.75em;
   border: 1px solid var(--color-border);
+  // Intentional 2px bottom border — visual "depth" cue (mechanical-key
+  // affordance convention — slightly thicker bottom edge simulates the
+  // physical lip of a keyboard key). No other component uses a 2px border,
+  // so a dedicated `--kbd-bottom-border-w` token would be single-use.
   border-bottom-width: 2px;
   border-radius: var(--radius-sm);
   background: var(--color-surface-raised);

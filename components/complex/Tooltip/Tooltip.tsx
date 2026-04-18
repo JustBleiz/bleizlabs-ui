@@ -26,6 +26,7 @@
  *   no focus trap, no scroll lock, no background inert, no outside-click
  *   dismissal (not modal).
  * @apg https://www.w3.org/WAI/ARIA/apg/patterns/tooltip/
+ * @deviation Delay defaults to 700ms (not WAI-APG 1500ms). See D29 in docs/decisions.md.
  * @tested tsc --noEmit ✓ | eslint + jsx-a11y via eslint-config-next ✓ |
  *   next build ✓ — DEFERRED: Playwright execution, axe-core runtime sweep,
  *   manual NVDA sweep, iOS/Android device testing (Radix #1573/#2589/#1351)

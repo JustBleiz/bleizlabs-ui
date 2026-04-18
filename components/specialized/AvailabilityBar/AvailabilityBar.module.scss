@@ -19,6 +19,10 @@
 .strip {
   display: grid;
   grid-template-columns: repeat(var(--availability-cells), minmax(0, 1fr));
+  // Intentional 2px hairline gap between cells — visual convention of the
+  // "segmented bar" design language. Smaller than any --space-N value
+  // (--space-1 = 4px) by design; tokenizing would obscure intent since no
+  // other component uses a 2px spacing.
   gap: 2px;
   width: 100%;
   height: var(--space-4);

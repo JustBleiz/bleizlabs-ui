@@ -1,11 +1,20 @@
 @use '../../../styles/mixins' as mx;
 
-.root {
-  --switch-track-w: 36px;
-  --switch-track-h: 20px;
-  --switch-thumb-size: 16px;
-  --switch-thumb-offset: 2px;
+// v0.3.0 F_B5: wrapper that stacks the clickable label + helper/error below.
+// Stays `inline-flex` so Switch keeps its inline placement in forms when
+// used without helper/error text.
+.field {
+  display: inline-flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
 
+.root {
+  // Switch track + thumb dimensions default to library tokens
+  // (--switch-track-w/h, --switch-thumb-size, --switch-thumb-offset) from
+  // _semantics.scss. Size overrides below redefine the track/thumb subset
+  // per-size; `md` size (default) relies on the library defaults so it stays
+  // in sync if projects retune the token values.
   display: inline-flex;
   align-items: center;
   gap: var(--space-3);
@@ -19,12 +28,17 @@
 }
 
 .sizeSm {
+  // Compact size — smaller track/thumb than the library default. `md` omitted
+  // because it matches the library default (_semantics.scss).
   --switch-track-w: 28px;
   --switch-track-h: 16px;
   --switch-thumb-size: 12px;
 }
 
 .sizeMd {
+  // Explicit reset block — keeps the class usable when a consumer stacks
+  // `sizeMd` after `sizeSm` at runtime (e.g., toggling size via state).
+  // Values match library defaults.
   --switch-track-w: 36px;
   --switch-track-h: 20px;
   --switch-thumb-size: 16px;
@@ -79,6 +93,23 @@
   display: inline-flex;
   align-items: center;
   line-height: var(--line-height-normal);
+}
+
+// v0.3.0 F_B5: helper + error message plumbing mirrors Input/Textarea.
+.helper {
+  margin: 0;
+  font-family: var(--font-secondary);
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+  line-height: var(--line-height-normal);
+}
+
+.error {
+  // E142 L2 a11y: --color-error (red-500) was ~3.7:1 on dark surface.
+  // --color-error-strong is theme-aware (red-700 light / red-300 dark)
+  // and keeps the semantic "error red" while hitting AA.
+  color: var(--color-error-strong);
+  font-weight: var(--font-weight-medium);
 }
 
 @media (prefers-reduced-motion: reduce) {

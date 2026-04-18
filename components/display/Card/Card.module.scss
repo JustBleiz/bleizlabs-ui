@@ -60,8 +60,13 @@
   }
 
   &:focus-visible {
-    outline: 2px solid var(--focus-ring);
-    outline-offset: 2px;
+    // `--focus-ring` is a full box-shadow expression (0 0 0 3px <color>) —
+    // not a color. Must be applied via `box-shadow`, not `outline`. Matches
+    // Alert.module.scss precedent. Previous `outline: 2px solid var(--focus-ring)`
+    // rendered as garbage because the shadow expression is not a valid
+    // <color> value.
+    outline: none;
+    box-shadow: var(--focus-ring);
   }
 }
 

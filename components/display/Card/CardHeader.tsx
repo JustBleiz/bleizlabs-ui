@@ -10,6 +10,9 @@ import styles from './CardHeader.module.scss';
  * @tokens  --space-{1,4}, --color-border-subtle
  * @a11y    Renders `<div>` by default. Use `asChild` to project onto
  *          `<header>` if the parent Card is article/section semantic.
+ *
+ * @example
+ * <CardHeader border><Heading level={3}>Title</Heading></CardHeader>
  */
 export interface CardHeaderProps extends HTMLAttributes<HTMLDivElement> {
   /** Add a bottom border separator. Default `false`. */

@@ -39,8 +39,7 @@
   }
 
   &:focus-visible {
-    outline: 2px solid var(--color-brand);
-    outline-offset: 2px;
+    @include mx.focus-ring;
   }
 }
 
@@ -104,7 +103,10 @@
   border: 1px solid transparent;
   border-radius: var(--radius-md);
   cursor: pointer;
-  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+  transition:
+    background var(--duration-fast) var(--easing-default),
+    color var(--duration-fast) var(--easing-default),
+    border-color var(--duration-fast) var(--easing-default);
 
   // WCAG 2.5.5 / D13: touch target ≥44×44 on coarse pointers (mobile)
   @include mx.touch-target;
@@ -116,8 +118,7 @@
   }
 
   &:focus-visible {
-    outline: 2px solid var(--color-brand);
-    outline-offset: 2px;
+    @include mx.focus-ring;
   }
 }
 

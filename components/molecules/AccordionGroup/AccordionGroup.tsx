@@ -29,11 +29,17 @@ import styles from './AccordionGroup.module.scss';
  *          Stack atom (gap prop), `SpaceIndex` type, cn,
  *          React: `Children`, `cloneElement`, `isValidElement`,
  *          `forwardRef`, `useCallback`, `useState`
- * @a11y    Optional `role="region"` + `aria-label` supported via spread
- *          props when the consumer wants the group announced as a
- *          landmark. No extra ARIA is forced — each Accordion child
- *          already carries the full APG disclosure pattern
- *          (button + aria-expanded + aria-controls + region).
+ * @a11y    Auto-applies `role="region"` when `aria-label` or
+ *          `aria-labelledby` is provided (WAI-ARIA practice: a region
+ *          landmark needs an accessible name). Omits `role` otherwise so
+ *          the wrapper stays a plain `<div>` (implicit generic semantics)
+ *          — forcing an unnamed region landmark would pollute the
+ *          landmark list for SR users. Each Accordion child already
+ *          carries the full APG disclosure pattern (button +
+ *          aria-expanded + aria-controls + region), so the group role is
+ *          additive, not required. Consumers can override with an
+ *          explicit `role` prop if they need a different semantic (e.g.,
+ *          `role="list"` when the group is a flat enumeration).
  * @notes   Controlled at the group level: AccordionGroup owns a
  *          `Set<number>` of open indexes and injects `open` +
  *          `onOpenChange` into each Accordion child via
@@ -127,12 +133,21 @@ export const AccordionGroup = forwardRef<HTMLDivElement, AccordionGroupProps>(
       });
     });
 
+    // v0.3.0 F_B7: auto-derive `role="region"` when the group has an
+    // accessible name. If the consumer passes an explicit `role`, honor it.
+    const hasAccessibleName =
+      rest['aria-label'] !== undefined || rest['aria-labelledby'] !== undefined;
+    const resolvedRole = rest.role ?? (hasAccessibleName ? 'region' : undefined);
+    const { role: _omitRole, ...restWithoutRole } = rest;
+    void _omitRole;
+
     return (
       <Stack
         ref={ref}
         gap={gap}
+        role={resolvedRole}
         className={cn(styles.root, className)}
-        {...rest}
+        {...restWithoutRole}
       >
         {mapped}
       </Stack>

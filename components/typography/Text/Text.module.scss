@@ -33,10 +33,10 @@
   font-size: var(--font-size-xs);
   line-height: var(--line-height-normal);
   font-weight: var(--text-weight, var(--font-weight-medium));
-  letter-spacing: 0.01em;
+  letter-spacing: var(--letter-spacing-wide);
 }
 
 .uppercase {
   text-transform: uppercase;
-  letter-spacing: 0.06em;
+  letter-spacing: var(--letter-spacing-wider);
 }

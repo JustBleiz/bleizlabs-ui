@@ -8,6 +8,9 @@ import styles from './TableBody.module.scss';
  * @layer   atom (display, flat slot — D24)
  * @a11y    Native `<tbody>` — wraps the data rows so TableHeader /
  *          TableFooter stay semantically separated.
+ *
+ * @example
+ * <TableBody><TableRow><TableCell>Row 1</TableCell></TableRow></TableBody>
  */
 export type TableBodyProps = HTMLAttributes<HTMLTableSectionElement>;
 

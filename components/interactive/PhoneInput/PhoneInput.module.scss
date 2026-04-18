@@ -1,0 +1,11 @@
+// ============================================================================
+// PhoneInput — thin wrapper over MaskedInput with phone preset default
+// ============================================================================
+
+.root {
+  // Reserved for PhoneInput-specific styling. MaskedInput already handles all
+  // visual states (hover/focus/active/disabled/error) via its shared Input
+  // shell. Leave this class empty so consumers can target `.root` via
+  // `className` if they need to add phone-specific visual tweaks (e.g.,
+  // country-flag adornment spacing in Phase 10).
+}

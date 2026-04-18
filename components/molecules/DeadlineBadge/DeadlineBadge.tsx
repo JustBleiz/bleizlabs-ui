@@ -54,7 +54,15 @@ export interface DeadlineBadgeProps extends HTMLAttributes<HTMLDivElement> {
   deadline: string | Date;
   /** Optional visible prefix rendered as a caption (e.g. `"Deadline:"`). */
   label?: string;
-  /** BCP 47 locale for `Intl.RelativeTimeFormat`. Default `'pl-PL'`. */
+  /**
+   * BCP 47 locale for `Intl.RelativeTimeFormat` + `Intl.DateTimeFormat`.
+   *
+   * v0.3.0 F_B8: default changed from `'pl-PL'` to `undefined`. An
+   * `undefined` locale lets Intl fall back to the runtime/browser default
+   * (the user's system locale) — correct behavior for a locale-agnostic
+   * library. Pass an explicit locale string (e.g. `'pl-PL'`, `'en-US'`)
+   * to override.
+   */
   locale?: string;
   /**
    * Days remaining at which the badge switches from `success` →
@@ -84,7 +92,7 @@ export const DeadlineBadge = forwardRef<HTMLDivElement, DeadlineBadgeProps>(
     {
       deadline,
       label,
-      locale = 'pl-PL',
+      locale,
       urgentThreshold = 3,
       className,
       ...rest
@@ -111,7 +119,9 @@ export const DeadlineBadge = forwardRef<HTMLDivElement, DeadlineBadgeProps>(
       try {
         return new Intl.RelativeTimeFormat(locale, { numeric: 'auto' });
       } catch {
-        return new Intl.RelativeTimeFormat('pl-PL', { numeric: 'auto' });
+        // Invalid locale string — fall back to browser runtime default
+        // (undefined) rather than force a specific locale.
+        return new Intl.RelativeTimeFormat(undefined, { numeric: 'auto' });
       }
     }, [locale]);
 
@@ -123,7 +133,7 @@ export const DeadlineBadge = forwardRef<HTMLDivElement, DeadlineBadgeProps>(
           year: 'numeric',
         });
       } catch {
-        return new Intl.DateTimeFormat('pl-PL', {
+        return new Intl.DateTimeFormat(undefined, {
           day: '2-digit',
           month: '2-digit',
           year: 'numeric',

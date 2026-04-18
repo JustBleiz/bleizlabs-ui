@@ -282,6 +282,8 @@ export const NumberInput = forwardRef<HTMLInputElement, NumberInputProps>(
       disabled,
       id,
       className,
+      onFocus: onFocusProp,
+      onBlur: onBlurProp,
       ...rest
     },
     ref,
@@ -307,26 +309,28 @@ export const NumberInput = forwardRef<HTMLInputElement, NumberInputProps>(
       () => formatNumber(currentValue, locale, effectiveDecimals, currency),
       [currentValue, locale, effectiveDecimals, currency],
     );
-    const [display, setDisplay] = useState<string>(formatted);
-    const [isFocused, setIsFocused] = useState(false);
-
-    // When the controlled value changes from the outside (and we're not
-    // focused), reflect the new formatted value into the input. We avoid
-    // doing this while focused so we don't yank the cursor mid-edit.
-    if (!isFocused && display !== formatted) {
-      setDisplay(formatted);
-    }
+    // v0.3.0 F_B3: derive display from props/state without setState during
+    // render OR in a useEffect. `typedDisplay` holds the user-typed raw
+    // string WHILE the user is interacting (focus/change); when it's
+    // `null`, the pure-derived `formatted` value wins — which means any
+    // controlled-value change from outside is reflected automatically.
+    // On blur we reset typedDisplay to `null` so the library-formatted
+    // string takes over. React's own docs recommend pure derivation for
+    // "mirror a prop" cases: https://react.dev/learn/you-might-not-need-an-effect
+    // Previous implementations either setState during render (anti-pattern)
+    // or setState inside useEffect (flagged by react-hooks/set-state-in-effect).
+    const [typedDisplay, setTypedDisplay] = useState<string | null>(null);
+    const display = typedDisplay ?? formatted;
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
       const raw = event.target.value;
-      setDisplay(raw);
+      setTypedDisplay(raw);
       const parsed = parseNumber(raw);
       if (!isControlled) setUncontrolledValue(parsed);
       onValueChange?.(parsed);
     };
 
     const handleFocus = (event: React.FocusEvent<HTMLInputElement>) => {
-      setIsFocused(true);
       // Show raw value (no formatting) so user can edit cleanly. Use
       // toFixed instead of String() to avoid scientific notation
       // (e.g., 1e+21) for very large magnitudes — that notation would
@@ -334,26 +338,29 @@ export const NumberInput = forwardRef<HTMLInputElement, NumberInputProps>(
       // toFixed handles the magnitude range typical for form inputs
       // (currency, counts, measurements, percentages).
       if (currentValue !== undefined) {
-        setDisplay(currentValue.toFixed(effectiveDecimals));
+        setTypedDisplay(currentValue.toFixed(effectiveDecimals));
       }
-      rest.onFocus?.(event);
+      onFocusProp?.(event);
     };
 
     const handleBlur = (event: React.FocusEvent<HTMLInputElement>) => {
-      setIsFocused(false);
       // Clamp + reformat on blur.
       const parsed = parseNumber(display);
       if (parsed !== undefined) {
         const clamped = clampNumber(parsed, min, max);
         if (!isControlled) setUncontrolledValue(clamped);
         if (clamped !== currentValue) onValueChange?.(clamped);
-        setDisplay(formatNumber(clamped, locale, effectiveDecimals, currency));
+        // Clear typedDisplay so the derived `display` falls back to the
+        // library-formatted value. This guarantees the blur view always
+        // matches the latest `formatted` (which reflects the clamped
+        // controlled value after React re-renders).
+        setTypedDisplay(null);
       } else {
-        setDisplay('');
+        setTypedDisplay('');
         if (!isControlled) setUncontrolledValue(undefined);
         if (currentValue !== undefined) onValueChange?.(undefined);
       }
-      rest.onBlur?.(event);
+      onBlurProp?.(event);
     };
 
     const showSuffix = suffix && !currency;

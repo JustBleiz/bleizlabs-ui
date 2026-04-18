@@ -4,7 +4,7 @@
   font-family: var(--font-primary);
   font-weight: var(--heading-weight, var(--font-weight-semibold));
   line-height: var(--line-height-tight);
-  letter-spacing: -0.015em;
+  letter-spacing: var(--letter-spacing-tight);
   text-align: var(--heading-align, start);
 }
 
@@ -39,5 +39,5 @@
 
 .size5xl {
   font-size: var(--font-size-5xl);
-  letter-spacing: -0.025em;
+  letter-spacing: var(--letter-spacing-tighter);
 }

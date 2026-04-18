@@ -4,6 +4,83 @@ All notable releases of this component library. Follows [Keep a Changelog](https
 
 ---
 
+## [0.3.0] — 2026-04-19
+
+**"Quality 100/100" audit-fix-audit loop — 2 CRITICAL + 27 IMPORTANT from full-library audit (76 components vs `component-build` skill rubric), fixed in one coordinated batch with fresh re-audit verification.** All 76 components pass rubric with zero CRITICAL + zero IMPORTANT. Ratifies 3 new architectural decisions (D27-D29). One deferred item (ToggleGroup roving focus) tracked to v0.4.0.
+
+### Breaking changes
+
+- **BackLink** — `label` prop is now semantically required (Polish `'Wstecz'` default removed). Consumers passing `<BackLink href="/" />` without label render an empty-text button; pass `label="…"` or use `asChild` for custom content.
+- **DeadlineBadge** — `locale` default changed from `'pl-PL'` to `undefined` (browser/runtime locale via Intl default). Pass `locale="pl-PL"` explicitly to restore prior behavior.
+- **PasswordInput** — strength-segment attribute renamed `data-filled="true"` → `data-state="filled"` to align with library-wide `data-state` convention. Consumer CSS selecting `[data-filled]` must migrate to `[data-state='filled']`.
+- **Dot** — `pulse` animation now actually runs (previously silent no-op under Turbopack+Next16 due to CSS Modules keyframe scoping). Consumers using `<Dot pulse />` will see the animation for the first time.
+
+### Fixed — library (ship in tarball)
+
+#### CRITICAL (2)
+- **C1 `components/interactive/PhoneInput`** — missing `PhoneInput.module.scss` triplet (violated `component-standards.md` §3.1). Added minimal `.root` placeholder and imported into `.tsx`. Matches BackLink precedent.
+- **C2 `components/specialized/Dot` + `components/interactive/Input`** — global `pulse` and `spin` keyframe references silently no-op'd under Turbopack+Next16 (CSS Modules scope keyframe identifiers). Inlined as local `dotPulse` and `inputSpin` keyframes with explanatory comments. Matches Checkbox `checkboxTick` / RadioGroup `radioDotFill` precedent.
+
+#### IMPORTANT (27)
+
+**Rendering / contrast bugs:**
+- **F_A1 `components/display/Card`** — focus-ring rendered as garbage because `outline: 2px solid var(--focus-ring)` used `--focus-ring` as a color, but the token is a full `box-shadow` expression. Replaced with `box-shadow: var(--focus-ring); outline: none;` (matches Alert precedent).
+- **F_B1 MaskedInput / NumberInput / PasswordInput** — `.error` class still used `var(--color-error)` (3.7:1 on dark). Upgraded to `var(--color-error-strong)` for WCAG 1.4.3 AA (Input/Textarea already upgraded in v0.2.0).
+- **F_B4 Input / Textarea / MaskedInput / NumberInput / PasswordInput** — `::placeholder` color was `--color-text-muted` (failed 4.5:1 on `--color-surface-raised`). Changed to `--color-text-secondary`. Disabled placeholder color kept as muted (intentional low contrast).
+- **F_C1 `components/complex/Dialog`** — SCSS drift vs Drawer/Sheet forks. Replaced literal `0.15s ease` transitions with `var(--duration-fast) var(--easing-default)` triplet (3 transitions) and `outline: 2px solid var(--color-brand)` with `@include mx.focus-ring` (2 occurrences).
+
+**Form a11y asymmetry:**
+- **F_B5 `components/interactive/Checkbox` + `components/interactive/Switch`** — added `error?: string` + `helperText?: string` props, `aria-invalid` + `aria-describedby` + `aria-required` ARIA plumbing, wrapped in `<span.field>` for helper/error stacking. Matches Input/Textarea plumbing.
+
+**Architectural ratifications (decisions.md):**
+- **D27 — Table `:global()` descendant selectors** ratified as intentional exception from "every component styles itself" baseline. Refactor would require breaking API change without user-visible benefit.
+- **D28 — Component-internal px size scales** ratified (Avatar 24-80px, IconBox 32-48px, Skeleton 16-40px, Spinner 12-32px). Closed-enum sizes via `size` prop are permitted; layout spacing still uses `--space-N`.
+- **D29 — Tooltip delay 700ms override** ratified (WAI-APG suggests ~1500ms). Rationale: product UX research + alignment with Radix/MUI/Ant Design defaults. Documented via `@deviation` field in Tooltip docblock.
+
+**i18n / locale decoupling:**
+- **F_B8 BackLink `label`** — Polish `'Wstecz'` default removed (see breaking changes).
+- **F_B8 DeadlineBadge `locale`** — default changed to `undefined` (see breaking changes).
+- **F_B9 `components/specialized/Pagination`** — new `labels?: PaginationLabels` prop with English defaults. Consumers can pass `labels={{ previous, next, first, last, page }}` for localization. `ariaLabel` prop deprecated (still functional; `labels.nav` wins if both set).
+
+**Token tokenization:**
+- **F_B2 `components/interactive/Switch`** — 4 new library-level tokens in `_semantics.scss`: `--switch-track-w: 36px`, `--switch-track-h: 20px`, `--switch-thumb-size: 16px`, `--switch-thumb-offset: 2px`. Switch SCSS no longer holds literals.
+- **F_A5 `components/typography/Heading` + `components/typography/Text`** — 4 letter-spacing literals tokenized to existing `--letter-spacing-tight/tighter/wide/wider` semantic tokens.
+- **F_B12 naming-conventions.md + component-standards.md** — canonicalized `--space-N` spacing scale. Alias tokens (`--gap-card`, `--padding-card`) retained for active Card-family consumers, but documented as secondary per-Card-family path. Examples in docs updated to use `--space-N`.
+
+**Docblock consistency:**
+- **F_C2 Tooltip** — added `@deviation` field citing D29.
+- **F_C3 ActionCard / ContentCard / FormCard / SidebarCard / StatsCard** — added `@apg` / `@tested` / `@regressions` docblock fields (SiteHeader was done in v0.2.0).
+- **F_C4 HoverCard** — `@regressions` rationale line added explaining fewer cases vs Tooltip/Popover.
+- **F_A5 Card + Table sub-components** — 7 compound sub-components (CardHeader/Body/Footer/Section, TableHeader/Body/Footer) received `@example` entries.
+
+**React 19 hygiene:**
+- **F_B3 `components/interactive/NumberInput`** — `display` state refactored to pure derivation (`typedDisplay ?? formatted`), eliminating both render-body setState AND setState-in-effect anti-patterns (the latter flagged by `react-hooks/set-state-in-effect`). Behavior unchanged from consumer perspective. Also destructured `onFocus`/`onBlur` out of `{...rest}` spread so consumer-passed handlers no longer silently override internal blur-to-formatted / focus-to-raw behavior.
+- **F_B7 `components/molecules/AccordionGroup`** — auto-applies `role="region"` when `aria-label` or `aria-labelledby` is provided. Docblock claim now matches runtime.
+- **F_A4 `components/display/Skeleton`** — `aria-live` is now opt-in via explicit `ariaLive` prop (default `undefined` = no attribute emitted). Prevents N skeletons = N announcements screen-reader storm.
+- **F_B11 PasswordInput** — `data-filled` attribute renamed to `data-state="filled"` (see breaking changes).
+
+### Deferred to v0.4.0
+
+- **F_B6 `components/interactive/ToggleGroup`** — APG toolbar arrow-key roving focus not yet implemented. Docblock carries explicit defer note. Current behavior: each toggle is independently tabbable.
+
+### Quality gates
+
+- Full library audit (3 parallel agents, 76 components): 74/76 PASS → 76/76 PASS post-fix.
+- Fresh Round 2 re-audit (3 parallel independent agents): **0 CRITICAL + 0 IMPORTANT across all 76 components**.
+- typecheck + lint + fresh prod build clean on every intermediate gate.
+- Playwright runtime suite: 825 pass / 157 skip / 0 fail. One pre-existing parallel-load flake (ContextMenu CM-R04) passes in isolation; not a Round 1 regression.
+- 1 midnight-boundary timezone flake fixed: `DatePicker.regression.spec.ts` DP-R16 now uses browser-local date via `page.evaluate` instead of Node UTC `toISOString`.
+
+### Consumer upgrade notes
+
+- Test any `<BackLink href="…" />` call sites: now render empty-text; add `label` or use `asChild`.
+- Audit `<DeadlineBadge>` without explicit `locale`: now uses browser locale. If you shipped Polish-formatted dates expecting `'pl-PL'` default, pass it explicitly.
+- Search for `[data-filled]` selectors targeting PasswordInput strength segments: migrate to `[data-state='filled']`.
+- Search for `.CardHeader` etc. (none changed runtime behavior); new `@example` docblocks are additive.
+- If you theme Switch via custom tokens: `--switch-track-w/h`, `--switch-thumb-size/offset` are now the canonical knobs.
+
+---
+
 ## [0.2.0] — 2026-04-19
 
 **Library polish aggregate — 14 findings surfaced by E142 L3 runtime test conversion, fixed in one batch.** Ships `aria-activedescendant` on editable comboboxes + selects (restoring WCAG SC 4.1.3), unblocks first-key keyboard activation on Select, fixes axe `list` violation on Toast, wires HoverCard into the shared Dialog escape stack, and resolves seven IMPORTANT keyboard / aria / focus-restore regressions discovered during L3a-L3e spec conversion.

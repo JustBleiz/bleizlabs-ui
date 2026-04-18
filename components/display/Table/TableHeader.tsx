@@ -10,6 +10,9 @@ import styles from './TableHeader.module.scss';
  *          --font-weight-semibold, --letter-spacing-wider, --space-{2,3,4}
  * @a11y    Native `<thead>` — scopes header cells to column headers when
  *          cells use `<th scope="col">` (set via TableCell `as="th"`).
+ *
+ * @example
+ * <TableHeader><TableRow><TableCell as="th">Name</TableCell></TableRow></TableHeader>
  */
 export type TableHeaderProps = HTMLAttributes<HTMLTableSectionElement>;
 

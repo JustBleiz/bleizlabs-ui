@@ -79,7 +79,21 @@
 // ============================================================================
 
 .pulse {
-  animation: pulse 2s var(--easing-default) infinite;
+  // Local @keyframes — CSS Modules scope keyframe identifiers, so referencing
+  // the global `pulse` keyframe from _animations.scss silently no-ops under
+  // Turbopack + Next.js 16. Each animation-consuming module owns a tiny local
+  // copy (matches Checkbox checkboxTick + RadioGroup radioDotFill precedent).
+  animation: dotPulse 2s var(--easing-default) infinite;
+}
+
+@keyframes dotPulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

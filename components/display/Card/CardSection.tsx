@@ -21,6 +21,9 @@ import styles from './CardSection.module.scss';
  *          CardSection siblings inside CardBody to build a divided list;
  *          mark each one (or only the ones you want to detach from the
  *          previous block) with `separator`.
+ *
+ * @example
+ * <CardSection separator direction="row">Block content</CardSection>
  */
 export interface CardSectionProps extends HTMLAttributes<HTMLDivElement> {
   /** Flex direction of children. Default `column`. */
