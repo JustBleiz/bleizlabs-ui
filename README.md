@@ -3,7 +3,7 @@
 > A zero-dependency, fully-styled React component library with seed-based design tokens.
 > 81 components, WAI-ARIA compliant, runtime-test-verified, SCSS Modules, React 19 + Next.js 16.
 >
-> **Current version: [`@bleizlabs/ui@0.2.0`](https://github.com/BleizLabs/bleizlabs-ui/pkgs/npm/ui)** — runtime-test-verified across 84 Playwright `.spec.ts` suites + 23 NVDA sweep protocols. See [CHANGELOG.md](CHANGELOG.md) for the full v0.2.0 release notes.
+> **Current version: [`@bleizlabs/ui@0.3.0`](https://github.com/BleizLabs/bleizlabs-ui/pkgs/npm/ui)** — Quality 100/100: all 76 components pass the `component-build` skill rubric with zero CRITICAL + zero IMPORTANT (verified via two-round audit-fix-audit loop). Runtime-test-verified across 84 Playwright `.spec.ts` suites + 23 NVDA sweep protocols. See [CHANGELOG.md](CHANGELOG.md) for the v0.3.0 release notes + breaking changes.
 
 ---
 
