@@ -77,18 +77,27 @@
   transform: rotate(180deg);
 }
 
-// Panel expand/collapse uses classic `max-height` transition (0 ↔ large
-// ceiling) instead of the `grid-template-rows: 0fr ↔ 1fr` trick. Reason
-// (E135, follow-up to E134 bug 5): the grid-fractional-unit approach
-// interpolates poorly across browsers — Chromium has measurable jank
-// between frames when computing the `1fr` target from a `0fr` start for
-// grids with a single auto-sized child (the first frame often snaps to
-// the target height, making the content text appear at full height
-// before the row-height transition actually runs). max-height with a
-// sufficiently large ceiling (1000px covers typical FAQ / form panel
-// content) transitions linearly and predictably in every major browser.
-// The practical downside — transition duration scales with ceiling, not
-// content height — is imperceptible at 250-300ms durations.
+// Panel expand/collapse — two-tier animation strategy:
+//
+//   1. Baseline (Firefox, pre-interpolate-size browsers): classic
+//      `max-height: 1000px` ceiling transition. Duration is constant
+//      (--duration-normal 250ms); content shorter than 1000px finishes
+//      its visible reveal earlier in the timeline — acceptable fallback.
+//
+//   2. Progressive (Chrome 129+/Sep 2024, Safari 26+/2025, Edge 129+):
+//      `interpolate-size: allow-keywords` enables `height: 0 ↔ auto`
+//      transitions natively. Duration matches actual content height,
+//      so 100px panel and 500px panel both feel proportionally smooth
+//      — the "snappy" feel reported for short panels under the
+//      max-height ceiling is eliminated. Duration bumped slightly
+//      (320ms) with an ease-out curve for a more intentional "reveal"
+//      feel on content-sized panels.
+//
+// E135 note (historical): an earlier attempt used
+// `grid-template-rows: 0fr ↔ 1fr`. Abandoned due to Chromium jank on
+// single auto-sized children — first frame often snapped to target
+// height. interpolate-size is the standards-track solution for that
+// problem and works correctly across affected browsers.
 .panel {
   max-height: 1000px;
   overflow: hidden;
@@ -111,6 +120,23 @@
 
 .panelClosed > .panelInner {
   visibility: hidden;
+}
+
+// Progressive enhancement — content-aware height transition.
+@supports (interpolate-size: allow-keywords) {
+  .panel {
+    interpolate-size: allow-keywords;
+    max-height: none;
+    height: auto;
+    transition:
+      height 320ms cubic-bezier(0.2, 0.8, 0.2, 1),
+      border-top-color var(--duration-fast) var(--easing-default);
+  }
+
+  .panelClosed {
+    height: 0;
+    max-height: 0;
+  }
 }
 
 .panelInner {
