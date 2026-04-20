@@ -41,3 +41,13 @@
   font-size: var(--font-size-5xl);
   letter-spacing: var(--letter-spacing-tighter);
 }
+
+// v0.3.5 — atelier big-type display variant. Fluid clamp() ensures hero
+// headings remain legible from 375px to 1440px+ without overflow, and tight
+// 1.05 line-height replaces the default 1.25 for dense editorial typography.
+// Use with `size="display"` on Hero H1 (or any big-type H2 in atelier layout).
+.sizeDisplay {
+  font-size: clamp(2.25rem, 5.5vw + 1rem, 4.5rem);
+  line-height: 1.05;
+  letter-spacing: var(--letter-spacing-tighter);
+}

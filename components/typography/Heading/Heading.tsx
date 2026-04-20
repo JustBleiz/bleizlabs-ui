@@ -16,6 +16,8 @@ import styles from './Heading.module.scss';
  * @tokens  --font-primary (.root font-family), --line-height-tight (.root);
  *          --font-size-{sm,base,lg,xl,2xl,3xl,4xl,5xl} (size variants — note
  *          that sizeMd class resolves to `--font-size-base`, not `--font-size-md`);
+ *          size="display" is viewport-fluid via `clamp()` + tight line-height
+ *          1.05 for atelier big-type rendering (v0.3.5);
  *          --font-weight-{regular,medium,semibold,bold} (tsx WEIGHT_VAR);
  *          --color-text-{primary,secondary,muted} + --color-brand-500 (tsx COLOR_VAR).
  *          Component-local CSS variables `--heading-{color,weight,align}` carry
@@ -55,7 +57,8 @@ export type HeadingSize =
   | '2xl'
   | '3xl'
   | '4xl'
-  | '5xl';
+  | '5xl'
+  | 'display';
 
 export interface HeadingProps extends HTMLAttributes<HTMLHeadingElement> {
   /** Semantic heading level (renders <h1>..<h6>). Default 2. */
@@ -92,6 +95,7 @@ const SIZE_CLASS: Record<HeadingSize, string> = {
   '3xl': styles.size3xl!,
   '4xl': styles.size4xl!,
   '5xl': styles.size5xl!,
+  display: styles.sizeDisplay!,
 };
 
 type HeadingTag = 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6';

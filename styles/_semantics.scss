@@ -44,12 +44,17 @@
   --font-weight-bold: #{$font-weight-bold};
 
   // Letter-spacing scale — fine typographic control (Phase 3 + retroactive Phase 2 fix)
-  // Defaults map to common ranges: -0.025em (display headings) → 0.06em (uppercase labels)
+  // Defaults map to common ranges: -0.025em (display headings) → 0.18em (atelier ticker)
   --letter-spacing-tight: -0.015em;
   --letter-spacing-tighter: -0.025em;
   --letter-spacing-normal: 0;
   --letter-spacing-wide: 0.01em;
   --letter-spacing-wider: 0.06em;
+  // v0.3.5 atelier additions — mono markers + ticker labels (reused across 6+
+  // Hero/bottomline patterns in BleizLabs web/panel). Promoted to library after
+  // Rule of Three hit on /rozwiazania refactor-skill audit.
+  --letter-spacing-wide-mono: 0.12em;
+  --letter-spacing-ticker: 0.18em;
 
   // ==========================================================================
   // SPACING — full scale + semantic defaults
@@ -234,6 +239,19 @@
   --duration-normal: #{$duration-normal};
   --duration-slow: #{$duration-slow};
   --easing-default: #{$easing-default};
+  // v0.3.5 — Apple-style ease-out used by atelier nav transitions (arrow slide,
+  // hover lift, rule reveal). Promoted after 6+ call-site repetitions in
+  // BleizLabs web sections. Keep both `--easing-default` (seed-controlled) and
+  // `--easing-apple` (atelier canonical) for intent clarity at call sites.
+  --easing-apple: cubic-bezier(0.2, 0.8, 0.2, 1);
+
+  // ==========================================================================
+  // ATELIER GEOMETRY (v0.3.5) — canonical fixed dimensions for BleizLabs atelier
+  // signature (48×2 teal divider rule). Not seed-driven (signature intentionally
+  // stable cross-theme). Consumers may override per-project in their own :root.
+  // ==========================================================================
+  --atelier-rule-width: 48px;
+  --atelier-rule-height: 2px;
 
   // ==========================================================================
   // Z-INDEX SCALE (Phase 10 layering)

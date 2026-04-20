@@ -54,6 +54,20 @@
   }
 }
 
+// v0.3.5 — Atelier rule reveal (48×2 teal divider scale-in on H1/H2 entry).
+// Added after 6+ duplicated copies across BleizLabs Hero sections. Pairs with
+// `--atelier-rule-width` / `--atelier-rule-height` tokens + `--easing-apple`.
+@keyframes ruleReveal {
+  from {
+    transform: scaleX(0);
+    opacity: 0;
+  }
+  to {
+    transform: scaleX(1);
+    opacity: 1;
+  }
+}
+
 @keyframes slideInLeft {
   from {
     opacity: 0;
