@@ -123,6 +123,12 @@
 }
 
 // Progressive enhancement — content-aware height transition.
+// IMPORTANT: max-height must be `none` in BOTH states when interpolate-size
+// is active. Leaving max-height:0 on .panelClosed (from the fallback block)
+// would cascade through and clamp computed height to 0 instantly — the
+// `height: auto → 0` transition would never get a chance to animate on
+// the close direction. Overriding to `max-height: none` in closed state
+// removes the clamp so the height transition runs both ways symmetrically.
 @supports (interpolate-size: allow-keywords) {
   .panel {
     interpolate-size: allow-keywords;
@@ -135,7 +141,7 @@
 
   .panelClosed {
     height: 0;
-    max-height: 0;
+    max-height: none;
   }
 }
 
