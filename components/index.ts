@@ -41,7 +41,7 @@ export * from './display/Spinner';
 export * from './display/Table';
 
 // ----------------------------------------------------------------------------
-// Interactive (16)
+// Interactive (17)
 // ----------------------------------------------------------------------------
 export * from './interactive/Accordion';
 export * from './interactive/Button';
@@ -57,6 +57,7 @@ export * from './interactive/PhoneInput';
 export * from './interactive/RadioGroup';
 export * from './interactive/Switch';
 export * from './interactive/Textarea';
+export * from './interactive/TextLink';
 export * from './interactive/Toggle';
 export * from './interactive/ToggleGroup';
 

@@ -4,6 +4,41 @@ All notable releases of this component library. Follows [Keep a Changelog](https
 
 ---
 
+## [0.3.4] — 2026-04-20
+
+**New interactive atom: `TextLink` — promoted from BleizLabs Website v2 HeroSection refactor after validation on 2+ sections (Rule of Three approaching).**
+
+### Added — library
+
+- **`components/interactive/TextLink`** — inline atelier link atom with animated arrow suffix + underline-on-hover + focus-ring via `outline: 2px solid var(--color-brand)`. Framework-agnostic (no next/link dependency). Props: `href?`, `asChild?`, `hideArrow?`, all `AnchorHTMLAttributes<HTMLAnchorElement>` forwarded via `...rest`. `forwardRef<HTMLAnchorElement>`. Server-safe when used without `asChild`. Tokens: `--color-text-primary`, `--color-brand`, `--font-size-base`, `--font-weight-semibold`, `--space-{1,2,3}`, `--radius-sm`, `--duration-{fast,normal}`, `--easing-default`. `@media (prefers-reduced-motion: reduce)` guard included.
+- Consumer uses: plain `<TextLink href="/path">Label</TextLink>` renders `<a>` with arrow (server-safe, full page reload for internal routes). `<TextLink asChild><Link href="/path">Label <span>→</span></Link></TextLink>` for SPA routing — consumer must include arrow manually per Slot semantics (same constraint as Button B3 fix in v0.3.3).
+
+### Notes
+
+- Known limitation: `asChild + <Link>` + library-owned `arrow` slot does not render (same Slot children-array bug pattern as Button B3). Consumer must include arrow in own child. Future v0.3.5 candidate: refactor TextLink arrow composition so `asChild` works with single-child Link without arrow burden on consumer.
+- Inventory: `D:/OS/internal/bleizlabs-ui/docs/component-inventory.md` updated with TextLink entry under Phase 4 Simple Interactive atoms.
+
+---
+
+## [0.3.3] — 2026-04-20
+
+**Three CRITICAL library bugs discovered during BleizLabs Website v2 /rozwiazania S4 ComponentsSection atelier implementation (Pakiety Startowe shelf+filter). Root-cause, fix, verify.**
+
+### Fixed — library
+
+#### CRITICAL (3)
+
+- **B1 `components/interactive/Button`** — `iconOnly` + `icon` prop rendered icon twice. Root cause: `inner` conditional rendered icon both at line 159 (`icon && iconPosition === 'left'`, with default `iconPosition='left'`) AND at line 167 (`iconOnly`) — both branches active simultaneously. Fix: gate left-icon branch with `!iconOnly` analogous to right-icon branch (line 172 precedent). Consumers using `<Button iconOnly icon={<Icon />} aria-label="..." />` now render exactly one icon.
+- **B2 `styles/_semantics.scss`** — `--color-background` token was missing despite being a common design-system spelling; consumers writing `linear-gradient(to right, var(--color-background), transparent)` got `initial` / transparent fallback (silent failure). Fix: add `--color-background: var(--color-bg)` alias at `:root` scope so both token names resolve to theme-active canonical value. Theme-aware via CSS variable forwarding.
+- **B3 `components/interactive/Button`** — `asChild` + `<Link>` child rendered nothing (silent null). Root cause: Button passed `inner` (Fragment containing conditional icon/label spans) as Slot `children`. Under Next.js 16 RSC boundary, Fragment children cross the serialization boundary as an **array**, so `Slot`'s `isValidElement(children)` returned `false` → Slot returned `null` → Button disappeared from DOM entirely. Fix: `asChild` branch now passes the consumer's **original `children`** directly to Slot (canonical Radix Slot semantics — project styling onto consumer's element, consumer owns content). Side effect: consumers using `asChild` must include their own icon markup in the child; icon prop is respected only in native `<button>`/`<a>` render paths. Previously documented workaround (`<Button href="/path">Text</Button>` instead of `asChild`) is no longer needed.
+
+### Notes
+
+- No breaking changes. All 3 fixes restore documented API behavior that silently failed.
+- Downstream `BleizLabs Website v2` /rozwiazania S1-S4 sections had local workarounds (direct `href` prop instead of `asChild + Link`, local `.navButton` class with padding:0 for square iconOnly look, `var(--color-surface)` fallback for missing `--color-background`). These workarounds can be removed at consumer level after upgrading — or kept as redundant-but-safe belt-and-braces.
+
+---
+
 ## [0.3.0] — 2026-04-19
 
 **"Quality 100/100" audit-fix-audit loop — 2 CRITICAL + 27 IMPORTANT from full-library audit (76 components vs `component-build` skill rubric), fixed in one coordinated batch with fresh re-audit verification.** All 76 components pass rubric with zero CRITICAL + zero IMPORTANT. Ratifies 3 new architectural decisions (D27-D29). One deferred item (ToggleGroup roving focus) tracked to v0.4.0.

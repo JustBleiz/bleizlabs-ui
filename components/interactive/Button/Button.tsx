@@ -156,7 +156,7 @@ export const Button = forwardRef<HTMLElement, ButtonProps>(function Button(
 
   const inner = (
     <>
-      {icon && iconPosition === 'left' ? (
+      {icon && iconPosition === 'left' && !iconOnly ? (
         <span aria-hidden="true" className={styles.icon}>
           {icon}
         </span>
@@ -199,6 +199,20 @@ export const Button = forwardRef<HTMLElement, ButtonProps>(function Button(
   }
 
   if (asChild) {
+    // Slot expects EXACTLY ONE React element child (isValidElement check). In
+    // `asChild`, that child is the consumer's own element (e.g. Next `<Link>`)
+    // and Slot projects Button's className + style onto it. Passing `inner`
+    // (a Fragment with conditional icon/label spans) produced a React children
+    // array — `isValidElement` returns false for arrays → Slot rendered null,
+    // silently swallowing the Button (observed as empty `<Inline>` in DOM with
+    // Next.js 16 RSC passing Fragment children as array across client boundary).
+    //
+    // Consumers who want icon-wrapping with asChild must include the icon
+    // markup in their own child:
+    //
+    // <Button asChild variant="link">
+    //   <Link href="/docs"><Icon /> Documentation</Link>
+    // </Button>
     return (
       <Slot
         ref={ref as React.Ref<HTMLElement>}
@@ -208,7 +222,7 @@ export const Button = forwardRef<HTMLElement, ButtonProps>(function Button(
         data-disabled={disabled || undefined}
         {...(rest as React.HTMLAttributes<HTMLElement>)}
       >
-        {inner}
+        {children}
       </Slot>
     );
   }

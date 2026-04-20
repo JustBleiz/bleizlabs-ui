@@ -1,0 +1,47 @@
+/* TextLink — inline atelier link atom. Framework-agnostic (no next/link). */
+
+.root {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--color-text-primary);
+  text-decoration: none;
+  font-weight: var(--font-weight-semibold);
+  font-size: var(--font-size-base);
+  padding-block: var(--space-3);
+  border-bottom: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  transition:
+    border-color var(--duration-fast) var(--easing-default),
+    gap var(--duration-normal) var(--easing-default),
+    color var(--duration-fast) var(--easing-default);
+}
+
+.root:hover {
+  border-bottom-color: var(--color-brand);
+  gap: var(--space-3);
+  color: var(--color-brand);
+}
+
+.root:focus-visible {
+  outline: 2px solid var(--color-brand);
+  outline-offset: var(--space-1);
+  border-bottom-color: var(--color-brand);
+  color: var(--color-brand);
+}
+
+.arrow {
+  transition: transform var(--duration-normal) cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.root:hover .arrow,
+.root:focus-visible .arrow {
+  transform: translateX(var(--space-1));
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .root,
+  .arrow {
+    transition: none;
+  }
+}

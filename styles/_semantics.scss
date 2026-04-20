@@ -329,6 +329,15 @@
   --container-xl: #{$seed-bp-xl};
 
   // ==========================================================================
+  // SEMANTIC COLOR ALIASES
+  // ==========================================================================
+  // `--color-background` is a common spelling across design systems; alias it
+  // to `--color-bg` so consumers can write `linear-gradient(to right,
+  // var(--color-background), transparent)` without grepping for the canonical
+  // token name. Theme-aware because it forwards the live `--color-bg` value.
+  --color-background: var(--color-bg);
+
+  // ==========================================================================
   // DEFAULT THEME SURFACES — driven by $seed-mode
   // ==========================================================================
   // This block sets which theme loads before any JS runs. Runtime toggle
