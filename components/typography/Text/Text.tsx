@@ -37,11 +37,25 @@ import styles from './Text.module.scss';
  *          `_mixins.scss` but are inlined as flat classes here so the
  *          component owns its typography scale rather than mixing in.
  *
+ *          v0.3.1 — semantic default colors per variant (DEFAULT_COLOR_BY_VARIANT):
+ *          headings are the only primary-tier in the system, so Text defaults
+ *          map onto the read + meta tiers. `body-strong` keeps primary for
+ *          inline emphasis. Override with explicit `color` prop when needed.
+ *
+ *          | variant     | default color |
+ *          | ----------- | ------------- |
+ *          | lead        | secondary     |
+ *          | body        | secondary     |
+ *          | body-strong | primary       |
+ *          | small       | secondary     |
+ *          | caption     | muted         |
+ *
  * @example
- * <Text>Body copy paragraph.</Text>
- * <Text variant="lead">Lead-in introduction.</Text>
- * <Text variant="small" color="muted">Footnote.</Text>
- * <Text variant="caption" uppercase>Section label</Text>
+ * <Text>Body copy paragraph.</Text>                  // secondary (default)
+ * <Text variant="lead">Lead-in introduction.</Text>  // secondary
+ * <Text variant="body-strong">Emphasis.</Text>       // primary
+ * <Text variant="caption" uppercase>Label</Text>     // muted
+ * <Text color="primary">Override back to primary.</Text>
  * <Text asChild>
  *   <span>Inline text via asChild</span>
  * </Text>
@@ -53,7 +67,12 @@ export interface TextProps extends HTMLAttributes<HTMLParagraphElement> {
   variant?: TextVariant;
   /** Font weight override (defaults to variant's natural weight). */
   weight?: 'regular' | 'medium' | 'semibold' | 'bold';
-  /** Text color. Default `primary`. `inherit` adopts surrounding context. */
+  /**
+   * Text color. If omitted, resolves to a semantic default per variant
+   * (see `DEFAULT_COLOR_BY_VARIANT`): lead/body/small → secondary,
+   * body-strong → primary, caption → muted. `inherit` adopts surrounding
+   * context.
+   */
   color?: 'primary' | 'secondary' | 'muted' | 'brand' | 'inherit';
   /** Text alignment. Default `start`. */
   align?: 'start' | 'center' | 'end';
@@ -86,6 +105,19 @@ const COLOR_VAR: Record<NonNullable<TextProps['color']>, string> = {
   inherit: 'inherit',
 };
 
+// v0.3.1 — semantic default color per variant. Headings own the primary
+// tier; Text maps onto read + meta tiers so a raw `<Text variant="lead">`
+// carries correct hierarchy without consumers repeating color="secondary".
+// `body-strong` keeps primary because its role is inline emphasis (card
+// micro-title, bolded sentence), which earns heading-adjacent weight.
+const DEFAULT_COLOR_BY_VARIANT: Record<TextVariant, NonNullable<TextProps['color']>> = {
+  lead: 'secondary',
+  body: 'secondary',
+  'body-strong': 'primary',
+  small: 'secondary',
+  caption: 'muted',
+};
+
 const WEIGHT_VAR: Record<NonNullable<TextProps['weight']>, string> = {
   regular: 'var(--font-weight-regular)',
   medium: 'var(--font-weight-medium)',
@@ -97,7 +129,7 @@ export const Text = forwardRef<HTMLParagraphElement, TextProps>(function Text(
   {
     variant = 'body',
     weight,
-    color = 'primary',
+    color,
     align = 'start',
     uppercase = false,
     asChild = false,
@@ -109,9 +141,10 @@ export const Text = forwardRef<HTMLParagraphElement, TextProps>(function Text(
   ref,
 ) {
   const Comp = asChild ? Slot : 'p';
+  const resolvedColor = color ?? DEFAULT_COLOR_BY_VARIANT[variant];
 
   const textVars: CSSProperties = {
-    '--text-color': COLOR_VAR[color],
+    '--text-color': COLOR_VAR[resolvedColor],
     '--text-align': align,
     ...(weight ? { '--text-weight': WEIGHT_VAR[weight] } : {}),
   } as CSSProperties;
