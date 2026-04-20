@@ -43,6 +43,7 @@ import styles from './Heading.module.scss';
  * <Heading level={1}>Page title</Heading>                // h1, size 5xl
  * <Heading level={2} size="3xl">Section</Heading>        // h2, smaller
  * <Heading level={3} size="5xl" align="center">Hero</Heading>
+ * <Heading level={1} size="display">Hero title</Heading> // v0.3.5 fluid clamp
  * <Heading level={2} asChild>
  *   <a href="/article">Linked title</a>
  * </Heading>

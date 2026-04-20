@@ -46,6 +46,12 @@
 // headings remain legible from 375px to 1440px+ without overflow, and tight
 // 1.05 line-height replaces the default 1.25 for dense editorial typography.
 // Use with `size="display"` on Hero H1 (or any big-type H2 in atelier layout).
+// Semantic guidance: `size="5xl"` for large section headings (article intros,
+// chapter titles); `size="display"` reserved for hero/banner contexts where
+// viewport-fluid scaling is intentional.
+// Narrow-viewport note: at the 2.25rem (36px) clamp floor paired with
+// line-height 1.05, multi-line wrapped titles can read densely on <384px
+// devices — keep display headings short (≤6 words) for hero contexts.
 .sizeDisplay {
   font-size: clamp(2.25rem, 5.5vw + 1rem, 4.5rem);
   line-height: 1.05;

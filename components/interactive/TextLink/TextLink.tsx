@@ -19,9 +19,13 @@ import styles from './TextLink.module.scss';
  *          types `AnchorHTMLAttributes`, `ReactNode`
  * @a11y    Renders `<a>` by default with text + animated arrow suffix.
  *          `asChild` projects onto a single ReactElement child (e.g. Next
- *          `<Link>`). Arrow is `aria-hidden`. Focus-visible provides a
- *          2px outline at `var(--space-1)` offset, independent of the
- *          underline state.
+ *          `<Link>`). Arrow is `aria-hidden`. Focus-visible consumes the
+ *          library-wide `mx.focus-ring` mixin for consistent outline styling.
+ *          `forced-colors: active` maps to LinkText + CanvasText for Windows
+ *          High Contrast Mode legibility.
+ *          Security: when `target="_blank"` is passed, `rel` is auto-patched
+ *          to include `noopener noreferrer` (OWASP reverse-tabnabbing guard);
+ *          consumer-provided `rel` tokens are preserved and deduplicated.
  * @notes   Framework-agnostic by design — no next/link dependency. For
  *          client-side navigation, consumers use `asChild` to wrap their
  *          framework's Link component. The underline animates on hover:
@@ -52,8 +56,27 @@ export const TextLink = forwardRef<HTMLAnchorElement, TextLinkProps>(
   ) {
     const Comp = asChild ? Slot : 'a';
 
+    // Auto-wire `rel="noopener noreferrer"` when target="_blank" to prevent
+    // reverse-tabnabbing (OWASP). Preserves and deduplicates consumer-provided
+    // rel tokens so `<TextLink target="_blank" rel="external">` keeps `external`.
+    const safeRest =
+      rest.target === '_blank'
+        ? {
+            ...rest,
+            rel: Array.from(
+              new Set(
+                [
+                  ...(rest.rel ? rest.rel.split(/\s+/).filter(Boolean) : []),
+                  'noopener',
+                  'noreferrer',
+                ],
+              ),
+            ).join(' '),
+          }
+        : rest;
+
     return (
-      <Comp ref={ref} className={cn(styles.root, className)} {...rest}>
+      <Comp ref={ref} className={cn(styles.root, className)} {...safeRest}>
         {children}
         {!hideArrow && (
           <span className={styles.arrow} aria-hidden>

@@ -89,9 +89,11 @@
 //      transitions natively. Duration matches actual content height,
 //      so 100px panel and 500px panel both feel proportionally smooth
 //      — the "snappy" feel reported for short panels under the
-//      max-height ceiling is eliminated. Duration bumped slightly
-//      (320ms) with an ease-out curve for a more intentional "reveal"
-//      feel on content-sized panels.
+//      max-height ceiling is eliminated. Uses `--easing-apple`
+//      (cubic-bezier 0.2, 0.8, 0.2, 1) for the intentional "reveal"
+//      ease-out on content-sized panels. Duration stays on the
+//      `--duration-normal` token; the curve alone produces the
+//      snappier reveal feel (v0.3.5 atelier token consumption).
 //
 // E135 note (historical): an earlier attempt used
 // `grid-template-rows: 0fr ↔ 1fr`. Abandoned due to Chromium jank on
@@ -135,7 +137,7 @@
     max-height: none;
     height: auto;
     transition:
-      height 320ms cubic-bezier(0.2, 0.8, 0.2, 1),
+      height var(--duration-normal) var(--easing-apple),
       border-top-color var(--duration-fast) var(--easing-default);
   }
 

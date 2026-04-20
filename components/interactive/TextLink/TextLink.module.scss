@@ -1,5 +1,7 @@
 /* TextLink — inline atelier link atom. Framework-agnostic (no next/link). */
 
+@use '../../../styles/mixins' as mx;
+
 .root {
   display: inline-flex;
   align-items: center;
@@ -24,19 +26,35 @@
 }
 
 .root:focus-visible {
-  outline: 2px solid var(--color-brand);
+  @include mx.focus-ring;
   outline-offset: var(--space-1);
   border-bottom-color: var(--color-brand);
   color: var(--color-brand);
 }
 
 .arrow {
-  transition: transform var(--duration-normal) cubic-bezier(0.2, 0.8, 0.2, 1);
+  transition: transform var(--duration-normal) var(--easing-apple);
 }
 
 .root:hover .arrow,
 .root:focus-visible .arrow {
   transform: translateX(var(--space-1));
+}
+
+// Windows High Contrast Mode — map to system colors so focus ring and link
+// state stay visible when user-agent strips custom palette. `LinkText` is
+// the HCM-defined link color; `CanvasText` is the foreground text color.
+@media (forced-colors: active) {
+  .root {
+    color: LinkText;
+  }
+
+  .root:hover,
+  .root:focus-visible {
+    color: LinkText;
+    border-bottom-color: LinkText;
+    outline-color: CanvasText;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
