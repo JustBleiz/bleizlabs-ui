@@ -1090,13 +1090,20 @@ export function NavigationMenuContent({
   );
 
   // Initial focus on open: first or last submenu link based on data-open-reason.
+  // E148: `reason === 'none'` opens the submenu WITHOUT stealing focus — used
+  // when ArrowRight/ArrowLeft crosses menubar items (APG: focus stays on the
+  // menubar trigger, submenu opens silently). Returning the trigger here
+  // makes useFloatingFocus re-focus the already-focused trigger (no-op)
+  // instead of falling back to focusing the content container (which would
+  // steal focus off the trigger via `target ?? container`).
   useFloatingFocus({
     open: isOpen,
     contentRef: popperRef,
     getFocusTarget: (container) => {
+      const reason = triggerRef.current?.getAttribute('data-open-reason');
+      if (reason === 'none') return triggerRef.current as HTMLElement | null;
       const links = getSubmenuLinks(container);
       if (links.length === 0) return null;
-      const reason = triggerRef.current?.getAttribute('data-open-reason');
       if (reason === 'last') {
         return links[links.length - 1] ?? null;
       }
@@ -1203,7 +1210,11 @@ export function NavigationMenuContent({
           setRovingTabindex(items, nextIdx);
           nextItem.focus();
           if (nextValue && nextItem.getAttribute('aria-haspopup') === 'menu') {
-            nextItem.setAttribute('data-open-reason', 'first');
+            // E148: APG menubar — when ArrowRight crosses menubar items, focus
+            // stays on the NEXT menubar trigger; the submenu opens silently.
+            // 'none' suppresses useFloatingFocus's focus-steal (vs 'first'
+            // which moves focus INTO the submenu on click/ArrowDown open).
+            nextItem.setAttribute('data-open-reason', 'none');
             setOpenValue(nextValue);
           } else {
             setOpenValue(null);
@@ -1227,7 +1238,9 @@ export function NavigationMenuContent({
           setRovingTabindex(items, prevIdx);
           prevItem.focus();
           if (prevValue && prevItem.getAttribute('aria-haspopup') === 'menu') {
-            prevItem.setAttribute('data-open-reason', 'first');
+            // E148: mirror ArrowRight — cross-menubar ArrowLeft keeps focus on
+            // prev menubar trigger; submenu opens without focus-steal.
+            prevItem.setAttribute('data-open-reason', 'none');
             setOpenValue(prevValue);
           } else {
             setOpenValue(null);

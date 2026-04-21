@@ -106,10 +106,23 @@ export function useFloatingDismiss(config: FloatingDismissConfig): void {
   }, [config.open, config.closeOnOutsideClick]);
 
   // Window scroll — capture phase, passive. Opt-in for ContextMenu.
+  // E148: dismiss only when the window ACTUALLY scrolls — guard against
+  // spurious scroll-event fires that leave `scrollY` unchanged (observed in
+  // CI after Playwright auto-scrollIntoView on an already-visible element,
+  // causing a false-positive dismiss mid-menuitem-click). Snapshot scrollX/Y
+  // at open; compare deltas against a subpixel threshold. Preserves intent
+  // (user scrolls → close) without firing on no-op scroll events.
   useEffect(() => {
     if (!config.open) return;
     if (!config.closeOnScroll) return;
-    const handleScroll = () => configRef.current.onDismiss();
+    const originX = window.scrollX;
+    const originY = window.scrollY;
+    const handleScroll = () => {
+      const dx = Math.abs(window.scrollX - originX);
+      const dy = Math.abs(window.scrollY - originY);
+      if (dx < 1 && dy < 1) return;
+      configRef.current.onDismiss();
+    };
     window.addEventListener('scroll', handleScroll, { capture: true, passive: true });
     return () =>
       window.removeEventListener('scroll', handleScroll, { capture: true });

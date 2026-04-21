@@ -13,7 +13,15 @@ import { defineConfig, devices } from '@playwright/test';
  *    Exec time target ≤15 min for full 23-component suite.
  *
  * Chromium-only per D-E142.7 (cross-browser matrix explicit out-of-scope).
+ *
+ * E148: `BASE_URL` env var overrides the default (:3000) — use when another
+ * project already owns :3000 and you want to run bleizlabs-ui tests against
+ * a secondary port (e.g., `BASE_URL=http://localhost:3100 npx playwright test`).
+ * Skips the bundled webServer when set so callers manage the server lifecycle.
  */
+const BASE_URL = process.env.BASE_URL ?? 'http://localhost:3000';
+const SKIP_WEB_SERVER = !!process.env.BASE_URL;
+
 export default defineConfig({
   testDir: '.',
   testMatch: ['tests/**/*.spec.ts', 'components/**/tests/*.spec.ts'],
@@ -29,7 +37,7 @@ export default defineConfig({
     ? [['github'], ['html', { open: 'never' }], ['list']]
     : [['html', { open: 'never' }], ['list']],
   use: {
-    baseURL: 'http://localhost:3000',
+    baseURL: BASE_URL,
     trace: 'on-first-retry',
     screenshot: 'only-on-failure',
     video: 'retain-on-failure',
@@ -45,12 +53,14 @@ export default defineConfig({
   // via `pageerror` for Slot/Turbopack edge cases that never reach consumers
   // of a published tarball. Production-built HTML matches consumer reality.
   // Local re-runs skip the build when a server is already up on :3000.
-  webServer: {
-    command: 'npm run build && npm run start',
-    url: 'http://localhost:3000',
-    reuseExistingServer: !process.env.CI,
-    timeout: 180_000,
-    stdout: 'ignore',
-    stderr: 'pipe',
-  },
+  webServer: SKIP_WEB_SERVER
+    ? undefined
+    : {
+        command: 'npm run build && npm run start',
+        url: 'http://localhost:3000',
+        reuseExistingServer: !process.env.CI,
+        timeout: 180_000,
+        stdout: 'ignore',
+        stderr: 'pipe',
+      },
 });
