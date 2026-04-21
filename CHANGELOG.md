@@ -4,6 +4,32 @@ All notable releases of this component library. Follows [Keep a Changelog](https
 
 ---
 
+## [0.4.1] — 2026-04-21
+
+**E148 CI test stabilization — hotfix release. Fixes 3 persistent Playwright per-component failures that blocked the `test` workflow across v0.3.5 / v0.4.0 pushes (publish workflow had been passing separately, so v0.4.0 was already live but carried two real user-facing bugs). Two fixes are real library bugs reachable from consumer apps; one is a demo-layer correction plus a defensive guard in the shared dismiss primitive. Additive, non-breaking. Backward-compatible with v0.4.0 public API.**
+
+### Fixed — library
+
+- **`components/complex/NavigationMenu`** — cross-menubar ArrowRight/ArrowLeft no longer steals focus into the destination submenu. Previously, pressing ArrowRight while focused inside an open submenu would advance to the next menubar trigger AND move focus down to its first submenu link (two-step focus jump). APG `/menubar/` permits either "open-without-focus" or "open-with-focus" semantics; our intent per the F6 test was "open-without-focus" — the implementation quietly drifted to the wrong branch because `useFloatingFocus` fell back to focusing the content container when `getFocusTarget` returned `null`. Fix: added a `data-open-reason='none'` sentinel that cross-menubar nav writes to the destination trigger; `getFocusTarget` now returns the trigger itself on `'none'` (no-op re-focus), keeping focus where the menubar navigation left it. Visual + click/hover open paths unchanged (`'first'` / `'last'` reasons untouched).
+- **`components/presets/SiteHeader`** — mobile toggle (`SiteHeaderMobileToggle`) now meets WCAG 2.5.5 Level AAA 44×44 touch-target minimum regardless of sibling Actions content. Previously declared `width/height: 44px` but had no `flex-shrink` guard — when Brand + Actions (Sign in + Get started) + toggle + gaps summed above viewport width at 375px (Linux font metrics render wider than Windows), the flex layout shrank the toggle to ~40.34px content-width. Fix: added `flex-shrink: 0` + explicit `min-width: 44px` + `min-height: 44px` to pin the touch-target floor even under content pressure. No visual change on desktop (hidden above md breakpoint).
+- **`components/utils/floating/useFloatingDismiss`** — scroll handler now snapshots `window.scrollX/Y` on open and compares deltas against a subpixel threshold before invoking `onDismiss`. Spurious scroll events (Playwright auto-scrollIntoView, Chromium scroll-anchoring, no-op scroll callbacks) with zero position change no longer dismiss the floating surface. Preserves intent: any real scroll movement still closes. Defensive net — the ContextMenu CM-R16 CI failure was root-caused to a demo-layer layout shift (see below), but this guard hardens all `closeOnScroll: true` consumers against similar browser-behavior edge cases.
+
+### Fixed — internals (dev-only, not shipped to consumers)
+
+- **`app/components/context-menu/page.tsx`** — playground demo always renders the "Last action: …" line (placeholder when no action yet), instead of conditionally mounting it after the first `onSelect`. The conditional mount added a layout shift ABOVE the viewport scroll position, triggering Chromium's scroll-anchoring algorithm to bump `scrollY` by ~30px and fire a real `scroll` event — which closed the ContextMenu mid-menuitem-click (via `closeOnScroll: true`) and broke the CM-R16 `onSelect preventDefault keeps menu open` assertion across 3 retries in CI. Does not reproduce locally (subpixel rounding differences). Consumer apps only hit this pattern if they render content above the viewport on the same click that opens/keeps a ContextMenu open; unlikely in practice, but the dev guard on `useFloatingDismiss` above protects against it regardless.
+- **`playwright.config.ts`** — accepts `BASE_URL` env var override, auto-skipping the bundled webServer when set. Lets contributors run bleizlabs-ui tests against an alternate port (e.g., `:3100`) without freeing the default `:3000` if another project already owns it.
+
+### Notes
+
+- **Backward-compatible.** Zero public API changes. `@bleizlabs/ui@0.4.1` is a drop-in for `0.4.0`. Consumers who don't use NavigationMenu's cross-menubar arrow nav or SiteHeader mobile toggle see zero behavior delta.
+- **User-impact.** Both library-level fixes are reachable in real consumer apps:
+  - NavigationMenu F6: any keyboard user navigating the horizontal menubar with ArrowRight/ArrowLeft to cross menubar items would observe inconsistent focus — focus jumping into submenu instead of staying on menubar. Visible on the BleizLabs website v2 `SiteHeader` and any consumer using `<NavigationMenu>` horizontally.
+  - SiteHeader SH-R20: mobile (375px viewport) users on Linux-backed browsers (e.g., any Android Chrome, Linux Firefox, production Hetzner renders under headless inspection) saw the mobile toggle rendered below 44×44, failing the tap-target minimum.
+- **CI gate.** Playwright per-component suite: 774 passed · 3 flaky (retry-pass, historical) · 0 failed in the verification run (24718936236). TypeScript / ESLint / barrel / Next build all green.
+- **No consumer migration needed.** `npm install @bleizlabs/ui@^0.4.0` already resolves to `0.4.1` under semver caret; explicit bump to `^0.4.1` only required if consumer pins exact versions.
+
+---
+
 ## [0.4.0] — 2026-04-21
 
 **Atelier pack — Rule-of-Three-gated tokens, Heading display tier ladder, Button shape prop, and two new components (Anchor atom + PairedCard preset). Triggered by empirical consumption of v0.3.5 during BleizLabs Website v2 `/rozwiazania` atelier refactor (`frontend/refactor` skill) across 7 sections + cross-referenced with concurrent homepage refactor. Every added token/component ships with ≥2 independent website consumers — no speculative primitives.**
