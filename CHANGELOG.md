@@ -4,6 +4,36 @@ All notable releases of this component library. Follows [Keep a Changelog](https
 
 ---
 
+## [0.4.3] — 2026-04-22
+
+**E149 hover-polish — 2 new duration tokens (`--duration-hover` 280ms, `--duration-card-hover` 320ms) + library component adoption (Button + Card). Smoother hover feel site-wide for all consumers after upgrade. Pure additive + backward-compatible with v0.4.2.**
+
+### Added — library
+
+- **`styles/_project-settings.scss`** — 2 new `!default` seed tokens in ANIMATION TIMING section: `$seed-duration-hover: 280ms` (button-sized hover) + `$seed-duration-card-hover: 320ms` (card-sized hover). Consumer can override via `@use '@bleizlabs/ui/styles' with ($seed-duration-hover: 150ms, ...)` for snappier feel if preferred.
+- **`styles/_generator.scss`** — passthrough SCSS variables `$duration-hover` + `$duration-card-hover` to semantics layer.
+- **`styles/_semantics.scss`** — emits CSS custom properties `--duration-hover` + `--duration-card-hover` in `:root`. Available cross-library for consumer use via `transition: background-color var(--duration-hover) ...` (buttons) or `transition: border-color var(--duration-card-hover) ...` (cards).
+
+### Changed — library components
+
+- **`components/interactive/Button/Button.module.scss`** — `.root` transition list upgraded from `--duration-fast` (150ms snappy) to `--duration-hover` (280ms atelier polish) on all 5 properties (background-color, border-color, color, box-shadow, transform). Smoother button hover feel library-wide.
+- **`components/display/Card/Card.module.scss`** — `.root` transition list upgraded from `--duration-fast` (150ms) to `--duration-card-hover` (320ms) on 3 properties (transform, box-shadow, border-color). Smoother card lift feel for all Card hoverable consumers.
+
+### Notes
+
+- **Backward-compatible.** Zero public API changes. `@bleizlabs/ui@0.4.3` is a drop-in for `0.4.2`. `^0.4.0` consumers auto-upgrade via semver caret.
+- **User-impact.** Default hover transition times extended: Button 150 → 280ms, Card 150 → 320ms. Effect = premium atelier polish ("snap" → "fade"). Consumers wanting original snappy feel can override seeds via `@use` pattern.
+- **Why not bump `--duration-normal` instead.** Normal (250ms) is used by Modal/Drawer/Dialog/Accordion/Toast state-change animations. A bump would slow those too — undesirable. Separate hover tokens = clean concern separation (hover polish vs state-change speed).
+- **Motivation.** bleizlabs-website E167 site-wide need for smoother button + card hover transitions ("skaczą" user feedback). Local web tokens promoted to library per Rule of Three (Button + Card + 9 card sections). Library component adoption so tokens are not dead.
+- **No consumer migration needed.** `npm install @bleizlabs/ui@^0.4.0` resolves to `0.4.3` under semver caret.
+
+### Verification
+
+- `node playground/build.mjs` PASS (66ms, 17 expected tokens present, new duration tokens visible in compiled.css).
+- `npm run typecheck` PASS (zero errors).
+
+---
+
 ## [0.4.2] — 2026-04-21
 
 **E164 Wave 3 hotfix — `TextLink` `asChild` + next/link rendered empty DOM. Mirrors Button B3 (v0.3.3) Slot children-array fix. Additive + backward-compatible with v0.4.1.**

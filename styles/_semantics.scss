@@ -238,6 +238,17 @@
   --duration-fast: #{$duration-fast};
   --duration-normal: #{$duration-normal};
   --duration-slow: #{$duration-slow};
+  // v0.4.1 — hover-polish tokens. Tuned slower than `--duration-normal`
+  // (250ms) for atelier premium hover feel on interactive surfaces —
+  // eliminates "snap" perception w favor of smooth fade. Opt-in: library
+  // components still use `--duration-fast` / `--duration-normal` by
+  // default żeby nie zwalniać modal/drawer/dialog animations. Consumers
+  // use via `transition: background-color var(--duration-hover) ...` na
+  // buttonach i `transition: border-color var(--duration-card-hover) ...`
+  // na kartach. Promoted after repeated bleizlabs-web site-wide need
+  // dla smoother button + card hover transitions (E167).
+  --duration-hover: #{$duration-hover};
+  --duration-card-hover: #{$duration-card-hover};
   --easing-default: #{$easing-default};
   // v0.3.5 — Apple-style ease-out used by atelier nav transitions (arrow slide,
   // hover lift, rule reveal). Promoted after 6+ call-site repetitions in

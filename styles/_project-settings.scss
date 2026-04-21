@@ -142,9 +142,23 @@ $seed-badge-radius: full !default; // pill
 // ANIMATION TIMING
 // ============================================================================
 
-$seed-duration-fast: 150ms !default; // micro-interactions (hover, press)
+$seed-duration-fast: 150ms !default; // micro-interactions (quick press, toggle)
 $seed-duration-normal: 250ms !default; // standard transitions (open/close, slide, fade)
 $seed-duration-slow: 500ms !default; // slow reveals (skeleton shimmer, backdrop fade)
+
+// Hover-specific tuned durations — atelier premium polish for hover state
+// transitions on interactive surfaces. Slower than `normal` for deliberate,
+// non-snappy feel (snap → fade). Separate tokens for button-sized vs card-
+// sized hover surfaces because natural feel differs (small = slightly faster,
+// large = slower for smooth lift). v0.4.1+
+//
+// Consumers read as `var(--duration-hover)` / `var(--duration-card-hover)`.
+// Library components stay on `--duration-fast` / `--duration-normal` by
+// default — these tokens are opt-in for projects wanting smoother hover
+// polish without bumping the library's own transition durations
+// (which would slow modal/drawer/dialog animations too).
+$seed-duration-hover: 280ms !default; // button / small interactive element hover
+$seed-duration-card-hover: 320ms !default; // card / large surface hover (border/transform/shadow)
 
 $seed-easing-default: cubic-bezier(0.4, 0, 0.2, 1) !default; // ease-in-out Material-like
 

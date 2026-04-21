@@ -202,6 +202,8 @@ $dark-text-inverse: map.get($neutral, 950);
 $duration-fast: $seed-duration-fast;
 $duration-normal: $seed-duration-normal;
 $duration-slow: $seed-duration-slow;
+$duration-hover: $seed-duration-hover; // v0.4.1 — hover polish (280ms default)
+$duration-card-hover: $seed-duration-card-hover; // v0.4.1 — card hover polish (320ms default)
 $easing-default: $seed-easing-default;
 
 // ============================================================================

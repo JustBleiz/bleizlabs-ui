@@ -7,10 +7,15 @@
   border-radius: var(--card-radius, var(--radius-card));
   background: var(--color-surface);
   color: var(--color-text-primary);
+  // v0.4.2 — E149 adoption: Card hover transition upgraded z `--duration-fast`
+  // (150ms, snappy) → `--duration-card-hover` (320ms, atelier polish). Cards
+  // są large interactive surfaces — longer transition = smoother lift feel.
+  // Matches bleizlabs-web E167 site-wide card hover pattern. Consumers can
+  // override via seed `$seed-duration-card-hover` in `@use`.
   transition:
-    transform var(--duration-fast) var(--easing-default),
-    box-shadow var(--duration-fast) var(--easing-default),
-    border-color var(--duration-fast) var(--easing-default);
+    transform var(--duration-card-hover) var(--easing-default),
+    box-shadow var(--duration-card-hover) var(--easing-default),
+    border-color var(--duration-card-hover) var(--easing-default);
 }
 
 // ============================================================================

@@ -23,12 +23,16 @@
   text-decoration: none;
   cursor: pointer;
   user-select: none;
+  // v0.4.2 — E149 adoption: Button hover transition upgraded z `--duration-fast`
+  // (150ms, snappy) → `--duration-hover` (280ms, atelier polish). Matches
+  // bleizlabs-web E167 site-wide pattern — smoother button hover w B2B atelier
+  // context. Consumers can override via seed `$seed-duration-hover` in `@use`.
   transition:
-    background-color var(--duration-fast) var(--easing-default),
-    border-color var(--duration-fast) var(--easing-default),
-    color var(--duration-fast) var(--easing-default),
-    box-shadow var(--duration-fast) var(--easing-default),
-    transform var(--duration-fast) var(--easing-default);
+    background-color var(--duration-hover) var(--easing-default),
+    border-color var(--duration-hover) var(--easing-default),
+    color var(--duration-hover) var(--easing-default),
+    box-shadow var(--duration-hover) var(--easing-default),
+    transform var(--duration-hover) var(--easing-default);
 
   @include mx.touch-target;
 
