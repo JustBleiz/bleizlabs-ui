@@ -56,11 +56,25 @@ export default function ContextMenuPlaygroundPage() {
         >
           Focus anchor (click to clear action log)
         </Button>
-        {lastAction && (
-          <Text variant="small" color="brand">
-            Last action: <code>{lastAction}</code>
-          </Text>
-        )}
+        {/* E148: reserve space unconditionally — conditional mount on first
+            click adds a layout-shift ABOVE the viewport scroll position that
+            triggers Chromium's scroll-anchoring adjustment, firing a real
+            scroll event that dismisses any open ContextMenu (closeOnScroll
+            default true). Renders placeholder line when lastAction is null so
+            subsequent menuitem clicks cause no layout delta in CI. */}
+        <Text
+          variant="small"
+          color={lastAction ? 'brand' : 'muted'}
+          aria-live="polite"
+        >
+          {lastAction ? (
+            <>
+              Last action: <code>{lastAction}</code>
+            </>
+          ) : (
+            'Last action: (none yet — right-click a drop zone and pick an item)'
+          )}
+        </Text>
       </header>
 
       {/* ──────────────────────────────────────── */}
