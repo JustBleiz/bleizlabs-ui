@@ -4,6 +4,26 @@ All notable releases of this component library. Follows [Keep a Changelog](https
 
 ---
 
+## [0.4.2] — 2026-04-21
+
+**E164 Wave 3 hotfix — `TextLink` `asChild` + next/link rendered empty DOM. Mirrors Button B3 (v0.3.3) Slot children-array fix. Additive + backward-compatible with v0.4.1.**
+
+### Fixed — library
+
+- **`components/interactive/TextLink`** — `<TextLink asChild><Link>…</Link></TextLink>` (the canonical Next.js client-side-navigation pattern) rendered nothing in the DOM when `hideArrow` was not set (default). Root cause: TextLink passed two children to `Slot` — the consumer's `<Link>` plus the library-owned arrow `<span>`. Slot's `isValidElement(children)` guard returns `false` for children arrays → `return null` → empty render. Same bug pattern as Button B3 (v0.3.3); the fix recipe was already documented in `Button.tsx:215-241`. Fix: branch on `asChild` in TextLink — in the asChild path, `cloneElement` the consumer's child and append the arrow `<span>` into the child's own `children`, so Slot still sees exactly one valid element. Default `'a'` render path preserved unchanged. Single known consumer site-wide (BleizLabs `/o-nas` Hero) now renders both anchor + arrow correctly.
+
+### Tests
+
+- **`components/interactive/TextLink/tests/TextLink.regression.spec.ts`** — new regression spec covering the full `asChild` × `hideArrow` matrix: default (`<a>` + arrow), `hideArrow` (`<a>` text only), `asChild + <Link>` (anchor + arrow — THE REGRESSION), `asChild + hideArrow + <Link>` (anchor text only). New dev-only playground route `/components/text-link` (`app/components/text-link/page.tsx` + `page.module.scss`) hosts the four scenarios for Playwright + manual eyeballing.
+
+### Notes
+
+- **Backward-compatible.** Zero public API changes. `@bleizlabs/ui@0.4.2` is a drop-in for `0.4.1`. Default `'a'` render path produces identical output. Only the `asChild` + `hideArrow=false` combination changes — from silently empty to correctly rendered.
+- **User-impact.** Consumers of `<TextLink asChild>` (currently just the BleizLabs `/o-nas` Hero "Sprawdź rozwiązania") saw empty anchor DOM in prod. Fix restores documented behavior. Consumers not using `asChild` see zero delta.
+- **No consumer migration needed.** `npm install @bleizlabs/ui@^0.4.0` resolves to `0.4.2` under semver caret.
+
+---
+
 ## [0.4.1] — 2026-04-21
 
 **E148 CI test stabilization — hotfix release. Fixes 3 persistent Playwright per-component failures that blocked the `test` workflow across v0.3.5 / v0.4.0 pushes (publish workflow had been passing separately, so v0.4.0 was already live but carried two real user-facing bugs). Two fixes are real library bugs reachable from consumer apps; one is a demo-layer correction plus a defensive guard in the shared dismiss primitive. Additive, non-breaking. Backward-compatible with v0.4.0 public API.**
