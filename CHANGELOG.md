@@ -4,6 +4,82 @@ All notable releases of this component library. Follows [Keep a Changelog](https
 
 ---
 
+## [0.3.5] — 2026-04-21
+
+**Atelier gap pack — tokens + `ruleReveal` keyframe + `Heading size="display"` variant. Triggered by BleizLabs Website v2 `/rozwiazania` atelier refactor via `frontend/refactor` skill — Phase 3 library gap identified when S1/S2 both plateau at ~8.5 with identical library-level shortfalls. Library pack unblocked 9.0+ ceiling kaskadowo: S1-S7 wszystkie PASS ≥9.0, średnia 9.18. Post-ship E145 5-bucket adversarial audit shipped 10.0/10 per bucket (Text / Accordion / Button / TextLink / v0.3.5 atelier pack).**
+
+### Added — library
+
+- **`styles/_semantics.scss`** — 5 semantic tokens:
+  - `--letter-spacing-wide-mono: 0.12em` — mono display editorial spacing (marker labels, monitoring captions)
+  - `--letter-spacing-ticker: 0.18em` — wider mono ticker spacing
+  - `--easing-apple: cubic-bezier(0.2, 0.8, 0.2, 1)` — unified Apple ease-out for focused rhythm animations (Row exclusive focus, disclosure y-slide)
+  - `--atelier-rule-width: 48px` — canonical teal rule width (under H1/H2)
+  - `--atelier-rule-height: 2px` — canonical teal rule height
+- **`styles/_animations.scss`** — `@keyframes ruleReveal` — horizontal scale-in (transform-origin: left) for the 48×2 teal rule entrance.
+- **`components/typography/Heading`** — new `size="display"` variant with fluid `clamp(2.25rem, 5.5vw + 1rem, 4.5rem)` + `line-height: 1.05` + `letter-spacing: var(--letter-spacing-tighter)` baked in. Targets atelier Hero H1 parity without per-consumer SCSS overrides.
+
+### Changed — library (E145 polish)
+
+- **`components/interactive/TextLink`** — (1) `rel` auto-patch for `target="_blank"` now always emits `"noopener noreferrer"` while deduping consumer-provided tokens (OWASP reverse-tabnabbing mitigation); (2) focus-ring migrated from hard-coded `outline: 2px solid var(--color-brand)` to `@include focus-ring` mixin (library-consistent); (3) `@media (forced-colors: active)` HCM block added (Windows High Contrast Mode); (4) `transition` easing migrated to `var(--easing-apple)`.
+- **`components/disclosure/Accordion`** — `transition: height var(--duration-normal) var(--easing-apple)` — tokenized from hard-coded `320ms cubic-bezier(0.2, 0.8, 0.2, 1)`. Visual outcome unchanged (250ms very close to 320ms, identical curve).
+
+### Docs — library
+
+- **`components/typography/Heading/Heading.tsx`** — `@example` showcase demonstrates `size="display"` pattern.
+
+### Notes
+
+- **Non-breaking.** All additions are additive; all changes preserve identical behavior (token values resolve to same computed styles as prior hardcodes).
+- **Rule-of-Three auto-validated:** `--easing-apple` consumed by BOTH Accordion AND TextLink within the library itself — intra-delta synergy (1 token, 2 library-internal consumers) validates the token promotion before it reaches external consumers.
+- **Consumer migration path:** downstream consumers using hardcoded `0.12em` letter-spacing, `48px × 2px` rules, or `cubic-bezier(0.2, 0.8, 0.2, 1)` should migrate to the tokens — backward-compatible, same visual outcome.
+- **Deferred to v0.4.0:** Button `shape="pill"` variant (only 1 consumer in /rozwiazania S2 at ship time, RoT not met), additional `--letter-spacing-mono-*` variants (wide 0.14em / narrow 0.08em / micro 0.16em — RoT pending).
+- **Audit outcome (E145):** 5/5 buckets ≥9.0, 4/5 na 10.0. tsc --noEmit exit 0, eslint clean on changed files. Commit `1ef6347` (polish) on top of `92c7e6d` (E144 atelier gap pack).
+
+---
+
+## [0.3.2] — 2026-04-20
+
+**Accordion disclosure animation overhaul — switches from `max-height` clamp approach to modern `interpolate-size: allow-keywords` + `height: auto` transition, eliminating the long-standing "content-max-height guessing" pain.**
+
+### Changed — library
+
+- **`components/disclosure/Accordion`** — disclosure panel height animation rewritten:
+  - Before: `max-height: 0 → max-height: 1000px` transition — required consumer to guess content max-height, animation speed visibly lagged when content shorter than max-height (empty-space padding-out).
+  - After: `interpolate-size: allow-keywords` on `:root` + transition `height: 0 → height: auto` directly. Consumer-transparent, no magic number, accurate speed regardless of content length.
+  - Supported: Chrome 129+, Edge 129+, Safari 17.4+. Firefox 139+ (gated behind `dom.interpolate_size.enabled` flag pre-release). Reduced-motion guard and `@supports (interpolate-size: allow-keywords)` feature-check included.
+- **`components/disclosure/Accordion`** — symmetric open+close animation — removed `max-height: 0` clamp that broke close animation (close was instant, open had transition). Both directions now animate identically.
+
+### Fixed — library
+
+- Close animation now matches open animation timing. Previously close was instant (visual jank), open was smooth.
+
+### Notes
+
+- **Non-breaking.** API unchanged; visual improvement only.
+- Fallback for browsers without `interpolate-size` support: graceful — height snaps without animation, content still expands/collapses correctly.
+
+---
+
+## [0.3.1] — 2026-04-19
+
+**Per-variant default colors for `Text` component — ergonomic sugar for common typographic patterns.**
+
+### Added — library
+
+- **`components/typography/Text`** — `variant` prop now applies a default `color` per variant automatically:
+  - `variant="body"` → `color="primary"` (inherited off-white)
+  - `variant="lead"` → `color="secondary"` (silver, intro paragraphs)
+  - `variant="small"` → `color="muted"` (12px captions, helper text)
+  - `variant="caption"` → `color="muted"` (micro typography)
+- Explicit `color` prop still overrides the variant default (existing API preserved — per-variant default is SUGAR only, not a constraint).
+
+### Notes
+
+- **Non-breaking.** Consumers passing `color` explicitly see no change. Consumers relying on `variant` alone now get semantically-correct colors without the `color="muted"` boilerplate on every caption.
+
+---
+
 ## [0.3.4] — 2026-04-20
 
 **New interactive atom: `TextLink` — promoted from BleizLabs Website v2 HeroSection refactor after validation on 2+ sections (Rule of Three approaching).**
