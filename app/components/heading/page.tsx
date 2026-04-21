@@ -3,7 +3,7 @@ import { Heading, type HeadingLevel, type HeadingSize } from '@/components/typog
 import styles from './page.module.scss';
 
 const LEVELS: HeadingLevel[] = [1, 2, 3, 4, 5, 6];
-const SIZES: HeadingSize[] = ['sm', 'md', 'lg', 'xl', '2xl', '3xl', '4xl', '5xl'];
+const SIZES: HeadingSize[] = ['sm', 'md', 'lg', 'xl', '2xl', '3xl', '4xl', '5xl', 'display-md', 'display'];
 
 export default function HeadingPlaygroundPage() {
   return (

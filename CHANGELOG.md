@@ -4,6 +4,37 @@ All notable releases of this component library. Follows [Keep a Changelog](https
 
 ---
 
+## [0.4.0] — 2026-04-21
+
+**Atelier pack — Rule-of-Three-gated tokens, Heading display tier ladder, Button shape prop, and two new components (Anchor atom + PairedCard preset). Triggered by empirical consumption of v0.3.5 during BleizLabs Website v2 `/rozwiazania` atelier refactor (`frontend/refactor` skill) across 7 sections + cross-referenced with concurrent homepage refactor. Every added token/component ships with ≥2 independent website consumers — no speculative primitives.**
+
+### Added — library
+
+- **`styles/_semantics.scss`** — 4 atelier-geometry tokens (Rule-of-Three gated):
+  - `--letter-spacing-mono-wide: 0.14em` — mono display editorial spacing for `.modeCategory` (ProcessSection S5) + `.frameLabel` (AreaSection S3)
+  - `--atelier-tick-width: 8px` + `--atelier-tick-height: 1px` — bullet / disclosure item tick marks (ProcessSection S5 `.bulletItem::before` + AreaSection S3 `.disclosureItem::before`)
+  - `--atelier-corner-tick-size: clamp(12px, 1vw + 8px, 16px)` — fluid L-shaped illustration frame corners (AreaSection S3 + MeetsSection S6)
+- **`components/typography/Heading`** — new `size="display-md"` variant. Section-scale sibling of `size="display"`: fluid `clamp(1.875rem, 4vw + 0.75rem, 3rem)` + `line-height: 1.05` + `--letter-spacing-tighter`. Tier ladder after v0.4.0: `display` = Hero H1 (max 72px), `display-md` = section H2 big-type (max 48px). /rozwiazania S3/S4/S5 H2 parity target.
+- **`components/interactive/Button`** — new `shape?: 'rounded' | 'pill'` prop (default `'rounded'`, backward-compat — existing consumers see identical computed output). Orthogonal to `variant` (color/emphasis) and `size` (scale). `shape="pill"` resolves to `--radius-full`; `shape="rounded"` to `--radius-input` (v0.3.x default). Routed via local `--button-radius` channel so future shapes plug in without touching `.root`.
+- **`components/typography/Anchor`** — NEW atom. Inline body-text link primitive for prose ("see our policy", "as described in §3.2"). Distinct from `TextLink` (navigational, brand color, hover-reveal underline, trailing arrow): Anchor is always underlined, inherits color from surrounding Text, conservative hover shifts to brand color + `currentColor` decoration. Props: `href`, `target`, `rel` (auto-wires `noopener noreferrer` for `target="_blank"` per OWASP reverse-tabnabbing — TextLink E145 parity), `asChild` (Next `<Link>` polymorphism via Slot). `forced-colors: active` HCM block + `prefers-reduced-motion` guard + `mx.focus-ring` mixin. Component-build skill evaluator PASS 0 CRITICAL / 0 IMPORTANT / 2 NITPICK (non-blocking).
+- **`components/presets/PairedCard`** — NEW preset. Good/bad decision split composition — `variant: 'good' | 'bad'` (required) drives a local `--paired-card-accent` CSS var forwarded to Card's `accentColor` prop with `accentPosition="left"`. Defaults: `good` → `var(--color-success)`, `bad` → `var(--color-error)`. Consumers override the accent channel via inline style (`style={{ '--paired-card-accent': 'var(--color-brand-subtle)' }}`) for atelier-tinted palettes without changing `variant`. Slots: `title` (auto-wrapped in `<Heading level={3} size="lg">` when scalar), `description` (auto `<Text variant="body" color="muted">`), `children` (body), `footer`. Composes Card + CardHeader + CardBody + CardFooter + Heading + Text. Component-build skill evaluator PASS 0 CRITICAL / 2 IMPORTANT → doc clarifications applied → re-gated PASS.
+
+### Deferred (scope gate — Rule of Three not met)
+
+- `--letter-spacing-mono-narrow: 0.08em` — 1 consumer (`.stepIndex` ProcessSection S5). Waits for 2nd consumer.
+- `--letter-spacing-mono-micro: 0.16em` — 1 consumer (`.frameLabel*` AreaSection S3). Waits for 2nd consumer.
+- `Frame` atom — 4 repetitions within AreaSection S3 count as 1 consumer (section itself), not RoT. Waits for `/case-study` or second independent section consumer.
+
+### Notes
+
+- **Backward-compatible.** All additions are additive. Button `shape` default `'rounded'` mirrors v0.3.x radius exactly (same computed border-radius). Heading `size="display"` (v0.3.5) preserved unchanged alongside new `size="display-md"`.
+- **Anchor ≠ TextLink.** Deliberate API split — different semantic domains (prose-inline vs nav-action). `typography/Anchor/` vs `interactive/TextLink/` reflects that users reach for Anchor from typography mental model when writing body copy, TextLink from interactive model when building navigation. Keeping them separate avoids an ever-growing `variant` prop on one overloaded component.
+- **Rule-of-Three gating documented.** Every new token/component lists its consumers explicitly. Deferred items flagged with their blocker (consumer count) so future RoT checks are mechanical.
+- **Quality gates.** `tsc --noEmit` exit 0 · `npm run lint` clean · `check:barrel` OK · `tokens:verify` all 17 expected tokens present.
+- **Audit outcome.** 2 new components ran the full `component-build` skill GAN loop (Spec → Plan → Generator → Evaluator → Fix if needed → Integration → Verify). Both PASS the standard rubric. No Phase 10 complex interactive, so extended a11y pipeline N/A.
+
+---
+
 ## [0.3.5] — 2026-04-21
 
 **Atelier gap pack — tokens + `ruleReveal` keyframe + `Heading size="display"` variant. Triggered by BleizLabs Website v2 `/rozwiazania` atelier refactor via `frontend/refactor` skill — Phase 3 library gap identified when S1/S2 both plateau at ~8.5 with identical library-level shortfalls. Library pack unblocked 9.0+ ceiling kaskadowo: S1-S7 wszystkie PASS ≥9.0, średnia 9.18. Post-ship E145 5-bucket adversarial audit shipped 10.0/10 per bucket (Text / Accordion / Button / TextLink / v0.3.5 atelier pack).**

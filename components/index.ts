@@ -22,8 +22,9 @@ export * from './layout/Section';
 export * from './layout/Stack';
 
 // ----------------------------------------------------------------------------
-// Typography (2)
+// Typography (3)
 // ----------------------------------------------------------------------------
+export * from './typography/Anchor';
 export * from './typography/Heading';
 export * from './typography/Text';
 
@@ -96,6 +97,7 @@ export * from './molecules/ToggleGroupFilter';
 export * from './presets/ActionCard';
 export * from './presets/ContentCard';
 export * from './presets/FormCard';
+export * from './presets/PairedCard';
 export * from './presets/SidebarCard';
 export * from './presets/StatsCard';
 

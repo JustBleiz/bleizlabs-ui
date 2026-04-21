@@ -17,7 +17,8 @@ import styles from './Heading.module.scss';
  *          --font-size-{sm,base,lg,xl,2xl,3xl,4xl,5xl} (size variants — note
  *          that sizeMd class resolves to `--font-size-base`, not `--font-size-md`);
  *          size="display" is viewport-fluid via `clamp()` + tight line-height
- *          1.05 for atelier big-type rendering (v0.3.5);
+ *          1.05 for atelier big-type rendering (v0.3.5); size="display-md" is
+ *          the section-scale sibling (max 48px) for H2 atelier parity (v0.4.0);
  *          --font-weight-{regular,medium,semibold,bold} (tsx WEIGHT_VAR);
  *          --color-text-{primary,secondary,muted} + --color-brand-500 (tsx COLOR_VAR).
  *          Component-local CSS variables `--heading-{color,weight,align}` carry
@@ -43,7 +44,8 @@ import styles from './Heading.module.scss';
  * <Heading level={1}>Page title</Heading>                // h1, size 5xl
  * <Heading level={2} size="3xl">Section</Heading>        // h2, smaller
  * <Heading level={3} size="5xl" align="center">Hero</Heading>
- * <Heading level={1} size="display">Hero title</Heading> // v0.3.5 fluid clamp
+ * <Heading level={1} size="display">Hero title</Heading>    // v0.3.5 fluid clamp, max 72px
+ * <Heading level={2} size="display-md">Section title</Heading> // v0.4.0 section tier, max 48px
  * <Heading level={2} asChild>
  *   <a href="/article">Linked title</a>
  * </Heading>
@@ -59,6 +61,7 @@ export type HeadingSize =
   | '3xl'
   | '4xl'
   | '5xl'
+  | 'display-md'
   | 'display';
 
 export interface HeadingProps extends HTMLAttributes<HTMLHeadingElement> {
@@ -96,6 +99,7 @@ const SIZE_CLASS: Record<HeadingSize, string> = {
   '3xl': styles.size3xl!,
   '4xl': styles.size4xl!,
   '5xl': styles.size5xl!,
+  'display-md': styles.sizeDisplayMd!,
   display: styles.sizeDisplay!,
 };
 

@@ -7,6 +7,7 @@ import styles from './page.module.scss';
 
 const VARIANTS = ['primary', 'secondary', 'ghost', 'link', 'warning'] as const;
 const SIZES = ['sm', 'md', 'lg'] as const;
+const SHAPES = ['rounded', 'pill'] as const;
 
 function ArrowIcon() {
   return (
@@ -44,6 +45,31 @@ export default function ButtonPlaygroundPage() {
               {variant}
             </Button>
           ))}
+        </div>
+      </section>
+
+      <section className={styles.section}>
+        <Heading level={2} size="2xl">
+          Shapes (v0.4.0)
+        </Heading>
+        <Text className={styles.intro}>
+          <code>shape</code> prop is orthogonal to <code>variant</code> and{' '}
+          <code>size</code>. Default <code>&quot;rounded&quot;</code> is
+          backward-compatible with v0.3.x (same computed border-radius);{' '}
+          <code>&quot;pill&quot;</code> resolves to <code>--radius-full</code>.
+        </Text>
+        <div className={styles.row}>
+          {SHAPES.map((shape) => (
+            <Button key={shape} shape={shape}>
+              shape=&quot;{shape}&quot;
+            </Button>
+          ))}
+          <Button shape="pill" variant="secondary">
+            Pill + secondary
+          </Button>
+          <Button shape="pill" variant="ghost">
+            Pill + ghost
+          </Button>
         </div>
       </section>
 

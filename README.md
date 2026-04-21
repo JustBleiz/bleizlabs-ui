@@ -1,9 +1,9 @@
 # bleizlabs-ui
 
 > A zero-dependency, fully-styled React component library with seed-based design tokens.
-> 81 components, WAI-ARIA compliant, runtime-test-verified, SCSS Modules, React 19 + Next.js 16.
+> 84 components, WAI-ARIA compliant, runtime-test-verified, SCSS Modules, React 19 + Next.js 16.
 >
-> **Current version: [`@bleizlabs/ui@0.3.0`](https://github.com/BleizLabs/bleizlabs-ui/pkgs/npm/ui)** — Quality 100/100: all 76 components pass the `component-build` skill rubric with zero CRITICAL + zero IMPORTANT (verified via two-round audit-fix-audit loop). Runtime-test-verified across 84 Playwright `.spec.ts` suites + 23 NVDA sweep protocols. See [CHANGELOG.md](CHANGELOG.md) for the v0.3.0 release notes + breaking changes.
+> **Current version: [`@bleizlabs/ui@0.4.0`](https://github.com/BleizLabs/bleizlabs-ui/pkgs/npm/ui)** — Atelier pack: Rule-of-Three-gated tokens, Heading display tier ladder, Button `shape` prop, new `Anchor` typography atom, new `PairedCard` preset. Backward-compatible with v0.3.x. See [CHANGELOG.md](CHANGELOG.md) for the full release notes.
 
 ---
 

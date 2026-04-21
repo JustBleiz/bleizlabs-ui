@@ -72,12 +72,19 @@ export type ButtonVariant =
   | 'link'
   | 'warning';
 export type ButtonSize = 'sm' | 'md' | 'lg';
+export type ButtonShape = 'rounded' | 'pill';
 
 interface ButtonOwnProps {
   /** Visual variant. Default `primary`. */
   variant?: ButtonVariant;
   /** Size scale. Default `md`. */
   size?: ButtonSize;
+  /**
+   * Corner shape. Default `rounded` (uses `--radius-input` — backward-compat
+   * with v0.3.x). `pill` uses `--radius-full` for capsule/rounded-pill look
+   * — AreasSection pattern, opt-in CTA emphasis. Orthogonal to `variant`.
+   */
+  shape?: ButtonShape;
   /** Optional leading or trailing icon. */
   icon?: ReactNode;
   /** Icon position relative to the label. Default `left`. */
@@ -119,10 +126,16 @@ const SIZE_CLASS: Record<ButtonSize, string> = {
   lg: styles.sizeLg!,
 };
 
+const SHAPE_CLASS: Record<ButtonShape, string> = {
+  rounded: styles.shapeRounded!,
+  pill: styles.shapePill!,
+};
+
 export const Button = forwardRef<HTMLElement, ButtonProps>(function Button(
   {
     variant = 'primary',
     size = 'md',
+    shape = 'rounded',
     icon,
     iconPosition = 'left',
     iconOnly = false,
@@ -149,6 +162,7 @@ export const Button = forwardRef<HTMLElement, ButtonProps>(function Button(
     styles.root,
     VARIANT_CLASS[variant],
     SIZE_CLASS[size],
+    SHAPE_CLASS[shape],
     iconOnly && styles.iconOnly,
     fullWidth && styles.fullWidth,
     className,

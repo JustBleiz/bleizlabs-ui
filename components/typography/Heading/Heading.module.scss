@@ -57,3 +57,15 @@
   line-height: 1.05;
   letter-spacing: var(--letter-spacing-tighter);
 }
+
+// v0.4.0 — section-scale sibling of `.sizeDisplay`. Fluid clamp() 30→48px for
+// H2 atelier parity (AreaSection S3, ProcessSection S5). Keeps 1.05 line-height
+// + `--letter-spacing-tighter` rhythm of display-tier so the two tiers read as
+// a family. Use for section H2 big-type where Hero H1 uses `size="display"`.
+// Promoted after /rozwiazania S3/S4/S5 shared `font-size: 4xl` + custom
+// line-height overrides pattern (2+ consumers, RoT hit).
+.sizeDisplayMd {
+  font-size: clamp(1.875rem, 4vw + 0.75rem, 3rem);
+  line-height: 1.05;
+  letter-spacing: var(--letter-spacing-tighter);
+}
