@@ -297,7 +297,7 @@ export const FileChip = forwardRef<HTMLDivElement, FileChipProps>(
           </span>
         </Text>
 
-        <Text variant="caption" color="muted" asChild>
+        <Text variant="caption" color="secondary" asChild>
           <span className={styles.size}>{formatBytes(size)}</span>
         </Text>
 

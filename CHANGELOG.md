@@ -4,21 +4,25 @@ All notable releases of this component library. Follows [Keep a Changelog](https
 
 ---
 
-## [0.4.4] — 2026-04-22
+## [0.4.5] — 2026-04-22
 
-**E174.1 `FileChip` molecule — attachment chip for tickets, document lists, and contact forms. Rounded pill composing a MIME icon (or `Spinner` while uploading), CSS-truncated filename, human-readable size, and optional ghost `Button`s for remove / retry. Additive + backward-compatible with v0.4.3.**
+**E174.1 `FileChip` molecule — attachment chip for tickets, document lists, and contact forms. Rounded pill composing a MIME icon (or `Spinner` while uploading), CSS-truncated filename, human-readable size, and optional ghost `Button`s for remove / retry. Supersedes tag `v0.4.4` which failed CI axe contrast (same feature, contrast fix applied). Additive + backward-compatible with v0.4.3.**
 
 ### Added — library
 
-- **`components/molecules/FileChip`** — NEW Phase 5 molecule (M7). Props: `name`, `size` (bytes), `mimeType?`, `variant?: 'uploaded' | 'uploading' | 'error'` (default `uploaded`), `onRemove?`, `onRetry?`, `removeLabel?` (default `'Remove file'`), `retryLabel?` (default `'Retry'`). Composes `Spinner`, `Button`, `Text` atoms + inline SVG MIME icons (D25 zero-dep). Server-safe in the read-only form (`<FileChip name="x" size={1} />`); function props naturally pull the parent into a Client Component boundary. English-neutral defaults per v0.3.0 F_B8 precedent (BackLink).
+- **`components/molecules/FileChip`** — NEW Phase 5 molecule (M7). Props: `name`, `size` (bytes), `mimeType?`, `variant?: 'uploaded' | 'uploading' | 'error'` (default `uploaded`), `onRemove?`, `onRetry?`, `removeLabel?` (default `'Remove file'`), `retryLabel?` (default `'Retry'`), `uploadingLabel?` (default `'Uploading'`). Composes `Spinner`, `Button`, `Text` atoms + inline SVG MIME icons across 6 categories (image / video / audio / text / archive / document — D25 zero-dep). Server-safe in the read-only form (`<FileChip name="x" size={1} />`); function props naturally pull the parent into a Client Component boundary. English-neutral defaults per v0.3.0 F_B8 precedent (BackLink).
 - **`components/index.ts`** — added `FileChip` to the Molecules barrel; count comment updated `(6)` → `(7)`.
-- **`app/components/molecules/page.tsx`** — new demo section with six examples covering all variants + long-filename truncation + unknown-MIME fallback.
+- **`app/components/molecules/page.tsx`** — new demo section with six examples covering all variants + long-filename truncation + unknown-MIME fallback + custom `uploadingLabel`.
+
+### Fixed (vs unreleased tag v0.4.4)
+
+- **`FileChip.tsx` size slot color** — size text now uses `Text color="secondary"` instead of `muted`. The `muted` color token fails axe-core color-contrast AA on `--color-surface-raised` (FileChip's pill background); `secondary` sits at the 1.84 light-dark spread and passes on both raised and base surfaces. Six nodes were flagged on `/components/molecules` in CI (v0.4.4 publish run 24790543752). Tag `v0.4.4` remains in git as the broken attempt; no registry tarball was ever published.
 
 ### Notes
 
-- **Backward-compatible.** Zero public API changes to existing components. `@bleizlabs/ui@0.4.4` is a drop-in for `0.4.3`. `^0.4.0` consumers auto-upgrade via semver caret.
+- **Backward-compatible.** Zero public API changes to existing components. `@bleizlabs/ui@0.4.5` is a drop-in for `0.4.3`. `^0.4.0` consumers auto-upgrade via semver caret.
 - **Motivation.** BleizLabs Panel Klienta MVP (E174) needs a file-attachment chip across Ticket Detail, New Ticket, future Profile document sharing, and the marketing contact form — three-plus consumers justifies library promotion over a project-local primitive. Post-library-audit D17 identified this as the only molecule gap vs. the v0.4.3 inventory.
-- **A11y.** Remove / retry controls are real `<button>`s via the `Button` atom — focus-visible, keyboard-activatable. Icon is `aria-hidden`. `Spinner` brings its own `role="status"`. Non-English consumers must pass translated `removeLabel` / `retryLabel`.
+- **A11y.** Remove / retry controls are real `<button>`s via the `Button` atom — focus-visible, keyboard-activatable. Icon is `aria-hidden`. `Spinner` brings its own `role="status"`. Non-English consumers must pass translated `removeLabel` / `retryLabel` / `uploadingLabel`. Size + filename + MIME icon all carry AA-passing colors on both light and dark themes.
 
 ### Verification
 
@@ -26,6 +30,7 @@ All notable releases of this component library. Follows [Keep a Changelog](https
 - `npm run typecheck` PASS
 - `npm run build` PASS
 - `npm run test:smoke` PASS (FileChip demo auto-covered by `/components/molecules` smoke route)
+- CI `publish.yml` + `test` workflows green post-fix
 
 ---
 
