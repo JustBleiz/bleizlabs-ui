@@ -11,6 +11,7 @@ import {
   type ToggleGroupFilterOption,
 } from '@/components/molecules/ToggleGroupFilter';
 import { DeadlineBadge } from '@/components/molecules/DeadlineBadge';
+import { FileChip } from '@/components/molecules/FileChip';
 import { Accordion } from '@/components/interactive/Accordion';
 import { Badge } from '@/components/display/Badge';
 import { Heading } from '@/components/typography/Heading';
@@ -47,12 +48,12 @@ export default function MoleculesPlaygroundPage() {
           Molecules
         </Heading>
         <Text className={styles.intro}>
-          Six composite components built from the atom layer —{' '}
+          Seven composite components built from the atom layer —{' '}
           <code>DataRow</code>, <code>BackLink</code>,{' '}
           <code>SectionDivider</code>, <code>AccordionGroup</code>,{' '}
-          <code>ToggleGroupFilter</code>, and <code>DeadlineBadge</code>.
-          They codify recurring patterns so consumers don&apos;t reinvent
-          them per project.
+          <code>ToggleGroupFilter</code>, <code>DeadlineBadge</code>, and{' '}
+          <code>FileChip</code>. They codify recurring patterns so
+          consumers don&apos;t reinvent them per project.
         </Text>
       </header>
 
@@ -257,6 +258,64 @@ export default function MoleculesPlaygroundPage() {
             urgentThreshold={7}
           />
           <DeadlineBadge deadline={DEADLINES.soon} locale="en-US" />
+        </div>
+      </section>
+
+      {/* ==================================================================== */}
+      {/* FILECHIP                                                              */}
+      {/* ==================================================================== */}
+      <section className={styles.section}>
+        <Heading level={2} size="2xl">
+          FileChip
+        </Heading>
+        <Text>
+          Rounded pill chip for file attachments — composes a MIME icon
+          (or <code>Spinner</code> while uploading), filename (CSS-truncated),
+          human-readable size, and optional ghost <code>Button</code>s for
+          remove / retry. Three variants:{' '}
+          <code>uploaded</code> (default), <code>uploading</code>,{' '}
+          <code>error</code>. Server-safe in the read-only case; the parent
+          naturally becomes a Client Component when <code>onRemove</code> /
+          <code>onRetry</code> are supplied. Demo handlers below are no-ops.
+        </Text>
+
+        <div className={styles.stack}>
+          <FileChip
+            name="brief.pdf"
+            size={245_760}
+            mimeType="application/pdf"
+          />
+          <FileChip
+            name="screenshot.png"
+            size={1_474_560}
+            mimeType="image/png"
+            onRemove={() => {}}
+            removeLabel="Remove screenshot"
+          />
+          <FileChip
+            name="intro.mp4"
+            size={82_944_000}
+            mimeType="video/mp4"
+            variant="uploading"
+            uploadingLabel="Uploading intro.mp4"
+          />
+          <FileChip
+            name="archive-q3-full-backup-with-assets.zip"
+            size={524_288_000}
+            mimeType="application/zip"
+            variant="error"
+            onRetry={() => {}}
+            onRemove={() => {}}
+            retryLabel="Retry"
+            removeLabel="Discard upload"
+          />
+          <FileChip
+            name="podcast-episode.mp3"
+            size={12_582_912}
+            mimeType="audio/mpeg"
+            onRemove={() => {}}
+          />
+          <FileChip name="unknown-format-file" size={4096} />
         </div>
       </section>
     </main>

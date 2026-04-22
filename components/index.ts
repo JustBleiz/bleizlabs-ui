@@ -82,12 +82,13 @@ export * from './specialized/Pagination';
 export * from './specialized/UsageDonut';
 
 // ----------------------------------------------------------------------------
-// Molecules (6)
+// Molecules (7)
 // ----------------------------------------------------------------------------
 export * from './molecules/AccordionGroup';
 export * from './molecules/BackLink';
 export * from './molecules/DataRow';
 export * from './molecules/DeadlineBadge';
+export * from './molecules/FileChip';
 export * from './molecules/SectionDivider';
 export * from './molecules/ToggleGroupFilter';
 

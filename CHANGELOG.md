@@ -4,6 +4,31 @@ All notable releases of this component library. Follows [Keep a Changelog](https
 
 ---
 
+## [0.4.4] — 2026-04-22
+
+**E174.1 `FileChip` molecule — attachment chip for tickets, document lists, and contact forms. Rounded pill composing a MIME icon (or `Spinner` while uploading), CSS-truncated filename, human-readable size, and optional ghost `Button`s for remove / retry. Additive + backward-compatible with v0.4.3.**
+
+### Added — library
+
+- **`components/molecules/FileChip`** — NEW Phase 5 molecule (M7). Props: `name`, `size` (bytes), `mimeType?`, `variant?: 'uploaded' | 'uploading' | 'error'` (default `uploaded`), `onRemove?`, `onRetry?`, `removeLabel?` (default `'Remove file'`), `retryLabel?` (default `'Retry'`). Composes `Spinner`, `Button`, `Text` atoms + inline SVG MIME icons (D25 zero-dep). Server-safe in the read-only form (`<FileChip name="x" size={1} />`); function props naturally pull the parent into a Client Component boundary. English-neutral defaults per v0.3.0 F_B8 precedent (BackLink).
+- **`components/index.ts`** — added `FileChip` to the Molecules barrel; count comment updated `(6)` → `(7)`.
+- **`app/components/molecules/page.tsx`** — new demo section with six examples covering all variants + long-filename truncation + unknown-MIME fallback.
+
+### Notes
+
+- **Backward-compatible.** Zero public API changes to existing components. `@bleizlabs/ui@0.4.4` is a drop-in for `0.4.3`. `^0.4.0` consumers auto-upgrade via semver caret.
+- **Motivation.** BleizLabs Panel Klienta MVP (E174) needs a file-attachment chip across Ticket Detail, New Ticket, future Profile document sharing, and the marketing contact form — three-plus consumers justifies library promotion over a project-local primitive. Post-library-audit D17 identified this as the only molecule gap vs. the v0.4.3 inventory.
+- **A11y.** Remove / retry controls are real `<button>`s via the `Button` atom — focus-visible, keyboard-activatable. Icon is `aria-hidden`. `Spinner` brings its own `role="status"`. Non-English consumers must pass translated `removeLabel` / `retryLabel`.
+
+### Verification
+
+- `npm run check:barrel` PASS
+- `npm run typecheck` PASS
+- `npm run build` PASS
+- `npm run test:smoke` PASS (FileChip demo auto-covered by `/components/molecules` smoke route)
+
+---
+
 ## [0.4.3] — 2026-04-22
 
 **E149 hover-polish — 2 new duration tokens (`--duration-hover` 280ms, `--duration-card-hover` 320ms) + library component adoption (Button + Card). Smoother hover feel site-wide for all consumers after upgrade. Pure additive + backward-compatible with v0.4.2.**
