@@ -1,67 +1,106 @@
-# bleizlabs-ui
+# @bleizlabs/ui
 
 > A zero-dependency, fully-styled React component library with seed-based design tokens.
-> 84 components, WAI-ARIA compliant, runtime-test-verified, SCSS Modules, React 19 + Next.js 16.
->
-> **Current version: [`@bleizlabs/ui@0.4.1`](https://github.com/BleizLabs/bleizlabs-ui/pkgs/npm/ui)** — E148 CI stabilization hotfix: NavigationMenu cross-menubar focus, SiteHeader 44×44 touch target, `useFloatingDismiss` scroll-delta guard. Backward-compatible with v0.4.0. See [CHANGELOG.md](CHANGELOG.md) for the full release notes.
+> 85 components, WAI-ARIA compliant, runtime-test-verified, SCSS Modules, React 19 + Next.js 16.
+
+[![Version](https://img.shields.io/badge/npm-v0.4.3-0ea5e9)](https://github.com/BleizLabs/bleizlabs-ui/pkgs/npm/ui)
+[![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
+[![React](https://img.shields.io/badge/React-19-61dafb)](https://react.dev)
+[![Next.js](https://img.shields.io/badge/Next.js-16.2-black)](https://nextjs.org)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.6-3178c6)](https://www.typescriptlang.org)
+
+**Current version: [`@bleizlabs/ui@0.4.3`](https://github.com/BleizLabs/bleizlabs-ui/pkgs/npm/ui)** — E149 hover polish with two new duration tokens (`--duration-hover` 280ms, `--duration-card-hover` 320ms) adopted library-wide on Button and Card. Backward-compatible with v0.4.x. See [CHANGELOG.md](CHANGELOG.md) for the full release history.
+
+## Table of contents
+
+- [Why another component library?](#why-another-component-library)
+- [Highlights](#highlights)
+- [Component catalogue](#component-catalogue)
+- [Quick start](#quick-start)
+- [Customisation](#customisation)
+- [Running the playground](#running-the-playground)
+- [Architecture principles](#architecture-principles)
+- [Testing & quality](#testing--quality)
+- [Tech stack](#tech-stack)
+- [Browser support](#browser-support)
+- [Distribution](#distribution)
+- [Versioning & release](#versioning--release)
+- [Contributing](#contributing)
+- [Roadmap](#roadmap)
+- [License](#license)
 
 ---
 
 ## Why another component library?
 
-We shipped across a growing portfolio of products — internal tools, client deliverables, the BleizLabs website, admin panels — and kept hitting the same three walls:
+We ship across a growing portfolio of products — internal tools, client deliverables, the BleizLabs website, admin panels — and kept hitting the same three walls:
 
 1. **Headless libraries** (Radix, Headless UI) leave styling to every consumer, so every project re-invents the design system and drifts from the rest.
 2. **Styled libraries** (MUI, Chakra) lock us into their design language, their tokens, and a runtime dependency that's painful to customise deeply.
 3. **Copy-paste systems** (shadcn/ui) are excellent starting points, but every project forks forever — a bug fix in one consumer doesn't propagate anywhere else.
 
-`bleizlabs-ui` is our answer: **fully styled**, **zero runtime UI dependencies**, **semantic-token driven**, and **designed to be reskinned by changing five to ten seed values**. One source of truth, 81 components across every tier — layout, typography, display, interactive, feedback, complex, molecules, card presets.
+`@bleizlabs/ui` is our answer: **fully styled**, **zero runtime UI dependencies**, **semantic-token driven**, and **designed to be reskinned by changing five to ten seed values**. One source of truth, 85 components across ten categories — layout, typography, display, interactive, feedback, specialized, molecules, presets, complex interactive.
 
 ---
 
 ## Highlights
 
-- **81 components** across 10 categories — from `<Stack>` to `<Combobox>`, `<DatePicker>`, `<Command>` (⌘K palette), `<Toast>`, `<Sidebar>`
-- **Zero runtime UI dependencies** — no Radix, no Floating UI, no date-fns. Every floating primitive, every focus trap, every keyboard model is built in-house against the WAI-ARIA Authoring Practices Guide
-- **Seed-based design tokens** — override 5–10 seed values (brand color, radius, spacing scale) and the entire library reskins consistently across light + dark themes
-- **SCSS Modules** — no Tailwind, no CSS-in-JS, no runtime style computation. Components read CSS custom properties that consumers override at the `:root` level
-- **Accessibility-first** — every interactive component maps to a documented APG pattern, with keyboard models, focus management, and screen-reader semantics verified against Radix closed-issue catalogues
-- **Runtime-test-verified** — 84 Playwright `.spec.ts` suites × 4 dimensions (keyboard / focus / aria / regression), full `@axe-core/playwright` WCAG 2.1 AA sweep on 49 playground routes, **824 passing tests on every release tag via CI gate**
-- **NVDA-ready** — 23 pre-written manual sweep protocols (`.nvda.sweep.md` per component) for screen-reader validation
-- **Private npm package** — installable via `npm install @bleizlabs/ui` from GitHub Packages; copy-to-project escape hatch still available for client offboarding
-- **Built for React 19 + Next.js 16** with Turbopack, App Router, and Server Components in mind
+- **85 components** across 10 categories — from `<Stack>` to `<Combobox>`, `<DatePicker>`, `<Command>` (⌘K palette), `<Toast>`, `<Sidebar>`, `<SiteHeader>`.
+- **Zero runtime UI dependencies** — no Radix, no Floating UI, no date-fns. Every floating primitive, focus trap, drag gesture, and keyboard model is built in-house against the WAI-ARIA Authoring Practices Guide.
+- **Seed-based design tokens** — override 5–10 seed values (brand color, radius, spacing, timing) and the entire library reskins consistently across light + dark themes.
+- **SCSS Modules** — no Tailwind, no CSS-in-JS, no runtime style computation. Components read CSS custom properties that consumers override at the `:root` level.
+- **Accessibility-first** — every interactive component maps to a documented APG pattern, with keyboard models, focus management, and screen-reader semantics verified against Radix closed-issue catalogues.
+- **Runtime-test-verified** — 88 Playwright `.spec.ts` suites × 4 dimensions (keyboard / focus / aria / regression), full `@axe-core/playwright` WCAG 2.1 AA sweep on all 50 playground routes, CI-gated on every release tag.
+- **NVDA-ready** — 23+ pre-written manual sweep protocols (`.nvda.sweep.md` per component) for screen-reader validation.
+- **Private npm package** — installable via `npm install @bleizlabs/ui` from GitHub Packages. Copy-to-project remains available for client offboarding.
+- **React 19 + Next.js 16** — built with Server Components, Turbopack, and App Router in mind.
 
 ---
 
 ## Component catalogue
 
 ### Layout (4)
+
 `Container` · `Section` · `Stack` · `Inline`
 
-### Typography (2)
-`Heading` · `Text`
+### Typography (3)
+
+`Heading` · `Text` · `Anchor`
+
+`Heading` ships three display tiers for atelier hero treatment: `size="display"` (Hero H1, up to 72px), `size="display-md"` (section H2, up to 48px), plus the 8-size scale (`xs`..`4xl`) for general use. `Anchor` is the prose-inline link primitive — distinct from `TextLink` which is the navigational action.
 
 ### Display (13)
+
 `Card` · `CardHeader` · `CardBody` · `CardFooter` · `CardSection` · `Badge` · `Separator` · `IconBox` · `Avatar` · `Skeleton` · `Spinner` · `AspectRatio` · `Table`
 
-Table ships as a family — `TableHeader`, `TableBody`, `TableFooter`, `TableRow`, `TableCell` are all exported alongside `Table` but counted as one Table primitive for the total tally.
+`Table` ships as a family — `TableHeader`, `TableBody`, `TableFooter`, `TableRow`, `TableCell` are all exported alongside `Table` but counted as one primitive.
 
-### Interactive (18)
-`Button` · `ButtonGroup` · `Input` · `Textarea` · `Label` · `Checkbox` · `RadioGroup` · `RadioGroupItem` · `Toggle` · `ToggleGroup` · `Switch` · `Accordion` · `InputGroup` · `InputGroupText` · `NumberInput` · `MaskedInput` · `PhoneInput` · `PasswordInput`
+### Interactive (19)
+
+`Button` · `ButtonGroup` · `Input` · `Textarea` · `Label` · `Checkbox` · `RadioGroup` · `RadioGroupItem` · `Toggle` · `ToggleGroup` · `Switch` · `Accordion` · `InputGroup` · `InputGroupText` · `NumberInput` · `MaskedInput` · `PhoneInput` · `PasswordInput` · `TextLink`
+
+`Button` supports `shape?: 'rounded' | 'pill'` for atelier-style CTAs. `TextLink` is the navigational text link with `asChild` polymorphism for Next.js `<Link>`.
 
 ### Feedback (3)
+
 `Empty` · `Alert` · `Progress`
 
 ### Specialized (8)
+
 `Dot` · `MetricBar` · `AnimatedCounter` · `Breadcrumb` · `Pagination` · `UsageDonut` · `AvailabilityBar` · `Kbd`
 
 ### Molecules (6)
+
 `DataRow` · `BackLink` · `SectionDivider` · `AccordionGroup` · `ToggleGroupFilter` · `DeadlineBadge`
 
-### Card presets (5)
-`ContentCard` · `SidebarCard` · `FormCard` · `StatsCard` · `ActionCard`
+### Presets (7)
+
+`ContentCard` · `SidebarCard` · `FormCard` · `StatsCard` · `ActionCard` · `PairedCard` · `SiteHeader`
+
+`PairedCard` is the good/bad split composition. `SiteHeader` is a page-level nav preset with mobile toggle and 44×44 touch target.
 
 ### Complex interactive (22)
+
 `Dialog` · `AlertDialog` · `Drawer` · `Sheet` · `Tooltip` · `Popover` · `DropdownMenu` · `ContextMenu` · `HoverCard` · `NavigationMenu` · `Tabs` · `Select` · `Combobox` · `Calendar` · `DatePicker` · `Toast` · `Slider` · `Carousel` · `ScrollArea` · `InputOTP` · `Command` · `Sidebar`
 
 Browse every component with live examples at `http://localhost:3000` (see [Running the playground](#running-the-playground)).
@@ -176,22 +215,6 @@ Once copied the source is owned by the consumer — updates from upstream no lon
 
 ---
 
-## Running the playground
-
-The repository includes a Next.js playground with one route per component plus a combined showcase page.
-
-```bash
-cd dev
-npm install
-npm run dev
-```
-
-Open `http://localhost:3000` for the component index, `http://localhost:3000/demo` for the combined showcase, or `http://localhost:3000/components/<name>` for per-component deep dives (e.g. `/components/button`, `/components/combobox`, `/components/table`).
-
-The showcase includes a light/dark theme toggle — every component is dual-theme from day one.
-
----
-
 ## Customisation
 
 Every component reads from CSS custom properties, and every CSS custom property is derived from a small set of seed values. This means you have two tiers of customisation — a quick CSS-variable override for per-project tweaks, and a deeper seed-level reskin for full design-system reshaping. Both work regardless of whether you installed the library by copying the source or via npm.
@@ -214,6 +237,10 @@ For most projects, overriding a handful of CSS custom properties is enough. Add 
   /* typography */
   --font-primary:       'YourFont', system-ui, sans-serif;
   --font-secondary:     'JetBrainsMono', monospace;
+
+  /* motion (v0.4.3) */
+  --duration-hover:       280ms;  /* button-sized hover */
+  --duration-card-hover:  320ms;  /* card-sized hover */
 }
 
 /* dark theme overrides — applied when <html data-theme='dark'> is set */
@@ -224,7 +251,7 @@ For most projects, overriding a handful of CSS custom properties is enough. Add 
 }
 ```
 
-All 81 components pick up the change automatically — no component needs to be patched, nothing needs to be rebuilt.
+All 85 components pick up the change automatically — no component needs to be patched, nothing needs to be rebuilt.
 
 **Common tokens you can override:**
 
@@ -235,10 +262,12 @@ All 81 components pick up the change automatically — no component needs to be 
 | `--color-surface` / `--color-surface-raised` | Background layers |
 | `--color-text-primary` / `--color-text-secondary` / `--color-text-muted` | Text hierarchy |
 | `--color-success` / `--color-warning` / `--color-error` / `--color-info` | Semantic statuses |
-| `--radius-sm` / `--radius-md` / `--radius-lg` / `--radius-xl` | Corner radii |
+| `--radius-sm` / `--radius-md` / `--radius-lg` / `--radius-xl` / `--radius-full` | Corner radii |
 | `--space-1` … `--space-20` | 4-pixel spacing scale |
 | `--font-primary` / `--font-secondary` / `--font-mono` | Font families |
 | `--shadow-sm` / `--shadow-md` / `--shadow-lg` | Elevation |
+| `--duration-fast` / `--duration-normal` / `--duration-hover` / `--duration-card-hover` | Motion timing |
+| `--easing-default` / `--easing-apple` | Motion curves |
 
 The full token reference lives in [`styles/_semantics.scss`](styles/_semantics.scss).
 
@@ -251,10 +280,12 @@ Override seed values before the generator runs. Every color scale, shadow, hover
 ```scss
 // app/globals.scss
 @use '@bleizlabs/ui/styles' with (
-  $seed-brand:          #00E0B8,
-  $seed-accent:         #7C3AED,
-  $seed-font-primary:   ('YourFont', system-ui, sans-serif),
-  $seed-font-secondary: ('YourBodyFont', system-ui, sans-serif)
+  $seed-brand:              #00E0B8,
+  $seed-accent:             #7C3AED,
+  $seed-font-primary:       ('YourFont', system-ui, sans-serif),
+  $seed-font-secondary:     ('YourBodyFont', system-ui, sans-serif),
+  $seed-duration-hover:     150ms,
+  $seed-duration-card-hover: 200ms
 );
 ```
 
@@ -283,13 +314,13 @@ If your project needs a visual pattern the library does not ship (say, a gradien
 ```
 
 ```tsx
-import { Button } from '@bleizlabs/ui'; // or '@/components/interactive/Button'
+import { Button } from '@bleizlabs/ui';
 import styles from './GradientButton.module.scss';
 
 <Button className={styles.gradient}>Launch</Button>
 ```
 
-If the same variant reappears in two or more consumer projects, it becomes a candidate for upstream promotion as a new `variant` on the base component.
+If the same variant reappears in two or more consumer projects, it becomes a candidate for upstream promotion as a new `variant` on the base component (Rule of Three).
 
 ### Quick checklist — after install
 
@@ -301,41 +332,74 @@ If the same variant reappears in two or more consumer projects, it becomes a can
 
 ---
 
-## Architecture principles
+## Running the playground
 
-- **SCSS Modules only** — scoped class names, zero runtime style computation, standard tooling
-- **Zero runtime UI dependencies** — every interactive primitive (positioning, focus trap, dismiss, drag, match-media, date math) is written in-house
-- **Semantic tokens over primitives** — components reference `var(--color-brand)`, never `$brand-500`, so consumers can reskin without forking
-- **Compound flat API** — `<Card>` + `<CardHeader>` + `<CardBody>` as siblings, not `<Card.Header>` (shadcn-aligned, IDE-friendly, tree-shakeable)
-- **Polymorphism via `asChild`** — pass-through rendering for Next.js `<Link>`, HTML `<button>`, or any custom element using an in-house `Slot` primitive
-- **APG-first accessibility** — every interactive component has a documented keyboard model, ARIA contract, and regression catalogue against closed Radix issues
-- **Seed-based theming** — 5–10 seed values generate the full token system; consumers change seeds, not individual tokens
+The repository includes a Next.js playground with one route per component plus a combined showcase.
+
+```bash
+cd dev
+npm install
+npm run dev
+```
+
+Open `http://localhost:3000` for the component index, `http://localhost:3000/demo` for the combined showcase, or `http://localhost:3000/components/<name>` for per-component deep dives (e.g. `/components/button`, `/components/combobox`, `/components/table`).
+
+The showcase includes a light/dark theme toggle — every component is dual-theme from day one.
 
 ---
 
-## Testing & Quality
+## Architecture principles
 
-Every release passes a three-stage quality gate via CI before `npm publish` fires:
+- **SCSS Modules only** — scoped class names, zero runtime style computation, standard tooling.
+- **Zero runtime UI dependencies** — every interactive primitive (positioning, focus trap, dismiss, drag, match-media, date math) is written in-house.
+- **Semantic tokens over primitives** — components reference `var(--color-brand)`, never `$brand-500`, so consumers can reskin without forking.
+- **Compound flat API** — `<Card>` + `<CardHeader>` + `<CardBody>` as siblings, not `<Card.Header>` (shadcn-aligned, IDE-friendly, tree-shakeable).
+- **Polymorphism via `asChild`** — pass-through rendering for Next.js `<Link>`, HTML `<button>`, or any custom element using an in-house `Slot` primitive.
+- **APG-first accessibility** — every interactive component has a documented keyboard model, ARIA contract, and regression catalogue against closed Radix issues.
+- **Seed-based theming** — 5–10 seed values generate the full token system; consumers change seeds, not individual tokens.
+- **Rule of Three token promotion** — a new token lands only after 2+ independent consumers demonstrate the need. No speculative primitives.
 
-### Stage 1 — `tests/smoke.spec.ts` (49 routes)
+---
+
+## Testing & quality
+
+Every release passes a three-stage quality gate via CI before `npm publish` fires.
+
+### Stage 1 — smoke sweep (`tests/smoke.spec.ts`, 50 routes)
+
 Full library-wide `@axe-core/playwright` WCAG 2.1 AA scan (tags `wcag2a wcag2aa wcag21a wcag21aa`) against every public playground route. Runs against a **production build** (`next build && next start`) to catch consumer-realistic issues dev mode masks. Blocks CI publish if any route reports violations.
 
-### Stage 2 — Per-component runtime suites (84 `.spec.ts`)
-Every interactive component has 4 test files covering:
-- **Keyboard** — every APG-mandated key (Enter/Space/Arrows/Home/End/Escape/Tab/typeahead)
+### Stage 2 — per-component runtime suites (88 `.spec.ts`)
+
+Every interactive component has up to 4 test files covering:
+
+- **Keyboard** — every APG-mandated key (Enter/Space/Arrows/Home/End/Escape/Tab/typeahead/modifier guards)
 - **Focus** — initial landing, focus trap (where applicable), restore target, roving tabindex
 - **ARIA** — role/name/state attributes, `aria-activedescendant`, live-region timing, plus per-component `@axe-core/playwright` scan in OPEN state
 - **Regression** — Radix closed-issue catalogue mapped to bleizlabs-ui assertions (e.g., `NM-R09` typeahead wrapping, `CM-R04` second-menu-closes-first)
 
-Full suite: **824 passed / 157 skipped / 0 failed** on `v0.2.0` in ~55s across 12 parallel workers.
+### Stage 3 — NVDA sweep protocols (23+ checklists)
 
-### Stage 3 — NVDA sweep protocols (23 checklists)
-Each component ships a `<Name>.nvda.sweep.md` checklist for manual validation against NVDA 2024+ on Firefox. Covers role/name/state announcements, keyboard activation, focus management, live-region timing, and known NVDA-specific quirks. Ready for human tester execution post-release.
+Each interactive component ships a `<Name>.nvda.sweep.md` checklist for manual validation against NVDA 2024+ on Firefox. Covers role/name/state announcements, keyboard activation, focus management, live-region timing, and known NVDA-specific quirks.
 
 ### What this means for consumers
-- Every tagged release is **axe-clean** on 49 routes AND **regression-tested** across 84 per-component suites
-- Any new bug found in production gets codified as a regression test before the fix commits
-- Screen-reader behavior is explicitly documented per component, not assumed from APG compliance
+
+- Every tagged release is **axe-clean** across all 50 routes AND **regression-tested** across 88 per-component suites.
+- Any new bug found in production gets codified as a regression test before the fix commits.
+- Screen-reader behavior is explicitly documented per component, not assumed from APG compliance.
+
+### Running tests locally
+
+```bash
+cd dev
+npm run test              # full Playwright suite
+npm run test:smoke        # axe-core sweep only
+npm run test:e2e          # per-component suites only
+npm run test:headed       # debug mode with browser window
+npm run typecheck         # tsc --noEmit
+npm run lint              # ESLint (flat config)
+npm run check:barrel      # verify components/index.ts barrel completeness
+```
 
 ---
 
@@ -344,16 +408,30 @@ Each component ships a `<Name>.nvda.sweep.md` checklist for manual validation ag
 | Layer | Choice |
 |---|---|
 | Framework | React 19 + Next.js 16.2 (App Router, Turbopack default) |
-| Language | TypeScript 5.6 (strict) |
+| Language | TypeScript 5.6 (strict, `noUncheckedIndexedAccess`) |
 | Styling | SCSS Modules + CSS custom properties |
 | Tokens | Seed-based generator (Sass `@use`/`@forward`) |
 | Polymorphism | In-house `Slot` primitive (Radix-style `asChild`) |
 | Positioning | In-house `useFloating` + `computePosition` (no Floating UI) |
 | Date math | In-house `utils/date.ts` using native `Date` + `Intl.DateTimeFormat` (no date-fns) |
 | Focus management | In-house `useFocusTrap` + `FloatingPortal` + `findFirstTabbable` |
-| Drag gestures | In-house pointer-capture pattern (`Slider`, `Carousel`, `ScrollArea`) |
+| Drag gestures | In-house `usePointerDrag` with pointer-capture (Slider, Carousel, ScrollArea) |
+| Match media | In-house `useMatchMedia` via `useSyncExternalStore` (reduced-motion, coarse-pointer, breakpoints) |
+| Testing | Playwright 1.59 + `@axe-core/playwright` 4.11 |
 
 No external UI library is imported at runtime.
+
+---
+
+## Browser support
+
+| Browser | Minimum version | Notes |
+|---|---|---|
+| Chrome / Edge (Chromium) | 111+ | Full feature set. `interpolate-size: allow-keywords` (Accordion, v0.3.2) requires Chrome 129+; older Chromium falls back to `max-height` clamp. |
+| Firefox | 110+ | Full feature set. |
+| Safari (desktop + iOS) | 16.4+ | Full feature set. iOS uses `env(safe-area-inset-*)` for Drawer + Sheet. |
+
+Every component ships with `@media (prefers-reduced-motion: reduce)` fallbacks and `@media (forced-colors: active)` (Windows High Contrast Mode) mappings where relevant.
 
 ---
 
@@ -365,7 +443,7 @@ The library follows a **private-npm-first** model with a **copy-snapshot** escap
 
 Internal BleizLabs projects install via `npm install @bleizlabs/ui` from the GitHub Packages private registry. One bug fix → one `npm publish` → `npm update` propagates across every consumer. Source ships as TypeScript + SCSS, consumers transpile via Next.js.
 
-Publishing is driven by the `.github/workflows/publish.yml` workflow — push a `v*.*.*` tag, CI type-checks, builds the playground as a smoke test, verifies the tag matches `package.json` version, and publishes.
+Publishing is driven by the [`.github/workflows/publish.yml`](.github/workflows/publish.yml) workflow — push a `v*.*.*` tag, CI type-checks, verifies the tag matches `package.json` version, builds the playground as a smoke test, and publishes.
 
 ### Escape hatch: copy-to-project
 
@@ -373,21 +451,54 @@ Client deliverables that need full code ownership copy `styles/` and `components
 
 ---
 
+## Versioning & release
+
+This project follows [Semantic Versioning 2.0](https://semver.org).
+
+- **Patch (0.x.Y)** — bug fixes, internal refactors, additive tokens with Rule-of-Three gating. Backward-compatible.
+- **Minor (0.X.0)** — new components, new variants, new props with safe defaults. Backward-compatible.
+- **Major (X.0.0)** — breaking API changes. Reserved for the v1.0.0 stabilization after 2–3 consumer projects validate real-world usage.
+
+Every release lands in [`CHANGELOG.md`](CHANGELOG.md) following [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) format. Entries include:
+
+- **Added** / **Changed** / **Fixed** / **Deprecated** / **Removed** sections.
+- Explicit **Rule-of-Three gating** decisions for new tokens.
+- **Verification evidence** — typecheck, lint, build, test results.
+- **Consumer migration notes** where relevant.
+
+To consume a specific version, pin via semver caret: `"@bleizlabs/ui": "^0.4.0"` resolves to the latest `0.4.x` and auto-upgrades on `npm update`.
+
+---
+
+## Contributing
+
+This is a private BleizLabs library; external contributions are not accepted at this stage. For internal contributors:
+
+1. Read the [`CLAUDE.md`](../CLAUDE.md) project bootstrap for the full architectural decision log and component standards.
+2. Review [`docs/component-standards.md`](../docs/component-standards.md) for the component completeness checklist.
+3. For Phase 10 complex interactive components, follow [`docs/a11y-pipeline.md`](../docs/a11y-pipeline.md).
+4. Use the `component-build` skill (GAN-style Generator ↔ Evaluator loop) for every new component — enforced by internal convention.
+5. Every PR must pass: `npm run typecheck`, `npm run lint`, `npm run check:barrel`, `npm run test`.
+
+---
+
 ## Roadmap
 
-- **Now — v0.2.0 shipped:** 81/81 components, 84 runtime test suites, 23 NVDA sweep protocols, 15 library bug fixes applied (Combobox/Select `aria-activedescendant` context lift, Select first-key listbox open, Toast list semantics, HoverCard escapeStack, + 11 more — see [CHANGELOG.md](CHANGELOG.md) v0.2.0). **Production-safe for consumer adoption.**
-- **Next — consumer rollout:** BleizLabs website v2, saas-ideator UI, leadhunter-intelligence surface, client projects. Real-world reskinning + API stress-testing → feedback loop for v0.2.1 patches and v0.3.0 component additions.
-- **Next — NVDA human execution:** 23 protocols awaiting a physical tester (~8h across 3 batches of 8 components). Any CRITICAL findings → v0.2.1 patch; otherwise **v0.2.0 gets "NVDA-qualified" label**.
-- **Later — shared NVDA protocol extraction:** `_nvda-shared/{modal-focus, menu-navigation, combobox-listbox}.md` consolidation (~400 LOC redundancy reduction across families that share APG patterns).
-- **Later — deferred contrast token decision:** `.groupHeading` (Command) + `.description` (Toast) share muted-on-raised contrast issue. Pending a shared `--color-text-muted-on-raised` token decision.
-- **Later — post-consumer refactor:** Rule-of-three extractions (`usePointerDrag`, `useMatchMedia<T>`) after 3 consumer deployments ship stable semantics.
-- **Future — v1.0.0 stabilization:** API freeze after 2-3 consumer projects validate real-world usage. Additional primitives (Form orchestrator, Chart primitives, Rich editor) as evaluation targets, not commitments.
+- **Shipped — v0.4.3 (hover polish):** library-wide Button + Card hover timing tokenized into `--duration-hover` + `--duration-card-hover`. Consumer override preserved via seed `@use ... with (...)` pattern.
+- **Shipped — v0.4.x series:** Anchor atom, TextLink atom, PairedCard preset, SiteHeader preset, `Heading size="display"` + `size="display-md"`, `Button shape="pill"`, atelier rule tokens (`--atelier-rule-*`, `--atelier-tick-*`, `--atelier-corner-tick-*`), `--easing-apple` unified curve, `ruleReveal` keyframe.
+- **Shipped — v0.3.x series:** Accordion `interpolate-size` animation overhaul, per-variant Text colors, consumer-validated polish from BleizLabs Website v2.
+- **Shipped — v0.2.0 baseline:** 81 components, 84 runtime test suites, 23 NVDA sweep protocols, 15 library bug fixes (Combobox/Select `aria-activedescendant`, Select first-key listbox open, Toast list semantics, HoverCard escapeStack + 11 more).
+- **Now — consumer rollout:** BleizLabs Website v2 shipped `/rozwiazania`, `/o-nas`, `/kontakt` atelier reworks. Atelier `frontend/refactor` skill validated on Hero + Diagnoza (compound efficiency confirmed). Lighthouse + formal publish cadence ongoing.
+- **Next — NVDA human execution:** 23+ protocols awaiting physical tester (~8h across 3 batches of 8 components). CRITICAL findings feed the next patch; otherwise the current minor gets the "NVDA-qualified" label.
+- **Next — shared NVDA protocol extraction:** `_nvda-shared/{modal-focus, menu-navigation, combobox-listbox}.md` consolidation (~400 LOC redundancy reduction across families sharing APG patterns).
+- **Later — post-consumer refactor:** further Rule-of-Three extractions (`useTypeahead`, `useListboxKeyboardNav`, `useFloatingItemRegistry`) after 3+ consumer deployments ship stable semantics.
+- **Future — v1.0.0 stabilization:** API freeze after 2–3 consumer projects validate real-world usage. Additional primitives (Form orchestrator, Chart primitives, Rich editor) as evaluation targets, not commitments.
 
 ---
 
 ## License
 
-MIT — see `LICENSE` (added with first public release).
+MIT — see [`LICENSE`](LICENSE).
 
 ---
 
@@ -395,6 +506,7 @@ MIT — see `LICENSE` (added with first public release).
 
 The following live in the project root (`internal/bleizlabs-ui/`) and are intended for contributors, not external consumers:
 
+- [`CLAUDE.md`](../CLAUDE.md) — project bootstrap, precedence rules, D1–D26 architectural decisions index
 - [`COMPONENT_REGISTRY.md`](../COMPONENT_REGISTRY.md) — props, tokens, and usage per component
 - [`ROADMAP.md`](../ROADMAP.md) — phase-by-phase component sequencing and pending Epics
 - [`docs/decisions.md`](../docs/decisions.md) — architectural decisions log (D1–D26+)
@@ -403,8 +515,9 @@ The following live in the project root (`internal/bleizlabs-ui/`) and are intend
 - [`docs/a11y-pipeline.md`](../docs/a11y-pipeline.md) — accessibility testing workflow
 - [`docs/scss-conventions.md`](../docs/scss-conventions.md) — SCSS module conventions
 - [`docs/naming-conventions.md`](../docs/naming-conventions.md) — component and prop naming rules
+- [`docs/publish-playbook.md`](../docs/publish-playbook.md) — npm publish workflow and lessons learned
 - [`devlog.md`](../devlog.md) — session-by-session execution journal
 
 ---
 
-<sub>Built by [BleizLabs](https://bleizlabs.eu). Feedback and issues welcome.</sub>
+<sub>Built by [BleizLabs](https://bleizlabs.eu). Feedback and issues welcome via [GitHub Issues](https://github.com/BleizLabs/bleizlabs-ui/issues).</sub>
