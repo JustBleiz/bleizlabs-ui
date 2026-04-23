@@ -65,7 +65,8 @@ export default function FeedbackPlaygroundPage() {
           for empty lists and zero-result states. <code>Alert</code> presents
           semantic notifications with optional dismiss. <code>Progress</code>{' '}
           renders either a continuous percent bar or a multi-step stage
-          indicator.
+          indicator (in two display modes — pills for distinct steps, track
+          for continuous lifecycle).
         </Text>
       </header>
 
@@ -143,15 +144,17 @@ export default function FeedbackPlaygroundPage() {
       </section>
 
       {/* ==================================================================== */}
-      {/* PROGRESS — Stages                                                     */}
+      {/* PROGRESS — Stages (pills — default displayMode)                       */}
       {/* ==================================================================== */}
       <section className={styles.section}>
         <Heading level={2} size="2xl">
-          Progress — Stages
+          Progress — Stages (pills)
         </Heading>
         <Text>
-          Horizontal pill strip rendered as <code>&lt;ol aria-label&gt;</code>{' '}
-          with <code>aria-current=&quot;step&quot;</code> on the active step.
+          Default <code>displayMode=&quot;pills&quot;</code> — horizontal pill
+          strip rendered as <code>&lt;ol aria-label&gt;</code> with{' '}
+          <code>aria-current=&quot;step&quot;</code> on the active step.
+          Backward-compatible with pre-0.5.0 (no prop = pills).
         </Text>
 
         <div className={styles.stack}>
@@ -159,6 +162,71 @@ export default function FeedbackPlaygroundPage() {
             label="Client project progress"
             stages={STAGES}
             currentStage={stageIndex}
+          />
+        </div>
+
+        <div className={styles.controls}>
+          <Button
+            variant="secondary"
+            size="sm"
+            onClick={() => setStageIndex((i) => Math.max(0, i - 1))}
+            disabled={stageIndex === 0}
+          >
+            ← Previous stage
+          </Button>
+          <Button
+            variant="secondary"
+            size="sm"
+            onClick={() =>
+              setStageIndex((i) => Math.min(STAGES.length - 1, i + 1))
+            }
+            disabled={stageIndex === STAGES.length - 1}
+          >
+            Next stage →
+          </Button>
+        </div>
+      </section>
+
+      {/* ==================================================================== */}
+      {/* PROGRESS — Stages (track — 0.5.0 additive displayMode)                */}
+      {/* ==================================================================== */}
+      <section className={styles.section}>
+        <Heading level={2} size="2xl">
+          Progress — Stages (track)
+        </Heading>
+        <Text>
+          <code>displayMode=&quot;track&quot;</code> — equal-width edge-to-edge
+          segments with labels below. Shipped in 0.5.0 as additive, backward-
+          compatible extension. Same <code>role=&quot;list&quot;</code> +{' '}
+          <code>aria-current=&quot;step&quot;</code> semantics as pills.
+          Useful for multi-stage state machines where segment progression
+          matters more than individual pill identity (e.g., 7-stage project
+          lifecycle, multi-step checkout, onboarding flow).
+        </Text>
+
+        <div className={styles.stack}>
+          <Progress
+            label="Project lifecycle (track variant)"
+            stages={STAGES}
+            currentStage={stageIndex}
+            displayMode="track"
+          />
+        </div>
+
+        <div className={styles.stack}>
+          <Progress
+            label="7-stage state machine (track variant)"
+            stages={[
+              'Discovery',
+              'Scope',
+              'Awaiting approval',
+              'Awaiting payment',
+              'Realization',
+              'Acceptance',
+              'Closed',
+            ]}
+            currentStage={3}
+            displayMode="track"
           />
         </div>
 

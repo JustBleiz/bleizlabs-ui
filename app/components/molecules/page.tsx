@@ -12,6 +12,7 @@ import {
 } from '@/components/molecules/ToggleGroupFilter';
 import { DeadlineBadge } from '@/components/molecules/DeadlineBadge';
 import { FileChip } from '@/components/molecules/FileChip';
+import { PageHeader } from '@/components/molecules/PageHeader';
 import { Accordion } from '@/components/interactive/Accordion';
 import { Badge } from '@/components/display/Badge';
 import { Heading } from '@/components/typography/Heading';
@@ -48,12 +49,13 @@ export default function MoleculesPlaygroundPage() {
           Molecules
         </Heading>
         <Text className={styles.intro}>
-          Seven composite components built from the atom layer —{' '}
+          Eight composite components built from the atom layer —{' '}
           <code>DataRow</code>, <code>BackLink</code>,{' '}
           <code>SectionDivider</code>, <code>AccordionGroup</code>,{' '}
-          <code>ToggleGroupFilter</code>, <code>DeadlineBadge</code>, and{' '}
-          <code>FileChip</code>. They codify recurring patterns so
-          consumers don&apos;t reinvent them per project.
+          <code>ToggleGroupFilter</code>, <code>DeadlineBadge</code>,{' '}
+          <code>FileChip</code>, and <code>PageHeader</code>. They codify
+          recurring patterns so consumers don&apos;t reinvent them per
+          project.
         </Text>
       </header>
 
@@ -316,6 +318,83 @@ export default function MoleculesPlaygroundPage() {
             onRemove={() => {}}
           />
           <FileChip name="unknown-format-file" size={4096} />
+        </div>
+      </section>
+
+      {/* ==================================================================== */}
+      {/* PAGEHEADER                                                            */}
+      {/* ==================================================================== */}
+      <section className={styles.section}>
+        <Heading level={2} size="2xl">
+          PageHeader
+        </Heading>
+        <Text>
+          Page-top title section composing <code>Heading</code> +{' '}
+          <code>Text</code> (subtitle) + optional <code>Badge</code> strip via{' '}
+          <code>Stack</code> / <code>Inline</code>. Accent fragment via{' '}
+          <code>accentStart</code> / <code>accentEnd</code> char-index
+          slicing (defensive — out-of-bounds falls back to plain title).
+          Token override channel <code>--page-header-accent</code> (defaults{' '}
+          <code>var(--color-brand)</code>). Server-safe.
+        </Text>
+
+        <div className={styles.panel}>
+          <div className={styles.stack}>
+            <Text variant="small" color="secondary">
+              Plain title (level=1, no accent, no subtitle)
+            </Text>
+            <PageHeader level={1} title="Profil" />
+          </div>
+        </div>
+
+        <div className={styles.panel}>
+          <div className={styles.stack}>
+            <Text variant="small" color="secondary">
+              Accent fragment + subtitle (level=1)
+            </Text>
+            <PageHeader
+              level={1}
+              title="Moje usługi"
+              accentStart={5}
+              accentEnd={11}
+              subtitle="Przegląd Twoich usług."
+            />
+          </div>
+        </div>
+
+        <div className={styles.panel}>
+          <div className={styles.stack}>
+            <Text variant="small" color="secondary">
+              Full — title + accent + subtitle + status badges
+            </Text>
+            <PageHeader
+              level={1}
+              title="Wykonane projekty"
+              accentStart={10}
+              accentEnd={17}
+              subtitle="Przegląd ukończonych zleceń."
+              badges={[
+                { label: 'Aktywne 3', color: 'success' },
+                { label: '1 ostrzeżenie', color: 'warning' },
+              ]}
+            />
+          </div>
+        </div>
+
+        <div className={styles.panel}>
+          <div className={styles.stack}>
+            <Text variant="small" color="secondary">
+              Custom accent color (override via <code>accentColor</code> prop)
+            </Text>
+            <PageHeader
+              level={2}
+              title="Dashboard przeglądowy"
+              accentStart={10}
+              accentEnd={19}
+              accentColor="var(--color-accent-strong)"
+              subtitle="Skrócony podgląd wszystkich systemów."
+            />
+          </div>
         </div>
       </section>
     </main>
