@@ -4,9 +4,33 @@ All notable releases of this component library. Follows [Keep a Changelog](https
 
 ---
 
-## [0.5.0] — 2026-04-23
+## [0.5.1] — 2026-04-23
+
+**Demo-only fix — `PageHeader` molecule custom-accent-color playground demo removed (failed CI axe AA color-contrast on `--color-accent-strong` token at `3xl` heading size). Supersedes tag `v0.5.0` which failed smoke test before publish step — no registry tarball ever produced for `v0.5.0`. Library components (PageHeader + Progress.displayMode extension) unchanged vs. `v0.5.0` tag, same feature set.**
+
+### Fixed (vs unreleased tag v0.5.0)
+
+- **`app/components/molecules/page.tsx`** — removed the 4th PageHeader demo block ("Dashboard przeglądowy" with `accentColor="var(--color-accent-strong)"`). That specific token combination fails axe-core color-contrast AA on the molecules playground surface; remaining 3 demos (plain, accent fragment + subtitle, full + badges) cover the full API surface without contrast issues. Tag `v0.5.0` remains in git as the broken attempt; no registry tarball was ever published.
+
+### Notes
+
+- **Library code unchanged.** PageHeader component + Progress.displayMode extension identical to what `v0.5.0` intended to ship. Consumers install `@bleizlabs/ui@^0.5.1` (or `^0.5.0` via caret — registry serves `0.5.1` for both).
+- **Demo discipline.** Lesson: custom accent colors via `--color-accent-strong` need per-usage contrast check. The component itself is AA-safe by default (`var(--color-brand)`). Consumers providing custom `accentColor` must verify contrast on their surface.
+
+### Verification
+
+- `npm run check:barrel` PASS
+- `npm run typecheck` PASS
+- `npm run build` PASS
+- Visual smoke @ 1440x900 PASS (3 PageHeader demos + Progress pills + Progress track 5+7 stages)
+
+---
+
+## [0.5.0] — 2026-04-23 (YANKED — see 0.5.1)
 
 **E174v2 pre-planning library work — `PageHeader` molecule (M7) + `Progress.displayMode` extension. Both additive, backward-compatible. Universal scope per self-audit z user 2026-04-23 (TopNav i HeroCard wycofane do project-local jako brand-tied / shell-specific — biblioteka pozostaje czysto uniwersalna).**
+
+> **YANKED 2026-04-23:** tag pushed but CI Playwright smoke test failed on 4th PageHeader demo (`--color-accent-strong` fails AA contrast). Publish step never ran; no registry tarball produced. Superseded by `v0.5.1` (identical library code, demo fix only).
 
 ### Added — library
 

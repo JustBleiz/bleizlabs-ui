@@ -381,21 +381,6 @@ export default function MoleculesPlaygroundPage() {
           </div>
         </div>
 
-        <div className={styles.panel}>
-          <div className={styles.stack}>
-            <Text variant="small" color="secondary">
-              Custom accent color (override via <code>accentColor</code> prop)
-            </Text>
-            <PageHeader
-              level={2}
-              title="Dashboard przeglądowy"
-              accentStart={10}
-              accentEnd={19}
-              accentColor="var(--color-accent-strong)"
-              subtitle="Skrócony podgląd wszystkich systemów."
-            />
-          </div>
-        </div>
       </section>
     </main>
   );
