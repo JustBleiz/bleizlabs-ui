@@ -3,13 +3,13 @@
 > A zero-dependency, fully-styled React component library with seed-based design tokens.
 > 85 components, WAI-ARIA compliant, runtime-test-verified, SCSS Modules, React 19 + Next.js 16.
 
-[![Version](https://img.shields.io/badge/npm-v0.4.3-0ea5e9)](https://github.com/BleizLabs/bleizlabs-ui/pkgs/npm/ui)
+[![Version](https://img.shields.io/badge/npm-v0.5.2-0ea5e9)](https://github.com/BleizLabs/bleizlabs-ui/pkgs/npm/ui)
 [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 [![React](https://img.shields.io/badge/React-19-61dafb)](https://react.dev)
 [![Next.js](https://img.shields.io/badge/Next.js-16.2-black)](https://nextjs.org)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.6-3178c6)](https://www.typescriptlang.org)
 
-**Current version: [`@bleizlabs/ui@0.4.3`](https://github.com/BleizLabs/bleizlabs-ui/pkgs/npm/ui)** — E149 hover polish with two new duration tokens (`--duration-hover` 280ms, `--duration-card-hover` 320ms) adopted library-wide on Button and Card. Backward-compatible with v0.4.x. See [CHANGELOG.md](CHANGELOG.md) for the full release history.
+**Current version: [`@bleizlabs/ui@0.5.2`](https://github.com/BleizLabs/bleizlabs-ui/pkgs/npm/ui)** — i18n-ready aria-labels on `PasswordInput` visibility toggle + `Input` clear button. Adds `showPasswordLabel` / `hidePasswordLabel` / `clearLabel` optional props (defaults preserve previous English labels — non-breaking). Consumers enforcing strict i18n gates (e.g. `next-intl` with hardcoded-string enforcement) can now pass translated strings. See [CHANGELOG.md](CHANGELOG.md) for the full release history.
 
 ## Table of contents
 

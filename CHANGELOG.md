@@ -4,6 +4,67 @@ All notable releases of this component library. Follows [Keep a Changelog](https
 
 ---
 
+## [0.5.2] — 2026-04-23
+
+**i18n-ready aria-labels — `PasswordInput` + `Input` (`clearable`) now accept optional override props for the interactive toggle / clear button `aria-label`. Non-breaking addition: defaults preserve the previous English labels (`'Show password'` / `'Hide password'` / `'Clear'`) so existing consumers are unaffected. Unblocks strict-i18n apps (e.g. scout-hub) that enforce zero-hardcoded-string gates on the rendered DOM.**
+
+### Added
+
+- **`PasswordInput`** — two optional props on `PasswordInputProps`:
+  - `showPasswordLabel?: string` (default `'Show password'`) — `aria-label` on the visibility toggle button when the password is hidden.
+  - `hidePasswordLabel?: string` (default `'Hide password'`) — `aria-label` on the visibility toggle button when the password is visible.
+- **`Input`** — one optional prop on `InputProps`:
+  - `clearLabel?: string` (default `'Clear'`) — `aria-label` on the clear (X) button when `clearable` is true.
+
+### Usage (next-intl example)
+
+```tsx
+import { PasswordInput, Input } from '@bleizlabs/ui';
+import { useTranslations } from 'next-intl';
+
+function LoginField() {
+  const t = useTranslations('auth');
+  return (
+    <PasswordInput
+      label={t('password')}
+      name="password"
+      showPasswordLabel={t('showPassword')}
+      hidePasswordLabel={t('hidePassword')}
+    />
+  );
+}
+
+function SearchField() {
+  const t = useTranslations('common');
+  return (
+    <Input
+      label={t('search')}
+      name="q"
+      clearable
+      clearLabel={t('clear')}
+    />
+  );
+}
+```
+
+### Why
+
+The previous implementation hard-coded `aria-label="Show password"` / `"Hide password"` on `PasswordInput`'s reveal button and `aria-label="Clear"` on `Input`'s clear button. Consumers enforcing strict i18n (grep-based hardcoded-string gates over the rendered DOM, e.g. scout-hub CRM Block 1 `/login`) couldn't pass without shadowing the primitive with a local wrapper. These props close that gap without breaking any existing consumer.
+
+### Compatibility
+
+- **Non-breaking.** Every new prop is optional; defaults match the previous behaviour byte-for-byte. Existing consumers require no changes.
+- JSDoc added per prop. `@a11y` header clauses in both component files updated to document the override path.
+- No token, keyframe, SCSS, or test changes. TypeScript + ESLint clean.
+
+### Verification
+
+- `tsc --noEmit` — clean
+- `eslint components/interactive/{PasswordInput,Input}` — clean
+- Manual Playwright check via scout-hub consumer (v0.5.2 upgrade path): PL reveal button announces "Pokaż hasło" / "Ukryj hasło", EN announces "Show password" / "Hide password". Clear button aria-label picks up `clearLabel` at runtime.
+
+---
+
 ## [0.5.1] — 2026-04-23
 
 **Demo-only fix — `PageHeader` molecule custom-accent-color playground demo removed (failed CI axe AA color-contrast on `--color-accent-strong` token at `3xl` heading size). Supersedes tag `v0.5.0` which failed smoke test before publish step — no registry tarball ever produced for `v0.5.0`. Library components (PageHeader + Progress.displayMode extension) unchanged vs. `v0.5.0` tag, same feature set.**

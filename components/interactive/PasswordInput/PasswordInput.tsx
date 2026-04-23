@@ -27,10 +27,12 @@ import styles from './PasswordInput.module.scss';
  * @a11y    Native `<input type="password">` switches to `type="text"`
  *          when the visibility toggle is activated. The eye button is
  *          a keyboard-reachable `<button type="button">` with an
- *          `aria-label` that announces the current state ("Show
- *          password" / "Hide password") and an `aria-pressed` boolean
- *          reflecting the toggle state. The button sits inside the
- *          input wrap and participates in the `:focus-within` ring.
+ *          `aria-label` that announces the current state (default
+ *          "Show password" / "Hide password", override via
+ *          `showPasswordLabel` / `hidePasswordLabel` for i18n) and an
+ *          `aria-pressed` boolean reflecting the toggle state. The
+ *          button sits inside the input wrap and participates in the
+ *          `:focus-within` ring.
  *
  *          Strength meter: when `showStrength` is set, a `<div
  *          role="meter">` renders below the input with `aria-valuemin`,
@@ -110,6 +112,18 @@ export interface PasswordInputProps
   showStrength?: boolean;
   /** Hide visible label (still in a11y tree). Default `false`. */
   hideLabel?: boolean;
+  /**
+   * `aria-label` for the visibility toggle button when the password is
+   * hidden (pressing it will reveal the password). Default `'Show password'`.
+   * Override for i18n (e.g. `t('showPassword')`).
+   */
+  showPasswordLabel?: string;
+  /**
+   * `aria-label` for the visibility toggle button when the password is
+   * visible (pressing it will hide the password). Default `'Hide password'`.
+   * Override for i18n (e.g. `t('hidePassword')`).
+   */
+  hidePasswordLabel?: string;
 }
 
 type StrengthLevel = 0 | 1 | 2 | 3 | 4;
@@ -175,6 +189,8 @@ export const PasswordInput = forwardRef<HTMLInputElement, PasswordInputProps>(
       helperText,
       showStrength = false,
       hideLabel = false,
+      showPasswordLabel = 'Show password',
+      hidePasswordLabel = 'Hide password',
       required,
       disabled,
       id,
@@ -243,7 +259,7 @@ export const PasswordInput = forwardRef<HTMLInputElement, PasswordInputProps>(
           />
           <button
             type="button"
-            aria-label={visible ? 'Hide password' : 'Show password'}
+            aria-label={visible ? hidePasswordLabel : showPasswordLabel}
             aria-pressed={visible}
             tabIndex={disabled ? -1 : 0}
             disabled={disabled}

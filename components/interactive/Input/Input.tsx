@@ -31,9 +31,9 @@ import styles from './Input.module.scss';
  *          links the error message, helper text, AND counter (when
  *          `showCounter` is on) so the live char count is announced. The
  *          `clearable` X button is a native `<button type="button">` with
- *          `aria-label` so it's keyboard-reachable; clearing fires
- *          `onChange` with an empty target value (consumer state stays in
- *          sync). The `loading` Spinner is decorated with `role="status"
+ *          `aria-label` (default `'Clear'`, override via `clearLabel` for
+ *          i18n) so it's keyboard-reachable; clearing fires `onChange`
+ *          with an empty target value (consumer state stays in sync). The `loading` Spinner is decorated with `role="status"
  *          aria-live="polite"` so SR users hear the in-flight state.
  *          `prefix`/`suffix` literal text addons are pure visual labels —
  *          they don't carry semantic meaning beyond the visible text, and
@@ -139,6 +139,12 @@ export interface InputProps
    */
   clearable?: boolean;
   /**
+   * `aria-label` for the clear (X) button. Default `'Clear'`.
+   * Override for i18n (e.g. `t('clear')`). Only used when
+   * `clearable` is true.
+   */
+  clearLabel?: string;
+  /**
    * Show an inline Spinner on the right indicating an async operation
    * (e.g., search-as-you-type, async validation). Takes priority over
    * `endIcon` when both are passed.
@@ -178,6 +184,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
     suffix,
     showCounter = false,
     clearable = false,
+    clearLabel = 'Clear',
     loading = false,
     hideLabel = false,
     required,
@@ -320,7 +327,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
         ) : showClearButton ? (
           <button
             type="button"
-            aria-label="Clear"
+            aria-label={clearLabel}
             className={styles.clearButton}
             onClick={handleClear}
           >
