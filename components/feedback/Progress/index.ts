@@ -1,1 +1,5 @@
-export { Progress, type ProgressProps } from './Progress';
+export {
+  Progress,
+  type ProgressProps,
+  type ProgressStageDisplayMode,
+} from './Progress';

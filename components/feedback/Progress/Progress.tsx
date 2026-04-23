@@ -63,11 +63,26 @@ import styles from './Progress.module.scss';
  * <Progress label="Upload pliku" value={65} max={100} />
  */
 
+/**
+ * Visual rendering mode for stages-mode Progress.
+ *
+ * - `pills` (default): numbered circular pill per stage with label inside.
+ *   Best for short multi-step flows (3-5 stages) where each stage's status
+ *   is referenced individually.
+ * - `track`: flat horizontal segmented bar — equal-width segments touch
+ *   edge-to-edge, labels render below. Best for longer pipelines (4-8
+ *   stages) and project timelines where the overall arc matters more than
+ *   per-stage iconography. Numbered index is hidden in this mode.
+ */
+export type ProgressStageDisplayMode = 'pills' | 'track';
+
 type ProgressStagesProps = {
   /** Stage names rendered as pills in an `<ol>`. When set, `currentStage` is required and `value`/`max` must NOT be set. */
   stages: string[];
   /** Zero-indexed active stage. Must satisfy `0 ≤ currentStage < stages.length`. */
   currentStage: number;
+  /** Visual rendering mode for stages. Default `'pills'`. See `ProgressStageDisplayMode`. */
+  displayMode?: ProgressStageDisplayMode;
   /** Forbidden in stages mode. */
   value?: never;
   /** Forbidden in stages mode. */
@@ -97,6 +112,7 @@ type ProgressPropsFlat = Omit<HTMLAttributes<HTMLDivElement>, 'aria-label'> & {
   label: string;
   stages?: string[];
   currentStage?: number;
+  displayMode?: ProgressStageDisplayMode;
   value?: number;
   max?: number;
 };
@@ -111,6 +127,7 @@ export const Progress = forwardRef<HTMLDivElement, ProgressProps>(
       className,
       stages,
       currentStage,
+      displayMode,
       value,
       max,
       ...domProps
@@ -118,10 +135,17 @@ export const Progress = forwardRef<HTMLDivElement, ProgressProps>(
 
     // Stages mode
     if (stages !== undefined) {
+      const resolvedDisplayMode: ProgressStageDisplayMode =
+        displayMode ?? 'pills';
+      const modeClass =
+        resolvedDisplayMode === 'track'
+          ? styles.modeStagesTrack
+          : styles.modeStages;
+
       return (
         <div
           ref={ref}
-          className={cn(styles.root, styles.modeStages, className)}
+          className={cn(styles.root, modeClass, className)}
           {...domProps}
         >
           <ol aria-label={label} className={styles.stageList}>

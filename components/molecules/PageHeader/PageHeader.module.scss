@@ -1,0 +1,36 @@
+// ============================================================================
+// PageHeader — molecule (Phase 7 M7)
+// Composes Stack + Heading + Text + Inline + Badge atoms.
+// All visual rules below are layout-only — typography & color come from atoms.
+// ============================================================================
+
+.root {
+  width: 100%;
+}
+
+.title {
+  // Heading atom owns size/weight/color via its own props.
+  // PageHeader contributes nothing here — kept as named slot for SCSS
+  // overrides at consumer site if ever needed (per :global() escape hatch).
+}
+
+.accent {
+  // Default accent color resolves through `--page-header-accent` channel
+  // (set on the span via inline `style` when consumer supplies `accentColor`).
+  // Fallback to `--color-brand` keeps the documented default in sync with
+  // the @tokens contract — the inline channel only overrides, never replaces
+  // the token pipeline (so theming + forced-colors remap continue to work).
+  color: var(--page-header-accent, var(--color-brand));
+  // Font weight/family/size inherited from parent Heading — matching the
+  // surrounding title text exactly except for color.
+  font-weight: inherit;
+}
+
+.subtitle {
+  // Text atom owns variant/color. Slot retained for consumer overrides.
+}
+
+.badges {
+  // Inline atom owns flex layout (gap/wrap). Slot retained for consumer
+  // overrides (e.g., margin-top adjustment in special page headers).
+}

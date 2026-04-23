@@ -4,6 +4,32 @@ All notable releases of this component library. Follows [Keep a Changelog](https
 
 ---
 
+## [0.5.0] — 2026-04-23
+
+**E174v2 pre-planning library work — `PageHeader` molecule (M7) + `Progress.displayMode` extension. Both additive, backward-compatible. Universal scope per self-audit z user 2026-04-23 (TopNav i HeroCard wycofane do project-local jako brand-tied / shell-specific — biblioteka pozostaje czysto uniwersalna).**
+
+### Added — library
+
+- **`components/molecules/PageHeader`** — NEW Phase 7 molecule (M7). Page-top title section z optional accent fragment (char-index slicing), optional subtitle (Text variant="lead"), optional status badges. Server-safe. Composition: Stack + Heading + Text + Inline + Badge — zero new structural primitives. Props: `title`, `level?: 1|2|3` (default 2), `size?: HeadingSize`, `accentStart?: number`, `accentEnd?: number`, `accentColor?: string`, `subtitle?: ReactNode`, `badges?: PageHeaderBadge[]`. Token override channel `--page-header-accent` (CSS custom property, fallback `var(--color-brand)` — preserves theming + forced-colors remap). Defensive bounds check on accent indices (out-of-bounds / inverted → plain title fallback, never throws).
+- **`components/feedback/Progress`** — NEW prop `displayMode?: 'pills' | 'track'` (default `'pills'`). Adds `track` visual variant: equal-width segments edge-to-edge z labels below, no numbered index. Best for project pipelines (4-8 stages). Existing pills mode untouched (backward compatible). New exported type `ProgressStageDisplayMode`.
+- **`components/index.ts`** — added `PageHeader` w Molecules barrel, count comment `(7)` → `(8)`.
+- **`COMPONENT_REGISTRY.md`** + **`ROADMAP.md`** — pełne entries dla PageHeader (props/types/deps/a11y/token-channel).
+
+### Notes
+
+- **Backward-compatible.** Zero public API changes do existing components. `@bleizlabs/ui@0.5.0` is a drop-in for `0.4.5`. `^0.4.0` consumers auto-upgrade via semver caret.
+- **Motivation.** BleizLabs Website v2 panel port (E174v2) — PageHeader pojawia się na każdej stronie panelu jako universal product-agnostic title section. Progress.displayMode='track' dla project pipeline visualization (4-stage analiza→zakres→realizacja→akceptacja). Per pre-planning self-audit z user 2026-04-23: tylko universal patterns trafiają do biblioteki; brand-tied (HeroCard glassmorphic) i shell-specific (TopNav) zostają project-local kompozycje z lib atoms.
+- **A11y.** PageHeader: semantic Heading per `level`, accent span = inline `<span>` (część jednego accessible name), subtitle `<p>` via Text. Non-interactive presentational. Progress.displayMode='track': same semantic `<ol>`/`<li>` z `aria-current="step"` jako pills mode — visual variant tylko, zero a11y regression.
+- **Token discipline.** Zero hex / px hardcoded w obu zmianach. PageHeader accent color przez `--page-header-accent` CSS custom property channel (lesson z Evaluator iter 1 — preserves token pipeline + theming).
+
+### Verification
+
+- `tsc --noEmit` zero errors (PageHeader: po Phase 3 generation + po Phase 5 fix iter 1 = 2× clean; Progress EXTEND: 1× clean post-edit).
+- Evaluator outcome (PageHeader): superpowers:code-reviewer agent, 2 rounds — Round 1 FAIL (2 IMPORTANT z inline color style bypass), Round 2 PASS (po CSS custom property channel fix).
+- Demo page sections + CI smoke: do dorobienia w next session (post-acceptance E174v2 plan).
+
+---
+
 ## [0.4.5] — 2026-04-22
 
 **E174.1 `FileChip` molecule — attachment chip for tickets, document lists, and contact forms. Rounded pill composing a MIME icon (or `Spinner` while uploading), CSS-truncated filename, human-readable size, and optional ghost `Button`s for remove / retry. Supersedes tag `v0.4.4` which failed CI axe contrast (same feature, contrast fix applied). Additive + backward-compatible with v0.4.3.**

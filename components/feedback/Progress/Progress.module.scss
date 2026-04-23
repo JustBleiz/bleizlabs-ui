@@ -92,6 +92,89 @@
 }
 
 // ============================================================================
+// STAGES MODE — track display variant (linear segmented bar with labels below)
+// ============================================================================
+// `displayMode="track"` renders the same `<ol>` structure as pills mode but
+// styles each `<li>` as a flat horizontal segment (equal-width, edge-to-edge).
+// Numbered index is hidden — the colored fill of each segment carries the
+// done/active/pending status, and labels render below the bar in a stacked
+// layout. Best for project pipelines (4-8 stages) where the overall arc is
+// more important than individual numbered milestones.
+
+.modeStagesTrack {
+  font-size: var(--font-size-xs);
+
+  .stageList {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 2px; // 1px hairline between segments — keeps boundary visible
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+  }
+
+  .stageItem {
+    flex: 1 1 0;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--space-1);
+    padding: 0;
+    border: none;
+    border-radius: 0;
+    background: transparent;
+    color: var(--color-text-secondary);
+    font-weight: var(--font-weight-medium);
+    line-height: 1;
+    transition:
+      background var(--duration-normal) var(--easing-default),
+      color var(--duration-normal) var(--easing-default);
+  }
+
+  .stageIndex {
+    // Numeric badge is hidden in track mode — segment fill carries status.
+    display: none;
+  }
+
+  .stageLabel {
+    display: block;
+    padding: var(--space-1) var(--space-2);
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: var(--letter-spacing-wider);
+  }
+
+  // Each segment is a colored bar above its label — implemented via ::before
+  // so the label text remains in normal flow and gets centered separately.
+  .stageItem::before {
+    content: '';
+    display: block;
+    width: 100%;
+    height: var(--space-2);
+    background: var(--color-surface-raised);
+    transition: background var(--duration-normal) var(--easing-default);
+  }
+
+  .stageCompleted {
+    color: var(--color-brand-strong);
+  }
+
+  .stageCompleted::before {
+    background: var(--color-brand-subtle);
+  }
+
+  .stageActive {
+    color: var(--color-text-primary);
+  }
+
+  .stageActive::before {
+    background: var(--color-brand);
+  }
+}
+
+// ============================================================================
 // PERCENT MODE — linear progress bar
 // ============================================================================
 
@@ -122,6 +205,7 @@
 
 @media (prefers-reduced-motion: reduce) {
   .stageItem,
+  .stageItem::before,
   .bar {
     transition: none;
   }
