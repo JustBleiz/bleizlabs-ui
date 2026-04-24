@@ -4,6 +4,33 @@ All notable releases of this component library. Follows [Keep a Changelog](https
 
 ---
 
+## [0.5.3] — 2026-04-24
+
+**Bugfix — `Select` + `Combobox` hover/keyboard highlight now works. Upstream bug in v0.5.0–v0.5.2: TSX rendered `data-highlighted=""` (empty string) but SCSS selector was `&[data-highlighted='true']` — attribute-value mismatch meant the selector never matched, so `--color-surface-hover` background never painted when pointer-move / arrow-nav set the highlighted state. Affected both pointer and keyboard a11y paths (aria-activedescendant pattern). Fix aligns TSX to the working convention already used by `Command` / `Slider` / `Carousel` / `ScrollArea` / `Sidebar` / `InputOTP` / `Toast` (TSX emits `'true'` literal). No public API change, no breaking change — consumers just get the hover effect they expected.**
+
+### Fixed
+
+- **`Select`** (`SelectItem`) — `data-highlighted` DOM attribute now renders as `'true'` (was empty string `''`), so `Select.module.scss:206` `&[data-highlighted='true']` selector matches and paints `--color-surface-hover` on hovered / keyboard-highlighted option.
+- **`Combobox`** (`ComboboxItem`) — same fix; `Combobox.module.scss:304` `&[data-highlighted='true']` selector now matches.
+
+### Not affected
+
+- `Command` (`CommandItem`) — already used `'true'` convention pre-0.5.3, no change needed.
+- `ContextMenu`, `DropdownMenu` — use `data-disabled` / `data-invalid` with SCSS attribute-presence selectors (`[data-disabled]` without value), so their `''` convention was never broken.
+
+### Compatibility
+
+- **Non-breaking.** Prop signatures (`SelectItemProps`, `ComboboxItemProps`) unchanged. Behavior contract unchanged (attribute-presence semantics preserved — `data-highlighted` absent when not highlighted, present when highlighted). Only the rendered attribute VALUE changes (`""` → `"true"`).
+- Consumers with CSS overrides keying on `[data-highlighted='true']` (the same pattern lib SCSS used) start working as intended.
+- Consumers keying on attribute-presence `[data-highlighted]` continue to work (both `""` and `"true"` match presence selector).
+
+### Verification
+
+- `tsc --noEmit` clean.
+- Cross-lib sweep: verified 22 complex-interactive components for same-pattern bug. Only Select + Combobox affected (7 `''`-convention sites total, but only 2 paired with a value-requiring SCSS selector).
+
+---
+
 ## [0.5.2] — 2026-04-23
 
 **i18n-ready aria-labels — `PasswordInput` + `Input` (`clearable`) now accept optional override props for the interactive toggle / clear button `aria-label`. Non-breaking addition: defaults preserve the previous English labels (`'Show password'` / `'Hide password'` / `'Clear'`) so existing consumers are unaffected. Unblocks strict-i18n apps (e.g. scout-hub) that enforce zero-hardcoded-string gates on the rendered DOM.**

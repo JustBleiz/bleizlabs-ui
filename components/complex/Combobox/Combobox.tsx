@@ -1881,7 +1881,7 @@ function ComboboxItemImpl({
       aria-selected={isSelected}
       aria-disabled={disabled || undefined}
       data-state={isSelected ? 'checked' : 'unchecked'}
-      data-highlighted={isHighlighted ? '' : undefined}
+      data-highlighted={isHighlighted ? 'true' : undefined}
       data-disabled={disabled ? '' : undefined}
       data-value={value}
       tabIndex={-1}
