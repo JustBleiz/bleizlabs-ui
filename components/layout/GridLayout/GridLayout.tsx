@@ -130,7 +130,12 @@ export interface GridLayoutProps extends HTMLAttributes<HTMLDivElement> {
   children?: ReactNode;
 }
 
-const ALIGN_MAP: Record<GridAlign, string> = {
+// CSS Grid uses bare 'start' / 'end' values — no flex-* prefix needed.
+// This intentionally differs from Stack/Inline ALIGN_MAP which translates
+// to flex-start / flex-end for the flex layout context. Maps keyed via
+// `NonNullable<GridLayoutProps['align']>` so future widening of the prop
+// union triggers TS exhaustiveness errors here (mirrors Stack/Inline).
+const ALIGN_MAP: Record<NonNullable<GridLayoutProps['align']>, string> = {
   start: 'start',
   center: 'center',
   end: 'end',
@@ -138,7 +143,7 @@ const ALIGN_MAP: Record<GridAlign, string> = {
   baseline: 'baseline',
 };
 
-const JUSTIFY_MAP: Record<GridJustify, string> = {
+const JUSTIFY_MAP: Record<NonNullable<GridLayoutProps['justify']>, string> = {
   start: 'start',
   center: 'center',
   end: 'end',
@@ -147,6 +152,10 @@ const JUSTIFY_MAP: Record<GridJustify, string> = {
   around: 'space-around',
   evenly: 'space-evenly',
 };
+
+// ---------------------------------------------------------------------------
+// helpers — grid-track template normalisers
+// ---------------------------------------------------------------------------
 
 function tracksToCss(value: number | string): string {
   if (typeof value === 'number') {

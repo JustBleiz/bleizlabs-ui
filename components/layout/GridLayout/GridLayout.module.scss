@@ -2,7 +2,11 @@
 
 .root {
   display: grid;
-  grid-template-columns: var(--grid-cols);
+  // Defensive fallback `repeat(1, minmax(0, 1fr))` mirrors Stack/Inline's
+  // var-with-fallback convention — if `columns` ever lands as undefined
+  // (untyped JS caller / serialisation gap), the grid collapses to a
+  // single column instead of becoming layout-invalid.
+  grid-template-columns: var(--grid-cols, repeat(1, minmax(0, 1fr)));
   grid-template-rows: var(--grid-rows, none);
   column-gap: var(--grid-column-gap, var(--space-3));
   row-gap: var(--grid-row-gap, var(--space-3));
