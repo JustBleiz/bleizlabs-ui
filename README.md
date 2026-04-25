@@ -1,7 +1,7 @@
 # @bleizlabs/ui
 
 > A zero-dependency, fully-styled React component library with seed-based design tokens.
-> 90 components, WAI-ARIA compliant, runtime-test-verified, SCSS Modules, React 19 + Next.js 16.
+> 91 components, WAI-ARIA compliant, runtime-test-verified, SCSS Modules, React 19 + Next.js 16.
 
 [![Version](https://img.shields.io/badge/npm-v0.5.5-0ea5e9)](https://github.com/BleizLabs/bleizlabs-ui/pkgs/npm/ui)
 [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
