@@ -1,6 +1,9 @@
 .root {
   display: flex;
   flex-direction: var(--card-direction, column);
+  // v0.5.5 — `gap` prop injects `--card-gap`; default `0` preserves
+  // v0.5.4 byte-for-byte (no gap between flex children).
+  gap: var(--card-gap, 0);
   width: var(--card-width, auto);
   min-width: 0;
   padding: var(--card-padding, var(--padding-card));

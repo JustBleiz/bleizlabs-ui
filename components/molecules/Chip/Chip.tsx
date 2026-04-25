@@ -1,47 +1,54 @@
 import {
   forwardRef,
   type ButtonHTMLAttributes,
+  type ForwardedRef,
+  type HTMLAttributes,
+  type ReactElement,
   type ReactNode,
+  type Ref,
 } from 'react';
 import { cn } from '../../utils/cn';
 import styles from './Chip.module.scss';
 
 /**
- * Chip — pill-shaped toggleable filter chip (Phase 7 molecule, v0.5.4).
+ * Chip — pill-shaped filter chip with toggle (default) or display-only mode
+ * (Phase 7 molecule, v0.5.4 toggle + v0.5.5 display variant).
  *
  * Promoted from scout-hub `2026-04_e05-ui-polish` B7 batches list status
  * filter row (12 raw `<button>` elements with custom pressed-state styling)
  * — the threshold for promotion per `rules/frontend/component-architecture.md`.
+ * The v0.5.5 `interactive=false` display variant promotes scout-hub
+ * `2026-04_e05-gan-reattack` B4 `/settings/icp` scopeChip pattern
+ * (display-only band-tinted chips inside summary surfaces).
  *
  * Distinct from `Toggle`: Toggle is a generic on/off button (Bold, Italic);
  * Chip is the filter-row pattern with smaller dimensions, pill-only shape,
- * and brand-on-pressed semantics. Different mental model → different
- * component (per ToggleGroupFilter precedent).
+ * and brand-on-pressed semantics.
  *
  * @layer   molecule
  * @tokens  --color-brand, --color-brand-subtle, --color-brand-strong,
  *          --color-surface, --color-surface-raised, --color-border-subtle,
  *          --color-text-{primary,secondary,muted}, --color-{success,warning,
- *          error,info,brand}-strong (for dot indicators), --space-{1,2,3},
- *          --font-size-xs, --font-weight-medium, --letter-spacing-wide,
- *          --radius-full, --duration-fast, --easing-default,
- *          --focus-ring (via mx.focus-ring mixin in SCSS)
- * @deps    cn, React: `forwardRef`, types `ButtonHTMLAttributes`, `ReactNode`
- * @a11y    Native `<button type="button" aria-pressed>` — keyboard
- *          activation (Space/Enter) + assistive-tech press semantics for
- *          free. Disabled state uses native `disabled`. The decorative
- *          dot (when `dot={true}`) carries `aria-hidden="true"` — meaning
- *          must be in the chip label text. Controlled-only — parent owns
- *          the `pressed` state, simplifying integration with
- *          `useState<string[]>` filter selection.
+ *          error,info,brand}-strong, --space-{1,2,3}, --font-size-xs,
+ *          --font-weight-medium, --letter-spacing-wide, --radius-full,
+ *          --duration-fast, --easing-default, --focus-ring
+ * @deps    cn, React: `forwardRef`, types `ButtonHTMLAttributes`,
+ *          `HTMLAttributes`, `ReactNode`
+ * @a11y    Interactive (default `interactive=true`): native
+ *          `<button type="button" aria-pressed>` — keyboard activation
+ *          (Space/Enter) + AT press semantics. Disabled state uses native
+ *          `disabled`. Decorative dot (when `dot={true}`) carries
+ *          `aria-hidden="true"` — meaning must live in chip label text.
+ *
+ *          Display (`interactive=false`): renders `<span>` with NO
+ *          aria-pressed (display chips have no toggle semantics — info
+ *          is the chip text + optional dot color). Optional `pressed`
+ *          drives initial visual state for active-filter summary patterns
+ *          where the chip is read-only.
  *
  * @example
+ * // Interactive (default — v0.5.4 API)
  * const [active, setActive] = useState<string[]>([]);
- * const toggle = (status: string) =>
- *   setActive(prev => prev.includes(status)
- *     ? prev.filter(s => s !== status)
- *     : [...prev, status]);
- *
  * <Chip
  *   pressed={active.includes('queued')}
  *   onPressedChange={() => toggle('queued')}
@@ -49,7 +56,9 @@ import styles from './Chip.module.scss';
  *   Queued
  * </Chip>
  *
- * <Chip pressed={true} dot dotColor="success">Online</Chip>
+ * // Display-only (v0.5.5)
+ * <Chip interactive={false} pressed dot dotColor="success">Online</Chip>
+ * <Chip interactive={false} dot dotColor="info">EU-DACH</Chip>
  */
 export type ChipSize = 'sm' | 'md';
 export type ChipTone = 'default' | 'brand';
@@ -61,22 +70,17 @@ export type ChipDotColor =
   | 'info'
   | 'muted';
 
-export interface ChipProps
-  extends Omit<
-    ButtonHTMLAttributes<HTMLButtonElement>,
-    'value' | 'defaultValue' | 'onChange' | 'children'
-  > {
-  /** Controlled pressed state. Required. */
-  pressed: boolean;
-  /** Pressed change callback (fires on click; receives the next value). */
-  onPressedChange?: (pressed: boolean) => void;
+// ----------------------------------------------------------------------------
+// Shared / variant prop types
+// ----------------------------------------------------------------------------
+
+type ChipSharedFields = {
   /** Size scale. Default `'md'`. */
   size?: ChipSize;
   /**
    * Pressed-state color tone. Default `'brand'` (brand-subtle background +
-   * brand-strong text on pressed). `'default'` swaps to a neutral
-   * surface-raised background + primary text — useful for filter rows
-   * where the active state should not compete with brand CTAs.
+   * brand-strong text). `'default'` swaps to a neutral fill — useful for
+   * filter rows where the active state should not compete with brand CTAs.
    */
   tone?: ChipTone;
   /** Render a leading status dot. Default `false`. */
@@ -85,7 +89,47 @@ export interface ChipProps
   dotColor?: ChipDotColor;
   /** Chip label text — visible accessible name. */
   children: ReactNode;
-}
+};
+
+/**
+ * Interactive Chip variant — default. Renders native `<button aria-pressed>`.
+ * Backward-compatible with v0.5.4 API (current consumers need no changes).
+ */
+export type ChipInteractiveProps = ChipSharedFields &
+  Omit<
+    ButtonHTMLAttributes<HTMLButtonElement>,
+    'value' | 'defaultValue' | 'onChange' | 'children'
+  > & {
+    /**
+     * Default `true` — interactive button. Set `false` to render display-only
+     * `<span>` (v0.5.5).
+     */
+    interactive?: true;
+    /** Controlled pressed state. Required when interactive. */
+    pressed: boolean;
+    /** Pressed change callback (fires on click; receives the next value). */
+    onPressedChange?: (pressed: boolean) => void;
+  };
+
+/**
+ * Display Chip variant — v0.5.5. Renders `<span>` with no toggle semantics.
+ * Use for read-only status indicators, summary band-tinted chips, etc.
+ */
+export type ChipDisplayProps = ChipSharedFields &
+  Omit<HTMLAttributes<HTMLSpanElement>, 'children'> & {
+    /** Marks this Chip as display-only (no aria-pressed, no click handler). */
+    interactive: false;
+    /** Optional initial visual pressed state. No toggle behavior. */
+    pressed?: boolean;
+    /** Not allowed in display mode — display chips don't toggle. */
+    onPressedChange?: never;
+  };
+
+export type ChipProps = ChipInteractiveProps | ChipDisplayProps;
+
+// ----------------------------------------------------------------------------
+// Style maps
+// ----------------------------------------------------------------------------
 
 const SIZE_CLASS: Record<ChipSize, string> = {
   sm: styles.sizeSm!,
@@ -106,8 +150,57 @@ const DOT_COLOR_CLASS: Record<ChipDotColor, string> = {
   muted: styles.dotMuted!,
 };
 
-export const Chip = forwardRef<HTMLButtonElement, ChipProps>(function Chip(
-  {
+// ----------------------------------------------------------------------------
+// Implementation — single forwardRef with discriminated runtime branch.
+// `ref` typing is widened to HTMLElement at the implementation level so the
+// internal cast is contained; the exported `Chip` binding narrows the public
+// surface back to `HTMLButtonElement` (interactive) or `HTMLSpanElement`
+// (display) via overloaded function-type signatures below.
+// ----------------------------------------------------------------------------
+
+const ChipImpl = forwardRef<HTMLElement, ChipProps>(function Chip(props, ref) {
+  if (props.interactive === false) {
+    const {
+      interactive: _interactive,
+      pressed = false,
+      onPressedChange: _onPressedChange,
+      size = 'md',
+      tone = 'brand',
+      dot = false,
+      dotColor = 'brand',
+      className,
+      children,
+      ...spanRest
+    } = props;
+    void _interactive;
+    void _onPressedChange;
+    return (
+      <span
+        ref={ref as ForwardedRef<HTMLSpanElement>}
+        data-state={pressed ? 'on' : 'off'}
+        className={cn(
+          styles.root,
+          styles.display,
+          SIZE_CLASS[size],
+          TONE_CLASS[tone],
+          pressed && styles.pressed,
+          className,
+        )}
+        {...spanRest}
+      >
+        {dot ? (
+          <span
+            aria-hidden="true"
+            className={cn(styles.dot, DOT_COLOR_CLASS[dotColor])}
+          />
+        ) : null}
+        <span className={styles.label}>{children}</span>
+      </span>
+    );
+  }
+
+  const {
+    interactive: _interactive,
     pressed,
     onPressedChange,
     size = 'md',
@@ -119,12 +212,11 @@ export const Chip = forwardRef<HTMLButtonElement, ChipProps>(function Chip(
     onClick,
     children,
     ...rest
-  },
-  ref,
-) {
+  } = props;
+  void _interactive;
   return (
     <button
-      ref={ref}
+      ref={ref as ForwardedRef<HTMLButtonElement>}
       type="button"
       aria-pressed={pressed}
       data-state={pressed ? 'on' : 'off'}
@@ -152,3 +244,21 @@ export const Chip = forwardRef<HTMLButtonElement, ChipProps>(function Chip(
     </button>
   );
 });
+
+ChipImpl.displayName = 'Chip';
+
+/**
+ * Function-overloaded public type — TS narrows `ref` per discriminator.
+ * Interactive consumers get `Ref<HTMLButtonElement>`; display consumers
+ * get `Ref<HTMLSpanElement>`. Backward-compat for v0.5.4 callers (default
+ * `interactive` omitted → narrows to interactive variant).
+ */
+type ChipComponent = {
+  (
+    props: ChipInteractiveProps & { ref?: Ref<HTMLButtonElement> },
+  ): ReactElement;
+  (props: ChipDisplayProps & { ref?: Ref<HTMLSpanElement> }): ReactElement;
+  displayName?: string;
+};
+
+export const Chip = ChipImpl as unknown as ChipComponent;

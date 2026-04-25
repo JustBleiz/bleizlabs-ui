@@ -215,6 +215,21 @@
   // Card-specific shadow alias — neutral elevated card lift (Phase 3 D1)
   --shadow-card: var(--shadow-md);
 
+  // v0.5.5 — Card-tint shadow channel. Consumer override path for
+  // hue-tinted card shadows (atelier signature, brand-tinted lifts, etc.).
+  // Default falls back to `--shadow-card` so existing surfaces stay
+  // byte-for-byte. Override per theme via consumer's own theme block:
+  //   :root[data-theme='light'] {
+  //     --shadow-card-tint: 0 4px 16px rgba(10, 60, 80, 0.12);
+  //   }
+  //   :root[data-theme='dark'] {
+  //     --shadow-card-tint: 0 4px 24px rgba(70, 90, 180, 0.30);
+  //   }
+  // Promoted from scout-hub `2026-04_e05-gan-reattack` B4/B6/B7 PLATEAU
+  // evidence — hue ~204° atelier teal gap not closable via existing
+  // `--color-brand` 174° / `--color-info-strong` 217° tokens.
+  --shadow-card-tint: var(--shadow-card);
+
   // ==========================================================================
   // GLOWS
   // ==========================================================================
@@ -357,6 +372,17 @@
   --input-addon-bg: var(--color-surface-raised);
   --input-addon-text: var(--color-text-secondary);
   --input-addon-border: var(--color-border);
+
+  // v0.5.5 — Select placeholder color slot. Defaults to
+  // `--color-text-secondary` so the trigger placeholder passes WCAG 2.2 AA
+  // 4.5:1 contrast on `--color-surface-raised` light theme (the v0.5.4
+  // default `--color-text-muted` measured 3.4:1, an AA fail flagged by
+  // scout-hub `2026-04_e05-gan-reattack` B7 PLATEAU evidence). Consumers
+  // who want the dimmer pre-v0.5.5 look can override per theme:
+  //   :root[data-theme='light'] {
+  //     --select-placeholder-color: var(--color-text-muted);
+  //   }
+  --select-placeholder-color: var(--color-text-secondary);
 
   // ==========================================================================
   // CONTAINER MAX-WIDTHS — used by <Container size> (Phase 1 L3)

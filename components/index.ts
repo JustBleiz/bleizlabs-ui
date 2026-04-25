@@ -14,9 +14,10 @@
 // component, add it here AND in README.md → Component catalogue.
 
 // ----------------------------------------------------------------------------
-// Layout (4)
+// Layout (5)
 // ----------------------------------------------------------------------------
 export * from './layout/Container';
+export * from './layout/GridLayout';
 export * from './layout/Inline';
 export * from './layout/Section';
 export * from './layout/Stack';

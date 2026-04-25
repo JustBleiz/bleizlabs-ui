@@ -1,15 +1,15 @@
 # @bleizlabs/ui
 
 > A zero-dependency, fully-styled React component library with seed-based design tokens.
-> 90 components, WAI-ARIA compliant, runtime-test-verified, SCSS Modules, React 19 + Next.js 16.
+> 91 components, WAI-ARIA compliant, runtime-test-verified, SCSS Modules, React 19 + Next.js 16.
 
-[![Version](https://img.shields.io/badge/npm-v0.5.4-0ea5e9)](https://github.com/BleizLabs/bleizlabs-ui/pkgs/npm/ui)
+[![Version](https://img.shields.io/badge/npm-v0.5.5-0ea5e9)](https://github.com/BleizLabs/bleizlabs-ui/pkgs/npm/ui)
 [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 [![React](https://img.shields.io/badge/React-19-61dafb)](https://react.dev)
 [![Next.js](https://img.shields.io/badge/Next.js-16.2-black)](https://nextjs.org)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.6-3178c6)](https://www.typescriptlang.org)
 
-**Current version: [`@bleizlabs/ui@0.5.4`](https://github.com/BleizLabs/bleizlabs-ui/pkgs/npm/ui)** — atelier promotions sprint: 5 patterns from the scout-hub `e05-ui-polish` work-unit promoted to library primitives. New typography atom `Eyebrow` (small uppercase numeric label with hairline connector), 2 new molecules (`Chip` pill-shaped filter toggle, `IconButton` accessibility-enforcing wrapper over Button), 2 additive variants on existing components (`StatsCard tone="instrumented"` for live-data dashboard panels, `Progress color` prop on percent mode for per-phase cost panels). All non-breaking — defaults preserve v0.5.3 behavior byte-for-byte. Unblocks the scout-hub re-attack on B4 + B6 + B7 strict ≥9.0 GAN scores. See [CHANGELOG.md](CHANGELOG.md) for the full release history.
+**Current version: [`@bleizlabs/ui@0.5.5`](https://github.com/BleizLabs/bleizlabs-ui/pkgs/npm/ui)** — atelier extensions sprint: 5 audit-revised amendments promoted from the scout-hub `e05-gan-reattack` work-unit (PR #5) plus 1 user-requested addition. New `GridLayout` Phase 1 layout atom (universal multi-column CSS Grid primitive with mobile-first responsive cascade), `Card gap` additive prop (flex-gap channel for internal slot spacing), `Chip interactive=false` discriminated-union display mode (renders `<span>` for read-only status / summary chips), `--shadow-card-tint` semantic token (consumer-overridable hue-tinted shadow channel), `--select-placeholder-color` semantic token (intentional WCAG 2.2 AA contrast fix from 3.4:1 to 4.5:1+ on Select placeholder). 4 of 5 are non-breaking — only the Select placeholder default shifts visually (override path documented in CHANGELOG). See [CHANGELOG.md](CHANGELOG.md) for the full release history.
 
 ## Table of contents
 
@@ -39,13 +39,13 @@ We ship across a growing portfolio of products — internal tools, client delive
 2. **Styled libraries** (MUI, Chakra) lock us into their design language, their tokens, and a runtime dependency that's painful to customise deeply.
 3. **Copy-paste systems** (shadcn/ui) are excellent starting points, but every project forks forever — a bug fix in one consumer doesn't propagate anywhere else.
 
-`@bleizlabs/ui` is our answer: **fully styled**, **zero runtime UI dependencies**, **semantic-token driven**, and **designed to be reskinned by changing five to ten seed values**. One source of truth, 85 components across ten categories — layout, typography, display, interactive, feedback, specialized, molecules, presets, complex interactive.
+`@bleizlabs/ui` is our answer: **fully styled**, **zero runtime UI dependencies**, **semantic-token driven**, and **designed to be reskinned by changing five to ten seed values**. One source of truth, 91 components across ten categories — layout, typography, display, interactive, feedback, specialized, molecules, presets, complex interactive.
 
 ---
 
 ## Highlights
 
-- **85 components** across 10 categories — from `<Stack>` to `<Combobox>`, `<DatePicker>`, `<Command>` (⌘K palette), `<Toast>`, `<Sidebar>`, `<SiteHeader>`.
+- **91 components** across 10 categories — from `<Stack>` and `<GridLayout>` to `<Combobox>`, `<DatePicker>`, `<Command>` (⌘K palette), `<Toast>`, `<Sidebar>`, `<SiteHeader>`.
 - **Zero runtime UI dependencies** — no Radix, no Floating UI, no date-fns. Every floating primitive, focus trap, drag gesture, and keyboard model is built in-house against the WAI-ARIA Authoring Practices Guide.
 - **Seed-based design tokens** — override 5–10 seed values (brand color, radius, spacing, timing) and the entire library reskins consistently across light + dark themes.
 - **SCSS Modules** — no Tailwind, no CSS-in-JS, no runtime style computation. Components read CSS custom properties that consumers override at the `:root` level.
@@ -59,9 +59,11 @@ We ship across a growing portfolio of products — internal tools, client delive
 
 ## Component catalogue
 
-### Layout (4)
+### Layout (5)
 
-`Container` · `Section` · `Stack` · `Inline`
+`Container` · `Section` · `Stack` · `Inline` · `GridLayout`
+
+`GridLayout` (v0.5.5) is the multi-column CSS Grid primitive — number `columns` (e.g. `columns={3}`) shorthand expands to `repeat(N, minmax(0, 1fr))`; string `columns` accepts arbitrary track templates (`'240px 1fr'`, `'repeat(auto-fit, minmax(220px, 1fr))'`). Mobile-first `responsive={{ md: 2, lg: 3 }}` cascade via SCSS `var()` fallback chain in breakpoint media queries.
 
 ### Typography (4)
 
@@ -253,7 +255,7 @@ For most projects, overriding a handful of CSS custom properties is enough. Add 
 }
 ```
 
-All 85 components pick up the change automatically — no component needs to be patched, nothing needs to be rebuilt.
+All 91 components pick up the change automatically — no component needs to be patched, nothing needs to be rebuilt.
 
 **Common tokens you can override:**
 

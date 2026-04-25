@@ -4,6 +4,63 @@ All notable releases of this component library. Follows [Keep a Changelog](https
 
 ---
 
+## [0.5.5] — 2026-04-26
+
+**Atelier extensions sprint — 5 audit-revised amendments promoted from scout-hub `2026-04_e05-gan-reattack` PLATEAU evidence (PR #5 squash-merged 2026-04-26 as `c58d97a`) plus 1 user-requested addition. 1 new layout atom (`GridLayout`), 2 new semantic tokens (`--shadow-card-tint`, `--select-placeholder-color`), 1 additive prop on existing component (`Card gap`), 1 discriminated-union variant on existing component (`Chip interactive=false` display mode). All non-breaking EXCEPT the Select placeholder default which intentionally lifts WCAG 2.2 AA contrast (3.4:1 → 4.5:1+); consumers wanting the dimmer pre-v0.5.5 look can override via `--select-placeholder-color: var(--color-text-muted)` per theme block.**
+
+### Added
+
+- **`GridLayout` (Phase 1 layout atom)** — universal multi-column CSS Grid primitive sitting alongside `Stack` / `Inline` / `Container` / `Section`. Exports `GridLayout`, `GridLayoutProps`, `GridLayoutResponsive`. Required `columns: number | string` (number → `repeat(N, minmax(0, 1fr))`; string → raw CSS grid template, e.g. `'240px 1fr'` or `'repeat(auto-fit, minmax(220px, 1fr))'`). Optional `rows`, `gap`, `columnGap`, `rowGap` (`SpaceIndex`), `align` (align-items), `justify` (justify-content), `responsive: { sm?, md?, lg?, xl? }` mobile-first cascade via SCSS `var()` fallback chain in `mx.bp-{sm,md,lg,xl}` breakpoint media queries, `asChild` via `Slot`. Server-Component safe. Promoted from scout-hub B4 `/settings/icp` metaGrid 2x2 density pattern. Replaced an audit-rejected "DataRow grid variant" candidate — DataRow is a single label/value pair while GridLayout owns arbitrary content cells, so a NEW Phase 1 atom is the universal answer.
+
+- **`Card` `gap?: SpaceIndex` additive prop** — flex gap between immediate children. Card already used `display: flex` since v0.4.x; v0.5.5 exposes the gap channel through a typed prop. Default `undefined` skips channel injection; SCSS fallback `gap: 0` preserves v0.5.4 byte-for-byte (zero-gap flex flow same as before). Pairs naturally with `direction='row'` for inline content rows. User-requested addition during v0.5.5 sprint planning 2026-04-26.
+
+- **`Chip` `interactive?: boolean` discriminated-union variant** — `interactive=false` renders `<span>` (no `aria-pressed`, no click handler), opening display-only mode for status pills, summary band-tinted chips, and read-only filter indicators. Default `interactive=true` zachowuje v0.5.4 button API byte-for-byte. Discriminated union narrows ref typing per variant via type-overloaded public binding (`Ref<HTMLButtonElement>` interactive / `Ref<HTMLSpanElement>` display). New `.display` SCSS class resets cursor + neutralises hover side-effects on the span variant; pressed visual still composes through tone classes for "active filter" summary patterns. Promoted from scout-hub B4 `/settings/icp` scopeChip pattern (display-only band-tinted chips inside summary surfaces).
+
+- **`--shadow-card-tint` semantic token** — consumer-overridable hue-tinted shadow channel for card-class surfaces. Default falls back to `var(--shadow-card)` so existing surfaces stay byte-for-byte. Override per theme via consumer's own theme block:
+  ```scss
+  :root[data-theme='light'] {
+    --shadow-card-tint: 0 4px 16px rgba(10, 60, 80, 0.12);
+  }
+  :root[data-theme='dark'] {
+    --shadow-card-tint: 0 4px 24px rgba(70, 90, 180, 0.30);
+  }
+  ```
+  Promoted from scout-hub B4/B6/B7 PLATEAU evidence — atelier teal hue ~204° gap not closable via existing `--color-brand` 174° / `--color-info-strong` 217°. **Architecture decision 2026-04-26:** single CSS custom property (NOT dual `-light/-dark` suffix tokens) — theme switching happens via existing `:root[data-theme]` override blocks per CSS custom property convention (matches `--color-bg`, `--card-bg-glass` precedent). Anti-pattern alternative rejected because it would double token count for zero architectural gain.
+
+- **`--select-placeholder-color` semantic token** — `Select` trigger placeholder color slot. Defaults to `var(--color-text-secondary)` which passes WCAG 2.2 AA 4.5:1 contrast on `--color-surface-raised` (the v0.5.4 hardcoded `var(--color-text-muted)` measured 3.4:1, an AA fail flagged by scout-hub B7 PLATEAU evidence). Universal consumer override path via `:root[data-theme] { --select-placeholder-color: ... }`.
+
+### Changed
+
+- **`Select` placeholder default contrast (visible visual change)** — `Select.module.scss` `.valuePlaceholder` color now reads `var(--select-placeholder-color)` instead of hardcoded `var(--color-text-muted)`. New default lifts contrast from 3.4:1 (AA fail) to 4.5:1+ (AA PASS). Visible visual change for v0.5.4 consumers — placeholder text becomes slightly more legible. Consumers wanting the dimmer pre-v0.5.5 look can override:
+  ```scss
+  :root[data-theme='light'] {
+    --select-placeholder-color: var(--color-text-muted);
+  }
+  ```
+
+### Compatibility
+
+- **Mostly non-breaking.** 4 of 5 changes are purely additive — every v0.5.4 consumer pattern compiles and renders identically without code edits.
+- **One visible default change** — Select placeholder default contrast lifts to AA-safe. This is an intentional accessibility fix, not a regression. Override path documented above.
+- `Card` without `gap` prop = `gap: 0` = byte-for-byte v0.5.4 zero-gap flex flow.
+- `Chip` without `interactive` prop = `interactive=true` = byte-for-byte v0.5.4 (`<button aria-pressed>` + required `pressed`).
+- `--shadow-card-tint` defaults to `var(--shadow-card)` — no consumer changes required.
+- 1 new component (`GridLayout`) is pure addition — no existing exports modified.
+- Component count `90` → `91`. Layout (4) → Layout (5).
+- Zero new runtime UI dependencies (D5/D25 honored).
+
+### Verification
+
+- `tsc --noEmit` clean (run after each amendment + final).
+- Sass build clean throughout.
+- `next build` clean (47 routes prerendered; demo extension to be added in follow-up doc-debt commit).
+- Token audit — all referenced `--space-{0..20}`, `--shadow-card`, `--color-text-secondary` confirmed in `_semantics.scss`.
+- Backward-compat sweep — `Card` (no gap) + `Chip` (no interactive prop) byte-for-byte identical; default Select placeholder visual delta documented.
+- GridLayout component-build evaluator (`/component-build` Phase 4) — Round 1 FAIL 0C / 2I / 2N → Round 2 PASS 0C / 0I / 1N (cosmetic NIT deferred — `--grid-rows, none` fallback note).
+- Phase 7.1 Critical Consistency Audit (cross-doc consistency: CHANGELOG + README + barrel + work-unit context + COMPONENT_REGISTRY + ROADMAP).
+
+---
+
 ## [0.5.4] — 2026-04-25
 
 **Atelier promotions sprint — 5 patterns from scout-hub `2026-04_e05-ui-polish` work-unit promoted to library primitives. 1 new typography atom (`Eyebrow`), 2 new molecules (`Chip`, `IconButton`), 2 additive variants on existing components (`StatsCard tone="instrumented"`, `Progress color` on percent mode). All changes are non-breaking — defaults preserve v0.5.3 behavior byte-for-byte. Unblocks scout-hub re-attack on B4 + B6 + B7 strict ≥9.0 GAN scores by removing the structural caps that forced the prior ESCALATED outcomes.**

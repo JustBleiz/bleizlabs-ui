@@ -88,7 +88,11 @@
 }
 
 .valuePlaceholder {
-  color: var(--color-text-muted);
+  // v0.5.5 — was `--color-text-muted` (3.4:1 contrast on surface-raised,
+  // AA fail). Now `--select-placeholder-color` token defaulting to
+  // `--color-text-secondary` (4.5:1+, AA PASS). Consumer override path
+  // available via `:root[data-theme='*'] { --select-placeholder-color: ... }`.
+  color: var(--select-placeholder-color);
 }
 
 // ============================================================================

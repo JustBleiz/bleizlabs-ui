@@ -39,6 +39,26 @@
 }
 
 // ---------------------------------------------------------------------------
+// Display variant (v0.5.5) — interactive=false renders <span>; reset cursor
+// + suppress hover transition into "interactive" appearance. Pressed visual
+// (toneBrand.pressed / toneDefault.pressed) still applies via composition,
+// so consumers can convey "active filter" state without toggle semantics.
+// ---------------------------------------------------------------------------
+
+.display {
+  cursor: default;
+  user-select: text; // allow label text selection in summary contexts
+
+  // Suppress the .root :hover treatment — display chips should not visually
+  // promise interactivity. Restore base color/border explicitly to avoid
+  // any hover side-effects when the chip happens to receive pointer focus.
+  &:hover {
+    border-color: var(--color-border-subtle);
+    color: var(--chip-color, var(--color-text-secondary));
+  }
+}
+
+// ---------------------------------------------------------------------------
 // Sizes — chip dimensions tuned for filter rows (sm) and dense panels (md)
 // ---------------------------------------------------------------------------
 
