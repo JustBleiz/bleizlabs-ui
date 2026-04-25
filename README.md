@@ -39,13 +39,13 @@ We ship across a growing portfolio of products — internal tools, client delive
 2. **Styled libraries** (MUI, Chakra) lock us into their design language, their tokens, and a runtime dependency that's painful to customise deeply.
 3. **Copy-paste systems** (shadcn/ui) are excellent starting points, but every project forks forever — a bug fix in one consumer doesn't propagate anywhere else.
 
-`@bleizlabs/ui` is our answer: **fully styled**, **zero runtime UI dependencies**, **semantic-token driven**, and **designed to be reskinned by changing five to ten seed values**. One source of truth, 85 components across ten categories — layout, typography, display, interactive, feedback, specialized, molecules, presets, complex interactive.
+`@bleizlabs/ui` is our answer: **fully styled**, **zero runtime UI dependencies**, **semantic-token driven**, and **designed to be reskinned by changing five to ten seed values**. One source of truth, 91 components across ten categories — layout, typography, display, interactive, feedback, specialized, molecules, presets, complex interactive.
 
 ---
 
 ## Highlights
 
-- **85 components** across 10 categories — from `<Stack>` to `<Combobox>`, `<DatePicker>`, `<Command>` (⌘K palette), `<Toast>`, `<Sidebar>`, `<SiteHeader>`.
+- **91 components** across 10 categories — from `<Stack>` and `<GridLayout>` to `<Combobox>`, `<DatePicker>`, `<Command>` (⌘K palette), `<Toast>`, `<Sidebar>`, `<SiteHeader>`.
 - **Zero runtime UI dependencies** — no Radix, no Floating UI, no date-fns. Every floating primitive, focus trap, drag gesture, and keyboard model is built in-house against the WAI-ARIA Authoring Practices Guide.
 - **Seed-based design tokens** — override 5–10 seed values (brand color, radius, spacing, timing) and the entire library reskins consistently across light + dark themes.
 - **SCSS Modules** — no Tailwind, no CSS-in-JS, no runtime style computation. Components read CSS custom properties that consumers override at the `:root` level.
@@ -255,7 +255,7 @@ For most projects, overriding a handful of CSS custom properties is enough. Add 
 }
 ```
 
-All 85 components pick up the change automatically — no component needs to be patched, nothing needs to be rebuilt.
+All 91 components pick up the change automatically — no component needs to be patched, nothing needs to be rebuilt.
 
 **Common tokens you can override:**
 
