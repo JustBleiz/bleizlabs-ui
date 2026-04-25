@@ -215,6 +215,21 @@
   // Card-specific shadow alias — neutral elevated card lift (Phase 3 D1)
   --shadow-card: var(--shadow-md);
 
+  // v0.5.5 — Card-tint shadow channel. Consumer override path for
+  // hue-tinted card shadows (atelier signature, brand-tinted lifts, etc.).
+  // Default falls back to `--shadow-card` so existing surfaces stay
+  // byte-for-byte. Override per theme via consumer's own theme block:
+  //   :root[data-theme='light'] {
+  //     --shadow-card-tint: 0 4px 16px rgba(10, 60, 80, 0.12);
+  //   }
+  //   :root[data-theme='dark'] {
+  //     --shadow-card-tint: 0 4px 24px rgba(70, 90, 180, 0.30);
+  //   }
+  // Promoted from scout-hub `2026-04_e05-gan-reattack` B4/B6/B7 PLATEAU
+  // evidence — hue ~204° atelier teal gap not closable via existing
+  // `--color-brand` 174° / `--color-info-strong` 217° tokens.
+  --shadow-card-tint: var(--shadow-card);
+
   // ==========================================================================
   // GLOWS
   // ==========================================================================
