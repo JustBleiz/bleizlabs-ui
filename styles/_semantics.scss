@@ -373,6 +373,17 @@
   --input-addon-text: var(--color-text-secondary);
   --input-addon-border: var(--color-border);
 
+  // v0.5.5 — Select placeholder color slot. Defaults to
+  // `--color-text-secondary` so the trigger placeholder passes WCAG 2.2 AA
+  // 4.5:1 contrast on `--color-surface-raised` light theme (the v0.5.4
+  // default `--color-text-muted` measured 3.4:1, an AA fail flagged by
+  // scout-hub `2026-04_e05-gan-reattack` B7 PLATEAU evidence). Consumers
+  // who want the dimmer pre-v0.5.5 look can override per theme:
+  //   :root[data-theme='light'] {
+  //     --select-placeholder-color: var(--color-text-muted);
+  //   }
+  --select-placeholder-color: var(--color-text-secondary);
+
   // ==========================================================================
   // CONTAINER MAX-WIDTHS — used by <Container size> (Phase 1 L3)
   // ==========================================================================
