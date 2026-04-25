@@ -1,0 +1,90 @@
+// Eyebrow — Phase 2 atom (v0.5.4)
+//
+// Atelier eyebrow signature: 0.7rem uppercase tabular-nums + 0.08em tracking
+// + medium weight + optional 2-digit zero-padded numeric prefix with hairline
+// connector. Promoted from scout-hub `batches.module.scss` 5-site duplication.
+//
+// The 0.7rem and 0.08em literals ARE the eyebrow scale itself — they are
+// not magic numbers but the atelier vocabulary primitive. They sit between
+// the type scale's `--font-size-xs` (0.75rem) and a hypothetical xxs.
+
+.root {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-family: var(--font-secondary);
+  font-size: 0.7rem;
+  font-weight: var(--font-weight-medium);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.08em;
+  line-height: 1;
+  text-transform: uppercase;
+  margin: 0;
+  color: var(--eyebrow-color, var(--color-text-muted));
+}
+
+// ---------------------------------------------------------------------------
+// Tones — color tier
+// ---------------------------------------------------------------------------
+
+.toneMuted {
+  --eyebrow-color: var(--color-text-muted);
+}
+
+.toneSecondary {
+  --eyebrow-color: var(--color-text-secondary);
+}
+
+.toneStrong {
+  --eyebrow-color: var(--color-text-primary);
+}
+
+// ---------------------------------------------------------------------------
+// Slots
+// ---------------------------------------------------------------------------
+
+.label {
+  display: inline-block;
+}
+
+.index {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  // Independent color so the index reads as a structural marker even when
+  // the label tone is muted. Strong tone aligns with brand-strong for the
+  // eyebrow's role as a visual track marker.
+  color: var(--eyebrow-index-color, var(--color-text-secondary));
+}
+
+.toneStrong .index {
+  --eyebrow-index-color: var(--color-brand-strong);
+}
+
+// 14px hairline connector between the numeric index and the label. Width
+// matches scout-hub's `.formSectionEyebrow::before` 14px gradient — the
+// established atelier vocabulary. Gradient fade emphasises the connector
+// origin at the index, dissipating into the label.
+.hairline {
+  flex: 0 0 auto;
+  display: inline-block;
+  width: 14px;
+  height: 1px;
+  background: linear-gradient(
+    to right,
+    var(--eyebrow-color, var(--color-text-muted)) 0%,
+    transparent 100%
+  );
+  // Vertical alignment touch — the hairline reads as a baseline tick when
+  // pulled down by 1px relative to the cap-height of uppercase digits.
+  margin-top: 1px;
+}
+
+// ---------------------------------------------------------------------------
+// Modifier — withIndex toggles tighter gap to bring index/label together
+// ---------------------------------------------------------------------------
+
+.withIndex {
+  // Default gap (--space-2 = 8px) is correct for index + hairline + label.
+  // Reserved for future overrides — keeps the modifier class slot live.
+}
