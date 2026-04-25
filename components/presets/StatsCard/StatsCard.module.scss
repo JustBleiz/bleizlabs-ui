@@ -1,9 +1,32 @@
-// StatsCard — Phase 8 E13
+// StatsCard — Phase 8 E13 (+v0.5.4 tones)
 // Three layouts on top of Card atom: stacked | inline | icon-lead.
 // Body gap tightens stacked content so label→value→change reads as one cluster.
+//
+// v0.5.4 tones (atelier promotion from scout-hub e05-ui-polish):
+// - default — Card atom styling unchanged (backward-compat byte-for-byte)
+// - instrumented — inset top brand hairline + shadow-sm lift; marks the
+//   card as "live data" / instrumented panel in dashboard grids.
 
 .root {
   // Inherits Card atom styling.
+}
+
+// ---------------------------------------------------------------------------
+// Tones (v0.5.4)
+// ---------------------------------------------------------------------------
+
+.toneDefault {
+  // No-op — preserves v0.5.3 surface.
+}
+
+.toneInstrumented {
+  // Inset brand hairline at the top edge — composed via box-shadow so it
+  // does NOT consume layout space (a top border would shift the card 1px).
+  // Combined with shadow-sm for the subtle elevated-panel lift used by
+  // scout-hub's B3 hero triptych and now generalised for B6 + B7 stats grids.
+  box-shadow:
+    inset 0 1px 0 var(--color-brand),
+    var(--shadow-sm);
 }
 
 .body {
