@@ -182,6 +182,26 @@
   --progress-value: 0%;
 }
 
+// Per-bar color channel (v0.5.4). Default fallback to --color-brand keeps
+// v0.5.3 byte-for-byte compat. Color classes below set --bar-color via
+// composition so the bar swap respects light/dark theme via tokens (no
+// hex leakage). Promoted from scout-hub cost-estimator B5 polish.
+.colorBrand {
+  --bar-color: var(--color-brand);
+}
+
+.colorInfo {
+  --bar-color: var(--color-info);
+}
+
+.colorSuccessStrong {
+  --bar-color: var(--color-success-strong);
+}
+
+.colorWarningStrong {
+  --bar-color: var(--color-warning-strong);
+}
+
 .track {
   position: relative;
   width: 100%;
@@ -195,7 +215,7 @@
   width: var(--progress-value);
   height: 100%;
   border-radius: inherit;
-  background: var(--color-brand);
+  background: var(--bar-color, var(--color-brand));
   transition: width var(--duration-normal) var(--easing-default);
 }
 
