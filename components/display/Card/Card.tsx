@@ -62,6 +62,21 @@ export interface CardProps extends HTMLAttributes<HTMLDivElement> {
   radius?: CardRadius;
   /** Flex direction of immediate children. Default `column`. */
   direction?: CardDirection;
+  /**
+   * Flex gap between immediate children from the spacing scale (v0.5.5).
+   * When omitted, no gap is applied (zero-gap flex flow — byte-for-byte
+   * identical to v0.5.4). Use this to space out internal Card slots
+   * (CardHeader / CardBody / CardFooter / arbitrary children) without
+   * adding `<Stack gap>` wrappers. Pairs naturally with `direction='row'`
+   * for inline content rows.
+   *
+   * @example
+   * <Card gap={3} padding={5}>
+   *   <Heading level={3}>Title</Heading>
+   *   <Text>Body content</Text>
+   * </Card>
+   */
+  gap?: SpaceIndex;
   /** Accent border color (only with `variant="accent"`). Default `--color-brand`. */
   accentColor?: string;
   /** Accent border edge (only with `variant="accent"`). Default `left`. */
@@ -95,6 +110,7 @@ export const Card = forwardRef<HTMLDivElement, CardProps>(function Card(
     padding = 5,
     radius = 'lg',
     direction = 'column',
+    gap,
     accentColor,
     accentPosition = 'left',
     hoverable = false,
@@ -113,6 +129,7 @@ export const Card = forwardRef<HTMLDivElement, CardProps>(function Card(
     '--card-padding': `var(--space-${padding})`,
     '--card-radius': RADIUS_TOKEN[radius],
     '--card-direction': direction,
+    ...(gap !== undefined && { '--card-gap': `var(--space-${gap})` }),
     ...(width !== undefined && { '--card-width': width }),
     ...(accentColor !== undefined && { '--card-accent-color': accentColor }),
   } as CSSProperties;
