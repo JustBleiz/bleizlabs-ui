@@ -55,6 +55,21 @@ import styles from './StatsCard.module.scss';
  */
 export type StatsCardLayout = 'stacked' | 'inline' | 'icon-lead';
 
+/**
+ * Visual tone for StatsCard (v0.5.4).
+ *
+ * - `default` (default): inherits Card's standard surface — no extra
+ *   hairline, no shadow lift. Backward-compat with v0.5.3 behavior.
+ * - `instrumented`: atelier dashboard signature — adds an inset top brand
+ *   hairline (`box-shadow: inset 0 1px 0 var(--color-brand)`) plus a
+ *   `var(--shadow-sm)` lift. Marks the card as "live data" / "instrumented
+ *   panel" in dashboard grids. Promoted from scout-hub
+ *   `2026-04_e05-ui-polish` B6 + B7 audit (memory
+ *   `project_e05_ui_polish_complete.md`) where 4 stats cards lacked the
+ *   hairline that B3 hero triptych used to mark instrumented surfaces.
+ */
+export type StatsCardTone = 'default' | 'instrumented';
+
 interface StatsCardCommonProps
   extends Omit<CardProps, 'direction' | 'children'> {
   /** Metric label (e.g., "Monthly revenue"). Required. */
@@ -63,6 +78,8 @@ interface StatsCardCommonProps
   value: ReactNode;
   /** Optional delta indicator (e.g., `<Badge>+12%</Badge>`, plain text). */
   change?: ReactNode;
+  /** Visual tone. Default `'default'` — backward-compat with v0.5.3. */
+  tone?: StatsCardTone;
 }
 
 type StatsCardStackedOrInlineProps = StatsCardCommonProps & {
@@ -91,6 +108,11 @@ type StatsCardPropsInternal = StatsCardCommonProps & {
   iconVariant?: IconBoxVariant;
 };
 
+const TONE_CLASS: Record<StatsCardTone, string> = {
+  default: styles.toneDefault!,
+  instrumented: styles.toneInstrumented!,
+};
+
 function wrapValue(value: ReactNode): ReactNode {
   if (typeof value === 'string' || typeof value === 'number') {
     return (
@@ -111,6 +133,7 @@ export const StatsCard = forwardRef<HTMLDivElement, StatsCardProps>(
       layout = 'stacked',
       icon,
       iconVariant = 'default',
+      tone = 'default',
       padding = 5,
       radius = 'lg',
       className,
@@ -165,7 +188,12 @@ export const StatsCard = forwardRef<HTMLDivElement, StatsCardProps>(
         ref={ref}
         padding={padding}
         radius={radius}
-        className={cn(styles.root, styles[`layout-${layout}`], className)}
+        className={cn(
+          styles.root,
+          styles[`layout-${layout}`],
+          TONE_CLASS[tone],
+          className,
+        )}
         {...cardProps}
       >
         <CardBody className={styles.body}>{layoutContent}</CardBody>

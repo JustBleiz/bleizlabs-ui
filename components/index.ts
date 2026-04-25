@@ -22,9 +22,10 @@ export * from './layout/Section';
 export * from './layout/Stack';
 
 // ----------------------------------------------------------------------------
-// Typography (3)
+// Typography (4)
 // ----------------------------------------------------------------------------
 export * from './typography/Anchor';
+export * from './typography/Eyebrow';
 export * from './typography/Heading';
 export * from './typography/Text';
 
@@ -82,13 +83,15 @@ export * from './specialized/Pagination';
 export * from './specialized/UsageDonut';
 
 // ----------------------------------------------------------------------------
-// Molecules (8)
+// Molecules (10)
 // ----------------------------------------------------------------------------
 export * from './molecules/AccordionGroup';
 export * from './molecules/BackLink';
+export * from './molecules/Chip';
 export * from './molecules/DataRow';
 export * from './molecules/DeadlineBadge';
 export * from './molecules/FileChip';
+export * from './molecules/IconButton';
 export * from './molecules/PageHeader';
 export * from './molecules/SectionDivider';
 export * from './molecules/ToggleGroupFilter';

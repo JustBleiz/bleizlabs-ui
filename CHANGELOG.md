@@ -4,6 +4,38 @@ All notable releases of this component library. Follows [Keep a Changelog](https
 
 ---
 
+## [0.5.4] — 2026-04-25
+
+**Atelier promotions sprint — 5 patterns from scout-hub `2026-04_e05-ui-polish` work-unit promoted to library primitives. 1 new typography atom (`Eyebrow`), 2 new molecules (`Chip`, `IconButton`), 2 additive variants on existing components (`StatsCard tone="instrumented"`, `Progress color` on percent mode). All changes are non-breaking — defaults preserve v0.5.3 behavior byte-for-byte. Unblocks scout-hub re-attack on B4 + B6 + B7 strict ≥9.0 GAN scores by removing the structural caps that forced the prior ESCALATED outcomes.**
+
+### Added
+
+- **`Eyebrow` (Phase 2 typography atom)** — small uppercase atelier label with optional numeric prefix + hairline connector. Exports `Eyebrow`, `EyebrowProps`, `EyebrowTone`. Three tones (`'muted'` default, `'secondary'`, `'strong'`). 0.7rem font / 0.08em letter-spacing / tabular-nums / medium-weight signature. The numeric prefix is decorative (`aria-hidden`); accessible name comes from label children. Promoted from 5-site duplication in scout-hub `batches.module.scss` (`.scopePreviewTitle`, `.costHeroEyebrow`, `.costCapEyebrow`, `.formSectionEyebrow`, `.filterLabel`).
+- **`Chip` (Phase 7 molecule)** — pill-shaped toggleable filter chip with controlled `pressed` state. Exports `Chip`, `ChipProps`, `ChipSize`, `ChipTone`, `ChipDotColor`. Two sizes (`'sm'`, `'md'`), two tones (`'brand'` default with brand-subtle pressed, `'default'` neutral pressed for non-CTA filter rows), six dot colors (`brand` / `success` / `warning` / `error` / `info` / `muted`). Native `<button type="button" aria-pressed>` for keyboard a11y. Promoted from scout-hub B7 12-status filter row (raw `<button>` repetition).
+- **`IconButton` (Phase 7 molecule)** — accessibility-enforcing wrapper over `Button` with `iconOnly={true}`. Exports `IconButton`, `IconButtonProps`. Required TS-enforced `aria-label: string` prop closes the gap where Button's `iconOnly` mode trusted consumers to remember the label. Inherits all Button visuals (size, variant, shape, asChild, href). Promoted from scout-hub B7 3-dot menu trigger + various icon-only buttons.
+- **`StatsCard` `tone="instrumented"` variant** — additive prop on `StatsCardCommonProps`. Exports new type `StatsCardTone = 'default' | 'instrumented'`. `'instrumented'` adds inset top brand hairline (`box-shadow: inset 0 1px 0 var(--color-brand)`) + `var(--shadow-sm)` lift. Marks the card as live data / instrumented panel in dashboard grids. Default `'default'` preserves v0.5.3 surface byte-for-byte. Promoted from scout-hub B6 (4 stats cards lacking the hairline that B3 hero triptych used).
+- **`Progress` `color` prop on percent mode** — additive prop on `ProgressPercentProps`. Exports new type `ProgressPercentColor = 'brand' | 'info' | 'success-strong' | 'warning-strong'`. Drives `--bar-color` channel via class composition. Stages mode unaffected. Default `'brand'` preserves v0.5.3 byte-for-byte. Unblocks scout-hub B5 cost-estimator phase rows currently raw `<div role="progressbar">` (Progress percent had no per-phase color prop).
+
+### Compatibility
+
+- **Non-breaking.** All 5 changes are additive — every v0.5.3 consumer pattern compiles and renders identically without code edits.
+- `StatsCard` without `tone` prop = `tone="default"` = byte-for-byte v0.5.3 surface (no hairline, no shadow).
+- `Progress` without `color` prop in percent mode = `color="brand"` = byte-for-byte v0.5.3 bar color (`--color-brand`).
+- 3 new components (`Eyebrow`, `Chip`, `IconButton`) are pure additions — no existing exports modified.
+- Component count `87` → `90` (description field bump in `package.json`).
+- Zero new runtime UI dependencies (D5/D25 honored).
+- Zero new semantic tokens — all promotions compose from existing `--color-*` / `--shadow-*` / `--space-*` palette.
+
+### Verification
+
+- `tsc --noEmit` clean.
+- `next build` clean (47 routes prerendered).
+- Token audit — all referenced `--color-{info,success-strong,warning-strong,error-strong,brand,brand-subtle,brand-strong,text-muted}` confirmed in `_semantics.scss`.
+- Backward-compat sweep — `StatsCard` (no tone) + `Progress` (no color) render bytes-for-byte identical to v0.5.3.
+- Phase 7.1 Critical Consistency Audit (cross-doc consistency: CHANGELOG + README + barrel + work-unit context).
+
+---
+
 ## [0.5.3] — 2026-04-24
 
 **Bugfix — `Select` + `Combobox` hover/keyboard highlight now works. Upstream bug in v0.5.0–v0.5.2: TSX rendered `data-highlighted=""` (empty string) but SCSS selector was `&[data-highlighted='true']` — attribute-value mismatch meant the selector never matched, so `--color-surface-hover` background never painted when pointer-move / arrow-nav set the highlighted state. Affected both pointer and keyboard a11y paths (aria-activedescendant pattern). Fix aligns TSX to the working convention already used by `Command` / `Slider` / `Carousel` / `ScrollArea` / `Sidebar` / `InputOTP` / `Toast` (TSX emits `'true'` literal). No public API change, no breaking change — consumers just get the hover effect they expected.**

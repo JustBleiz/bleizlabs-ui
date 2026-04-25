@@ -76,6 +76,24 @@ import styles from './Progress.module.scss';
  */
 export type ProgressStageDisplayMode = 'pills' | 'track';
 
+/**
+ * Per-bar color for percent-mode Progress (v0.5.4).
+ *
+ * Default `'brand'` preserves v0.5.3 byte-for-byte. The other three colors
+ * align with scout-hub cost-estimator phase semantics (info=discovery,
+ * success-strong=D0, warning-strong=research) so multi-phase cost panels
+ * can build per-phase Progress rows from the library directly without
+ * descending into `:global(.bzl-*)` selectors.
+ *
+ * Stages mode is unaffected — semantic stage colors live in the
+ * `.stageActive`/`.stageCompleted` rules and use brand throughout.
+ */
+export type ProgressPercentColor =
+  | 'brand'
+  | 'info'
+  | 'success-strong'
+  | 'warning-strong';
+
 type ProgressStagesProps = {
   /** Stage names rendered as pills in an `<ol>`. When set, `currentStage` is required and `value`/`max` must NOT be set. */
   stages: string[];
@@ -94,6 +112,11 @@ type ProgressPercentProps = {
   value: number;
   /** Upper bound for `value`. Default `100`. */
   max?: number;
+  /**
+   * Bar color (v0.5.4). Default `'brand'` — backward-compat byte-for-byte
+   * with v0.5.3. See {@link ProgressPercentColor}.
+   */
+  color?: ProgressPercentColor;
   /** Forbidden in percent mode. */
   stages?: never;
   /** Forbidden in percent mode. */
@@ -115,6 +138,14 @@ type ProgressPropsFlat = Omit<HTMLAttributes<HTMLDivElement>, 'aria-label'> & {
   displayMode?: ProgressStageDisplayMode;
   value?: number;
   max?: number;
+  color?: ProgressPercentColor;
+};
+
+const PERCENT_COLOR_CLASS: Record<ProgressPercentColor, string> = {
+  brand: styles.colorBrand!,
+  info: styles.colorInfo!,
+  'success-strong': styles.colorSuccessStrong!,
+  'warning-strong': styles.colorWarningStrong!,
 };
 
 export const Progress = forwardRef<HTMLDivElement, ProgressProps>(
@@ -130,6 +161,7 @@ export const Progress = forwardRef<HTMLDivElement, ProgressProps>(
       displayMode,
       value,
       max,
+      color,
       ...domProps
     } = props as ProgressPropsFlat;
 
@@ -182,6 +214,8 @@ export const Progress = forwardRef<HTMLDivElement, ProgressProps>(
     const percent = (clamped / safeMax) * 100;
     const cssVars = { '--progress-value': `${percent}%` } as CSSProperties;
 
+    const resolvedColor: ProgressPercentColor = color ?? 'brand';
+
     return (
       <div
         ref={ref}
@@ -190,7 +224,12 @@ export const Progress = forwardRef<HTMLDivElement, ProgressProps>(
         aria-valuenow={clamped}
         aria-valuemin={0}
         aria-valuemax={safeMax}
-        className={cn(styles.root, styles.modePercent, className)}
+        className={cn(
+          styles.root,
+          styles.modePercent,
+          PERCENT_COLOR_CLASS[resolvedColor],
+          className,
+        )}
         style={cssVars}
         {...domProps}
       >
