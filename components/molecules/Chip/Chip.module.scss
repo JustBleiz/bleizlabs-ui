@@ -1,0 +1,143 @@
+@use '../../../styles/mixins' as mx;
+
+// Chip — Phase 7 molecule (v0.5.4)
+// Pill-shaped toggleable filter chip. Promoted from scout-hub B7 status
+// filter row 12-button repetition.
+
+.root {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-full);
+  background: var(--chip-bg, var(--color-surface-raised));
+  color: var(--chip-color, var(--color-text-secondary));
+  font-family: var(--font-secondary);
+  font-size: var(--chip-font-size, var(--font-size-xs));
+  font-weight: var(--font-weight-medium);
+  letter-spacing: var(--letter-spacing-wide);
+  line-height: 1;
+  white-space: nowrap;
+  cursor: pointer;
+  user-select: none;
+  transition:
+    background var(--duration-fast) var(--easing-default),
+    border-color var(--duration-fast) var(--easing-default),
+    color var(--duration-fast) var(--easing-default);
+
+  @include mx.focus-ring;
+
+  &:hover:not(:disabled):not([aria-pressed='true']) {
+    border-color: var(--color-border);
+    color: var(--color-text-primary);
+  }
+
+  &:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Sizes — chip dimensions tuned for filter rows (sm) and dense panels (md)
+// ---------------------------------------------------------------------------
+
+.sizeSm {
+  --chip-font-size: 0.7rem; // matches Eyebrow scale signature
+  padding: 4px var(--space-2);
+}
+
+.sizeMd {
+  --chip-font-size: var(--font-size-xs);
+  padding: var(--space-1) var(--space-3);
+}
+
+// ---------------------------------------------------------------------------
+// Tones — pressed-state color treatment
+// ---------------------------------------------------------------------------
+
+// `default` tone leaves all rules to the base + .pressed selector below
+// using neutral surface-strong + primary text. Reserved class so the slot
+// remains explicit in the API surface.
+.toneDefault {
+  // No-op — base styling.
+}
+
+// `brand` tone is the default — pressed state lifts to brand-subtle bg
+// + brand-strong text. Below the `.pressed` rule applies via composition.
+.toneBrand {
+  // No-op — pressed rule below handles brand fill via tone composition.
+}
+
+// ---------------------------------------------------------------------------
+// Pressed state
+// ---------------------------------------------------------------------------
+// Brand tone (default) — brand-subtle background + brand-strong text.
+.toneBrand.pressed {
+  background: var(--color-brand-subtle);
+  border-color: var(--color-brand);
+  color: var(--color-brand-strong);
+}
+
+// Default tone — neutral surface-strong fill + primary text. Useful when
+// brand CTA colors must be preserved for the "real" action elsewhere on
+// the page (per scout-hub B7 reasoning — status filter chips are passive
+// view filters, not brand CTAs).
+.toneDefault.pressed {
+  background: var(--color-surface);
+  border-color: var(--color-border);
+  color: var(--color-text-primary);
+}
+
+// ---------------------------------------------------------------------------
+// Slots
+// ---------------------------------------------------------------------------
+
+.label {
+  display: inline-block;
+  // Letter-spacing inherits from .root; explicit here for clarity if a
+  // future consumer overrides root spacing.
+}
+
+.dot {
+  flex: 0 0 auto;
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: var(--radius-full);
+  background: var(--chip-dot-color, var(--color-brand-strong));
+}
+
+.dotBrand {
+  --chip-dot-color: var(--color-brand-strong);
+}
+
+.dotSuccess {
+  --chip-dot-color: var(--color-success-strong);
+}
+
+.dotWarning {
+  --chip-dot-color: var(--color-warning-strong);
+}
+
+.dotError {
+  --chip-dot-color: var(--color-error-strong);
+}
+
+.dotInfo {
+  --chip-dot-color: var(--color-info);
+}
+
+.dotMuted {
+  --chip-dot-color: var(--color-text-muted);
+}
+
+// ---------------------------------------------------------------------------
+// Reduced motion — disable transitions
+// ---------------------------------------------------------------------------
+
+@media (prefers-reduced-motion: reduce) {
+  .root {
+    transition: none;
+  }
+}
