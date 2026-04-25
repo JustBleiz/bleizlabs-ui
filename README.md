@@ -63,11 +63,11 @@ We ship across a growing portfolio of products — internal tools, client delive
 
 `Container` · `Section` · `Stack` · `Inline`
 
-### Typography (3)
+### Typography (4)
 
-`Heading` · `Text` · `Anchor`
+`Heading` · `Text` · `Anchor` · `Eyebrow`
 
-`Heading` ships three display tiers for atelier hero treatment: `size="display"` (Hero H1, up to 72px), `size="display-md"` (section H2, up to 48px), plus the 8-size scale (`xs`..`4xl`) for general use. `Anchor` is the prose-inline link primitive — distinct from `TextLink` which is the navigational action.
+`Heading` ships three display tiers for atelier hero treatment: `size="display"` (Hero H1, up to 72px), `size="display-md"` (section H2, up to 48px), plus the 8-size scale (`xs`..`4xl`) for general use. `Anchor` is the prose-inline link primitive — distinct from `TextLink` which is the navigational action. `Eyebrow` (v0.5.4) is the small uppercase atelier label with optional numeric prefix + 14px hairline connector — promoted from a 5-site duplication in scout-hub.
 
 ### Display (13)
 
@@ -89,9 +89,11 @@ We ship across a growing portfolio of products — internal tools, client delive
 
 `Dot` · `MetricBar` · `AnimatedCounter` · `Breadcrumb` · `Pagination` · `UsageDonut` · `AvailabilityBar` · `Kbd`
 
-### Molecules (6)
+### Molecules (10)
 
-`DataRow` · `BackLink` · `SectionDivider` · `AccordionGroup` · `ToggleGroupFilter` · `DeadlineBadge`
+`DataRow` · `BackLink` · `SectionDivider` · `AccordionGroup` · `ToggleGroupFilter` · `DeadlineBadge` · `FileChip` · `PageHeader` · `Chip` · `IconButton`
+
+`Chip` (v0.5.4) is the pill-shaped toggleable filter chip with controlled `pressed` state — pattern-promoted from scout-hub B7 12-status filter row. `IconButton` (v0.5.4) is the accessibility-enforcing `iconOnly` wrapper over `Button` with TS-required `aria-label`.
 
 ### Presets (7)
 
