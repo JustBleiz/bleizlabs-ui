@@ -1,6 +1,6 @@
 {
   "name": "@bleizlabs/ui",
-  "version": "0.5.5",
+  "version": "0.5.6",
   "description": "Universal fully-styled React component library for BleizLabs. Zero runtime UI dependencies. Seed-based design tokens. 91 components across 10 categories.",
   "license": "MIT",
   "author": "BleizLabs <hello@bleizlabs.eu>",

@@ -3,13 +3,13 @@
 > A zero-dependency, fully-styled React component library with seed-based design tokens.
 > 91 components, WAI-ARIA compliant, runtime-test-verified, SCSS Modules, React 19 + Next.js 16.
 
-[![Version](https://img.shields.io/badge/npm-v0.5.5-0ea5e9)](https://github.com/BleizLabs/bleizlabs-ui/pkgs/npm/ui)
+[![Version](https://img.shields.io/badge/npm-v0.5.6-0ea5e9)](https://github.com/BleizLabs/bleizlabs-ui/pkgs/npm/ui)
 [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 [![React](https://img.shields.io/badge/React-19-61dafb)](https://react.dev)
 [![Next.js](https://img.shields.io/badge/Next.js-16.2-black)](https://nextjs.org)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.6-3178c6)](https://www.typescriptlang.org)
 
-**Current version: [`@bleizlabs/ui@0.5.5`](https://github.com/BleizLabs/bleizlabs-ui/pkgs/npm/ui)** — atelier extensions sprint: 5 audit-revised amendments promoted from the scout-hub `e05-gan-reattack` work-unit (PR #5) plus 1 user-requested addition. New `GridLayout` Phase 1 layout atom (universal multi-column CSS Grid primitive with mobile-first responsive cascade), `Card gap` additive prop (flex-gap channel for internal slot spacing), `Chip interactive=false` discriminated-union display mode (renders `<span>` for read-only status / summary chips), `--shadow-card-tint` semantic token (consumer-overridable hue-tinted shadow channel), `--select-placeholder-color` semantic token (intentional WCAG 2.2 AA contrast fix from 3.4:1 to 4.5:1+ on Select placeholder). 4 of 5 are non-breaking — only the Select placeholder default shifts visually (override path documented in CHANGELOG). See [CHANGELOG.md](CHANGELOG.md) for the full release history.
+**Current version: [`@bleizlabs/ui@0.5.6`](https://github.com/BleizLabs/bleizlabs-ui/pkgs/npm/ui)** — documentation + demo polish patch: closes doc-debt deferred from v0.5.2 → v0.5.5 amendment-scope precedent. Zero source code changes (same component API as v0.5.5). COMPONENT_REGISTRY entries for v0.5.4 atelier promotions (Eyebrow typography atom, Chip molecule with v0.5.5 interactive variant note, IconButton molecule). New playground demo route `/components/grid-layout` with 6 sections demonstrating the v0.5.5 GridLayout atom (equal columns, responsive cascade, arbitrary tracks, auto-fitting, per-axis gap override, asChild projection). 91 components unchanged. See [CHANGELOG.md](CHANGELOG.md) for the full release history.
 
 ## Table of contents
 

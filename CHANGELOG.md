@@ -4,6 +4,39 @@ All notable releases of this component library. Follows [Keep a Changelog](https
 
 ---
 
+## [0.5.6] — 2026-04-26
+
+**Documentation + demo polish patch — closes doc-debt deferred from v0.5.2 → v0.5.5 amendment-scope precedent. Zero source code changes; same component API as v0.5.5. COMPONENT_REGISTRY entries dla v0.5.4 atelier promotions (Eyebrow + Chip + IconButton) plus new GridLayout playground demo route.**
+
+### Documentation
+
+- **`COMPONENT_REGISTRY.md`** — added 3 entries (Eyebrow, Chip with v0.5.4 toggle + v0.5.5 interactive variant note, IconButton). Each entry follows established format (Ścieżka / Opis / Props / Tokens / Deps / A11y / Forward ref / Verification / Examples). Closes doc-debt accumulated through v0.5.4 amendment-scope precedent.
+
+### Demos
+
+- **NEW playground route `/components/grid-layout`** — full GridLayout v0.5.5 demo z 6 sections: equal columns (number shorthand), responsive cascade (mobile-first), arbitrary tracks (sidebar + main), auto-fitting card grid, per-axis gap override, asChild projection (`<ul>` semantic). `app/components/grid-layout/page.tsx` + `page.module.scss` mirroring Stack/Inline playground pattern.
+
+### Compatibility
+
+- **Zero source code changes** — same component API as v0.5.5. No new exports, no breaking changes, no visual deltas in component renders. Pure documentation + demo additions.
+- **Component count unchanged** — 91 components (Layout 5 + Typography 4 + Display 13 + Interactive 19 + Feedback 3 + Specialized 8 + Molecules 10 + Card presets 7 + Composition 1 + Complex interactive 22).
+- **Demo routes 47 → 48** — adds `/components/grid-layout`. v0.5.5 shipped GridLayout component without demo (deferred per amendment-scope precedent); v0.5.6 closes the gap.
+
+### Verification
+
+- `tsc --noEmit` clean.
+- Sass build clean.
+- Phase 7.1 Critical Consistency Audit dispatched pre-release.
+
+### Deferred to v0.5.7 doc-polish (if needed)
+
+- Demo extensions for typography (Eyebrow section in `typography/page.tsx`), molecules (Chip + IconButton + Chip display variant in `molecules/page.tsx`), display (Card gap demo in `card/page.tsx`).
+- COMPONENT_REGISTRY status banner refresh (cosmetic).
+- ROADMAP banner refresh (cosmetic).
+- COMPONENT_REGISTRY addendums on existing Card entry (`gap` prop bullet) + Select entry (`--select-placeholder-color` token bullet).
+
+---
+
 ## [0.5.5] — 2026-04-26
 
 **Atelier extensions sprint — 5 audit-revised amendments promoted from scout-hub `2026-04_e05-gan-reattack` PLATEAU evidence (PR #5 squash-merged 2026-04-26 as `c58d97a`) plus 1 user-requested addition. 1 new layout atom (`GridLayout`), 2 new semantic tokens (`--shadow-card-tint`, `--select-placeholder-color`), 1 additive prop on existing component (`Card gap`), 1 discriminated-union variant on existing component (`Chip interactive=false` display mode). All non-breaking EXCEPT the Select placeholder default which intentionally lifts WCAG 2.2 AA contrast (3.4:1 → 4.5:1+); consumers wanting the dimmer pre-v0.5.5 look can override via `--select-placeholder-color: var(--color-text-muted)` per theme block.**
