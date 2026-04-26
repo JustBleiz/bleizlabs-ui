@@ -1,0 +1,113 @@
+@use 'mixins' as mx;
+
+.main {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: var(--space-10) var(--space-6);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-10);
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+
+  h1 {
+    @include mx.heading-1;
+    margin: 0;
+  }
+
+  p {
+    @include mx.body-base;
+    color: var(--color-text-secondary);
+    margin: 0;
+    max-width: 70ch;
+  }
+}
+
+.back {
+  @include mx.body-small;
+  color: var(--color-text-secondary);
+  text-decoration: none;
+  width: fit-content;
+
+  &:hover {
+    color: var(--color-text-primary);
+  }
+}
+
+.demo {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+
+  h2 {
+    @include mx.heading-3;
+    margin: 0;
+    color: var(--color-text-primary);
+  }
+}
+
+.caption {
+  @include mx.body-small;
+  color: var(--color-text-secondary);
+  margin: 0;
+  max-width: 70ch;
+
+  code {
+    background: var(--color-surface-raised);
+    border: 1px solid var(--color-border-subtle);
+    border-radius: var(--radius-sm);
+    padding: 0 var(--space-1);
+    font-family: var(--font-mono);
+    font-size: 0.85em;
+    color: var(--color-text-primary);
+  }
+}
+
+.box {
+  background: var(--color-surface-raised);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-input);
+  padding: var(--space-3) var(--space-4);
+  color: var(--color-text-primary);
+  @include mx.body-small;
+}
+
+.sidebar {
+  background: var(--color-surface-raised);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-input);
+  padding: var(--space-4);
+  color: var(--color-text-secondary);
+  font-family: var(--font-mono);
+  @include mx.body-small;
+}
+
+.main_content {
+  background: var(--color-surface-raised);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-input);
+  padding: var(--space-4);
+  min-height: 120px;
+  color: var(--color-text-secondary);
+  font-family: var(--font-mono);
+  @include mx.body-small;
+}
+
+.list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+
+  li {
+    background: var(--color-surface-raised);
+    border: 1px solid var(--color-border-subtle);
+    border-radius: var(--radius-input);
+    padding: var(--space-2) var(--space-3);
+    color: var(--color-text-primary);
+    @include mx.body-small;
+  }
+}
