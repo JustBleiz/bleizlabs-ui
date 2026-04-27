@@ -3,13 +3,13 @@
 > A zero-dependency, fully-styled React component library with seed-based design tokens.
 > 91 components, WAI-ARIA compliant, runtime-test-verified, SCSS Modules, React 19 + Next.js 16.
 
-[![Version](https://img.shields.io/badge/npm-v0.5.6-0ea5e9)](https://github.com/BleizLabs/bleizlabs-ui/pkgs/npm/ui)
+[![Version](https://img.shields.io/badge/npm-v0.5.7-0ea5e9)](https://github.com/BleizLabs/bleizlabs-ui/pkgs/npm/ui)
 [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 [![React](https://img.shields.io/badge/React-19-61dafb)](https://react.dev)
 [![Next.js](https://img.shields.io/badge/Next.js-16.2-black)](https://nextjs.org)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.6-3178c6)](https://www.typescriptlang.org)
 
-**Current version: [`@bleizlabs/ui@0.5.6`](https://github.com/BleizLabs/bleizlabs-ui/pkgs/npm/ui)** — documentation + demo polish patch: closes doc-debt deferred from v0.5.2 → v0.5.5 amendment-scope precedent. Zero source code changes (same component API as v0.5.5). COMPONENT_REGISTRY entries for v0.5.4 atelier promotions (Eyebrow typography atom, Chip molecule with v0.5.5 interactive variant note, IconButton molecule). New playground demo route `/components/grid-layout` with 6 sections demonstrating the v0.5.5 GridLayout atom (equal columns, responsive cascade, arbitrary tracks, auto-fitting, per-axis gap override, asChild projection). 91 components unchanged. See [CHANGELOG.md](CHANGELOG.md) for the full release history.
+**Current version: [`@bleizlabs/ui@0.5.7`](https://github.com/BleizLabs/bleizlabs-ui/pkgs/npm/ui)** — typography tokens patch: closes three library gaps surfaced by scout-hub `/pl/login` refactor. Adds `Text variant="eyebrow"` (inline-light atelier eyebrow path, sharing the `mx.eyebrow-typography` mixin with the standalone `Eyebrow` atom — pick the atom when the numeric prefix + hairline ornament is wanted, the variant for inline composition without ornament). Adds three editorial Heading sizes (`hero-editorial` fluid clamp 36→52px for login asides + `form-card-title` 22px + `form-card-subtitle` 15px for form cards). Introduces `--color-text-on-brand` semantic token fixing WCAG 2.2 AA contrast for primary buttons in light mode (white-on-teal ~2.49:1 → near-black-on-teal ~5.88:1). Backward-compatible additive release; one visible behavior change in light theme primary buttons. 91 components unchanged. See [CHANGELOG.md](CHANGELOG.md) for the full release history.
 
 ## Table of contents
 
@@ -50,7 +50,7 @@ We ship across a growing portfolio of products — internal tools, client delive
 - **Seed-based design tokens** — override 5–10 seed values (brand color, radius, spacing, timing) and the entire library reskins consistently across light + dark themes.
 - **SCSS Modules** — no Tailwind, no CSS-in-JS, no runtime style computation. Components read CSS custom properties that consumers override at the `:root` level.
 - **Accessibility-first** — every interactive component maps to a documented APG pattern, with keyboard models, focus management, and screen-reader semantics verified against Radix closed-issue catalogues.
-- **Runtime-test-verified** — 88 Playwright `.spec.ts` suites × 4 dimensions (keyboard / focus / aria / regression), full `@axe-core/playwright` WCAG 2.1 AA sweep on all 50 playground routes, CI-gated on every release tag.
+- **Runtime-test-verified** — 88 Playwright `.spec.ts` suites × 4 dimensions (keyboard / focus / aria / regression), full `@axe-core/playwright` WCAG 2.1 AA sweep on all 52 playground routes, CI-gated on every release tag.
 - **NVDA-ready** — 23+ pre-written manual sweep protocols (`.nvda.sweep.md` per component) for screen-reader validation.
 - **Private npm package** — installable via `npm install @bleizlabs/ui` from GitHub Packages. Copy-to-project remains available for client offboarding.
 - **React 19 + Next.js 16** — built with Server Components, Turbopack, and App Router in mind.
@@ -69,7 +69,7 @@ We ship across a growing portfolio of products — internal tools, client delive
 
 `Heading` · `Text` · `Anchor` · `Eyebrow`
 
-`Heading` ships three display tiers for atelier hero treatment: `size="display"` (Hero H1, up to 72px), `size="display-md"` (section H2, up to 48px), plus the 8-size scale (`xs`..`4xl`) for general use. `Anchor` is the prose-inline link primitive — distinct from `TextLink` which is the navigational action. `Eyebrow` (v0.5.4) is the small uppercase atelier label with optional numeric prefix + 14px hairline connector — promoted from a 5-site duplication in scout-hub.
+`Heading` ships 13 sizes total: 8-size standard scale (`sm` · `md` · `lg` · `xl` · `2xl` · `3xl` · `4xl` · `5xl`) for general use, two display tiers for atelier hero treatment (`size="display"` Hero H1 up to 72px, `size="display-md"` section H2 up to 48px), and three v0.5.7 editorial sizes (`hero-editorial` fluid clamp 36→52px for login asides, `form-card-title` 22px and `form-card-subtitle` 15px for form-card pairs). `Text` ships 6 variants — `lead` / `body` / `body-strong` / `small` / `caption` / `eyebrow` (v0.5.7 inline-light atelier eyebrow path; the variant shares the `mx.eyebrow-typography` mixin with the standalone `Eyebrow` atom — pick the variant for inline composition, the atom when the numeric prefix + hairline ornament is wanted). `Anchor` is the prose-inline link primitive — distinct from `TextLink` which is the navigational action. `Eyebrow` (v0.5.4) is the small uppercase atelier label with optional numeric prefix + 14px hairline connector — promoted from a 5-site duplication in scout-hub.
 
 ### Display (13)
 
@@ -369,7 +369,7 @@ The showcase includes a light/dark theme toggle — every component is dual-them
 
 Every release passes a three-stage quality gate via CI before `npm publish` fires.
 
-### Stage 1 — smoke sweep (`tests/smoke.spec.ts`, 50 routes)
+### Stage 1 — smoke sweep (`tests/smoke.spec.ts`, 52 routes)
 
 Full library-wide `@axe-core/playwright` WCAG 2.1 AA scan (tags `wcag2a wcag2aa wcag21a wcag21aa`) against every public playground route. Runs against a **production build** (`next build && next start`) to catch consumer-realistic issues dev mode masks. Blocks CI publish if any route reports violations.
 
@@ -388,7 +388,7 @@ Each interactive component ships a `<Name>.nvda.sweep.md` checklist for manual v
 
 ### What this means for consumers
 
-- Every tagged release is **axe-clean** across all 50 routes AND **regression-tested** across 88 per-component suites.
+- Every tagged release is **axe-clean** across all 52 playground routes AND **regression-tested** across 88 per-component suites.
 - Any new bug found in production gets codified as a regression test before the fix commits.
 - Screen-reader behavior is explicitly documented per component, not assumed from APG compliance.
 

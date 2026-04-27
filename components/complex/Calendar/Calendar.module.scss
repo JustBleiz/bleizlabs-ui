@@ -191,11 +191,15 @@
 
 // Selected — filled brand bg + brand-foreground text.
 // E142 L2 a11y: previous `--color-surface-raised` fallback was ~4.3:1 on
-// brand bg (~AA edge). `--color-text-inverse` matches Button.variantPrimary
-// precedent (dark text in dark theme → 7:1 on brand) for consistency.
+// brand bg (~AA edge). v0.5.7 — uses `--color-text-on-brand` semantic
+// token (decoupled from `--color-text-inverse` which fails WCAG 2.2 AA on
+// mid-tone brand seeds in light mode — white-on-teal ~2.49:1). Token
+// default `#25292E` yields ~5.88:1 on teal `#14B8A6`. Library-wide
+// brand-fill text audit landed in v0.5.7 (Button + Calendar + Tabs +
+// Toggle + Carousel + TableRow all migrated together).
 .cellButtonSelected {
   background: var(--color-brand);
-  color: var(--color-text-inverse);
+  color: var(--color-text-on-brand);
   border-color: var(--color-brand);
   font-weight: var(--font-weight-semibold);
 

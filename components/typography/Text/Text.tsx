@@ -59,6 +59,13 @@ import styles from './Text.module.scss';
  *          numeric prefix + hairline ornament. Use the standalone `Eyebrow`
  *          atom when the atelier numeric/hairline ornament is wanted.
  *
+ *          Semantic note for `variant="eyebrow"`: Text renders `<p>` by default,
+ *          which is the wrong semantic for an inline section marker / eyebrow
+ *          label (eyebrows are not paragraphs). Prefer `asChild` with `<span>`
+ *          for inline eyebrow contexts next to headings, or use the standalone
+ *          `Eyebrow` atom which is `<span>` by default. The `<p>` default only
+ *          stays "right" for variants `lead/body/body-strong/small/caption`.
+ *
  * @example
  * <Text>Body copy paragraph.</Text>                  // secondary (default)
  * <Text variant="lead">Lead-in introduction.</Text>  // secondary
@@ -86,8 +93,8 @@ export interface TextProps extends HTMLAttributes<HTMLParagraphElement> {
   /**
    * Text color. If omitted, resolves to a semantic default per variant
    * (see `DEFAULT_COLOR_BY_VARIANT`): lead/body/small → secondary,
-   * body-strong → primary, caption → muted. `inherit` adopts surrounding
-   * context.
+   * body-strong → primary, caption/eyebrow → muted. `inherit` adopts
+   * surrounding context.
    */
   color?: 'primary' | 'secondary' | 'muted' | 'brand' | 'inherit';
   /** Text alignment. Default `start`. */

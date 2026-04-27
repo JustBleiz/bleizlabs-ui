@@ -4,6 +4,42 @@ All notable releases of this component library. Follows [Keep a Changelog](https
 
 ---
 
+## [0.5.7] — 2026-04-27
+
+**Typography tokens patch — three library gaps surfaced by scout-hub `/pl/login` refactor closed in one release. Adds the inline-light eyebrow path on `Text`, three editorial Heading sizes (login asides + form cards), and the `--color-text-on-brand` semantic token (WCAG 2.2 AA fix for light-mode primary buttons on mid-tone brand seeds). Backward-compatible additive release; one visible behavior change in light theme primary buttons (white → near-black text — fixes contrast bug, see Fixed below).**
+
+### Added
+
+- **`Text variant="eyebrow"`** — inline-light atelier eyebrow path on the `Text` atom. Same uppercase / 0.7rem / 0.08em-tracked / tabular-nums vocabulary as the standalone `Eyebrow` atom (v0.5.4) but WITHOUT the numeric prefix + hairline ornament. Use this when composing eyebrow inline next to other Text variants; reach for the standalone `Eyebrow` atom when you want the numbered marker. Single source of truth via shared SCSS mixin `mx.eyebrow-typography` in `_mixins.scss` — both Eyebrow and Text variant=eyebrow `@include` the same vocabulary block. `TextVariant` union widens 5 → 6; `DEFAULT_COLOR_BY_VARIANT` maps eyebrow → muted (mirrors Eyebrow's default tone). Backward-compatible: existing 5 variants byte-equivalent.
+
+- **`Heading size="hero-editorial" | "form-card-title" | "form-card-subtitle"`** — three editorial-tier sizes filling gaps in the standard scale. `hero-editorial` is a viewport-fluid clamp 36→52px (line-height 1.1) sitting between `display-md` (48px ceiling) and `display` (72px ceiling) — atelier presence without the full display tier weight. `form-card-title` is 22px fixed (line-height 1.25) between Heading lg (18px) and xl (24px) — form card titles below xl loudness. `form-card-subtitle` is 15px fixed (line-height 1.45) between Text small (14px) and base (16px) — supporting copy in form-card pairs. Token-driven: three new `--font-size-{hero-editorial,form-card-title,form-card-subtitle}` semantics declared in `_semantics.scss` `:root` block alongside the standard scale. `HeadingSize` union widens 10 → 13; `SIZE_CLASS` map extended; backward-compatible.
+
+### Fixed
+
+- **WCAG 2.2 AA contrast for text on brand fills (light mode)** — across the library, components rendering text on `var(--color-brand)` filled surfaces used `--color-text-inverse` which resolves to `white` in light mode. White on mid-tone brand seeds (e.g. teal `#14B8A6`) yields ~2.49:1 — FAILS WCAG 2.2 AA (needs ≥4.5:1 body / ≥3:1 UI). Introduced dedicated `--color-text-on-brand` semantic token (default `#25292E`, near-black; ~5.88:1 on teal — PASS AA body + AA UI). Decoupled from `--color-text-inverse` so brand-fill text contrast can evolve independently of light/dark inversion semantics. **Library-wide audit + migration (6 components)**: `Button.variantPrimary`, `Calendar.cellButtonSelected` (selected day), `Carousel.indicator:hover` + `Carousel.pauseButton` (hover + `[aria-pressed='true']`), `Tabs.trigger[data-state='active']` (segmented variant active tab), `Toggle.pressed`, `Table.selected` rows (incl. `--color-text-primary` + `--color-text-secondary` cascade overrides for nested Badges/Text). All 6 swap `--color-text-inverse` → `--color-text-on-brand` together so the WCAG fix lands consistently. `Badge.colorBrand` + `IconBox.variantBrand` use a tinted-bg pattern (`--color-brand-subtle` bg + `--color-brand-strong` text) and were correctly excluded — no change needed. Promoted from scout-hub `/pl/login` O1.1 refactor where a project-local `--color-on-brand` workaround was identified as a library gap; library-wide audit triggered by Phase 7.1 audit Iter 1 caught the additional 5 sites the initial E03 audit missed. **Visible change in light theme**: text color on these 6 brand-fill surfaces changes from `white` to `#25292E`. **Dark theme unchanged** (both the previous `neutral-950` value of `--color-text-inverse` and the new `--color-text-on-brand: #25292E` are near-black).
+
+### Compatibility
+
+- **Public API**: Text + Heading union widening is backward-compatible (TS supertype). Existing prop usages render byte-equivalent output. No removed exports, no renamed exports.
+- **Visual deltas**:
+  - **Light theme** brand-fill text: `white` → `#25292E` near-black across 6 surfaces (Button primary, Calendar selected day, Carousel indicator hover + pause toggle, Tabs segmented active, Toggle pressed, Table selected row). WCAG fix; consumers depending on white text on brand-fill in light mode should override `--color-text-on-brand` in their globals.
+  - **Dark theme**: no visible deltas across all 6 surfaces. `--color-text-on-brand` resolves to the same near-black tone as previous `--color-text-inverse: neutral-950` rendering.
+  - **Eyebrow component renders byte-equivalent** — internal SCSS refactor to `@include mx.eyebrow-typography` produces identical CSS output.
+- **Migration note for consumers with project-local `--color-on-brand`**: the library now ships a canonical `--color-text-on-brand` semantic. Consumers (e.g. scout-hub) can remove their local `--color-on-brand` override block from `globals.scss` after upgrading. The library token does the right thing by default for mid-tone brand seeds.
+- **Component count unchanged** — 91 components. No new components added; only variants, sizes, and one semantic token.
+- **Demo routes unchanged at 55** — typography + heading playground demos extended in-place (no new routes). Canonical count from `next build` output: 55 = root + `_not-found` + 52 `/components/*` + `/demo`. Note: v0.5.4 → v0.5.6 historical CHANGELOG entries cite earlier route counts (47 / 48) that under-counted at the time; left as historical record.
+
+### Verification
+
+- `tsc --noEmit` clean.
+- `npm run lint` clean (incidentally fixed pre-existing v0.5.6 drift in `app/components/grid-layout/page.tsx` — 4 `react/no-unescaped-entities` errors via housekeeping commit `51680e8`).
+- `next build` clean (55 routes prerendered, ~2.9s — root + `_not-found` + 52 `/components/*` + `/demo`).
+- Sass build clean (`compiled.css` 17.24 KB → 17.50 KB; additive only).
+- WCAG contrast for `--color-text-on-brand` on teal `#14B8A6` brand: 5.88:1 (math-verified). Live Playwright visual regression deferred to v0.5.8 visual-regression sprint.
+- Phase 7.1 Critical Consistency Audit dispatched pre-release.
+
+---
+
 ## [0.5.6] — 2026-04-26
 
 **Documentation + demo polish patch — closes doc-debt deferred from v0.5.2 → v0.5.5 amendment-scope precedent. Zero source code changes; same component API as v0.5.5. COMPONENT_REGISTRY entries dla v0.5.4 atelier promotions (Eyebrow + Chip + IconButton) plus new GridLayout playground demo route.**
