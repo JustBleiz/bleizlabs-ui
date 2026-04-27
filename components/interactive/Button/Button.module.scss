@@ -99,7 +99,14 @@
 
 .variantPrimary {
   background: var(--color-brand);
-  color: var(--color-text-inverse);
+  // v0.5.7 — was `var(--color-text-inverse)` which resolves to `white` in
+  // light mode, FAILING WCAG 2.2 AA on mid-tone brand seeds (e.g. teal
+  // #14B8A6 yields ~2.49:1 — needs ≥4.5:1 body / ≥3:1 UI). Switched to
+  // `--color-text-on-brand` (defined in `_semantics.scss`, default `#25292E`
+  // near-black, ~5.88:1 on teal — PASS AA body + AA UI in both themes).
+  // Consumers with very-dark brand seeds (navy etc.) should override
+  // `--color-text-on-brand` in their globals.scss.
+  color: var(--color-text-on-brand);
   border-color: var(--color-brand);
   box-shadow: var(--shadow-brand, none);
 

@@ -49,18 +49,41 @@ import styles from './Text.module.scss';
  *          | body-strong | primary       |
  *          | small       | secondary     |
  *          | caption     | muted         |
+ *          | eyebrow     | muted         |
+ *
+ *          v0.5.7 — `eyebrow` variant added as the inline-light composition
+ *          path for atelier eyebrow typography (0.7rem uppercase tabular-nums
+ *          + 0.08em tracking + medium weight, shared via `mx.eyebrow-typography`
+ *          mixin with the `Eyebrow` atom). Use this when composing eyebrow
+ *          inline next to other Text variants without the `Eyebrow` atom's
+ *          numeric prefix + hairline ornament. Use the standalone `Eyebrow`
+ *          atom when the atelier numeric/hairline ornament is wanted.
+ *
+ *          Semantic note for `variant="eyebrow"`: Text renders `<p>` by default,
+ *          which is the wrong semantic for an inline section marker / eyebrow
+ *          label (eyebrows are not paragraphs). Prefer `asChild` with `<span>`
+ *          for inline eyebrow contexts next to headings, or use the standalone
+ *          `Eyebrow` atom which is `<span>` by default. The `<p>` default only
+ *          stays "right" for variants `lead/body/body-strong/small/caption`.
  *
  * @example
  * <Text>Body copy paragraph.</Text>                  // secondary (default)
  * <Text variant="lead">Lead-in introduction.</Text>  // secondary
  * <Text variant="body-strong">Emphasis.</Text>       // primary
  * <Text variant="caption" uppercase>Label</Text>     // muted
+ * <Text variant="eyebrow">Briefing</Text>            // muted, inline-light eyebrow
  * <Text color="primary">Override back to primary.</Text>
  * <Text asChild>
  *   <span>Inline text via asChild</span>
  * </Text>
  */
-export type TextVariant = 'lead' | 'body' | 'body-strong' | 'small' | 'caption';
+export type TextVariant =
+  | 'lead'
+  | 'body'
+  | 'body-strong'
+  | 'small'
+  | 'caption'
+  | 'eyebrow';
 
 export interface TextProps extends HTMLAttributes<HTMLParagraphElement> {
   /** Typography preset. Default `body`. */
@@ -70,8 +93,8 @@ export interface TextProps extends HTMLAttributes<HTMLParagraphElement> {
   /**
    * Text color. If omitted, resolves to a semantic default per variant
    * (see `DEFAULT_COLOR_BY_VARIANT`): lead/body/small → secondary,
-   * body-strong → primary, caption → muted. `inherit` adopts surrounding
-   * context.
+   * body-strong → primary, caption/eyebrow → muted. `inherit` adopts
+   * surrounding context.
    */
   color?: 'primary' | 'secondary' | 'muted' | 'brand' | 'inherit';
   /** Text alignment. Default `start`. */
@@ -90,6 +113,7 @@ const VARIANT_CLASS: Record<TextVariant, string> = {
   'body-strong': styles.bodyStrong!,
   small: styles.small!,
   caption: styles.caption!,
+  eyebrow: styles.eyebrow!,
 };
 
 // E142 L2 a11y: `brand` previously pinned to `--color-brand-500`, the raw
@@ -116,6 +140,7 @@ const DEFAULT_COLOR_BY_VARIANT: Record<TextVariant, NonNullable<TextProps['color
   'body-strong': 'primary',
   small: 'secondary',
   caption: 'muted',
+  eyebrow: 'muted',
 };
 
 const WEIGHT_VAR: Record<NonNullable<TextProps['weight']>, string> = {

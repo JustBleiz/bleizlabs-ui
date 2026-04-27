@@ -1,9 +1,18 @@
 import Link from 'next/link';
+import { Eyebrow } from '@/components/typography/Eyebrow';
 import { Heading } from '@/components/typography/Heading';
 import { Text, type TextVariant } from '@/components/typography/Text';
+import { Inline } from '@/components/layout/Inline';
 import styles from './page.module.scss';
 
-const VARIANTS: TextVariant[] = ['lead', 'body', 'body-strong', 'small', 'caption'];
+const VARIANTS: TextVariant[] = [
+  'lead',
+  'body',
+  'body-strong',
+  'small',
+  'caption',
+  'eyebrow',
+];
 
 const SAMPLE = 'The quick brown fox jumps over the lazy dog. Pack my box with five dozen liquor jugs. How vexingly quick daft zebras jump!';
 
@@ -83,6 +92,46 @@ export default function TextPlaygroundPage() {
             </Text>{' '}
             — Text classes apply but DOM is &lt;span&gt;.
           </p>
+        </div>
+      </section>
+
+      <section className={styles.demo}>
+        <Heading level={2} size="2xl">7. Eyebrow variant (v0.5.7) — inline-light atelier vocabulary</Heading>
+        <Text variant="body" color="secondary">
+          The <code>variant=&quot;eyebrow&quot;</code> path reuses the same
+          atelier typography as the standalone <code>Eyebrow</code> atom (0.7rem
+          uppercase, 0.08em tracking, tabular-nums, medium weight) without the
+          atom&apos;s numeric prefix + hairline ornament. Use this when
+          composing inline next to other Text variants; reach for the standalone{' '}
+          <code>Eyebrow</code> atom when you want the numbered marker.
+        </Text>
+
+        <div className={styles.col}>
+          <div className={styles.frame}>
+            <span className={styles.label}>variant=&quot;eyebrow&quot; (standalone)</span>
+            <Text variant="eyebrow">Briefing</Text>
+          </div>
+
+          <div className={styles.frame}>
+            <span className={styles.label}>composed via Inline next to Heading</span>
+            <Inline gap={3} align="baseline">
+              <Text variant="eyebrow">Section 03</Text>
+              <Heading level={3} size="lg">Quality assurance</Heading>
+            </Inline>
+          </div>
+
+          <div className={styles.frame}>
+            <span className={styles.label}>side-by-side with the standalone Eyebrow atom</span>
+            <Inline gap={6} align="center">
+              <Eyebrow index={1}>With ornament</Eyebrow>
+              <Text variant="eyebrow">Without ornament</Text>
+            </Inline>
+          </div>
+
+          <div className={styles.frame}>
+            <span className={styles.label}>color override (color=&quot;brand&quot;)</span>
+            <Text variant="eyebrow" color="brand">Live · awaiting input</Text>
+          </div>
         </div>
       </section>
     </main>

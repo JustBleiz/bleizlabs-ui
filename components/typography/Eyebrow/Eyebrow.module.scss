@@ -1,4 +1,4 @@
-// Eyebrow — Phase 2 atom (v0.5.4)
+// Eyebrow — Phase 2 atom (v0.5.4 atom, v0.5.7 typography DRY refactor)
 //
 // Atelier eyebrow signature: 0.7rem uppercase tabular-nums + 0.08em tracking
 // + medium weight + optional 2-digit zero-padded numeric prefix with hairline
@@ -7,18 +7,20 @@
 // The 0.7rem and 0.08em literals ARE the eyebrow scale itself — they are
 // not magic numbers but the atelier vocabulary primitive. They sit between
 // the type scale's `--font-size-xs` (0.75rem) and a hypothetical xxs.
+//
+// v0.5.7 — typography vocabulary moved to `mx.eyebrow-typography` shared with
+// `Text` variant="eyebrow" (single source of truth). Layout (display/gap/
+// align-items) stays here because Eyebrow has multi-child structure (index +
+// hairline + label) while Text variant="eyebrow" is single-element.
+
+@use '../../../styles/mixins' as mx;
 
 .root {
+  @include mx.eyebrow-typography;
+
   display: inline-flex;
   align-items: center;
   gap: var(--space-2);
-  font-family: var(--font-secondary);
-  font-size: 0.7rem;
-  font-weight: var(--font-weight-medium);
-  font-variant-numeric: tabular-nums;
-  letter-spacing: 0.08em;
-  line-height: 1;
-  text-transform: uppercase;
   margin: 0;
   color: var(--eyebrow-color, var(--color-text-muted));
 }

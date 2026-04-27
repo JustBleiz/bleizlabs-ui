@@ -53,7 +53,7 @@ export default function GridLayoutPlaygroundPage() {
       <section className={styles.demo}>
         <h2>3. Arbitrary tracks (sidebar + main)</h2>
         <p className={styles.caption}>
-          <code>columns="240px 1fr"</code> — fixed-width sidebar plus fluid
+          <code>{`columns="240px 1fr"`}</code> — fixed-width sidebar plus fluid
           main content. Pass any CSS{' '}
           <code>grid-template-columns</code> string.
         </p>
@@ -66,7 +66,7 @@ export default function GridLayoutPlaygroundPage() {
       <section className={styles.demo}>
         <h2>4. Auto-fitting card grid</h2>
         <p className={styles.caption}>
-          <code>columns="repeat(auto-fit, minmax(220px, 1fr))"</code> — packs as
+          <code>{`columns="repeat(auto-fit, minmax(220px, 1fr))"`}</code> — packs as
           many ~220px tracks as fit, expanding to fill row. Resize to see how
           column count adapts without breakpoint config.
         </p>

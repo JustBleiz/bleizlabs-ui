@@ -19,6 +19,10 @@ import styles from './Heading.module.scss';
  *          size="display" is viewport-fluid via `clamp()` + tight line-height
  *          1.05 for atelier big-type rendering (v0.3.5); size="display-md" is
  *          the section-scale sibling (max 48px) for H2 atelier parity (v0.4.0);
+ *          v0.5.7 editorial scale: --font-size-hero-editorial (login hero
+ *          asides, fluid clamp 36→52px), --font-size-form-card-title (22px
+ *          fixed, gap between lg and xl), --font-size-form-card-subtitle
+ *          (15px fixed, gap between sm and base);
  *          --font-weight-{regular,medium,semibold,bold} (tsx WEIGHT_VAR);
  *          --color-text-{primary,secondary,muted} + --color-brand-500 (tsx COLOR_VAR).
  *          Component-local CSS variables `--heading-{color,weight,align}` carry
@@ -46,6 +50,9 @@ import styles from './Heading.module.scss';
  * <Heading level={3} size="5xl" align="center">Hero</Heading>
  * <Heading level={1} size="display">Hero title</Heading>    // v0.3.5 fluid clamp, max 72px
  * <Heading level={2} size="display-md">Section title</Heading> // v0.4.0 section tier, max 48px
+ * <Heading level={1} size="hero-editorial">Aside hero</Heading>      // v0.5.7 fluid clamp 36→52px
+ * <Heading level={2} size="form-card-title">Sign in</Heading>        // v0.5.7 22px fixed
+ * <Heading level={3} size="form-card-subtitle">Use your work email</Heading> // v0.5.7 15px fixed
  * <Heading level={2} asChild>
  *   <a href="/article">Linked title</a>
  * </Heading>
@@ -62,7 +69,14 @@ export type HeadingSize =
   | '4xl'
   | '5xl'
   | 'display-md'
-  | 'display';
+  | 'display'
+  // v0.5.7 — editorial scale (login hero asides, form cards). See
+  // _semantics.scss tokens `--font-size-{hero-editorial,form-card-title,
+  // form-card-subtitle}` and Heading.module.scss `.sizeHeroEditorial`,
+  // `.sizeFormCardTitle`, `.sizeFormCardSubtitle`.
+  | 'hero-editorial'
+  | 'form-card-title'
+  | 'form-card-subtitle';
 
 export interface HeadingProps extends HTMLAttributes<HTMLHeadingElement> {
   /** Semantic heading level (renders <h1>..<h6>). Default 2. */
@@ -101,6 +115,9 @@ const SIZE_CLASS: Record<HeadingSize, string> = {
   '5xl': styles.size5xl!,
   'display-md': styles.sizeDisplayMd!,
   display: styles.sizeDisplay!,
+  'hero-editorial': styles.sizeHeroEditorial!,
+  'form-card-title': styles.sizeFormCardTitle!,
+  'form-card-subtitle': styles.sizeFormCardSubtitle!,
 };
 
 type HeadingTag = 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6';

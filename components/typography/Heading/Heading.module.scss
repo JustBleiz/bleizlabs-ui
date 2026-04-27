@@ -69,3 +69,41 @@
   line-height: 1.05;
   letter-spacing: var(--letter-spacing-tighter);
 }
+
+// v0.5.7 — editorial scale tier. Three sizes filling gaps in the standard
+// scale for editorial typography contexts (login hero asides, form cards).
+// Tokens defined in `_semantics.scss` (--font-size-{hero-editorial,
+// form-card-title,form-card-subtitle}). Promoted from scout-hub /pl/login
+// O1.1 refactor where 3 page-SCSS overrides duplicated off-scale values.
+
+// Hero-editorial — viewport-fluid clamp(36px → 52px) sitting between
+// `.sizeDisplayMd` (max 48px) and `.sizeDisplay` (max 72px). Atelier
+// presence without the full display tier weight; line-height 1.1 reads
+// slightly looser than display's 1.05 for multi-line aside contexts where
+// the headline often wraps. Use on `<h1>` in login asides, settings hero
+// blocks, marketing-page splash bars where display tier overpowers.
+.sizeHeroEditorial {
+  font-size: var(--font-size-hero-editorial);
+  line-height: 1.1;
+  letter-spacing: var(--letter-spacing-tighter);
+}
+
+// Form-card-title — 22px fixed (between Heading lg 18px and xl 24px).
+// Form cards typically need title emphasis below xl (which feels too loud
+// in a stacked form context) but above lg. Line-height 1.25 for compact
+// multi-line behavior; letter-spacing tight to anchor visual weight.
+.sizeFormCardTitle {
+  font-size: var(--font-size-form-card-title);
+  line-height: 1.25;
+  letter-spacing: var(--letter-spacing-tight);
+}
+
+// Form-card-subtitle — 15px fixed (between Text small 14px and base 16px).
+// Supporting copy in form cards where base reads too dominant and small
+// reads too thin. Line-height 1.45 for readability; normal letter-spacing
+// (no tightening — this is body-tier, not headline-tier).
+.sizeFormCardSubtitle {
+  font-size: var(--font-size-form-card-subtitle);
+  line-height: 1.45;
+  letter-spacing: var(--letter-spacing-normal);
+}

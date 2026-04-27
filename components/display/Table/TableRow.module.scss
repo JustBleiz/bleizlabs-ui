@@ -23,16 +23,19 @@
 // (E138b-followup: subtle brand shades were too close to default surface
 // in dark mode — "ciężko jest odróżnić selected od nie klikniętego").
 // The token `--color-brand` is theme-independent (vivid brand-500) so
-// the highlight reads the same across both themes. `--color-text-inverse`
-// is the text color designed to contrast with brand surfaces.
+// the highlight reads the same across both themes. v0.5.7 — uses
+// `--color-text-on-brand` (decoupled from `--color-text-inverse` which
+// fails WCAG 2.2 AA in light mode on mid-tone brand seeds — white-on-teal
+// ~2.49:1). Token default `#25292E` yields ~5.88:1 on teal `#14B8A6`.
+// Cascade overrides on `--color-text-primary` + `--color-text-secondary`
+// flow through to nested Badges/Text so a brand Badge on a brand row
+// renders against the same on-brand text color.
 .selected > td,
 .selected > th {
   background: var(--color-brand);
-  color: var(--color-text-inverse);
-  // Inherit via context — consumers can nest Badges etc. that'll need
-  // to pick their own colors (brand Badge on brand row would vanish).
-  --color-text-primary: var(--color-text-inverse);
-  --color-text-secondary: var(--color-text-inverse);
+  color: var(--color-text-on-brand);
+  --color-text-primary: var(--color-text-on-brand);
+  --color-text-secondary: var(--color-text-on-brand);
 }
 
 // Hover on an already-selected row — shift bg to `--color-brand-strong`

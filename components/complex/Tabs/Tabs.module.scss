@@ -158,7 +158,9 @@
 
     &[data-state='active'] {
       background: var(--color-brand);
-      color: var(--color-text-inverse);
+      // v0.5.7 — was `--color-text-inverse` (white in light mode, ~2.49:1
+      // on teal — FAILS WCAG 2.2 AA). Library-wide brand-fill text audit.
+      color: var(--color-text-on-brand);
     }
   }
 }
