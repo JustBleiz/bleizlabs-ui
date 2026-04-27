@@ -440,6 +440,10 @@
     --color-text-muted: #{$dark-text-muted};
     --color-text-inverse: #{$dark-text-inverse};
 
+    // v0.5.7 — see ":root[data-theme='dark']" override block below for
+    // semantics + WCAG rationale.
+    --color-text-on-brand: #25292E;
+
     --card-bg-glass: rgba(255, 255, 255, 0.04);
   } @else {
     --color-bg: #{$light-bg};
@@ -455,6 +459,10 @@
     --color-text-secondary: #{$light-text-secondary};
     --color-text-muted: #{$light-text-muted};
     --color-text-inverse: #{$light-text-inverse};
+
+    // v0.5.7 — see ":root[data-theme='light']" override block below for
+    // semantics + WCAG rationale.
+    --color-text-on-brand: #25292E;
 
     --card-bg-glass: rgba(255, 255, 255, 0.6);
   }
@@ -478,6 +486,17 @@
   --color-text-secondary: #{$light-text-secondary};
   --color-text-muted: #{$light-text-muted};
   --color-text-inverse: #{$light-text-inverse};
+
+  // v0.5.7 — Highest-contrast text color for content rendered on
+  // `var(--color-brand)` filled surfaces (Button primary, future brand-accent
+  // chips). `--color-text-inverse` resolves to `white` in light mode, which
+  // FAILS WCAG 2.2 AA on most mid-tone brand seeds (e.g. teal #14B8A6 yields
+  // ~2.49:1 — needs ≥4.5:1 body / ≥3:1 UI). Near-black `#25292E` yields
+  // ~5.88:1 on teal; passes AA body + AA UI. Promoted from scout-hub
+  // /pl/login O1.1 refactor where local `--color-on-brand` workaround was
+  // identified as a library gap. Consumers with very-dark brand seeds (e.g.
+  // navy #1E3A8A) should override this token in their globals.scss.
+  --color-text-on-brand: #25292E;
 
   --card-bg-glass: rgba(255, 255, 255, 0.6);
 
@@ -520,6 +539,16 @@
   --color-text-secondary: #{$dark-text-secondary};
   --color-text-muted: #{$dark-text-muted};
   --color-text-inverse: #{$dark-text-inverse};
+
+  // v0.5.7 — same near-black value as light theme. Brand color stays the
+  // same hue across themes (it's brand identity, not a surface), so the
+  // contrast math is theme-independent for mid-tone brand seeds. Previously
+  // dark-mode primary buttons used `--color-text-inverse` which resolves to
+  // `neutral-950` (also near-black) — same effective rendering, just decoupled
+  // from inverse semantics so light theme can fix its `white`-on-brand AA bug
+  // without affecting dark theme. See light-theme block above for full
+  // rationale + consumer override pattern for dark-brand-seed projects.
+  --color-text-on-brand: #25292E;
 
   --card-bg-glass: rgba(255, 255, 255, 0.04);
 
