@@ -131,6 +131,25 @@
   letter-spacing: 0.01em;
 }
 
+// Atelier eyebrow typography vocabulary — 0.7rem uppercase tabular-nums
+// medium-weight 0.08em-tracked. The 0.7rem and 0.08em literals ARE the
+// eyebrow scale itself (atelier-PRESENT vocabulary), intentionally NOT
+// tokenised — they sit between `--font-size-xs` (0.75rem) and a
+// hypothetical xxs and define the eyebrow primitive. Shared by:
+//   - `Eyebrow` atom (.root, with optional numeric prefix + hairline)
+//   - `Text` variant="eyebrow" (single-element inline-light path, no ornament)
+// Layout (display, gap, align-items) stays in the consumer because Eyebrow
+// has multi-child structure while Text variant="eyebrow" is single-element.
+@mixin eyebrow-typography {
+  font-family: var(--font-secondary);
+  font-size: 0.7rem;
+  font-weight: var(--font-weight-medium);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.08em;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
 // ============================================================================
 // FOCUS RING HELPER — standardized focus-visible styling
 // ============================================================================
