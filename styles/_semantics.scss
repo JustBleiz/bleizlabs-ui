@@ -33,6 +33,21 @@
   --font-size-4xl: #{$font-size-4xl};
   --font-size-5xl: #{$font-size-5xl};
 
+  // v0.5.7 — editorial scale tokens. Three sizes that fill gaps in the seed
+  // scale for editorial typography contexts (login hero asides, form cards).
+  // Hero-editorial sits between display-md (3rem ceiling) and display (4.5rem
+  // ceiling) — viewport-fluid clamp for landing/login hero asides where the
+  // hero H1 wants atelier presence without the full display tier weight.
+  // Form-card-title + form-card-subtitle are fixed sizes in the gap between
+  // standard scale steps (lg→xl, sm→base) — form cards typically need title
+  // emphasis below xl but above lg, and supporting copy with editorial
+  // tracking that base+caption miss. Promoted from scout-hub /pl/login
+  // O1.1 refactor (asideHeadline + cardTitle + cardSubtitle 3-site
+  // duplication of off-scale clamp/fixed values in page-level SCSS).
+  --font-size-hero-editorial: clamp(2.25rem, 4.5vw + 0.75rem, 3.25rem);
+  --font-size-form-card-title: 1.375rem; // 22px
+  --font-size-form-card-subtitle: 0.9375rem; // 15px
+
   --line-height-tight: #{$line-height-tight};
   --line-height-snug: #{$line-height-snug};
   --line-height-normal: #{$line-height-normal};
