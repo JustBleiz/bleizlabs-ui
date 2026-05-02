@@ -130,7 +130,7 @@ function DefaultTrendIcon({ direction }: { direction: TrendDirection }) {
 }
 
 export interface KpiValueProps
-  extends Omit<HTMLAttributes<HTMLDivElement>, 'role' | 'children'> {
+  extends Omit<HTMLAttributes<HTMLDivElement>, 'children'> {
   /** Main display value. Number enables animation; string renders as-is (e.g. `"—"`, `"N/A"`). */
   value: number | string;
   /** Unit label (e.g. `"PLN"`, `"%"`, `"konwersji"`). Renders inline-right of value as small/muted text. */
@@ -158,8 +158,8 @@ export interface KpiValueProps
   };
   /** Optional accessible label, applied to the root element. */
   'aria-label'?: string;
-  /** Optional ARIA role (e.g. `"status"` for live data updates). */
-  role?: string;
+  // Note: `role?: AriaRole` is provided by HTMLAttributes (not re-declared
+  // to avoid widening to `string`). Use e.g. `role="status"` for live data.
   /**
    * @internal KpiValue owns its inner layout — children are not accepted.
    * For secondary content use `trend` slot; for semantic wrapping compose externally.

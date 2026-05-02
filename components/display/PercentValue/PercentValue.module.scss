@@ -1,0 +1,77 @@
+// =============================================================================
+// PercentValue — display atom for large percentage values
+// =============================================================================
+// Symmetric pair with KpiValue (D10). Renders large percentage value + optional
+// benchmark caption below. Color cascades via inline --percent-value-color CSS
+// var (set in TSX from `tone` prop, with auto-derivation via thresholds + inverse).
+//
+// Pure presentational — no states (non-interactive atom). Reduced motion handled
+// by AnimatedCounter dependency at runtime; defensive baseline PRM block at file
+// end suppresses any future transition added.
+
+// ----------------------------------------------------------------------------
+// 1. ROOT
+// ----------------------------------------------------------------------------
+.root {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  align-items: flex-start;
+  font-family: var(--font-primary);
+  color: var(--color-text-primary);
+}
+
+// ----------------------------------------------------------------------------
+// 2. VALUE ROW (percentage display)
+// ----------------------------------------------------------------------------
+// Note: no `gap` here — single child span (.percent). KpiValue's .valueRow
+// has gap-2 because it stacks value + unit; PercentValue has no separate unit
+// (the % symbol is rendered inline with the value).
+.valueRow {
+  display: inline-flex;
+  align-items: baseline;
+  line-height: var(--line-height-tight);
+  letter-spacing: var(--letter-spacing-tighter);
+}
+
+.percent {
+  font-weight: var(--font-weight-semibold);
+  color: var(--percent-value-color, var(--color-text-primary));
+}
+
+// ----------------------------------------------------------------------------
+// 3. SIZES (driven by font-size token swap on .valueRow)
+// ----------------------------------------------------------------------------
+.sizeMd {
+  font-size: var(--font-size-3xl);
+}
+
+.sizeLg {
+  font-size: var(--font-size-4xl);
+}
+
+.sizeXl {
+  font-size: var(--font-size-5xl);
+}
+
+// ----------------------------------------------------------------------------
+// 4. BENCHMARK CAPTION (optional, shown below value)
+// ----------------------------------------------------------------------------
+.benchmark {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  line-height: var(--line-height-tight);
+  letter-spacing: var(--letter-spacing-normal);
+  color: var(--color-text-muted);
+}
+
+// ----------------------------------------------------------------------------
+// 5. REDUCED MOTION (defensive baseline — PercentValue has no transitions today,
+//    but suppresses any future addition; AnimatedCounter handles its own PRM)
+// ----------------------------------------------------------------------------
+@media (prefers-reduced-motion: reduce) {
+  .root {
+    animation: none;
+    transition: none;
+  }
+}
