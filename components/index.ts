@@ -87,10 +87,11 @@ export * from './specialized/Pagination';
 export * from './specialized/UsageDonut';
 
 // ----------------------------------------------------------------------------
-// Molecules (11)
+// Molecules (12)
 // ----------------------------------------------------------------------------
 export * from './molecules/AccordionGroup';
 export * from './molecules/BackLink';
+export * from './molecules/BreakdownList';
 export * from './molecules/Chip';
 export * from './molecules/DataRow';
 export * from './molecules/DeadlineBadge';
