@@ -31,13 +31,14 @@ export * from './typography/Heading';
 export * from './typography/Text';
 
 // ----------------------------------------------------------------------------
-// Display (10 families / 14 exports)
+// Display (11 families / 15 exports)
 // ----------------------------------------------------------------------------
 export * from './display/AspectRatio';
 export * from './display/Avatar';
 export * from './display/Badge';
 export * from './display/Card';
 export * from './display/IconBox';
+export * from './display/KpiValue';
 export * from './display/Reveal';
 export * from './display/Separator';
 export * from './display/Skeleton';
