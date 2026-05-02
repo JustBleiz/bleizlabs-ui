@@ -4,6 +4,52 @@ All notable releases of this component library. Follows [Keep a Changelog](https
 
 ---
 
+## [0.5.9] — 2026-04-27
+
+**Reveal atom + RevealStack molecule release — promotes universal scroll-reveal pattern from project-local code into the library, plus convenience composition wrapper for canonical section header→body layout. Two additive components (1 atom + 1 molecule), zero breaking changes, library count 91 → 93.**
+
+### Added
+
+- **`<Reveal>`** (Phase 3 Display D9, Tier B) — scroll-triggered IntersectionObserver gate atom. Promoted from `bleizlabs-website` project-local `RevealOnView` (cross-imported by panel + marketing surfaces — code smell that triggered library promotion). Pure behavior wrapper: emits `data-revealed='true'` attribute on the rendered element once it intersects viewport (one-shot — observer disconnects after first hit). No own CSS — consumer styles via `[data-revealed='true']` SCSS attribute selector. `'use client'` boundary required (uses `IntersectionObserver` + `useState`/`useEffect`).
+  - **API improvements vs original `RevealOnView`:**
+    - `tag` prop (constrained `RevealTag` union: `'div' | 'section' | 'article' | 'aside' | 'header' | 'footer' | 'main' | 'nav' | 'li'`) replaces unconstrained polymorphic generic `as<T>` — Section's `tag` precedent applied + IMP-1 evaluator catch resolved
+    - `asChild` (Slot) for projection onto custom components or any tag outside the union (D5/D25 library convention)
+    - `immediate` prop — skip observer, render `data-revealed='true'` on mount; use for above-the-fold LCP content (eliminates flash-of-unrevealed before observer fires)
+    - `disabled` prop — disable observer entirely; useful for test fixtures (deterministic snapshots without IntersectionObserver mock)
+    - `mergeRefs` for proper internal observer ref + consumer `forwardRef` composition
+    - SSR-safe `IntersectionObserver === undefined` defensive guard for older Node test environments
+  - **Type exports:** `Reveal`, `RevealProps`, `RevealTag`
+
+- **`<RevealStack>`** (Phase 7 Molecules M8) — composition molecule wrapping `<Reveal>` + `<Stack>`. Replaces verbose `<Reveal><Stack gap={3}>...</Stack></Reveal>` pattern (recurring in panel section refactor — 7 dashboard sections, 36 marketing sections potential). Default `gap={3}` (16px) is the canonical section header→body uniform vertical rhythm. `'use client'` (inherited from Reveal). Forwards Reveal props (`tag`/`asChild`/`threshold`/`rootMargin`/`immediate`/`disabled`) + Stack props (`gap`/`align`/`justify`).
+  - **className target:** lands on outer Reveal wrapper (the element with `data-revealed`), NOT on inner Stack. Intentional — 90% use case is consumer styling reveal-driven CSS transitions on wrapper. To style inner flex layout (e.g. add background to body group), wrap children in own `<Stack className={...}>`. Documented explicitly in `@notes` block per IMP-2 evaluator catch.
+  - **Why composition instead of `gap` prop on Reveal:** SRP — Reveal is behavior atom (data-attr emit), layout is Stack's responsibility. Pre-baking `gap` into Reveal would couple two concerns + force `display: flex` onto consumers needing pure passthrough (e.g. `<Reveal asChild><article>` with grid layout inside). RevealStack opt-in convenience for the common case; raw Reveal stays unbiased for edge cases.
+  - **Why no `bodyGap`/`headerGap` props:** magic (would have to recognize which child is header), brittle, encourages misuse. Single uniform gap throughout section is the canonical pattern. Nested groups with different gap → composition: `<RevealStack gap={3}><SectionHeader /><Stack gap={2}>...</Stack></RevealStack>`.
+  - **Type exports:** `RevealStack`, `RevealStackProps`
+
+### Changed
+
+- **`components/index.ts` barrel:** Display category 9 → 10 families (added Reveal), Molecules category 10 → 11 (added RevealStack). Comment counts updated.
+- **`ROADMAP.md`:** Phase 3 Display D9 row added (Reveal, Tier B). Phase 7 Molecules M8 row added (RevealStack).
+- **`COMPONENT_REGISTRY.md`:** Reveal entry inserted under Display section (after AspectRatio). RevealStack entry inserted under Molecules section (after PageHeader).
+- **`package.json`:** version 0.5.8 → 0.5.9, description component count 91 → 93.
+
+### Compatibility
+
+- **Public API:** purely additive — no removed exports, no renamed exports, no breaking type changes. Existing 91 components byte-equivalent.
+- **Visual deltas:** none — Reveal has no own CSS, RevealStack is composition that produces identical DOM as manual `<Reveal><Stack>` pairing.
+- **Consumer migration (post-publish, separate work-unit):** `bleizlabs-website` panel sweep ready for v0.5.9 bump — 7 dashboard sections + custom local `<Section>` molecule (rolled back) → swap for `<RevealStack>`. Marketing surface (~36 RevealOnView consumers) can either continue cross-importing project-local file or migrate to `<Reveal>` from library at consumer's pace.
+- **Demo routes:** `/components/reveal` (combined Reveal atom + RevealStack examples) — adds 1 route, total 56.
+
+### Audit trail
+
+- Phase 4 Evaluator iter 1: 0 CRITICAL / 2 IMPORTANT / 2 NITPICK
+  - IMP-1: `as?: ElementType` unconstrained — fixed via `tag?: RevealTag` constrained union (Section precedent, also exported as type for RevealStack reuse)
+  - IMP-2: RevealStack `className` lands on outer Reveal not inner Stack — fixed via explicit `@notes` documentation block (no `stackClassName` prop — avoid surface bloat for marginal use case)
+- Phase 4 Evaluator iter 2: 0 CRITICAL / 2 IMPORTANT (stale JSDoc references after `as`→`tag` rename) / 1 NITPICK — mechanical fixes verifiable by inspection per evaluator note
+- All fixes applied; final tsc + lint clean.
+
+---
+
 ## [0.5.7] — 2026-04-27
 
 **Typography tokens patch — three library gaps surfaced by scout-hub `/pl/login` refactor closed in one release. Adds the inline-light eyebrow path on `Text`, three editorial Heading sizes (login asides + form cards), and the `--color-text-on-brand` semantic token (WCAG 2.2 AA fix for light-mode primary buttons on mid-tone brand seeds). Backward-compatible additive release; one visible behavior change in light theme primary buttons (white → near-black text — fixes contrast bug, see Fixed below).**
