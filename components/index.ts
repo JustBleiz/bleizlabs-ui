@@ -103,11 +103,12 @@ export * from './molecules/SectionDivider';
 export * from './molecules/ToggleGroupFilter';
 
 // ----------------------------------------------------------------------------
-// Card presets (5)
+// Card presets (6)
 // ----------------------------------------------------------------------------
 export * from './presets/ActionCard';
 export * from './presets/ContentCard';
 export * from './presets/FormCard';
+export * from './presets/IconHeaderCard';
 export * from './presets/PairedCard';
 export * from './presets/SidebarCard';
 export * from './presets/StatsCard';
