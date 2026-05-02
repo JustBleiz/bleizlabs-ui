@@ -11,8 +11,7 @@ import styles from './IconBox.module.scss';
  * IconBox — square icon container with bg + color variants (Phase 3 D4).
  *
  * @layer   atom (display)
- * @tokens  --color-{brand,success,error}-{subtle,strong} (per variant map —
- *          note: IconBoxVariant is `default|brand|success|error|plain`, no info);
+ * @tokens  --color-{brand,success,warning,error}-{subtle,strong} (per variant map);
  *          --color-surface, --color-border-subtle;
  *          --color-text-{primary,secondary,muted};
  *          --radius-md, --space-{2,3,4} (size variants sm/md/lg)
@@ -24,8 +23,20 @@ import styles from './IconBox.module.scss';
  *
  * @example
  * <IconBox icon={<MailIcon />} variant="brand" size="md" />
+ *
+ * @changelog
+ * - v0.5.8 (2026-05-04): added `warning` variant — canonical state previously
+ *   missing from the `default|brand|success|error|plain` set. Universal
+ *   cross-system need (every consumer has a warning state). Additive — zero
+ *   breaking changes.
  */
-export type IconBoxVariant = 'default' | 'brand' | 'success' | 'error' | 'plain';
+export type IconBoxVariant =
+  | 'default'
+  | 'brand'
+  | 'success'
+  | 'warning'
+  | 'error'
+  | 'plain';
 export type IconBoxSize = 'sm' | 'md' | 'lg';
 
 export interface IconBoxProps extends HTMLAttributes<HTMLDivElement> {
@@ -43,6 +54,7 @@ const VARIANT_CLASS: Record<IconBoxVariant, string> = {
   default: styles.variantDefault!,
   brand: styles.variantBrand!,
   success: styles.variantSuccess!,
+  warning: styles.variantWarning!,
   error: styles.variantError!,
   plain: styles.variantPlain!,
 };

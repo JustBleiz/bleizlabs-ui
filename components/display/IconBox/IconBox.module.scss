@@ -62,6 +62,15 @@
   color: var(--color-success-strong);
 }
 
+// v0.5.8 (2026-05-04) — warning canonical state added per cross-system audit.
+// Mirror Success/Error variant pattern (subtle border + bg, strong fg) using
+// the existing --color-warning-{subtle,strong} token pair.
+.variantWarning {
+  border-color: var(--color-warning-subtle);
+  background: var(--color-warning-subtle);
+  color: var(--color-warning-strong);
+}
+
 .variantError {
   border-color: var(--color-error-subtle);
   background: var(--color-error-subtle);
