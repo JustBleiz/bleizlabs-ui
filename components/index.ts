@@ -31,13 +31,14 @@ export * from './typography/Heading';
 export * from './typography/Text';
 
 // ----------------------------------------------------------------------------
-// Display (9 families / 13 exports)
+// Display (10 families / 14 exports)
 // ----------------------------------------------------------------------------
 export * from './display/AspectRatio';
 export * from './display/Avatar';
 export * from './display/Badge';
 export * from './display/Card';
 export * from './display/IconBox';
+export * from './display/Reveal';
 export * from './display/Separator';
 export * from './display/Skeleton';
 export * from './display/Spinner';
@@ -84,7 +85,7 @@ export * from './specialized/Pagination';
 export * from './specialized/UsageDonut';
 
 // ----------------------------------------------------------------------------
-// Molecules (10)
+// Molecules (11)
 // ----------------------------------------------------------------------------
 export * from './molecules/AccordionGroup';
 export * from './molecules/BackLink';
@@ -94,6 +95,7 @@ export * from './molecules/DeadlineBadge';
 export * from './molecules/FileChip';
 export * from './molecules/IconButton';
 export * from './molecules/PageHeader';
+export * from './molecules/RevealStack';
 export * from './molecules/SectionDivider';
 export * from './molecules/ToggleGroupFilter';
 
