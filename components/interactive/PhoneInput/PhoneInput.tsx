@@ -3,6 +3,7 @@
 import { forwardRef } from 'react';
 import { MaskedInput, type MaskedInputProps } from '../MaskedInput';
 import { MASK_PRESETS, type MaskPreset } from '../../utils/masks';
+import { useResolvedLocale } from '../../utils/locale';
 import { cn } from '../../utils/cn';
 import styles from './PhoneInput.module.scss';
 
@@ -27,12 +28,22 @@ import styles from './PhoneInput.module.scss';
  *          flag rendering, which exceeds atom scope).
  *
  *          Presets available:
- *          - `phonePL` (default): `+48 ### ### ###`
+ *          - `phonePL`: `+48 ### ### ###`
  *          - `phoneUS`: `+1 (###) ###-####`
+ *          - `phoneE164`: `+## ### ### ###` (generic fallback)
+ *
+ *          Default behavior (v0.7.0+): when neither `preset` nor `mask`
+ *          is passed, the preset is derived from `navigator.language`
+ *          via `useResolvedLocale`:
+ *          - `pl-*` → `phonePL`
+ *          - `en-US`/`en-CA` → `phoneUS`
+ *          - everything else (incl. SSR baseline) → `phoneE164`
  *
  *          For other countries, pass a raw `mask` prop (e.g.,
  *          `+44 #### ### ####` for UK) — accepts any valid mask
- *          pattern from `masks.ts`.
+ *          pattern from `masks.ts`. Consumers who want stable PL
+ *          formatting regardless of browser locale should pass
+ *          `preset="phonePL"` explicitly.
  *
  *          Value is the FORMATTED phone string (e.g., `+48 123 456 789`).
  *          To extract just the digits for backend submission, call
@@ -58,16 +69,16 @@ import styles from './PhoneInput.module.scss';
  *   mask="+44 #### ### ####"
  * />
  */
-export type PhonePreset = Extract<MaskPreset, 'phonePL' | 'phoneUS'>;
+export type PhonePreset = Extract<MaskPreset, 'phonePL' | 'phoneUS' | 'phoneE164'>;
 
 export interface PhoneInputProps
   extends Omit<MaskedInputProps, 'preset' | 'mask' | 'label'> {
   /** Visible label text. Default used by consumers: `"Telefon"` / `"Phone"`. */
   label: string;
   /**
-   * Phone mask preset. Default `phonePL` (Polish `+48 ### ### ###`).
-   * Other presets from `MASK_PRESETS` are rejected at the type level —
-   * use the `mask` prop if you need a different country format.
+   * Phone mask preset. When omitted, derived from `navigator.language`
+   * (PL → `phonePL`, US/CA → `phoneUS`, otherwise → `phoneE164`). SSR
+   * baseline is `phoneE164`.
    */
   preset?: PhonePreset;
   /**
@@ -78,10 +89,22 @@ export interface PhoneInputProps
   mask?: string;
 }
 
+function presetFromLocale(locale: string): PhonePreset {
+  // BCP 47 lang-region. Lowercase region for case-insensitive match.
+  const region = locale.split('-')[1]?.toUpperCase();
+  const lang = locale.split('-')[0]?.toLowerCase();
+  if (lang === 'pl') return 'phonePL';
+  if (region === 'US' || region === 'CA') return 'phoneUS';
+  return 'phoneE164';
+}
+
 export const PhoneInput = forwardRef<HTMLInputElement, PhoneInputProps>(
-  function PhoneInput({ preset = 'phonePL', mask, className, ...rest }, ref) {
+  function PhoneInput({ preset, mask, className, ...rest }, ref) {
+    const locale = useResolvedLocale();
     // Resolve mask: raw `mask` prop wins over preset (escape hatch).
-    const resolvedMask = mask ?? MASK_PRESETS[preset];
+    // When neither passed, derive preset from runtime locale.
+    const resolvedPreset = preset ?? presetFromLocale(locale);
+    const resolvedMask = mask ?? MASK_PRESETS[resolvedPreset];
     return (
       <MaskedInput
         ref={ref}

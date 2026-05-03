@@ -194,6 +194,13 @@ export const MASK_PRESETS = {
   phonePL: '+48 ### ### ###',
   /** US phone number: `+1 (123) 456-7890` */
   phoneUS: '+1 (###) ###-####',
+  /**
+   * Generic E.164 phone fallback: `+## ### ### ###`. Used by PhoneInput
+   * when no preset is specified and `navigator.language` resolves to a
+   * country without a dedicated preset (any non-PL/non-US locale, plus
+   * the deterministic SSR baseline).
+   */
+  phoneE164: '+## ### ### ###',
   /** Polish postcode: `12-345` */
   postcodePL: '##-###',
   /** Polish NIP (tax ID): `123-456-78-90` */

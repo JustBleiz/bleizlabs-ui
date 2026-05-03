@@ -1,0 +1,1 @@
+export { useResolvedLocale } from './useResolvedLocale';
