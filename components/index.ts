@@ -87,7 +87,7 @@ export * from './specialized/Pagination';
 export * from './specialized/UsageDonut';
 
 // ----------------------------------------------------------------------------
-// Molecules (12)
+// Molecules (13)
 // ----------------------------------------------------------------------------
 export * from './molecules/AccordionGroup';
 export * from './molecules/BackLink';
@@ -97,6 +97,7 @@ export * from './molecules/DataRow';
 export * from './molecules/DeadlineBadge';
 export * from './molecules/FileChip';
 export * from './molecules/IconButton';
+export * from './molecules/MetricTile';
 export * from './molecules/PageHeader';
 export * from './molecules/RevealStack';
 export * from './molecules/SectionDivider';
