@@ -379,6 +379,14 @@
   --switch-thumb-offset: 2px;
 
   // ==========================================================================
+  // CLUSTER 3 MICRO TOKENS — v0.7.0 (E04 Cluster 3)
+  // ==========================================================================
+  // Dedicated semantic tokens dla single-purpose values poza --space-* scale.
+  // Per R22 (b) — visual identity preservation z independent override path.
+  --badge-dot-size: 6px;            // Badge .dot (gap między --space-1 4px i --space-2 8px)
+  --border-width-accent: 3px;       // Card .accentLeft/.accentTop border-width (gap między 2px design constant i 4px)
+
+  // ==========================================================================
   // ICON-BOX FONT-SIZE GAP-FILL TOKEN — v0.7.0 (E04 Cluster 1)
   // ==========================================================================
   // IconBox lg 22px NIE mapuje na base `--font-size-*` scale (xl=20, 2xl=24 —

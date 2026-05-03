@@ -40,11 +40,11 @@
 }
 
 .accentLeft {
-  border-left: 3px solid var(--card-accent-color, var(--color-brand));
+  border-left: var(--border-width-accent) solid var(--card-accent-color, var(--color-brand));
 }
 
 .accentTop {
-  border-top: 3px solid var(--card-accent-color, var(--color-brand));
+  border-top: var(--border-width-accent) solid var(--card-accent-color, var(--color-brand));
 }
 
 .variantGlass {

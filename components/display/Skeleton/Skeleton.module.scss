@@ -14,7 +14,7 @@
 // ============================================================================
 
 .text {
-  height: 12px;
+  height: var(--space-3); // 12px (R22 token reuse-first)
   border-radius: var(--radius-sm);
 }
 
