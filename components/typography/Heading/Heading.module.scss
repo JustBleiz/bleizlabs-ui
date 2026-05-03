@@ -34,7 +34,7 @@
 
 .size4xl {
   font-size: var(--font-size-4xl);
-  letter-spacing: -0.02em;
+  letter-spacing: var(--letter-spacing-tighter); // -0.025em (R22 reuse, delta 0.005em od poprzedniego -0.02em negligible)
 }
 
 .size5xl {
@@ -54,7 +54,7 @@
 // devices — keep display headings short (≤6 words) for hero contexts.
 .sizeDisplay {
   font-size: clamp(2.25rem, 5.5vw + 1rem, 4.5rem);
-  line-height: 1.05;
+  line-height: var(--line-height-display); // 1.05 (R22 dedicated token)
   letter-spacing: var(--letter-spacing-tighter);
 }
 
@@ -66,7 +66,7 @@
 // line-height overrides pattern (2+ consumers, RoT hit).
 .sizeDisplayMd {
   font-size: clamp(1.875rem, 4vw + 0.75rem, 3rem);
-  line-height: 1.05;
+  line-height: var(--line-height-display); // 1.05 (R22 dedicated token, shared z sizeDisplay)
   letter-spacing: var(--letter-spacing-tighter);
 }
 
@@ -84,7 +84,7 @@
 // blocks, marketing-page splash bars where display tier overpowers.
 .sizeHeroEditorial {
   font-size: var(--font-size-hero-editorial);
-  line-height: 1.1;
+  line-height: var(--line-height-display-loose); // 1.1 (R22 dedicated token)
   letter-spacing: var(--letter-spacing-tighter);
 }
 
@@ -94,7 +94,7 @@
 // multi-line behavior; letter-spacing tight to anchor visual weight.
 .sizeFormCardTitle {
   font-size: var(--font-size-form-card-title);
-  line-height: 1.25;
+  line-height: var(--line-height-form-card-title); // 1.25 (R22 dedicated token)
   letter-spacing: var(--letter-spacing-tight);
 }
 
@@ -104,6 +104,6 @@
 // (no tightening — this is body-tier, not headline-tier).
 .sizeFormCardSubtitle {
   font-size: var(--font-size-form-card-subtitle);
-  line-height: 1.45;
+  line-height: var(--line-height-form-card-subtitle); // 1.45 (R22 dedicated token)
   letter-spacing: var(--letter-spacing-normal);
 }

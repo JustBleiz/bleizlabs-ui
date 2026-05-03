@@ -53,6 +53,17 @@
   --line-height-normal: #{$line-height-normal};
   --line-height-relaxed: #{$line-height-relaxed};
 
+  // v0.7.0 — Heading typography line-height gap-fill tokens (E04 Cluster 2).
+  // Heading.module.scss size variants display/displayMd/hero-editorial/
+  // form-card-title/form-card-subtitle wymagają line-heights NIE w base
+  // {tight: 1.2, snug: 1.375, normal: 1.5, relaxed: 1.625} scale.
+  // Per R22 (b) dedicated semantic — atelier display tier ma własną budget
+  // dla densely-stacked editorial typography.
+  --line-height-display: 1.05;            // Hero H1 atelier display tier
+  --line-height-display-loose: 1.1;       // Hero-editorial multi-line aside
+  --line-height-form-card-title: 1.25;    // Form-card title compact stack
+  --line-height-form-card-subtitle: 1.45; // Form-card subtitle readable copy
+
   --font-weight-regular: #{$font-weight-regular};
   --font-weight-medium: #{$font-weight-medium};
   --font-weight-semibold: #{$font-weight-semibold};
