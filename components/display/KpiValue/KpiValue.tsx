@@ -17,6 +17,11 @@ import styles from './KpiValue.module.scss';
  *          --line-height-tight, --letter-spacing-{tighter,normal},
  *          --color-text-{primary,secondary,muted},
  *          --color-{success,warning,error,brand-500}, --space-{1,2}
+ * @notes   `unit === '%'` is special-cased: the percent sign attaches tightly
+ *          inside the value span (no `--space-1` gap, no `.unit` styling) —
+ *          renders as `42%` not `42 %`. Other units render via separate
+ *          small/muted span (legacy KpiValue behavior preserved). This
+ *          reproduces ex-PercentValue visual identity post-merge (v0.7.0).
  * @deps    cn (lib). Zero icon-library deps per D5 — trend icons are inline
  *          SVG with optional `trend.icon` ReactNode slot for consumer override.
  *          Animation moved to {@link KpiValueAnimated} client wrapper.
@@ -99,6 +104,7 @@ import styles from './KpiValue.module.scss';
 
 export type KpiValueColor = 'primary' | 'success' | 'warning' | 'error' | 'brand';
 export type KpiValueColorOrAuto = KpiValueColor | 'auto';
+export type KpiValueSize = 'md' | 'lg' | 'xl';
 
 const VALUE_COLOR_VAR: Record<KpiValueColor, string> = {
   primary: 'var(--color-text-primary)',
@@ -108,7 +114,7 @@ const VALUE_COLOR_VAR: Record<KpiValueColor, string> = {
   brand: 'var(--color-brand-500)',
 };
 
-const SIZE_CLASS: Record<NonNullable<KpiValueProps['size']>, string> = {
+const SIZE_CLASS: Record<KpiValueSize, string> = {
   md: styles.sizeMd!,
   lg: styles.sizeLg!,
   xl: styles.sizeXl!,
@@ -219,7 +225,7 @@ export interface KpiValueProps
    */
   unit?: string;
   /** Visual scale of the numeric value. Default `'lg'`. */
-  size?: 'md' | 'lg' | 'xl';
+  size?: KpiValueSize;
   /**
    * Color of the value. `'auto'` derives the color from `thresholds` +
    * `inverse` when `value` is numeric (otherwise falls back to

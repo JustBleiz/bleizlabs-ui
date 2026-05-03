@@ -30,10 +30,9 @@ import styles from './EntityCard.module.scss';
  *          density-driven), --color-text-{primary,secondary,muted}
  *          (typography via Text), --color-{brand,success,warning,error}
  *          (badge tones + accent color), --radius-{md,lg} (density-driven
- *          via Card radius prop). Component-local: `--entity-card-icon-size`
- *          (default 32px — fixed-tier per D28 grandfathered px exception
- *          for Avatar-class fixed-size atoms; consumer overrides via icon
- *          node intrinsic size).
+ *          via Card radius prop). Icon slot does NOT own a size token —
+ *          consumers control icon dimensions via the icon node's
+ *          intrinsic `width`/`height` (typically 14-20px).
  * @deps    Card (atom — variant/accent/padding/radius/gap/hoverable/asChild),
  *          Heading + Text (typography), Inline + Stack (layout), Badge
  *          (status), cn. Zero icon-library deps per D5 — `icon` is
