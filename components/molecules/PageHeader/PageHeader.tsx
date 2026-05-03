@@ -82,6 +82,21 @@ import styles from './PageHeader.module.scss';
  *     { label: '1 ostrzeżenie', color: 'warning' },
  *   ]}
  * />
+ *
+ * @example
+ * // v0.7.0 amendment — actions slot (CTA buttons / filters / overflow menu
+ * // right of title at desktop, wrap below on narrow viewports)
+ * <PageHeader
+ *   level={1}
+ *   title="Tickety"
+ *   subtitle="Zgłoszenia i wsparcie"
+ *   actions={
+ *     <>
+ *       <Button variant="ghost" size="sm">Filtruj</Button>
+ *       <Button variant="primary" size="sm">Nowy ticket</Button>
+ *     </>
+ *   }
+ * />
  */
 
 export type PageHeaderLevel = 1 | 2 | 3;
@@ -122,6 +137,16 @@ export interface PageHeaderProps
   subtitle?: ReactNode;
   /** Optional status badge strip rendered below subtitle. */
   badges?: PageHeaderBadge[];
+  /**
+   * Optional actions slot (v0.7.0 amendment) — renders right of the title
+   * at desktop widths, wraps below the title on narrow viewports.
+   * Typically `<Button>` / `<DropdownMenu>` triggers / overflow menu.
+   * Consumer composes the action elements (zero structural assumptions:
+   * lib stays universal, project-specific button order/styling stays at
+   * consumer). Subtitle and badges retain their existing position below
+   * the title row regardless of `actions` presence.
+   */
+  actions?: ReactNode;
 }
 
 export const PageHeader = forwardRef<HTMLDivElement, PageHeaderProps>(
@@ -135,6 +160,7 @@ export const PageHeader = forwardRef<HTMLDivElement, PageHeaderProps>(
       accentColor,
       subtitle,
       badges,
+      actions,
       className,
       ...rest
     },
@@ -169,6 +195,11 @@ export const PageHeader = forwardRef<HTMLDivElement, PageHeaderProps>(
     );
 
     const hasBadges = Array.isArray(badges) && badges.length > 0;
+    const headingNode = (
+      <Heading level={level} size={size} className={styles.title}>
+        {titleContent}
+      </Heading>
+    );
 
     return (
       <Stack
@@ -177,9 +208,14 @@ export const PageHeader = forwardRef<HTMLDivElement, PageHeaderProps>(
         className={cn(styles.root, className)}
         {...rest}
       >
-        <Heading level={level} size={size} className={styles.title}>
-          {titleContent}
-        </Heading>
+        {actions ? (
+          <div className={styles.titleRow}>
+            <div className={styles.titleSlot}>{headingNode}</div>
+            <div className={styles.actions}>{actions}</div>
+          </div>
+        ) : (
+          headingNode
+        )}
 
         {subtitle ? (
           <Text variant="lead" color="secondary" className={styles.subtitle}>
