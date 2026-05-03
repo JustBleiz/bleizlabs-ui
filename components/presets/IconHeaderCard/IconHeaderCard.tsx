@@ -107,8 +107,18 @@ export interface IconHeaderCardProps
   headerIcon: ReactNode;
   /** Caption text rendered next to icon (uppercase + semibold + muted color). Required. */
   headerLabel: string;
-  /** Optional Badge in the header row. */
-  headerBadge?: { label: string; color?: BadgeColor };
+  /**
+   * Optional Badge in the header row.
+   *
+   * - `label` (required): badge text
+   * - `color` (optional): semantic color (default neutral)
+   * - `icon` (optional, v0.6.1): leading icon node — typically a `@tabler/icons-react`
+   *   element. Promoted from bleizlabs-website Faza 3 deferred AIChannelHeader
+   *   (bot-type indicator badges with provider icons). Universal across BleizLabs
+   *   products (status badges, certification marks, model labels routinely pair
+   *   icon + text).
+   */
+  headerBadge?: { label: string; color?: BadgeColor; icon?: ReactNode };
   /** IconBox visual variant. Default `'default'`. */
   iconVariant?: IconBoxVariant;
   /** IconBox size. Default `'sm'` (smaller for stat-card density vs. default `md`). */
@@ -172,7 +182,11 @@ export const IconHeaderCard = forwardRef<HTMLDivElement, IconHeaderCardProps>(
                 <span>{headerLabel}</span>
               </Text>
               {headerBadge && (
-                <Badge color={headerBadge.color} label={headerBadge.label} />
+                <Badge
+                  color={headerBadge.color}
+                  label={headerBadge.label}
+                  icon={headerBadge.icon}
+                />
               )}
             </Inline>
             {children}

@@ -202,6 +202,10 @@
   --bar-color: var(--color-warning-strong);
 }
 
+.colorErrorStrong {
+  --bar-color: var(--color-error-strong);
+}
+
 .track {
   position: relative;
   width: 100%;

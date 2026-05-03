@@ -21,6 +21,8 @@ import styles from './Progress.module.scss';
  *
  * @layer   atom (feedback)
  * @tokens  --color-brand, --color-brand-subtle, --color-brand-strong,
+ *          --color-info, --color-success-strong, --color-warning-strong,
+ *          --color-error-strong (v0.6.1),
  *          --color-surface, --color-surface-raised, --color-border-subtle,
  *          --color-text-{primary,secondary},
  *          --space-{1,2}, --font-size-xs, --font-weight-{medium,semibold},
@@ -77,13 +79,17 @@ import styles from './Progress.module.scss';
 export type ProgressStageDisplayMode = 'pills' | 'track';
 
 /**
- * Per-bar color for percent-mode Progress (v0.5.4).
+ * Per-bar color for percent-mode Progress.
  *
- * Default `'brand'` preserves v0.5.3 byte-for-byte. The other three colors
- * align with scout-hub cost-estimator phase semantics (info=discovery,
- * success-strong=D0, warning-strong=research) so multi-phase cost panels
- * can build per-phase Progress rows from the library directly without
- * descending into `:global(.bzl-*)` selectors.
+ * - `brand` (default, v0.5.4): preserves v0.5.3 byte-for-byte.
+ * - `info` / `success-strong` / `warning-strong` (v0.5.4): align with
+ *   scout-hub cost-estimator phase semantics (info=discovery, success-strong=D0,
+ *   warning-strong=research) so multi-phase cost panels can build per-phase
+ *   Progress rows from the library without descending into `:global(.bzl-*)`.
+ * - `error-strong` (v0.6.1): negative-state metrics (failure rate, escalation,
+ *   churn, declining KPIs). Promoted from bleizlabs-website Faza 3 deferred
+ *   SatisfactionScore mood scoreBar — universal across BleizLabs products
+ *   (every system has negative-state progress signals).
  *
  * Stages mode is unaffected — semantic stage colors live in the
  * `.stageActive`/`.stageCompleted` rules and use brand throughout.
@@ -92,7 +98,8 @@ export type ProgressPercentColor =
   | 'brand'
   | 'info'
   | 'success-strong'
-  | 'warning-strong';
+  | 'warning-strong'
+  | 'error-strong';
 
 type ProgressStagesProps = {
   /** Stage names rendered as pills in an `<ol>`. When set, `currentStage` is required and `value`/`max` must NOT be set. */
@@ -146,6 +153,7 @@ const PERCENT_COLOR_CLASS: Record<ProgressPercentColor, string> = {
   info: styles.colorInfo!,
   'success-strong': styles.colorSuccessStrong!,
   'warning-strong': styles.colorWarningStrong!,
+  'error-strong': styles.colorErrorStrong!,
 };
 
 export const Progress = forwardRef<HTMLDivElement, ProgressProps>(
