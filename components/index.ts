@@ -104,10 +104,11 @@ export * from './molecules/SectionDivider';
 export * from './molecules/ToggleGroupFilter';
 
 // ----------------------------------------------------------------------------
-// Card presets (7)
+// Card presets (8)
 // ----------------------------------------------------------------------------
 export * from './presets/ActionCard';
 export * from './presets/ContentCard';
+export * from './presets/EntityCard';
 export * from './presets/EntityHero';
 export * from './presets/FormCard';
 export * from './presets/IconHeaderCard';

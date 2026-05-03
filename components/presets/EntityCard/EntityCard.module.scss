@@ -1,0 +1,121 @@
+// =============================================================================
+// EntityCard — universal entity grid item preset (E04.2 #3, Phase 8 CP8)
+// =============================================================================
+// Promoted from 6+ cross-system consumers per Tier B decision-tree audit
+// 2026-05-04. Composes Card + Heading + Text + Inline + Stack + Badge atoms.
+// Density variants drive padding/radius/heading-size via Card props (no SCSS
+// branching needed for density itself — SCSS owns icon slot + meta-strip
+// chrome only). Server-safe.
+
+// ----------------------------------------------------------------------------
+// 1. ROOT (Card composition — chrome owned by Card atom)
+// ----------------------------------------------------------------------------
+.root {
+  // Card atom owns variant / accent / padding / radius / gap / hoverable /
+  // hover transitions. Hook reserved for consumer overrides.
+  // When rendered as <a> (href provided, via Card asChild), inherit text
+  // color + remove default underline so the entire surface acts as the
+  // click target without anchor-style underline cruft.
+  &:is(a),
+  &:is(a):hover,
+  &:is(a):focus-visible {
+    color: inherit;
+    text-decoration: none;
+  }
+}
+
+// ----------------------------------------------------------------------------
+// 2. BODY (Stack composition wrapping all slots)
+// ----------------------------------------------------------------------------
+.body {
+  // Stack atom owns gap. Hook reserved for consumer overrides.
+}
+
+// ----------------------------------------------------------------------------
+// 3. HEADER (icon + title row, when icon present)
+// ----------------------------------------------------------------------------
+.header {
+  // Inline atom owns gap + align. Hook reserved.
+}
+
+.title {
+  // Heading atom owns size/weight/color. min-width: 0 lets long titles
+  // wrap inside Inline flex row (default would force overflow).
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
+.icon {
+  // Icon slot — consumer SVG/icon component. Sized via consumer's own
+  // icon size prop (typically 14-20px). Inline-flex centers the slot
+  // visually w title baseline regardless of icon node intrinsic display.
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+  // Color follows current text color cascade — consumer passes icon w
+  // `currentColor` stroke and it inherits the title color (or accent
+  // color if consumer wraps EntityCard z color override).
+  color: inherit;
+}
+
+// ----------------------------------------------------------------------------
+// 4. DESCRIPTION (Text composition)
+// ----------------------------------------------------------------------------
+.description {
+  // Text atom owns variant/color. Hook reserved for consumer overrides.
+}
+
+// ----------------------------------------------------------------------------
+// 5. BADGES (Inline composition)
+// ----------------------------------------------------------------------------
+.badges {
+  // Inline atom owns gap + wrap. Hook reserved.
+}
+
+// ----------------------------------------------------------------------------
+// 6. META STRIP (<ul role="list"> w flex-wrap rows — mirrors EntityHero)
+// ----------------------------------------------------------------------------
+.metaStrip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2) var(--space-4);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.metaItem {
+  display: flex;
+  min-width: 0;
+}
+
+.metaIcon {
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+  color: inherit;
+}
+
+// ----------------------------------------------------------------------------
+// 7. DENSITY VARIANTS — most density behavior delegated do Card props
+//    (padding/radius driven via Card prop). Hooks reserved dla per-density
+//    overrides if consumer needs micro-tuning per surface.
+// ----------------------------------------------------------------------------
+.densityCompact {
+  // Card padding=4, radius=md, gap=2, heading size=md (driven by props).
+}
+
+.densityComfortable {
+  // Card padding=5, radius=lg, gap=3, heading size=lg (driven by props).
+}
+
+// ----------------------------------------------------------------------------
+// 8. REDUCED MOTION (defensive baseline — Card hoverable handles its own
+//    transition + reduced-motion suppression internally; this block is
+//    a safety net in case consumer adds custom transitions via SCSS hook)
+// ----------------------------------------------------------------------------
+@media (prefers-reduced-motion: reduce) {
+  .root {
+    transition: none;
+  }
+}
