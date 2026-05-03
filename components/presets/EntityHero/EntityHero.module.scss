@@ -1,5 +1,6 @@
 // =============================================================================
-// DetailPageHero — universal entity detail page hero shell
+// EntityHero — universal entity detail-view hero shell
+// (renamed from DetailPageHero in v0.7.0; alias path retained for v0.7.x)
 // =============================================================================
 // Pure compositional preset. Visual chrome (typography, BackLink ghost
 // button, Heading display tier) delegated entirely to dependency components.
@@ -70,7 +71,7 @@
 }
 
 // ----------------------------------------------------------------------------
-// 6. REDUCED MOTION (defensive baseline — DetailPageHero has no transitions;
+// 6. REDUCED MOTION (defensive baseline — EntityHero has no transitions;
 //    Heading / Text / BackLink handle their own PRM)
 // ----------------------------------------------------------------------------
 @media (prefers-reduced-motion: reduce) {

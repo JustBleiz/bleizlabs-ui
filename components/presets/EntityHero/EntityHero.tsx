@@ -5,10 +5,11 @@ import { Stack } from '../../layout/Stack/Stack';
 import { Text } from '../../typography/Text/Text';
 import { BackLink } from '../../molecules/BackLink/BackLink';
 import { cn } from '../../utils/cn';
-import styles from './DetailPageHero.module.scss';
+import styles from './EntityHero.module.scss';
 
 /**
- * DetailPageHero — universal entity detail page hero shell
+ * EntityHero — universal entity detail-view hero shell (renamed from
+ * DetailPageHero in v0.7.0; original name remains as deprecated alias).
  *
  * @layer   preset (Phase 8 CP7, sister to IconHeaderCard CP6)
  * @tokens  --space-{1,2,3,4} (gaps between backLink + header row + description +
@@ -25,7 +26,7 @@ import styles from './DetailPageHero.module.scss';
  *          Meta strip rendered as `<ul role="list">` for SR navigation.
  *          `aria-label` on root via spread for live data scenarios.
  *
- * @notes   Like IconHeaderCard (CP6 sister preset), DetailPageHero uses
+ * @notes   Like IconHeaderCard (CP6 sister preset), EntityHero uses
  *          ReactNode SLOTS (titleBadges, statusIndicators, progression) —
  *          INTENTIONAL family divergence from KpiValue/PercentValue/BreakdownList
  *          children?:never convention. Justified because entity diversity
@@ -33,8 +34,8 @@ import styles from './DetailPageHero.module.scss';
  *          + type label, ProjectDetailHeader composes PillarChipGroup + type
  *          badge + StageProgress, TicketDetailHeader composes status + SLA +
  *          conversion banner. Lib cannot prescribe one shape across all entity
- *          taxonomies. Body composition is consumer-driven; DetailPageHero
- *          owns shell layout + spacing + semantic landmark only.
+ *          taxonomies. Body composition is consumer-driven; EntityHero owns
+ *          shell layout + spacing + semantic landmark only.
  *
  *          Meta strip is structured (typed array) rather than ReactNode slot
  *          because every consumer renders the same shape (icon + label +
@@ -43,7 +44,7 @@ import styles from './DetailPageHero.module.scss';
  *
  * @example
  * // Service detail (driving consumer)
- * <DetailPageHero
+ * <EntityHero
  *   backLink={{ href: '/panel/services', label: 'Wszystkie usługi' }}
  *   title="Chatbot obsługi sklepu"
  *   titleBadges={
@@ -63,7 +64,7 @@ import styles from './DetailPageHero.module.scss';
  *
  * @example
  * // Minimal
- * <DetailPageHero
+ * <EntityHero
  *   backLink={{ href: '/panel/tickets', label: 'Wszystkie zgłoszenia' }}
  *   title="Zgłoszenie #1234"
  *   statusIndicators={<Badge color="warning" label="W toku" dot />}
@@ -71,10 +72,10 @@ import styles from './DetailPageHero.module.scss';
  *
  * @example
  * // No back-link (top-level detail)
- * <DetailPageHero title="Twoje konto" description="Ustawienia profilu i preferencje." />
+ * <EntityHero title="Twoje konto" description="Ustawienia profilu i preferencje." />
  */
 
-export interface DetailPageHeroMetaItem {
+export interface EntityHeroMetaItem {
   /** Optional stable React key. Falls back to `${label}-${index}` when omitted. */
   key?: string;
   /**
@@ -90,9 +91,9 @@ export interface DetailPageHeroMetaItem {
   value: ReactNode;
 }
 
-export interface DetailPageHeroProps
+export interface EntityHeroProps
   extends Omit<HTMLAttributes<HTMLElement>, 'children' | 'title'> {
-  /** Page title. String → wrapped in `<Heading level=1 size=4xl>`; ReactNode passed through verbatim (consumer owns Heading). NB: shadows native `title` tooltip attribute (intentional — DetailPageHero `title` is the page H1, not a hover tooltip). */
+  /** Page title. String → wrapped in `<Heading level=1 size=4xl>`; ReactNode passed through verbatim (consumer owns Heading). NB: shadows native `title` tooltip attribute (intentional — EntityHero `title` is the page H1, not a hover tooltip). */
   title: string | ReactNode;
   /** Optional BackLink config. When omitted no back-link is rendered. */
   backLink?: { href: string; label: string };
@@ -105,9 +106,9 @@ export interface DetailPageHeroProps
   /** Optional ReactNode slot for progression indicator (e.g. StageProgress — projects only; absent for services/tickets). */
   progression?: ReactNode;
   /** Optional structured meta strip rendered below status/progression. Each item: `{ key?, icon?, label, value }`. */
-  metaStrip?: DetailPageHeroMetaItem[];
+  metaStrip?: EntityHeroMetaItem[];
   /**
-   * @internal DetailPageHero owns its inner layout — children are not accepted.
+   * @internal EntityHero owns its inner layout — children are not accepted.
    * Use named slot props (titleBadges / statusIndicators / progression) or
    * the structured `metaStrip` prop for additional content.
    */
@@ -116,8 +117,8 @@ export interface DetailPageHeroProps
   // HTMLAttributes via `...rest` spread onto the <header> root.
 }
 
-export const DetailPageHero = forwardRef<HTMLElement, DetailPageHeroProps>(
-  function DetailPageHero(
+export const EntityHero = forwardRef<HTMLElement, EntityHeroProps>(
+  function EntityHero(
     {
       title,
       backLink,

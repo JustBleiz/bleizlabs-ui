@@ -107,7 +107,7 @@ export * from './molecules/ToggleGroupFilter';
 // ----------------------------------------------------------------------------
 export * from './presets/ActionCard';
 export * from './presets/ContentCard';
-export * from './presets/DetailPageHero';
+export * from './presets/EntityHero';
 export * from './presets/FormCard';
 export * from './presets/IconHeaderCard';
 export * from './presets/PairedCard';
