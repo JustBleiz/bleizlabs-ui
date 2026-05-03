@@ -19,8 +19,8 @@ import styles from './BreakdownList.module.scss';
  *          informational `<li>` — `ref` always resolves to `<ul>`, aria-* props
  *          and any `role` override land on the same element regardless of
  *          item count (consistent contract). Owns its inner layout —
- *          `children?: never` enforces this (mirrors KpiValue/PercentValue
- *          Value-family SRP convention).
+ *          `children?: never` enforces this (mirrors KpiValue Value-family
+ *          SRP convention; PercentValue merged into KpiValue v0.7.0).
  *
  * @notes   Tone enum (`'brand' | 'info' | 'success' | 'warning'`) intentionally
  *          omits `'error'` — the underlying `ProgressPercentColor` has no

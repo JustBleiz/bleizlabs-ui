@@ -93,7 +93,19 @@
 }
 
 // ----------------------------------------------------------------------------
-// 6. REDUCED MOTION (defensive baseline — KpiValue has no transitions today,
+// 6. BENCHMARK CAPTION (optional, shown below trend row — merged from
+//    legacy PercentValue 2026-05-04)
+// ----------------------------------------------------------------------------
+.benchmark {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  line-height: var(--line-height-tight);
+  letter-spacing: var(--letter-spacing-normal);
+  color: var(--color-text-muted);
+}
+
+// ----------------------------------------------------------------------------
+// 7. REDUCED MOTION (defensive baseline — KpiValue has no transitions today,
 //    but suppresses any future addition; AnimatedCounter handles its own PRM)
 // ----------------------------------------------------------------------------
 @media (prefers-reduced-motion: reduce) {

@@ -28,7 +28,7 @@ import styles from './EntityHero.module.scss';
  *
  * @notes   Like IconHeaderCard (CP6 sister preset), EntityHero uses
  *          ReactNode SLOTS (titleBadges, statusIndicators, progression) —
- *          INTENTIONAL family divergence from KpiValue/PercentValue/BreakdownList
+ *          INTENTIONAL family divergence from KpiValue/BreakdownList
  *          children?:never convention. Justified because entity diversity
  *          REQUIRES flexible slots: ServiceDetailHero composes PillarChipGroup
  *          + type label, ProjectDetailHeader composes PillarChipGroup + type

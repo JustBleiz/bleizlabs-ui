@@ -1,72 +1,50 @@
 'use client';
 
 import { forwardRef } from 'react';
-import { AnimatedCounter } from '../../specialized/AnimatedCounter/AnimatedCounter';
-import { PercentValue, type PercentValueProps } from './PercentValue';
+import {
+  KpiValueAnimated,
+  type KpiValueAnimatedProps,
+} from '../KpiValue/KpiValueAnimated';
+import type { PercentValueProps } from './PercentValue';
 
 /**
- * PercentValueAnimated — animated count-up wrapper around {@link PercentValue}.
+ * @deprecated since v0.7.0 — merged into {@link KpiValueAnimated}. Will
+ * be removed in v1.0.0. Migration:
  *
- * @layer   atom (display) — Client Component, wraps Server-safe `PercentValue`
- * @deps    PercentValue (lib base atom), AnimatedCounter (lib specialized).
- *          Replaces the `animated` prop pattern that lived on PercentValue
- *          pre-v0.7.0 — splitting the client boundary into this thin
- *          wrapper lets the base atom stay RSC-safe.
+ * - `<PercentValueAnimated value={X} />` →
+ *   `<KpiValueAnimated value={X} unit="%" />`
+ * - `tone` prop → `color` prop
  *
- * @example
- * <PercentValueAnimated value={42} />
- *
- * @example
- * <PercentValueAnimated
- *   value={22}
- *   inverse
- *   thresholds={{ success: 15, warning: 30 }}
- *   benchmark="industry avg 20%"
- *   duration={1800}
- * />
+ * This thin wrapper exists for backward compatibility through v0.7.x —
+ * forwards every prop to KpiValueAnimated with `unit="%"` defaulted and
+ * `tone` re-aliased to `color`.
  */
 export interface PercentValueAnimatedProps
   extends Omit<PercentValueProps, 'renderValue'> {
-  /** Animation duration in ms (forwarded to AnimatedCounter). Default 1500. */
+  /** Animation duration in ms. Default 1500. */
   duration?: number;
-  /**
-   * Locale for numeric formatting (BCP-47, forwarded to AnimatedCounter).
-   * When omitted, AnimatedCounter resolves from `navigator.language` with
-   * `'en-US'` SSR fallback.
-   */
+  /** Locale for numeric formatting (BCP-47). */
   locale?: string;
-  /**
-   * When `false`, renders statically without animation (still mounted as
-   * a Client Component because AnimatedCounter handles motion semantics).
-   * Default `true`.
-   */
+  /** When `false`, renders statically. Default `true`. */
   animated?: boolean;
 }
 
+/**
+ * @deprecated since v0.7.0 — use {@link KpiValueAnimated} with `unit="%"`.
+ */
 export const PercentValueAnimated = forwardRef<
   HTMLDivElement,
   PercentValueAnimatedProps
 >(function PercentValueAnimated(
-  { duration, locale, animated = true, ...rest },
+  { tone = 'auto', value, decimals = 0, ...rest },
   ref
 ) {
-  return (
-    <PercentValue
-      ref={ref}
-      {...rest}
-      renderValue={(value, decimals) =>
-        animated ? (
-          <AnimatedCounter
-            value={value}
-            duration={duration}
-            decimals={decimals}
-            locale={locale}
-            suffix="%"
-          />
-        ) : (
-          `${value.toFixed(decimals)}%`
-        )
-      }
-    />
-  );
+  const kpiProps: KpiValueAnimatedProps = {
+    ...rest,
+    value,
+    unit: '%',
+    color: tone,
+    decimals,
+  };
+  return <KpiValueAnimated ref={ref} {...kpiProps} />;
 });

@@ -1,7 +1,6 @@
 import Link from 'next/link';
 import { BreakdownList } from '@/components/molecules/BreakdownList';
 import { KpiValue, KpiValueAnimated } from '@/components/display/KpiValue';
-import { PercentValueAnimated } from '@/components/display/PercentValue';
 import { IconHeaderCard } from '@/components/presets/IconHeaderCard';
 import { Heading } from '@/components/typography/Heading';
 import { Text } from '@/components/typography/Text';
@@ -135,8 +134,10 @@ export default function IconHeaderCardPlaygroundPage() {
               },
             ]}
           >
-            <PercentValueAnimated
+            <KpiValueAnimated
               value={22}
+              unit="%"
+              color="auto"
               inverse
               thresholds={{ success: 15, warning: 30 }}
               benchmark="industry avg 20%"
