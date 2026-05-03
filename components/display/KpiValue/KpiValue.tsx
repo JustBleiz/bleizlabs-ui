@@ -1,49 +1,44 @@
-'use client';
-// 'use client' — required because optional `animated` prop forwards to
-// AnimatedCounter (which uses requestAnimationFrame + useState + matchMedia).
-// Component itself is otherwise stateless; client boundary is the AnimatedCounter
-// dependency. Consumers wrapping in RSC contexts: KpiValue creates the boundary.
-
 import {
   forwardRef,
   type CSSProperties,
   type HTMLAttributes,
   type ReactNode,
 } from 'react';
-import { AnimatedCounter } from '../../specialized/AnimatedCounter/AnimatedCounter';
 import { cn } from '../../utils/cn';
 import styles from './KpiValue.module.scss';
 
 /**
  * KpiValue — large numeric metric display with unit label and optional trend
  *
- * @layer   atom (display)
+ * @layer   atom (display) — Server Component since v0.7.0
  * @tokens  --font-primary, --font-size-{3xl,4xl,5xl,sm}, --font-weight-{semibold,medium},
  *          --line-height-tight, --letter-spacing-{tighter,normal},
  *          --color-text-{primary,secondary,muted},
  *          --color-{success,warning,error,brand-500}, --space-{1,2}
- * @deps    AnimatedCounter (lib, conditional via `animated` prop), cn (lib).
- *          Zero icon-library deps per D5: trend icons are inline SVG with optional
- *          `trend.icon` ReactNode slot for consumer override.
+ * @deps    cn (lib). Zero icon-library deps per D5 — trend icons are inline
+ *          SVG with optional `trend.icon` ReactNode slot for consumer override.
+ *          Animation moved to {@link KpiValueAnimated} client wrapper since
+ *          v0.7.0 (was forced `'use client'` on this atom).
  * @a11y    Pure presentational atom — renders <div>. Default inline trend icon is
  *          decorative (`aria-hidden="true"`). Trend label conveys direction in text
- *          for screen readers. AnimatedCounter handles `prefers-reduced-motion`
- *          internally; SCSS includes defensive baseline PRM block. Consumers add
- *          `aria-label` / `role="status"` via spread when value is live data.
- *          For semantic wrapping, compose externally:
+ *          for screen readers. SCSS includes defensive baseline reduced-motion
+ *          block. Consumers add `aria-label` / `role="status"` via spread when
+ *          value is live data. For semantic wrapping, compose externally:
  *          `<article aria-label="..."><KpiValue ... /></article>` — KpiValue owns
  *          its own internal layout so asChild Slot pattern is intentionally not
  *          supported (drops 1 variation axis; `children?: never` enforces this).
  *
+ * @serverSafe Default since v0.7.0. Pure render of `String(value)` (or supplied
+ *          ReactNode). For animated count-up use {@link KpiValueAnimated}.
+ *
  * @example
- * <KpiValue value={12500} unit="PLN" animated />
+ * <KpiValue value={12500} unit="PLN" />
  *
  * @example
  * <KpiValue
  *   value={42}
  *   unit="konwersji"
  *   trend={{ direction: 'up', label: '+12%' }}
- *   animated
  * />
  *
  * @example
@@ -83,9 +78,9 @@ const SIZE_CLASS: Record<NonNullable<KpiValueProps['size']>, string> = {
   xl: styles.sizeXl!,
 };
 
-type TrendDirection = 'up' | 'down' | 'flat';
+export type KpiTrendDirection = 'up' | 'down' | 'flat';
 
-const TREND_CLASS: Record<TrendDirection, string> = {
+const TREND_CLASS: Record<KpiTrendDirection, string> = {
   up: styles.trendUp!,
   down: styles.trendDown!,
   flat: styles.trendFlat!,
@@ -93,7 +88,7 @@ const TREND_CLASS: Record<TrendDirection, string> = {
 
 // Path-only data per direction; shared <svg> wrapper below collapses 6×
 // duplicated SVG attrs into one definition (eval iter-1 IMPORTANT-3 fix).
-const TREND_PATH: Record<TrendDirection, ReactNode> = {
+const TREND_PATH: Record<KpiTrendDirection, ReactNode> = {
   up: (
     <>
       <path d="M3 17l6-6 4 4 8-8" />
@@ -109,7 +104,7 @@ const TREND_PATH: Record<TrendDirection, ReactNode> = {
   flat: <path d="M5 12h14" />,
 };
 
-function DefaultTrendIcon({ direction }: { direction: TrendDirection }) {
+function DefaultTrendIcon({ direction }: { direction: KpiTrendDirection }) {
   // Inline SVG — zero-dep per D5. Stroke 2, 14×14 to match lib icon sizing.
   // aria-hidden via parent span; <svg> here is purely decorative.
   return (
@@ -131,7 +126,8 @@ function DefaultTrendIcon({ direction }: { direction: TrendDirection }) {
 
 export interface KpiValueProps
   extends Omit<HTMLAttributes<HTMLDivElement>, 'children'> {
-  /** Main display value. Number enables animation; string renders as-is (e.g. `"—"`, `"N/A"`). */
+  /** Main display value. Number or string — both render as-is. For
+   * animated count-up use {@link KpiValueAnimated}. */
   value: number | string;
   /** Unit label (e.g. `"PLN"`, `"%"`, `"konwersji"`). Renders inline-right of value as small/muted text. */
   unit?: string;
@@ -139,23 +135,23 @@ export interface KpiValueProps
   size?: 'md' | 'lg' | 'xl';
   /** Color of the value. Default `'primary'`. */
   color?: 'primary' | 'success' | 'warning' | 'error' | 'brand';
-  /** When `true`, animate count-up from 0 to value (effective only when `value` is a number). Default `false`. */
-  animated?: boolean;
-  /** Animation duration in ms (forwarded to AnimatedCounter). Default 1500. */
-  duration?: number;
-  /** Fraction digits for numeric formatting (forwarded to AnimatedCounter). Default 0. */
-  decimals?: number;
-  /** Locale for numeric formatting (BCP-47, forwarded to AnimatedCounter). Default `'pl-PL'`. */
-  locale?: string;
   /** Optional trend indicator displayed in a row below the value. */
   trend?: {
     /** Trend direction — `up` (success/green), `down` (error/red), `flat` (muted). */
-    direction: TrendDirection;
+    direction: KpiTrendDirection;
     /** Optional label text (e.g. `"+12%"`, `"-3 PLN"`). Renders next to trend icon. */
     label?: string;
     /** Optional icon slot. Default uses inline SVG matching direction. Consumer-provided node should be aria-hidden. */
     icon?: ReactNode;
   };
+  /**
+   * Optional renderer for the value cell. When supplied, replaces the
+   * default `<span>{String(value)}</span>` output. {@link KpiValueAnimated}
+   * uses this slot to inject `<AnimatedCounter>`. Consumers can also use
+   * it for custom formatting (e.g. their own Intl.NumberFormat config)
+   * while keeping KpiValue as a Server Component.
+   */
+  renderValue?: (value: number | string) => ReactNode;
   /** Optional accessible label, applied to the root element. */
   'aria-label'?: string;
   // Note: `role?: AriaRole` is provided by HTMLAttributes (not re-declared
@@ -174,11 +170,8 @@ export const KpiValue = forwardRef<HTMLDivElement, KpiValueProps>(
       unit,
       size = 'lg',
       color = 'primary',
-      animated = false,
-      duration,
-      decimals,
-      locale,
       trend,
+      renderValue,
       className,
       style,
       ...rest
@@ -186,7 +179,6 @@ export const KpiValue = forwardRef<HTMLDivElement, KpiValueProps>(
     ref
   ) {
     const valueColorVar = VALUE_COLOR_VAR[color];
-    const isAnimatable = animated && typeof value === 'number';
 
     return (
       <div
@@ -202,16 +194,7 @@ export const KpiValue = forwardRef<HTMLDivElement, KpiValueProps>(
       >
         <span className={cn(styles.valueRow, SIZE_CLASS[size])}>
           <span className={styles.value}>
-            {isAnimatable ? (
-              <AnimatedCounter
-                value={value}
-                duration={duration}
-                decimals={decimals}
-                locale={locale}
-              />
-            ) : (
-              String(value)
-            )}
+            {renderValue ? renderValue(value) : String(value)}
           </span>
           {unit && <span className={styles.unit}>{unit}</span>}
         </span>

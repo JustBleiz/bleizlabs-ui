@@ -1,31 +1,30 @@
-'use client';
-// 'use client' — required because optional `animated` prop forwards to
-// AnimatedCounter (which uses requestAnimationFrame + useState + matchMedia).
-// Component itself is otherwise stateless; client boundary is the AnimatedCounter
-// dependency. Mirrors KpiValue (D10) sister-atom pattern.
-
-import { forwardRef, type CSSProperties, type HTMLAttributes } from 'react';
-import { AnimatedCounter } from '../../specialized/AnimatedCounter/AnimatedCounter';
+import { forwardRef, type CSSProperties, type HTMLAttributes, type ReactNode } from 'react';
 import { cn } from '../../utils/cn';
 import styles from './PercentValue.module.scss';
 
 /**
  * PercentValue — large percentage display atom with tone-derived color
  *
- * @layer   atom (display)
+ * @layer   atom (display) — Server Component since v0.7.0
  * @tokens  --font-primary, --font-size-{3xl,4xl,5xl,sm}, --font-weight-{semibold,medium},
  *          --line-height-tight, --letter-spacing-{tighter,normal},
  *          --color-text-{primary,secondary,muted},
  *          --color-{success,warning,error,brand-500}, --space-{1,2}
- * @deps    AnimatedCounter (lib, conditional via `animated` prop), cn (lib).
- *          Zero icon-library deps per D5. Symmetric pair with KpiValue (D10).
- * @a11y    Pure presentational atom — renders <div>. AnimatedCounter handles
- *          `prefers-reduced-motion` internally; SCSS includes defensive baseline
- *          PRM block. Consumers add `aria-label` / `role="status"` via spread
- *          when value is live data. For semantic wrapping, compose externally:
- *          `<article aria-label="..."><PercentValue ... /></article>`. Owns its
- *          inner layout — `children?: never` enforces this (drops 1 axis;
+ * @deps    cn (lib). Zero icon-library deps per D5. Symmetric pair with
+ *          {@link KpiValue}. Animation moved to {@link PercentValueAnimated}
+ *          client wrapper since v0.7.0 (was forced `'use client'` on this
+ *          atom).
+ * @a11y    Pure presentational atom — renders <div>. SCSS includes defensive
+ *          baseline reduced-motion block. Consumers add `aria-label` /
+ *          `role="status"` via spread when value is live data. For semantic
+ *          wrapping, compose externally:
+ *          `<article aria-label="..."><PercentValue ... /></article>`. Owns
+ *          its inner layout — `children?: never` enforces this (drops 1 axis;
  *          mirrors KpiValue SRP decision).
+ *
+ * @serverSafe Default since v0.7.0. Pure render of `${value.toFixed(decimals)}%`
+ *          (or supplied ReactNode). For animated count-up use
+ *          {@link PercentValueAnimated}.
  *
  * @example
  * <PercentValue value={42} />
@@ -41,7 +40,6 @@ import styles from './PercentValue.module.scss';
  *   inverse
  *   thresholds={{ success: 15, warning: 30 }}
  *   benchmark="industry avg 20%"
- *   animated
  * />
  *
  * @example
@@ -55,9 +53,10 @@ import styles from './PercentValue.module.scss';
  * </article>
  */
 
-type ToneKey = 'primary' | 'success' | 'warning' | 'error' | 'brand';
+export type PercentValueTone = 'auto' | 'primary' | 'success' | 'warning' | 'error' | 'brand';
+type ResolvedTone = Exclude<PercentValueTone, 'auto'>;
 
-const VALUE_COLOR_VAR: Record<ToneKey, string> = {
+const VALUE_COLOR_VAR: Record<ResolvedTone, string> = {
   primary: 'var(--color-text-primary)',
   success: 'var(--color-success)',
   warning: 'var(--color-warning)',
@@ -78,10 +77,10 @@ const SIZE_CLASS: Record<NonNullable<PercentValueProps['size']>, string> = {
  */
 function deriveTone(
   value: number,
-  tone: NonNullable<PercentValueProps['tone']>,
+  tone: PercentValueTone,
   thresholds: PercentValueProps['thresholds'],
   inverse: boolean
-): ToneKey {
+): ResolvedTone {
   if (tone !== 'auto') return tone;
   const success = thresholds?.success;
   const warning = thresholds?.warning;
@@ -106,7 +105,7 @@ export interface PercentValueProps
    * Color tone. `'auto'` (default) derives color from `thresholds` + `inverse`.
    * Explicit values override auto-derivation.
    */
-  tone?: 'auto' | 'primary' | 'success' | 'warning' | 'error' | 'brand';
+  tone?: PercentValueTone;
   /**
    * Threshold ranges for `tone='auto'` derivation. When omitted with auto, falls back to `'primary'`.
    * Default semantics (inverse=false): `value >= success` → success; `value >= warning` → warning; else error.
@@ -117,14 +116,16 @@ export interface PercentValueProps
   inverse?: boolean;
   /** Fraction digits for percentage formatting. Default `0`. */
   decimals?: number;
-  /** When `true`, animate count-up via AnimatedCounter. Default `false`. */
-  animated?: boolean;
-  /** Animation duration in ms (forwarded to AnimatedCounter). Default 1500. */
-  duration?: number;
-  /** Locale for numeric formatting (BCP-47, forwarded to AnimatedCounter). Default `'pl-PL'`. */
-  locale?: string;
   /** Optional benchmark caption rendered below value (e.g. `"industry avg 20%"`, `"target ≥95%"`). */
   benchmark?: string;
+  /**
+   * Optional renderer for the percent cell. When supplied, replaces the
+   * default `${value.toFixed(decimals)}%` output. {@link PercentValueAnimated}
+   * uses this slot to inject `<AnimatedCounter>`. Consumers can also use
+   * it for custom formatting while keeping PercentValue as a Server
+   * Component.
+   */
+  renderValue?: (value: number, decimals: number) => ReactNode;
   /** Optional accessible label, applied to the root element. */
   'aria-label'?: string;
   // Note: `role?: AriaRole` is provided by HTMLAttributes (not re-declared
@@ -145,10 +146,8 @@ export const PercentValue = forwardRef<HTMLDivElement, PercentValueProps>(
       thresholds,
       inverse = false,
       decimals = 0,
-      animated = false,
-      duration,
-      locale,
       benchmark,
+      renderValue,
       className,
       style,
       ...rest
@@ -172,17 +171,9 @@ export const PercentValue = forwardRef<HTMLDivElement, PercentValueProps>(
       >
         <span className={cn(styles.valueRow, SIZE_CLASS[size])}>
           <span className={styles.percent}>
-            {animated ? (
-              <AnimatedCounter
-                value={value}
-                duration={duration}
-                decimals={decimals}
-                locale={locale}
-                suffix="%"
-              />
-            ) : (
-              `${value.toFixed(decimals)}%`
-            )}
+            {renderValue
+              ? renderValue(value, decimals)
+              : `${value.toFixed(decimals)}%`}
           </span>
         </span>
         {benchmark && <span className={styles.benchmark}>{benchmark}</span>}

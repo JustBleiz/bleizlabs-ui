@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { PercentValue } from '@/components/display/PercentValue';
+import { PercentValue, PercentValueAnimated } from '@/components/display/PercentValue';
 import { Heading } from '@/components/typography/Heading';
 import { Text } from '@/components/typography/Text';
 import styles from './page.module.scss';
@@ -16,8 +16,9 @@ export default function PercentValuePlaygroundPage() {
         </Heading>
         <p className={styles.intro}>
           Universal large-percentage display atom with tone-derived color.
-          Symmetric pair with KpiValue (D10). Composes AnimatedCounter conditionally
-          via <code>animated</code> prop. Auto-derives color from{' '}
+          Symmetric pair with KpiValue (D10). Server Component since v0.7.0;
+          animated count-up via sister <code>PercentValueAnimated</code>
+          client wrapper. Auto-derives color from{' '}
           <code>thresholds</code> + <code>inverse</code>, or accepts explicit{' '}
           <code>tone</code> override.
         </p>
@@ -33,36 +34,33 @@ export default function PercentValuePlaygroundPage() {
         </Text>
         <div className={styles.row}>
           <div className={styles.cell}>
-            <PercentValue
+            <PercentValueAnimated
               value={8}
               inverse
               thresholds={{ success: 15, warning: 30 }}
               benchmark="industry avg 20%"
-              animated
             />
             <Text variant="caption" color="muted">
               8% — success (low)
             </Text>
           </div>
           <div className={styles.cell}>
-            <PercentValue
+            <PercentValueAnimated
               value={22}
               inverse
               thresholds={{ success: 15, warning: 30 }}
               benchmark="industry avg 20%"
-              animated
             />
             <Text variant="caption" color="muted">
               22% — warning (mid)
             </Text>
           </div>
           <div className={styles.cell}>
-            <PercentValue
+            <PercentValueAnimated
               value={45}
               inverse
               thresholds={{ success: 15, warning: 30 }}
               benchmark="industry avg 20%"
-              animated
             />
             <Text variant="caption" color="muted">
               45% — error (high)
@@ -232,7 +230,7 @@ export default function PercentValuePlaygroundPage() {
             </Text>
           </div>
           <div className={styles.cell}>
-            <PercentValue value={99.95} decimals={2} animated />
+            <PercentValueAnimated value={99.95} decimals={2} />
             <Text variant="caption" color="muted">
               decimals=2 + animated
             </Text>
@@ -244,7 +242,7 @@ export default function PercentValuePlaygroundPage() {
             </Text>
           </div>
           <div className={styles.cell}>
-            <PercentValue value={50} animated duration={2000} size="xl" />
+            <PercentValueAnimated value={50} duration={2000} size="xl" />
             <Text variant="caption" color="muted">
               xl animated 2s
             </Text>
