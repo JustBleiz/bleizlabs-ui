@@ -1,0 +1,81 @@
+// =============================================================================
+// DetailPageHero — universal entity detail page hero shell
+// =============================================================================
+// Pure compositional preset. Visual chrome (typography, BackLink ghost
+// button, Heading display tier) delegated entirely to dependency components.
+// SCSS handles only layout: outer flex column + meta strip flex-wrap row +
+// reserved hooks for consumer overrides.
+//
+// Server-Component safe. No states (non-interactive shell). No transitions.
+// Defensive baseline reduced-motion block.
+
+// ----------------------------------------------------------------------------
+// 1. ROOT (<header> landmark)
+// ----------------------------------------------------------------------------
+.root {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+// ----------------------------------------------------------------------------
+// 2. TITLE ROW (Heading + optional badges, baseline-aligned, wrap on narrow)
+// ----------------------------------------------------------------------------
+.titleRow {
+  // Inline gap=3 align=start wrap already handles structure; class hook
+  // reserved for consumer override (e.g. force single-line, custom alignment).
+}
+
+.titleBadges {
+  // Inline gap=2 align=center wrap — wraps below Heading on narrow viewports.
+}
+
+// ----------------------------------------------------------------------------
+// 3. STATUS ROW (badges, payment chips, SLA)
+// ----------------------------------------------------------------------------
+.statusRow {
+  // Inline wrap — falls to multi-row when status indicators don't fit inline.
+}
+
+// ----------------------------------------------------------------------------
+// 4. PROGRESSION SLOT (e.g. StageProgress molecule for projects)
+// ----------------------------------------------------------------------------
+.progression {
+  // No styling — consumer-supplied node owns its visuals. Wrapper exists for
+  // consistent SCSS targeting (consumer can override via className).
+  display: block;
+}
+
+// ----------------------------------------------------------------------------
+// 5. META STRIP (<ul role="list"> with flex-wrap rows)
+// ----------------------------------------------------------------------------
+.metaStrip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2) var(--space-4);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.metaItem {
+  display: flex;
+  min-width: 0;
+}
+
+.metaInline {
+  // Inline gap=1 align=center — handles icon + label + value spacing.
+  // min-width: 0 to allow long values to truncate gracefully if needed.
+  min-width: 0;
+}
+
+// ----------------------------------------------------------------------------
+// 6. REDUCED MOTION (defensive baseline — DetailPageHero has no transitions;
+//    Heading / Text / BackLink handle their own PRM)
+// ----------------------------------------------------------------------------
+@media (prefers-reduced-motion: reduce) {
+  .root {
+    animation: none;
+    transition: none;
+  }
+}

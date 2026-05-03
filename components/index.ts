@@ -31,13 +31,15 @@ export * from './typography/Heading';
 export * from './typography/Text';
 
 // ----------------------------------------------------------------------------
-// Display (10 families / 14 exports)
+// Display (12 families / 16 exports)
 // ----------------------------------------------------------------------------
 export * from './display/AspectRatio';
 export * from './display/Avatar';
 export * from './display/Badge';
 export * from './display/Card';
 export * from './display/IconBox';
+export * from './display/KpiValue';
+export * from './display/PercentValue';
 export * from './display/Reveal';
 export * from './display/Separator';
 export * from './display/Skeleton';
@@ -85,10 +87,11 @@ export * from './specialized/Pagination';
 export * from './specialized/UsageDonut';
 
 // ----------------------------------------------------------------------------
-// Molecules (11)
+// Molecules (12)
 // ----------------------------------------------------------------------------
 export * from './molecules/AccordionGroup';
 export * from './molecules/BackLink';
+export * from './molecules/BreakdownList';
 export * from './molecules/Chip';
 export * from './molecules/DataRow';
 export * from './molecules/DeadlineBadge';
@@ -100,11 +103,13 @@ export * from './molecules/SectionDivider';
 export * from './molecules/ToggleGroupFilter';
 
 // ----------------------------------------------------------------------------
-// Card presets (5)
+// Card presets (7)
 // ----------------------------------------------------------------------------
 export * from './presets/ActionCard';
 export * from './presets/ContentCard';
+export * from './presets/DetailPageHero';
 export * from './presets/FormCard';
+export * from './presets/IconHeaderCard';
 export * from './presets/PairedCard';
 export * from './presets/SidebarCard';
 export * from './presets/StatsCard';

@@ -1,0 +1,104 @@
+// =============================================================================
+// KpiValue — display atom for large numeric KPI values
+// =============================================================================
+// Universal big-number display: value + unit (inline) + optional trend row
+// (icon + label). Color cascades via inline --kpi-value-color CSS var
+// (set in TSX based on `color` prop). Trend color cascades via --trend-color
+// (set per .trendUp/.trendDown/.trendFlat variant class).
+//
+// Pure presentational — no states (non-interactive atom). Reduced motion
+// handled by AnimatedCounter dependency at runtime; defensive baseline
+// reduced-motion block at file end suppresses any future transition added.
+
+// ----------------------------------------------------------------------------
+// 1. ROOT
+// ----------------------------------------------------------------------------
+.root {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  align-items: flex-start;
+  font-family: var(--font-primary);
+  color: var(--color-text-primary);
+}
+
+// ----------------------------------------------------------------------------
+// 2. VALUE ROW (value + unit inline)
+// ----------------------------------------------------------------------------
+.valueRow {
+  display: inline-flex;
+  align-items: baseline;
+  gap: var(--space-2);
+  line-height: var(--line-height-tight);
+  letter-spacing: var(--letter-spacing-tighter);
+}
+
+.value {
+  font-weight: var(--font-weight-semibold);
+  color: var(--kpi-value-color, var(--color-text-primary));
+}
+
+.unit {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-muted);
+  letter-spacing: var(--letter-spacing-normal);
+}
+
+// ----------------------------------------------------------------------------
+// 3. SIZES (driven by font-size token swap on .valueRow)
+// ----------------------------------------------------------------------------
+.sizeMd {
+  font-size: var(--font-size-3xl);
+}
+
+.sizeLg {
+  font-size: var(--font-size-4xl);
+}
+
+.sizeXl {
+  font-size: var(--font-size-5xl);
+}
+
+// ----------------------------------------------------------------------------
+// 4. TREND ROW (optional, shown below value)
+// ----------------------------------------------------------------------------
+.trendRow {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  line-height: var(--line-height-tight);
+  color: var(--trend-color, var(--color-text-muted));
+}
+
+.trendLabel {
+  color: inherit;
+}
+
+// ----------------------------------------------------------------------------
+// 5. TREND VARIANTS (set --trend-color cascade)
+// ----------------------------------------------------------------------------
+.trendUp {
+  --trend-color: var(--color-success);
+}
+
+.trendDown {
+  --trend-color: var(--color-error);
+}
+
+.trendFlat {
+  --trend-color: var(--color-text-secondary);
+}
+
+// ----------------------------------------------------------------------------
+// 6. REDUCED MOTION (defensive baseline — KpiValue has no transitions today,
+//    but suppresses any future addition; AnimatedCounter handles its own PRM)
+// ----------------------------------------------------------------------------
+@media (prefers-reduced-motion: reduce) {
+  .root {
+    animation: none;
+    transition: none;
+  }
+}
