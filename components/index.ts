@@ -75,10 +75,11 @@ export * from './feedback/Empty';
 export * from './feedback/Progress';
 
 // ----------------------------------------------------------------------------
-// Specialized (8)
+// Specialized (9)
 // ----------------------------------------------------------------------------
 export * from './specialized/AnimatedCounter';
 export * from './specialized/AvailabilityBar';
+export * from './specialized/BarChart';
 export * from './specialized/Breadcrumb';
 export * from './specialized/Dot';
 export * from './specialized/Kbd';
