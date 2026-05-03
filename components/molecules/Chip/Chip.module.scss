@@ -63,8 +63,8 @@
 // ---------------------------------------------------------------------------
 
 .sizeSm {
-  --chip-font-size: 0.7rem; // matches Eyebrow scale signature
-  padding: 4px var(--space-2);
+  --chip-font-size: 0.7rem; // matches Eyebrow scale signature (atelier vocabulary literal)
+  padding: var(--space-1) var(--space-2); // 4px 8px (R22 token reuse-first)
 }
 
 .sizeMd {
@@ -122,8 +122,8 @@
 .dot {
   flex: 0 0 auto;
   display: inline-block;
-  width: 6px;
-  height: 6px;
+  width: var(--badge-dot-size); // 6px (R22 reuse — Chip dot semantically equivalent do Badge dot)
+  height: var(--badge-dot-size);
   border-radius: var(--radius-full);
   background: var(--chip-dot-color, var(--color-brand-strong));
 }

@@ -27,8 +27,8 @@
 
 .dot {
   display: inline-block;
-  width: 6px;
-  height: 6px;
+  width: var(--badge-dot-size); // 6px (R22 (b) dedicated token)
+  height: var(--badge-dot-size);
   border-radius: var(--radius-full);
   background: currentcolor;
 }

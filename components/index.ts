@@ -75,10 +75,11 @@ export * from './feedback/Empty';
 export * from './feedback/Progress';
 
 // ----------------------------------------------------------------------------
-// Specialized (8)
+// Specialized (9)
 // ----------------------------------------------------------------------------
 export * from './specialized/AnimatedCounter';
 export * from './specialized/AvailabilityBar';
+export * from './specialized/BarChart';
 export * from './specialized/Breadcrumb';
 export * from './specialized/Dot';
 export * from './specialized/Kbd';
@@ -87,7 +88,7 @@ export * from './specialized/Pagination';
 export * from './specialized/UsageDonut';
 
 // ----------------------------------------------------------------------------
-// Molecules (12)
+// Molecules (13)
 // ----------------------------------------------------------------------------
 export * from './molecules/AccordionGroup';
 export * from './molecules/BackLink';
@@ -97,17 +98,19 @@ export * from './molecules/DataRow';
 export * from './molecules/DeadlineBadge';
 export * from './molecules/FileChip';
 export * from './molecules/IconButton';
+export * from './molecules/MetricTile';
 export * from './molecules/PageHeader';
 export * from './molecules/RevealStack';
 export * from './molecules/SectionDivider';
 export * from './molecules/ToggleGroupFilter';
 
 // ----------------------------------------------------------------------------
-// Card presets (7)
+// Card presets (9)
 // ----------------------------------------------------------------------------
 export * from './presets/ActionCard';
 export * from './presets/ContentCard';
-export * from './presets/DetailPageHero';
+export * from './presets/EntityCard';
+export * from './presets/EntityHero';
 export * from './presets/FormCard';
 export * from './presets/IconHeaderCard';
 export * from './presets/PairedCard';

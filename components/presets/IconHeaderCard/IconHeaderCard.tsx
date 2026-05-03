@@ -32,8 +32,9 @@ import styles from './IconHeaderCard.module.scss';
  *          the root Card via spread for live data scenarios.
  *
  * @notes   (1) THIS IS THE ONE EXCEPTION in the Faza 2 batch family to the
- *          `children?: never` convention enforced on KpiValue / PercentValue /
- *          BreakdownList. IconHeaderCard's universality REQUIRES the consumer
+ *          `children?: never` convention enforced on KpiValue / BreakdownList
+ *          (PercentValue was merged into KpiValue v0.7.0). IconHeaderCard's
+ *          universality REQUIRES the consumer
  *          to provide the body via `children` — the shell owns header + footer
  *          + Card chrome only. Body is opaque to IconHeaderCard. Sister
  *          family components own their body completely; IconHeaderCard owns
@@ -72,7 +73,7 @@ import styles from './IconHeaderCard.module.scss';
  *     { title: 'Najczęstsze powody', children: <BreakdownList ... /> },
  *   ]}
  * >
- *   <PercentValue value={22} inverse thresholds={{ success: 15, warning: 30 }} benchmark="industry avg 20%" />
+ *   <KpiValueAnimated value={22} unit="%" color="auto" inverse thresholds={{ success: 15, warning: 30 }} benchmark="industry avg 20%" />
  * </IconHeaderCard>
  *
  * @example
@@ -97,8 +98,10 @@ export interface IconHeaderCardFooterSection {
 export interface IconHeaderCardProps
   extends Omit<HTMLAttributes<HTMLDivElement>, 'children'> {
   /**
-   * Primary body content slot — typically `KpiValue`, `PercentValue`,
-   * `BreakdownList`, `MetricBar`, or composed Stack/Inline of those. Required.
+   * Primary body content slot — typically `KpiValue` (or its
+   * `KpiValueAnimated` client wrapper, including percent mode via
+   * `unit="%"`), `BreakdownList`, `MetricBar`, or composed Stack/Inline
+   * of those. Required.
    * IconHeaderCard owns header + footer + Card chrome; body is opaque to the
    * shell. See `@notes` for the divergence rationale vs. sister components.
    */

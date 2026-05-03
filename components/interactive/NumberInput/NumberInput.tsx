@@ -8,6 +8,7 @@ import {
   type InputHTMLAttributes,
 } from 'react';
 import { cn } from '../../utils/cn';
+import { useResolvedLocale } from '../../utils/locale';
 import { Label } from '../Label';
 import styles from './NumberInput.module.scss';
 
@@ -72,8 +73,13 @@ import styles from './NumberInput.module.scss';
  *            (`showSuffix = suffix && !currency`) only renders when
  *            `currency` is unset.
  *
- *          Locale defaults to `'pl-PL'` (project default). Override per
- *          field for multi-locale forms.
+ *          Locale (v0.7.0+): when `locale` is omitted, the value is
+ *          derived from `navigator.language` via `useResolvedLocale`.
+ *          SSR baseline is `'en-US'` (deterministic); on client
+ *          hydration the browser locale takes over without a hydration
+ *          warning. Consumers who need a stable locale across SSR/CSR
+ *          (or who target a locale that does not match the user's
+ *          browser) should pass `locale` explicitly.
  *
  *          For non-numeric formatted inputs (NIP, PESEL, postcode,
  *          credit card), use `<MaskedInput>` instead.
@@ -144,8 +150,9 @@ export interface NumberInputProps
    */
   currency?: string;
   /**
-   * BCP 47 locale string. Default `'pl-PL'`. Affects thousand separator,
-   * decimal point, and currency symbol position.
+   * BCP 47 locale string. When omitted, derived from `navigator.language`
+   * (SSR baseline `'en-US'`). Affects thousand separator, decimal point,
+   * and currency symbol position.
    */
   locale?: string;
   /**
@@ -273,7 +280,7 @@ export const NumberInput = forwardRef<HTMLInputElement, NumberInputProps>(
       step,
       decimals,
       currency,
-      locale = 'pl-PL',
+      locale: localeProp,
       suffix,
       error,
       helperText,
@@ -289,6 +296,7 @@ export const NumberInput = forwardRef<HTMLInputElement, NumberInputProps>(
     ref,
   ) {
     void step; // doc-only currently
+    const locale = useResolvedLocale(localeProp);
     const generatedId = useId();
     const inputId = id ?? `${name}-${generatedId}`;
     const errorId = error ? `${inputId}-error` : undefined;

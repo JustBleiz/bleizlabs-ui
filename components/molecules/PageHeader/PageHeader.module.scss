@@ -26,6 +26,35 @@
   font-weight: inherit;
 }
 
+.titleRow {
+  // v0.7.0 amendment — title + actions row (rendered only when `actions`
+  // prop is present). Title takes available space, actions sit right at
+  // desktop widths and wrap below title on narrow viewports.
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.titleSlot {
+  // Title slot grows to fill remaining row width — actions stay flush
+  // right. `min-width: 0` lets long titles ellipsize gracefully via the
+  // Heading atom's own overflow handling (when consumers add it).
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.actions {
+  // Actions slot stays compact — flex 0 0 auto keeps it sized to content.
+  // Inline gap mirrors badges row (--space-2) for visual consistency
+  // across PageHeader strips.
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+  flex: 0 0 auto;
+}
+
 .subtitle {
   // Text atom owns variant/color. Slot retained for consumer overrides.
 }

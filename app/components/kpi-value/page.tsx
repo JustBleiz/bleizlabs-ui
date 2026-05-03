@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { KpiValue } from '@/components/display/KpiValue';
+import { KpiValue, KpiValueAnimated } from '@/components/display/KpiValue';
 import { Heading } from '@/components/typography/Heading';
 import { Text } from '@/components/typography/Text';
 import styles from './page.module.scss';
@@ -15,9 +15,10 @@ export default function KpiValuePlaygroundPage() {
           KpiValue
         </Heading>
         <p className={styles.intro}>
-          Universal KPI big-number display atom. Numeric or string value + unit
-          label + optional trend indicator. Symmetric pair with PercentValue.
-          Composes AnimatedCounter (conditional, via <code>animated</code> prop).
+          Universal KPI big-number display atom (Server Component since
+          v0.7.0). Numeric or string value + unit label + optional trend
+          indicator. Symmetric pair with PercentValue. Animated count-up via
+          sister <code>KpiValueAnimated</code> client wrapper.
         </p>
       </header>
 
@@ -31,41 +32,38 @@ export default function KpiValuePlaygroundPage() {
         </Text>
         <div className={styles.row}>
           <div className={styles.cell}>
-            <KpiValue
+            <KpiValueAnimated
               value={42}
               unit="konwersji"
               trend={{ direction: 'up', label: '+12%' }}
-              animated
             />
             <Text variant="caption" color="muted">
               ConversionStats
             </Text>
           </div>
           <div className={styles.cell}>
-            <KpiValue
+            <KpiValueAnimated
               value={1500}
               unit="PLN"
               size="xl"
               trend={{ direction: 'up', label: '+8%' }}
-              animated
             />
             <Text variant="caption" color="muted">
               PackageRevenueOverview
             </Text>
           </div>
           <div className={styles.cell}>
-            <KpiValue
+            <KpiValueAnimated
               value={12500}
               unit="sesji"
               trend={{ direction: 'down', label: '-3%' }}
-              animated
             />
             <Text variant="caption" color="muted">
               PublicTrafficStats
             </Text>
           </div>
           <div className={styles.cell}>
-            <KpiValue value={4.7} unit="/5" decimals={1} animated />
+            <KpiValueAnimated value={4.7} unit="/5" decimals={1} />
             <Text variant="caption" color="muted">
               SatisfactionScore
             </Text>
@@ -209,9 +207,9 @@ export default function KpiValuePlaygroundPage() {
             </Text>
           </div>
           <div className={styles.cell}>
-            <KpiValue value={42} unit="konwersji" animated={false} />
+            <KpiValue value={42} unit="konwersji" />
             <Text variant="caption" color="muted">
-              static (no animation)
+              static (Server Component)
             </Text>
           </div>
         </div>
@@ -223,21 +221,21 @@ export default function KpiValuePlaygroundPage() {
         </Heading>
         <div className={styles.row}>
           <div className={styles.cell}>
-            <KpiValue value={12500} unit="PLN" animated duration={2000} />
+            <KpiValueAnimated value={12500} unit="PLN" duration={2000} />
             <Text variant="caption" color="muted">
-              integer 12,500
+              integer 12,500 (KpiValueAnimated)
             </Text>
           </div>
           <div className={styles.cell}>
-            <KpiValue value={4.7} unit="/5" animated decimals={1} />
+            <KpiValueAnimated value={4.7} unit="/5" decimals={1} />
             <Text variant="caption" color="muted">
-              decimal 4.7
+              decimal 4.7 (KpiValueAnimated)
             </Text>
           </div>
           <div className={styles.cell}>
-            <KpiValue value={250} unit="$" animated locale="en-US" />
+            <KpiValueAnimated value={250} unit="$" locale="en-US" />
             <Text variant="caption" color="muted">
-              en-US locale
+              en-US locale (KpiValueAnimated)
             </Text>
           </div>
         </div>

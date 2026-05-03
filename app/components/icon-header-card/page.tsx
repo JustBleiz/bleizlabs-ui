@@ -1,7 +1,6 @@
 import Link from 'next/link';
 import { BreakdownList } from '@/components/molecules/BreakdownList';
-import { KpiValue } from '@/components/display/KpiValue';
-import { PercentValue } from '@/components/display/PercentValue';
+import { KpiValue, KpiValueAnimated } from '@/components/display/KpiValue';
 import { IconHeaderCard } from '@/components/presets/IconHeaderCard';
 import { Heading } from '@/components/typography/Heading';
 import { Text } from '@/components/typography/Text';
@@ -85,11 +84,10 @@ export default function IconHeaderCardPlaygroundPage() {
             iconVariant="brand"
             headerBadge={{ label: 'Ostatnie 30 dni', color: 'default' }}
           >
-            <KpiValue
+            <KpiValueAnimated
               value={42}
               unit="konwersji"
               trend={{ direction: 'up', label: '+12%' }}
-              animated
             />
           </IconHeaderCard>
 
@@ -99,12 +97,11 @@ export default function IconHeaderCardPlaygroundPage() {
             iconVariant="success"
             headerBadge={{ label: 'Aktywny', color: 'success' }}
           >
-            <KpiValue
+            <KpiValueAnimated
               value={1500}
               unit="PLN"
               size="xl"
               trend={{ direction: 'up', label: '+8%' }}
-              animated
             />
           </IconHeaderCard>
         </div>
@@ -137,12 +134,13 @@ export default function IconHeaderCardPlaygroundPage() {
               },
             ]}
           >
-            <PercentValue
+            <KpiValueAnimated
               value={22}
+              unit="%"
+              color="auto"
               inverse
               thresholds={{ success: 15, warning: 30 }}
               benchmark="industry avg 20%"
-              animated
             />
           </IconHeaderCard>
 
@@ -164,11 +162,10 @@ export default function IconHeaderCardPlaygroundPage() {
               },
             ]}
           >
-            <KpiValue
+            <KpiValueAnimated
               value={29700}
               unit="sesji"
               trend={{ direction: 'up', label: '+5%' }}
-              animated
             />
           </IconHeaderCard>
         </div>
@@ -191,7 +188,7 @@ export default function IconHeaderCardPlaygroundPage() {
             headerLabel="Satysfakcja"
             iconVariant="success"
           >
-            <KpiValue value={4.7} unit="/5" decimals={1} animated />
+            <KpiValueAnimated value={4.7} unit="/5" decimals={1} />
           </IconHeaderCard>
         </div>
       </section>
@@ -253,7 +250,7 @@ export default function IconHeaderCardPlaygroundPage() {
               },
             ]}
           >
-            <KpiValue value={1240} unit="rozmów" trend={{ direction: 'up', label: '+18%' }} animated />
+            <KpiValueAnimated value={1240} unit="rozmów" trend={{ direction: 'up', label: '+18%' }} />
           </IconHeaderCard>
         </div>
       </section>

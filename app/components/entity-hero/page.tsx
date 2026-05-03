@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { Badge } from '@/components/display/Badge';
-import { DetailPageHero } from '@/components/presets/DetailPageHero';
+import { EntityHero } from '@/components/presets/EntityHero';
 import { Heading } from '@/components/typography/Heading';
 import { Text } from '@/components/typography/Text';
 import styles from './page.module.scss';
@@ -31,7 +31,7 @@ const ICON_CLOCK = 'M12 6v6l4 2m6-2a10 10 0 11-20 0 10 10 0 0120 0z';
 const ICON_LINK =
   'M10 13a5 5 0 007 0l4-4a5 5 0 00-7-7l-1 1m-2 2l-4 4a5 5 0 007 7l1-1';
 
-export default function DetailPageHeroPlaygroundPage() {
+export default function EntityHeroPlaygroundPage() {
   return (
     <main className={styles.main}>
       <header className={styles.header}>
@@ -39,7 +39,7 @@ export default function DetailPageHeroPlaygroundPage() {
           ← back
         </Link>
         <Heading level={1} size="4xl">
-          DetailPageHero
+          EntityHero
         </Heading>
         <p className={styles.intro}>
           Universal entity detail page hero shell. Renders semantic{' '}
@@ -60,7 +60,7 @@ export default function DetailPageHeroPlaygroundPage() {
           status indicator, and 3-item meta strip.
         </Text>
         <div className={styles.demoSurface}>
-          <DetailPageHero
+          <EntityHero
             backLink={{ href: '/panel/services', label: 'Wszystkie usługi' }}
             title="Chatbot obsługi sklepu"
             titleBadges={
@@ -102,7 +102,7 @@ export default function DetailPageHeroPlaygroundPage() {
           strip.
         </Text>
         <div className={styles.demoSurface}>
-          <DetailPageHero
+          <EntityHero
             backLink={{ href: '/panel/projects', label: 'Wszystkie projekty' }}
             title="Migracja sklepu na Shopify"
             titleBadges={
@@ -155,7 +155,7 @@ export default function DetailPageHeroPlaygroundPage() {
           meta strip (ticket detail uses different sidebar pattern for meta).
         </Text>
         <div className={styles.demoSurface}>
-          <DetailPageHero
+          <EntityHero
             backLink={{ href: '/panel/tickets', label: 'Wszystkie zgłoszenia' }}
             title="Zgłoszenie #1234 — Brak dostępu do panelu"
             titleBadges={<Badge color="default" label="Wsparcie" />}
@@ -175,7 +175,7 @@ export default function DetailPageHeroPlaygroundPage() {
           4. Minimal — title only
         </Heading>
         <div className={styles.demoSurface}>
-          <DetailPageHero title="Twoje konto" />
+          <EntityHero title="Twoje konto" />
         </div>
       </section>
 
@@ -184,7 +184,7 @@ export default function DetailPageHeroPlaygroundPage() {
           5. No back-link (top-level detail)
         </Heading>
         <div className={styles.demoSurface}>
-          <DetailPageHero
+          <EntityHero
             title="Profil użytkownika"
             description="Ustawienia profilu i preferencje konta."
             metaStrip={[
@@ -212,7 +212,7 @@ export default function DetailPageHeroPlaygroundPage() {
           different size, or `level=2`), pass ReactNode title.
         </Text>
         <div className={styles.demoSurface}>
-          <DetailPageHero
+          <EntityHero
             backLink={{ href: '/panel', label: 'Do panelu' }}
             title={
               <Heading level={1} size="5xl" weight="bold">
@@ -229,7 +229,7 @@ export default function DetailPageHeroPlaygroundPage() {
           7. Maximal — wszystkie sloty + długi meta strip
         </Heading>
         <div className={styles.demoSurface}>
-          <DetailPageHero
+          <EntityHero
             backLink={{ href: '/panel/services', label: 'Usługi' }}
             title="Voicebot premium z analityką"
             titleBadges={

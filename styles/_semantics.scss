@@ -53,6 +53,17 @@
   --line-height-normal: #{$line-height-normal};
   --line-height-relaxed: #{$line-height-relaxed};
 
+  // v0.7.0 — Heading typography line-height gap-fill tokens (E04 Cluster 2).
+  // Heading.module.scss size variants display/displayMd/hero-editorial/
+  // form-card-title/form-card-subtitle wymagają line-heights NIE w base
+  // {tight: 1.2, snug: 1.375, normal: 1.5, relaxed: 1.625} scale.
+  // Per R22 (b) dedicated semantic — atelier display tier ma własną budget
+  // dla densely-stacked editorial typography.
+  --line-height-display: 1.05;            // Hero H1 atelier display tier
+  --line-height-display-loose: 1.1;       // Hero-editorial multi-line aside
+  --line-height-form-card-title: 1.25;    // Form-card title compact stack
+  --line-height-form-card-subtitle: 1.45; // Form-card subtitle readable copy
+
   --font-weight-regular: #{$font-weight-regular};
   --font-weight-medium: #{$font-weight-medium};
   --font-weight-semibold: #{$font-weight-semibold};
@@ -358,14 +369,51 @@
   // ==========================================================================
   // SWITCH DIMENSION TOKENS — Phase 4 Simple Interactive (v0.3.0 F_B2)
   // ==========================================================================
-  // Library-level defaults for Switch track + thumb. Switch component overrides
-  // these per-size via `.sizeSm` scope. Projects can override library-wide
-  // (e.g., larger touch target on mobile) by redefining the tokens in their
-  // own :root scope. Values match the existing hardcoded Switch `md` shell.
+  // Library-level defaults for Switch track + thumb (md size). Switch component
+  // overrides these per-size via `.sizeSm` scope (sm-size tokens below).
+  // Projects can override library-wide (e.g., larger touch target on mobile)
+  // by redefining the tokens in their own :root scope.
   --switch-track-w: 36px;
   --switch-track-h: 20px;
   --switch-thumb-size: 16px;
   --switch-thumb-offset: 2px;
+
+  // ==========================================================================
+  // CLUSTER 3 MICRO TOKENS — v0.7.0 (E04 Cluster 3)
+  // ==========================================================================
+  // Dedicated semantic tokens dla single-purpose values poza --space-* scale.
+  // Per R22 (b) — visual identity preservation z independent override path.
+  --badge-dot-size: 6px;            // Badge .dot (gap między --space-1 4px i --space-2 8px)
+  --border-width-accent: 3px;       // Card .accentLeft/.accentTop border-width (gap między 2px design constant i 4px)
+
+  // ==========================================================================
+  // ICON-BOX FONT-SIZE GAP-FILL TOKEN — v0.7.0 (E04 Cluster 1)
+  // ==========================================================================
+  // IconBox lg 22px NIE mapuje na base `--font-size-*` scale (xl=20, 2xl=24 —
+  // delta ±9%). Per R22 (b) — dedicated semantic meaning: IconBox size scale
+  // 14/18/22 ma własny visual rhythm dla Tabler icon embedded inside box.
+  --icon-box-font-lg: 22px;
+
+  // v0.7.0 — sm-size tokens (E04 Cluster 1 architectural addition per R22 (c)).
+  // Switch md uses `--switch-track-w`/`-h`/`-thumb-size` (above) jako library
+  // defaults; sm-size requires dedicated tokens because gap w `--space-*` scale
+  // (28/16/12 px values present jako --space-7/4/3, ALE ich semantic name jest
+  // generic spacing — Switch sm-size deserves dedicated semantic token dla
+  // independent override path).
+  --switch-track-w-sm: 28px;
+  --switch-track-h-sm: 16px;
+  --switch-thumb-size-sm: 12px;
+
+  // ==========================================================================
+  // AVATAR FONT-SIZE GAP-FILL TOKENS — v0.7.0 (E04 Cluster 1)
+  // ==========================================================================
+  // Avatar font-sizes 10px (xs) i 26px (xl) NIE mapują 1:1 na base
+  // `--font-size-*` scale (xs=12px, sm=14px, lg=18px, 2xl=24px, 3xl=30px).
+  // Per R22 (b) — dedicated semantic meaning: Avatar inicjały xs/xl mają
+  // dedicated readability budget niezależny od typography scale. Other Avatar
+  // sizes (12/14/18) używają `--font-size-{xs,sm,lg}` jako reuse path.
+  --avatar-font-xs: 10px;
+  --avatar-font-xl: 26px;
 
   // ==========================================================================
   // INPUT TOKENS — Phase 4 Simple Interactive (E07) + addons (E08)
