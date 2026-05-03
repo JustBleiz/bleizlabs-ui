@@ -49,37 +49,39 @@
 }
 
 // ============================================================================
-// SIZE — square dimensions, fallback font-size scales with diameter
+// SIZE — square dimensions via --space-* tokens, fallback font-size scales
+// with diameter (xs/xl use --avatar-font-* gap-fill tokens, sm/md/lg reuse
+// --font-size-* scale per R22 token reuse-first)
 // ============================================================================
 
 .sizeXs {
-  width: 24px;
-  height: 24px;
-  font-size: 10px;
+  width: var(--space-6); // 24px
+  height: var(--space-6);
+  font-size: var(--avatar-font-xs); // 10px (gap-fill token)
 }
 
 .sizeSm {
-  width: 32px;
-  height: 32px;
-  font-size: 12px;
+  width: var(--space-8); // 32px
+  height: var(--space-8);
+  font-size: var(--font-size-xs); // 12px
 }
 
 .sizeMd {
-  width: 40px;
-  height: 40px;
-  font-size: 14px;
+  width: var(--space-10); // 40px
+  height: var(--space-10);
+  font-size: var(--font-size-sm); // 14px
 }
 
 .sizeLg {
-  width: 56px;
-  height: 56px;
-  font-size: 18px;
+  width: var(--space-14); // 56px
+  height: var(--space-14);
+  font-size: var(--font-size-lg); // 18px
 }
 
 .sizeXl {
-  width: 80px;
-  height: 80px;
-  font-size: 26px;
+  width: var(--space-20); // 80px
+  height: var(--space-20);
+  font-size: var(--avatar-font-xl); // 26px (gap-fill token)
 }
 
 // ============================================================================
@@ -92,9 +94,9 @@
   bottom: 4%;
   width: 25%;
   height: 25%;
-  min-width: 8px;
-  min-height: 8px;
-  border: 2px solid var(--color-bg);
+  min-width: var(--space-2); // 8px (R22 reuse)
+  min-height: var(--space-2);
+  border: 2px solid var(--color-bg); // 2px = decorative ring (NIE token candidate)
   border-radius: var(--radius-full);
 }
 

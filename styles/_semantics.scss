@@ -358,14 +358,43 @@
   // ==========================================================================
   // SWITCH DIMENSION TOKENS — Phase 4 Simple Interactive (v0.3.0 F_B2)
   // ==========================================================================
-  // Library-level defaults for Switch track + thumb. Switch component overrides
-  // these per-size via `.sizeSm` scope. Projects can override library-wide
-  // (e.g., larger touch target on mobile) by redefining the tokens in their
-  // own :root scope. Values match the existing hardcoded Switch `md` shell.
+  // Library-level defaults for Switch track + thumb (md size). Switch component
+  // overrides these per-size via `.sizeSm` scope (sm-size tokens below).
+  // Projects can override library-wide (e.g., larger touch target on mobile)
+  // by redefining the tokens in their own :root scope.
   --switch-track-w: 36px;
   --switch-track-h: 20px;
   --switch-thumb-size: 16px;
   --switch-thumb-offset: 2px;
+
+  // ==========================================================================
+  // ICON-BOX FONT-SIZE GAP-FILL TOKEN — v0.7.0 (E04 Cluster 1)
+  // ==========================================================================
+  // IconBox lg 22px NIE mapuje na base `--font-size-*` scale (xl=20, 2xl=24 —
+  // delta ±9%). Per R22 (b) — dedicated semantic meaning: IconBox size scale
+  // 14/18/22 ma własny visual rhythm dla Tabler icon embedded inside box.
+  --icon-box-font-lg: 22px;
+
+  // v0.7.0 — sm-size tokens (E04 Cluster 1 architectural addition per R22 (c)).
+  // Switch md uses `--switch-track-w`/`-h`/`-thumb-size` (above) jako library
+  // defaults; sm-size requires dedicated tokens because gap w `--space-*` scale
+  // (28/16/12 px values present jako --space-7/4/3, ALE ich semantic name jest
+  // generic spacing — Switch sm-size deserves dedicated semantic token dla
+  // independent override path).
+  --switch-track-w-sm: 28px;
+  --switch-track-h-sm: 16px;
+  --switch-thumb-size-sm: 12px;
+
+  // ==========================================================================
+  // AVATAR FONT-SIZE GAP-FILL TOKENS — v0.7.0 (E04 Cluster 1)
+  // ==========================================================================
+  // Avatar font-sizes 10px (xs) i 26px (xl) NIE mapują 1:1 na base
+  // `--font-size-*` scale (xs=12px, sm=14px, lg=18px, 2xl=24px, 3xl=30px).
+  // Per R22 (b) — dedicated semantic meaning: Avatar inicjały xs/xl mają
+  // dedicated readability budget niezależny od typography scale. Other Avatar
+  // sizes (12/14/18) używają `--font-size-{xs,sm,lg}` jako reuse path.
+  --avatar-font-xs: 10px;
+  --avatar-font-xl: 26px;
 
   // ==========================================================================
   // INPUT TOKENS — Phase 4 Simple Interactive (E07) + addons (E08)

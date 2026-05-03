@@ -48,27 +48,27 @@
 }
 
 // ============================================================================
-// SIZE
+// SIZE — square dimensions via --space-* tokens (R22 token reuse-first)
 // ============================================================================
 
 .sizeXs {
-  width: 12px;
-  height: 12px;
+  width: var(--space-3); // 12px
+  height: var(--space-3);
 }
 
 .sizeSm {
-  width: 16px;
-  height: 16px;
+  width: var(--space-4); // 16px
+  height: var(--space-4);
 }
 
 .sizeMd {
-  width: 24px;
-  height: 24px;
+  width: var(--space-6); // 24px
+  height: var(--space-6);
 }
 
 .sizeLg {
-  width: 32px;
-  height: 32px;
+  width: var(--space-8); // 32px
+  height: var(--space-8);
 }
 
 // ============================================================================

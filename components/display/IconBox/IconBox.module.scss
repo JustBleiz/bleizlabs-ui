@@ -19,25 +19,26 @@
 }
 
 // ============================================================================
-// SIZE — square dimensions, icon scales to 60% inside
+// SIZE — square dimensions via --space-* tokens, icon scales to 60% inside
+// (font-size: sm/md reuse --font-size-*; lg uses gap-fill token)
 // ============================================================================
 
 .sizeSm {
-  width: 32px;
-  height: 32px;
-  font-size: 14px;
+  width: var(--space-8); // 32px
+  height: var(--space-8);
+  font-size: var(--font-size-sm); // 14px
 }
 
 .sizeMd {
-  width: 40px;
-  height: 40px;
-  font-size: 18px;
+  width: var(--space-10); // 40px
+  height: var(--space-10);
+  font-size: var(--font-size-lg); // 18px
 }
 
 .sizeLg {
-  width: 48px;
-  height: 48px;
-  font-size: 22px;
+  width: var(--space-12); // 48px
+  height: var(--space-12);
+  font-size: var(--icon-box-font-lg); // 22px (gap-fill token)
 }
 
 // ============================================================================

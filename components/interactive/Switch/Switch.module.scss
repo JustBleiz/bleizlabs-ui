@@ -27,21 +27,24 @@
   @include mx.touch-target;
 }
 
+// v0.7.0 (E04 Cluster 1) — sm-size redefines via dedicated tokens
+// (--switch-{track-w,track-h,thumb-size}-sm) z _semantics.scss zamiast
+// hardcoded px. Phase 7.1 audit catch (2026-05-03): previous .sizeMd block
+// redefiniowało hardcoded values mimo że library defaults
+// (--switch-track-w/h/thumb-size) już istnieją w _semantics.scss —
+// .sizeMd pozostawione jako empty selector bo Switch.tsx Class Modules
+// type assertion (`styles.sizeMd!`) wymaga className present runtime.
 .sizeSm {
-  // Compact size — smaller track/thumb than the library default. `md` omitted
-  // because it matches the library default (_semantics.scss).
-  --switch-track-w: 28px;
-  --switch-track-h: 16px;
-  --switch-thumb-size: 12px;
+  --switch-track-w: var(--switch-track-w-sm); // 28px
+  --switch-track-h: var(--switch-track-h-sm); // 16px
+  --switch-thumb-size: var(--switch-thumb-size-sm); // 12px
 }
 
 .sizeMd {
-  // Explicit reset block — keeps the class usable when a consumer stacks
-  // `sizeMd` after `sizeSm` at runtime (e.g., toggling size via state).
-  // Values match library defaults.
-  --switch-track-w: 36px;
-  --switch-track-h: 20px;
-  --switch-thumb-size: 16px;
+  // Empty — relies on library defaults z _semantics.scss
+  // (--switch-track-w: 36px, --switch-track-h: 20px, --switch-thumb-size: 16px,
+  // --switch-thumb-offset: 2px). Empty selector preserved dla runtime className
+  // assertion w Switch.tsx (`styles.sizeMd!`).
 }
 
 .disabled {
