@@ -1,15 +1,15 @@
 # @bleizlabs/ui
 
 > A zero-dependency, fully-styled React component library with seed-based design tokens.
-> 91 components, WAI-ARIA compliant, runtime-test-verified, SCSS Modules, React 19 + Next.js 16.
+> 97 components across 10 categories, WAI-ARIA compliant, runtime-test-verified, SCSS Modules, React 19 + Next.js 16.
 
-[![Version](https://img.shields.io/badge/npm-v0.5.7-0ea5e9)](https://github.com/BleizLabs/bleizlabs-ui/pkgs/npm/ui)
+[![Version](https://img.shields.io/badge/npm-v0.7.3-0ea5e9)](https://github.com/BleizLabs/bleizlabs-ui/pkgs/npm/ui)
 [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 [![React](https://img.shields.io/badge/React-19-61dafb)](https://react.dev)
 [![Next.js](https://img.shields.io/badge/Next.js-16.2-black)](https://nextjs.org)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.6-3178c6)](https://www.typescriptlang.org)
 
-**Current version: [`@bleizlabs/ui@0.5.7`](https://github.com/BleizLabs/bleizlabs-ui/pkgs/npm/ui)** — typography tokens patch: closes three library gaps surfaced by scout-hub `/pl/login` refactor. Adds `Text variant="eyebrow"` (inline-light atelier eyebrow path, sharing the `mx.eyebrow-typography` mixin with the standalone `Eyebrow` atom — pick the atom when the numeric prefix + hairline ornament is wanted, the variant for inline composition without ornament). Adds three editorial Heading sizes (`hero-editorial` fluid clamp 36→52px for login asides + `form-card-title` 22px + `form-card-subtitle` 15px for form cards). Introduces `--color-text-on-brand` semantic token fixing WCAG 2.2 AA contrast for primary buttons in light mode (white-on-teal ~2.49:1 → near-black-on-teal ~5.88:1). Backward-compatible additive release; one visible behavior change in light theme primary buttons. 91 components unchanged. See [CHANGELOG.md](CHANGELOG.md) for the full release history.
+**Current version: [`@bleizlabs/ui@0.7.3`](https://github.com/BleizLabs/bleizlabs-ui/pkgs/npm/ui)** — `ZoneCard` (CP9) preset shipped. Universal info-card preset for zoned/section-based layouts: renders semantic `<section>` landmark via `Card asChild`, with optional icon + title + subtitle + rightSlot, plus `density: 'compact' | 'comfortable'` (drives padding + body gap) and `tone: 'default' | 'success' | 'warning' | 'error' | 'brand'` (drives icon color via `[data-tone]` attribute cascade). 5-axis variation envelope mapped to consumer panel surfaces (TechnicalInfraCard, ProjectsFinancialOverview). Card presets reach 10/10 — Phase 8 family complete. Library now ships **97 components across 10 categories**. Stepping stone toward v0.8.0 batch (semantic touch-target token cluster + drift fixes + FilterBar molecule). See [CHANGELOG.md](CHANGELOG.md) for the full release history.
 
 ## Table of contents
 
@@ -39,13 +39,13 @@ We ship across a growing portfolio of products — internal tools, client delive
 2. **Styled libraries** (MUI, Chakra) lock us into their design language, their tokens, and a runtime dependency that's painful to customise deeply.
 3. **Copy-paste systems** (shadcn/ui) are excellent starting points, but every project forks forever — a bug fix in one consumer doesn't propagate anywhere else.
 
-`@bleizlabs/ui` is our answer: **fully styled**, **zero runtime UI dependencies**, **semantic-token driven**, and **designed to be reskinned by changing five to ten seed values**. One source of truth, 91 components across ten categories — layout, typography, display, interactive, feedback, specialized, molecules, presets, complex interactive.
+`@bleizlabs/ui` is our answer: **fully styled**, **zero runtime UI dependencies**, **semantic-token driven**, and **designed to be reskinned by changing five to ten seed values**. One source of truth, 97 components across ten categories — layout, typography, display, interactive, feedback, specialized, molecules, card presets, composition presets, complex interactive.
 
 ---
 
 ## Highlights
 
-- **91 components** across 10 categories — from `<Stack>` and `<GridLayout>` to `<Combobox>`, `<DatePicker>`, `<Command>` (⌘K palette), `<Toast>`, `<Sidebar>`, `<SiteHeader>`.
+- **97 components** across 10 categories — from `<Stack>` and `<GridLayout>` to `<Combobox>`, `<DatePicker>`, `<Command>` (⌘K palette), `<Toast>`, `<Sidebar>`, `<SiteHeader>`, `<EntityCard>`, `<ZoneCard>`.
 - **Zero runtime UI dependencies** — no Radix, no Floating UI, no date-fns. Every floating primitive, focus trap, drag gesture, and keyboard model is built in-house against the WAI-ARIA Authoring Practices Guide.
 - **Seed-based design tokens** — override 5–10 seed values (brand color, radius, spacing, timing) and the entire library reskins consistently across light + dark themes.
 - **SCSS Modules** — no Tailwind, no CSS-in-JS, no runtime style computation. Components read CSS custom properties that consumers override at the `:root` level.
@@ -71,37 +71,45 @@ We ship across a growing portfolio of products — internal tools, client delive
 
 `Heading` ships 13 sizes total: 8-size standard scale (`sm` · `md` · `lg` · `xl` · `2xl` · `3xl` · `4xl` · `5xl`) for general use, two display tiers for atelier hero treatment (`size="display"` Hero H1 up to 72px, `size="display-md"` section H2 up to 48px), and three v0.5.7 editorial sizes (`hero-editorial` fluid clamp 36→52px for login asides, `form-card-title` 22px and `form-card-subtitle` 15px for form-card pairs). `Text` ships 6 variants — `lead` / `body` / `body-strong` / `small` / `caption` / `eyebrow` (v0.5.7 inline-light atelier eyebrow path; the variant shares the `mx.eyebrow-typography` mixin with the standalone `Eyebrow` atom — pick the variant for inline composition, the atom when the numeric prefix + hairline ornament is wanted). `Anchor` is the prose-inline link primitive — distinct from `TextLink` which is the navigational action. `Eyebrow` (v0.5.4) is the small uppercase atelier label with optional numeric prefix + 14px hairline connector — promoted from a 5-site duplication in scout-hub.
 
-### Display (13)
+### Display (12)
 
-`Card` · `CardHeader` · `CardBody` · `CardFooter` · `CardSection` · `Badge` · `Separator` · `IconBox` · `Avatar` · `Skeleton` · `Spinner` · `AspectRatio` · `Table`
+`AspectRatio` · `Avatar` · `Badge` · `Card` · `IconBox` · `KpiValue` · `PercentValue` · `Reveal` · `Separator` · `Skeleton` · `Spinner` · `Table`
 
-`Table` ships as a family — `TableHeader`, `TableBody`, `TableFooter`, `TableRow`, `TableCell` are all exported alongside `Table` but counted as one primitive.
+`Card` ships as a flat compound family — `CardHeader`, `CardBody`, `CardFooter`, `CardSection` are all exported alongside `Card` per shadcn-style flat naming (D24). `Table` similarly exports `TableHeader`, `TableBody`, `TableFooter`, `TableRow`, `TableCell`. `KpiValue` (v0.6.0) is the unified numeric+unit metric atom (replaces older `AnimatedPrice` and absorbed `PercentValue` change-delta surface). `PercentValue` (v0.6.0) is a thin specialization for percentage-shaped metrics composing `KpiValue` semantics. `Reveal` (v0.5.9) is the IntersectionObserver-driven `data-revealed` attribute emitter — pure behavior atom for scroll-triggered reveals (the layout pairs with `RevealStack` molecule).
 
-### Interactive (19)
+### Interactive (17)
 
-`Button` · `ButtonGroup` · `Input` · `Textarea` · `Label` · `Checkbox` · `RadioGroup` · `RadioGroupItem` · `Toggle` · `ToggleGroup` · `Switch` · `Accordion` · `InputGroup` · `InputGroupText` · `NumberInput` · `MaskedInput` · `PhoneInput` · `PasswordInput` · `TextLink`
+`Accordion` · `Button` · `ButtonGroup` · `Checkbox` · `Input` · `InputGroup` · `Label` · `MaskedInput` · `NumberInput` · `PasswordInput` · `PhoneInput` · `RadioGroup` · `Switch` · `Textarea` · `TextLink` · `Toggle` · `ToggleGroup`
 
-`Button` supports `shape?: 'rounded' | 'pill'` for atelier-style CTAs. `TextLink` is the navigational text link with `asChild` polymorphism for Next.js `<Link>`.
+`RadioGroup` exports `RadioGroupItem` as a flat compound sibling per D24; `InputGroup` exports `InputGroupText` likewise. `Button` supports `shape?: 'rounded' | 'pill'` for atelier-style CTAs. `TextLink` is the navigational text link with `asChild` polymorphism for Next.js `<Link>`.
 
 ### Feedback (3)
 
-`Empty` · `Alert` · `Progress`
+`Alert` · `Empty` · `Progress`
 
-### Specialized (8)
+### Specialized (9)
 
-`Dot` · `MetricBar` · `AnimatedCounter` · `Breadcrumb` · `Pagination` · `UsageDonut` · `AvailabilityBar` · `Kbd`
+`AnimatedCounter` · `AvailabilityBar` · `BarChart` · `Breadcrumb` · `Dot` · `Kbd` · `MetricBar` · `Pagination` · `UsageDonut`
 
-### Molecules (10)
+`BarChart` (v0.7.x) is the universal single-series bar chart — pure-CSS bar rendering, auto-detected ceiling, optional `highlightIndex` accent treatment, server-safe.
 
-`DataRow` · `BackLink` · `SectionDivider` · `AccordionGroup` · `ToggleGroupFilter` · `DeadlineBadge` · `FileChip` · `PageHeader` · `Chip` · `IconButton`
+### Molecules (14)
 
-`Chip` (v0.5.4) is the pill-shaped toggleable filter chip with controlled `pressed` state — pattern-promoted from scout-hub B7 12-status filter row. `IconButton` (v0.5.4) is the accessibility-enforcing `iconOnly` wrapper over `Button` with TS-required `aria-label`.
+`AccordionGroup` · `BackLink` · `BreakdownList` · `Chip` · `DataRow` · `DeadlineBadge` · `FileChip` · `IconButton` · `MetricTile` · `PageHeader` · `RevealStack` · `SectionDivider` · `SectionHeader` · `ToggleGroupFilter`
 
-### Presets (7)
+`Chip` (v0.5.4) is the pill-shaped toggleable filter chip with controlled `pressed` state — pattern-promoted from scout-hub B7 12-status filter row. `IconButton` (v0.5.4) is the accessibility-enforcing `iconOnly` wrapper over `Button` with TS-required `aria-label`. `BreakdownList` (v0.7.0+) renders progress-style breakdown rows with tone enum (`default | success | warning | error`). `MetricTile` (v0.7.0) and `PageHeader` (v0.7.0) extend the panel-pattern library lifted from `bleizlabs-website`. `RevealStack` (v0.5.9) is the canonical `<Reveal><Stack gap={3}>...</Stack></Reveal>` composition. `SectionHeader` (v0.7.2) is the universal section heading row (`[gradient accent] LABEL · count [meta][action]`) — promoted from 27 panel_v2 production consumers.
 
-`ContentCard` · `SidebarCard` · `FormCard` · `StatsCard` · `ActionCard` · `PairedCard` · `SiteHeader`
+### Card presets (10)
 
-`PairedCard` is the good/bad split composition. `SiteHeader` is a page-level nav preset with mobile toggle and 44×44 touch target.
+`ActionCard` · `ContentCard` · `EntityCard` · `EntityHero` · `FormCard` · `IconHeaderCard` · `PairedCard` · `SidebarCard` · `StatsCard` · `ZoneCard`
+
+`EntityCard` + `EntityHero` (v0.7.0, formerly `DetailPageHero`) form the entity-detail family. `IconHeaderCard` (v0.6.0) standardises icon+heading card framing. `PairedCard` is the good/bad split composition. `ZoneCard` (v0.7.3 — current) is the universal info-card preset (semantic `<section>` landmark, density × tone variations, 5-axis variation envelope) for zoned section-based layouts.
+
+### Composition presets (1)
+
+`SiteHeader`
+
+`SiteHeader` is a page-level nav preset with mobile toggle and 44×44 touch target.
 
 ### Complex interactive (22)
 
@@ -255,7 +263,7 @@ For most projects, overriding a handful of CSS custom properties is enough. Add 
 }
 ```
 
-All 91 components pick up the change automatically — no component needs to be patched, nothing needs to be rebuilt.
+All 97 components pick up the change automatically — no component needs to be patched, nothing needs to be rebuilt.
 
 **Common tokens you can override:**
 
@@ -272,6 +280,7 @@ All 91 components pick up the change automatically — no component needs to be 
 | `--shadow-sm` / `--shadow-md` / `--shadow-lg` | Elevation |
 | `--duration-fast` / `--duration-normal` / `--duration-hover` / `--duration-card-hover` | Motion timing |
 | `--easing-default` / `--easing-apple` | Motion curves |
+| `--size-touch-min` | Touch-target minimum (WCAG 2.1 SC 2.5.5) — default 44px; override to 48px or 56px for accessibility-stricter products |
 
 The full token reference lives in [`styles/_semantics.scss`](styles/_semantics.scss).
 
@@ -488,11 +497,13 @@ This is a private BleizLabs library; external contributions are not accepted at 
 
 ## Roadmap
 
-- **Shipped — v0.4.3 (hover polish):** library-wide Button + Card hover timing tokenized into `--duration-hover` + `--duration-card-hover`. Consumer override preserved via seed `@use ... with (...)` pattern.
-- **Shipped — v0.4.x series:** Anchor atom, TextLink atom, PairedCard preset, SiteHeader preset, `Heading size="display"` + `size="display-md"`, `Button shape="pill"`, atelier rule tokens (`--atelier-rule-*`, `--atelier-tick-*`, `--atelier-corner-tick-*`), `--easing-apple` unified curve, `ruleReveal` keyframe.
+- **Shipped — v0.7.3 (current):** `ZoneCard` preset (Phase 8 CP9) — universal info-card preset (semantic `<section>` landmark, density × tone variations, 5-axis variation envelope) for zoned section-based layouts. Card presets reach 10/10 — Phase 8 family complete.
+- **Shipped — v0.7.0 → v0.7.2:** `KpiValue` + `PercentValue` numeric/percent atoms, `EntityCard` + `EntityHero` (formerly `DetailPageHero`) entity-detail family, `IconHeaderCard`, `BreakdownList` molecule with tone enum, `MetricTile` + `PageHeader` panel-pattern family, `SectionHeader` molecule (universal section heading row, promoted from 27 panel_v2 production consumers), token cleanup batch (typography line-heights, atelier display tier).
+- **Shipped — v0.5.7 → v0.6.1:** `Text variant="eyebrow"` + three editorial Heading sizes (`hero-editorial` / `form-card-title` / `form-card-subtitle`), `--color-text-on-brand` semantic token (WCAG 2.2 AA fix for brand-fill text in light mode, library-wide migration across 6 surfaces), `Reveal` IntersectionObserver atom + `RevealStack` composition molecule, Progress `color: 'error-strong'` extension.
+- **Shipped — v0.4.x series:** `Anchor` atom, `TextLink` atom, `PairedCard` preset, `SiteHeader` preset, `Heading size="display"` + `size="display-md"`, `Button shape="pill"`, atelier rule tokens (`--atelier-rule-*`, `--atelier-tick-*`, `--atelier-corner-tick-*`), `--easing-apple` unified curve, `ruleReveal` keyframe, library-wide hover timing tokens (`--duration-hover` + `--duration-card-hover`).
 - **Shipped — v0.3.x series:** Accordion `interpolate-size` animation overhaul, per-variant Text colors, consumer-validated polish from BleizLabs Website v2.
 - **Shipped — v0.2.0 baseline:** 81 components, 84 runtime test suites, 23 NVDA sweep protocols, 15 library bug fixes (Combobox/Select `aria-activedescendant`, Select first-key listbox open, Toast list semantics, HoverCard escapeStack + 11 more).
-- **Now — consumer rollout:** BleizLabs Website v2 shipped `/rozwiazania`, `/o-nas`, `/kontakt` atelier reworks. Atelier `frontend/refactor` skill validated on Hero + Diagnoza (compound efficiency confirmed). Lighthouse + formal publish cadence ongoing.
+- **Next — v0.8.0 batch (in progress):** semantic touch-target token cluster (seed-driven `$seed-touch-target` + `--size-touch-min` per WCAG 2.1 SC 2.5.5) replacing the 15 hardcoded `2.75rem` touch-min sites across `Calendar` / `Carousel` / `DatePicker` / `InputOTP` / `Slider` / `Toast` (Carousel `2.25rem` atelier nav signature deliberately preserved + documented), `2rem` compact-control sites mapped to existing `var(--space-8)`, drift fixes (barrel comments, `package.json` description), README resync, `FilterBar` molecule.
 - **Next — NVDA human execution:** 23+ protocols awaiting physical tester (~8h across 3 batches of 8 components). CRITICAL findings feed the next patch; otherwise the current minor gets the "NVDA-qualified" label.
 - **Next — shared NVDA protocol extraction:** `_nvda-shared/{modal-focus, menu-navigation, combobox-listbox}.md` consolidation (~400 LOC redundancy reduction across families sharing APG patterns).
 - **Later — post-consumer refactor:** further Rule-of-Three extractions (`useTypeahead`, `useListboxKeyboardNav`, `useFloatingItemRegistry`) after 3+ consumer deployments ship stable semantics.
