@@ -300,6 +300,21 @@ export const Calendar = forwardRef<HTMLDivElement, CalendarProps>(function Calen
 
   const displayMonth = useMemo(() => startOfMonth(focusedDate), [focusedDate]);
 
+  // Sync displayed month when consumer-driven `value` prop jumps months. Uses
+  // React 19 "during render setState" change-detection pattern so React batches
+  // the update with the current render — preferred over `useEffect` per the
+  // official "you might not need an effect" guidance, and avoids the
+  // commit-then-render-again cycle. Tracks the prop (`controlledValue`) NOT
+  // the derived `selectedDate`, so user keyboard nav (which moves focus
+  // without changing the consumer prop) is unaffected.
+  const [prevControlledValue, setPrevControlledValue] = useState(controlledValue);
+  if (controlledValue !== prevControlledValue) {
+    setPrevControlledValue(controlledValue);
+    if (controlledValue != null && !isSameMonth(controlledValue, displayMonth)) {
+      setFocusedDate(startOfDay(controlledValue));
+    }
+  }
+
   const weekStartsOn = useMemo<CalendarWeekStart>(
     () => weekStartsOnProp ?? getWeekStartDay(locale),
     [weekStartsOnProp, locale],

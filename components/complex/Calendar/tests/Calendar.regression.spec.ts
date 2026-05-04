@@ -105,6 +105,33 @@ test.describe('Calendar — regression guards', () => {
     await expect(selected).toHaveCount(1);
   });
 
+  test('CAL-R19c — controlled value cross-month jump: displayed month follows new value', async ({
+    page,
+  }) => {
+    // Demo Section 2 starts with controlled = April 20, 2026. Clicking "Today"
+    // sets value to today (May 4, 2026 or later). Pre-fix the calendar stayed
+    // on April because focusedDate was lazy-init only — today's cell was not
+    // rendered (5-week grid March 29 → May 2), so aria-selected count = 0.
+    // Post-fix the displayed month must jump to today's month so today's cell
+    // is in the grid AND marked aria-selected.
+    await page.emulateMedia({ reducedMotion: 'reduce' });
+    await page.goto('/components/calendar');
+    const sections = page.locator('section');
+    const controlled = sections.nth(1);
+    await controlled.getByRole('button', { name: 'Today' }).click();
+    const todayMonthYear = new Intl.DateTimeFormat('en-US', {
+      month: 'long',
+      year: 'numeric',
+    }).format(new Date());
+    // Header reflects today's month (proves displayMonth jumped)
+    await expect(controlled.getByText(todayMonthYear)).toBeVisible();
+    // Selected cell exists AND is the in-month variant (not an outside day)
+    const selected = controlled
+      .getByRole('grid')
+      .locator('td[role="gridcell"][aria-selected="true"]');
+    await expect(selected).toHaveCount(1);
+  });
+
   test('CAL-R19b — Clear sets selection to null', async ({ page }) => {
     await page.emulateMedia({ reducedMotion: 'reduce' });
     await page.goto('/components/calendar');

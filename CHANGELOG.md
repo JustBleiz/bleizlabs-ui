@@ -4,6 +4,22 @@ All notable releases of this component library. Follows [Keep a Changelog](https
 
 ---
 
+## [0.8.4] — 2026-05-04
+
+**`Calendar` controlled-value cross-month sync fix — when consumer passes a new `value` prop in a different month from what's displayed, the grid now jumps to the new value's month. Pre-fix the displayed month was lazy-init only and ignored later prop changes, leaving the selected cell off-screen. Patch fix, no API change. Restores green CI on `main` (CAL-R19 e2e regression unblocked).**
+
+### Fixed
+
+- **`<Calendar value={...}>`** — external `value` prop changes that cross a month boundary now move the displayed month to match the new value. Internal cell clicks already updated `focusedDate`, so consumer-driven value changes (e.g. external "Today" / "Jump to date" buttons) now behave consistently. Reason for prior behavior: `focusedDate` used a lazy `useState` init that was deliberately decoupled from `selectedDate` to avoid fighting keyboard navigation. Fix watches the consumer prop (`controlledValue`) directly via `useEffect` and only syncs when the new value is in a different month than `displayMonth` — keyboard nav (which moves `focusedDate` without changing the consumer prop) is unaffected.
+- **`Calendar.regression.spec.ts CAL-R19c`** — new e2e test that asserts both the rendered month header AND the selected cell match today after the external Today click. Sister test to CAL-R19; CAL-R19's existing `aria-selected` count assertion failed deterministically on `main` runs because the demo's initial controlled value (`April 20, 2026`) plus a 5-week April grid (`Mar 29 – May 2`) put today's cell outside the rendered range. CAL-R19c locks the regression by verifying the month jump.
+
+### Notes
+
+- Component count unchanged (bug fix, NOT new component): library count stays 100.
+- Driving incident: every push to `main` from v0.7.5 onward triggered an e2e failure on this single test, blocking the green-main signal that downstream projects rely on. Root cause was deterministic (not flake) — same React state shape, same demo seed value, same wall-clock day boundary.
+
+---
+
 ## [0.8.3] — 2026-05-04
 
 **`Badge` `pulse?: boolean` variant amendment — covers notification badge + live-status indicator patterns via existing Badge atom (panel_v2 ServiceCard.notifBadge + bleizos ClientsList.healthBadge). Inventory-first dup-check redirected proposed `NotifBadge` molecule into a 1-prop amendment on the existing atom — saves a redundant wrapper component, retains universal Badge API. Component count unchanged (variant amendment, NOT new component): library count stays 100. Additive patch.**
