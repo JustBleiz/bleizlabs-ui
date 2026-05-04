@@ -14,6 +14,13 @@ jobs:
   changes:
     name: Detect changes (path filter for e2e gating)
     runs-on: ubuntu-latest
+    permissions:
+      # `pull-requests: read` lets dorny/paths-filter call the GitHub API to
+      # diff base vs head on PR events. Required for events sourced from
+      # forks; required when GITHUB_TOKEN's default permissions are
+      # restricted (this repo's default).
+      contents: read
+      pull-requests: read
     outputs:
       code: ${{ steps.filter.outputs.code }}
     steps:
