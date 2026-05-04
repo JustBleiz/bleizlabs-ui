@@ -41,8 +41,8 @@ test.describe('SiteHeader — keyboard interactions (desktop)', () => {
   test('KB-08 — ArrowRight does not move focus off nav link (no menubar hijack)', async ({
     page,
   }) => {
-    // Use SiteHeader wrapper class — see SiteHeader.aria.spec.ts AR-01 note.
-    const siteHeader = page.locator('header[class*="__wrapper"]').first();
+    // Use SiteHeader .root class — see SiteHeader.aria.spec.ts AR-01 note.
+    const siteHeader = page.locator('header[class*="__root"]').first();
     await siteHeader.scrollIntoViewIfNeeded();
     const productsLink = siteHeader
       .getByRole('navigation', { name: 'Primary' })

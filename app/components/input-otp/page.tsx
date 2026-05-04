@@ -199,6 +199,7 @@ export default function InputOTPPlayground() {
           <Text
             id="otp-error-msg"
             variant="small"
+            color="inherit"
             className={styles.errorMsg}
             role="alert"
           >

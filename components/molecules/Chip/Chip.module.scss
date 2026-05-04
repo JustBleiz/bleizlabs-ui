@@ -153,6 +153,19 @@
 }
 
 // ---------------------------------------------------------------------------
+// Touch target — WCAG 2.2 AAA (D13) per --size-touch-min token (v0.7.5)
+// ---------------------------------------------------------------------------
+// Interactive variant only — display-only chips don't need pointer-target
+// expansion (they're decorative status indicators, not tap targets). Scoped
+// via :not(.display) so the @media (pointer: coarse) min-dimensions kick in
+// only when Chip renders as <button>. Display variant retains its compact
+// dimensions (sm/md size paddings only) — no visual change.
+
+.root:not(.display) {
+  @include mx.touch-target;
+}
+
+// ---------------------------------------------------------------------------
 // Reduced motion — disable transitions
 // ---------------------------------------------------------------------------
 

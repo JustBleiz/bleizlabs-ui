@@ -4,6 +4,48 @@ All notable releases of this component library. Follows [Keep a Changelog](https
 
 ---
 
+## [0.7.5] — 2026-05-04
+
+**Hygiene sweep — D11 compliance + token propagation + 6 demo backfills + docs corrections. Patch-level — additive only, zero breaking changes, visual output byte-equivalent. Driven by post-v0.7.4 component-build spec audit (10/22 PARTIAL findings — zero CRITICAL).**
+
+### Added
+
+- **6 dedicated component playground routes** — `/components/icon-button`, `/components/eyebrow`, `/components/chip`, `/components/file-chip`, `/components/page-header`, `/components/reveal-stack`. Pre-sweep these 6 components shared aggregator pages (`molecules/`, `text/`, `reveal/` topic pages). Per `component-build` skill Phase 6 spec each component MUST have its own deep-dive route with variants × sizes × states × asChild examples + light/dark theme support. Total `/components/*` routes 62 → 68.
+
+### Changed
+
+- **D11 base-class compliance** (3 components) — per `docs/component-standards.md` D11 the outermost SCSS class MUST be `.root`. Renamed:
+  - `SiteHeader.module.scss`: `.wrapper` → `.root` (2 sites — main rule + forced-colors `@media` block) + `SiteHeader.tsx` `wrapperClass` cn() reference + 2 test/regression doc references + Playwright locator `header[class*="__wrapper"]` → `header[class*="__root"]`.
+  - `SectionHeader.module.scss`: `.header` → `.root` + `SectionHeader.tsx` className reference.
+  - `ZoneCard.module.scss`: ADD new `.root` class with `display: contents` semantics — Card asChild owns visual frame (padding/border/shadow), `.root` provides D11 conformance + cascade origin for `[data-tone]` selectors. Tone selectors `[data-tone='X'] .icon` scoped to `.root[data-tone='X'] .icon` to limit cascade origin to ZoneCard instances. Import `cn` from utils + `className={cn(styles.root, className)}` on `<section>`.
+  - **Class names are CSS Modules internal** — no consumer can target them via `:global()` unless they reverse-engineer hashed names (forbidden per D11). Zero breaking change.
+- **`mx.touch-target` mixin** (`styles/_mixins.scss`) now references `var(--size-touch-min)` instead of hardcoded `44px`. The semantic token shipped in v0.7.4 now drives 100% of touch-min surfaces in the library. Consumer override paths (build-time seed OR runtime `:root`) propagate to BOTH the 6 v0.7.4 directly-migrated sites AND the ~10 components consuming the mixin (AlertDialog/Combobox/Command/ContextMenu/Dialog/Drawer/DropdownMenu/InputOTP/NavigationMenu + Chip post-v0.7.5). Default 44px preserved (token resolves to seed default) — zero visual delta for existing consumers.
+- **Chip touch-target enforcement** (`Chip.module.scss`) — added `.root:not(.display) { @include mx.touch-target; }` so the interactive variant lifts to 44×44 on coarse pointers per D13 / WCAG 2.2 AAA. Scoped via `:not(.display)` so display-only chips retain compact `sm`/`md` size paddings (decorative status indicators, not tap targets).
+
+### Fixed
+
+- **`docs/component-inventory.md` PageHeader entry** — removed stale "Per projekt (NIE w bazie)" listing for PageHeader (promoted to base library as Molecule M7 in v0.5.0 + extended with `actions` slot in v0.7.0). Added complete row to the Molecules table with full `Component | Budowa | Opis` format. Added migration note in the "Per projekt" table footer documenting the promotion.
+- **`COMPONENT_REGISTRY.md` ZoneCard CP9 backfill** (project root) — full preset entry (Ścieżka / Layer / Zamyka / Props × 8 typed / 5-axis variation envelope / Defaults / Composition / Tokens / Deps / A11y / Driving consumers / Universality test 3-of-3 / Deferred CollapsibleZoneCard / Type exports / Demo page / Audit trail / 3 examples). Drugi agent updated only `component-inventory.md` at PR #11 merge time; v0.7.5 closes the docs gap.
+
+### Compatibility
+
+- **Public API:** purely additive. No removed exports, no renamed exports, no breaking type changes. SCSS class renames are CSS Modules internal — invisible to consumers (hashed in production bundle).
+- **Visual deltas:** none. `--size-touch-min` resolves to identical `44px` value; `var(--space-8)` resolves to identical `32px`; D11 SCSS renames preserve all selectors and rules byte-equivalent.
+- **Consumer migration:** automatic on caret-bump. Chip interactive variant gains 44×44 touch-target on `(pointer: coarse)` — change is positive (better mobile UX).
+
+### Audit trail
+
+- Component-build spec audit (post-v0.7.4) — 22 post-Phase-10 components evaluated. Verdict: 12/22 FULL spec, 10/22 PARTIAL, 0 CRITICAL, 0 unsafe. Findings addressed:
+  - **E01 D11 compliance** — 3 components fixed (SiteHeader, SectionHeader, ZoneCard).
+  - **E02 demo coverage** — 6 dedicated routes created.
+  - **E03 prefers-reduced-motion** — N/A. Auditor flagged Eyebrow/SectionHeader/ZoneCard as missing reduced-motion guards but Grep verification confirmed all 3 have ZERO transitions/animations. Adding empty `@media` blocks would be premature defensive code anti-pattern (per OS rules "Don't add error handling for scenarios that can't happen"). Closed as documented N/A.
+  - **E04 Chip amendment** — auditor's `asChild` claim was a false positive (Toggle precedent does not exist + aria-pressed/anchor semantic conflict + universality 3-of-3 marginal benefit). Touch-target enforcement IS the real WCAG gap; mixin token propagation handles this universally.
+  - **E05 PageHeader docs** — inventory placeholder fixed + registry backfill landed.
+- Phase 7.1 Critical Consistency Audit dispatched pre-PR.
+- Validation gates: `tsc --noEmit` PASS, `npm run lint` PASS, sass build PASS (compiled.css 17.92 KB unchanged), `check-barrel.mjs` PASS, `next build` PASS (68 `/components/*` + 3 utility = 71 routes prerendered).
+
+---
+
 ## [0.7.4] — 2026-05-04
 
 **Audit + token cluster + docs resync sprint. Additive only — zero breaking changes. Patch-level — no API surface change, just one new opt-in semantic token + 21-site internal SCSS migration that preserves visual output byte-for-byte.**

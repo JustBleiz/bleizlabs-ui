@@ -4,9 +4,21 @@
 // Body: Stack of consumer-bespoke content (gap density-driven)
 // =============================================================================
 
-// .root: section landmark — Card preset owns padding/radius/background.
-// Tone-driven accents cascade via [data-tone] attribute (decoupled from
-// Card's Slot merge mechanics — set explicitly on the section element).
+// -----------------------------------------------------------------------------
+// Root — section landmark, Card asChild target
+// D11 base class convention — `.root` declared on the outermost element for
+// styling hooks AND tone-attribute scoping. Card preset owns visual frame
+// (padding/radius/background) via composition; .root provides the cascade
+// origin for [data-tone] selectors below (decoupled from Card's Slot merge).
+// `display: contents` keeps the wrapper class layout-transparent — Card's
+// own padding/border/shadow render unaffected because no extra box renders.
+// -----------------------------------------------------------------------------
+
+.root {
+  // Layout-transparent — Card composition owns visual frame. The class
+  // exists for D11 conformance + as the cascade origin for [data-tone].
+  display: contents;
+}
 
 // -----------------------------------------------------------------------------
 // Header — Inline composition handles flex; layout-only overrides
@@ -60,21 +72,24 @@
 // -----------------------------------------------------------------------------
 // Tone variants — drive icon color cascade via [data-tone] attribute.
 // Default = secondary text color (declared on .icon above).
-// Decoupled from Slot className merging — explicit attribute on <section>.
+// Scoped under `.root` to limit cascade origin to ZoneCard instances and
+// avoid accidentally targeting consumer's own `[data-tone]` attributes
+// elsewhere on the page (e.g., when ZoneCard wraps content that itself uses
+// data-tone for unrelated semantics).
 // -----------------------------------------------------------------------------
 
-[data-tone='success'] .icon {
+.root[data-tone='success'] .icon {
   color: var(--color-success);
 }
 
-[data-tone='warning'] .icon {
+.root[data-tone='warning'] .icon {
   color: var(--color-warning);
 }
 
-[data-tone='error'] .icon {
+.root[data-tone='error'] .icon {
   color: var(--color-error);
 }
 
-[data-tone='brand'] .icon {
+.root[data-tone='brand'] .icon {
   color: var(--color-brand);
 }

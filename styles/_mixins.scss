@@ -59,9 +59,18 @@
 //   }
 
 @mixin touch-target {
+  // v0.7.5 — references --size-touch-min semantic token (introduced v0.7.4
+  // per WCAG 2.1 SC 2.5.5). Single source of truth across all touch-min
+  // surfaces in the library. Consumer override paths:
+  //   build-time:  @use '@bleizlabs/ui/styles' with ($seed-touch-target: 48px);
+  //   runtime:     :root { --size-touch-min: 48px; }
+  // Default 44px preserved (token resolves to seed default) — zero visual
+  // delta for existing consumers; opt-in dial-up for accessibility-stricter
+  // products (senior care, motor-impaired audiences) hits ALL components
+  // using this mixin in addition to the 6 directly-migrated v0.7.4 sites.
   @media (pointer: coarse) {
-    min-height: 44px;
-    min-width: 44px;
+    min-height: var(--size-touch-min);
+    min-width: var(--size-touch-min);
   }
 }
 
