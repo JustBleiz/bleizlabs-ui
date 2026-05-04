@@ -10,14 +10,15 @@ All notable releases of this component library. Follows [Keep a Changelog](https
 
 ### Added
 
-- **`<Badge pulse>`** prop — infinite opacity pulse animation (1 → 0.5 → 1, 2s cycle, `var(--easing-default)` easing). Mirrors `Dot.pulse` API for consistency across atom layer.
+- **`<Badge pulse>`** prop — pulses **only the leading `icon` / `dot`** (badge frame + label stay static so the text remains readable at a glance). 1 → 0.5 → 1 opacity cycle, 2s, `var(--easing-default)` easing. API name matches `Dot.pulse` for consistency across the atom layer; SCSS scope differs because Badge is a composite (frame + label + indicator) whereas Dot is a single indicator.
+  - **Requires `icon` or `dot`** for the cue to be visible — pulse without an indicator child is a no-op (intentional: pulsing the label flickers text and harms readability).
   - Inherits global `prefers-reduced-motion: reduce` guard (auto-stops for users who opt out of animations).
   - Decorative-only — pair with `color` + `label` so meaning survives when motion is disabled.
   - Driving consumers (universality 3-of-3 reaffirmed):
     - panel_v2 `ServiceCard.notifBadge` — `[icon] [count]` warning tier with pulse for unread notifications.
     - bleizos `ClientsList.healthBadge` — `[icon] [count]` tier-driven pulse for client health indicators.
     - scout-hub admin already imports lib `Badge` — pulse opcjonalny dla future warning/online indicators.
-- Demo page `app/components/badge/page.tsx` Section 7 — pulse showcase (4 examples: notification count `3` warning + LIVE error indicator + Online success dot + Updating info dot).
+- Demo page `app/components/badge/page.tsx` Section 7 — pulse showcase (4 examples: notification count `3` warning + icon, LIVE error + dot, Online success + dot, Updating info + dot).
 - Local `@keyframes badgePulse` per Turbopack scoping discipline (NOT global pulse) — matches `Dot.dotPulse` + `Checkbox.checkboxTick` + `RadioGroup.radioDotFill` precedent.
 
 ### Changed

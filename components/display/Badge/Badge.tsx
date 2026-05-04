@@ -24,6 +24,10 @@ import styles from './Badge.module.scss';
  *          must also be conveyed in the `label`. `pulse` is purely
  *          visual — never the sole carrier of urgency; pair with
  *          color + label so the meaning survives reduced-motion.
+ *          `pulse` animates only the leading `icon` / `dot` — the
+ *          frame + label stay static so the text is always readable.
+ *          Pass `icon` or `dot` together with `pulse` for the cue
+ *          to be visible.
  *
  * @example
  * <Badge label="Active" color="success" />
@@ -59,7 +63,7 @@ export interface BadgeProps extends HTMLAttributes<HTMLSpanElement> {
   icon?: ReactNode;
   /** Show a small filled dot left of the label. Default `false`. */
   dot?: boolean;
-  /** Infinite opacity pulse animation — pair with `color` + `label` so meaning survives reduced-motion. Default `false`. */
+  /** Pulse only the leading `icon` / `dot` (badge frame + label stay static). Pass `icon` or `dot` for the cue to be visible. Inherits global reduced-motion guard. Default `false`. */
   pulse?: boolean;
   /** Render as the single child element via Slot. When true, the child element supplies its own text and `label` is ignored. */
   asChild?: boolean;

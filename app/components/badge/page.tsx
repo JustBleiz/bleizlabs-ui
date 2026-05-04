@@ -87,11 +87,11 @@ export default function BadgePlaygroundPage() {
         <Heading level={2} size="2xl">7. Pulse — notification + live status</Heading>
         <div className={styles.row}>
           <Badge label="3" color="warning" icon={<span>🔔</span>} pill pulse />
-          <Badge label="LIVE" color="error" pill uppercase pulse />
+          <Badge label="LIVE" color="error" dot pill uppercase pulse />
           <Badge label="Online" color="success" dot pill pulse />
           <Badge label="Updating" color="info" dot pulse />
           <Text variant="caption" color="muted">
-            (Pulse inherits global prefers-reduced-motion guard)
+            (Frame + label stay static — only the icon/dot pulses; inherits prefers-reduced-motion guard)
           </Text>
         </div>
       </section>
