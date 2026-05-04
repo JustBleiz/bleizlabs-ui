@@ -4,6 +4,112 @@ All notable releases of this component library. Follows [Keep a Changelog](https
 
 ---
 
+## [Unreleased] — v0.8.0 batch (in progress)
+
+**Audit + token cluster + docs resync sprint. Additive only — zero breaking changes. `FilterBar` molecule pending before tag bump; rename heading to `[0.8.0] — YYYY-MM-DD` at publish time.**
+
+### Added
+
+- **`$seed-touch-target` seed** + **`--size-touch-min` semantic token** (WCAG 2.1 SC 2.5.5 minimum touch-target dimension, default `44px`). Single source of truth for `@media (pointer: coarse)` minimum touch-target across `Calendar` cells, `Carousel` nav, `DatePicker` cells, `InputOTP` slots, `Slider` thumbs, `Toast` close. Consumer override paths: `@use '@bleizlabs/ui/styles' with ($seed-touch-target: 48px)` (build-time seed) or `:root { --size-touch-min: 48px; }` (runtime). Dedicated semantic instead of `--space-11` extension because 44px sits between `--space-10` (40px) and `--space-12` (48px) — adding scale step 11 would break the Tailwind 4px-step contract for a single touch-min value (per R22 (b) "dedicated semantic when value doesn't 1:1 map to existing scale").
+
+### Changed
+
+- **Touch-target migration (15 sites across 6 components):** `Calendar.module.scss` (3) + `Carousel.module.scss` (4) + `DatePicker.module.scss` (2) + `InputOTP.module.scss` (2) + `Slider.module.scss` (2) + `Toast.module.scss` (2) all replace hardcoded `2.75rem` with `var(--size-touch-min)`. Zero visual delta — token resolves to the same 44px.
+- **Compact-control migration (6 sites across 3 components):** `Calendar.module.scss` chevron (2) + `Carousel.module.scss` pauseButton (2) + `DatePicker.module.scss` chevron (2) all replace hardcoded `2rem` with `var(--space-8)` (existing token, 32px). Zero visual delta.
+- **Carousel atelier nav `2.25rem` (36px) preserved** — sits between `--space-8` (32px) and `--space-10` (40px), intentionally off the 4px-step scale for carousel-nav visual identity. Documented inline with rationale comment; touch-min coverage retained via `@media (pointer: coarse)` block on the same selector.
+- **`components/index.ts` barrel comments:** Molecules count corrected `(13)` → `(14)`, Card presets count corrected `(9)` → `(10)`. Comments now match actual export counts.
+- **`package.json` description:** corrected component count `101` → `97` (ground truth: folder count per category — see README catalogue).
+- **`README.md`** full resync: badge `v0.5.7` → `v0.7.3`, header count `91` → `97` (4 occurrences), version banner rewritten for `ZoneCard` v0.7.3 with v0.8.0 batch tease, Component catalogue rewritten with accurate per-category counts and complete listings (Display 12 with `KpiValue`/`PercentValue`/`Reveal`; Specialized 9 with `BarChart`; Molecules 14 with `BreakdownList`/`MetricTile`/`PageHeader`/`RevealStack`/`SectionHeader`; Card presets 10 with `EntityCard`/`EntityHero`/`IconHeaderCard`/`ZoneCard`; Composition presets split out as separate `(1)` family for `SiteHeader`), Roadmap section prepended with v0.5–v0.7 shipped highlights + v0.8.0 batch in-progress entry, "Common tokens" table extended with `--size-touch-min` row.
+- **`CHANGELOG.md`:** consolidated `## [0.6.0 — 0.7.2]` bridge rollup entry filling the v0.5.9 → v0.7.3 gap (per-version commits + devlog entries remain canonical for full audit trail).
+- **`COMPONENT_REGISTRY.md`** (project root): added complete `ZoneCard` (CP9) entry under Card Presets section — the previously-published v0.7.3 release shipped only the `component-inventory.md` entry; this sprint closes the docs gap.
+
+### Compatibility
+
+- **Public API:** purely additive (one new seed, one new semantic token). Existing consumer SCSS is byte-equivalent. No removed exports, no renamed exports, no breaking type changes.
+- **Visual deltas:** none — `var(--size-touch-min)` resolves to `44px`, identical to the previous hardcoded `2.75rem`. `var(--space-8)` resolves to `32px`, identical to previous `2rem`. Carousel `2.25rem` (36px) untouched.
+- **Consumer migration:** automatic on caret-bump. Override path `:root { --size-touch-min: 48px; }` or seed `$seed-touch-target: 48px` available immediately for accessibility-stricter products.
+
+### Audit trail
+
+- Phase 7.1 Critical Consistency Audit (adversarial subagent) iter 1 PASS-WITH-WARNINGS — 0 CRITICAL / 2 IMPORTANT / 2 NITPICK.
+  - IMP-C1: `--size-touch-min` missing from README "Common tokens" table — fixed (table row added).
+  - IMP-C2: token cluster + 6 component migrations missing CHANGELOG entry — fixed (this entry).
+  - NIT-A3: roadmap copy precision around `2.25rem` preserved — fixed (clarified that Carousel atelier nav signature is deliberately preserved while touch-min sites are 100% migrated).
+  - NIT-META: branch had uncommitted changes at audit time — addressed in commit phase.
+- Validation gates: `tsc --noEmit` PASS, sass build PASS (17.89 KB compiled.css, 17 tokens verified, +0.39 KB additive), `check-barrel.mjs` PASS.
+
+---
+
+## [0.7.3] — 2026-05-04
+
+**`ZoneCard` (CP9) preset — Phase 8 Card-presets family completes at 10/10. Universal info-card preset for zoned/section-based layouts. Additive minor; library count 96 → 97.**
+
+### Added
+
+- **`<ZoneCard>`** (Phase 8 Presets CP9) — universal info-card preset composing `Card asChild` (renders semantic `<section>` landmark) + optional `Inline` header (icon slot via `IconBox`-driven `[data-tone]` cascade + title via `Heading h3 md` + optional subtitle via `Text caption muted` + optional `rightSlot` ReactNode for badges/counters/actions) + body via `Stack` whose `gap` is driven by `density`. Body content stays consumer-bespoke (any ReactNode children).
+  - **5 variation axes:** icon? + title (required) + subtitle? + rightSlot? + (density × tone).
+  - **`density: 'compact' | 'comfortable'`** drives Card padding (`var(--space-4)` / `var(--space-5)`) + body gap (`var(--space-2)` / `var(--space-3)`) via lookup maps. Compact for dense dashboards, comfortable for editorial pages.
+  - **`tone: 'default' | 'success' | 'warning' | 'error' | 'brand'`** drives icon color via `[data-tone]` attribute cascade — decoupled from Slot className merging so consumer's own className never collides with tone styling.
+  - **`ariaLabel?: string`** defaults to `title` (avoids redundant SR announcement when title is already in the heading).
+  - **`forwardRef<HTMLElement>`** + Server-Component safe (no client hooks). Compose-first: zero new primitives — pure composition of existing library atoms.
+  - **Driving consumers (post-publish migration target):** panel_v2 `TechnicalInfraCard` (5 `InfraZoneCard` sites) + `ProjectsFinancialOverview` (2 wrapper sites). Combined ~7 production consumer sites + ~87 R12-violation reduction expected from migration.
+  - **Universality test 3-of-3:** panel_v2 ✅ (current 27 candidate sites) · BleizOS hypothetical ✅ (admin info-card pattern is universal) · scout-hub hypothetical ✅. PASS.
+  - **CollapsibleZoneCard variant deferred** until Rule of Three on collapse-needing consumers (currently 1 collapsing consumer: `FinancialBreakdown`).
+  - **Type exports:** `ZoneCard`, `ZoneCardProps`, `ZoneCardDensity`, `ZoneCardTone`.
+
+### Changed
+
+- **`components/index.ts` barrel:** Card presets category 9 → 10 (ZoneCard added). Comment count updated.
+- **`COMPONENT_REGISTRY.md` + `docs/component-inventory.md`** — ZoneCard entry added under Card Presets section.
+- **`package.json`:** version 0.7.2 → 0.7.3, description component count 101 → 97 (correcting historical drift; ground truth is folder count per category — see catalogue in README).
+
+### Compatibility
+
+- **Public API:** purely additive — no removed exports, no renamed exports, no breaking type changes. Existing 96 components byte-equivalent.
+- **Visual deltas:** none — ZoneCard is a new export, does not modify existing components.
+- **Demo routes:** `/components/zone-card` (full ZoneCard demo with all 5 variation axes) — adds 1 route.
+
+### Audit trail
+
+- Phase 4 Evaluator iter 1 FAIL with 3 IMPORTANT (a11y `ariaLabel` defaulting from `title`, density `@tokens` JSDoc with `--space-*` mapping, tone cascade decoupled from Slot via `[data-tone]` attribute) — all fixed in iter 2.
+- Phase 4 Evaluator iter 2 PASS (0C/0I/3N cosmetic).
+- Phase 7.1 Critical Consistency Audit dispatched pre-release.
+
+---
+
+## [0.6.0 — 0.7.2] — 2026-04-28 → 2026-05-04 (consolidated rollup)
+
+**Bridge entry summarising the seven minor + patch releases between v0.5.9 and v0.7.3. Each version was published individually to GitHub Packages; this rollup highlights the shipped surface for changelog completeness without a per-release breakdown. Library count progressed 93 → 96 across this window. See git tags `v0.6.0`, `v0.6.1`, `v0.7.0`, `v0.7.1`, `v0.7.2` for per-release commits and devlog entries for full audit trails.**
+
+### Added
+
+- **`<KpiValue>`** (v0.6.0, Display) — universal numeric+unit metric atom replacing older `AnimatedPrice`. Composable with `<PercentValue>` for change-delta surfaces.
+- **`<PercentValue>`** (v0.6.0, Display) — thin specialization for percentage-shaped metrics composing `KpiValue` semantics.
+- **`<EntityCard>`** (v0.7.0, Card presets CP8) — entity-detail card preset.
+- **`<EntityHero>`** (v0.7.0, Card presets — renamed from `DetailPageHero`) — entity-detail hero preset.
+- **`<IconHeaderCard>`** (v0.6.0, Card presets CP6) — standardised icon+heading card framing.
+- **`<BreakdownList>`** (v0.7.0, Molecules) — progress-style breakdown rows. v0.7.1 amendment extended `tone` enum with `'error'` (maps to `Progress.error-strong` shipped v0.6.1) for high-stakes alarm scenarios.
+- **`<MetricTile>`** (v0.7.0, Molecules) — KPI tile composition lifted from `bleizlabs-website` panel-pattern-extraction work-unit.
+- **`<PageHeader>`** (v0.7.0, Molecules) — universal page header molecule lifted from `bleizlabs-website` panel-pattern-extraction.
+- **`<SectionHeader>`** (v0.7.2, Molecules M11) — universal section heading row (`[gradient accent] LABEL · count [meta][action]`) promoted from 27 panel_v2 production consumers (Rule of Three exceeded 9×).
+- **`<BarChart>`** (v0.7.x, Specialized) — universal single-series bar chart (pure-CSS bar rendering, auto-detected ceiling, optional `highlightIndex` accent treatment, server-safe).
+- **`Progress color: 'error-strong'`** (v0.6.1) — Progress component gains explicit error tone, unblocks BreakdownList tone enum extension.
+
+### Changed
+
+- **Token cleanup batch (v0.7.0)** — typography line-height gap-fill semantic tokens (`--line-height-display`, `--line-height-display-loose`, `--line-height-form-card-title`, `--line-height-form-card-subtitle`) for atelier display tier; `--badge-dot-size`, `--border-width-accent`, `--icon-box-font-lg` micro-tokens (per R22 token-reuse-first scan: dedicated semantic where existing scale doesn't 1:1).
+- **`PageHeader` extend (v0.7.0)** — additional props for panel-pattern adoption.
+- **`KpiValue` + `PercentValue` merge (v0.7.0)** — value/percent semantic split per consumer feedback.
+- **`DetailPageHero` rename → `EntityHero` (v0.7.0)** — naming alignment with `EntityCard`. Breaking import name change for v0.7.0 consumers.
+- **`BarChart.module.scss` `.srOnly`** (v0.7.1 amendment) replaced local 9-line block with shared `@include mx.sr-only` mixin (-9 LOC).
+
+### Compatibility
+
+- v0.7.0 contains the only breaking change in this window (`DetailPageHero` → `EntityHero` rename). All other entries are additive.
+- 23 git commits across the window; published manually to GitHub Packages per OS publish playbook.
+
+---
+
 ## [0.5.9] — 2026-04-27
 
 **Reveal atom + RevealStack molecule release — promotes universal scroll-reveal pattern from project-local code into the library, plus convenience composition wrapper for canonical section header→body layout. Two additive components (1 atom + 1 molecule), zero breaking changes, library count 91 → 93.**
