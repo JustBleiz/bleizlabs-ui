@@ -84,6 +84,11 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  // Atelier carousel-nav signature size 36px — sits between --space-8 (32px)
+  // and --space-10 (40px). Intentionally off the 4px-step scale, preserved
+  // for visual identity (nav buttons that are visibly slightly larger than
+  // a default 32px chip but smaller than a 40px control). Touch-min coverage
+  // for coarse pointers comes from `@media (pointer: coarse)` below.
   width: 2.25rem;
   height: 2.25rem;
   border-radius: var(--radius-full);
@@ -119,8 +124,8 @@
   }
 
   @media (pointer: coarse) {
-    min-width: 2.75rem;
-    min-height: 2.75rem;
+    min-width: var(--size-touch-min);
+    min-height: var(--size-touch-min);
   }
 }
 
@@ -134,8 +139,8 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 2rem;
-  height: 2rem;
+  width: var(--space-8);
+  height: var(--space-8);
   border-radius: var(--radius-full);
   background: var(--color-surface-raised);
   border: 1px solid var(--color-border);
@@ -167,8 +172,8 @@
   }
 
   @media (pointer: coarse) {
-    min-width: 2.75rem;
-    min-height: 2.75rem;
+    min-width: var(--size-touch-min);
+    min-height: var(--size-touch-min);
   }
 }
 
