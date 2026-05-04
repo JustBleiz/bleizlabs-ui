@@ -117,6 +117,7 @@ export * from './presets/IconHeaderCard';
 export * from './presets/PairedCard';
 export * from './presets/SidebarCard';
 export * from './presets/StatsCard';
+export * from './presets/ZoneCard';
 
 // ----------------------------------------------------------------------------
 // Composition presets (1)
