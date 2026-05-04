@@ -36,7 +36,14 @@
 }
 
 .errorMsg {
-  color: var(--color-error);
+  // v0.7.5 — `color: var(--color-error)` defaults to error-500 which fails
+  // axe WCAG 2.1 AA color-contrast on light surfaces (~3.8:1 against white).
+  // Use the theme-aware `--color-error-strong` token (defined per-theme in
+  // `_semantics.scss`: error-700 in light mode → ~5.9:1 PASS, error-300 in
+  // dark mode → ~7.4:1 PASS). Companion change in tsx: `<Text color="inherit">`
+  // so Text doesn't set its own `--text-color` inline (which would win over
+  // this className per CSS inline-style precedence).
+  color: var(--color-error-strong);
 }
 
 .completionsLog {
