@@ -11,6 +11,41 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  changes:
+    name: Detect changes (path filter for e2e gating)
+    runs-on: ubuntu-latest
+    permissions:
+      # `pull-requests: read` lets dorny/paths-filter call the GitHub API to
+      # diff base vs head on PR events. Required for events sourced from
+      # forks; required when GITHUB_TOKEN's default permissions are
+      # restricted (this repo's default).
+      contents: read
+      pull-requests: read
+    outputs:
+      code: ${{ steps.filter.outputs.code }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          # `code` flips true when the PR touches anything that can affect e2e
+          # rendering: components themselves, demo pages they render in,
+          # Playwright config / test infra, or anything that reshapes the
+          # bundle (deps + sass / next config). Keep this conservative —
+          # missing a path produces silent skipped e2e on a risky PR.
+          filters: |
+            code:
+              - 'components/**'
+              - 'app/**'
+              - 'styles/**'
+              - 'tests/**'
+              - 'playwright.config.ts'
+              - 'package.json'
+              - 'package-lock.json'
+              - 'next.config.mjs'
+              - 'tsconfig.json'
+              - '.github/workflows/test.yml'
+
   typecheck:
     name: TypeScript
     runs-on: ubuntu-latest
@@ -90,8 +125,15 @@ jobs:
   e2e:
     name: Playwright per-component (keyboard + focus + aria + regression)
     runs-on: ubuntu-latest
-    needs: [smoke]
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: [smoke, changes]
+    # Always on push-to-main (full guarantee on the trunk).
+    # On PRs, only when the change actually touches code that can affect e2e —
+    # docs / devlog / ROADMAP-only PRs stay fast and skip the ~10-min e2e job.
+    # Catches regressions BEFORE merge; fixes the v0.7.5 → v0.8.3 pattern
+    # where deterministic Calendar CAL-R19 failures only surfaced post-merge.
+    if: |
+      (github.event_name == 'push' && github.ref == 'refs/heads/main') ||
+      (github.event_name == 'pull_request' && needs.changes.outputs.code == 'true')
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
