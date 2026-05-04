@@ -31,12 +31,13 @@ export * from './typography/Heading';
 export * from './typography/Text';
 
 // ----------------------------------------------------------------------------
-// Display (12 families / 16 exports)
+// Display (13 families / 17 exports — v0.8.1 EdgeBar NEW)
 // ----------------------------------------------------------------------------
 export * from './display/AspectRatio';
 export * from './display/Avatar';
 export * from './display/Badge';
 export * from './display/Card';
+export * from './display/EdgeBar';
 export * from './display/IconBox';
 export * from './display/KpiValue';
 export * from './display/PercentValue';

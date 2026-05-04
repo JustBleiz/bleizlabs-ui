@@ -4,6 +4,38 @@ All notable releases of this component library. Follows [Keep a Changelog](https
 
 ---
 
+## [0.8.1] — 2026-05-04
+
+**`EdgeBar` (Display atom) — Phase 3 Display family extends to 13/13 (17 exports). Universal absolute-positioned decorative stripe along one edge of a positioned parent. Reuses `BadgeColor` palette for cross-component consistency. Promoted from primitive-purity-sweep Tier A — retires the legacy raw `<span class=edge>` / `<span class=rowLeftEdge>` markup across panel_v2 ProjectCard + ServiceCard. Additive patch; library count 98 → 99.**
+
+### Added
+
+- **`<EdgeBar>`** (Display atom) — pure-decorative atom for top / bottom / left / right edge accent stripes anchored to a positioned parent. Server-safe (no client state).
+  - **Props (4 axes):**
+    - `position?: 'top' | 'left' | 'right' | 'bottom'` — edge to anchor to; default `'top'`.
+    - `color?: BadgeColor` — semantic color reused from Badge: `default | brand | success | warning | error | info`; default `'default'`.
+    - `thickness?: 'sm' | 'md' | 'lg'` — bar weight (2 / 3 / 4 px); default `'md'`.
+    - `pulse?: boolean` — infinite 2s opacity cycle for live indicators; default `false`.
+  - **A11y:** purely decorative — `<span aria-hidden="true">` with no `role` and no `aria-*`. Color alone never conveys meaning; status semantics live on the parent component (text label, icon, heading).
+  - **Animation:** local `@keyframes edgeBarPulse` (Dot/Checkbox/RadioGroup precedent — CSS Modules scope keyframe identifiers, so global `pulse` from `_animations.scss` silently no-ops under Turbopack + Next.js 16). `prefers-reduced-motion: reduce` disables animation in same SCSS block.
+  - **Tokens (R22 reuse-first — zero new tokens):** All colors reuse Badge palette tokens (`var(--color-{brand,success,warning,error,info})` + `var(--color-border-strong)` for default). Easing via `var(--easing-default)`. Thickness 2/3/4px hardcoded with `@raw-px-ok` comments per D28 (component-internal decorator dimensions outside the 4px space scale; closed enum).
+  - **Parent contract:** wrapping element MUST set `position: relative` (or any non-`static`) — documented in JSDoc + demo with `<Card>` parents. `pointer-events: none` on the bar so clicks pass through to the underlying surface.
+  - **Demo route:** `/components/edge-bar` — 7 sections (minimal / 4 positions / 6 colors / 3 thicknesses / 3 pulsing / Card top-edge accent / row left-edge accent). Smoke route added to `tests/smoke.spec.ts` — axe-core PASS.
+  - **R12/R22/R23/R24/D11 compliant.** Universality 3-of-3 verified: panel_v2 ProjectCard top-edge + ServiceCard mirror + ServiceCardRow left-edge (4 sites); BleizOS admin list-row indicators; scout-hub admin selected-row accents.
+  - Composes with: any `position: relative` parent (Card most common). NEW v0.8.1 — promoted from `bleizlabs-website` panel_v2 driving consumers per primitive-purity-sweep amendment queue Tier A.
+
+### Changed
+
+- **`components/index.ts` Display section** — count 12 → 13 families / 16 → 17 exports (EdgeBar added between Card and IconBox alphabetically).
+- **`tests/smoke.spec.ts`** — `/components/edge-bar` route added to library-wide axe scan.
+- **`package.json`** — version `0.8.0` → `0.8.1`; component count `98 → 99` in description.
+
+### Notes
+
+- **Skipped Sprint 2 (StatusDot proposal):** Inventory check caught duplicate — `<Dot>` atom (per D15 architectural decision) already covers all proposed StatusDot use cases (6 colors / 3 sizes / `pulse` / `label` sr-only / `asChild` Slot). Amendment queue line 27 marked RESOLVED. EdgeBar (Sprint 2-pivot) is the actual next remaining Tier A atom from primitive-purity-sweep.
+
+---
+
 ## [0.8.0] — 2026-05-04
 
 **`CollapsibleZoneCard` (CP10) preset — Phase 8 Card-presets family extends to 11/11. Universal collapsible info-card preset (sister to ZoneCard CP9 v0.7.3) with APG disclosure pattern state machinery (controlled + uncontrolled), summary chip slot, animated body collapse via grid-template-rows + chevron rotation, modern `inert` + `aria-hidden` a11y removal pattern. Additive minor; library count 97 → 98. Driven by primitive-purity-sweep Tier S Sprint 1.**

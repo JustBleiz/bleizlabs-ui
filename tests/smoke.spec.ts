@@ -42,6 +42,7 @@ const ROUTES = [
   '/components/dialog',
   '/components/drawer',
   '/components/dropdown-menu',
+  '/components/edge-bar',
   '/components/feedback',
   '/components/heading',
   '/components/hover-card',
