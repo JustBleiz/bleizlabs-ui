@@ -1,0 +1,80 @@
+// ============================================================================
+// TimelineMarker — round indicator (Phase 7 compound member, D11 .root base)
+// Default = neutral dot; tint classes (data-tint cascade) drive border +
+// background fill via existing semantic color tokens (R22 reuse-first —
+// zero new tokens). Inner icon-slot sizing on `> svg` mirrors lib-wide
+// inline-icon convention (Button.module.scss precedent).
+// ============================================================================
+
+.root {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px; // @raw-px-ok: marker visual size (D28 exemption)
+  height: 26px; // @raw-px-ok
+  border-radius: var(--radius-full);
+  border: 1px solid var(--color-border-strong);
+  background: var(--color-surface-raised);
+  color: var(--color-text-secondary);
+  flex-shrink: 0;
+
+  // Inner icon-slot sizing — Tabler icon convention from ActivityFeed
+  // precedent is 14px / stroke 1.75. Consumer passes the icon; we just
+  // clamp size. Per lib precedent (Button.module.scss inline-icon slot)
+  // this is a ratified D28 exemption for icon-slot dimensions.
+  > svg {
+    width: 14px; // @raw-px-ok: icon slot size (D28 exemption)
+    height: 14px; // @raw-px-ok
+    display: block;
+  }
+
+  // ----------------------------------------------------------------------------
+  // Tint cascade — color-mix() borders + subtle backgrounds. Mirrors
+  // ActivityFeed driving-consumer vocabulary byte-for-byte. Each tint
+  // composes from a single semantic token (R22-compliant reuse).
+  // ----------------------------------------------------------------------------
+
+  &[data-tint='brand'] {
+    border-color: color-mix(in srgb, var(--color-brand) 40%, transparent);
+    background: color-mix(in srgb, var(--color-brand) 10%, var(--color-surface));
+    color: var(--color-brand);
+  }
+
+  &[data-tint='success'] {
+    border-color: color-mix(in srgb, var(--color-success) 40%, transparent);
+    background: color-mix(in srgb, var(--color-success) 10%, var(--color-surface));
+    color: var(--color-success);
+  }
+
+  &[data-tint='warning'] {
+    border-color: color-mix(in srgb, var(--color-warning) 40%, transparent);
+    background: color-mix(in srgb, var(--color-warning) 10%, var(--color-surface));
+    color: var(--color-warning);
+  }
+
+  &[data-tint='error'] {
+    border-color: color-mix(in srgb, var(--color-error) 40%, transparent);
+    background: color-mix(in srgb, var(--color-error) 10%, var(--color-surface));
+    color: var(--color-error);
+  }
+
+  &[data-tint='info'] {
+    border-color: color-mix(in srgb, var(--color-info) 40%, transparent);
+    background: color-mix(in srgb, var(--color-info) 10%, var(--color-surface));
+    color: var(--color-info);
+  }
+}
+
+// ============================================================================
+// Forced colors (Windows High Contrast Mode) — borders fall back to system
+// CanvasText so the marker remains visible when forced-colors strips our
+// color-mix backgrounds.
+// ============================================================================
+
+@media (forced-colors: active) {
+  .root {
+    border-color: CanvasText;
+    background: Canvas;
+    color: CanvasText;
+  }
+}

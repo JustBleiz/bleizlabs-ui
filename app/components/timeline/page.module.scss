@@ -1,0 +1,121 @@
+@use 'mixins' as mx;
+
+.main {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-10);
+  max-width: 1024px;
+  margin: 0 auto;
+  padding: var(--space-10) var(--space-6);
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.intro {
+  @include mx.body-base;
+  max-width: 60ch;
+  margin: 0;
+  color: var(--color-text-secondary);
+}
+
+.back {
+  @include mx.body-small;
+  width: fit-content;
+  color: var(--color-text-secondary);
+  text-decoration: none;
+  &:hover {
+    color: var(--color-brand);
+  }
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.sectionTitle {
+  @include mx.heading-3;
+  margin: 0;
+}
+
+.sectionDescription {
+  @include mx.body-base;
+  margin: 0;
+  color: var(--color-text-secondary);
+}
+
+// Demo cards wrapping each Timeline example
+.demoCard {
+  padding: var(--space-5);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface-raised);
+}
+
+// Side-by-side grid for tint variants showcase
+.tintGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: var(--space-4);
+}
+
+// Inline label utilities used inside event content
+.eventTitle {
+  @include mx.body-base;
+  margin: 0;
+  font-weight: 600;
+}
+
+.eventTime {
+  @include mx.body-small;
+  // Use text-secondary (not text-muted) — muted fails WCAG AA contrast
+  // against surface-raised card backgrounds in light mode (axe smoke gate).
+  color: var(--color-text-secondary);
+  font-variant-numeric: tabular-nums;
+}
+
+.eventBody {
+  @include mx.body-small;
+  margin: 0;
+  color: var(--color-text-secondary);
+}
+
+.eventRow {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+}
+
+// Clickable link inside content slot — replaces removed asChild pattern.
+// Renders as a block to capture the full content-area click target while
+// keeping the marker slot decorative outside the link.
+.eventLink {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+
+  &:hover .eventTitle {
+    color: var(--color-brand);
+  }
+
+  &:focus-visible {
+    outline: none;
+    box-shadow: var(--focus-ring);
+    border-radius: var(--radius-md);
+  }
+}
+
+// Inline initials / version pill displayed inside custom-marker children
+// (Section 6 demo). Replaces inline-style usage; reuses existing tokens
+// rather than introducing px literals.
+.markerInitials {
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-bold);
+  line-height: 1;
+}

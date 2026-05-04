@@ -1,0 +1,14 @@
+// ============================================================================
+// Timeline — root <ol> container (Phase 7 compound molecule, D11 .root base)
+// Sibling compound members ship their own SCSS modules:
+//   TimelineItem.module.scss  → <li> + connector spine + marker slot
+//   TimelineMarker.module.scss → marker <span> + tint cascade + forced-colors
+// ============================================================================
+
+.root {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}

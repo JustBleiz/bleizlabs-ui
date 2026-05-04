@@ -4,6 +4,40 @@ All notable releases of this component library. Follows [Keep a Changelog](https
 
 ---
 
+## [0.8.2] — 2026-05-04
+
+**`Timeline` (Phase 7 Molecule) — compound flat exports `Timeline` + `TimelineItem` + `TimelineMarker`. Universal chronological event-list molecule with semantic `<ol>/<li>` + tinted markers + CSS connector spine. Promoted from primitive-purity-sweep — driving consumers BleizOS ActivityFeed + panel_v2 ActivityContent + RecentActivityFeed + scout-hub tab-history (4 verified sites; explicit `@primitive-purity-skip` markers in 3 files request this lib amendment). Additive patch; library count 99 → 100.**
+
+### Added
+
+- **`<Timeline>`** (root) — semantic `<ol>` container. `forwardRef<HTMLOListElement, TimelineProps>`. Server-safe (no client hooks).
+- **`<TimelineItem>`** (compound member) — `<li>` row with marker slot + content slot + connector spine cascade.
+  - **Props:**
+    - `marker?: ReactNode` — custom marker node (Avatar, Badge, custom widget). When omitted, default `<TimelineMarker tint={tint}>` dot rendered.
+    - `tint?: TimelineMarkerTint` (default `'default'`) — convenience tint for the default marker (ignored when `marker` set explicitly).
+  - **No `asChild`** — intentionally not supported. The `<li>` carries two semantic siblings (marker slot + content slot) which the lib `Slot` primitive cannot merge into a single consumer element. For full-row clickability, place a `<Link>` / `<a>` / `<button>` inside the content slot (the marker stays decorative outside the link, the click area covers the content area). See `TimelineItem.tsx` JSDoc + demo Section 4.
+- **`<TimelineMarker>`** (compound member) — decorative round indicator. `forwardRef<HTMLSpanElement, TimelineMarkerProps>`. Renders `<span aria-hidden="true">`.
+  - **Props:**
+    - `tint?: TimelineMarkerTint` — `default | brand | success | warning | error | info` (matches Dot/Badge palette).
+    - `icon?: ReactNode` — icon node centered inside marker (replaces dot; pass at ~14px / stroke 1.75 per ActivityFeed precedent).
+    - `children?: ReactNode` — replaces dot AND icon entirely (Avatar/Badge/widget markers).
+- **A11y:** semantic `<ol>` (chronological list per WCAG 2.1 SC 1.3.1) + `<li>` per item + decorative marker (`aria-hidden="true"`). Consumer owns timestamp semantics — wrap timestamp text in `<time dateTime="ISO">`. Forced-colors media query maps marker borders to `CanvasText` (Windows High Contrast Mode visibility).
+- **Connector spine:** CSS `::before` pseudo-element (zero extra DOM); `:last-child` selector suppresses on final item; gradient color via `color-mix(in srgb, var(--color-text-primary) 12%/6%, transparent)`.
+- **Tokens (R22 reuse-first — zero new tokens):** All tint colors via `color-mix()` over existing `var(--color-{brand,success,warning,error,info})` + `var(--color-border-strong)` + `var(--color-surface-raised)` + `var(--color-text-{primary,secondary,muted})` semantic tokens. Marker visual size (26×26 px) and icon size (14×14 px) hardcoded with `@raw-px-ok` per D28 (specialized component-internal visual sizing outside 4px space scale; closed-enum dimensions).
+
+### Changed
+
+- **`components/index.ts` Molecules section** — count 14 → 15 (Timeline added between SectionHeader and ToggleGroupFilter alphabetically).
+- **`tests/smoke.spec.ts`** — `/components/timeline` route added (between text and toast alphabetically).
+- **`package.json`** — version `0.8.1` → `0.8.2`; component count `99 → 100` in description.
+
+### Notes
+
+- **Universality 3-of-3 PASS verified by Phase 1 Explore agent:** BleizOS `_sections/ActivityFeed/ActivityFeed.tsx` (explicit `@primitive-purity-skip` marker requesting this molecule) + panel_v2 `panel/activity/ActivityContent.tsx` line 220 + panel_v2 `panel/services/_sections/RecentActivityFeed/RecentActivityFeed.tsx` line 71 + scout-hub `leads/[slug]/tab-history.tsx` (data-driven verification timeline).
+- Consumer migration deferred to primitive-purity-sweep work-unit chunks 5+ (retires `@primitive-purity-skip` markers in 3 files post-migration).
+
+---
+
 ## [0.8.1] — 2026-05-04
 
 **`EdgeBar` (Display atom) — Phase 3 Display family extends to 13/13 (17 exports). Universal absolute-positioned decorative stripe along one edge of a positioned parent. Reuses `BadgeColor` palette for cross-component consistency. Promoted from primitive-purity-sweep Tier A — retires the legacy raw `<span class=edge>` / `<span class=rowLeftEdge>` markup across panel_v2 ProjectCard + ServiceCard. Additive patch; library count 98 → 99.**
