@@ -168,8 +168,8 @@
       content: '';
       position: absolute;
       inset: 50%;
-      width: 2.75rem;
-      height: 2.75rem;
+      width: var(--size-touch-min);
+      height: var(--size-touch-min);
       transform: translate(-50%, -50%);
     }
   }

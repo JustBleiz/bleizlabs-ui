@@ -246,8 +246,8 @@
   }
 
   @media (pointer: coarse) {
-    min-width: 2.75rem;
-    min-height: 2.75rem;
+    min-width: var(--size-touch-min);
+    min-height: var(--size-touch-min);
   }
 }
 

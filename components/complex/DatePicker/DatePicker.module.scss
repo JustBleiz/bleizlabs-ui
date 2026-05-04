@@ -74,11 +74,11 @@
   align-items: center;
   justify-content: center;
   // D13 WCAG 2.2 AAA 44×44 touch target on coarse pointers (touch devices).
-  // Fine-pointer (mouse) keeps compact 2rem size so the input doesn't grow
-  // visually on desktop where pointer precision is high. Uniformed via
-  // pointer-media fallback when coarse.
-  width: 2rem;
-  height: 2rem;
+  // Fine-pointer (mouse) keeps compact --space-8 (32px) size so the input
+  // doesn't grow visually on desktop where pointer precision is high.
+  // Coarse-pointer fallback grows to --size-touch-min per WCAG 2.1 SC 2.5.5.
+  width: var(--space-8);
+  height: var(--space-8);
   padding: 0;
   margin-right: var(--space-1);
   background: transparent;
@@ -92,8 +92,8 @@
     color var(--duration-fast) var(--easing-default);
 
   @media (pointer: coarse) {
-    min-width: 2.75rem;
-    min-height: 2.75rem;
+    min-width: var(--size-touch-min);
+    min-height: var(--size-touch-min);
   }
 
   &:hover:not([aria-disabled='true']) {
