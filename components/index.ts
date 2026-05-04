@@ -102,6 +102,7 @@ export * from './molecules/MetricTile';
 export * from './molecules/PageHeader';
 export * from './molecules/RevealStack';
 export * from './molecules/SectionDivider';
+export * from './molecules/SectionHeader';
 export * from './molecules/ToggleGroupFilter';
 
 // ----------------------------------------------------------------------------
