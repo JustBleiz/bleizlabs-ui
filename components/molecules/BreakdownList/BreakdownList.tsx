@@ -22,11 +22,11 @@ import styles from './BreakdownList.module.scss';
  *          `children?: never` enforces this (mirrors KpiValue Value-family
  *          SRP convention; PercentValue merged into KpiValue v0.7.0).
  *
- * @notes   Tone enum (`'brand' | 'info' | 'success' | 'warning'`) intentionally
- *          omits `'error'` — the underlying `ProgressPercentColor` has no
- *          `error-strong` variant. For cautionary high-rate scenarios use
- *          `'warning'`. To be revisited when Progress gains an `error` color
- *          (post-batch lib amendment).
+ * @notes   Tone enum extended `v0.7.1` — `'error'` added now that Progress
+ *          ships `error-strong` color (v0.6.1 amendment). Use for high-stakes
+ *          alarm patterns (overdue debt, critical-rate failures). For mid-tier
+ *          caution use `'warning'`. Tone enum: `'brand' | 'info' | 'success'
+ *          | 'warning' | 'error'`.
  *
  * @example
  * <BreakdownList
@@ -61,7 +61,12 @@ import styles from './BreakdownList.module.scss';
  * />
  */
 
-export type BreakdownListTone = 'brand' | 'info' | 'success' | 'warning';
+export type BreakdownListTone =
+  | 'brand'
+  | 'info'
+  | 'success'
+  | 'warning'
+  | 'error';
 
 export interface BreakdownListItem {
   /** Optional stable React key. Falls back to `${label}-${index}` when omitted; positions must be stable if labels are not unique. */
@@ -79,6 +84,7 @@ const TONE_TO_PROGRESS_COLOR: Record<BreakdownListTone, ProgressPercentColor> = 
   info: 'info',
   success: 'success-strong',
   warning: 'warning-strong',
+  error: 'error-strong',
 };
 
 const DENSITY_CLASS: Record<NonNullable<BreakdownListProps['density']>, string> = {
