@@ -45,7 +45,7 @@ test.describe('SiteHeader — ARIA (desktop)', () => {
   test('AR-06 — aria snapshot on first SiteHeader exposes navigation role', async ({
     page,
   }) => {
-    const siteHeader = page.locator('header[class*="__wrapper"]').first();
+    const siteHeader = page.locator('header[class*="__root"]').first();
     const snapshot = await siteHeader.ariaSnapshot();
     expect(snapshot).toContain('navigation');
     expect(snapshot).toMatch(/"Primary"/);

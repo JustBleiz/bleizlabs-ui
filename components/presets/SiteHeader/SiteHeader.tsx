@@ -291,7 +291,7 @@ export const SiteHeader = forwardRef<HTMLElement, SiteHeaderProps>(function Site
     [baseContextValue],
   );
 
-  const wrapperClass = cn(
+  const rootClass = cn(
     styles.root,
     styles[variant],
     styles[position],
@@ -308,7 +308,7 @@ export const SiteHeader = forwardRef<HTMLElement, SiteHeaderProps>(function Site
         bg="transparent"
         py={0}
         fullBleed
-        className={wrapperClass}
+        className={rootClass}
         {...rest}
       >
         <Container size={containerSize} padding={4}>

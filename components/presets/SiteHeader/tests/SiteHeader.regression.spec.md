@@ -13,7 +13,7 @@
 ### SH-R01 — Sticky header remains pinned on scroll
 
 - **Bug:** `position: sticky` falls out of place when ancestor has `overflow: hidden`.
-- **Expected:** Sticky wrapper stays at viewport top during page scroll.
+- **Expected:** Sticky `.root` stays at viewport top during page scroll.
 - **Test:** scroll 800px, verify header's `getBoundingClientRect().top === 0`.
 
 ```ts
@@ -125,7 +125,7 @@ test('SH-R25: unlabeled nav triggers console.warn', async ({ page }) => {
 ### SH-R21 — forced-colors active preserves affordances
 
 - **Bug:** Backdrop blur + brand-colored hover lose visibility in Windows HCM.
-- **Expected:** `@media (forced-colors: active)` block applies `CanvasText` borders on wrapper + active link outline. Verified in module.scss.
+- **Expected:** `@media (forced-colors: active)` block applies `CanvasText` borders on `.root` + active link outline. Verified in module.scss.
 
 ## Touch / pointer
 

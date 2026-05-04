@@ -73,7 +73,7 @@ test.describe('SiteHeader — regression (sticky + composition)', () => {
     await page.setViewportSize({ width: 1280, height: 800 });
     await page.goto('/components/site-header');
     const transition = await page
-      .locator('header[class*="__wrapper"]')
+      .locator('header[class*="__root"]')
       .first()
       .evaluate((el) => getComputedStyle(el).transitionDuration);
     expect(transition).toMatch(/^0s|^0\.001s/);
@@ -108,12 +108,12 @@ test.describe('SiteHeader — regression (sticky + composition)', () => {
     await expect(dialog.first()).toBeVisible();
   });
 
-  test('SH-R16 — bordered prop produces .bordered class on wrapper', async ({ page }) => {
+  test('SH-R16 — bordered prop produces .bordered class on .root', async ({ page }) => {
     await page.setViewportSize({ width: 1280, height: 800 });
     await page.goto('/components/site-header');
-    // Use SiteHeader wrapper class (page has its own <header> too for page
+    // Use SiteHeader .root class (page has its own <header> too for page
     // title — we want only SiteHeader instances).
-    const siteHeaders = page.locator('header[class*="__wrapper"]');
+    const siteHeaders = page.locator('header[class*="__root"]');
     // BasicDemo (first) is unbordered. Variants demo (2nd and 3rd) are bordered.
     const firstBordered = siteHeaders.nth(1);
     const borderedClass = await firstBordered.getAttribute('class');
@@ -157,15 +157,15 @@ test.describe('SiteHeader — regression (sticky + composition)', () => {
     // provides non-empty labels. Requires dedicated demo scenario.
   });
 
-  test('SiteHeader instance count: 6+ instances produce matching wrappers', async ({
+  test('SiteHeader instance count: 6+ instances produce matching .root elements', async ({
     page,
   }) => {
     await page.setViewportSize({ width: 1280, height: 800 });
     await page.goto('/components/site-header');
     // Playground has Basic + Variants (2) + Sizes (3) + Position + Responsive
     // + AsChild = 9 SiteHeader instances.
-    const wrappers = await page.locator('header[class*="__wrapper"]').count();
-    expect(wrappers).toBeGreaterThanOrEqual(6);
+    const roots = await page.locator('header[class*="__root"]').count();
+    expect(roots).toBeGreaterThanOrEqual(6);
   });
 
   test('default solid variant: Brand + Nav + Actions visible on desktop', async ({
@@ -173,7 +173,7 @@ test.describe('SiteHeader — regression (sticky + composition)', () => {
   }) => {
     await page.setViewportSize({ width: 1280, height: 800 });
     await page.goto('/components/site-header');
-    const basicHeader = page.locator('header[class*="__wrapper"]').first();
+    const basicHeader = page.locator('header[class*="__root"]').first();
     await expect(basicHeader.getByText('Acme')).toBeVisible();
     await expect(
       basicHeader.getByRole('link', { name: 'Products' }),
