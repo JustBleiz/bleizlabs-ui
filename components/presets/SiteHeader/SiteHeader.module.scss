@@ -13,10 +13,12 @@
  * ========================================================================== */
 
 /* --------------------------------------------------------------------------
- * WRAPPER (outer <header> from Section tag="header")
+ * ROOT (outer <header> from Section tag="header")
+ * D11 base class convention — every component module uses `.root` as the
+ * outermost element class regardless of layer (atom / molecule / preset).
  * -------------------------------------------------------------------------- */
 
-.wrapper {
+.root {
   /* POSITIONING applied via .sticky / .static modifier classes */
 
   /* DISPLAY */
@@ -329,7 +331,7 @@
  * -------------------------------------------------------------------------- */
 
 @media (forced-colors: active) {
-  .wrapper {
+  .root {
     border: 1px solid CanvasText;
   }
   .bordered {

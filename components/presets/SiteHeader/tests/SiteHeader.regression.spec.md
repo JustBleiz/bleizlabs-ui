@@ -120,7 +120,7 @@ test('SH-R25: unlabeled nav triggers console.warn', async ({ page }) => {
 
 ### SH-R19 — prefers-reduced-motion disables all transitions
 
-- Covered by SH-R18 + `@media (prefers-reduced-motion: reduce) { transition: none }` on `.wrapper`, `.mobileToggle`, `.toggleBar`, `.nav a`.
+- Covered by SH-R18 + `@media (prefers-reduced-motion: reduce) { transition: none }` on `.root`, `.mobileToggle`, `.toggleBar`, `.nav a`.
 
 ### SH-R21 — forced-colors active preserves affordances
 

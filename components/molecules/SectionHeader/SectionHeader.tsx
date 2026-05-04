@@ -79,7 +79,7 @@ export const SectionHeader = forwardRef<HTMLElement, SectionHeaderProps>(
     return (
       <header
         ref={ref}
-        className={cn(styles.header, className)}
+        className={cn(styles.root, className)}
         {...rest}
       >
         <div className={styles.lead}>

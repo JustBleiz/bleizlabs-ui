@@ -20,9 +20,9 @@ test.describe('SiteHeader — ARIA (desktop)', () => {
     // direct child of <body> (ARIA scoping rule). Playground nests each
     // SiteHeader inside a <section>, stripping banner role. Real consumer
     // apps that place SiteHeader directly under <body> DO get banner landmark.
-    // Assertion: find a SiteHeader instance (by its .wrapper class) + verify
+    // Assertion: find a SiteHeader instance (by its .root class) + verify
     // it has a nav landmark inside.
-    const siteHeader = page.locator('header[class*="__wrapper"]').first();
+    const siteHeader = page.locator('header[class*="__root"]').first();
     await expect(siteHeader).toBeAttached();
     const nav = siteHeader.locator('nav[aria-label]').first();
     await expect(nav).toBeAttached();

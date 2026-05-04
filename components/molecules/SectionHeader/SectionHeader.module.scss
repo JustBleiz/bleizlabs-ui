@@ -6,7 +6,7 @@
 // flex-column container (`<Stack gap={3}>`) for header→content gap. Page-root
 // gap (Stack gap={6}) handles inter-section spacing. Single source per scope.
 
-.header {
+.root {
   display: flex;
   align-items: center;
   gap: var(--space-3);

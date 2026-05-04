@@ -292,7 +292,7 @@ export const SiteHeader = forwardRef<HTMLElement, SiteHeaderProps>(function Site
   );
 
   const wrapperClass = cn(
-    styles.wrapper,
+    styles.root,
     styles[variant],
     styles[position],
     styles[size],

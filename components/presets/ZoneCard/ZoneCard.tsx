@@ -4,6 +4,7 @@ import { Heading } from '../../typography/Heading';
 import { Text } from '../../typography/Text';
 import { Inline } from '../../layout/Inline';
 import { Stack } from '../../layout/Stack';
+import { cn } from '../../utils/cn';
 import styles from './ZoneCard.module.scss';
 
 /**
@@ -153,7 +154,7 @@ export const ZoneCard = forwardRef<HTMLElement, ZoneCardProps>(
           ref={ref}
           aria-label={ariaLabel ?? title}
           data-tone={tone}
-          className={className}
+          className={cn(styles.root, className)}
           {...rest}
         >
           <Stack gap={bodyGap}>
