@@ -106,9 +106,10 @@ export * from './molecules/SectionHeader';
 export * from './molecules/ToggleGroupFilter';
 
 // ----------------------------------------------------------------------------
-// Card presets (10)
+// Card presets (11) — v0.8.0 adds CollapsibleZoneCard CP10
 // ----------------------------------------------------------------------------
 export * from './presets/ActionCard';
+export * from './presets/CollapsibleZoneCard';
 export * from './presets/ContentCard';
 export * from './presets/EntityCard';
 export * from './presets/EntityHero';

@@ -4,6 +4,57 @@ All notable releases of this component library. Follows [Keep a Changelog](https
 
 ---
 
+## [0.8.0] — 2026-05-04
+
+**`CollapsibleZoneCard` (CP10) preset — Phase 8 Card-presets family extends to 11/11. Universal collapsible info-card preset (sister to ZoneCard CP9 v0.7.3) with APG disclosure pattern state machinery (controlled + uncontrolled), summary chip slot, animated body collapse via grid-template-rows + chevron rotation, modern `inert` + `aria-hidden` a11y removal pattern. Additive minor; library count 97 → 98. Driven by primitive-purity-sweep Tier S Sprint 1.**
+
+### Added
+
+- **`<CollapsibleZoneCard>`** (Phase 8 Presets CP10) — universal collapsible info-card preset extending `<ZoneCard>` CP9 with disclosure widget state machinery per [APG disclosure pattern](https://www.w3.org/WAI/ARIA/apg/patterns/disclosure/). Sister-extension contract: inherits 100% of ZoneCard token surface, header layout, and density/tone variants — adds open-state machinery, summary chip slot, chevron toggle, and grid-template-rows expand/collapse animation.
+  - **Inherits from ZoneCardProps** (Omit `'children'`): `title` (required), `icon?`, `subtitle?`, `rightSlot?`, `density?`, `tone?`, `ariaLabel?`, plus HTMLAttributes.
+  - **New props (8 axes):**
+    - `defaultOpen?: boolean` — uncontrolled initial state; default `false`.
+    - `open?: boolean` + `onOpenChange?: (open: boolean) => void` — controlled mode (Radix-style API per APG).
+    - `summaryChip?: { label: string; tone?: ZoneCardTone }` — Badge in collapsed-only header right-slot; coexists with `rightSlot`.
+    - `collapsedSummary?: ReactNode` — alt richer collapsed slot (mutually exclusive with `summaryChip`).
+    - `toggleAriaLabel?: string` — optional override (default: accessible name composes from inner Heading text — no aria-label shadow).
+    - `chevronIcon?: ReactNode` — optional icon override (default inline SVG).
+    - `forceMount?: boolean` — semantic hint only (body always mounted regardless — required by collapse animation; sets `data-force-mount='true'` for consumer observation).
+  - **Animation mechanism:** body uses `grid-template-rows: 1fr ↔ 0fr` + `overflow: hidden` for smooth height-auto collapse without JS measurement. Always-mounted body required (HTML `[hidden]` attribute would short-circuit transition by synchronously applying `display: none`). A11y removal when collapsed via `inert='' + aria-hidden='true'` (modern disclosure pattern; supported Chrome 102+, Firefox 112+, Safari 15.5+).
+  - **A11y (APG disclosure):** trigger is `<button type="button">` with native Space/Enter handling, `aria-expanded` + `aria-controls` link button → body. Section `<aria-labelledby={titleId}>` is sole landmark — body has NO `role="region"` to avoid duplicate-named nested landmark. `prefers-reduced-motion: reduce` disables both chevron rotation + body grid-rows transition (instant flip, APG-compliant).
+  - **Tokens (R22 reuse-first — zero new tokens):** All padding/gap inherited from ZoneCard density maps. Chevron rotation on `var(--duration-fast)` + `var(--easing-default)`. Body collapse on `var(--duration-normal)`. Focus-ring via `mx.focus-ring` mixin (`box-shadow: var(--focus-ring)` — NOT outline, per Card.module.scss documented precedent).
+  - **Compose-first:** zero new primitives — pure composition over Card asChild + Heading + Text + IconBox + Inline + Stack + Badge + Slot + inline SVG chevron.
+  - **forwardRef<HTMLElement>** + `'use client'` (owns `useState` for uncontrolled mode + `useId` for stable IDs).
+  - **Driving consumers (post-publish migration target):** panel_v2 `FinancialBreakdown` (2 sites Income/Expenses with summary chips) + `ProjectsFinancialOverview` (2 sites Forecast/Actuals mirror) + `TechnicalInfraCard` (collapse upgrade candidate). Combined ~5 production consumer sites + retires ~140 R12-violation reduction + 2 file-level skips after consumer migration.
+  - **Universality test 3-of-3:** panel_v2 ✅ (3 driving sites confirmed) · BleizOS admin ✅ (client detail panes with collapse pattern) · scout-hub admin ✅ (lead detail collapsible sections). PASS per universality rule.
+  - **Type exports:** `CollapsibleZoneCard`, `CollapsibleZoneCardProps`, `CollapsibleZoneCardSummaryChip`, `ZoneCardDensity` (re-export), `ZoneCardTone` (re-export), `ZoneCardProps` (re-export for prop-mapping wrappers).
+  - **Phase 10 a11y pipeline:** Playwright `keyboard.spec.ts` (Space/Enter/Tab + form-non-submit + rapid-toggle), `focus.spec.ts` (no auto-focus + stays-on-trigger + box-shadow focus-visible + body focusables reachable), `aria.spec.ts` (aria-expanded toggle + aria-controls ID + accessible name composition + section aria-labelledby + body always-mounted with inert+aria-hidden + axe-core via `@axe-core/playwright` zero violations), `regression.spec.ts` (20 cases — 9 from Radix Accordion+Collapsible closed issues + 11 synthesized from APG disclosure patterns + production precedent).
+
+- **Dedicated demo route `/components/collapsible-zone-card`** with 10 sections covering all variation axes + edge cases: minimal uncontrolled, summary chip pattern (FinancialBreakdown driving consumer), full ZoneCard inheritance showcase, 3-zone group pattern, density comparison, controlled mode (parent state with onOpenChange), nested disclosures (Radix #2717/#2390 regression), inside `<form>` (Radix #15 — `type="button"` doesn't submit), forceMount semantic hint with lib `<Input>`, tone variants matrix.
+
+### Changed
+
+- **`components/index.ts` barrel comments:** Card presets count corrected `(10)` → `(11)` with v0.8.0 attribution comment.
+- **`package.json` description:** corrected component count `97` → `98`.
+
+### Compatibility
+
+- **Public API:** purely additive (one new component + type re-exports). No removed exports, no renamed exports, no breaking type changes.
+- **Visual deltas:** none (new component only — no changes to existing CP9 ZoneCard or other components).
+- **Consumer migration:** automatic on caret-bump. Consumer migrations from local `CollapsibleZoneCard` helpers to lib component happen in primitive-purity-sweep work-unit chunks 5+ (panel_v2 FinancialBreakdown + ProjectsFinancialOverview).
+
+### Audit trail
+
+- `/component-build` skill — full Phase 0-7 GAN loop:
+  - **Phase 1 Explore:** spec brief generated at `docs/_tmp/CollapsibleZoneCard-spec.md` (universality 3-of-3 verified, ZoneCard inheritance contract extracted, APG disclosure pattern selected over Accordion, 20 regression cases compiled from Radix Accordion + Collapsible closed issues + synthesized APG edge cases).
+  - **Phase 2 Plan:** 6 open decisions resolved autonomously per auto mode (animation = grid-template-rows, summary chip = DOM mount/unmount, chevron = inline SVG + override slot, controlled API = Radix-style, demo = 10 sections at dedicated route, heading nesting = preserved per APG).
+  - **Phase 3 Generator:** wrote component `.tsx` + `.module.scss` + `index.ts` + 4 Playwright test files + dedicated demo route + 4 client islands + barrel update.
+  - **Phase 4-5 Evaluator/Fix loop (3 iter):** iter 1 FAIL (5 CRIT + 8 IMP — non-existent motion tokens, `--focus-ring` misused as color, `aria-label` shadow, body unmount kills animation, double-name body region, +8 IMPORTANT); iter 1 fix landed all 13. Iter 2 FAIL (1 CRIT regression — `hidden` attr killed animation; iter 2 fix swapped to `inert + aria-hidden`). Iter 3 FAIL (4 CRIT + 2 IMP — pure mechanical doc/test sync drift from iter-2 mechanic swap; per skill 3-iter cap, applied final fix-pass dropping `role="region"` + syncing 4 dependent files). All issues from 3 evaluator passes resolved.
+  - **Validation gates:** `tsc --noEmit` PASS, `npm run lint` PASS (jsx-a11y included), `check-barrel.mjs` PASS.
+  - **Phase 7 deferred verifications (Playwright run + manual NVDA sweep):** queued for Sprint 1 final verify gate per skill standards.
+
+---
+
 ## [0.7.5] — 2026-05-04
 
 **Hygiene sweep — D11 compliance + token propagation + 6 demo backfills + docs corrections. Patch-level — additive only, zero breaking changes, visual output byte-equivalent. Driven by post-v0.7.4 component-build spec audit (10/22 PARTIAL findings — zero CRITICAL).**

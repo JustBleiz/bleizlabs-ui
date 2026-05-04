@@ -52,3 +52,6 @@ coverage/
 
 # npm pack artifacts (generated locally for test consumers)
 *.tgz
+
+# Local component-build / refactor artifacts (screenshots, audit reports — not for repo)
+LOG/
