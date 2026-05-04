@@ -33,6 +33,7 @@ const ROUTES = [
   '/components/calendar',
   '/components/card',
   '/components/carousel',
+  '/components/collapsible-zone-card',
   '/components/combobox',
   '/components/command',
   '/components/container',
