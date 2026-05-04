@@ -4,9 +4,9 @@ All notable releases of this component library. Follows [Keep a Changelog](https
 
 ---
 
-## [Unreleased] — v0.8.0 batch (in progress)
+## [0.7.4] — 2026-05-04
 
-**Audit + token cluster + docs resync sprint. Additive only — zero breaking changes. `FilterBar` molecule pending before tag bump; rename heading to `[0.8.0] — YYYY-MM-DD` at publish time.**
+**Audit + token cluster + docs resync sprint. Additive only — zero breaking changes. Patch-level — no API surface change, just one new opt-in semantic token + 21-site internal SCSS migration that preserves visual output byte-for-byte.**
 
 ### Added
 
