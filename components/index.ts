@@ -89,7 +89,7 @@ export * from './specialized/Pagination';
 export * from './specialized/UsageDonut';
 
 // ----------------------------------------------------------------------------
-// Molecules (14)
+// Molecules (15 — v0.8.2 Timeline NEW: compound flat exports Timeline + TimelineItem + TimelineMarker)
 // ----------------------------------------------------------------------------
 export * from './molecules/AccordionGroup';
 export * from './molecules/BackLink';
@@ -104,6 +104,7 @@ export * from './molecules/PageHeader';
 export * from './molecules/RevealStack';
 export * from './molecules/SectionDivider';
 export * from './molecules/SectionHeader';
+export * from './molecules/Timeline';
 export * from './molecules/ToggleGroupFilter';
 
 // ----------------------------------------------------------------------------

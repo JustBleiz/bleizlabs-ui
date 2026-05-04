@@ -1,7 +1,7 @@
 {
   "name": "@bleizlabs/ui",
-  "version": "0.8.1",
-  "description": "Universal fully-styled React component library for BleizLabs. Zero runtime UI dependencies. Seed-based design tokens. 99 components across 10 categories.",
+  "version": "0.8.2",
+  "description": "Universal fully-styled React component library for BleizLabs. Zero runtime UI dependencies. Seed-based design tokens. 100 components across 10 categories.",
   "license": "MIT",
   "author": "BleizLabs <hello@bleizlabs.eu>",
   "homepage": "https://github.com/BleizLabs/bleizlabs-ui#readme",

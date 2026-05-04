@@ -1,0 +1,83 @@
+// ============================================================================
+// TimelineItem — <li> with marker slot + content slot + connector spine
+// (Phase 7 compound member of Timeline, D11 .root base).
+// ----------------------------------------------------------------------------
+// Layout: 2-column inline-grid keeps marker fixed-width on the left and
+// content fluid on the right. The connector spine is a ::before pseudo-
+// element positioned at the marker column center — zero extra DOM. The
+// `:last-child` rule suppresses the spine on the final item to avoid
+// orphan dangling lines.
+// ============================================================================
+
+.root {
+  position: relative;
+  display: grid;
+  grid-template-columns: 26px 1fr; // @raw-px-ok: marker visual size (D28 exemption)
+  align-items: start;
+  gap: var(--space-3);
+  padding-bottom: var(--space-4);
+
+  // Connector spine — gradient line behind the marker column. `top` starts
+  // BELOW marker bottom so it visually connects without overdraw; `bottom`
+  // extends to the next item's marker top via the next <li>'s padding +
+  // gap rhythm.
+  &::before {
+    content: '';
+    position: absolute;
+    left: calc(13px - 0.5px); // @raw-px-ok: marker center (26px / 2) minus half-stroke
+    top: 26px; // @raw-px-ok: starts BELOW marker bottom
+    bottom: 0;
+    width: 1px;
+    background: linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--color-text-primary) 12%, transparent) 0%,
+      color-mix(in srgb, var(--color-text-primary) 6%, transparent) 100%
+    );
+  }
+
+  &:last-child {
+    padding-bottom: 0;
+
+    // No connector below the final marker — it would dangle into empty space.
+    &::before {
+      display: none;
+    }
+  }
+}
+
+// ============================================================================
+// .markerSlot — fixed-size container that anchors the marker to the grid
+// column. Decorative wrapper (aria-hidden lives on the inner marker via
+// TimelineMarker). Uses inline-flex to center the inner marker if it shrinks.
+// ============================================================================
+
+.markerSlot {
+  display: inline-flex;
+  align-items: flex-start;
+  justify-content: center;
+  width: 26px; // @raw-px-ok: matches grid column (D28 exemption)
+  height: 26px; // @raw-px-ok
+  flex-shrink: 0;
+}
+
+// ============================================================================
+// .content — fluid right column for event content. Consumer owns layout
+// inside (typically Stack with title row + meta row).
+// ============================================================================
+
+.content {
+  display: block;
+  min-width: 0; // allows long titles to wrap rather than overflow grid column
+}
+
+// ============================================================================
+// Forced colors (Windows High Contrast Mode) — connector falls back to
+// CanvasText so the spine remains visible when forced-colors strips
+// color-mix backgrounds.
+// ============================================================================
+
+@media (forced-colors: active) {
+  .root::before {
+    background: CanvasText;
+  }
+}

@@ -72,6 +72,7 @@ const ROUTES = [
   '/components/table',
   '/components/tabs',
   '/components/text',
+  '/components/timeline',
   '/components/toast',
   '/components/toggles',
   '/components/tooltip',
