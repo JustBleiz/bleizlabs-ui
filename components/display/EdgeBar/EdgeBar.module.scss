@@ -1,0 +1,121 @@
+// ============================================================================
+// EdgeBar — absolute-positioned decorative stripe (Display atom, server-safe)
+// Parent MUST be `position: relative` (or any non-static) so the bar anchors
+// inside the intended container — see EdgeBar.tsx @notes for the contract.
+// ============================================================================
+
+// ============================================================================
+// BASE — absolute positioning + thickness var
+// ============================================================================
+
+.root {
+  position: absolute;
+  display: block;
+  pointer-events: none; // decorative — never intercepts clicks
+  --edge-bar-thickness: 3px; // default = md; .thicknessSm/Md/Lg classes override (rationale lives in those blocks)
+}
+
+// ============================================================================
+// POSITIONS — anchor to one edge, span the perpendicular axis fully
+// ============================================================================
+
+.positionTop {
+  top: 0;
+  left: 0;
+  right: 0;
+  height: var(--edge-bar-thickness);
+}
+
+.positionBottom {
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: var(--edge-bar-thickness);
+}
+
+.positionLeft {
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: var(--edge-bar-thickness);
+}
+
+.positionRight {
+  top: 0;
+  bottom: 0;
+  right: 0;
+  width: var(--edge-bar-thickness);
+}
+
+// ============================================================================
+// THICKNESS — closed enum (sm/md/lg). Component-internal decorator dimensions
+// outside the lib's 4px spacing scale (D9); D28 ratified `@raw-px-ok` exemption.
+// ============================================================================
+
+.thicknessSm {
+  --edge-bar-thickness: 2px; // @raw-px-ok: thin decorator widths outside scale
+}
+
+.thicknessMd {
+  --edge-bar-thickness: 3px; // @raw-px-ok: thin decorator widths outside scale
+}
+
+.thicknessLg {
+  --edge-bar-thickness: 4px; // @raw-px-ok: kept literal for parity with sm/md (matches --space-1 numerically; closed enum)
+}
+
+// ============================================================================
+// COLORS — Badge/Dot palette (6 values). Default = neutral border tint;
+// status colors fill solid for accent visibility.
+// ============================================================================
+
+.colorDefault {
+  background: var(--color-border-strong);
+}
+
+.colorBrand {
+  background: var(--color-brand);
+}
+
+.colorSuccess {
+  background: var(--color-success);
+}
+
+.colorWarning {
+  background: var(--color-warning);
+}
+
+.colorError {
+  background: var(--color-error);
+}
+
+.colorInfo {
+  background: var(--color-info);
+}
+
+// ============================================================================
+// PULSE MODIFIER — infinite opacity cycle (Dot/Checkbox/RadioGroup precedent)
+// ============================================================================
+
+.pulse {
+  // Local @keyframes — CSS Modules scope keyframe identifiers, so referencing
+  // a global `pulse` from _animations.scss silently no-ops under Turbopack +
+  // Next.js 16. Each animation-consuming module owns its tiny local copy.
+  animation: edgeBarPulse 2s var(--easing-default) infinite;
+}
+
+@keyframes edgeBarPulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pulse {
+    animation: none;
+  }
+}
