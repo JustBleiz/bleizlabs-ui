@@ -88,7 +88,7 @@ export * from './specialized/Pagination';
 export * from './specialized/UsageDonut';
 
 // ----------------------------------------------------------------------------
-// Molecules (13)
+// Molecules (14)
 // ----------------------------------------------------------------------------
 export * from './molecules/AccordionGroup';
 export * from './molecules/BackLink';
@@ -106,7 +106,7 @@ export * from './molecules/SectionHeader';
 export * from './molecules/ToggleGroupFilter';
 
 // ----------------------------------------------------------------------------
-// Card presets (9)
+// Card presets (10)
 // ----------------------------------------------------------------------------
 export * from './presets/ActionCard';
 export * from './presets/ContentCard';
