@@ -367,6 +367,21 @@
   }
 
   // ==========================================================================
+  // CONTROL SIZING — touch-target minimum (v0.8.0)
+  // ==========================================================================
+  // Single semantic token derived from $seed-touch-target. Used at
+  // `@media (pointer: coarse)` blocks across Calendar/InputOTP/Toast/
+  // DatePicker/Carousel/Slider so all touch-min surfaces share one source
+  // of truth. Consumer override path: `@use '@bleizlabs/ui/styles' with
+  // ($seed-touch-target: 48px)` or runtime `:root { --size-touch-min: 48px; }`.
+  // Per WCAG 2.1 SC 2.5.5 (Target Size) — 44px is the minimum for
+  // pointer-input targets that aren't inline links / intentionally grouped /
+  // UA-default. Dedicated semantic instead of `--space-11` extension because
+  // 44px sits between scale steps 10 (40px) and 12 (48px) — adding 11 would
+  // break the Tailwind-style 4px-step contract for a single touch-min value.
+  --size-touch-min: #{$seed-touch-target};
+
+  // ==========================================================================
   // SWITCH DIMENSION TOKENS — Phase 4 Simple Interactive (v0.3.0 F_B2)
   // ==========================================================================
   // Library-level defaults for Switch track + thumb (md size). Switch component

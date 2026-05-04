@@ -173,3 +173,23 @@ $seed-bp-md: 768px !default; // tablet portrait
 $seed-bp-lg: 1024px !default; // tablet landscape / small desktop
 $seed-bp-xl: 1280px !default; // desktop
 $seed-bp-2xl: 1440px !default; // large desktop / Figma standard frame
+
+// ============================================================================
+// CONTROL SIZING — touch-target seed (WCAG 2.1 SC 2.5.5)
+// ============================================================================
+// Single seed governing minimum interactive control dimension on coarse-pointer
+// devices (touch). 44px is the WAI/WCAG 2.1 SC 2.5.5 minimum target size for
+// pointer inputs (excluding inline links, intentionally-grouped controls, and
+// browser-default UA controls). The library exposes this as `--size-touch-min`
+// so `Calendar` cells, `InputOTP` slots, `Toast` close, `DatePicker` cells,
+// `Carousel` nav, and `Slider` thumbs all reference one source of truth at the
+// `@media (pointer: coarse)` breakpoint. Consumers building accessibility-
+// stricter products (senior care, motor-impaired audiences) override to 48px
+// or 56px in `globals.scss` and the entire library responds.
+//
+// Why a seed and not a hardcoded `--space-11` extension: 44px is intentionally
+// off the 4px-step scale (would require breaking the Tailwind-style 0,1,2,3,4,
+// 5,6,7,8,10,12,14,16,20 contract for a single value). Dedicated semantic
+// touch-min token is the cleaner solution per R22 (b) "dedicated semantic
+// meaning when value doesn't 1:1 map to existing scale".
+$seed-touch-target: 44px !default;
