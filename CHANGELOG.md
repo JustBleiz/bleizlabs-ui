@@ -4,6 +4,44 @@ All notable releases of this component library. Follows [Keep a Changelog](https
 
 ---
 
+## [0.8.3] — 2026-05-04
+
+**`Badge` `pulse?: boolean` variant amendment — covers notification badge + live-status indicator patterns via existing Badge atom (panel_v2 ServiceCard.notifBadge + bleizos ClientsList.healthBadge). Inventory-first dup-check redirected proposed `NotifBadge` molecule into a 1-prop amendment on the existing atom — saves a redundant wrapper component, retains universal Badge API. Component count unchanged (variant amendment, NOT new component): library count stays 100. Additive patch.**
+
+### Added
+
+- **`<Badge pulse>`** prop — pulses **only the leading `icon` / `dot`** (badge frame + label stay static so the text remains readable at a glance). 1 → 0.5 → 1 opacity cycle, 2s, `var(--easing-default)` easing. API name matches `Dot.pulse` for consistency across the atom layer; SCSS scope differs because Badge is a composite (frame + label + indicator) whereas Dot is a single indicator.
+  - **Requires `icon` or `dot`** for the cue to be visible — pulse without an indicator child is a no-op (intentional: pulsing the label flickers text and harms readability).
+  - Inherits global `prefers-reduced-motion: reduce` guard (auto-stops for users who opt out of animations).
+  - Decorative-only — pair with `color` + `label` so meaning survives when motion is disabled.
+  - Driving consumers (universality 3-of-3 reaffirmed):
+    - panel_v2 `ServiceCard.notifBadge` — `[icon] [count]` warning tier with pulse for unread notifications.
+    - bleizos `ClientsList.healthBadge` — `[icon] [count]` tier-driven pulse for client health indicators.
+    - scout-hub admin already imports lib `Badge` — pulse opcjonalny dla future warning/online indicators.
+- Demo page `app/components/badge/page.tsx` Section 7 — pulse showcase (4 examples: notification count `3` warning + icon, LIVE error + dot, Online success + dot, Updating info + dot).
+- Local `@keyframes badgePulse` per Turbopack scoping discipline (NOT global pulse) — matches `Dot.dotPulse` + `Checkbox.checkboxTick` + `RadioGroup.radioDotFill` precedent.
+
+### Changed
+
+- `Badge.tsx` — added `pulse?: boolean` interface prop + JSDoc + `pulse && styles.pulse` class wiring.
+- `Badge.module.scss` — added `.pulse` modifier rule + local `@keyframes badgePulse` + `prefers-reduced-motion: reduce` guard.
+
+### Sprint 6 inventory-first decision (amendment, not new molecule)
+
+Original Sprint 6 candidate from primitive-purity-sweep amendment queue was `NotifBadge` molecule (`tier + count + icon` notification badge). Recursive inventory check determined existing `Badge` atom already covers ~95% of the proposed API:
+
+- `tier` ↔ `color` (6 tiers: default/brand/success/warning/error/info)
+- `count` ↔ `label` (string content, e.g. `"3"`)
+- `icon` ↔ `icon` prop (leading slot)
+- `pill` shape (already supported)
+- `pulse` — **only gap → 1-prop amendment, this release**
+
+Adding `NotifBadge` would have produced a redundant wrapper renaming Badge's API. Per `feedback_lib_universal_naming_compose_first` memory (`Q2: Compose istniejących lib atoms? YES → compose w project-level, NIE tworz nowy`) + Sprint 3 KickerChip precedent (also redirected to existing atom coverage), Sprint 6 pivots to amendment.
+
+Consumer migration in primitive-purity-sweep chunks 5+ unifies `notifBadge` + `healthBadge` patterns on `<Badge color={tier} label={count} icon={<...>} pill pulse />`.
+
+---
+
 ## [0.8.2] — 2026-05-04
 
 **`Timeline` (Phase 7 Molecule) — compound flat exports `Timeline` + `TimelineItem` + `TimelineMarker`. Universal chronological event-list molecule with semantic `<ol>/<li>` + tinted markers + CSS connector spine. Promoted from primitive-purity-sweep — driving consumers BleizOS ActivityFeed + panel_v2 ActivityContent + RecentActivityFeed + scout-hub tab-history (4 verified sites; explicit `@primitive-purity-skip` markers in 3 files request this lib amendment). Additive patch; library count 99 → 100.**
