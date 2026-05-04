@@ -85,3 +85,31 @@
   background: var(--color-info-subtle);
   color: var(--color-info-strong);
 }
+
+// ============================================================================
+// PULSE MODIFIER — infinite opacity cycle (Dot precedent, v0.8.3)
+// ============================================================================
+
+.pulse {
+  // Local @keyframes — CSS Modules scope keyframe identifiers, so referencing
+  // a global `pulse` keyframe from _animations.scss silently no-ops under
+  // Turbopack + Next.js 16. Each animation-consuming module owns a tiny local
+  // copy (matches Dot dotPulse + Checkbox checkboxTick + RadioGroup radioDotFill).
+  animation: badgePulse 2s var(--easing-default) infinite;
+}
+
+@keyframes badgePulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pulse {
+    animation: none;
+  }
+}

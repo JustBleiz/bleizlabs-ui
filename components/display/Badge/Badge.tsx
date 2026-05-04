@@ -14,13 +14,16 @@ import styles from './Badge.module.scss';
  * @tokens  --color-{brand,success,warning,error,info}-{subtle,strong},
  *          --color-border-subtle, --color-text-{primary,secondary},
  *          --space-{1,2}, --font-size-xs, --font-weight-medium,
- *          --letter-spacing-wider, --radius-{sm,full,badge}
+ *          --letter-spacing-wider, --radius-{sm,full,badge},
+ *          --easing-default
  * @deps    Slot (own primitive, asChild boundary), cn, React: `forwardRef`,
  *          type imports `HTMLAttributes<HTMLSpanElement>`, `ReactNode`
  * @a11y    Renders `<span>` by default — inline neutral element.
  *          Use `asChild` to project onto `<time dateTime="...">` for
  *          semantic timestamps. Color is decorative only — meaning
- *          must also be conveyed in the `label`.
+ *          must also be conveyed in the `label`. `pulse` is purely
+ *          visual — never the sole carrier of urgency; pair with
+ *          color + label so the meaning survives reduced-motion.
  *
  * @example
  * <Badge label="Active" color="success" />
@@ -28,6 +31,12 @@ import styles from './Badge.module.scss';
  * <Badge asChild color="info" dot>
  *   <time dateTime="2026-04-14">Apr 14</time>
  * </Badge>
+ *
+ * @example
+ * // Notification badge with pulse (panel ServiceCard / bleizos
+ * // health indicator pattern). Pulse inherits global reduced-motion
+ * // guard so it auto-stops for users who opt out of animations.
+ * <Badge color="warning" label="3" icon={<IconBell />} pill pulse />
  */
 export type BadgeColor =
   | 'default'
@@ -50,6 +59,8 @@ export interface BadgeProps extends HTMLAttributes<HTMLSpanElement> {
   icon?: ReactNode;
   /** Show a small filled dot left of the label. Default `false`. */
   dot?: boolean;
+  /** Infinite opacity pulse animation — pair with `color` + `label` so meaning survives reduced-motion. Default `false`. */
+  pulse?: boolean;
   /** Render as the single child element via Slot. When true, the child element supplies its own text and `label` is ignored. */
   asChild?: boolean;
 }
@@ -71,6 +82,7 @@ export const Badge = forwardRef<HTMLSpanElement, BadgeProps>(function Badge(
     uppercase = false,
     icon,
     dot = false,
+    pulse = false,
     asChild = false,
     className,
     children,
@@ -102,6 +114,7 @@ export const Badge = forwardRef<HTMLSpanElement, BadgeProps>(function Badge(
         COLOR_CLASS[color],
         pill && styles.pill,
         uppercase && styles.uppercase,
+        pulse && styles.pulse,
         className,
       )}
       {...rest}
