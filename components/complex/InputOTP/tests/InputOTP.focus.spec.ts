@@ -94,11 +94,10 @@ test.describe('InputOTP — focus behavior', () => {
       .getByRole('textbox', { name: 'Verification code' })
       .first();
     await input.focus();
-    // Focused → at least one slot has data-active
-    await page.waitForTimeout(20);
+    // Focused → at least one slot has data-active (locator-bound auto-retry)
     const section = page.locator('section').nth(0);
     const activeSlots = section.locator('[aria-hidden="true"][data-active="true"]');
-    expect(await activeSlots.count()).toBeGreaterThanOrEqual(1);
+    await expect(activeSlots.first()).toBeAttached();
     // Blur — click outside into header
     await page.locator('h1').click();
     const activeAfterBlur = section.locator('[aria-hidden="true"][data-active="true"]');

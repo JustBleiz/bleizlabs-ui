@@ -42,9 +42,11 @@ test.describe('Tooltip — ARIA + accessibility tree', () => {
   test('tooltip id stable across show/hide cycles', async ({ page }) => {
     const trigger = page.getByRole('button', { name: 'Save' });
     await trigger.focus();
+    await expect(trigger).toHaveAttribute('aria-describedby', /.+/);
     const idFirstShow = await trigger.getAttribute('aria-describedby');
     await page.getByRole('button', { name: 'Undo' }).focus();
     await trigger.focus();
+    await expect(trigger).toHaveAttribute('aria-describedby', /.+/);
     const idSecondShow = await trigger.getAttribute('aria-describedby');
     expect(idFirstShow).toBe(idSecondShow);
   });
