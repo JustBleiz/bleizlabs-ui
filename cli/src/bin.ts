@@ -2,6 +2,7 @@ import { Command } from 'commander';
 import pc from 'picocolors';
 import { CLI_VERSION, printVersion } from './commands/version.js';
 import { runInit } from './commands/init.js';
+import { runAdd } from './commands/add.js';
 import { loadManifest, countTotalNames } from './lib/registry-loader.js';
 
 /**
@@ -55,9 +56,18 @@ program
   .option('--new', 'scaffold only missing wrappers (default when no names given)')
   .option('--target-dir <path>', 'wrapper layer target directory', 'app/_components/ui')
   .option('--dry-run', 'preview changes without writing files')
-  .action(() => {
-    console.log(pc.yellow('add: not implemented yet (lands in E04).'));
-    process.exitCode = 2;
+  .action(async (
+    names: string[] | undefined,
+    opts: { all?: boolean; new?: boolean; targetDir: string; dryRun?: boolean },
+  ) => {
+    const code = await runAdd(import.meta.url, {
+      names: names ?? [],
+      all: opts.all === true,
+      newOnly: opts.new === true || (!opts.all && (names === undefined || names.length === 0)),
+      targetDir: opts.targetDir,
+      dryRun: opts.dryRun === true,
+    });
+    process.exitCode = code;
   });
 
 program
@@ -101,4 +111,8 @@ if (wantsVersion) {
   process.exit(0);
 }
 
-program.parse(argv);
+// parseAsync awaits async .action handlers so process.exitCode is honored.
+program.parseAsync(argv).catch((err) => {
+  console.error(pc.red('CLI error: ') + (err as Error).message);
+  process.exit(1);
+});
