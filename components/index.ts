@@ -123,8 +123,9 @@ export * from './presets/StatsCard';
 export * from './presets/ZoneCard';
 
 // ----------------------------------------------------------------------------
-// Composition presets (1)
+// Composition presets (2) — v0.9.0 adds AppShell
 // ----------------------------------------------------------------------------
+export * from './presets/AppShell';
 export * from './presets/SiteHeader';
 
 // ----------------------------------------------------------------------------
