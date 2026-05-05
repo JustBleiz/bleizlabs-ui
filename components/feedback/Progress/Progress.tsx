@@ -108,6 +108,20 @@ type ProgressStagesProps = {
   currentStage: number;
   /** Visual rendering mode for stages. Default `'pills'`. See `ProgressStageDisplayMode`. */
   displayMode?: ProgressStageDisplayMode;
+  /**
+   * When `true` AND `displayMode='track'`, hides per-segment labels —
+   * renders bars-only compact strip. Useful for minimal list-row indicators
+   * where stage label is rendered separately (e.g. consumer-side adjacent
+   * label row). No-op in `pills` mode (pills carry label inline).
+   *
+   * Adjust bar height via `--progress-track-height` (default `var(--space-2)`)
+   * and inter-segment gap via `--progress-track-gap` (default `2px`) — both
+   * are CSS var channels overridable via consumer SCSS module + `className`
+   * passthrough on the root.
+   *
+   * @since 0.8.5
+   */
+  hideLabels?: boolean;
   /** Forbidden in stages mode. */
   value?: never;
   /** Forbidden in stages mode. */
@@ -143,6 +157,7 @@ type ProgressPropsFlat = Omit<HTMLAttributes<HTMLDivElement>, 'aria-label'> & {
   stages?: string[];
   currentStage?: number;
   displayMode?: ProgressStageDisplayMode;
+  hideLabels?: boolean;
   value?: number;
   max?: number;
   color?: ProgressPercentColor;
@@ -167,6 +182,7 @@ export const Progress = forwardRef<HTMLDivElement, ProgressProps>(
       stages,
       currentStage,
       displayMode,
+      hideLabels,
       value,
       max,
       color,
@@ -181,11 +197,17 @@ export const Progress = forwardRef<HTMLDivElement, ProgressProps>(
         resolvedDisplayMode === 'track'
           ? styles.modeStagesTrack
           : styles.modeStages;
+      // hideLabels is a no-op in pills mode — pills carry label inline.
+      const hideLabelsAttr =
+        resolvedDisplayMode === 'track' && hideLabels === true
+          ? 'true'
+          : undefined;
 
       return (
         <div
           ref={ref}
           className={cn(styles.root, modeClass, className)}
+          data-hide-labels={hideLabelsAttr}
           {...domProps}
         >
           <ol aria-label={label} className={styles.stageList}>

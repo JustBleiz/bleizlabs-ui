@@ -102,12 +102,18 @@
 // more important than individual numbered milestones.
 
 .modeStagesTrack {
+  // CSS var channels (v0.8.5) — consumer-overridable via className passthrough
+  // for atelier customization (compact bars-only rows, denser geometry).
+  // Defaults preserve v0.8.4 byte-for-byte rendering.
+  --progress-track-height: var(--space-2);
+  --progress-track-gap: 2px;
+
   font-size: var(--font-size-xs);
 
   .stageList {
     display: flex;
     flex-wrap: nowrap;
-    gap: 2px; // 1px hairline between segments — keeps boundary visible
+    gap: var(--progress-track-gap);
     margin: 0;
     padding: 0;
     list-style: none;
@@ -152,7 +158,7 @@
     content: '';
     display: block;
     width: 100%;
-    height: var(--space-2);
+    height: var(--progress-track-height);
     background: var(--color-surface-raised);
     transition: background var(--duration-normal) var(--easing-default);
   }
@@ -171,6 +177,19 @@
 
   .stageActive::before {
     background: var(--color-brand);
+  }
+}
+
+// hideLabels opt-in (v0.8.5) — bars-only compact strip. Only applies to
+// track mode (pills carry label inline; hiding them defeats pills purpose).
+// `gap` between item and label collapses since label is hidden.
+.modeStagesTrack[data-hide-labels='true'] {
+  .stageItem {
+    gap: 0;
+  }
+
+  .stageLabel {
+    display: none;
   }
 }
 

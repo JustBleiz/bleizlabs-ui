@@ -4,6 +4,39 @@ All notable releases of this component library. Follows [Keep a Changelog](https
 
 ---
 
+## [0.8.5] — 2026-05-05
+
+**`Progress` `hideLabels?: boolean` opt-in + CSS var channels (`--progress-track-height`, `--progress-track-gap`) — covers compact bars-only stage strip pattern (driving consumers: bleizlabs-website panel ProjectCard list-row indicator + bleizos ProjectsList stage pill row). Inventory-first dup-check redirected proposed `StageProgress` molecule retention into a 1-prop amendment on the existing atom — saves a redundant project-local component, retains universal Progress API, allows full StageProgress retirement post-consumer-migration. Component count unchanged (variant amendment, NOT new component): library count stays 100. Additive patch, backward-compatible byte-for-byte.**
+
+### Added
+
+- **`<Progress hideLabels>`** prop (stages mode + `displayMode='track'` only) — bars-only compact strip when consumer renders the stage label separately (e.g. inline next to the bar in a list row). No-op in pills mode (pills carry label inline; hiding them defeats the pills purpose).
+  - Implementation: `data-hide-labels='true'` attribute on root → SCSS rule `.modeStagesTrack[data-hide-labels='true'] .stageLabel { display: none }` + `.stageItem { gap: 0 }` (collapses item-label gap since label is hidden).
+  - Driving consumers (universality 3-of-3 reaffirmed):
+    - bleizlabs-website panel_v2 `ProjectCard` row + grid stage indicator.
+    - bleizlabs-website bleizos `ProjectsList` stage pill row (compact `.stagePillRow`).
+    - scout-hub admin batch progress sidebar (sister pattern, hypothetical pending migration).
+- **`--progress-track-height`** CSS var channel (default `var(--space-2)` = 8 px) — consumer atelier override for thinner/denser bars. Set via consumer SCSS module + `className` passthrough.
+- **`--progress-track-gap`** CSS var channel (default `2px`) — inter-segment hairline override. Set via consumer SCSS module + `className` passthrough.
+- Demo page `app/components/feedback/page.tsx` Progress — Stages (track) section: added `hideLabels` showcase plus geometry-channel docs.
+
+### Changed
+
+- `Progress.tsx` — added `hideLabels?: boolean` to `ProgressStagesProps` (and the internal `ProgressPropsFlat` shape used for discriminated-union destructuring) + JSDoc + `data-hide-labels` attribute wiring (track mode only; pills ignores).
+- `Progress.module.scss` — `.modeStagesTrack` declares `--progress-track-height` + `--progress-track-gap` CSS var channels; `.stageList { gap }` and `.stageItem::before { height }` now read from those channels (defaults preserve v0.8.4 byte-for-byte). New `.modeStagesTrack[data-hide-labels='true']` rule hides labels + collapses gap.
+
+### Migration retirement path
+
+Consumer migration in bleizlabs-website work-unit `library-style-cleanup`:
+
+1. **Flagship callsites ALREADY MIGRATED** in v0.8.4 consumer (commit `e5e3a06`): ProjectsOverview + ProjectDetailHeader use lib `Progress displayMode='track'` directly (with default labels visible).
+2. **Compact callsites** (3): swap `<StageProgress current={N} variant='compact' />` → `<Progress label='...' stages={STAGE_LABELS} currentStage={N} displayMode='track' hideLabels className={styles.compactProgress} />` + consumer SCSS `.compactProgress { --progress-track-height: 3px; --progress-track-gap: 0; }` for atelier-grade compact geometry.
+3. **Delete** `apps/web/src/app/_components/shared/StageProgress/` after callsite swap.
+
+Net consumer simplification: −82 LOC (StageProgress.tsx + .module.scss + index.ts) + cross-route-group import dependency removed (StageProgress imported `STAGE_LABELS` from `(panel_v2)/_data/helpers` while being consumed by `(bleizos)`).
+
+---
+
 ## [0.8.4] — 2026-05-04
 
 **`Calendar` controlled-value cross-month sync fix — when consumer passes a new `value` prop in a different month from what's displayed, the grid now jumps to the new value's month. Pre-fix the displayed month was lazy-init only and ignored later prop changes, leaving the selected cell off-screen. Patch fix, no API change. Restores green CI on `main` (CAL-R19 e2e regression unblocked).**

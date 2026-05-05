@@ -230,6 +230,24 @@ export default function FeedbackPlaygroundPage() {
           />
         </div>
 
+        <Text>
+          <code>hideLabels</code> opt-in (v0.8.5) — bars-only compact strip
+          for minimal list-row indicators where the stage label is rendered
+          separately by the consumer. Only applies in track mode (pills mode
+          ignores). Adjust bar geometry via <code>--progress-track-height</code>
+          and <code>--progress-track-gap</code> CSS var channels.
+        </Text>
+
+        <div className={styles.stack}>
+          <Progress
+            label="Compact stage strip (bars only)"
+            stages={STAGES}
+            currentStage={stageIndex}
+            displayMode="track"
+            hideLabels
+          />
+        </div>
+
         <div className={styles.controls}>
           <Button
             variant="secondary"
