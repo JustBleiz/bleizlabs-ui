@@ -1,6 +1,7 @@
 import { Command } from 'commander';
 import pc from 'picocolors';
 import { CLI_VERSION, printVersion } from './commands/version.js';
+import { runInit } from './commands/init.js';
 import { loadManifest, countTotalNames } from './lib/registry-loader.js';
 
 /**
@@ -36,9 +37,15 @@ program
   .option('--global-css <path>', 'global CSS entrypoint', 'app/globals.scss')
   .option('--no-prompts', 'CI mode — fail on conflicts instead of prompting')
   .option('--dry-run', 'preview changes without writing files')
-  .action(() => {
-    console.log(pc.yellow('init: not implemented yet (lands in E03).'));
-    process.exitCode = 2;
+  .action(async (opts: { targetDir: string; stylesDir: string; globalCss: string; prompts: boolean; dryRun: boolean }) => {
+    const code = await runInit(import.meta.url, {
+      targetDir: opts.targetDir,
+      stylesDir: opts.stylesDir,
+      globalCss: opts.globalCss,
+      prompts: opts.prompts !== false,
+      dryRun: opts.dryRun === true,
+    });
+    process.exitCode = code;
   });
 
 program
