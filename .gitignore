@@ -55,3 +55,6 @@ coverage/
 
 # Local component-build / refactor artifacts (screenshots, audit reports — not for repo)
 LOG/
+
+# CLI bundle (built at publish time via prepublishOnly; regenerable from cli/src/)
+cli-dist/

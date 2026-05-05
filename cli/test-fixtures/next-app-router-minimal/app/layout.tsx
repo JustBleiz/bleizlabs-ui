@@ -1,0 +1,13 @@
+import type { ReactNode } from 'react';
+
+export const metadata = {
+  title: 'CLI test fixture',
+};
+
+export default function RootLayout({ children }: { children: ReactNode }) {
+  return (
+    <html lang="en" data-theme="dark">
+      <body>{children}</body>
+    </html>
+  );
+}

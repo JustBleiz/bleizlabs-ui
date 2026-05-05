@@ -43,9 +43,13 @@
   "files": [
     "components",
     "styles",
+    "cli-dist",
     "README.md",
     "LICENSE"
   ],
+  "bin": {
+    "bleizlabs-ui": "./cli-dist/bin.js"
+  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -56,13 +60,15 @@
     "check:barrel": "node scripts/check-barrel.mjs",
     "build:manifest": "node scripts/build-component-manifest.mjs",
     "check:manifest": "node scripts/check-manifest.mjs",
+    "build:cli": "tsup --config cli/tsup.config.ts",
+    "dev:cli": "tsup --config cli/tsup.config.ts --watch",
     "tokens:build": "node playground/build.mjs",
     "tokens:verify": "node playground/build.mjs",
     "test": "playwright test",
     "test:smoke": "playwright test tests/smoke.spec.ts",
     "test:e2e": "playwright test components/",
     "test:headed": "playwright test --headed",
-    "prepublishOnly": "npm run typecheck && npm run check:barrel && npm run build:manifest && npm run check:manifest && npm run build"
+    "prepublishOnly": "npm run typecheck && npm run check:barrel && npm run build:manifest && npm run check:manifest && npm run build:cli && npm run build"
   },
   "peerDependencies": {
     "react": ">=19.0.0",
@@ -71,16 +77,20 @@
   "devDependencies": {
     "@axe-core/playwright": "^4.11.2",
     "@axe-core/react": "^4.11.2",
+    "@inquirer/prompts": "^7.0.0",
     "@playwright/test": "^1.59.1",
     "@types/node": "^20.11.0",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
+    "commander": "^12.1.0",
     "eslint": "^9.0.0",
     "eslint-config-next": "^16.2.3",
     "next": "^16.2.3",
+    "picocolors": "^1.1.1",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "sass": "^1.83.0",
+    "tsup": "^8.3.0",
     "typescript": "^5.6.0"
   },
   "engines": {
