@@ -6,6 +6,15 @@ on:
   pull_request:
     branches: [main]
 
+# Force Node.js 24 runtime for third-party JS actions whose `action.yml`
+# still declares `runs.using: node20` (e.g. dorny/paths-filter@v3 — no v4
+# released yet). `actions/*@v5` already declare Node 24 natively.
+# GitHub Actions will force-default to Node 24 on 2026-06-02; opt in now
+# to silence the deprecation warning. Independent from `node-version: 24`
+# in setup-node steps (which controls the project's npm runtime).
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
+
 concurrency:
   group: test-${{ github.ref }}
   cancel-in-progress: true
@@ -24,7 +33,7 @@ jobs:
     outputs:
       code: ${{ steps.filter.outputs.code }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: dorny/paths-filter@v3
         id: filter
         with:
@@ -50,10 +59,10 @@ jobs:
     name: TypeScript
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
         with:
-          node-version: 20
+          node-version: 24
           cache: npm
           cache-dependency-path: package-lock.json
       - run: npm ci
@@ -63,10 +72,10 @@ jobs:
     name: ESLint (+ jsx-a11y)
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
         with:
-          node-version: 20
+          node-version: 24
           cache: npm
           cache-dependency-path: package-lock.json
       - run: npm ci
@@ -76,10 +85,10 @@ jobs:
     name: Next build
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
         with:
-          node-version: 20
+          node-version: 24
           cache: npm
           cache-dependency-path: package-lock.json
       - run: npm ci
@@ -89,10 +98,10 @@ jobs:
     name: Barrel completeness
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
         with:
-          node-version: 20
+          node-version: 24
           cache: npm
           cache-dependency-path: package-lock.json
       - run: npm ci
@@ -103,10 +112,10 @@ jobs:
     runs-on: ubuntu-latest
     needs: [typecheck, lint, build]
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
         with:
-          node-version: 20
+          node-version: 24
           cache: npm
           cache-dependency-path: package-lock.json
       - run: npm ci
@@ -116,7 +125,7 @@ jobs:
         run: npm run test:smoke
       - name: Upload Playwright report
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: playwright-smoke-report
           path: playwright-report/
@@ -135,10 +144,10 @@ jobs:
       (github.event_name == 'push' && github.ref == 'refs/heads/main') ||
       (github.event_name == 'pull_request' && needs.changes.outputs.code == 'true')
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
         with:
-          node-version: 20
+          node-version: 24
           cache: npm
           cache-dependency-path: package-lock.json
       - run: npm ci
@@ -148,7 +157,7 @@ jobs:
         run: npm run test:e2e
       - name: Upload Playwright report
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: playwright-e2e-report
           path: playwright-report/

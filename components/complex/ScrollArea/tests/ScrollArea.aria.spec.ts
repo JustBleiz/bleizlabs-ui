@@ -49,8 +49,10 @@ test.describe('ScrollArea — ARIA + accessibility tree', () => {
     // Section 1 — overflow, scrollbars render.
     const basicSection = sections.nth(0);
     const basicThumbs = basicSection.locator('[data-scroll-area-thumb]');
-    // At least the vertical thumb is rendered.
-    expect(await basicThumbs.count()).toBeGreaterThan(0);
+    // At least the vertical thumb is rendered. Use locator-bound count
+    // assertion (auto-retries) to wait for the ResizeObserver to fire
+    // and proportional-thumb math to settle after first paint.
+    await expect(basicThumbs.first()).toBeAttached();
   });
 
   test.skip('SA-R08 — touch pointer: native scroll preserved [PLAYGROUND-DEP: desktop Chromium no-touch]', async () => {
