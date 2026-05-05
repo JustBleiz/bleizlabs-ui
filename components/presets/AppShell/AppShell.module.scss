@@ -1,0 +1,41 @@
+// AppShell — Phase 12 composition preset
+//
+// Lib provides STRUCTURE: outer flex row (Sidebar | main column), inner flex
+// column (TopNav | content), <main> landmark with padding-top cancellation.
+// Consumer SCSS overrides VISUAL identity via className passthrough on root
+// (per shadcn pattern R4 — `Card variant=glass` precedent).
+
+.root {
+  // SidebarProvider+Inline asChild combo provides the flex row chrome.
+  // Root contributes only the viewport-fill + base surface tint via the
+  // existing `--color-surface-section` semantic token (no new tokens added,
+  // R7 token reuse-first compliance).
+  min-height: 100vh;
+  background: var(--color-surface-section, var(--color-surface));
+}
+
+.main {
+  // Inner column wrapping TopNav (optional) + main content area.
+  // Uses `--color-surface` (raised over `--color-surface-section` root) for
+  // the natural surface contrast between sidebar rail and content area.
+  // Consumers needing a custom tint pass an override via the `className` on
+  // root (the cascade reaches `.main` via descendant selector if needed),
+  // OR provide a project-level surface token override in their globals.
+  background: var(--color-surface);
+  flex: 1;
+  min-width: 0;
+}
+
+.content {
+  flex: 1;
+  overflow: clip;
+  position: relative;
+  // Built-in cancellation of any consumer global rule like
+  // `main { padding-top: var(--nav-footprint) }` (typical marketing-site
+  // convention). Marketing surfaces should scope nav-footprint compensation
+  // to their own layout, NOT a global tag selector. Forensic: 2026-05-05
+  // panel + bleizos regression in bleizlabs-website required two
+  // near-identical fix-ups before AppShell shipped — single source of truth
+  // here prevents the bug class entirely.
+  padding-top: 0;
+}
