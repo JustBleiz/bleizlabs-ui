@@ -43,9 +43,11 @@ test.describe('Carousel — ARIA + accessibility tree', () => {
       .first();
     const firstSlide = basic.locator('[aria-roledescription="slide"]').first();
     await expect(firstSlide).toHaveAttribute('role', 'group');
-    const label = await firstSlide.getAttribute('aria-label');
     // Source format: `${myIndex + 1} of ${total}` e.g., "1 of 5".
-    expect(label).toMatch(/^\d+ of \d+$/);
+    // Use locator-bound assertion (auto-retries) instead of one-shot
+    // getAttribute() to avoid race when aria-label is set after first
+    // render (slide count derives from registered slides via effect).
+    await expect(firstSlide).toHaveAttribute('aria-label', /^\d+ of \d+$/);
   });
 
   test('CAR-R10 — non-current slides get inert attribute (NOT aria-hidden)', async ({
@@ -141,8 +143,11 @@ test.describe('Carousel — ARIA + accessibility tree', () => {
       .first();
     const prev = loop.getByRole('button', { name: 'Previous slide' });
     const next = loop.getByRole('button', { name: 'Next slide' });
-    expect(await prev.getAttribute('aria-disabled')).not.toBe('true');
-    expect(await next.getAttribute('aria-disabled')).not.toBe('true');
+    // Use locator-bound assertion (auto-retries) so we wait for the loop
+    // state to settle (initial render briefly inherits non-loop edge state
+    // before the `loop` prop propagates through the controller effect).
+    await expect(prev).not.toHaveAttribute('aria-disabled', 'true');
+    await expect(next).not.toHaveAttribute('aria-disabled', 'true');
   });
 
   test('aria snapshot contains slide group', async ({ page }) => {
