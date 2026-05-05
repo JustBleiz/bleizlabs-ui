@@ -31,11 +31,11 @@ test.describe('Tooltip — ARIA + accessibility tree', () => {
     const save = page.getByRole('button', { name: 'Save' });
     const undo = page.getByRole('button', { name: 'Undo' });
     await save.focus();
+    await expect(save).toHaveAttribute('aria-describedby', /.+/);
     const firstId = await save.getAttribute('aria-describedby');
-    expect(firstId).toBeTruthy();
     await undo.focus();
+    await expect(undo).toHaveAttribute('aria-describedby', /.+/);
     const secondId = await undo.getAttribute('aria-describedby');
-    expect(secondId).toBeTruthy();
     expect(firstId).not.toBe(secondId);
   });
 

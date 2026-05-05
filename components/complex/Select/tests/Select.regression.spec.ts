@@ -42,7 +42,11 @@ test.describe('Select — regressions', () => {
     const trigger = page.getByRole('combobox').first();
     await trigger.click();
     await expect(page.getByRole('listbox').first()).toBeVisible();
-    await page.mouse.click(5, 5);
+    // Dispatch pointerdown directly on the page heading instead of viewport-coord
+    // click — listbox is portal-rendered and can flip-overlap (5,5), making the
+    // click hit listbox itself. dispatchEvent bypasses the rendering layer so
+    // the event target is reliably outside the popper containment.
+    await page.locator('h1').first().dispatchEvent('pointerdown');
     await expect(page.getByRole('listbox')).toHaveCount(0);
   });
 
