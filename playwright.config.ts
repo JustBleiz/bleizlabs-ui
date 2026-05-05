@@ -41,15 +41,6 @@ export default defineConfig({
     trace: 'on-first-retry',
     screenshot: 'only-on-failure',
     video: 'retain-on-failure',
-    // Disable keyframe animations during tests. Every Phase 10 component ships
-    // a `prefers-reduced-motion: reduce` block that flattens its entrance
-    // animation; emulating it globally eliminates animation-induced
-    // actionability stability delays that race short timers like the
-    // HoverCard 300ms closeDelay window. Best practice for hover-/pointer-heavy
-    // suites — no test logic change required.
-    contextOptions: {
-      reducedMotion: 'reduce',
-    },
   },
   projects: [
     {
