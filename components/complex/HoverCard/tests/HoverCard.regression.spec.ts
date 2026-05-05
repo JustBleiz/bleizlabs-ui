@@ -33,12 +33,10 @@ test.describe('HoverCard — regression cases', () => {
     await page.waitForTimeout(800);
     const dialog = page.getByRole('dialog');
     await expect(dialog).toBeVisible();
-    // Move pointer from trigger toward content — triggers closeDelay timer
-    await page.mouse.move(0, 0); // leave trigger
-    // Before closeDelay elapses, fire pointerenter on content — timer cancelled.
-    // dispatchEvent (synchronous) avoids the Playwright hover() actionability
-    // delay that can race the closeDelay window.
-    await dialog.dispatchEvent('pointerenter');
+    // Move pointer DIRECTLY from trigger to dialog — skip the (0,0) detour
+    // that raced the 300ms closeDelay window. Trigger pointerleave schedules
+    // close; dialog pointerenter cancels it in the same tick.
+    await dialog.hover();
     await page.waitForTimeout(400);
     await expect(dialog).toBeVisible();
   });
