@@ -1,3 +1,4 @@
+import fs from 'node:fs';
 import path from 'node:path';
 import {
   renderWrapperTsx,
@@ -109,8 +110,6 @@ export function findMissingWrappers(
   manifest: ComponentManifest,
   targetDir: string,
 ): { components: ManifestFamily[]; utilities: ManifestFamily[]; typesOnly: ManifestFamily[] } {
-  const fs = require('node:fs') as typeof import('node:fs');
-
   const isPresent = (familyDir: string): boolean => fs.existsSync(familyDir);
 
   return {
