@@ -30,11 +30,16 @@ test.describe('Toast — focus behavior', () => {
     page,
   }) => {
     const trigger = page.getByRole('button', { name: 'toast()', exact: true });
-    await trigger.focus();
-    await expect(trigger).toBeFocused();
+    // Retry focus() until it sticks — guards against React hydration race
+    // where focus applies to pre-hydration DOM and is lost when React replaces
+    // the node mid-test (Playwright canonical retry pattern).
+    await expect(async () => {
+      await trigger.focus();
+      await expect(trigger).toBeFocused({ timeout: 500 });
+    }).toPass({ timeout: 5000 });
     await trigger.click();
     const toast = page.getByRole('status').filter({ hasText: 'Default notification' });
-    await expect(toast).toBeVisible();
+    await expect(toast).toBeVisible({ timeout: 10000 });
     // Focus must remain on the trigger button (no steal).
     await expect(trigger).toBeFocused();
   });

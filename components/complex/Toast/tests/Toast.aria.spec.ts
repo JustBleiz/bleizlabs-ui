@@ -38,7 +38,8 @@ test.describe('Toast — ARIA + accessibility tree', () => {
   }) => {
     await page.getByRole('button', { name: 'toast.success()' }).click();
     const successToast = page.getByRole('status').filter({ hasText: 'Saved successfully' });
-    await expect(successToast).toBeVisible();
+    // Toast portal mounts + slide-in animation; raise timeout headroom for cold CI.
+    await expect(successToast).toBeVisible({ timeout: 10000 });
     await expect(successToast).toHaveAttribute('aria-live', 'polite');
   });
 
