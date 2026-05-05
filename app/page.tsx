@@ -128,10 +128,34 @@ const components: ComponentLink[] = [
     status: 'available',
   },
   {
+    href: '/components/button-group',
+    name: 'ButtonGroup',
+    description:
+      'Joined row/column of related buttons — attached collapses inner radii + dedupes 1px borders via joined-group mixin. Server-safe, role="group" with required aria-label.',
+    phase: 'Phase 4 — Simple Interactive',
+    status: 'available',
+  },
+  {
     href: '/components/input',
     name: 'Input + Label + Textarea',
     description:
       'Form trio with controlled / uncontrolled state, auto-id label coupling, error + helper, start/end icons.',
+    phase: 'Phase 4 — Simple Interactive',
+    status: 'available',
+  },
+  {
+    href: '/components/label',
+    name: 'Label',
+    description:
+      'Form-coupled <label htmlFor> atom with optional required indicator + visual disabled state. Use directly when composing custom form layouts (Input renders its own internal Label).',
+    phase: 'Phase 4 — Simple Interactive',
+    status: 'available',
+  },
+  {
+    href: '/components/textarea',
+    name: 'Textarea',
+    description:
+      'Multi-line text input. Resize prop (none/vertical/horizontal/both), error + helperText, hideLabel for sr-only labels, auto-id via useId (split from Input per D24 shadcn flat pattern).',
     phase: 'Phase 4 — Simple Interactive',
     status: 'available',
   },
@@ -176,10 +200,26 @@ const components: ComponentLink[] = [
     status: 'available',
   },
   {
+    href: '/components/availability-bar',
+    name: 'AvailabilityBar',
+    description:
+      'Day-by-day status strip — ok/warning/down cells in a CSS grid scaled via --availability-cells channel. role="img" wrapper with summary aria-label; per-day native title tooltips. Server-safe.',
+    phase: 'Phase 6 — Specialized (Tier B)',
+    status: 'available',
+  },
+  {
     href: '/components/molecules',
     name: 'Molecules',
     description:
       'E12 — DataRow, BackLink, SectionDivider, AccordionGroup (single/multiple), ToggleGroupFilter, DeadlineBadge (hydration-safe countdown).',
+    phase: 'Phase 7 — Molecules',
+    status: 'available',
+  },
+  {
+    href: '/components/toggle-group-filter',
+    name: 'ToggleGroupFilter',
+    description:
+      'Filter-chip row — controlled multi-select wrapper over ToggleGroup type="multiple". Maps flat options array to Toggle children, optional groupLabel uppercase caption above the row.',
     phase: 'Phase 7 — Molecules',
     status: 'available',
   },
