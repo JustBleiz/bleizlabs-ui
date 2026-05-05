@@ -35,8 +35,10 @@ test.describe('HoverCard — regression cases', () => {
     await expect(dialog).toBeVisible();
     // Move pointer from trigger toward content — triggers closeDelay timer
     await page.mouse.move(0, 0); // leave trigger
-    // Before closeDelay elapses, enter content — timer cancelled
-    await dialog.hover();
+    // Before closeDelay elapses, fire pointerenter on content — timer cancelled.
+    // dispatchEvent (synchronous) avoids the Playwright hover() actionability
+    // delay that can race the closeDelay window.
+    await dialog.dispatchEvent('pointerenter');
     await page.waitForTimeout(400);
     await expect(dialog).toBeVisible();
   });
