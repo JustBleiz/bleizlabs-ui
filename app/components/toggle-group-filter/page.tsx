@@ -42,7 +42,7 @@ export default function ToggleGroupFilterPlaygroundPage() {
         <p className={styles.intro}>
           Filter-chip row composing ToggleGroup (`type=&quot;multiple&quot;`) + Toggle + Text caption.
           Controlled-only molecule — consumer owns `value: string[]` + `onValueChange` state.
-          The `label` prop wires the inner ToggleGroup's `aria-label`; optional `groupLabel`
+          The `label` prop wires the inner ToggleGroup&apos;s `aria-label`; optional `groupLabel`
           renders a visible uppercase caption above the row.
         </p>
       </header>
