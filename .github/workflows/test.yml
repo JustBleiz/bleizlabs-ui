@@ -6,6 +6,15 @@ on:
   pull_request:
     branches: [main]
 
+# Force Node.js 24 runtime for third-party JS actions whose `action.yml`
+# still declares `runs.using: node20` (e.g. dorny/paths-filter@v3 — no v4
+# released yet). `actions/*@v5` already declare Node 24 natively.
+# GitHub Actions will force-default to Node 24 on 2026-06-02; opt in now
+# to silence the deprecation warning. Independent from `node-version: 24`
+# in setup-node steps (which controls the project's npm runtime).
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
+
 concurrency:
   group: test-${{ github.ref }}
   cancel-in-progress: true
