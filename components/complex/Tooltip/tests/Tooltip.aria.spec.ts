@@ -21,10 +21,10 @@ test.describe('Tooltip — ARIA + accessibility tree', () => {
   test('aria-describedby wired to tooltip id', async ({ page }) => {
     const trigger = page.getByRole('button', { name: 'Save' });
     await trigger.focus();
+    await expect(trigger).toHaveAttribute('aria-describedby', /.+/);
     const describedBy = await trigger.getAttribute('aria-describedby');
-    expect(describedBy).toBeTruthy();
-    const tooltipId = await page.locator('[role="tooltip"]').getAttribute('id');
-    expect(describedBy).toBe(tooltipId);
+    const tooltip = page.locator('[role="tooltip"]');
+    await expect(tooltip).toHaveAttribute('id', describedBy!);
   });
 
   test('id unique per instance — no collision between sibling tooltips [Radix #899]', async ({ page }) => {
@@ -54,11 +54,9 @@ test.describe('Tooltip — ARIA + accessibility tree', () => {
   test('aria-describedby absent when tooltip hidden', async ({ page }) => {
     const trigger = page.getByRole('button', { name: 'Save' });
     // Before focus — no aria-describedby (tooltip not open)
-    const before = await trigger.getAttribute('aria-describedby');
-    expect(before).toBeNull();
+    await expect(trigger).not.toHaveAttribute('aria-describedby', /.+/);
     await trigger.focus();
-    const during = await trigger.getAttribute('aria-describedby');
-    expect(during).toBeTruthy();
+    await expect(trigger).toHaveAttribute('aria-describedby', /.+/);
   });
 
   test('content NOT wired as aria-labelledby (tooltip is supplemental, not naming)', async ({ page }) => {
