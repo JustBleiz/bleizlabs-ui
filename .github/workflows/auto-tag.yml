@@ -1,0 +1,82 @@
+name: Auto-tag on main + dispatch publish
+
+# After `test.yml` finishes successfully on `main`, read package.json
+# version. If `v<version>` is not yet a git tag, create + push the
+# annotated tag, then dispatch `publish.yml` with that tag as input.
+#
+# Doc-only PRs (or any PR that does NOT bump `package.json`) are no-ops
+# here — the tag already exists, the job exits clean. Re-publish of an
+# already-published version is impossible: `publish.yml` checks tag-vs-
+# package-version, and `npm publish` itself rejects duplicate versions.
+#
+# Why dispatch instead of relying on the tag-push trigger:
+# pushing a tag with the default `GITHUB_TOKEN` does NOT trigger
+# downstream workflows (GitHub safety against accidental loops). So we
+# push the tag (for git history + GitHub Releases) AND explicitly
+# `gh workflow run publish.yml`, which DOES run when dispatched via the
+# default token.
+
+on:
+  workflow_run:
+    workflows: ["test"]
+    types: [completed]
+    branches: [main]
+
+# Force Node.js 24 runtime for third-party JS actions still on Node 20.
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
+
+jobs:
+  auto-tag:
+    name: Auto-tag main on version bump
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.head_branch == 'main' }}
+    permissions:
+      contents: write   # push tag
+      actions: write    # dispatch publish.yml workflow_dispatch
+
+    steps:
+      - name: Checkout main at the workflow_run head SHA
+        uses: actions/checkout@v5
+        with:
+          ref: ${{ github.event.workflow_run.head_sha }}
+          fetch-depth: 0
+
+      - name: Detect version + tag state
+        id: ver
+        run: |
+          VERSION="$(node -p "require('./package.json').version")"
+          TAG="v${VERSION}"
+          echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
+          echo "tag=${TAG}" >> "$GITHUB_OUTPUT"
+          if git rev-parse --verify "refs/tags/${TAG}" >/dev/null 2>&1; then
+            echo "tag_exists=true" >> "$GITHUB_OUTPUT"
+            echo "Tag ${TAG} already exists — nothing to publish."
+          else
+            echo "tag_exists=false" >> "$GITHUB_OUTPUT"
+            echo "Tag ${TAG} does NOT exist — will tag + publish."
+          fi
+
+      - name: Configure git identity
+        if: steps.ver.outputs.tag_exists == 'false'
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Create + push annotated tag
+        if: steps.ver.outputs.tag_exists == 'false'
+        run: |
+          TAG="${{ steps.ver.outputs.tag }}"
+          git tag -a "${TAG}" -m "${TAG} — auto-tagged from main after green CI"
+          git push origin "${TAG}"
+
+      - name: Dispatch publish workflow
+        if: steps.ver.outputs.tag_exists == 'false'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          TAG="${{ steps.ver.outputs.tag }}"
+          gh workflow run publish.yml \
+            -f tag="${TAG}" \
+            -R "${{ github.repository }}"
+          echo "Dispatched publish.yml for ${TAG}."
