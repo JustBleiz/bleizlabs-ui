@@ -1,0 +1,31 @@
+// ThemeToggle.module.scss
+//
+// ThemeToggle composes the Button atom and inherits nearly all
+// styling from it (variant=ghost, size=sm). This module provides
+// only the icon-cell sizing and a reduced-motion scaffold for a
+// future v1.x icon-morph enhancement.
+
+.icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.125rem;
+  height: 1.125rem;
+
+  & > svg {
+    width: 100%;
+    height: 100%;
+  }
+}
+
+// Reduced-motion guard scaffold — current v1 build performs a hard
+// icon swap with zero animation, so there is nothing to disable
+// today. Structure preserved so a future v1.x morph (rotate / fade)
+// has a single canonical place to honor user preference.
+@media (prefers-reduced-motion: reduce) {
+  .icon,
+  .icon > svg {
+    animation: none;
+    transition: none;
+  }
+}

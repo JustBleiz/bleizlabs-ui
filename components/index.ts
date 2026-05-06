@@ -86,6 +86,7 @@ export * from './specialized/Dot';
 export * from './specialized/Kbd';
 export * from './specialized/MetricBar';
 export * from './specialized/Pagination';
+export * from './specialized/ThemeToggle';
 export * from './specialized/UsageDonut';
 
 // ----------------------------------------------------------------------------
