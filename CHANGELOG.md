@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning 2.0](https://semver.org/spec/v2
 
 ## [Unreleased]
 
+## [0.11.1] — 2026-05
+
+### Fixed
+
+- **`prepublishOnly` lint failure on `playwright-report/`.** When the
+  publish workflow ran `test:smoke` before `npm publish`, the generated
+  `playwright-report/` directory contained Playwright's minified UI
+  assets, which the subsequent `prepublishOnly`-triggered lint scanned
+  as application code (errors on `no-this-alias`). Added
+  `playwright-report/**` and `test-results/**` to the `lint` script's
+  ignore patterns so generated artifacts are never linted. v0.11.0
+  shipped functionally identical to v0.11.1 but the npm publish step
+  failed at this lint gate.
+
 ## [0.11.0] — 2026-05
 
 ### Fixed
@@ -124,7 +138,8 @@ First public release.
 - Distributed via GitHub Packages as a scoped package. See [README.md](README.md)
   for installation instructions.
 
-[Unreleased]: https://github.com/BleizLabs/bleizlabs-ui/compare/v0.11.0...HEAD
+[Unreleased]: https://github.com/BleizLabs/bleizlabs-ui/compare/v0.11.1...HEAD
+[0.11.1]: https://github.com/BleizLabs/bleizlabs-ui/releases/tag/v0.11.1
 [0.11.0]: https://github.com/BleizLabs/bleizlabs-ui/releases/tag/v0.11.0
 [0.10.2]: https://github.com/BleizLabs/bleizlabs-ui/releases/tag/v0.10.2
 [0.10.1]: https://github.com/BleizLabs/bleizlabs-ui/releases/tag/v0.10.1
