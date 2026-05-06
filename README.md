@@ -3,6 +3,7 @@
 > A zero-dependency, fully-styled React component library with seed-based design tokens.
 > 100+ components, WAI-ARIA compliant, SCSS Modules, React 19 + Next.js 16.
 
+[![npm](https://img.shields.io/npm/v/@bleizlabs/ui?color=cb3837&logo=npm)](https://www.npmjs.com/package/@bleizlabs/ui)
 [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 [![React](https://img.shields.io/badge/React-19-61dafb)](https://react.dev)
 [![Next.js](https://img.shields.io/badge/Next.js-16.2-black)](https://nextjs.org)
@@ -34,24 +35,16 @@ Three walls hit by every product team:
 
 ### Prerequisites
 
-- Node.js 20 or newer
+- Node.js 24 or newer
 - React 19 + Next.js 16 host project (or any React 19 bundler with SCSS Modules)
 
 ### Installation
 
-`@bleizlabs/ui` publishes to GitHub Packages. Authenticate first:
-
-```ini
-# .npmrc — project root or ~/.npmrc
-@bleizlabs:registry=https://npm.pkg.github.com
-//npm.pkg.github.com/:_authToken=${GITHUB_TOKEN}
-```
-
-`GITHUB_TOKEN` is a personal access token (classic) with `read:packages` scope.
-
 ```bash
 npm install @bleizlabs/ui
 ```
+
+Published to the public npm registry — no auth, no `.npmrc` setup required.
 
 ### Configure Next.js
 

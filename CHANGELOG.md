@@ -7,6 +7,22 @@ and this project adheres to [Semantic Versioning 2.0](https://semver.org/spec/v2
 
 ## [Unreleased]
 
+## [0.11.2] — 2026-05
+
+### Changed
+
+- **Public release on npmjs.org.** Migrated from GitHub Packages to
+  the public npm registry — `npm install @bleizlabs/ui` now works
+  with no auth, no `.npmrc` setup. `publishConfig` updated to
+  `access: "public"` + `registry: "https://registry.npmjs.org/"`.
+- **CI publish workflow** switched to npmjs.org with provenance
+  attestation (`npm publish --provenance --access public`) and
+  `NPM_TOKEN` secret in place of `GITHUB_TOKEN`.
+- **README** — install block simplified, added npm version badge,
+  Node prerequisite corrected to 24+ (matches `engines.node`).
+- **`bin` entry** normalized to `cli-dist/bin.js` (was `./cli-dist/bin.js`)
+  via `npm pkg fix` — restores `npx @bleizlabs/ui` post-install.
+
 ## [0.11.1] — 2026-05
 
 ### Fixed
