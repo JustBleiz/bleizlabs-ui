@@ -93,7 +93,15 @@ export function useFloatingFocus(config: FloatingFocusConfig): void {
       if (!container) return;
       const target = getFocusTarget?.(container) ?? container;
       if (target && typeof target.focus === 'function') {
-        target.focus();
+        // `preventScroll: true` is critical for floating consumers with
+        // `closeOnScroll` (ContextMenu): a partially-clipped focus target
+        // would otherwise trigger `scroll-into-view-if-needed` on focus,
+        // which fires a window scroll event that the dismiss primitive
+        // observes and closes the surface immediately on open. The portal
+        // is rendered at correct viewport coordinates already — focus
+        // never needs to scroll to reveal it. Floating consumers without
+        // close-on-scroll are unaffected by the option.
+        target.focus({ preventScroll: true });
       }
     });
 
@@ -105,7 +113,7 @@ export function useFloatingFocus(config: FloatingFocusConfig): void {
       const restore = explicitTarget ?? previousActiveRef.current;
       if (restore?.isConnected && typeof restore.focus === 'function') {
         requestAnimationFrame(() => {
-          restore.focus();
+          restore.focus({ preventScroll: true });
         });
       }
     };
