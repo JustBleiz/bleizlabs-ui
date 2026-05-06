@@ -641,3 +641,24 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
+// Conservative baseline reset — fixes browser-default body margin (8px) +
+// gives every consumer a viewport-tall body without per-project resets.
+// Does NOT impose a layout convention (no flex/grid on body) — consumers
+// remain free to choose their own root layout primitive (Stack, GridLayout,
+// or page-specific markup). Honors `prefers-reduced-motion: reduce`.
+html {
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  min-height: 100dvh;
+}

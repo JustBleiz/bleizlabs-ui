@@ -88,7 +88,7 @@ describe('templates', () => {
   });
 
   describe('renderRootBarrel', () => {
-    it('lists components alphabetically + utilities + types', () => {
+    it('groups components by category, sorts within category, lists utilities + types', () => {
       const manifest: ComponentManifest = {
         schemaVersion: '1',
         libVersion: '0.10.0',
@@ -96,7 +96,9 @@ describe('templates', () => {
         categories: {},
         components: [
           { family: 'Zebra', category: 'display', path: 'display/Zebra', exports: ['Zebra'], types: [], hooks: [] },
-          sampleFamily,
+          sampleFamily, // Card / display
+          { family: 'Stack', category: 'layout', path: 'layout/Stack', exports: ['Stack'], types: [], hooks: [] },
+          sampleHookFamily, // Sidebar / complex
         ],
         utilities: [
           { family: 'cn', category: 'utils', path: 'utils/cn', exports: ['cn'], types: [], hooks: [] },
@@ -105,13 +107,25 @@ describe('templates', () => {
       };
       const out = renderRootBarrel(manifest);
       expect(out).toMatch(MARKER_REGEX_TS);
-      // Alphabetical (Card before Zebra)
-      const idxCard = out.indexOf("from './Card'");
-      const idxZebra = out.indexOf("from './Zebra'");
-      expect(idxCard).toBeLessThan(idxZebra);
-      // Utilities under utils/
+
+      // Category-nested paths
+      expect(out).toContain("from './display/Card'");
+      expect(out).toContain("from './display/Zebra'");
+      expect(out).toContain("from './layout/Stack'");
+      expect(out).toContain("from './complex/Sidebar'");
+
+      // Sorted by category first (complex < display < layout), then by family within
+      const idxSidebar = out.indexOf("from './complex/Sidebar'");
+      const idxCard = out.indexOf("from './display/Card'");
+      const idxZebra = out.indexOf("from './display/Zebra'");
+      const idxStack = out.indexOf("from './layout/Stack'");
+      expect(idxSidebar).toBeLessThan(idxCard);
+      expect(idxCard).toBeLessThan(idxZebra); // alphabetical within display
+      expect(idxZebra).toBeLessThan(idxStack);
+
+      // Utilities under utils/ (category field carries this)
       expect(out).toContain("from './utils/cn'");
-      // Types under types/
+      // Types under types/ (category field carries this)
       expect(out).toContain("from './types/spacing'");
     });
   });

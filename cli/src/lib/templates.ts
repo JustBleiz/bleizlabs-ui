@@ -115,11 +115,20 @@ export function renderRootBarrel(manifest: ComponentManifest): string {
   lines.push('// IMPORT FROM HERE (not from "@bleizlabs/ui" directly):');
   lines.push('//   import { Button, Card, Sidebar } from "@/components/ui";');
   lines.push('');
-  lines.push('// --- Components ---');
-  for (const f of [...manifest.components].sort((a, b) =>
-    a.family.localeCompare(b.family),
-  )) {
-    lines.push(`export * from './${f.family}';`);
+  lines.push('// --- Components (grouped by lib category for navigability) ---');
+  // Sort by category, then by family name within category — produces stable,
+  // human-readable barrel ordering grouped by lib taxonomy.
+  const sortedComponents = [...manifest.components].sort((a, b) => {
+    const cat = a.category.localeCompare(b.category);
+    return cat !== 0 ? cat : a.family.localeCompare(b.family);
+  });
+  let currentCategory = '';
+  for (const f of sortedComponents) {
+    if (f.category !== currentCategory) {
+      lines.push(`// ${f.category}`);
+      currentCategory = f.category;
+    }
+    lines.push(`export * from './${f.category}/${f.family}';`);
   }
   if (manifest.utilities.length > 0) {
     lines.push('');
@@ -127,7 +136,7 @@ export function renderRootBarrel(manifest: ComponentManifest): string {
     for (const f of [...manifest.utilities].sort((a, b) =>
       a.family.localeCompare(b.family),
     )) {
-      lines.push(`export * from './utils/${f.family}';`);
+      lines.push(`export * from './${f.category}/${f.family}';`);
     }
   }
   if (manifest.typesOnly.length > 0) {
@@ -136,7 +145,7 @@ export function renderRootBarrel(manifest: ComponentManifest): string {
     for (const f of [...manifest.typesOnly].sort((a, b) =>
       a.family.localeCompare(b.family),
     )) {
-      lines.push(`export * from './types/${f.family}';`);
+      lines.push(`export * from './${f.category}/${f.family}';`);
     }
   }
   lines.push('');

@@ -20,10 +20,19 @@ export interface WrapperGenSummary {
 
 /**
  * Generate the full wrapper layer for a manifest into the consumer's
- * target directory. Layout:
+ * target directory. Layout mirrors the library's `components/<category>/`
+ * structure for navigability:
  *
  *   <targetDir>/
- *     <Family>/
+ *     layout/<Family>/                  (Container, Stack, Inline, ...)
+ *     typography/<Family>/              (Heading, Text, Anchor, ...)
+ *     display/<Family>/                 (Badge, Card, Avatar, ...)
+ *     interactive/<Family>/             (Button, Input, Switch, ...)
+ *     feedback/<Family>/                (Alert, Empty, Progress)
+ *     specialized/<Family>/             (Breadcrumb, Pagination, ...)
+ *     molecules/<Family>/               (Chip, DataRow, Timeline, ...)
+ *     presets/<Family>/                 (EntityCard, ZoneCard, SiteHeader, ...)
+ *     complex/<Family>/                 (Dialog, Combobox, Calendar, ...)
  *       <Family>.tsx
  *       <Family>.module.scss
  *       index.ts
@@ -32,13 +41,17 @@ export interface WrapperGenSummary {
  *       <UtilFamily>.module.scss
  *       index.ts
  *     types/<TypesFamily>/
- *       <TypesFamily>.tsx       (type-only re-export)
+ *       <TypesFamily>.tsx               (type-only re-export)
  *       index.ts
- *     index.ts                  (root barrel)
+ *     index.ts                          (root barrel)
  *     README.md
  *
  * SCSS placeholders are written for components + utilities (so consumers
  * have a slot ready), but NOT for types-only families (no runtime, no styles).
+ *
+ * Component category nesting introduced in CLI v0.11.0 (mirrors the lib's
+ * own structure). Pre-v0.11 flat layout is auto-migrated by the `migrate-
+ * categories` module before this function runs (see init / add commands).
  */
 export function generateWrappers(
   manifest: ComponentManifest,
@@ -46,19 +59,17 @@ export function generateWrappers(
 ): WrapperGenSummary {
   const results: WriteFileResult[] = [];
 
-  // Components — direct under targetDir
+  // Manifest's `category` field is authoritative — components carry their lib
+  // category ('layout' | 'typography' | ...), utilities carry 'utils',
+  // typesOnly carry 'types'. Single path expression for all three groups.
   for (const f of manifest.components) {
-    results.push(...writeFamily(f, path.join(targetDir, f.family), manifest.libVersion, false));
+    results.push(...writeFamily(f, path.join(targetDir, f.category, f.family), manifest.libVersion, false));
   }
-
-  // Utilities — under targetDir/utils/
   for (const f of manifest.utilities) {
-    results.push(...writeFamily(f, path.join(targetDir, 'utils', f.family), manifest.libVersion, false));
+    results.push(...writeFamily(f, path.join(targetDir, f.category, f.family), manifest.libVersion, false));
   }
-
-  // Types-only — under targetDir/types/, no SCSS
   for (const f of manifest.typesOnly) {
-    results.push(...writeFamily(f, path.join(targetDir, 'types', f.family), manifest.libVersion, true));
+    results.push(...writeFamily(f, path.join(targetDir, f.category, f.family), manifest.libVersion, true));
   }
 
   // Root barrel
@@ -112,15 +123,12 @@ export function findMissingWrappers(
 ): { components: ManifestFamily[]; utilities: ManifestFamily[]; typesOnly: ManifestFamily[] } {
   const isPresent = (familyDir: string): boolean => fs.existsSync(familyDir);
 
+  const familyAbsent = (f: ManifestFamily): boolean =>
+    !isPresent(path.join(targetDir, f.category, f.family));
+
   return {
-    components: manifest.components.filter(
-      (f) => !isPresent(path.join(targetDir, f.family)),
-    ),
-    utilities: manifest.utilities.filter(
-      (f) => !isPresent(path.join(targetDir, 'utils', f.family)),
-    ),
-    typesOnly: manifest.typesOnly.filter(
-      (f) => !isPresent(path.join(targetDir, 'types', f.family)),
-    ),
+    components: manifest.components.filter(familyAbsent),
+    utilities: manifest.utilities.filter(familyAbsent),
+    typesOnly: manifest.typesOnly.filter(familyAbsent),
   };
 }

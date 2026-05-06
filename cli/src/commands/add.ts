@@ -13,6 +13,7 @@ import {
   findMissingWrappers,
   generateWrappers,
 } from '../lib/wrapper-generator.js';
+import { autoMigrate } from '../lib/migrate-categories.js';
 import {
   writeFileIdempotent,
   type WriteFileResult,
@@ -60,6 +61,30 @@ export async function runAdd(
 
   const targetAbs = path.resolve(project.cwd, options.targetDir);
 
+  // --- Auto-migrate pre-v0.11 flat layout BEFORE diffing/scaffolding ---
+  // findMissingWrappers compares against the new category-nested paths; if
+  // the consumer is still on flat layout, every family would look "missing"
+  // and we'd generate duplicate folders. Migrate first so the diff reflects
+  // reality.
+  if (!options.dryRun) {
+    const migration = autoMigrate(manifest, targetAbs);
+    if (migration.migrated.length > 0) {
+      log(
+        pc.green('✓ ') +
+          `Migrated ${migration.migrated.length} component folders to category-nested layout`,
+      );
+    }
+    if (migration.conflicts.length > 0) {
+      log(
+        pc.yellow('! ') +
+          `${migration.conflicts.length} family folders exist in BOTH flat and nested locations — review manually`,
+      );
+      for (const c of migration.conflicts) {
+        log(pc.dim(`    ${c.family}: ${c.flatPath} + ${c.nestedPath}`));
+      }
+    }
+  }
+
   // --- Resolve which families to scaffold ------------------------------
   const resolved = resolveFamilies(options, manifest, targetAbs);
   if (resolved.kind === 'error') {
@@ -96,13 +121,13 @@ export async function runAdd(
   // --- Apply ------------------------------------------------------------
   const results: WriteFileResult[] = [];
   for (const f of resolved.families.components) {
-    results.push(...writeOne(f, targetAbs, manifest.libVersion, false, false));
+    results.push(...writeOne(f, targetAbs, manifest.libVersion, false));
   }
   for (const f of resolved.families.utilities) {
-    results.push(...writeOne(f, targetAbs, manifest.libVersion, false, true));
+    results.push(...writeOne(f, targetAbs, manifest.libVersion, false));
   }
   for (const f of resolved.families.typesOnly) {
-    results.push(...writeOne(f, targetAbs, manifest.libVersion, true, false));
+    results.push(...writeOne(f, targetAbs, manifest.libVersion, true));
   }
 
   // Always regenerate root barrel — manifest may have new families
@@ -209,12 +234,13 @@ function writeOne(
   targetAbs: string,
   libVersion: string,
   typesOnly: boolean,
-  isUtility: boolean,
 ): WriteFileResult[] {
-  const subdir = typesOnly ? 'types' : isUtility ? 'utils' : '';
-  const familyDir = subdir
-    ? path.join(targetAbs, subdir, family.family)
-    : path.join(targetAbs, family.family);
+  // Manifest carries the authoritative category per family:
+  //   components    -> 'layout' | 'typography' | 'display' | 'interactive' | ...
+  //   utilities     -> 'utils'
+  //   typesOnly     -> 'types'
+  // Mirror lib structure under targetDir for consumer navigability.
+  const familyDir = path.join(targetAbs, family.category, family.family);
 
   const results: WriteFileResult[] = [];
   const tsxContent = typesOnly
