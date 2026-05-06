@@ -89,7 +89,28 @@ export function patchNextConfig(info: ProjectInfo): NextConfigPatchResult {
   const head = matched.slice(0, lastBrace);
   const tail = matched.slice(lastBrace);
   const trimmedHead = head.trimEnd();
-  const trailingComma = trimmedHead.endsWith(',') ? '' : ',';
+
+  // Determine if a trailing comma is needed.
+  // Strip trailing comments + whitespace iteratively to find the last meaningful char.
+  // Cases:
+  //   `{ }` (empty)                        -> last meaningful = `{` -> NO comma
+  //   `{ /* comment */ }` (only comment)   -> last meaningful = `{` -> NO comma
+  //   `{ key: val }` (no trailing comma)   -> last meaningful = value char -> YES comma
+  //   `{ key: val, }` (already has comma)  -> last meaningful = `,` -> NO comma
+  let stripped = trimmedHead;
+  let prev: string;
+  do {
+    prev = stripped;
+    stripped = stripped.trimEnd();
+    // Strip trailing block comment(s)
+    stripped = stripped.replace(/\/\*[\s\S]*?\*\/$/, '');
+    // Strip trailing line comment
+    stripped = stripped.replace(/\/\/[^\n]*$/, '');
+  } while (stripped !== prev);
+  stripped = stripped.trimEnd();
+
+  const lastChar = stripped.length > 0 ? stripped[stripped.length - 1] : '';
+  const trailingComma = lastChar === '{' || lastChar === ',' || lastChar === '' ? '' : ',';
   const newMatched = `${trimmedHead}${trailingComma}\n${insert}\n${tail}`;
 
   const next = before + newMatched + after;
