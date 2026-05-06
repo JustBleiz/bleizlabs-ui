@@ -20,6 +20,16 @@ on:
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
 
+# One publish at a time per tag. If auto-tag dispatches publish while a
+# manual `workflow_dispatch` run is in progress for the same tag, queue
+# rather than race — npm rejects duplicate versions, but interleaving
+# `npm publish` with `gh release create` would otherwise produce
+# nondeterministic GitHub Release timing relative to npm. `cancel-in-
+# progress: false` keeps the in-flight job alive.
+concurrency:
+  group: publish-${{ github.event.inputs.tag || github.ref_name }}
+  cancel-in-progress: false
+
 jobs:
   publish:
     runs-on: ubuntu-latest
@@ -40,6 +50,16 @@ jobs:
           registry-url: 'https://registry.npmjs.org/'
           scope: '@bleizlabs'
 
+      - name: Verify package version matches tag (fail-fast)
+        run: |
+          PKG_VERSION="v$(node -p "require('./package.json').version")"
+          TAG="${{ github.event.inputs.tag || github.ref_name }}"
+          echo "Tag: $TAG, Package: $PKG_VERSION"
+          if [ "$PKG_VERSION" != "$TAG" ]; then
+            echo "ERROR: package.json version ($PKG_VERSION) does not match tag ($TAG)"
+            exit 1
+          fi
+
       - name: Install dependencies
         run: npm ci
 
@@ -58,16 +78,6 @@ jobs:
       - name: Run Playwright smoke suite (E142 L1 — 51 routes + axe-core gate)
         run: npm run test:smoke
 
-      - name: Verify package version matches tag
-        run: |
-          PKG_VERSION="v$(node -p "require('./package.json').version")"
-          TAG="${{ github.event.inputs.tag || github.ref_name }}"
-          echo "Tag: $TAG, Package: $PKG_VERSION"
-          if [ "$PKG_VERSION" != "$TAG" ]; then
-            echo "ERROR: package.json version ($PKG_VERSION) does not match tag ($TAG)"
-            exit 1
-          fi
-
       - name: Publish
         run: npm publish --provenance --access public
 
@@ -85,12 +95,20 @@ jobs:
           # Extract this version's section from CHANGELOG.md (between
           # "## [<version>]" and the next "## [" heading). Falls back to
           # auto-generated notes if the section is missing.
+          #
+          # Use `index()` for prefix matching instead of regex. Earlier
+          # iteration used `$0 ~ "^## \\[" ver "\\]"`; POSIX awk does not
+          # honor `\[` / `\]` escapes inside a dynamically-built regex
+          # string (warning: "escape sequence `\[' treated as plain `['"),
+          # so the bracket got parsed as a character class and the section
+          # never matched. `index($0, marker) == 1` is regex-free + POSIX
+          # portable + immune to special chars in the version string.
           VERSION="${TAG#v}"
           NOTES_FILE="$(mktemp)"
-          awk -v ver="$VERSION" '
-            $0 ~ "^## \\[" ver "\\]" { in_section=1; next }
-            in_section && /^## \[/   { in_section=0 }
-            in_section                { print }
+          awk -v marker="## [${VERSION}]" '
+            index($0, marker) == 1     { in_section=1; next }
+            in_section && index($0, "## [") == 1 { in_section=0 }
+            in_section                  { print }
           ' CHANGELOG.md > "$NOTES_FILE"
           if [ -s "$NOTES_FILE" ]; then
             echo "Creating release $TAG with notes from CHANGELOG.md."
