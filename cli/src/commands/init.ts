@@ -11,6 +11,7 @@ import {
   type ProjectInfo,
 } from '../lib/project-detector.js';
 import { generateWrappers } from '../lib/wrapper-generator.js';
+import { autoMigrate } from '../lib/migrate-categories.js';
 import {
   writeFileIdempotent,
   updateManagedBlock,
@@ -111,6 +112,28 @@ export async function runInit(
     log('');
     log(pc.dim('Re-run without --dry-run to apply changes.'));
     return 0;
+  }
+
+  // --- Step 2.5: Auto-migrate pre-v0.11 flat layout to category-nested ---
+  const migration = autoMigrate(manifest, targetAbs);
+  if (migration.migrated.length > 0 || migration.conflicts.length > 0) {
+    const detailParts: string[] = [];
+    if (migration.migrated.length > 0) {
+      detailParts.push(`${migration.migrated.length} migrated to category subdirs`);
+    }
+    if (migration.conflicts.length > 0) {
+      detailParts.push(
+        `${migration.conflicts.length} conflicts (flat + nested both exist — review manually)`,
+      );
+    }
+    if (migration.unmarked.length > 0) {
+      detailParts.push(`${migration.unmarked.length} unmarked (left untouched)`);
+    }
+    steps.push({
+      name: 'category migration',
+      status: migration.conflicts.length > 0 ? 'warn' : 'ok',
+      detail: detailParts.join(', '),
+    });
   }
 
   // --- Step 3: Generate wrapper layer ----------------------------------

@@ -46,12 +46,12 @@ describe('init flow (integration)', () => {
   it('init scaffolds full wrapper layer + configs + agent instructions', () => {
     runCli(['init'], tmpProject);
 
-    // Wrapper layer
+    // Wrapper layer — category-nested per CLI v0.11+
     expect(fs.existsSync(path.join(tmpProject, 'app', '_components', 'ui', 'index.ts'))).toBe(true);
-    expect(fs.existsSync(path.join(tmpProject, 'app', '_components', 'ui', 'Button', 'Button.tsx'))).toBe(true);
-    expect(fs.existsSync(path.join(tmpProject, 'app', '_components', 'ui', 'Button', 'Button.module.scss'))).toBe(true);
-    expect(fs.existsSync(path.join(tmpProject, 'app', '_components', 'ui', 'Card', 'Card.tsx'))).toBe(true);
-    expect(fs.existsSync(path.join(tmpProject, 'app', '_components', 'ui', 'Sidebar', 'Sidebar.tsx'))).toBe(true);
+    expect(fs.existsSync(path.join(tmpProject, 'app', '_components', 'ui', 'interactive', 'Button', 'Button.tsx'))).toBe(true);
+    expect(fs.existsSync(path.join(tmpProject, 'app', '_components', 'ui', 'interactive', 'Button', 'Button.module.scss'))).toBe(true);
+    expect(fs.existsSync(path.join(tmpProject, 'app', '_components', 'ui', 'display', 'Card', 'Card.tsx'))).toBe(true);
+    expect(fs.existsSync(path.join(tmpProject, 'app', '_components', 'ui', 'complex', 'Sidebar', 'Sidebar.tsx'))).toBe(true);
     expect(fs.existsSync(path.join(tmpProject, 'app', '_components', 'ui', 'utils', 'cn', 'cn.tsx'))).toBe(true);
     expect(fs.existsSync(path.join(tmpProject, 'app', '_components', 'ui', 'types', 'spacing', 'spacing.tsx'))).toBe(true);
 
@@ -86,7 +86,7 @@ describe('init flow (integration)', () => {
 
   it('compound family wrapper re-exports all parts + types', () => {
     const cardWrapper = fs.readFileSync(
-      path.join(tmpProject, 'app', '_components', 'ui', 'Card', 'Card.tsx'),
+      path.join(tmpProject, 'app', '_components', 'ui', 'display', 'Card', 'Card.tsx'),
       'utf8',
     );
     expect(cardWrapper).toContain('Card,');
@@ -100,7 +100,7 @@ describe('init flow (integration)', () => {
 
   it('Sidebar wrapper includes hook in value-exports', () => {
     const sidebarWrapper = fs.readFileSync(
-      path.join(tmpProject, 'app', '_components', 'ui', 'Sidebar', 'Sidebar.tsx'),
+      path.join(tmpProject, 'app', '_components', 'ui', 'complex', 'Sidebar', 'Sidebar.tsx'),
       'utf8',
     );
     expect(sidebarWrapper).toContain('useSidebar,');
@@ -109,7 +109,7 @@ describe('init flow (integration)', () => {
   });
 
   it('init re-run preserves user-modified file (no marker)', () => {
-    const buttonPath = path.join(tmpProject, 'app', '_components', 'ui', 'Button', 'Button.tsx');
+    const buttonPath = path.join(tmpProject, 'app', '_components', 'ui', 'interactive', 'Button', 'Button.tsx');
     const userContent = '// USER MODIFIED — no marker\nexport { Button } from "@bleizlabs/ui";\n';
     fs.writeFileSync(buttonPath, userContent);
 

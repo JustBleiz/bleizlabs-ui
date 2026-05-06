@@ -7,6 +7,92 @@ and this project adheres to [Semantic Versioning 2.0](https://semver.org/spec/v2
 
 ## [Unreleased]
 
+## [0.11.0] — 2026-05
+
+### Fixed
+
+- **Body baseline reset shipped with `@use '@bleizlabs/ui/styles'`.** The
+  `BASE STYLES` section in `_semantics.scss` previously declared its intent
+  as "applied to `:root` + `body`" but only `:root` was implemented. The
+  body element kept the browser default `margin: 8px`, forcing every
+  consumer to add an `html, body { margin: 0; padding: 0 }` workaround in
+  `app/globals.scss`. Lib now ships a conservative reset directly:
+
+  ```scss
+  html { scroll-behavior: smooth; }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+  }
+  body { margin: 0; padding: 0; min-height: 100dvh; }
+  ```
+
+  Conservative on purpose — no `display: flex` or other layout convention
+  on body. Consumers retain freedom over their root layout primitive
+  (`Stack`, `GridLayout`, page-specific markup). A regression test in
+  `tests/baseline-reset.spec.ts` pins the contract so this cannot
+  silently regress again.
+
+### Changed
+
+- **CLI wrapper layout — category-nested folders.** `npx @bleizlabs/ui init`
+  and `add` now generate the project wrapper layer mirroring the library's
+  own `components/<category>/` structure for navigability. Layout:
+
+  ```text
+  app/_components/ui/
+    layout/{Container,Stack,Inline,Section,GridLayout}/
+    typography/{Heading,Text,Anchor,Eyebrow}/
+    display/{Badge,Card,Avatar,Table,...}/
+    interactive/{Button,Input,Switch,...}/
+    feedback/{Alert,Empty,Progress}/
+    specialized/{Breadcrumb,Pagination,...}/
+    molecules/{Chip,DataRow,Timeline,...}/
+    presets/{EntityCard,ZoneCard,SiteHeader,...}/
+    complex/{Dialog,Combobox,Calendar,...}/
+    utils/{cn,...}/
+    types/{spacing,...}/
+    index.ts
+  ```
+
+  Previous flat layout (every component as a sibling under `ui/`) hit
+  navigability friction past ~30 wrappers. Mirroring the lib taxonomy
+  keeps file-tree exploration cheap as the library grows.
+
+### Added
+
+- **Auto-migration from flat → nested layout.** First run of CLI v0.11.0 on
+  a project initialized with v0.10.x detects flat-layout wrapper folders
+  (those containing the `// @bleizlabs/ui-generated` marker) and moves
+  each into its category subdirectory before regenerating. No consumer
+  action required — re-run `npx @bleizlabs/ui add --new` and the layout
+  reorganizes itself.
+
+  - Folders without the generated marker (user-authored) are left alone.
+  - When both flat and nested paths exist for the same family, the
+    conflict is surfaced and the operator decides which to keep.
+  - The root `index.ts` barrel re-exports use category paths
+    (`export * from './display/Card'`), so the public API surface
+    (`import { Card } from '@/components/ui'`) is unchanged.
+
+### Migration
+
+If a consumer imports a wrapper from a deep path (e.g.
+`from '@/components/ui/Card'`), update to import from the root barrel
+(`from '@/components/ui'`). Deep imports were never the documented
+pattern but may have been used incidentally — they break under the new
+layout. Root-barrel imports keep working.
+
+## [0.10.2] — 2026-05
+
+### Fixed
+
+- **CLI `nextconfig-patcher` stray comma.** When a fresh
+  `create-next-app` produced `next.config.ts` with comment-only body
+  (`{ /* config options here */ }`), the patcher inserted a stray comma
+  after the comment, causing `next build` to fail with `SyntaxError`.
+  Fixed by stripping trailing comments + whitespace iteratively before
+  the last-meaningful-char check.
+
 ## [0.10.1] — 2026-05
 
 First public release.
@@ -38,5 +124,7 @@ First public release.
 - Distributed via GitHub Packages as a scoped package. See [README.md](README.md)
   for installation instructions.
 
-[Unreleased]: https://github.com/BleizLabs/bleizlabs-ui/compare/v0.10.1...HEAD
+[Unreleased]: https://github.com/BleizLabs/bleizlabs-ui/compare/v0.11.0...HEAD
+[0.11.0]: https://github.com/BleizLabs/bleizlabs-ui/releases/tag/v0.11.0
+[0.10.2]: https://github.com/BleizLabs/bleizlabs-ui/releases/tag/v0.10.2
 [0.10.1]: https://github.com/BleizLabs/bleizlabs-ui/releases/tag/v0.10.1
