@@ -9,7 +9,7 @@
 [![Next.js](https://img.shields.io/badge/Next.js-16.2-black)](https://nextjs.org)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.6-3178c6)](https://www.typescriptlang.org)
 
-> 📦 **v0.11.2 — now public on npm.** `npm install @bleizlabs/ui` — no auth, no `.npmrc`. [Release notes →](https://github.com/BleizLabs/bleizlabs-ui/releases/tag/v0.11.2)
+> 📦 **Public on npm.** `npm install @bleizlabs/ui` — no auth, no `.npmrc`. Current version shown in the `npm` badge above. [All releases →](https://github.com/BleizLabs/bleizlabs-ui/releases)
 
 ---
 

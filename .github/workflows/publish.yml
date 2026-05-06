@@ -24,8 +24,8 @@ jobs:
   publish:
     runs-on: ubuntu-latest
     permissions:
-      contents: read
-      id-token: write
+      contents: write   # create GitHub Release on publish success
+      id-token: write   # npm provenance (Trusted Publishing)
 
     steps:
       - name: Checkout
@@ -70,3 +70,38 @@ jobs:
 
       - name: Publish
         run: npm publish --provenance --access public
+
+      - name: Create GitHub Release (idempotent)
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          TAG="${{ github.event.inputs.tag || github.ref_name }}"
+          # Skip if a Release already exists for this tag (e.g. created
+          # manually before publish, or on retry of a failed publish run).
+          if gh release view "$TAG" -R "${{ github.repository }}" >/dev/null 2>&1; then
+            echo "Release $TAG already exists — leaving it untouched."
+            exit 0
+          fi
+          # Extract this version's section from CHANGELOG.md (between
+          # "## [<version>]" and the next "## [" heading). Falls back to
+          # auto-generated notes if the section is missing.
+          VERSION="${TAG#v}"
+          NOTES_FILE="$(mktemp)"
+          awk -v ver="$VERSION" '
+            $0 ~ "^## \\[" ver "\\]" { in_section=1; next }
+            in_section && /^## \[/   { in_section=0 }
+            in_section                { print }
+          ' CHANGELOG.md > "$NOTES_FILE"
+          if [ -s "$NOTES_FILE" ]; then
+            echo "Creating release $TAG with notes from CHANGELOG.md."
+            gh release create "$TAG" \
+              --title "$TAG" \
+              --notes-file "$NOTES_FILE" \
+              -R "${{ github.repository }}"
+          else
+            echo "CHANGELOG section for $VERSION empty — using auto-generated notes."
+            gh release create "$TAG" \
+              --title "$TAG" \
+              --generate-notes \
+              -R "${{ github.repository }}"
+          fi
