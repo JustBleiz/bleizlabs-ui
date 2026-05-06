@@ -7,6 +7,25 @@ and this project adheres to [Semantic Versioning 2.0](https://semver.org/spec/v2
 
 ## [Unreleased]
 
+## [0.11.3] — 2026-05
+
+### Fixed
+
+- **`useFloatingFocus` now passes `{ preventScroll: true }` to every
+  `.focus()` call** — both the initial-focus rAF on open and the
+  restore-focus rAF on close. Without this, a partially-clipped focus
+  target on open triggered the browser's `scroll-into-view-if-needed`,
+  firing a window scroll event that `useFloatingDismiss` `closeOnScroll`
+  consumers (notably `ContextMenu`) observed and immediately closed
+  the menu on, producing an open → close race. Surfaced as a flaky
+  CM-R10 ("position uses clientX/clientY") on CI Linux runners under
+  parallel-worker load. Floating consumers without `closeOnScroll`
+  are unaffected; the portal is positioned at correct viewport
+  coordinates already, so focus never needs to scroll to reveal it.
+  Affects `ContextMenu`, `DropdownMenu`, `Popover`, `HoverCard`,
+  `NavigationMenu`, `Select`, `Combobox` (all `useFloatingFocus`
+  consumers).
+
 ## [0.11.2] — 2026-05
 
 ### Changed
