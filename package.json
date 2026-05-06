@@ -70,7 +70,7 @@
     "test:smoke": "playwright test tests/smoke.spec.ts",
     "test:e2e": "playwright test components/",
     "test:headed": "playwright test --headed",
-    "prepublishOnly": "npm run typecheck && npm run lint && npm run check:barrel && npm run build:manifest && npm run check:manifest && npm run test:cli && npm run build:cli && npm run build"
+    "prepublishOnly": "npm run typecheck && npm run lint && npm run check:barrel && npm run build:manifest && npm run check:manifest && npm run build:cli && npm run test:cli && npm run build"
   },
   "peerDependencies": {
     "react": ">=19.0.0",
