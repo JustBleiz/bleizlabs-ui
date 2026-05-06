@@ -1,0 +1,1730 @@
+{
+  "schemaVersion": "1",
+  "libVersion": "0.10.0",
+  "generatedAt": "2026-05-06T07:01:53.617Z",
+  "categories": {
+    "layout": [
+      "Container",
+      "GridLayout",
+      "Inline",
+      "Section",
+      "Stack"
+    ],
+    "typography": [
+      "Anchor",
+      "Eyebrow",
+      "Heading",
+      "Text"
+    ],
+    "display": [
+      "AspectRatio",
+      "Avatar",
+      "Badge",
+      "Card",
+      "EdgeBar",
+      "IconBox",
+      "KpiValue",
+      "PercentValue",
+      "Reveal",
+      "Separator",
+      "Skeleton",
+      "Spinner",
+      "Table"
+    ],
+    "interactive": [
+      "Accordion",
+      "Button",
+      "ButtonGroup",
+      "Checkbox",
+      "Input",
+      "InputGroup",
+      "Label",
+      "MaskedInput",
+      "NumberInput",
+      "PasswordInput",
+      "PhoneInput",
+      "RadioGroup",
+      "Switch",
+      "TextLink",
+      "Textarea",
+      "Toggle",
+      "ToggleGroup"
+    ],
+    "feedback": [
+      "Alert",
+      "Empty",
+      "Progress"
+    ],
+    "specialized": [
+      "AnimatedCounter",
+      "AvailabilityBar",
+      "BarChart",
+      "Breadcrumb",
+      "Dot",
+      "Kbd",
+      "MetricBar",
+      "Pagination",
+      "UsageDonut"
+    ],
+    "molecules": [
+      "AccordionGroup",
+      "BackLink",
+      "BreakdownList",
+      "Chip",
+      "DataRow",
+      "DeadlineBadge",
+      "FileChip",
+      "IconButton",
+      "MetricTile",
+      "PageHeader",
+      "RevealStack",
+      "SectionDivider",
+      "SectionHeader",
+      "Timeline",
+      "ToggleGroupFilter"
+    ],
+    "presets": [
+      "ActionCard",
+      "AppShell",
+      "CollapsibleZoneCard",
+      "ContentCard",
+      "EntityCard",
+      "EntityHero",
+      "FormCard",
+      "IconHeaderCard",
+      "PairedCard",
+      "SidebarCard",
+      "SiteHeader",
+      "StatsCard",
+      "ZoneCard"
+    ],
+    "complex": [
+      "AlertDialog",
+      "Calendar",
+      "Carousel",
+      "Combobox",
+      "Command",
+      "ContextMenu",
+      "DatePicker",
+      "Dialog",
+      "Drawer",
+      "DropdownMenu",
+      "HoverCard",
+      "InputOTP",
+      "NavigationMenu",
+      "Popover",
+      "ScrollArea",
+      "Select",
+      "Sheet",
+      "Sidebar",
+      "Slider",
+      "Tabs",
+      "Toast",
+      "Tooltip"
+    ]
+  },
+  "components": [
+    {
+      "family": "Container",
+      "category": "layout",
+      "path": "layout/Container",
+      "exports": [
+        "Container"
+      ],
+      "types": [
+        "ContainerProps"
+      ],
+      "hooks": []
+    },
+    {
+      "family": "GridLayout",
+      "category": "layout",
+      "path": "layout/GridLayout",
+      "exports": [
+        "GridLayout"
+      ],
+      "types": [
+        "GridLayoutProps",
+        "GridLayoutResponsive"
+      ],
+      "hooks": []
+    },
+    {
+      "family": "Inline",
+      "category": "layout",
+      "path": "layout/Inline",
+      "exports": [
+        "Inline"
+      ],
+      "types": [
+        "InlineProps"
+      ],
+      "hooks": []
+    },
+    {
+      "family": "Section",
+      "category": "layout",
+      "path": "layout/Section",
+      "exports": [
+        "Section"
+      ],
+      "types": [
+        "SectionProps"
+      ],
+      "hooks": []
+    },
+    {
+      "family": "Stack",
+      "category": "layout",
+      "path": "layout/Stack",
+      "exports": [
+        "Stack"
+      ],
+      "types": [
+        "StackProps"
+      ],
+      "hooks": []
+    },
+    {
+      "family": "Anchor",
+      "category": "typography",
+      "path": "typography/Anchor",
+      "exports": [
+        "Anchor"
+      ],
+      "types": [
+        "AnchorProps"
+      ],
+      "hooks": []
+    },
+    {
+      "family": "Eyebrow",
+      "category": "typography",
+      "path": "typography/Eyebrow",
+      "exports": [
+        "Eyebrow"
+      ],
+      "types": [
+        "EyebrowProps",
+        "EyebrowTone"
+      ],
+      "hooks": []
+    },
+    {
+      "family": "Heading",
+      "category": "typography",
+      "path": "typography/Heading",
+      "exports": [
+        "Heading"
+      ],
+      "types": [
+        "HeadingLevel",
+        "HeadingProps",
+        "HeadingSize"
+      ],
+      "hooks": []
+    },
+    {
+      "family": "Text",
+      "category": "typography",
+      "path": "typography/Text",
+      "exports": [
+        "Text"
+      ],
+      "types": [
+        "TextProps",
+        "TextVariant"
+      ],
+      "hooks": []
+    },
+    {
+      "family": "AspectRatio",
+      "category": "display",
+      "path": "display/AspectRatio",
+      "exports": [
+        "AspectRatio"
+      ],
+      "types": [
+        "AspectRatioProps"
+      ],
+      "hooks": []
+    },
+    {
+      "family": "Avatar",
+      "category": "display",
+      "path": "display/Avatar",
+      "exports": [
+        "Avatar"
+      ],
+      "types": [
+        "AvatarProps",
+        "AvatarShape",
+        "AvatarSize",
+        "AvatarStatus"
+      ],
+      "hooks": []
+    },
+    {
+      "family": "Badge",
+      "category": "display",
+      "path": "display/Badge",
+      "exports": [
+        "Badge"
+      ],
+      "types": [
+        "BadgeColor",
+        "BadgeProps"
+      ],
+      "hooks": []
+    },
+    {
+      "family": "Card",
+      "category": "display",
+      "path": "display/Card",
+      "exports": [
+        "Card",
+        "CardBody",
+        "CardFooter",
+        "CardHeader",
+        "CardSection"
+      ],
+      "types": [
+        "CardAccentPosition",
+        "CardBodyProps",
+        "CardDirection",
+        "CardFooterProps",
+        "CardHeaderProps",
+        "CardProps",
+        "CardRadius",
+        "CardSectionProps",
+        "CardVariant"
+      ],
+      "hooks": []
+    },
+    {
+      "family": "EdgeBar",
+      "category": "display",
+      "path": "display/EdgeBar",
+      "exports": [
+        "EdgeBar"
+      ],
+      "types": [
+        "EdgeBarColor",
+        "EdgeBarPosition",
+        "EdgeBarProps",
+        "EdgeBarThickness"
+      ],
+      "hooks": []
+    },
+    {
+      "family": "IconBox",
+      "category": "display",
+      "path": "display/IconBox",
+      "exports": [
+        "IconBox"
+      ],
+      "types": [
+        "IconBoxProps",
+        "IconBoxSize",
+        "IconBoxVariant"
+      ],
+      "hooks": []
+    },
+    {
+      "family": "KpiValue",
+      "category": "display",
+      "path": "display/KpiValue",
+      "exports": [
+        "KpiValue",
+        "KpiValueAnimated"
+      ],
+      "types": [
+        "KpiTrendDirection",
+        "KpiValueAnimatedProps",
+        "KpiValueProps"
+      ],
+      "hooks": []
+    },
+    {
+      "family": "PercentValue",
+      "category": "display",
+      "path": "display/PercentValue",
+      "exports": [
+        "PercentValue",
+        "PercentValueAnimated"
+      ],
+      "types": [
+        "PercentValueAnimatedProps",
+        "PercentValueProps",
+        "PercentValueTone"
+      ],
+      "hooks": []
+    },
+    {
+      "family": "Reveal",
+      "category": "display",
+      "path": "display/Reveal",
+      "exports": [
+        "Reveal"
+      ],
+      "types": [
+        "RevealProps",
+        "RevealTag"
+      ],
+      "hooks": []
+    },
+    {
+      "family": "Separator",
+      "category": "display",
+      "path": "display/Separator",
+      "exports": [
+        "Separator"
+      ],
+      "types": [
+        "SeparatorOrientation",
+        "SeparatorProps",
+        "SeparatorVariant"
+      ],
+      "hooks": []
+    },
+    {
+      "family": "Skeleton",
+      "category": "display",
+      "path": "display/Skeleton",
+      "exports": [
+        "Skeleton"
+      ],
+      "types": [
+        "SkeletonAnimation",
+        "SkeletonProps",
+        "SkeletonVariant"
+      ],
+      "hooks": []
+    },
+    {
+      "family": "Spinner",
+      "category": "display",
+      "path": "display/Spinner",
+      "exports": [
+        "Spinner"
+      ],
+      "types": [
+        "SpinnerColor",
+        "SpinnerProps",
+        "SpinnerSize"
+      ],
+      "hooks": []
+    },
+    {
+      "family": "Table",
+      "category": "display",
+      "path": "display/Table",
+      "exports": [
+        "Table",
+        "TableBody",
+        "TableCell",
+        "TableFooter",
+        "TableHeader",
+        "TableRow"
+      ],
+      "types": [
+        "TableBodyProps",
+        "TableCellAlign",
+        "TableCellProps",
+        "TableFooterProps",
+        "TableHeaderProps",
+        "TableProps",
+        "TableRowProps"
+      ],
+      "hooks": []
+    },
+    {
+      "family": "Accordion",
+      "category": "interactive",
+      "path": "interactive/Accordion",
+      "exports": [
+        "Accordion"
+      ],
+      "types": [
+        "AccordionProps"
+      ],
+      "hooks": []
+    },
+    {
+      "family": "Button",
+      "category": "interactive",
+      "path": "interactive/Button",
+      "exports": [
+        "Button"
+      ],
+      "types": [
+        "ButtonProps",
+        "ButtonSize",
+        "ButtonVariant"
+      ],
+      "hooks": []
+    },
+    {
+      "family": "ButtonGroup",
+      "category": "interactive",
+      "path": "interactive/ButtonGroup",
+      "exports": [
+        "ButtonGroup"
+      ],
+      "types": [
+        "ButtonGroupOrientation",
+        "ButtonGroupProps"
+      ],
+      "hooks": []
+    },
+    {
+      "family": "Checkbox",
+      "category": "interactive",
+      "path": "interactive/Checkbox",
+      "exports": [
+        "Checkbox"
+      ],
+      "types": [
+        "CheckboxProps"
+      ],
+      "hooks": []
+    },
+    {
+      "family": "Input",
+      "category": "interactive",
+      "path": "interactive/Input",
+      "exports": [
+        "Input"
+      ],
+      "types": [
+        "InputProps",
+        "InputType"
+      ],
+      "hooks": []
+    },
+    {
+      "family": "InputGroup",
+      "category": "interactive",
+      "path": "interactive/InputGroup",
+      "exports": [
+        "InputGroup",
+        "InputGroupText"
+      ],
+      "types": [
+        "InputGroupProps",
+        "InputGroupTextProps"
+      ],
+      "hooks": []
+    },
+    {
+      "family": "Label",
+      "category": "interactive",
+      "path": "interactive/Label",
+      "exports": [
+        "Label"
+      ],
+      "types": [
+        "LabelProps"
+      ],
+      "hooks": []
+    },
+    {
+      "family": "MaskedInput",
+      "category": "interactive",
+      "path": "interactive/MaskedInput",
+      "exports": [
+        "MASK_PRESETS",
+        "MaskedInput",
+        "applyMask",
+        "countPlaceholders",
+        "unmask"
+      ],
+      "types": [
+        "MaskPreset",
+        "MaskedInputProps"
+      ],
+      "hooks": []
+    },
+    {
+      "family": "NumberInput",
+      "category": "interactive",
+      "path": "interactive/NumberInput",
+      "exports": [
+        "NumberInput"
+      ],
+      "types": [
+        "NumberInputProps"
+      ],
+      "hooks": []
+    },
+    {
+      "family": "PasswordInput",
+      "category": "interactive",
+      "path": "interactive/PasswordInput",
+      "exports": [
+        "PasswordInput"
+      ],
+      "types": [
+        "PasswordInputProps"
+      ],
+      "hooks": []
+    },
+    {
+      "family": "PhoneInput",
+      "category": "interactive",
+      "path": "interactive/PhoneInput",
+      "exports": [
+        "PhoneInput"
+      ],
+      "types": [
+        "PhoneInputProps",
+        "PhonePreset"
+      ],
+      "hooks": []
+    },
+    {
+      "family": "RadioGroup",
+      "category": "interactive",
+      "path": "interactive/RadioGroup",
+      "exports": [
+        "RadioGroup",
+        "RadioGroupItem"
+      ],
+      "types": [
+        "RadioGroupItemProps",
+        "RadioGroupProps"
+      ],
+      "hooks": [
+        "useRadioGroupContext"
+      ]
+    },
+    {
+      "family": "Switch",
+      "category": "interactive",
+      "path": "interactive/Switch",
+      "exports": [
+        "Switch"
+      ],
+      "types": [
+        "SwitchProps",
+        "SwitchSize"
+      ],
+      "hooks": []
+    },
+    {
+      "family": "Textarea",
+      "category": "interactive",
+      "path": "interactive/Textarea",
+      "exports": [
+        "Textarea"
+      ],
+      "types": [
+        "TextareaProps",
+        "TextareaResize"
+      ],
+      "hooks": []
+    },
+    {
+      "family": "TextLink",
+      "category": "interactive",
+      "path": "interactive/TextLink",
+      "exports": [
+        "TextLink"
+      ],
+      "types": [
+        "TextLinkProps"
+      ],
+      "hooks": []
+    },
+    {
+      "family": "Toggle",
+      "category": "interactive",
+      "path": "interactive/Toggle",
+      "exports": [
+        "Toggle"
+      ],
+      "types": [
+        "ToggleProps",
+        "ToggleSize"
+      ],
+      "hooks": []
+    },
+    {
+      "family": "ToggleGroup",
+      "category": "interactive",
+      "path": "interactive/ToggleGroup",
+      "exports": [
+        "ToggleGroup"
+      ],
+      "types": [
+        "ToggleGroupOrientation",
+        "ToggleGroupProps"
+      ],
+      "hooks": []
+    },
+    {
+      "family": "Alert",
+      "category": "feedback",
+      "path": "feedback/Alert",
+      "exports": [
+        "Alert"
+      ],
+      "types": [
+        "AlertProps",
+        "AlertVariant"
+      ],
+      "hooks": []
+    },
+    {
+      "family": "Empty",
+      "category": "feedback",
+      "path": "feedback/Empty",
+      "exports": [
+        "Empty"
+      ],
+      "types": [
+        "EmptyProps"
+      ],
+      "hooks": []
+    },
+    {
+      "family": "Progress",
+      "category": "feedback",
+      "path": "feedback/Progress",
+      "exports": [
+        "Progress"
+      ],
+      "types": [
+        "ProgressProps",
+        "ProgressStageDisplayMode"
+      ],
+      "hooks": []
+    },
+    {
+      "family": "AnimatedCounter",
+      "category": "specialized",
+      "path": "specialized/AnimatedCounter",
+      "exports": [
+        "AnimatedCounter"
+      ],
+      "types": [
+        "AnimatedCounterProps"
+      ],
+      "hooks": []
+    },
+    {
+      "family": "AvailabilityBar",
+      "category": "specialized",
+      "path": "specialized/AvailabilityBar",
+      "exports": [
+        "AvailabilityBar"
+      ],
+      "types": [
+        "AvailabilityBarProps",
+        "AvailabilitySegment",
+        "AvailabilityStatus"
+      ],
+      "hooks": []
+    },
+    {
+      "family": "BarChart",
+      "category": "specialized",
+      "path": "specialized/BarChart",
+      "exports": [
+        "BarChart"
+      ],
+      "types": [
+        "BarChartDatum",
+        "BarChartProps",
+        "BarChartTone"
+      ],
+      "hooks": []
+    },
+    {
+      "family": "Breadcrumb",
+      "category": "specialized",
+      "path": "specialized/Breadcrumb",
+      "exports": [
+        "Breadcrumb"
+      ],
+      "types": [
+        "BreadcrumbItem",
+        "BreadcrumbProps"
+      ],
+      "hooks": []
+    },
+    {
+      "family": "Dot",
+      "category": "specialized",
+      "path": "specialized/Dot",
+      "exports": [
+        "Dot"
+      ],
+      "types": [
+        "DotColor",
+        "DotProps",
+        "DotSize"
+      ],
+      "hooks": []
+    },
+    {
+      "family": "Kbd",
+      "category": "specialized",
+      "path": "specialized/Kbd",
+      "exports": [
+        "Kbd"
+      ],
+      "types": [
+        "KbdProps",
+        "KbdSize"
+      ],
+      "hooks": []
+    },
+    {
+      "family": "MetricBar",
+      "category": "specialized",
+      "path": "specialized/MetricBar",
+      "exports": [
+        "MetricBar"
+      ],
+      "types": [
+        "MetricBarProps"
+      ],
+      "hooks": []
+    },
+    {
+      "family": "Pagination",
+      "category": "specialized",
+      "path": "specialized/Pagination",
+      "exports": [
+        "Pagination"
+      ],
+      "types": [
+        "PaginationProps",
+        "PaginationVariant"
+      ],
+      "hooks": []
+    },
+    {
+      "family": "UsageDonut",
+      "category": "specialized",
+      "path": "specialized/UsageDonut",
+      "exports": [
+        "UsageDonut"
+      ],
+      "types": [
+        "UsageDonutProps",
+        "UsageDonutSegment",
+        "UsageDonutSize"
+      ],
+      "hooks": []
+    },
+    {
+      "family": "AccordionGroup",
+      "category": "molecules",
+      "path": "molecules/AccordionGroup",
+      "exports": [
+        "AccordionGroup"
+      ],
+      "types": [
+        "AccordionGroupMode",
+        "AccordionGroupProps"
+      ],
+      "hooks": []
+    },
+    {
+      "family": "BackLink",
+      "category": "molecules",
+      "path": "molecules/BackLink",
+      "exports": [
+        "BackLink"
+      ],
+      "types": [
+        "BackLinkProps"
+      ],
+      "hooks": []
+    },
+    {
+      "family": "BreakdownList",
+      "category": "molecules",
+      "path": "molecules/BreakdownList",
+      "exports": [
+        "BreakdownList"
+      ],
+      "types": [
+        "BreakdownListItem",
+        "BreakdownListProps",
+        "BreakdownListTone"
+      ],
+      "hooks": []
+    },
+    {
+      "family": "Chip",
+      "category": "molecules",
+      "path": "molecules/Chip",
+      "exports": [
+        "Chip"
+      ],
+      "types": [
+        "ChipDotColor",
+        "ChipProps",
+        "ChipSize",
+        "ChipTone"
+      ],
+      "hooks": []
+    },
+    {
+      "family": "DataRow",
+      "category": "molecules",
+      "path": "molecules/DataRow",
+      "exports": [
+        "DataRow"
+      ],
+      "types": [
+        "DataRowProps"
+      ],
+      "hooks": []
+    },
+    {
+      "family": "DeadlineBadge",
+      "category": "molecules",
+      "path": "molecules/DeadlineBadge",
+      "exports": [
+        "DeadlineBadge"
+      ],
+      "types": [
+        "DeadlineBadgeProps"
+      ],
+      "hooks": []
+    },
+    {
+      "family": "FileChip",
+      "category": "molecules",
+      "path": "molecules/FileChip",
+      "exports": [
+        "FileChip"
+      ],
+      "types": [
+        "FileChipProps",
+        "FileChipVariant"
+      ],
+      "hooks": []
+    },
+    {
+      "family": "IconButton",
+      "category": "molecules",
+      "path": "molecules/IconButton",
+      "exports": [
+        "IconButton"
+      ],
+      "types": [
+        "IconButtonProps"
+      ],
+      "hooks": []
+    },
+    {
+      "family": "MetricTile",
+      "category": "molecules",
+      "path": "molecules/MetricTile",
+      "exports": [
+        "MetricTile"
+      ],
+      "types": [
+        "MetricTileDensity",
+        "MetricTileProps",
+        "MetricTileTone"
+      ],
+      "hooks": []
+    },
+    {
+      "family": "PageHeader",
+      "category": "molecules",
+      "path": "molecules/PageHeader",
+      "exports": [
+        "PageHeader"
+      ],
+      "types": [
+        "PageHeaderBadge",
+        "PageHeaderLevel",
+        "PageHeaderProps"
+      ],
+      "hooks": []
+    },
+    {
+      "family": "RevealStack",
+      "category": "molecules",
+      "path": "molecules/RevealStack",
+      "exports": [
+        "RevealStack"
+      ],
+      "types": [
+        "RevealStackProps"
+      ],
+      "hooks": []
+    },
+    {
+      "family": "SectionDivider",
+      "category": "molecules",
+      "path": "molecules/SectionDivider",
+      "exports": [
+        "SectionDivider"
+      ],
+      "types": [
+        "SectionDividerAlign",
+        "SectionDividerProps"
+      ],
+      "hooks": []
+    },
+    {
+      "family": "SectionHeader",
+      "category": "molecules",
+      "path": "molecules/SectionHeader",
+      "exports": [
+        "SectionHeader"
+      ],
+      "types": [
+        "SectionHeaderProps"
+      ],
+      "hooks": []
+    },
+    {
+      "family": "Timeline",
+      "category": "molecules",
+      "path": "molecules/Timeline",
+      "exports": [
+        "Timeline",
+        "TimelineItem",
+        "TimelineMarker"
+      ],
+      "types": [
+        "TimelineItemProps",
+        "TimelineMarkerProps",
+        "TimelineMarkerTint",
+        "TimelineProps"
+      ],
+      "hooks": []
+    },
+    {
+      "family": "ToggleGroupFilter",
+      "category": "molecules",
+      "path": "molecules/ToggleGroupFilter",
+      "exports": [
+        "ToggleGroupFilter"
+      ],
+      "types": [
+        "ToggleGroupFilterOption",
+        "ToggleGroupFilterProps"
+      ],
+      "hooks": []
+    },
+    {
+      "family": "ActionCard",
+      "category": "presets",
+      "path": "presets/ActionCard",
+      "exports": [
+        "ActionCard"
+      ],
+      "types": [
+        "ActionCardProps",
+        "ActionCardSeverity"
+      ],
+      "hooks": []
+    },
+    {
+      "family": "AppShell",
+      "category": "presets",
+      "path": "presets/AppShell",
+      "exports": [
+        "AppShell"
+      ],
+      "types": [
+        "AppShellProps",
+        "AppShellProviderConfig"
+      ],
+      "hooks": []
+    },
+    {
+      "family": "CollapsibleZoneCard",
+      "category": "presets",
+      "path": "presets/CollapsibleZoneCard",
+      "exports": [
+        "CollapsibleZoneCard"
+      ],
+      "types": [
+        "CollapsibleZoneCardProps",
+        "CollapsibleZoneCardSummaryChip",
+        "ZoneCardDensity",
+        "ZoneCardProps",
+        "ZoneCardTone"
+      ],
+      "hooks": []
+    },
+    {
+      "family": "ContentCard",
+      "category": "presets",
+      "path": "presets/ContentCard",
+      "exports": [
+        "ContentCard"
+      ],
+      "types": [
+        "ContentCardProps"
+      ],
+      "hooks": []
+    },
+    {
+      "family": "EntityCard",
+      "category": "presets",
+      "path": "presets/EntityCard",
+      "exports": [
+        "EntityCard"
+      ],
+      "types": [
+        "EntityCardAccentPosition",
+        "EntityCardBadge",
+        "EntityCardDensity",
+        "EntityCardMetaItem",
+        "EntityCardProps"
+      ],
+      "hooks": []
+    },
+    {
+      "family": "EntityHero",
+      "category": "presets",
+      "path": "presets/EntityHero",
+      "exports": [
+        "EntityHero",
+        "EntityHero as DetailPageHero"
+      ],
+      "types": [
+        "EntityHeroMetaItem",
+        "EntityHeroMetaItem as DetailPageHeroMetaItem",
+        "EntityHeroProps",
+        "EntityHeroProps as DetailPageHeroProps"
+      ],
+      "hooks": []
+    },
+    {
+      "family": "FormCard",
+      "category": "presets",
+      "path": "presets/FormCard",
+      "exports": [
+        "FormCard"
+      ],
+      "types": [
+        "FormCardProps"
+      ],
+      "hooks": []
+    },
+    {
+      "family": "IconHeaderCard",
+      "category": "presets",
+      "path": "presets/IconHeaderCard",
+      "exports": [
+        "IconHeaderCard"
+      ],
+      "types": [
+        "IconHeaderCardFooterSection",
+        "IconHeaderCardProps"
+      ],
+      "hooks": []
+    },
+    {
+      "family": "PairedCard",
+      "category": "presets",
+      "path": "presets/PairedCard",
+      "exports": [
+        "PairedCard"
+      ],
+      "types": [
+        "PairedCardProps",
+        "PairedCardVariant"
+      ],
+      "hooks": []
+    },
+    {
+      "family": "SidebarCard",
+      "category": "presets",
+      "path": "presets/SidebarCard",
+      "exports": [
+        "SidebarCard"
+      ],
+      "types": [
+        "SidebarCardProps"
+      ],
+      "hooks": []
+    },
+    {
+      "family": "SiteHeader",
+      "category": "presets",
+      "path": "presets/SiteHeader",
+      "exports": [
+        "SiteHeader",
+        "SiteHeaderActions",
+        "SiteHeaderBrand",
+        "SiteHeaderMobileToggle",
+        "SiteHeaderNav"
+      ],
+      "types": [
+        "SiteHeaderActionsProps",
+        "SiteHeaderBrandProps",
+        "SiteHeaderContainerSize",
+        "SiteHeaderMobileToggleProps",
+        "SiteHeaderNavProps",
+        "SiteHeaderPosition",
+        "SiteHeaderProps",
+        "SiteHeaderSize",
+        "SiteHeaderVariant"
+      ],
+      "hooks": []
+    },
+    {
+      "family": "StatsCard",
+      "category": "presets",
+      "path": "presets/StatsCard",
+      "exports": [
+        "StatsCard"
+      ],
+      "types": [
+        "StatsCardLayout",
+        "StatsCardProps"
+      ],
+      "hooks": []
+    },
+    {
+      "family": "ZoneCard",
+      "category": "presets",
+      "path": "presets/ZoneCard",
+      "exports": [
+        "ZoneCard"
+      ],
+      "types": [
+        "ZoneCardDensity",
+        "ZoneCardProps",
+        "ZoneCardTone"
+      ],
+      "hooks": []
+    },
+    {
+      "family": "AlertDialog",
+      "category": "complex",
+      "path": "complex/AlertDialog",
+      "exports": [
+        "AlertDialog"
+      ],
+      "types": [
+        "AlertDialogProps",
+        "AlertDialogSeverity",
+        "AlertDialogSize"
+      ],
+      "hooks": []
+    },
+    {
+      "family": "Calendar",
+      "category": "complex",
+      "path": "complex/Calendar",
+      "exports": [
+        "Calendar",
+        "CalendarCell",
+        "CalendarGrid",
+        "CalendarGridBody",
+        "CalendarGridHead",
+        "CalendarHeader"
+      ],
+      "types": [
+        "CalendarCellProps",
+        "CalendarDir",
+        "CalendarDisabled",
+        "CalendarGridBodyProps",
+        "CalendarGridHeadProps",
+        "CalendarGridProps",
+        "CalendarHeaderProps",
+        "CalendarProps",
+        "CalendarWeekStart"
+      ],
+      "hooks": []
+    },
+    {
+      "family": "Carousel",
+      "category": "complex",
+      "path": "complex/Carousel",
+      "exports": [
+        "Carousel",
+        "CarouselNext",
+        "CarouselPause",
+        "CarouselPrev",
+        "CarouselSlide",
+        "CarouselViewport"
+      ],
+      "types": [
+        "CarouselDir",
+        "CarouselNextProps",
+        "CarouselPauseProps",
+        "CarouselPrevProps",
+        "CarouselProps",
+        "CarouselSlideProps",
+        "CarouselViewportProps"
+      ],
+      "hooks": []
+    },
+    {
+      "family": "Combobox",
+      "category": "complex",
+      "path": "complex/Combobox",
+      "exports": [
+        "Combobox",
+        "ComboboxContent",
+        "ComboboxEmpty",
+        "ComboboxGroup",
+        "ComboboxInput",
+        "ComboboxItem",
+        "ComboboxLabel",
+        "ComboboxSeparator"
+      ],
+      "types": [
+        "ComboboxContentProps",
+        "ComboboxEmptyProps",
+        "ComboboxFilter",
+        "ComboboxGroupProps",
+        "ComboboxInputProps",
+        "ComboboxItemProps",
+        "ComboboxItemRecord",
+        "ComboboxLabelProps",
+        "ComboboxPlacement",
+        "ComboboxProps",
+        "ComboboxSeparatorProps"
+      ],
+      "hooks": []
+    },
+    {
+      "family": "Command",
+      "category": "complex",
+      "path": "complex/Command",
+      "exports": [
+        "Command",
+        "CommandEmpty",
+        "CommandGroup",
+        "CommandInput",
+        "CommandItem",
+        "CommandList",
+        "CommandLoading",
+        "CommandSeparator",
+        "CommandShortcut"
+      ],
+      "types": [
+        "CommandEmptyProps",
+        "CommandFilter",
+        "CommandGroupProps",
+        "CommandInputProps",
+        "CommandItemProps",
+        "CommandItemRecord",
+        "CommandListProps",
+        "CommandLoadingProps",
+        "CommandProps",
+        "CommandSeparatorProps",
+        "CommandShortcutProps"
+      ],
+      "hooks": [
+        "useCommandShortcut"
+      ]
+    },
+    {
+      "family": "ContextMenu",
+      "category": "complex",
+      "path": "complex/ContextMenu",
+      "exports": [
+        "ContextMenu",
+        "ContextMenuContent",
+        "ContextMenuGroup",
+        "ContextMenuItem",
+        "ContextMenuLabel",
+        "ContextMenuSeparator",
+        "ContextMenuTrigger"
+      ],
+      "types": [
+        "ContextMenuContentProps",
+        "ContextMenuGroupProps",
+        "ContextMenuItemProps",
+        "ContextMenuLabelProps",
+        "ContextMenuProps",
+        "ContextMenuSeparatorProps",
+        "ContextMenuTriggerProps"
+      ],
+      "hooks": []
+    },
+    {
+      "family": "DatePicker",
+      "category": "complex",
+      "path": "complex/DatePicker",
+      "exports": [
+        "DatePicker",
+        "DatePickerContent",
+        "DatePickerInput"
+      ],
+      "types": [
+        "DatePickerContentProps",
+        "DatePickerInputProps",
+        "DatePickerProps"
+      ],
+      "hooks": []
+    },
+    {
+      "family": "Dialog",
+      "category": "complex",
+      "path": "complex/Dialog",
+      "exports": [
+        "Dialog",
+        "escapeStack"
+      ],
+      "types": [
+        "DialogProps",
+        "DialogSize"
+      ],
+      "hooks": [
+        "useFocusTrap"
+      ]
+    },
+    {
+      "family": "Drawer",
+      "category": "complex",
+      "path": "complex/Drawer",
+      "exports": [
+        "Drawer"
+      ],
+      "types": [
+        "DrawerProps",
+        "DrawerSize"
+      ],
+      "hooks": []
+    },
+    {
+      "family": "DropdownMenu",
+      "category": "complex",
+      "path": "complex/DropdownMenu",
+      "exports": [
+        "DropdownMenu",
+        "DropdownMenuContent",
+        "DropdownMenuGroup",
+        "DropdownMenuItem",
+        "DropdownMenuLabel",
+        "DropdownMenuSeparator",
+        "DropdownMenuTrigger"
+      ],
+      "types": [
+        "DropdownMenuContentProps",
+        "DropdownMenuGroupProps",
+        "DropdownMenuItemProps",
+        "DropdownMenuLabelProps",
+        "DropdownMenuPlacement",
+        "DropdownMenuProps",
+        "DropdownMenuSeparatorProps",
+        "DropdownMenuTriggerProps"
+      ],
+      "hooks": []
+    },
+    {
+      "family": "HoverCard",
+      "category": "complex",
+      "path": "complex/HoverCard",
+      "exports": [
+        "HoverCard",
+        "HoverCardContent",
+        "HoverCardProvider",
+        "HoverCardTrigger"
+      ],
+      "types": [
+        "HoverCardContentProps",
+        "HoverCardPlacement",
+        "HoverCardProps",
+        "HoverCardProviderProps",
+        "HoverCardTriggerProps"
+      ],
+      "hooks": []
+    },
+    {
+      "family": "InputOTP",
+      "category": "complex",
+      "path": "complex/InputOTP",
+      "exports": [
+        "InputOTP",
+        "InputOTPGroup",
+        "InputOTPSeparator",
+        "InputOTPSlot"
+      ],
+      "types": [
+        "InputOTPGroupProps",
+        "InputOTPPattern",
+        "InputOTPProps",
+        "InputOTPSeparatorProps",
+        "InputOTPSlotProps"
+      ],
+      "hooks": []
+    },
+    {
+      "family": "NavigationMenu",
+      "category": "complex",
+      "path": "complex/NavigationMenu",
+      "exports": [
+        "NavigationMenu",
+        "NavigationMenuContent",
+        "NavigationMenuItem",
+        "NavigationMenuLink",
+        "NavigationMenuList",
+        "NavigationMenuProvider",
+        "NavigationMenuTrigger"
+      ],
+      "types": [
+        "NavigationMenuContentProps",
+        "NavigationMenuItemProps",
+        "NavigationMenuLinkProps",
+        "NavigationMenuListProps",
+        "NavigationMenuOrientation",
+        "NavigationMenuPlacement",
+        "NavigationMenuProps",
+        "NavigationMenuProviderProps",
+        "NavigationMenuTriggerProps"
+      ],
+      "hooks": []
+    },
+    {
+      "family": "Popover",
+      "category": "complex",
+      "path": "complex/Popover",
+      "exports": [
+        "Popover",
+        "PopoverContent",
+        "PopoverTrigger"
+      ],
+      "types": [
+        "PopoverContentProps",
+        "PopoverPlacement",
+        "PopoverProps",
+        "PopoverTriggerProps"
+      ],
+      "hooks": []
+    },
+    {
+      "family": "ScrollArea",
+      "category": "complex",
+      "path": "complex/ScrollArea",
+      "exports": [
+        "ScrollArea",
+        "ScrollAreaCorner",
+        "ScrollAreaScrollbar",
+        "ScrollAreaThumb",
+        "ScrollAreaViewport"
+      ],
+      "types": [
+        "ScrollAreaCornerProps",
+        "ScrollAreaDir",
+        "ScrollAreaOrientation",
+        "ScrollAreaProps",
+        "ScrollAreaScrollbarProps",
+        "ScrollAreaThumbProps",
+        "ScrollAreaViewportProps",
+        "ScrollAreaVisibility"
+      ],
+      "hooks": []
+    },
+    {
+      "family": "Select",
+      "category": "complex",
+      "path": "complex/Select",
+      "exports": [
+        "Select",
+        "SelectContent",
+        "SelectGroup",
+        "SelectItem",
+        "SelectLabel",
+        "SelectSeparator",
+        "SelectTrigger",
+        "SelectValue"
+      ],
+      "types": [
+        "SelectContentProps",
+        "SelectGroupProps",
+        "SelectItemProps",
+        "SelectLabelProps",
+        "SelectProps",
+        "SelectSeparatorProps",
+        "SelectTriggerProps",
+        "SelectValueProps"
+      ],
+      "hooks": []
+    },
+    {
+      "family": "Sheet",
+      "category": "complex",
+      "path": "complex/Sheet",
+      "exports": [
+        "Sheet"
+      ],
+      "types": [
+        "SheetProps",
+        "SheetSide",
+        "SheetSize"
+      ],
+      "hooks": []
+    },
+    {
+      "family": "Sidebar",
+      "category": "complex",
+      "path": "complex/Sidebar",
+      "exports": [
+        "Sidebar",
+        "SidebarContent",
+        "SidebarFooter",
+        "SidebarGroup",
+        "SidebarHeader",
+        "SidebarItem",
+        "SidebarProvider",
+        "SidebarSeparator",
+        "SidebarTrigger"
+      ],
+      "types": [
+        "SidebarCollapseMode",
+        "SidebarContentProps",
+        "SidebarFooterProps",
+        "SidebarGroupProps",
+        "SidebarHeaderProps",
+        "SidebarItemProps",
+        "SidebarProps",
+        "SidebarProviderProps",
+        "SidebarSeparatorProps",
+        "SidebarSide",
+        "SidebarTriggerProps",
+        "UseSidebarReturn"
+      ],
+      "hooks": [
+        "useSidebar"
+      ]
+    },
+    {
+      "family": "Slider",
+      "category": "complex",
+      "path": "complex/Slider",
+      "exports": [
+        "Slider",
+        "SliderRange",
+        "SliderThumb",
+        "SliderTrack"
+      ],
+      "types": [
+        "SliderDir",
+        "SliderOrientation",
+        "SliderProps",
+        "SliderRangeProps",
+        "SliderThumbProps",
+        "SliderTrackProps"
+      ],
+      "hooks": []
+    },
+    {
+      "family": "Tabs",
+      "category": "complex",
+      "path": "complex/Tabs",
+      "exports": [
+        "Tabs",
+        "TabsContent",
+        "TabsList",
+        "TabsTrigger"
+      ],
+      "types": [
+        "TabsActivationMode",
+        "TabsContentProps",
+        "TabsDir",
+        "TabsListProps",
+        "TabsListVariant",
+        "TabsOrientation",
+        "TabsProps",
+        "TabsTriggerProps"
+      ],
+      "hooks": []
+    },
+    {
+      "family": "Toast",
+      "category": "complex",
+      "path": "complex/Toast",
+      "exports": [
+        "Toaster",
+        "pauseAllTimers",
+        "resumeAllTimers",
+        "toast"
+      ],
+      "types": [
+        "ToastAction",
+        "ToastItem",
+        "ToastOptions",
+        "ToastVariant",
+        "ToasterDir",
+        "ToasterPosition",
+        "ToasterProps"
+      ],
+      "hooks": [
+        "useToastQueue"
+      ]
+    },
+    {
+      "family": "Tooltip",
+      "category": "complex",
+      "path": "complex/Tooltip",
+      "exports": [
+        "Tooltip",
+        "TooltipProvider"
+      ],
+      "types": [
+        "TooltipPlacement",
+        "TooltipProps",
+        "TooltipProviderProps"
+      ],
+      "hooks": []
+    }
+  ],
+  "utilities": [
+    {
+      "family": "cn",
+      "category": "utils",
+      "path": "utils/cn",
+      "exports": [
+        "cn"
+      ],
+      "types": [
+        "ClassValue"
+      ],
+      "hooks": []
+    },
+    {
+      "family": "mergeRefs",
+      "category": "utils",
+      "path": "utils/mergeRefs",
+      "exports": [
+        "mergeRefs"
+      ],
+      "types": [],
+      "hooks": []
+    },
+    {
+      "family": "Slot",
+      "category": "utils",
+      "path": "utils/Slot",
+      "exports": [
+        "Slot"
+      ],
+      "types": [
+        "SlotProps"
+      ],
+      "hooks": []
+    }
+  ],
+  "typesOnly": [
+    {
+      "family": "spacing",
+      "category": "types",
+      "path": "types/spacing",
+      "exports": [],
+      "types": [
+        "SpaceIndex"
+      ],
+      "hooks": []
+    }
+  ]
+}

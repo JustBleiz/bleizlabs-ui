@@ -1,0 +1,17 @@
+.root {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-3) var(--space-4);
+  background: var(--input-addon-bg);
+  border: 1px solid var(--input-addon-border);
+  border-radius: var(--radius-input);
+  color: var(--input-addon-text);
+  font-family: var(--font-secondary);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-medium);
+  line-height: var(--line-height-normal);
+  white-space: nowrap;
+  -webkit-user-select: none;
+  user-select: none;
+}

@@ -1,0 +1,235 @@
+// ============================================================================
+// BASE
+// ============================================================================
+
+.root {
+  display: block;
+  width: 100%;
+  color: var(--color-text-primary);
+}
+
+// ============================================================================
+// STAGES MODE — horizontal pill strip
+// ============================================================================
+
+.modeStages {
+  font-size: var(--font-size-xs);
+}
+
+.stageList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.stageItem {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: var(--space-1) var(--space-2);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-full);
+  background: var(--color-surface-raised);
+  color: var(--color-text-secondary);
+  font-weight: var(--font-weight-medium);
+  line-height: 1;
+  transition:
+    background var(--duration-normal) var(--easing-default),
+    border-color var(--duration-normal) var(--easing-default),
+    color var(--duration-normal) var(--easing-default);
+}
+
+.stageIndex {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.5em;
+  min-height: 1.5em;
+  // Symmetric padding so the numeric badge reads as a proper circular
+  // pill — the earlier `0 var(--space-1)` only padded horizontally so
+  // numbers sat flush against the top/bottom edge of the badge.
+  padding: var(--space-1);
+  border-radius: var(--radius-full);
+  background: var(--color-surface);
+  color: inherit;
+  font-weight: var(--font-weight-semibold);
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+}
+
+.stageLabel {
+  text-transform: uppercase;
+  letter-spacing: var(--letter-spacing-wider);
+}
+
+.stagePending {
+  // default look — uses base .stageItem styling
+}
+
+.stageCompleted {
+  border-color: var(--color-brand-subtle);
+  background: var(--color-brand-subtle);
+  color: var(--color-brand-strong);
+}
+
+.stageCompleted .stageIndex {
+  background: var(--color-brand);
+  color: var(--color-surface);
+}
+
+.stageActive {
+  border-color: var(--color-brand);
+  background: var(--color-brand);
+  color: var(--color-surface);
+}
+
+.stageActive .stageIndex {
+  background: var(--color-surface);
+  color: var(--color-brand-strong);
+}
+
+// ============================================================================
+// STAGES MODE — track display variant (linear segmented bar with labels below)
+// ============================================================================
+// `displayMode="track"` renders the same `<ol>` structure as pills mode but
+// styles each `<li>` as a flat horizontal segment (equal-width, edge-to-edge).
+// Numbered index is hidden — the colored fill of each segment carries the
+// done/active/pending status, and labels render below the bar in a stacked
+// layout. Best for project pipelines (4-8 stages) where the overall arc is
+// more important than individual numbered milestones.
+
+.modeStagesTrack {
+  font-size: var(--font-size-xs);
+
+  .stageList {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 2px; // 1px hairline between segments — keeps boundary visible
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+  }
+
+  .stageItem {
+    flex: 1 1 0;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--space-1);
+    padding: 0;
+    border: none;
+    border-radius: 0;
+    background: transparent;
+    color: var(--color-text-secondary);
+    font-weight: var(--font-weight-medium);
+    line-height: 1;
+    transition:
+      background var(--duration-normal) var(--easing-default),
+      color var(--duration-normal) var(--easing-default);
+  }
+
+  .stageIndex {
+    // Numeric badge is hidden in track mode — segment fill carries status.
+    display: none;
+  }
+
+  .stageLabel {
+    display: block;
+    padding: var(--space-1) var(--space-2);
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: var(--letter-spacing-wider);
+  }
+
+  // Each segment is a colored bar above its label — implemented via ::before
+  // so the label text remains in normal flow and gets centered separately.
+  .stageItem::before {
+    content: '';
+    display: block;
+    width: 100%;
+    height: var(--space-2);
+    background: var(--color-surface-raised);
+    transition: background var(--duration-normal) var(--easing-default);
+  }
+
+  .stageCompleted {
+    color: var(--color-brand-strong);
+  }
+
+  .stageCompleted::before {
+    background: var(--color-brand-subtle);
+  }
+
+  .stageActive {
+    color: var(--color-text-primary);
+  }
+
+  .stageActive::before {
+    background: var(--color-brand);
+  }
+}
+
+// ============================================================================
+// PERCENT MODE — linear progress bar
+// ============================================================================
+
+.modePercent {
+  --progress-value: 0%;
+}
+
+// Per-bar color channel. Default fallback to --color-brand. Color classes
+// below set --bar-color via composition so the bar swap respects light/dark
+// theme via tokens (no hex leakage).
+.colorBrand {
+  --bar-color: var(--color-brand);
+}
+
+.colorInfo {
+  --bar-color: var(--color-info);
+}
+
+.colorSuccessStrong {
+  --bar-color: var(--color-success-strong);
+}
+
+.colorWarningStrong {
+  --bar-color: var(--color-warning-strong);
+}
+
+.colorErrorStrong {
+  --bar-color: var(--color-error-strong);
+}
+
+.track {
+  position: relative;
+  width: 100%;
+  height: var(--space-2);
+  overflow: hidden;
+  border-radius: var(--radius-full);
+  background: var(--color-surface-raised);
+}
+
+.bar {
+  width: var(--progress-value);
+  height: 100%;
+  border-radius: inherit;
+  background: var(--bar-color, var(--color-brand));
+  transition: width var(--duration-normal) var(--easing-default);
+}
+
+// ============================================================================
+// REDUCED MOTION
+// ============================================================================
+
+@media (prefers-reduced-motion: reduce) {
+  .stageItem,
+  .stageItem::before,
+  .bar {
+    transition: none;
+  }
+}

@@ -1,0 +1,241 @@
+@use '../../../styles/mixins' as mx;
+
+// NavigationMenu — accessible menubar per APG /menubar/ (Phase 10 CI10).
+// Compound flat API. Menubar `<ul>` is the visible bar with horizontal layout;
+// each NavigationMenuItem `<li>` wraps a Trigger (or standalone Link), and
+// open submenus render via FloatingPortal + own positioning under their trigger.
+//
+// Fork `navigationMenuContentIn` keyframe matches Dialog/AlertDialog/Drawer/
+// Sheet/Tooltip/Popover/DropdownMenu/ContextMenu/HoverCard precedent — each
+// complex component owns its own keyframe for copy-to-project independence.
+
+// ──────────────────────────────────────────────────────────────────────────
+// Root wrapper — non-positioning container, holds the menubar
+// ──────────────────────────────────────────────────────────────────────────
+
+.root {
+  // Inline-flex so the menubar takes only the space its items need by default.
+  display: inline-flex;
+  align-items: stretch;
+  position: relative;
+}
+
+// ──────────────────────────────────────────────────────────────────────────
+// .list — `<ul role="menubar">` flex container
+// ──────────────────────────────────────────────────────────────────────────
+
+.list {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--space-1);
+  list-style: none;
+  margin: 0;
+  padding: var(--space-1);
+
+  background: var(--color-surface, transparent);
+  border-radius: var(--radius-md);
+
+  // Vertical orientation (API scaffold; impl rough — just swaps direction).
+  [data-orientation='vertical'] & {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
+
+// ──────────────────────────────────────────────────────────────────────────
+// .item — `<li role="none">` wrapper, no visual contribution
+// ──────────────────────────────────────────────────────────────────────────
+
+.item {
+  // li role="none" — no semantic styling, just a positioning context for
+  // the floating submenu portal. Display contents removes layout impact
+  // from the wrapper; the trigger/link inside drives the visual.
+  display: flex;
+  align-items: stretch;
+  position: relative;
+}
+
+// ──────────────────────────────────────────────────────────────────────────
+// .trigger — `<button role="menuitem">` opens submenu
+// ──────────────────────────────────────────────────────────────────────────
+
+.trigger {
+  // Reset button styles — NavigationMenuTrigger renders as <button> for
+  // native Enter/Space + focus + disabled handling.
+  all: unset;
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  min-height: 36px;
+
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium, 500);
+  line-height: 1.2;
+  color: var(--color-text-primary);
+
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  user-select: none;
+
+  transition: background-color var(--duration-fast) var(--easing-default),
+    color var(--duration-fast) var(--easing-default);
+
+  // Touch target — ensure 44x44 minimum on coarse pointers (D13).
+  @media (pointer: coarse) {
+    @include mx.touch-target;
+  }
+
+  &:hover:not([aria-disabled='true']) {
+    background: var(--color-surface-hover);
+  }
+
+  &:focus-visible {
+    background: var(--color-surface-hover);
+    @include mx.focus-ring;
+  }
+
+  // Open state — distinct visual so users see which submenu is active.
+  &[data-state='open'] {
+    background: var(--color-surface-hover);
+    color: var(--color-text-primary);
+  }
+
+  &[aria-disabled='true'] {
+    color: var(--color-text-muted);
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+}
+
+// ──────────────────────────────────────────────────────────────────────────
+// .contentRoot — outer portal wrapper (positioned by useFloating)
+// ──────────────────────────────────────────────────────────────────────────
+
+.contentRoot {
+  z-index: var(--z-popover);
+  pointer-events: none;
+}
+
+// ──────────────────────────────────────────────────────────────────────────
+// .content — `<div role="menu">` submenu surface
+// ──────────────────────────────────────────────────────────────────────────
+
+.content {
+  display: flex;
+  flex-direction: column;
+  pointer-events: auto;
+
+  background: var(--color-surface-raised);
+  color: var(--color-text-primary);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+
+  padding: var(--space-1);
+  min-width: 220px;
+  max-width: min(360px, 90vw);
+
+  // Scrollable when content exceeds viewport height (long submenus).
+  max-height: min(480px, calc(100vh - var(--space-8)));
+  overflow-y: auto;
+
+  animation: navigationMenuContentIn var(--duration-fast) var(--easing-default);
+
+  &:focus {
+    outline: none;
+  }
+}
+
+// ──────────────────────────────────────────────────────────────────────────
+// .link — `<a role="menuitem">` for both standalone menubar items + submenu
+// items. Renders differently based on context — when standalone in menubar,
+// matches .trigger styling; when inside .content (submenu), matches item.
+// ──────────────────────────────────────────────────────────────────────────
+
+.link {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  min-height: 32px;
+
+  font-size: var(--font-size-sm);
+  line-height: 1.4;
+  color: var(--color-text-primary);
+  text-decoration: none;
+
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  user-select: none;
+
+  transition: background-color var(--duration-fast) var(--easing-default),
+    color var(--duration-fast) var(--easing-default);
+
+  // Touch target — ensure 44x44 minimum on coarse pointers (D13).
+  @media (pointer: coarse) {
+    @include mx.touch-target;
+  }
+
+  // When standalone link is rendered inside the menubar list, lift to .trigger
+  // visual size (heavier weight, bigger min-height, hover background semantics
+  // identical to a Trigger button).
+  .list & {
+    min-height: 36px;
+    font-weight: var(--font-weight-medium, 500);
+  }
+
+  &:hover:not([aria-disabled='true']) {
+    background: var(--color-surface-hover);
+  }
+
+  &:focus-visible {
+    background: var(--color-surface-hover);
+    @include mx.focus-ring;
+  }
+
+  &[aria-disabled='true'] {
+    color: var(--color-text-muted);
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+}
+
+// Active link — current page indicator (aria-current="page").
+.linkActive {
+  color: var(--color-brand);
+  font-weight: var(--font-weight-semibold, 600);
+
+  // Subtle accent in submenu context.
+  .content & {
+    background: var(--color-surface-hover);
+  }
+}
+
+// ──────────────────────────────────────────────────────────────────────────
+// Animations
+// ──────────────────────────────────────────────────────────────────────────
+
+@keyframes navigationMenuContentIn {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .content {
+    animation: none;
+  }
+  .trigger,
+  .link {
+    transition: none;
+  }
+}

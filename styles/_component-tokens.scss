@@ -1,0 +1,88 @@
+// _component-tokens.scss
+//
+// Per-component token overrides. Filled LAZY — each section stays empty until
+// the corresponding component is implemented in Phase 1+ and discovers it
+// needs a component-specific token that doesn't fit the generic semantics.
+//
+// Rules:
+//   1. Component tokens are ALIASES of semantic tokens, not new values.
+//      Good:  --card-padding: var(--padding-card);
+//      Bad:   --card-padding: 12px;  (use space(3) or reference --padding-card)
+//   2. Only add a component token if the component has DISTINCT needs vs the
+//      generic semantic. If Card can use --padding-card directly, don't add
+//      --card-padding at all.
+//   3. Keep aliases tight — each one adds a layer of indirection. Only use when
+//      it improves readability or enables per-component override.
+//
+// For the full rationale see docs/token-architecture.md.
+
+:root {
+  // ==========================================================================
+  // CARD — Phase 3
+  // ==========================================================================
+  // --card-bg: var(--color-surface);
+  // --card-padding: var(--padding-card);
+  // --card-radius: var(--radius-card);
+  // --card-border: var(--color-border-subtle);
+
+  // ==========================================================================
+  // BUTTON — Phase 4
+  // ==========================================================================
+  // --button-radius: var(--radius-input);
+  // --button-padding-x: var(--space-4);
+  // --button-padding-y: var(--space-2);
+
+  // ==========================================================================
+  // INPUT / TEXTAREA — Phase 4
+  // ==========================================================================
+  // --input-bg: var(--color-surface);
+  // --input-border: var(--color-border);
+  // --input-border-focus: var(--color-brand);
+  // --input-radius: var(--radius-input);
+  // --input-padding-x: var(--space-3);
+  // --input-padding-y: var(--space-2);
+
+  // ==========================================================================
+  // CHECKBOX / RADIOGROUPITEM / SWITCH — Phase 4
+  // ==========================================================================
+  // --checkbox-size: 20px;
+  // --switch-track-width: 36px;
+  // --switch-track-height: 20px;
+
+  // ==========================================================================
+  // TOGGLE / TOGGLEGROUP — Phase 4
+  // ==========================================================================
+  // --toggle-bg: var(--color-surface);
+  // --toggle-bg-active: var(--color-brand-subtle);
+
+  // ==========================================================================
+  // DIALOG / SHEET / DRAWER — Phase 10 (deferred)
+  // ==========================================================================
+  // --dialog-bg: var(--color-surface);
+  // --dialog-radius: var(--radius-xl);
+  // --dialog-shadow: var(--shadow-overlay);
+  // --dialog-overlay: var(--color-overlay);
+
+  // ==========================================================================
+  // POPOVER / TOOLTIP / DROPDOWNMENU — Phase 10 (deferred)
+  // ==========================================================================
+  // --popover-bg: var(--color-surface);
+  // --popover-radius: var(--radius-lg);
+  // --popover-shadow: var(--shadow-lg);
+  // --tooltip-bg: var(--color-neutral-900);
+  // --tooltip-text: var(--color-neutral-50);
+  // --tooltip-radius: var(--radius-sm);
+
+  // ==========================================================================
+  // TABS / NAVIGATIONMENU — Phase 10 (deferred)
+  // ==========================================================================
+  // --tabs-border: var(--color-border);
+  // --tabs-indicator: var(--color-brand);
+
+  // ==========================================================================
+  // TOAST — Phase 10 (deferred)
+  // ==========================================================================
+  // --toast-bg: var(--color-surface);
+  // --toast-shadow: var(--shadow-overlay);
+  // --toast-radius: var(--radius-md);
+}

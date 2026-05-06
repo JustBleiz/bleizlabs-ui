@@ -1,0 +1,93 @@
+.root {
+  display: flex;
+  flex-direction: var(--card-direction, column);
+  // v0.5.5 — `gap` prop injects `--card-gap`; default `0` preserves
+  // v0.5.4 byte-for-byte (no gap between flex children).
+  gap: var(--card-gap, 0);
+  width: var(--card-width, auto);
+  min-width: 0;
+  padding: var(--card-padding, var(--padding-card));
+  border-radius: var(--card-radius, var(--radius-card));
+  background: var(--color-surface);
+  color: var(--color-text-primary);
+  // v0.4.2 — E149 adoption: Card hover transition upgraded z `--duration-fast`
+  // (150ms, snappy) → `--duration-card-hover` (320ms, atelier polish). Cards
+  // są large interactive surfaces — longer transition = smoother lift feel.
+  // Matches bleizlabs-web E167 site-wide card hover pattern. Consumers can
+  // override via seed `$seed-duration-card-hover` in `@use`.
+  transition:
+    transform var(--duration-card-hover) var(--easing-default),
+    box-shadow var(--duration-card-hover) var(--easing-default),
+    border-color var(--duration-card-hover) var(--easing-default);
+}
+
+// ============================================================================
+// VARIANTS
+// ============================================================================
+
+.variantDefault {
+  border: 1px solid var(--color-border-subtle);
+}
+
+.variantElevated {
+  border: 1px solid var(--color-border-subtle);
+  box-shadow: var(--shadow-card);
+}
+
+.variantAccent {
+  position: relative;
+  border: 1px solid var(--color-border-subtle);
+}
+
+.accentLeft {
+  border-left: var(--border-width-accent) solid var(--card-accent-color, var(--color-brand));
+}
+
+.accentTop {
+  border-top: var(--border-width-accent) solid var(--card-accent-color, var(--color-brand));
+}
+
+.variantGlass {
+  background: var(--card-bg-glass);
+  border: 1px solid var(--color-border-subtle);
+  backdrop-filter: blur(var(--card-blur));
+  -webkit-backdrop-filter: blur(var(--card-blur));
+}
+
+// ============================================================================
+// HOVERABLE — opt-in interactive state
+// ============================================================================
+
+.hoverable {
+  cursor: pointer;
+
+  &:hover {
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-lg);
+    border-color: var(--color-border);
+  }
+
+  &:focus-visible {
+    // `--focus-ring` is a full box-shadow expression (0 0 0 3px <color>) —
+    // not a color. Must be applied via `box-shadow`, not `outline`. Matches
+    // Alert.module.scss precedent. Previous `outline: 2px solid var(--focus-ring)`
+    // rendered as garbage because the shadow expression is not a valid
+    // <color> value.
+    outline: none;
+    box-shadow: var(--focus-ring);
+  }
+}
+
+// ============================================================================
+// REDUCED MOTION
+// ============================================================================
+
+@media (prefers-reduced-motion: reduce) {
+  .root {
+    transition: none;
+  }
+
+  .hoverable:hover {
+    transform: none;
+  }
+}

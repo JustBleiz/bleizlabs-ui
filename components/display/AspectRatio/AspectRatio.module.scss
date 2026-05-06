@@ -1,0 +1,22 @@
+.root {
+  position: relative;
+  display: block;
+  width: 100%;
+  aspect-ratio: var(--aspect-ratio, calc(16 / 9));
+  overflow: hidden;
+}
+
+// Absolute-fill inner span so any child (img / video / iframe) can be
+// positioned with `width: 100%; height: 100%; object-fit: cover` and
+// snap to the box without disturbing aspect-ratio collapse rules.
+.inner {
+  position: absolute;
+  inset: 0;
+  display: block;
+
+  > * {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+}

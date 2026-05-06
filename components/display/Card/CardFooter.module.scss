@@ -1,0 +1,31 @@
+.root {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin-top: var(--space-4);
+}
+
+.border {
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--color-border-subtle);
+}
+
+// Full-bleed action footer — extends to card edges, raised bg.
+// Negative margins cancel the parent Card padding (--card-padding cascades
+// down from Card, defaulting to --padding-card if Card is not the parent).
+// Bottom radii mirror the parent Card's `--card-radius` channel (fallback
+// `--radius-card`) so the raised bg follows the Card's rounded bottom
+// corners — without this, the footer prints a square band over the Card's
+// rounded edge (Card uses default `overflow: visible` to preserve hover
+// transforms + shadows, so clipping can't come from the parent).
+.action {
+  justify-content: space-between;
+  margin:
+    var(--space-4)
+    calc(-1 * var(--card-padding, var(--padding-card)))
+    calc(-1 * var(--card-padding, var(--padding-card)));
+  padding: var(--space-3) var(--card-padding, var(--padding-card));
+  background: var(--color-surface-raised);
+  border-bottom-left-radius: var(--card-radius, var(--radius-card));
+  border-bottom-right-radius: var(--card-radius, var(--radius-card));
+}

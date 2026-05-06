@@ -1,0 +1,85 @@
+.root {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid transparent;
+  border-radius: var(--radius-md);
+  background: transparent;
+  color: var(--color-text-primary);
+  line-height: 1;
+}
+
+.icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 60%;
+  height: 60%;
+}
+
+// ============================================================================
+// SIZE — square dimensions via --space-* tokens, icon scales to 60% inside
+// (font-size: sm/md reuse --font-size-*; lg uses gap-fill token)
+// ============================================================================
+
+.sizeSm {
+  width: var(--space-8); // 32px
+  height: var(--space-8);
+  font-size: var(--font-size-sm); // 14px
+}
+
+.sizeMd {
+  width: var(--space-10); // 40px
+  height: var(--space-10);
+  font-size: var(--font-size-lg); // 18px
+}
+
+.sizeLg {
+  width: var(--space-12); // 48px
+  height: var(--space-12);
+  font-size: var(--icon-box-font-lg); // 22px (gap-fill token)
+}
+
+// ============================================================================
+// VARIANTS
+// ============================================================================
+
+.variantDefault {
+  border-color: var(--color-border-subtle);
+  background: var(--color-surface);
+  color: var(--color-text-secondary);
+}
+
+.variantBrand {
+  border-color: var(--color-brand-subtle);
+  background: var(--color-brand-subtle);
+  color: var(--color-brand-strong);
+}
+
+.variantSuccess {
+  border-color: var(--color-success-subtle);
+  background: var(--color-success-subtle);
+  color: var(--color-success-strong);
+}
+
+// v0.5.8 (2026-05-04) — warning canonical state added per cross-system audit.
+// Mirror Success/Error variant pattern (subtle border + bg, strong fg) using
+// the existing --color-warning-{subtle,strong} token pair.
+.variantWarning {
+  border-color: var(--color-warning-subtle);
+  background: var(--color-warning-subtle);
+  color: var(--color-warning-strong);
+}
+
+.variantError {
+  border-color: var(--color-error-subtle);
+  background: var(--color-error-subtle);
+  color: var(--color-error-strong);
+}
+
+.variantPlain {
+  border-color: transparent;
+  background: transparent;
+  color: var(--color-text-muted);
+}

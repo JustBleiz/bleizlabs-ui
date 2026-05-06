@@ -1,0 +1,74 @@
+name: Publish to GitHub Packages
+
+# Triggered on semver tag push (v0.1.0, v0.1.1, v1.0.0, ...).
+# Manual workflow runs are also available via workflow_dispatch for
+# re-running a failed publish without re-tagging.
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Existing tag to publish (e.g. v0.1.0)'
+        required: true
+        type: string
+
+# Force Node.js 24 runtime for third-party JS actions still on Node 20.
+# `actions/*@v5` already use Node 24 natively. Node 20 removal 2026-09-16.
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+        with:
+          ref: ${{ github.event.inputs.tag || github.ref }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: 24
+          registry-url: 'https://npm.pkg.github.com'
+          scope: '@bleizlabs'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Type-check
+        run: npm run typecheck
+
+      - name: Barrel completeness check
+        run: npm run check:barrel
+
+      - name: Build playground (smoke test — playground scope only; barrel exports are validated by the previous two steps)
+        run: npm run build
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium
+
+      - name: Run Playwright smoke suite (E142 L1 — 51 routes + axe-core gate)
+        run: npm run test:smoke
+
+      - name: Verify package version matches tag
+        run: |
+          PKG_VERSION="v$(node -p "require('./package.json').version")"
+          TAG="${{ github.event.inputs.tag || github.ref_name }}"
+          echo "Tag: $TAG, Package: $PKG_VERSION"
+          if [ "$PKG_VERSION" != "$TAG" ]; then
+            echo "ERROR: package.json version ($PKG_VERSION) does not match tag ($TAG)"
+            exit 1
+          fi
+
+      - name: Publish
+        run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

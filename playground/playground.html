@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>bleizlabs-ui — Design Tokens Playground</title>
+    <link rel="stylesheet" href="compiled.css" />
+  </head>
+  <body>
+    <div class="preview-wrap">
+      <header class="preview-header">
+        <h1 class="preview-title">bleizlabs-ui — Design Tokens Playground</h1>
+        <button
+          class="preview-toggle"
+          onclick="toggleTheme()"
+          aria-label="Toggle theme"
+        >
+          Toggle theme
+        </button>
+      </header>
+
+      <div class="preview-grid">
+        <!-- TYPOGRAPHY -->
+        <section class="preview-section">
+          <h2 class="preview-section-title">Typography (dual font)</h2>
+          <h1 class="preview-h1">Heading 1 — primary font</h1>
+          <h2 class="preview-h2">Heading 2 — primary font</h2>
+          <h3 class="preview-h3">Heading 3 — primary font</h3>
+          <h4 class="preview-h4">Heading 4 — primary font</h4>
+          <p class="preview-body-large">Body large — secondary font for lede paragraphs and intro text.</p>
+          <p class="preview-body-base">Body base — secondary font for regular paragraphs and component content.</p>
+          <p class="preview-body-small">Body small — secondary font for meta text and descriptions.</p>
+          <p class="preview-caption">Caption / Overline Label</p>
+        </section>
+
+        <!-- BRAND SCALE -->
+        <section class="preview-section">
+          <h2 class="preview-section-title">Brand color scale</h2>
+          <div class="preview-swatch-row">
+            <div class="preview-swatch-small" style="background: var(--color-brand-50)" title="brand-50"></div>
+            <div class="preview-swatch-small" style="background: var(--color-brand-100)" title="brand-100"></div>
+            <div class="preview-swatch-small" style="background: var(--color-brand-200)" title="brand-200"></div>
+            <div class="preview-swatch-small" style="background: var(--color-brand-300)" title="brand-300"></div>
+            <div class="preview-swatch-small" style="background: var(--color-brand-400)" title="brand-400"></div>
+            <div class="preview-swatch-small" style="background: var(--color-brand-500)" title="brand-500"></div>
+            <div class="preview-swatch-small" style="background: var(--color-brand-600)" title="brand-600"></div>
+            <div class="preview-swatch-small" style="background: var(--color-brand-700)" title="brand-700"></div>
+            <div class="preview-swatch-small" style="background: var(--color-brand-800)" title="brand-800"></div>
+            <div class="preview-swatch-small" style="background: var(--color-brand-900)" title="brand-900"></div>
+            <div class="preview-swatch-small" style="background: var(--color-brand-950)" title="brand-950"></div>
+          </div>
+          <div class="preview-row" style="margin-top: var(--space-3)">
+            <span class="preview-label">--color-brand</span>
+            <div class="preview-swatch" style="background: var(--color-brand)"></div>
+          </div>
+          <div class="preview-row">
+            <span class="preview-label">--hover-brand</span>
+            <div class="preview-swatch" style="background: var(--hover-brand)"></div>
+          </div>
+          <div class="preview-row">
+            <span class="preview-label">--active-brand</span>
+            <div class="preview-swatch" style="background: var(--active-brand)"></div>
+          </div>
+        </section>
+
+        <!-- SURFACE COLORS (theme-dependent) -->
+        <section class="preview-section">
+          <h2 class="preview-section-title">Surface colors (theme-aware)</h2>
+          <div class="preview-row">
+            <span class="preview-label">--color-bg</span>
+            <div class="preview-swatch" style="background: var(--color-bg)"></div>
+          </div>
+          <div class="preview-row">
+            <span class="preview-label">--color-surface</span>
+            <div class="preview-swatch" style="background: var(--color-surface)"></div>
+          </div>
+          <div class="preview-row">
+            <span class="preview-label">--color-surface-raised</span>
+            <div class="preview-swatch" style="background: var(--color-surface-raised)"></div>
+          </div>
+          <div class="preview-row">
+            <span class="preview-label">--color-border</span>
+            <div class="preview-swatch" style="background: var(--color-border)"></div>
+          </div>
+          <div class="preview-row">
+            <span class="preview-label">--color-border-subtle</span>
+            <div class="preview-swatch" style="background: var(--color-border-subtle)"></div>
+          </div>
+        </section>
+
+        <!-- STATUS COLORS -->
+        <section class="preview-section">
+          <h2 class="preview-section-title">Status colors</h2>
+          <div class="preview-row">
+            <span class="preview-label">--color-error</span>
+            <div class="preview-swatch" style="background: var(--color-error)"></div>
+          </div>
+          <div class="preview-row">
+            <span class="preview-label">--color-warning</span>
+            <div class="preview-swatch" style="background: var(--color-warning)"></div>
+          </div>
+          <div class="preview-row">
+            <span class="preview-label">--color-success</span>
+            <div class="preview-swatch" style="background: var(--color-success)"></div>
+          </div>
+          <div class="preview-row">
+            <span class="preview-label">--color-info</span>
+            <div class="preview-swatch" style="background: var(--color-info)"></div>
+          </div>
+        </section>
+
+        <!-- RADIUS SCALE -->
+        <section class="preview-section">
+          <h2 class="preview-section-title">Radius scale</h2>
+          <div>
+            <div class="preview-box preview-radius-sm"></div>
+            <div class="preview-box preview-radius-md"></div>
+            <div class="preview-box preview-radius-lg"></div>
+            <div class="preview-box preview-radius-xl"></div>
+            <div class="preview-box preview-radius-2xl"></div>
+          </div>
+          <p class="preview-caption">sm / md / lg (card default) / xl / 2xl</p>
+        </section>
+
+        <!-- SHADOWS & GLOWS -->
+        <section class="preview-section">
+          <h2 class="preview-section-title">Shadows &amp; glows</h2>
+          <div>
+            <div class="preview-box preview-shadow-sm preview-radius-md"></div>
+            <div class="preview-box preview-shadow-md preview-radius-md"></div>
+            <div class="preview-box preview-shadow-lg preview-radius-md"></div>
+            <div class="preview-box preview-shadow-xl preview-radius-md"></div>
+          </div>
+          <p class="preview-caption">sm / md / lg / xl (neutral)</p>
+          <div>
+            <div class="preview-box preview-shadow-brand preview-radius-md"></div>
+            <div class="preview-box preview-glow-brand preview-radius-md"></div>
+          </div>
+          <p class="preview-caption">shadow-brand / glow-brand</p>
+        </section>
+
+        <!-- SPACING SCALE -->
+        <section class="preview-section">
+          <h2 class="preview-section-title">Spacing scale (4px unit, D9)</h2>
+          <div class="preview-row"><span class="preview-label">--space-1 (4px)</span><div style="width: var(--space-1); height: 24px; background: var(--color-brand)"></div></div>
+          <div class="preview-row"><span class="preview-label">--space-2 (8px)</span><div style="width: var(--space-2); height: 24px; background: var(--color-brand)"></div></div>
+          <div class="preview-row"><span class="preview-label">--space-3 (12px)</span><div style="width: var(--space-3); height: 24px; background: var(--color-brand)"></div></div>
+          <div class="preview-row"><span class="preview-label">--space-4 (16px)</span><div style="width: var(--space-4); height: 24px; background: var(--color-brand)"></div></div>
+          <div class="preview-row"><span class="preview-label">--space-6 (24px)</span><div style="width: var(--space-6); height: 24px; background: var(--color-brand)"></div></div>
+          <div class="preview-row"><span class="preview-label">--space-8 (32px)</span><div style="width: var(--space-8); height: 24px; background: var(--color-brand)"></div></div>
+          <div class="preview-row"><span class="preview-label">--space-12 (48px)</span><div style="width: var(--space-12); height: 24px; background: var(--color-brand)"></div></div>
+          <div class="preview-row"><span class="preview-label">--space-20 (80px)</span><div style="width: var(--space-20); height: 24px; background: var(--color-brand)"></div></div>
+        </section>
+
+        <!-- ANIMATIONS -->
+        <section class="preview-section">
+          <h2 class="preview-section-title">Animations (sample)</h2>
+          <div class="preview-row">
+            <span class="preview-label">spin (infinite)</span>
+            <div class="preview-spin"></div>
+          </div>
+          <div class="preview-row">
+            <span class="preview-label">pulse (infinite)</span>
+            <div class="preview-pulse"></div>
+          </div>
+          <p class="preview-caption" style="margin-top: var(--space-3)">12 more keyframes available: fadeIn, fadeInUp/Down, slideInLeft/Right, scaleIn, shake, fadeOut, expandDown, collapseUp, checkmark, radioFill, switchSlide</p>
+        </section>
+      </div>
+    </div>
+
+    <script>
+      function toggleTheme() {
+        const html = document.documentElement;
+        html.dataset.theme = html.dataset.theme === 'dark' ? 'light' : 'dark';
+      }
+    </script>
+  </body>
+</html>

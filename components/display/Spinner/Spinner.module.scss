@@ -1,0 +1,103 @@
+.root {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  // Prevent flex parents (Inline, Stack, Button row) from squeezing the
+  // spinner horizontally — size classes set explicit width/height but the
+  // default `flex-shrink: 1` can override them in tight rows.
+  flex-shrink: 0;
+  // Hard-guarantee the spinner stays perfectly circular even if a parent
+  // overrides width or height independently (e.g. a flex row that caps
+  // cross-axis height while leaving inline-axis free). `aspect-ratio: 1`
+  // forces the box to stay square at whatever dimension the browser
+  // resolved first. Reported in E134 bug 2 — prior fix with `flex-shrink`
+  // alone kept shrinking the X axis when the spinner sat inside a parent
+  // with asymmetric size constraints.
+  aspect-ratio: 1;
+}
+
+.ring {
+  display: block;
+  width: 100%;
+  height: 100%;
+  // `box-sizing: border-box` so the 2px ring border stays inside the
+  // 100%×100% box of the parent — without it, the ring's border adds 4px
+  // to the effective size on each axis, and any outer clipping shaves
+  // the ring into an oval. Combined with `.root { aspect-ratio: 1 }`,
+  // the ring can never go non-circular.
+  box-sizing: border-box;
+  aspect-ratio: 1;
+  border: 2px solid currentcolor;
+  border-top-color: transparent;
+  border-radius: 50%;
+  // Local @keyframes because CSS Modules scope animation-name identifiers
+  // — referencing a globally defined `spin` from _animations.scss silently
+  // no-ops under Turbopack + Next.js 16 CSS Modules. Each component module
+  // that needs a shared keyframe copies the tiny rule block locally (matches
+  // the Popover/Dialog/Sheet/Drawer precedent in this library).
+  animation: spinRotate var(--duration-slow) linear infinite;
+}
+
+@keyframes spinRotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+// ============================================================================
+// SIZE — square dimensions via --space-* tokens (R22 token reuse-first)
+// ============================================================================
+
+.sizeXs {
+  width: var(--space-3); // 12px
+  height: var(--space-3);
+}
+
+.sizeSm {
+  width: var(--space-4); // 16px
+  height: var(--space-4);
+}
+
+.sizeMd {
+  width: var(--space-6); // 24px
+  height: var(--space-6);
+}
+
+.sizeLg {
+  width: var(--space-8); // 32px
+  height: var(--space-8);
+}
+
+// ============================================================================
+// COLOR
+// ============================================================================
+
+.colorBrand {
+  color: var(--color-brand);
+}
+
+.colorCurrent {
+  color: currentcolor;
+}
+
+.colorMuted {
+  color: var(--color-text-muted);
+}
+
+// ============================================================================
+// SR-ONLY
+// ============================================================================
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}

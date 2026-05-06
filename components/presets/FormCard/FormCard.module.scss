@@ -1,0 +1,29 @@
+// FormCard — Phase 8 E13
+// Form-wrapped Card preset. Outer .formWrapper is semantic only (no visual styling).
+// Card atom owns all visual chrome. Header/body/footer inherit slot layout.
+
+.formWrapper {
+  display: contents;
+}
+
+.root {
+  // Inherits Card atom styling.
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.footer {
+  // CardFooter action-mode layout inherited from Card atom.
+  // Gap matches ContentCard footer for consistent footer spacing across presets.
+  gap: var(--space-3);
+}

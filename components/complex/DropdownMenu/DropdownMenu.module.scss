@@ -1,0 +1,121 @@
+@use '../../../styles/mixins' as mx;
+
+// DropdownMenu — floating menu triggered by a button (Phase 10 CI7).
+// Own compound flat API (does NOT reuse Popover directly — Popover hard-codes
+// `role="dialog"` which is incompatible with `role="menu"`, per D-D1 Option B).
+// Positioning math lives in `utils/position.ts` + `utils/useFloating.ts`.
+//
+// Fork `dropdownMenuContentIn` keyframe matches Dialog/AlertDialog/Drawer/Sheet
+// /Tooltip/Popover precedent — each complex component owns its own keyframe
+// for copy-to-project independence.
+
+.root {
+  // Portal root positioned by useFloating — no layout contribution.
+  z-index: var(--z-popover);
+  pointer-events: none;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  pointer-events: auto;
+
+  background: var(--color-surface-raised);
+  color: var(--color-text-primary);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+
+  // Menu-specific layout — tight vertical rhythm, no padding (items + separators
+  // + labels own their own padding so the surface edges are flush with content).
+  padding: var(--space-1);
+  min-width: 180px;
+  max-width: min(320px, 90vw);
+
+  // Scrollable when content exceeds viewport height (long menus).
+  max-height: min(480px, calc(100vh - var(--space-8)));
+  overflow-y: auto;
+
+  animation: dropdownMenuContentIn var(--duration-fast) var(--easing-default);
+
+  &:focus {
+    outline: none;
+  }
+}
+
+.item {
+  // Reset button styles — DropdownMenuItem renders as <button> for native
+  // Enter/Space + disabled handling.
+  all: unset;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  width: 100%;
+  padding: var(--space-2) var(--space-3);
+  min-height: 32px;
+  font-size: var(--font-size-sm);
+  line-height: 1.4;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  color: var(--color-text-primary);
+  user-select: none;
+
+  // Touch target — ensure 44x44 minimum on coarse pointers (D13).
+  @media (pointer: coarse) {
+    @include mx.touch-target;
+  }
+
+  &:hover:not([data-disabled]) {
+    background: var(--color-surface-hover);
+  }
+
+  &:focus-visible {
+    background: var(--color-surface-hover);
+    @include mx.focus-ring;
+  }
+
+  &[data-disabled] {
+    color: var(--color-text-muted);
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+}
+
+.separator {
+  height: 1px;
+  background: var(--color-border-subtle);
+  margin: var(--space-1) 0;
+}
+
+.label {
+  padding: var(--space-2) var(--space-3) var(--space-1);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold, 600);
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  user-select: none;
+}
+
+.group {
+  display: flex;
+  flex-direction: column;
+}
+
+@keyframes dropdownMenuContentIn {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .content {
+    animation: none;
+  }
+}

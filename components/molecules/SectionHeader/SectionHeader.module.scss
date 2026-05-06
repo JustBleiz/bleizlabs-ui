@@ -1,0 +1,75 @@
+// =============================================================================
+// SectionHeader — universal section heading row (M11)
+// Pattern: [gradient accent 24px] LABEL · count   [meta][action]
+// =============================================================================
+// Zero external padding/margin — parent owns layout. Wrap section in
+// flex-column container (`<Stack gap={3}>`) for header→content gap. Page-root
+// gap (Stack gap={6}) handles inter-section spacing. Single source per scope.
+
+.root {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: 0;
+  flex-wrap: wrap;
+}
+
+.lead {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-width: 0;
+}
+
+// Gradient accent line — 24px horizontal indicator, atelier signature.
+.accent {
+  display: inline-block;
+  width: var(--space-6);
+  height: 2px;
+  border-radius: 1px;
+  flex-shrink: 0;
+  background: linear-gradient(
+    90deg,
+    color-mix(in srgb, var(--color-brand) 60%, transparent) 0%,
+    color-mix(in srgb, var(--color-brand) 20%, transparent) 100%
+  );
+}
+
+.label {
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: var(--letter-spacing-wide-mono);
+  text-transform: uppercase;
+  color: var(--color-text-secondary);
+  line-height: 1;
+}
+
+.count {
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: var(--letter-spacing-wider);
+  color: var(--color-text-muted);
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+}
+
+.trail {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin-left: auto;
+  flex-wrap: wrap;
+}
+
+.meta {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+.action {
+  display: inline-flex;
+  align-items: center;
+}

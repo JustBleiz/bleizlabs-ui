@@ -1,0 +1,99 @@
+@use 'mixins' as mx;
+
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-10);
+  max-width: 960px;
+  margin: 0 auto;
+  padding: var(--space-10) var(--space-6);
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  padding-top: var(--space-6);
+  border-top: 1px solid var(--color-border-subtle);
+}
+
+.sectionHeader {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.mono {
+  font-family: var(--font-mono, monospace);
+  font-variant-numeric: tabular-nums;
+  color: var(--color-text-secondary);
+}
+
+.errorMsg {
+  // v0.7.5 — `color: var(--color-error)` defaults to error-500 which fails
+  // axe WCAG 2.1 AA color-contrast on light surfaces (~3.8:1 against white).
+  // Use the theme-aware `--color-error-strong` token (defined per-theme in
+  // `_semantics.scss`: error-700 in light mode → ~5.9:1 PASS, error-300 in
+  // dark mode → ~7.4:1 PASS). Companion change in tsx: `<Text color="inherit">`
+  // so Text doesn't set its own `--text-color` inline (which would win over
+  // this className per CSS inline-style precedence).
+  color: var(--color-error-strong);
+}
+
+.completionsLog {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--space-3);
+  background-color: var(--color-surface-muted, var(--color-surface));
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-md);
+}
+
+.completionsList {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+
+  li {
+    font-size: var(--font-size-sm);
+  }
+}
+
+.form {
+  padding: var(--space-4);
+  background-color: var(--color-surface-muted, var(--color-surface));
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-md);
+}
+
+.keyboardList {
+  margin: 0;
+  padding: 0 0 0 var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+
+  li {
+    list-style: disc;
+  }
+
+  code {
+    font-family: var(--font-mono, monospace);
+    background-color: var(--color-surface-raised);
+    padding: 0 var(--space-1);
+    border-radius: var(--radius-sm);
+    color: var(--color-text-primary);
+  }
+}

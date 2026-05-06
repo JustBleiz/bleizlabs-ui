@@ -1,0 +1,57 @@
+@use '../../../styles/mixins' as mx;
+
+.root {
+  margin: 0;
+  color: var(--text-color, var(--color-text-primary));
+  font-family: var(--font-secondary);
+  text-align: var(--text-align, start);
+}
+
+.lead {
+  font-size: var(--font-size-lg);
+  line-height: var(--line-height-relaxed);
+  font-weight: var(--text-weight, var(--font-weight-regular));
+}
+
+.body {
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-normal);
+  font-weight: var(--text-weight, var(--font-weight-regular));
+}
+
+.bodyStrong {
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-normal);
+  font-weight: var(--text-weight, var(--font-weight-semibold));
+}
+
+.small {
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-normal);
+  font-weight: var(--text-weight, var(--font-weight-regular));
+}
+
+.caption {
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-normal);
+  font-weight: var(--text-weight, var(--font-weight-medium));
+  letter-spacing: var(--letter-spacing-wide);
+}
+
+.uppercase {
+  text-transform: uppercase;
+  letter-spacing: var(--letter-spacing-wider);
+}
+
+// v0.5.7 — Atelier eyebrow variant. Inline-light path that reuses the same
+// typography vocabulary as the standalone `Eyebrow` atom (via shared
+// `mx.eyebrow-typography` mixin) without that atom's numeric prefix +
+// hairline ornament. Default color flows through `--text-color` (Text.tsx
+// DEFAULT_COLOR_BY_VARIANT maps eyebrow → muted, mirroring Eyebrow's default
+// muted tone). Source-order AFTER `.uppercase` so `letter-spacing: 0.08em`
+// from the mixin wins on equal-specificity cascade if `<Text variant="eyebrow"
+// uppercase>` is composed (the `uppercase` prop becomes redundant for this
+// variant but defensive cascade ordering preserves the atelier vocabulary).
+.eyebrow {
+  @include mx.eyebrow-typography;
+}

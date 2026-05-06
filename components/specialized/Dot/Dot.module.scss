@@ -1,0 +1,103 @@
+@use '../../../styles/mixins' as mx;
+
+// ============================================================================
+// BASE — inline round indicator
+// ============================================================================
+
+.root {
+  display: inline-block;
+  flex: 0 0 auto;
+  vertical-align: middle;
+  border: 1px solid transparent;
+  border-radius: var(--radius-full);
+  background: var(--color-surface);
+}
+
+// ============================================================================
+// SCREEN-READER-ONLY LABEL
+// ============================================================================
+
+.srOnly {
+  @include mx.sr-only;
+}
+
+// ============================================================================
+// SIZES
+// ============================================================================
+
+.sizeSm {
+  width: var(--space-2);
+  height: var(--space-2);
+}
+
+.sizeMd {
+  width: var(--space-3);
+  height: var(--space-3);
+}
+
+.sizeLg {
+  width: var(--space-4);
+  height: var(--space-4);
+}
+
+// ============================================================================
+// COLORS — subtle fill + strong border (Badge precedent)
+// ============================================================================
+
+.colorDefault {
+  border-color: var(--color-border-strong);
+  background: var(--color-surface-raised);
+}
+
+.colorBrand {
+  border-color: var(--color-brand);
+  background: var(--color-brand);
+}
+
+.colorSuccess {
+  border-color: var(--color-success);
+  background: var(--color-success);
+}
+
+.colorWarning {
+  border-color: var(--color-warning);
+  background: var(--color-warning);
+}
+
+.colorError {
+  border-color: var(--color-error);
+  background: var(--color-error);
+}
+
+.colorInfo {
+  border-color: var(--color-info);
+  background: var(--color-info);
+}
+
+// ============================================================================
+// PULSE MODIFIER — infinite opacity cycle
+// ============================================================================
+
+.pulse {
+  // Local @keyframes — CSS Modules scope keyframe identifiers, so referencing
+  // the global `pulse` keyframe from _animations.scss silently no-ops under
+  // Turbopack + Next.js 16. Each animation-consuming module owns a tiny local
+  // copy (matches Checkbox checkboxTick + RadioGroup radioDotFill precedent).
+  animation: dotPulse 2s var(--easing-default) infinite;
+}
+
+@keyframes dotPulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pulse {
+    animation: none;
+  }
+}

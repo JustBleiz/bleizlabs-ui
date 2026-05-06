@@ -1,0 +1,105 @@
+// =============================================================================
+// MetricTile — universal compact metric tile molecule (E04.2 #7)
+// =============================================================================
+// Promoted from 4 project-local name-drift cases (DetailMetric / SummaryMetric
+// / CardMetric / MetaItem) per Tier B decision-tree audit 2026-05-04.
+// Frameless by design — consumer chooses the frame (Card / metaStrip / etc.).
+// Server-safe (pure presentational, no transitions on root needed beyond
+// defensive reduced-motion baseline).
+//
+// All visual rules use lib semantic tokens — zero hardcoded colors / px.
+// Layout owned by Inline + Stack atoms via composition; SCSS contributes
+// only the value-color cascade channel + density-class hooks.
+
+// ----------------------------------------------------------------------------
+// 1. ROOT (frameless, no border / background / padding)
+// ----------------------------------------------------------------------------
+.root {
+  // No display/flex here — Inline (compact) or Stack (comfortable) child
+  // owns the layout. Root is just the cascade channel container + density
+  // hook for consumer SCSS overrides.
+  font-family: var(--font-secondary);
+  color: var(--color-text-primary);
+}
+
+// ----------------------------------------------------------------------------
+// 2. LABEL (caption-tier, muted; uppercase in comfortable density)
+// ----------------------------------------------------------------------------
+.label {
+  // Text atom owns variant/color/uppercase via props.
+  // Local class kept as SCSS hook for consumer overrides if needed.
+}
+
+// ----------------------------------------------------------------------------
+// 3. VALUE (body-strong tier, tone color set via element-level inline style)
+// ----------------------------------------------------------------------------
+.value {
+  // Tone-driven color is applied via inline `style.color` on the Text
+  // element directly (specificity-safe override that beats Text's own
+  // class rules regardless of CSS injection order). Local class kept
+  // as a SCSS hook for consumer overrides (e.g. font-variant-numeric
+  // for tabular figures).
+  font-variant-numeric: tabular-nums;
+}
+
+// ----------------------------------------------------------------------------
+// 4. ICON (consumer slot, fixed inline-flex container)
+// ----------------------------------------------------------------------------
+.icon {
+  // Inline-flex centering — keeps consumer SVG/icon node aligned with text
+  // baseline regardless of icon node intrinsic display behavior. Width/height
+  // of icon is consumer's responsibility (they pass size prop on their icon
+  // component); MetricTile only provides the slot.
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+  // Icon color follows current text color cascade — consumer can pass
+  // an icon with `currentColor` stroke and it'll inherit the tone.
+  color: inherit;
+}
+
+// ----------------------------------------------------------------------------
+// 5. DESCRIPTION (small/secondary, comfortable-only)
+// ----------------------------------------------------------------------------
+.description {
+  // Text atom owns variant/color. Local class for consumer override hook.
+}
+
+// ----------------------------------------------------------------------------
+// 6. DENSITY VARIANTS
+// ----------------------------------------------------------------------------
+// Compact: single-row inline (icon + label + value) — meta-strip style.
+// Layout owned by Inline atom; this class is a hook for consumer overrides
+// (e.g. wrap-control, custom alignment).
+.densityCompact {
+  // Inline gap=1 align=baseline already handles structure. Hook reserved.
+}
+
+.compactRow {
+  // No layout rules — Inline atom owns. Slot for consumer overrides.
+}
+
+// Comfortable: stacked label/value/description with uppercase caption.
+.densityComfortable {
+  // Stack gap=1 already handles structure. Hook reserved.
+}
+
+.comfortableStack {
+  // No layout rules — Stack atom owns. Slot for consumer overrides.
+}
+
+.valueRow {
+  // Inline gap=2 align=baseline already handles structure. Hook reserved.
+}
+
+// ----------------------------------------------------------------------------
+// 7. REDUCED MOTION (defensive baseline — MetricTile has no transitions
+//    today, but suppresses any future addition. Inline / Stack / Text
+//    atoms handle their own PRM internally.)
+// ----------------------------------------------------------------------------
+@media (prefers-reduced-motion: reduce) {
+  .root {
+    transition: none;
+    animation: none;
+  }
+}

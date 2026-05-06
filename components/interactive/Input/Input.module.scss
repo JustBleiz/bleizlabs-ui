@@ -1,0 +1,299 @@
+@use '../../../styles/mixins' as mx;
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  width: 100%;
+}
+
+.fieldDisabled {
+  cursor: not-allowed;
+}
+
+.inputWrap {
+  position: relative;
+  display: flex;
+  align-items: stretch;
+  width: 100%;
+  background: var(--input-bg);
+  border: 1px solid var(--input-border);
+  // `--input-wrap-radius` is an override channel read via CSS custom
+  // property inheritance from an ancestor (e.g. InputGroup collapses the
+  // radii of the inner inputWrap when it sits next to an addon / sibling
+  // in the joined widget). Default resolves to `--radius-input` so the
+  // standalone Input is unchanged.
+  border-radius: var(--input-wrap-radius, var(--radius-input));
+  overflow: hidden;
+  transition:
+    border-color var(--duration-fast) var(--easing-default),
+    box-shadow var(--duration-fast) var(--easing-default);
+
+  &:focus-within {
+    border-color: var(--input-border-focus);
+    @include mx.focus-ring;
+  }
+}
+
+.inputWrapError {
+  border-color: var(--color-error);
+
+  &:focus-within {
+    border-color: var(--color-error);
+    @include mx.focus-ring-error;
+  }
+}
+
+.input {
+  flex: 1;
+  min-width: 0;
+  padding: var(--space-3) var(--space-4);
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--color-text-primary);
+  font-family: var(--font-secondary);
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-normal);
+
+  &::placeholder {
+    // E142 v0.3.0 a11y: --color-text-muted fails 4.5:1 on --color-surface-raised.
+    // Placeholder text is informational (shows expected format) so must meet
+    // WCAG 1.4.3 AA; --color-text-secondary is the lightest token that clears
+    // the ratio on both light and dark surfaces.
+    color: var(--color-text-secondary);
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    color: var(--color-text-muted);
+  }
+
+  @include mx.touch-target;
+}
+
+// `.hasStartIcon` / `.hasEndIcon` adjust input padding when a decorative
+// icon slot is present (icon sits inside the input wrap, so the input no
+// longer needs full left/right padding to stay visually centered).
+// Prefix/suffix addons use `.addonText[data-side='*'] + .input` selectors
+// (below) and are handled separately — they fully replace the input's edge
+// padding because the addon owns the visual edge.
+.hasStartIcon .input {
+  padding-left: var(--space-2);
+}
+
+.hasEndIcon .input {
+  padding-right: var(--space-2);
+}
+
+// ============================================================================
+// ICON SLOTS — startIcon / endIcon (decorative)
+// ============================================================================
+
+.startIcon,
+.endIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  // Center-align within the input-wrap cross axis — the wrap uses
+  // `align-items: stretch` so the addonText can fill height (segmented-
+  // control look); slots with explicit width/height fall back to
+  // flex-start on the cross-axis without an explicit `align-self: center`
+  // (browsers resolve "stretch" to "start" when the item has an intrinsic
+  // size and cannot be stretched).
+  align-self: center;
+  width: var(--space-5);
+  height: var(--space-5);
+  color: var(--color-text-muted);
+  flex-shrink: 0;
+
+  > svg {
+    width: 100%;
+    height: 100%;
+  }
+}
+
+.startIcon {
+  margin-left: var(--space-3);
+}
+
+.endIcon {
+  margin-right: var(--space-3);
+}
+
+// ============================================================================
+// TEXT ADDON — prefix / suffix props (E08 Layer 1)
+// ============================================================================
+// Visually distinct surface inside the input wrap. Sits flush against the
+// inner edge so the wrap looks like a single segmented control. The
+// `data-side` attribute distinguishes left vs right for SCSS selectors —
+// kept as a data attribute (not a separate class) so the markup is symmetric.
+
+.addonText {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  padding: 0 var(--space-3);
+  background: var(--input-addon-bg);
+  color: var(--input-addon-text);
+  font-family: var(--font-secondary);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-medium);
+  line-height: var(--line-height-normal);
+  white-space: nowrap;
+  user-select: none;
+}
+
+.addonText[data-side='start'] {
+  border-right: 1px solid var(--input-addon-border);
+}
+
+.addonText[data-side='end'] {
+  border-left: 1px solid var(--input-addon-border);
+}
+
+// When a prefix addon is present, kill the duplicate inner padding-left on
+// the input itself so the addon visually owns the left edge.
+.inputWrap > .addonText[data-side='start'] + .input {
+  padding-left: var(--space-3);
+}
+
+.inputWrap > .input + .addonText[data-side='end'] {
+  // suffix sits flush against the input
+}
+
+// ============================================================================
+// END SLOT — loading spinner / clear button container
+// ============================================================================
+
+.endSlot {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  align-self: center;
+  margin-right: var(--space-3);
+  flex-shrink: 0;
+}
+
+.clearButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  align-self: center;
+  width: var(--space-6);
+  height: var(--space-6);
+  margin-right: var(--space-2);
+  padding: 0;
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-sm);
+  color: var(--color-text-muted);
+  cursor: pointer;
+  flex-shrink: 0;
+  transition:
+    background-color var(--duration-fast) var(--easing-default),
+    color var(--duration-fast) var(--easing-default);
+
+  > svg {
+    width: var(--space-4);
+    height: var(--space-4);
+  }
+
+  &:hover {
+    background: var(--color-surface-raised);
+    color: var(--color-text-primary);
+  }
+
+  &:focus-visible {
+    @include mx.focus-ring;
+  }
+
+  // WCAG 2.5.5 enhanced target size on coarse pointer (D13)
+  @include mx.touch-target;
+}
+
+// ============================================================================
+// LOADING SPINNER — inline border spinner
+// ============================================================================
+
+.loadingSpinner {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--space-5);
+  height: var(--space-5);
+  color: var(--color-text-secondary);
+}
+
+.spinnerRing {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: 2px solid currentcolor;
+  border-top-color: transparent;
+  border-radius: 50%;
+  // Local @keyframes — CSS Modules scope keyframe identifiers, so referencing
+  // the global `spin` keyframe from _animations.scss silently no-ops under
+  // Turbopack + Next.js 16. Each animation-consuming module owns a tiny local
+  // copy (matches Checkbox checkboxTick + RadioGroup radioDotFill precedent).
+  animation: inputSpin var(--duration-slow) linear infinite;
+}
+
+@keyframes inputSpin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+// ============================================================================
+// HELPER / ERROR / COUNTER — below the input
+// ============================================================================
+
+.helper {
+  margin: 0;
+  font-family: var(--font-secondary);
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+  line-height: var(--line-height-normal);
+}
+
+.error {
+  margin: 0;
+  font-family: var(--font-secondary);
+  font-size: var(--font-size-xs);
+  // E142 L2 a11y: --color-error (red-500) was ~3.7:1 on dark surface.
+  // --color-error-strong is theme-aware (red-700 light / red-300 dark)
+  // and keeps the semantic "error red" while hitting AA.
+  color: var(--color-error-strong);
+  font-weight: var(--font-weight-medium);
+  line-height: var(--line-height-normal);
+}
+
+.counter {
+  margin: 0;
+  align-self: flex-end;
+  font-family: var(--font-secondary);
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+  font-variant-numeric: tabular-nums;
+  line-height: var(--line-height-normal);
+}
+
+.srOnly {
+  @include mx.sr-only;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .inputWrap,
+  .clearButton {
+    transition: none;
+  }
+
+  .spinnerRing {
+    animation-duration: 0.001ms;
+  }
+}

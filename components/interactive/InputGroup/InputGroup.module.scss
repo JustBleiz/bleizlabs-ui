@@ -1,0 +1,71 @@
+@use '../../../styles/mixins' as mx;
+
+// InputGroup reuses the `joined-group` mixin from `_mixins.scss` — the same
+// mixin that powers ButtonGroup (E07 I1.5) and ToggleGroup (E07 I7). The
+// visual joining behavior is identical: collapsed inner radii on the
+// children, deduped 1px borders via -1px margin overlap, and a z-index lift
+// on focused/active children so outlines aren't clipped by the negative
+// margin overlap with neighbors.
+//
+// Children must:
+// 1. Carry a border-radius matching --radius-input (Input + InputGroupText
+//    do this via their own SCSS).
+// 2. Render a single root element (the joined-group selectors target `> *`
+//    direct children — Input renders `.field` wrapper which IS the
+//    immediate child, so the wrap participates in the dedup correctly).
+//
+// For Input children: they should be passed with `hideLabel` so the
+// field-level Label sits ABOVE the InputGroup, not inside the joined
+// widget.
+
+.root {
+  display: inline-flex;
+  flex-direction: row;
+  align-items: stretch;
+  width: 100%;
+
+  @include mx.joined-group;
+}
+
+// When an Input child sits inside InputGroup, the Input's `.field` wrapper
+// (which has gap-based vertical layout for label/input/helper) needs to
+// participate in the horizontal flex layout. We strip its width:100% so
+// it doesn't push siblings out, and let flex distribute space.
+.root > * {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+// InputGroupText addons should NOT flex — they sit at fixed width, only
+// the Input field stretches.
+.root > [data-input-group-addon='true'] {
+  flex: 0 0 auto;
+}
+
+// ============================================================================
+// INNER INPUTWRAP RADII COLLAPSE (E134 bug 6)
+// ============================================================================
+// Input's root is `.field` (label + .inputWrap + helper column) so the
+// joined-group mixin's `> *:first-child` / `> *:last-child` selectors hit
+// `.field`, which has no border-radius — meaning the actual rounded edge
+// (on the inner `.inputWrap`) keeps its full `--radius-input` on ALL four
+// corners even when sandwiched between addons. Visible result: Input's
+// inner rounded corner pokes through at the addon boundary.
+//
+// Fix: expose `--input-wrap-radius` as an override channel on the inputWrap
+// (see Input.module.scss) and set it from here based on sibling position.
+// CSS custom property inheritance cascades the value from `.field` down
+// into `.inputWrap` without touching Input.tsx or using cross-module
+// selectors.
+
+.root > *:not(:first-child):not(:last-child) {
+  --input-wrap-radius: 0;
+}
+
+.root > *:first-child:not(:last-child) {
+  --input-wrap-radius: var(--radius-input) 0 0 var(--radius-input);
+}
+
+.root > *:last-child:not(:first-child) {
+  --input-wrap-radius: 0 var(--radius-input) var(--radius-input) 0;
+}

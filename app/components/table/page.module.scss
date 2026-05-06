@@ -1,0 +1,59 @@
+@use 'mixins' as mx;
+
+.main {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-10);
+  max-width: 1024px;
+  margin: 0 auto;
+  padding: var(--space-10) var(--space-6);
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.intro {
+  @include mx.body-base;
+  max-width: 60ch;
+  margin: 0;
+  color: var(--color-text-secondary);
+}
+
+.back {
+  @include mx.body-small;
+  width: fit-content;
+  color: var(--color-text-secondary);
+  text-decoration: none;
+
+  &:hover {
+    color: var(--color-text-primary);
+  }
+}
+
+.demo {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.caption {
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-sm);
+}
+
+.codeBlock {
+  display: block;
+  padding: var(--space-3) var(--space-4);
+  background: var(--color-surface-raised);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-md);
+  font-family: var(--font-mono);
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+  line-height: var(--line-height-relaxed);
+  white-space: pre;
+  overflow-x: auto;
+}

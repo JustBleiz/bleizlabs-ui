@@ -1,0 +1,316 @@
+@use '../../../styles/mixins' as mx;
+
+// Command — Cmd+K command palette (Phase 10 CI19).
+// SECOND composition Epic — combines /combobox/ + /dialog-modal/ APG patterns.
+// Reuses Dialog useFocusTrap + FloatingPortal E23. Reimplements filter + listbox
+// with shared patterns from Combobox E28.
+
+// ──────────────────────────────────────────────────────────────────────────
+// Hidden registry (when dialog closed) — keeps item state alive without render
+// ──────────────────────────────────────────────────────────────────────────
+
+.hiddenRegistry {
+  display: none;
+}
+
+// ──────────────────────────────────────────────────────────────────────────
+// .portalRoot — full-viewport fixed container holding overlay + content
+// ──────────────────────────────────────────────────────────────────────────
+
+.portalRoot {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-modal, 1000);
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: 10vh;
+  padding-inline: var(--space-4);
+  pointer-events: none;
+}
+
+// ──────────────────────────────────────────────────────────────────────────
+// .overlay — backdrop; covers full viewport, closes on click
+// ──────────────────────────────────────────────────────────────────────────
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  background-color: var(--color-overlay);
+  pointer-events: auto;
+  animation: cmd-overlay-in var(--duration-normal) var(--easing-default);
+}
+
+// ──────────────────────────────────────────────────────────────────────────
+// .root — dialog surface (primary wrapper per D11 convention)
+// ──────────────────────────────────────────────────────────────────────────
+
+.root {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 40rem;
+  max-height: min(70vh, 37.5rem);
+  background-color: var(--color-surface-raised, var(--color-surface));
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg, var(--radius-md));
+  box-shadow: var(--shadow-lg);
+  overflow: hidden;
+  pointer-events: auto;
+  animation: cmd-content-in var(--duration-normal) var(--easing-default);
+
+  &:focus {
+    outline: none;
+  }
+}
+
+@keyframes cmd-overlay-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes cmd-content-in {
+  from {
+    opacity: 0;
+    transform: translateY(-0.5rem) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+// ──────────────────────────────────────────────────────────────────────────
+// .inputWrap — search icon + input row
+// ──────────────────────────────────────────────────────────────────────────
+
+.inputWrap {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-4);
+  border-bottom: 1px solid var(--color-border-subtle);
+  flex-shrink: 0;
+}
+
+.inputIcon {
+  color: var(--color-text-muted);
+  flex-shrink: 0;
+}
+
+.input {
+  flex: 1;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: var(--color-text-primary);
+  font: inherit;
+  font-size: var(--font-size-base);
+  line-height: 1.5;
+  caret-color: var(--color-brand);
+
+  &::placeholder {
+    color: var(--color-text-muted);
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
+}
+
+// ──────────────────────────────────────────────────────────────────────────
+// .list — scrollable listbox container
+// ──────────────────────────────────────────────────────────────────────────
+
+.list {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: var(--space-2);
+  scroll-behavior: smooth;
+}
+
+// ──────────────────────────────────────────────────────────────────────────
+// .empty — 0-match placeholder
+// ──────────────────────────────────────────────────────────────────────────
+
+.empty {
+  padding: var(--space-6) var(--space-4);
+  text-align: center;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+}
+
+// ──────────────────────────────────────────────────────────────────────────
+// .loading — async placeholder
+// ──────────────────────────────────────────────────────────────────────────
+
+.loading {
+  padding: var(--space-6) var(--space-4);
+  text-align: center;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+}
+
+// ──────────────────────────────────────────────────────────────────────────
+// .group — section with optional heading
+// ──────────────────────────────────────────────────────────────────────────
+
+.group {
+  display: flex;
+  flex-direction: column;
+  padding-block: var(--space-1);
+
+  &[data-hidden='true'] {
+    display: none;
+  }
+
+  & + & {
+    border-top: 1px solid var(--color-border-subtle);
+    margin-top: var(--space-1);
+    padding-top: var(--space-2);
+  }
+}
+
+.groupHeading {
+  padding: var(--space-1) var(--space-3);
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--color-text-muted);
+}
+
+.groupItems {
+  display: flex;
+  flex-direction: column;
+}
+
+// ──────────────────────────────────────────────────────────────────────────
+// .item — selectable row
+// ──────────────────────────────────────────────────────────────────────────
+
+.item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-md);
+  color: var(--color-text-primary);
+  font-size: var(--font-size-sm);
+  line-height: 1.4;
+  cursor: pointer;
+  user-select: none;
+  transition:
+    background-color var(--duration-fast) var(--easing-default),
+    color var(--duration-fast) var(--easing-default);
+
+  &[data-highlighted='true'] {
+    background-color: var(--color-surface-muted);
+    color: var(--color-brand);
+  }
+
+  &[data-disabled='true'] {
+    color: var(--color-text-muted);
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+
+  @include mx.touch-target;
+}
+
+// ──────────────────────────────────────────────────────────────────────────
+// .separator — visual divider
+// ──────────────────────────────────────────────────────────────────────────
+
+.separator {
+  height: 1px;
+  margin-block: var(--space-1);
+  background-color: var(--color-border-subtle);
+}
+
+// ──────────────────────────────────────────────────────────────────────────
+// .shortcut — inline kbd pill (decorative)
+// ──────────────────────────────────────────────────────────────────────────
+
+.shortcut {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  font-family: var(--font-mono, monospace);
+  font-size: var(--font-size-xs);
+  // E142 L4 F9: --color-text-muted (#9d9d9d) on surface-raised (#3f3f3f)
+  // computes 3.88:1 — fails WCAG 1.4.3 AA (4.5:1 required for small text).
+  // --color-text-secondary is theme-aware: light neutral-700 / dark
+  // neutral-300 on card surfaces, hitting ≥4.5:1 across modes.
+  color: var(--color-text-secondary);
+  letter-spacing: 0.04em;
+}
+
+// ──────────────────────────────────────────────────────────────────────────
+// prefers-reduced-motion — disable animations
+// ──────────────────────────────────────────────────────────────────────────
+
+@media (prefers-reduced-motion: reduce) {
+  .overlay,
+  .root {
+    animation: none;
+  }
+
+  .item,
+  .list {
+    transition: none;
+    scroll-behavior: auto;
+  }
+}
+
+// ──────────────────────────────────────────────────────────────────────────
+// forced-colors: active — Windows HCM token mapping
+// ──────────────────────────────────────────────────────────────────────────
+
+@media (forced-colors: active) {
+  .overlay {
+    background-color: Canvas;
+  }
+
+  .root {
+    background-color: Canvas;
+    border-color: ButtonText;
+    color: CanvasText;
+  }
+
+  .input {
+    color: CanvasText;
+    background-color: Canvas;
+  }
+
+  .item[data-highlighted='true'] {
+    background-color: Highlight;
+    color: HighlightText;
+  }
+
+  .item[data-disabled='true'] {
+    color: GrayText;
+  }
+
+  .separator {
+    background-color: ButtonText;
+  }
+
+  .groupHeading,
+  .empty,
+  .loading,
+  .shortcut {
+    color: GrayText;
+  }
+}

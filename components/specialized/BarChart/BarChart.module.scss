@@ -1,0 +1,149 @@
+// =============================================================================
+// BarChart — pure-CSS single-series bars (Phase 6 P9, Tier B, server-safe)
+// =============================================================================
+// Token-only colors (consumer can override per-datum via inline `--bar-fill`).
+// Highlight variant uses gradient fill + ring + shadow without crossing into
+// `color-mix` levels that fail dark-mode AA. Reduced-motion suppresses
+// transitions globally.
+
+@use '../../../styles/mixins' as mx;
+
+// ----------------------------------------------------------------------------
+// 1. ROOT — outer wrapper, drives layout + table positioning context
+// ----------------------------------------------------------------------------
+.root {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  width: 100%;
+  color: var(--color-text-primary);
+}
+
+// ----------------------------------------------------------------------------
+// 2. GRID — equal-column layout, --bars-count + --bar-chart-height injected
+//    from the component (CSS variables, not inline width/height) so consumers
+//    can override via className without specificity wars.
+// ----------------------------------------------------------------------------
+.grid {
+  display: grid;
+  grid-template-columns: repeat(var(--bars-count, 6), 1fr);
+  gap: var(--space-3);
+  align-items: end;
+  height: var(--bar-chart-height, 200px);
+  padding-block: var(--space-2);
+}
+
+// ----------------------------------------------------------------------------
+// 3. COLUMN — bar + label vertical stack
+// ----------------------------------------------------------------------------
+.column {
+  display: grid;
+  grid-template-rows: 1fr auto;
+  gap: var(--space-2);
+  height: 100%;
+  min-width: 0;
+}
+
+// ----------------------------------------------------------------------------
+// 4. BAR — interactive button surface, no chrome of its own
+// ----------------------------------------------------------------------------
+.bar {
+  --bar-height: 0%;
+  --bar-fill: var(--color-brand);
+
+  appearance: none;
+  border: 0;
+  background: transparent;
+  padding: 0;
+  cursor: pointer;
+  display: flex;
+  align-items: flex-end;
+  justify-content: stretch;
+  height: 100%;
+  border-radius: var(--radius-sm);
+  transition: filter var(--duration-normal) var(--easing-default);
+
+  // Coarse-pointer hit-area floor (D13). Default chart height (200px) already
+  // exceeds 44px on the vertical axis, so min-height is a no-op in practice;
+  // min-width forces narrow charts (12+ bars on phone widths) to overflow
+  // horizontally rather than render unhittable bars.
+  @include mx.touch-target;
+
+  &:hover .barFill,
+  &:focus-visible .barFill {
+    filter: brightness(1.12);
+  }
+
+  &:focus-visible {
+    outline: none;
+    box-shadow: var(--focus-ring);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+
+    &:hover .barFill,
+    &:focus-visible .barFill {
+      filter: none;
+    }
+  }
+}
+
+// ----------------------------------------------------------------------------
+// 5. BAR FILL — actual colored block, height drives via custom property
+// ----------------------------------------------------------------------------
+.barFill {
+  display: block;
+  width: 100%;
+  height: var(--bar-height, 0%);
+  // Top corners rounded; bottom corners square (bars sit on the chart
+  // baseline — rounding the bottom would create a visible gap).
+  border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+  background: var(--bar-fill);
+  transition: height var(--duration-normal) var(--easing-default);
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+  }
+}
+
+// ----------------------------------------------------------------------------
+// 6. HIGHLIGHT — accent treatment for highlightIndex
+//    Gradient fill (88% bottom → full top) + 1px ring + soft drop shadow.
+//    The ring uses `color-mix` against the bar's own fill so it adapts to
+//    per-datum `color` overrides without re-themeing the whole component.
+// ----------------------------------------------------------------------------
+.barHighlight {
+  .barFill {
+    background: linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--bar-fill) 75%, transparent) 0%,
+      var(--bar-fill) 100%
+    );
+    box-shadow:
+      0 0 0 1px color-mix(in srgb, var(--bar-fill) 35%, transparent),
+      0 6px 16px -8px color-mix(in srgb, var(--bar-fill) 60%, transparent);
+  }
+}
+
+// ----------------------------------------------------------------------------
+// 7. LABEL — bar caption below the bar
+// ----------------------------------------------------------------------------
+.label {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+  font-weight: var(--font-weight-medium);
+  text-align: center;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+// ----------------------------------------------------------------------------
+// 8. SR ONLY — visually-hidden data table (a11y truth source)
+// ----------------------------------------------------------------------------
+.srOnly {
+  @include mx.sr-only;
+}

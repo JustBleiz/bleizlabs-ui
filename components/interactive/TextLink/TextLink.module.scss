@@ -1,0 +1,65 @@
+/* TextLink — inline atelier link atom. Framework-agnostic (no next/link). */
+
+@use '../../../styles/mixins' as mx;
+
+.root {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--color-text-primary);
+  text-decoration: none;
+  font-weight: var(--font-weight-semibold);
+  font-size: var(--font-size-base);
+  padding-block: var(--space-3);
+  border-bottom: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  transition:
+    border-color var(--duration-fast) var(--easing-default),
+    gap var(--duration-normal) var(--easing-default),
+    color var(--duration-fast) var(--easing-default);
+}
+
+.root:hover {
+  border-bottom-color: var(--color-brand);
+  gap: var(--space-3);
+  color: var(--color-brand);
+}
+
+.root:focus-visible {
+  @include mx.focus-ring;
+  outline-offset: var(--space-1);
+  border-bottom-color: var(--color-brand);
+  color: var(--color-brand);
+}
+
+.arrow {
+  transition: transform var(--duration-normal) var(--easing-apple);
+}
+
+.root:hover .arrow,
+.root:focus-visible .arrow {
+  transform: translateX(var(--space-1));
+}
+
+// Windows High Contrast Mode — map to system colors so focus ring and link
+// state stay visible when user-agent strips custom palette. `LinkText` is
+// the HCM-defined link color; `CanvasText` is the foreground text color.
+@media (forced-colors: active) {
+  .root {
+    color: LinkText;
+  }
+
+  .root:hover,
+  .root:focus-visible {
+    color: LinkText;
+    border-bottom-color: LinkText;
+    outline-color: CanvasText;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .root,
+  .arrow {
+    transition: none;
+  }
+}

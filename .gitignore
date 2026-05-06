@@ -1,0 +1,63 @@
+# Dependencies
+node_modules/
+yarn.lock
+pnpm-lock.yaml
+# package-lock.json committed (required for CI npm ci + reproducible builds)
+
+# Build output
+dist/
+build/
+playground/compiled.css
+playground/compiled.css.map
+
+# Playwright (E142 L1)
+/playwright-report/
+/test-results/
+/playwright/.cache/
+
+# Next.js
+.next/
+out/
+next-env.d.ts
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# IDE / Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Testing
+coverage/
+.nyc_output/
+
+# TypeScript (Phase 1+)
+*.tsbuildinfo
+
+# npm pack artifacts (generated locally for test consumers)
+*.tgz
+
+# Local component-build / refactor artifacts (screenshots, audit reports — not for repo)
+LOG/
+
+# Internal work-unit notes (devlog, audit rounds, scratch context — not for repo)
+work/
+
+# CLI bundle (built at publish time via prepublishOnly; regenerable from cli/src/)
+cli-dist/

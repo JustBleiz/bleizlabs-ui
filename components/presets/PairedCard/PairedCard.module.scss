@@ -1,0 +1,43 @@
+// PairedCard — v0.4.0 E146
+// Thin preset over Card atom. Accent line routed via Card's variant="accent"
+// + accentColor which reads our local `--paired-card-accent` CSS var.
+// Per-variant defaults live in .tsx (CSSProperties injection); consumers can
+// override by setting `--paired-card-accent` at the call site.
+
+.root {
+  // Expose the accent channel as a local custom property so the cascade
+  // keeps the color resolvable by both Card's accent ribbon AND any
+  // composed atoms inside the body that want to tint to match (e.g.,
+  // a Badge or Text color bound via `color: var(--paired-card-accent)`).
+  // The value itself is set inline per variant from the .tsx file.
+}
+
+// Variant class hooks — currently only carry intent in the DOM for test
+// snapshots / data-attribute-style selectors. Visual routing happens via
+// inline style → Card's accentColor prop. Kept as named classes so future
+// variant-specific tweaks (e.g., per-variant header weight) have a target.
+.variant-good {
+  // Reserved for future good-variant tweaks.
+}
+
+.variant-bad {
+  // Reserved for future bad-variant tweaks.
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.footer {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}

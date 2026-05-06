@@ -1,0 +1,19 @@
+// TableHeader — distinct background + uppercase labels for column headers.
+// Works with TableCell `as="th"` to produce semantic column headers that
+// screen readers announce for each body cell.
+
+.root {
+  background: var(--color-surface-raised);
+
+  & > tr > th,
+  & > tr > td {
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-semibold);
+    text-transform: uppercase;
+    letter-spacing: var(--letter-spacing-wider);
+    // Headers should never wrap mid-label unless the consumer explicitly
+    // allows it — keeps column alignment clean as the table scrolls.
+    white-space: nowrap;
+  }
+}

@@ -1,0 +1,195 @@
+// _project-settings.scss
+//
+// THE SEED FILE — change these values to rebrand the entire design system.
+//
+// After any change here, `_generator.scss` cascades new values through:
+// color scales (50-900), shadows, glows, interactive states (hover/active/focus),
+// light/dark surface mapping, and semantic spacing/radius tokens.
+// You do not edit the generator directly — only this file.
+//
+// Default starter palette is monochromatic gray (D24 Option A) — an intentional
+// "fresh template" signal. Fork projects should swap $seed-brand with their
+// actual brand color as the first customization step.
+//
+// `!default` on every seed enables consumer override. Do NOT `@use` this
+// settings file directly from a consumer — that loads only the seeds and
+// will double-load when `styles/index.scss` then forwards them again. The
+// correct consumer patterns are:
+//
+//   npm install:
+//     @use '@bleizlabs/ui/styles' with (
+//       $seed-brand: #00E0B8,
+//       $seed-accent: #7C3AED
+//     );
+//
+//   copy-to-project install — edit this file directly:
+//     $seed-brand: #00E0B8;
+//     $seed-accent: #7C3AED;
+//
+// Architectural context: ../../docs/decisions.md (D1-D26)
+//   D3  — seed-based token generation
+//   D9  — spacing scale (Tailwind-style 4px unit)
+//   D10 — runtime theme toggle via [data-theme]
+//   D12 — breakpoints
+//   D24 — naming convention (shadcn-aligned flat)
+
+// ============================================================================
+// MODE — which theme loads first (before any JS runs)
+// ============================================================================
+// Both light AND dark themes are generated at build time. This sets the
+// default. Runtime switch: toggle `data-theme="dark"|"light"` on <html>.
+
+$seed-mode: dark !default; // dark | light
+
+// ============================================================================
+// SEMANTIC COLORS — seeds for color scale generation
+// ============================================================================
+// Each seed is expanded to a 50-900 scale by the generator (tint/shade functions).
+// Monochromatic gray defaults = fresh template. Change $seed-brand first.
+
+// Brand — primary interactive color (buttons, links, focus rings, active states)
+// Default: neutral gray-500 (signals "set me to your brand color")
+$seed-brand: #737373 !default;
+
+// Accent — secondary highlight (badges, subtle emphasis)
+// Default: same neutral — consumer decides if they want a distinct accent hue
+$seed-accent: #737373 !default;
+
+// Neutral — gray scale backbone (backgrounds, borders, text, surfaces)
+// Generator produces light (gray-50..gray-200 bg) and dark (gray-900..gray-950 bg) surfaces from this.
+$seed-neutral: #737373 !default;
+
+// Status colors — semantic meaning, industry-standard defaults
+$seed-error: #ef4444 !default; // red-500
+$seed-warning: #eab308 !default; // yellow-500
+$seed-success: #22c55e !default; // green-500
+$seed-info: #3b82f6 !default; // blue-500
+
+// ============================================================================
+// TYPOGRAPHY — dual font system (primary for headings, secondary for body)
+// ============================================================================
+// $seed-font-primary    → Heading component (h1-h4), display text, marketing hero
+// $seed-font-secondary  → Text component (body, small, caption, label), paragraphs
+//
+// Dual font pattern allows distinctive brand heading typography paired with
+// readable body font. Default starter uses Inter for both (safe, widely loved,
+// excellent screen rendering). Fork projects typically swap $seed-font-primary
+// for a brand display font (Satoshi, Cabinet Grotesk, custom) and keep Inter
+// for body to preserve readability.
+
+$seed-font-primary: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif !default;
+$seed-font-secondary: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif !default;
+$seed-font-mono: ui-monospace, 'SF Mono', Consolas, Menlo, monospace !default;
+
+// Font scale multiplier — 1 = default, 1.125 = 12.5% larger globally
+$seed-font-scale: 1 !default;
+
+// ============================================================================
+// SPACING SCALE — Tailwind-style 4px unit (D9 updated 2026-04-14)
+// ============================================================================
+// Rule: index × 4 = pixels
+// The generator exposes these as --gap-* / --padding-* CSS variables.
+
+$seed-spacing-scale: (
+  0: 0,
+  1: 4,
+  2: 8,
+  3: 12,
+  4: 16,
+  5: 20,
+  6: 24,
+  7: 28,
+  8: 32,
+  10: 40,
+  12: 48,
+  14: 56,
+  16: 64,
+  20: 80,
+) !default;
+
+// Default gap values (semantic) — referenced by layout atoms and card presets
+// These are indexes into $seed-spacing-scale above.
+$seed-page-gap: 6 !default; // 24px — between main page sections
+$seed-section-gap: 4 !default; // 16px — between elements within a section
+$seed-card-gap: 3 !default; // 12px — gap inside cards between children
+$seed-items-gap: 3 !default; // 12px — between list items
+$seed-tight-gap: 2 !default; // 8px — icon+text, badge row, close items
+
+// Default padding values
+$seed-card-padding: 3 !default; // 12px — default compact card padding
+$seed-page-padding: 6 !default; // 24px — page-level top/bottom padding
+
+// ============================================================================
+// RADIUS — named scale (pixel values intentional, brand-dependent)
+// ============================================================================
+
+$seed-radius-scale: (
+  none: 0,
+  sm: 4, // 4px — tight corners, small badges
+  md: 8, // 8px — button, input
+  lg: 12, // 12px — card default (D14-adjacent)
+  xl: 16, // 16px — large card, modal, drawer
+  '2xl': 24, // 24px — hero card
+  full: 9999, // fully rounded (avatar circle, pill)
+) !default;
+
+// Default radius (semantic)
+$seed-card-radius: lg !default; // 12px
+$seed-input-radius: md !default; // 8px
+$seed-badge-radius: full !default; // pill
+
+// ============================================================================
+// ANIMATION TIMING
+// ============================================================================
+
+$seed-duration-fast: 150ms !default; // micro-interactions (quick press, toggle)
+$seed-duration-normal: 250ms !default; // standard transitions (open/close, slide, fade)
+$seed-duration-slow: 500ms !default; // slow reveals (skeleton shimmer, backdrop fade)
+
+// Hover-specific tuned durations — atelier premium polish for hover state
+// transitions on interactive surfaces. Slower than `normal` for deliberate,
+// non-snappy feel (snap → fade). Separate tokens for button-sized vs card-
+// sized hover surfaces because natural feel differs (small = slightly faster,
+// large = slower for smooth lift). v0.4.1+
+//
+// Consumers read as `var(--duration-hover)` / `var(--duration-card-hover)`.
+// Library components stay on `--duration-fast` / `--duration-normal` by
+// default — these tokens are opt-in for projects wanting smoother hover
+// polish without bumping the library's own transition durations
+// (which would slow modal/drawer/dialog animations too).
+$seed-duration-hover: 280ms !default; // button / small interactive element hover
+$seed-duration-card-hover: 320ms !default; // card / large surface hover (border/transform/shadow)
+
+$seed-easing-default: cubic-bezier(0.4, 0, 0.2, 1) !default; // ease-in-out Material-like
+
+// ============================================================================
+// BREAKPOINTS — mobile-first (D12)
+// ============================================================================
+// Referenced by _mixins.scss bp-* helpers. Do not reference directly in components
+// — always use `@include mx.bp-md { }` etc.
+
+$seed-bp-sm: 640px !default; // large phone
+$seed-bp-md: 768px !default; // tablet portrait
+$seed-bp-lg: 1024px !default; // tablet landscape / small desktop
+$seed-bp-xl: 1280px !default; // desktop
+$seed-bp-2xl: 1440px !default; // large desktop / Figma standard frame
+
+// ============================================================================
+// CONTROL SIZING — touch-target seed (WCAG 2.1 SC 2.5.5)
+// ============================================================================
+// Single seed governing minimum interactive control dimension on coarse-pointer
+// devices (touch). 44px is the WAI/WCAG 2.1 SC 2.5.5 minimum target size for
+// pointer inputs (excluding inline links, intentionally-grouped controls, and
+// browser-default UA controls). The library exposes this as `--size-touch-min`
+// so `Calendar` cells, `InputOTP` slots, `Toast` close, `DatePicker` cells,
+// `Carousel` nav, and `Slider` thumbs all reference one source of truth at the
+// `@media (pointer: coarse)` breakpoint. Consumers building accessibility-
+// stricter products (senior care, motor-impaired audiences) override to 48px
+// or 56px in `globals.scss` and the entire library responds.
+//
+// Why a seed and not a hardcoded `--space-11` extension: 44px is intentionally
+// off the 4px-step scale (would require breaking the Tailwind-style 0,1,2,3,4,
+// 5,6,7,8,10,12,14,16,20 contract for a single value). Dedicated semantic
+// touch-min token is the cleaner solution per R22 (b) "dedicated semantic
+// meaning when value doesn't 1:1 map to existing scale".
+$seed-touch-target: 44px !default;

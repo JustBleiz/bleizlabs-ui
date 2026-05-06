@@ -1,0 +1,100 @@
+@use 'mixins' as mx;
+
+.main {
+  max-width: 1024px;
+  margin: 0 auto;
+  padding: var(--space-10) var(--space-6);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-10);
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+
+  h1 {
+    @include mx.heading-1;
+    margin: 0;
+  }
+
+  p {
+    @include mx.body-base;
+    color: var(--color-text-secondary);
+    margin: 0;
+  }
+}
+
+.back {
+  @include mx.body-small;
+  color: var(--color-text-secondary);
+  text-decoration: none;
+  width: fit-content;
+
+  &:hover {
+    color: var(--color-text-primary);
+  }
+}
+
+.demo {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+
+  h2 {
+    @include mx.heading-3;
+    margin: 0;
+    color: var(--color-text-primary);
+  }
+}
+
+.col {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.frame {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  padding: var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  min-width: 0;
+}
+
+.label {
+  @include mx.body-small;
+  color: var(--color-text-secondary);
+  font-family: var(--font-mono);
+}
+
+.box {
+  background: var(--color-surface-raised);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-input);
+  padding: var(--space-2) var(--space-3);
+  color: var(--color-text-primary);
+  @include mx.body-small;
+}
+
+.nav {
+  display: contents;
+
+  a {
+    color: var(--color-text-primary);
+    text-decoration: none;
+    padding: var(--space-2) var(--space-3);
+    border-radius: var(--radius-input);
+    background: var(--color-surface-raised);
+    border: 1px solid var(--color-border-subtle);
+    @include mx.body-small;
+
+    &:hover {
+      border-color: var(--color-brand-500);
+    }
+  }
+}

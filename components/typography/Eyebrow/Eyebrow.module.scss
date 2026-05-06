@@ -1,0 +1,89 @@
+// Eyebrow — atelier signature: 0.7rem uppercase tabular-nums + 0.08em
+// tracking + medium weight + optional 2-digit zero-padded numeric prefix
+// with hairline connector.
+//
+// The 0.7rem and 0.08em literals ARE the eyebrow scale itself — they are
+// not magic numbers but the atelier vocabulary primitive. They sit between
+// the type scale's `--font-size-xs` (0.75rem) and a hypothetical xxs.
+//
+// Typography vocabulary moved to `mx.eyebrow-typography` shared with
+// `Text` variant="eyebrow" (single source of truth). Layout (display/gap/
+// align-items) stays here because Eyebrow has multi-child structure (index +
+// hairline + label) while Text variant="eyebrow" is single-element.
+
+@use '../../../styles/mixins' as mx;
+
+.root {
+  @include mx.eyebrow-typography;
+
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin: 0;
+  color: var(--eyebrow-color, var(--color-text-muted));
+}
+
+// ---------------------------------------------------------------------------
+// Tones — color tier
+// ---------------------------------------------------------------------------
+
+.toneMuted {
+  --eyebrow-color: var(--color-text-muted);
+}
+
+.toneSecondary {
+  --eyebrow-color: var(--color-text-secondary);
+}
+
+.toneStrong {
+  --eyebrow-color: var(--color-text-primary);
+}
+
+// ---------------------------------------------------------------------------
+// Slots
+// ---------------------------------------------------------------------------
+
+.label {
+  display: inline-block;
+}
+
+.index {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  // Independent color so the index reads as a structural marker even when
+  // the label tone is muted. Strong tone aligns with brand-strong for the
+  // eyebrow's role as a visual track marker.
+  color: var(--eyebrow-index-color, var(--color-text-secondary));
+}
+
+.toneStrong .index {
+  --eyebrow-index-color: var(--color-brand-strong);
+}
+
+// 14px hairline connector between the numeric index and the label —
+// the established atelier vocabulary. Gradient fade emphasises the
+// connector origin at the index, dissipating into the label.
+.hairline {
+  flex: 0 0 auto;
+  display: inline-block;
+  width: 14px;
+  height: 1px;
+  background: linear-gradient(
+    to right,
+    var(--eyebrow-color, var(--color-text-muted)) 0%,
+    transparent 100%
+  );
+  // Vertical alignment touch — the hairline reads as a baseline tick when
+  // pulled down by 1px relative to the cap-height of uppercase digits.
+  margin-top: 1px;
+}
+
+// ---------------------------------------------------------------------------
+// Modifier — withIndex toggles tighter gap to bring index/label together
+// ---------------------------------------------------------------------------
+
+.withIndex {
+  // Default gap (--space-2 = 8px) is correct for index + hairline + label.
+  // Reserved for future overrides — keeps the modifier class slot live.
+}

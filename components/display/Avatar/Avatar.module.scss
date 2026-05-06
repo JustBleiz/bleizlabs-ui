@@ -1,0 +1,117 @@
+.root {
+  // `overflow` must NOT live on .root — the status dot is positioned slightly
+  // outside the avatar's rounded clip region (right: 4%, bottom: 4%) and any
+  // clip on root erases it. Instead .image and .fallback each inherit the
+  // root's border-radius and carry their own `overflow: hidden` so the image
+  // itself stays clipped to the avatar shape while the status dot remains
+  // free to overlap the edge.
+  position: relative;
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-surface-raised);
+  color: var(--color-text-secondary);
+  font-weight: var(--font-weight-semibold);
+  line-height: 1;
+  user-select: none;
+}
+
+.image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: inherit;
+  overflow: hidden;
+}
+
+.fallback {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  text-transform: uppercase;
+  border-radius: inherit;
+  overflow: hidden;
+}
+
+// ============================================================================
+// SHAPE
+// ============================================================================
+
+.shapeCircle {
+  border-radius: var(--radius-full);
+}
+
+.shapeRounded {
+  border-radius: var(--radius-lg);
+}
+
+// ============================================================================
+// SIZE — square dimensions via --space-* tokens, fallback font-size scales
+// with diameter (xs/xl use --avatar-font-* gap-fill tokens, sm/md/lg reuse
+// --font-size-* scale per R22 token reuse-first)
+// ============================================================================
+
+.sizeXs {
+  width: var(--space-6); // 24px
+  height: var(--space-6);
+  font-size: var(--avatar-font-xs); // 10px (gap-fill token)
+}
+
+.sizeSm {
+  width: var(--space-8); // 32px
+  height: var(--space-8);
+  font-size: var(--font-size-xs); // 12px
+}
+
+.sizeMd {
+  width: var(--space-10); // 40px
+  height: var(--space-10);
+  font-size: var(--font-size-sm); // 14px
+}
+
+.sizeLg {
+  width: var(--space-14); // 56px
+  height: var(--space-14);
+  font-size: var(--font-size-lg); // 18px
+}
+
+.sizeXl {
+  width: var(--space-20); // 80px
+  height: var(--space-20);
+  font-size: var(--avatar-font-xl); // 26px (gap-fill token)
+}
+
+// ============================================================================
+// STATUS DOT — bottom-right, scaled relative to avatar size
+// ============================================================================
+
+.status {
+  position: absolute;
+  right: 4%;
+  bottom: 4%;
+  width: 25%;
+  height: 25%;
+  min-width: var(--space-2); // 8px (R22 reuse)
+  min-height: var(--space-2);
+  border: 2px solid var(--color-bg); // 2px = decorative ring (NIE token candidate)
+  border-radius: var(--radius-full);
+}
+
+.statusOnline {
+  background: var(--color-success);
+}
+
+.statusOffline {
+  background: var(--color-text-muted);
+}
+
+.statusBusy {
+  background: var(--color-error);
+}
+
+.statusAway {
+  background: var(--color-warning);
+}

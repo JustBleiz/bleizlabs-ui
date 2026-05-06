@@ -1,0 +1,165 @@
+@use '../../../styles/mixins' as mx;
+
+.root {
+  display: flex;
+  flex-direction: column;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+.open {
+  background: var(--color-surface-raised);
+}
+
+.trigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  width: 100%;
+  padding: var(--space-4) var(--space-5);
+  background: transparent;
+  border: none;
+  color: var(--color-text-primary);
+  font-family: var(--font-secondary);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-medium);
+  text-align: left;
+  cursor: pointer;
+  user-select: none;
+
+  @include mx.touch-target;
+
+  &:focus-visible {
+    @include mx.focus-ring;
+    outline-offset: -2px;
+  }
+
+  &:hover:not(:disabled) {
+    background: var(--color-surface-raised);
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.55;
+  }
+}
+
+.compact .trigger {
+  padding: var(--space-3) var(--space-4);
+  font-size: var(--font-size-sm);
+}
+
+.question {
+  flex: 1;
+  min-width: 0;
+}
+
+.chevron {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--space-5);
+  height: var(--space-5);
+  flex-shrink: 0;
+  color: var(--color-text-secondary);
+  transition: transform var(--duration-normal) var(--easing-default);
+
+  > svg {
+    width: 100%;
+    height: 100%;
+  }
+}
+
+.open .chevron {
+  transform: rotate(180deg);
+}
+
+// Panel expand/collapse — two-tier animation strategy:
+//
+//   1. Baseline (Firefox, pre-interpolate-size browsers): classic
+//      `max-height: 1000px` ceiling transition. Duration is constant
+//      (--duration-normal 250ms); content shorter than 1000px finishes
+//      its visible reveal earlier in the timeline — acceptable fallback.
+//
+//   2. Progressive (Chrome 129+/Sep 2024, Safari 26+/2025, Edge 129+):
+//      `interpolate-size: allow-keywords` enables `height: 0 ↔ auto`
+//      transitions natively. Duration matches actual content height,
+//      so 100px panel and 500px panel both feel proportionally smooth
+//      — the "snappy" feel reported for short panels under the
+//      max-height ceiling is eliminated. Uses `--easing-apple`
+//      (cubic-bezier 0.2, 0.8, 0.2, 1) for the intentional "reveal"
+//      ease-out on content-sized panels. Duration stays on the
+//      `--duration-normal` token; the curve alone produces the
+//      snappier reveal feel (v0.3.5 atelier token consumption).
+//
+// E135 note (historical): an earlier attempt used
+// `grid-template-rows: 0fr ↔ 1fr`. Abandoned due to Chromium jank on
+// single auto-sized children — first frame often snapped to target
+// height. interpolate-size is the standards-track solution for that
+// problem and works correctly across affected browsers.
+.panel {
+  max-height: 1000px;
+  overflow: hidden;
+  border-top: 1px solid var(--color-border-subtle);
+  transition:
+    max-height var(--duration-normal) var(--easing-default),
+    border-top-color var(--duration-fast) var(--easing-default);
+}
+
+// Closed state — max-height 0 + border-top-color transparent + pointer-events
+// off. `visibility: hidden` on the inner (applied via .panelClosed below)
+// keeps the subtree out of the accessibility tree and tab order without
+// removing it from the layout tree (removing it would cancel the start
+// frame of the open transition).
+.panelClosed {
+  max-height: 0;
+  border-top-color: transparent;
+  pointer-events: none;
+}
+
+.panelClosed > .panelInner {
+  visibility: hidden;
+}
+
+// Progressive enhancement — content-aware height transition.
+// IMPORTANT: max-height must be `none` in BOTH states when interpolate-size
+// is active. Leaving max-height:0 on .panelClosed (from the fallback block)
+// would cascade through and clamp computed height to 0 instantly — the
+// `height: auto → 0` transition would never get a chance to animate on
+// the close direction. Overriding to `max-height: none` in closed state
+// removes the clamp so the height transition runs both ways symmetrically.
+@supports (interpolate-size: allow-keywords) {
+  .panel {
+    interpolate-size: allow-keywords;
+    max-height: none;
+    height: auto;
+    transition:
+      height var(--duration-normal) var(--easing-apple),
+      border-top-color var(--duration-fast) var(--easing-default);
+  }
+
+  .panelClosed {
+    height: 0;
+    max-height: none;
+  }
+}
+
+.panelInner {
+  padding: var(--space-4) var(--space-5);
+  color: var(--color-text-secondary);
+  line-height: var(--line-height-normal);
+}
+
+.compact .panelInner {
+  padding: var(--space-3) var(--space-4);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .chevron,
+  .panel {
+    transition: none;
+  }
+}

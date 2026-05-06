@@ -1,0 +1,120 @@
+@use '../../../styles/mixins' as mx;
+
+// Wrapper that stacks the clickable label + helper/error below.
+// Stays `inline-flex` so Switch keeps its inline placement in forms when
+// used without helper/error text.
+.field {
+  display: inline-flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.root {
+  // Switch track + thumb dimensions default to library tokens
+  // (--switch-track-w/h, --switch-thumb-size, --switch-thumb-offset) from
+  // _semantics.scss. Size overrides below redefine the track/thumb subset
+  // per-size; `md` size (default) relies on the library defaults so it stays
+  // in sync if projects retune the token values.
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-3);
+  font-family: var(--font-secondary);
+  font-size: var(--font-size-base);
+  color: var(--color-text-primary);
+  cursor: pointer;
+  user-select: none;
+
+  @include mx.touch-target;
+}
+
+// sm-size redefines via dedicated tokens
+// (--switch-{track-w,track-h,thumb-size}-sm) from _semantics.scss instead of
+// hardcoded px. .sizeMd preserved as empty selector because Switch.tsx
+// Class Modules type assertion (`styles.sizeMd!`) requires className to be
+// present at runtime.
+.sizeSm {
+  --switch-track-w: var(--switch-track-w-sm); // 28px
+  --switch-track-h: var(--switch-track-h-sm); // 16px
+  --switch-thumb-size: var(--switch-thumb-size-sm); // 12px
+}
+
+.sizeMd {
+  // Empty — relies on library defaults from _semantics.scss
+  // (--switch-track-w: 36px, --switch-track-h: 20px, --switch-thumb-size: 16px,
+  // --switch-thumb-offset: 2px). Empty selector preserved for runtime className
+  // assertion in Switch.tsx (`styles.sizeMd!`).
+}
+
+.disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.input {
+  @include mx.sr-only;
+}
+
+.track {
+  position: relative;
+  display: inline-block;
+  width: var(--switch-track-w);
+  height: var(--switch-track-h);
+  flex-shrink: 0;
+  background: var(--color-border);
+  border-radius: var(--switch-track-h);
+  transition: background-color var(--duration-fast) var(--easing-default);
+}
+
+.input:focus-visible + .track {
+  @include mx.focus-ring;
+}
+
+.thumb {
+  position: absolute;
+  top: 50%;
+  left: var(--switch-thumb-offset);
+  width: var(--switch-thumb-size);
+  height: var(--switch-thumb-size);
+  background: var(--color-surface);
+  border-radius: 50%;
+  box-shadow: var(--shadow-sm);
+  transform: translateY(-50%);
+  transition: left var(--duration-fast) var(--easing-default);
+}
+
+.input:checked + .track {
+  background: var(--color-brand);
+}
+
+.input:checked + .track .thumb {
+  left: calc(var(--switch-track-w) - var(--switch-thumb-size) - var(--switch-thumb-offset));
+}
+
+.label {
+  display: inline-flex;
+  align-items: center;
+  line-height: var(--line-height-normal);
+}
+
+// Helper + error message plumbing mirrors Input/Textarea.
+.helper {
+  margin: 0;
+  font-family: var(--font-secondary);
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+  line-height: var(--line-height-normal);
+}
+
+.error {
+  // --color-error-strong is theme-aware (red-700 light / red-300 dark)
+  // and keeps the semantic "error red" while meeting WCAG AA contrast.
+  color: var(--color-error-strong);
+  font-weight: var(--font-weight-medium);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .track,
+  .thumb {
+    transition: none;
+  }
+}

@@ -1,0 +1,56 @@
+// Playground-only SCSS entry.
+//
+// The shipped library seeds `$seed-brand` / `$seed-accent` as monochromatic
+// gray `#737373` by design (D5/D25 fresh-template signal — consumers override
+// per-project). That default renders Primary Button / Pressed Toggle labels
+// at ~3.5:1 contrast — below WCAG 2.1 AA — because brand bg and
+// text-inverse are both neutral-derived when brand == neutral.
+//
+// The dev playground is a CONSUMER of the library (exactly like BleizLabs
+// Website v2 or any future adopter). It must provide its own seed overrides
+// so axe-core smoke runs against realistic rendered output, not against the
+// unconfigured fresh-template defaults.
+//
+// Nothing in this file affects the library tarball — it lives under `app/`,
+// not under `styles/` or `components/`. `package.json` `files` whitelist
+// excludes `app/`. Runtime UI deps contract (D5/D25) intact.
+
+@use '../styles/index' as * with (
+  $seed-brand: #06b6d4,
+  $seed-accent: #8b5cf6
+);
+
+// Playground prose is littered with inline <code> references to prop names
+// and API signatures ("`asChild`", "`side: 'left' | 'right'`"). Without
+// explicit styling, UA defaults render `<code>` in the same muted color
+// family as surrounding caption text but on a transparent background,
+// landing below AA contrast. Scope the rule to .main so we don't interfere
+// with components that own their own code rendering (InputOTP, Command).
+// Uses theme-aware tokens — inherits contrast correctness from both themes.
+main code {
+  font-family: var(--font-mono);
+  font-size: 0.95em;
+  color: var(--color-text-primary);
+  background: var(--color-surface-raised);
+  padding: 0.15em 0.4em;
+  border-radius: var(--radius-input);
+  border: 1px solid var(--color-border-subtle);
+}
+
+// Raw <a> in playground prose (links inside <Text variant="body"> demos).
+// Without styling, UA defaults render as browser-blue — low contrast on
+// dark theme surfaces (axe: color-contrast). Underline restores AA-safe
+// link affordance beyond color alone (axe: link-in-text-block).
+// Raw <a> inside playground prose. Exclusions cover anchors that own their
+// styling: `.back` (page-back), `[class*="Button"]` (Button asChild <a>),
+// `[class*="anchor"]` / `[class*="Back"]` (demo section navs).
+main a:not(.back):not([class*="anchor"]):not([class*="Back"]):not([class*="Button"]):not([class*="Sidebar"]):not([class*="Nav"]):not([class*="Card"]):not([class*="SiteHeader"]) {
+  color: var(--color-brand-strong);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+
+  &:hover {
+    color: var(--color-brand);
+  }
+}
+

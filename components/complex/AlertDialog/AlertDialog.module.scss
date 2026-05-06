@@ -1,0 +1,132 @@
+// AlertDialog — Phase 10 Complex Interactive (E16)
+// Forked from Dialog.module.scss with alert-specific additions:
+//   - severity*  classes driving border + glow emphasis (info / warning / critical)
+//   - narrower default sizes (alerts stay compact)
+//   - .actions  flex row for Cancel + Confirm buttons
+//   - no closeButton (alerts require explicit action via buttons, no X escape)
+// Semantic tokens only per D25. prefers-reduced-motion disables animation.
+// `.root` is the outermost portal-rendered element (serves as overlay backdrop)
+// per D11 naming convention. Touch target enforcement on action buttons is
+// delegated to Button atom (which applies mx.touch-target mixin at pointer: coarse).
+
+@use '../../../styles/mixins' as mx;
+
+.root {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-modal);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-4);
+  background: var(--color-overlay);
+  animation: alertDialogOverlayIn var(--duration-normal) var(--easing-default);
+}
+
+.content {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  width: 100%;
+  max-height: calc(100vh - var(--space-8));
+  padding: var(--space-5);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-2xl);
+  overflow-y: auto;
+  animation: alertDialogContentIn var(--duration-normal) var(--easing-default);
+
+  &:focus {
+    outline: none;
+  }
+
+  &:focus-visible {
+    @include mx.focus-ring;
+  }
+}
+
+.sizeSm {
+  max-width: 360px;
+}
+
+.sizeMd {
+  max-width: 480px;
+}
+
+.sizeLg {
+  max-width: 600px;
+}
+
+.severityInfo {
+  border-color: var(--color-info);
+  box-shadow: 0 0 0 1px var(--color-info-subtle), var(--shadow-2xl);
+}
+
+.severityWarning {
+  border-color: var(--color-warning);
+  box-shadow: 0 0 0 1px var(--color-warning-subtle), var(--shadow-2xl);
+}
+
+.severityCritical {
+  border-color: var(--color-error);
+  box-shadow: 0 0 0 1px var(--color-error-subtle), var(--shadow-2xl);
+}
+
+.header {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+}
+
+.title {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.description {
+  margin: 0;
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--space-3);
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--color-border-subtle);
+}
+
+@keyframes alertDialogOverlayIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes alertDialogContentIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .root,
+  .content {
+    animation: none;
+  }
+}

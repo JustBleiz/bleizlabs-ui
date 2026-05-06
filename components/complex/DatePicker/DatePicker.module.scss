@@ -1,0 +1,203 @@
+@use '../../../styles/mixins' as mx;
+
+// DatePicker — accessible date input + Calendar popup composition (Phase 10 CI17).
+// Composes Combobox-style input trigger + Calendar E30 popup in dialog wrapper.
+// Zero-dep parse (ISO yyyy-mm-dd only MVP) + useFloating positioning.
+
+// ──────────────────────────────────────────────────────────────────────────
+// .root — DatePicker wrapper
+// ──────────────────────────────────────────────────────────────────────────
+
+.root {
+  display: inline-block;
+  position: relative;
+  font-family: var(--font-sans);
+}
+
+// ──────────────────────────────────────────────────────────────────────────
+// .triggerWrap — input + calendar icon button
+// ──────────────────────────────────────────────────────────────────────────
+
+.triggerWrap {
+  display: inline-flex;
+  align-items: center;
+  gap: 0;
+  width: 100%;
+  background: var(--input-bg, var(--color-surface-raised));
+  border: 1px solid var(--input-border, var(--color-border-subtle));
+  border-radius: var(--radius-input, var(--radius-sm));
+  overflow: hidden;
+  transition:
+    border-color var(--duration-fast) var(--easing-default),
+    box-shadow var(--duration-fast) var(--easing-default);
+
+  &:focus-within {
+    border-color: var(--input-border-focus, var(--color-brand));
+    box-shadow: var(--focus-ring);
+  }
+}
+
+// ──────────────────────────────────────────────────────────────────────────
+// .input — text input element
+// ──────────────────────────────────────────────────────────────────────────
+
+.input {
+  flex: 1 1 auto;
+  min-width: 0;
+  padding: var(--space-2) var(--space-3);
+  background: transparent;
+  border: 0;
+  outline: 0;
+  color: var(--color-text-primary);
+  font-family: inherit;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.4;
+
+  &::placeholder {
+    color: var(--color-text-muted);
+    opacity: 0.7;
+  }
+
+  &[aria-disabled='true'] {
+    color: var(--color-text-muted);
+    cursor: not-allowed;
+  }
+}
+
+// ──────────────────────────────────────────────────────────────────────────
+// .iconButton — calendar icon trigger inside input
+// ──────────────────────────────────────────────────────────────────────────
+
+.iconButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  // D13 WCAG 2.2 AAA 44×44 touch target on coarse pointers (touch devices).
+  // Fine-pointer (mouse) keeps compact --space-8 (32px) size so the input
+  // doesn't grow visually on desktop where pointer precision is high.
+  // Coarse-pointer fallback grows to --size-touch-min per WCAG 2.1 SC 2.5.5.
+  width: var(--space-8);
+  height: var(--space-8);
+  padding: 0;
+  margin-right: var(--space-1);
+  background: transparent;
+  border: 0;
+  border-radius: var(--radius-sm);
+  color: var(--color-text-muted);
+  cursor: pointer;
+  flex-shrink: 0;
+  transition:
+    background-color var(--duration-fast) var(--easing-default),
+    color var(--duration-fast) var(--easing-default);
+
+  @media (pointer: coarse) {
+    min-width: var(--size-touch-min);
+    min-height: var(--size-touch-min);
+  }
+
+  &:hover:not([aria-disabled='true']) {
+    background: var(--color-surface-hover);
+    color: var(--color-text-primary);
+  }
+
+  &[aria-disabled='true'] {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+
+  &[data-state='open'] {
+    color: var(--color-brand);
+  }
+}
+
+// ──────────────────────────────────────────────────────────────────────────
+// .contentRoot — portal outer wrapper
+// ──────────────────────────────────────────────────────────────────────────
+
+.contentRoot {
+  position: relative;
+  z-index: var(--z-popover);
+}
+
+// ──────────────────────────────────────────────────────────────────────────
+// .content — popup dialog surface
+// ──────────────────────────────────────────────────────────────────────────
+
+.content {
+  background: var(--color-surface-raised);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+  animation: datePickerContentIn var(--duration-fast) var(--easing-default);
+
+  &:focus-visible {
+    outline: none;
+  }
+}
+
+@keyframes datePickerContentIn {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// ──────────────────────────────────────────────────────────────────────────
+// Reduced motion
+// ──────────────────────────────────────────────────────────────────────────
+
+@media (prefers-reduced-motion: reduce) {
+  .triggerWrap,
+  .iconButton,
+  .content {
+    transition: none;
+    animation: none;
+  }
+}
+
+// ──────────────────────────────────────────────────────────────────────────
+// Forced colors (Windows High Contrast Mode)
+// ──────────────────────────────────────────────────────────────────────────
+
+@media (forced-colors: active) {
+  .triggerWrap {
+    border-color: ButtonBorder;
+
+    &:focus-within {
+      border-color: Highlight;
+      box-shadow: none;
+      outline: 2px solid Highlight;
+      outline-offset: 1px;
+    }
+  }
+
+  .input {
+    color: CanvasText;
+
+    &[aria-disabled='true'] {
+      color: GrayText;
+    }
+  }
+
+  .iconButton {
+    color: CanvasText;
+
+    &[aria-disabled='true'] {
+      color: GrayText;
+    }
+
+    &[data-state='open'] {
+      color: Highlight;
+    }
+  }
+
+  .content {
+    border-color: CanvasText;
+    box-shadow: none;
+  }
+}

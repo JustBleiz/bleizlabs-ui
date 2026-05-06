@@ -1,0 +1,9 @@
+// ============================================================================
+// BackLink — thin wrapper over ghost Button with leading arrow
+// ============================================================================
+
+.root {
+  // Reserved for BackLink-specific styling. Button already handles all
+  // visual states (hover/focus/active/disabled) via its variant=ghost.
+  // Leave this class empty so consumers can target `.root` if needed.
+}

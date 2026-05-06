@@ -1,0 +1,643 @@
+// _semantics.scss
+//
+// Emits CSS custom properties (--color-*, --gap-*, --radius-*, --shadow-*, etc.)
+// from generator output. This is the ONLY layer components ever touch.
+//
+// Architecture:
+//   :root                         → theme-independent tokens + default theme surfaces ($seed-mode)
+//   :root[data-theme='light']     → override all surface tokens to light values
+//   :root[data-theme='dark']      → override all surface tokens to dark values
+//
+// Runtime theme switch: JS toggles `data-theme` attribute on <html> element.
+// Default load (before JS) uses $seed-mode value — no flash-of-wrong-theme.
+
+@use 'sass:map';
+@use './project-settings' as *;
+@use './generator' as *;
+
+:root {
+  // ==========================================================================
+  // TYPOGRAPHY
+  // ==========================================================================
+  --font-primary: #{$seed-font-primary};
+  --font-secondary: #{$seed-font-secondary};
+  --font-mono: #{$seed-font-mono};
+
+  --font-size-xs: #{$font-size-xs};
+  --font-size-sm: #{$font-size-sm};
+  --font-size-base: #{$font-size-base};
+  --font-size-lg: #{$font-size-lg};
+  --font-size-xl: #{$font-size-xl};
+  --font-size-2xl: #{$font-size-2xl};
+  --font-size-3xl: #{$font-size-3xl};
+  --font-size-4xl: #{$font-size-4xl};
+  --font-size-5xl: #{$font-size-5xl};
+
+  // Editorial scale tokens. Three sizes that fill gaps in the seed scale for
+  // editorial typography contexts (login hero asides, form cards).
+  // Hero-editorial sits between display-md (3rem ceiling) and display (4.5rem
+  // ceiling) — viewport-fluid clamp for landing/login hero asides where the
+  // hero H1 wants atelier presence without the full display tier weight.
+  // Form-card-title + form-card-subtitle are fixed sizes in the gap between
+  // standard scale steps (lg→xl, sm→base) — form cards typically need title
+  // emphasis below xl but above lg, and supporting copy with editorial
+  // tracking that base+caption miss.
+  --font-size-hero-editorial: clamp(2.25rem, 4.5vw + 0.75rem, 3.25rem);
+  --font-size-form-card-title: 1.375rem; // 22px
+  --font-size-form-card-subtitle: 0.9375rem; // 15px
+
+  --line-height-tight: #{$line-height-tight};
+  --line-height-snug: #{$line-height-snug};
+  --line-height-normal: #{$line-height-normal};
+  --line-height-relaxed: #{$line-height-relaxed};
+
+  // Heading typography line-height gap-fill tokens. Heading.module.scss size
+  // variants display/displayMd/hero-editorial/form-card-title/form-card-subtitle
+  // need line-heights outside the base {tight: 1.2, snug: 1.375, normal: 1.5,
+  // relaxed: 1.625} scale. Dedicated semantic tokens — the atelier display
+  // tier owns its own budget for densely-stacked editorial typography.
+  --line-height-display: 1.05;            // Hero H1 atelier display tier
+  --line-height-display-loose: 1.1;       // Hero-editorial multi-line aside
+  --line-height-form-card-title: 1.25;    // Form-card title compact stack
+  --line-height-form-card-subtitle: 1.45; // Form-card subtitle readable copy
+
+  --font-weight-regular: #{$font-weight-regular};
+  --font-weight-medium: #{$font-weight-medium};
+  --font-weight-semibold: #{$font-weight-semibold};
+  --font-weight-bold: #{$font-weight-bold};
+
+  // Letter-spacing scale — fine typographic control (Phase 3 + retroactive Phase 2 fix)
+  // Defaults map to common ranges: -0.025em (display headings) → 0.18em (atelier ticker)
+  --letter-spacing-tight: -0.015em;
+  --letter-spacing-tighter: -0.025em;
+  --letter-spacing-normal: 0;
+  --letter-spacing-wide: 0.01em;
+  --letter-spacing-wider: 0.06em;
+  // Atelier additions — mono markers + ticker labels for hero/bottomline
+  // patterns. Reused across multiple hero and ticker compositions.
+  --letter-spacing-wide-mono: 0.12em;
+  --letter-spacing-ticker: 0.18em;
+
+  // ==========================================================================
+  // SPACING — full scale + semantic defaults
+  // ==========================================================================
+  --space-0: #{space(0)};
+  --space-1: #{space(1)};
+  --space-2: #{space(2)};
+  --space-3: #{space(3)};
+  --space-4: #{space(4)};
+  --space-5: #{space(5)};
+  --space-6: #{space(6)};
+  --space-7: #{space(7)};
+  --space-8: #{space(8)};
+  --space-10: #{space(10)};
+  --space-12: #{space(12)};
+  --space-14: #{space(14)};
+  --space-16: #{space(16)};
+  --space-20: #{space(20)};
+
+  // Semantic spacing (used by layout atoms and card presets)
+  --gap-page: #{$gap-page};
+  --gap-section: #{$gap-section};
+  --gap-card: #{$gap-card};
+  --gap-items: #{$gap-items};
+  --gap-tight: #{$gap-tight};
+  --padding-card: #{$padding-card};
+  --padding-page: #{$padding-page};
+
+  // ==========================================================================
+  // RADIUS — named scale + semantic defaults
+  // ==========================================================================
+  --radius-none: #{radius(none)};
+  --radius-sm: #{radius(sm)};
+  --radius-md: #{radius(md)};
+  --radius-lg: #{radius(lg)};
+  --radius-xl: #{radius(xl)};
+  --radius-2xl: #{radius('2xl')};
+  --radius-full: #{radius(full)};
+
+  --radius-card: #{$radius-card};
+  --radius-input: #{$radius-input};
+  --radius-badge: #{$radius-badge};
+
+  // ==========================================================================
+  // BRAND COLOR SCALE
+  // ==========================================================================
+  --color-brand-50: #{map.get($brand, 50)};
+  --color-brand-100: #{map.get($brand, 100)};
+  --color-brand-200: #{map.get($brand, 200)};
+  --color-brand-300: #{map.get($brand, 300)};
+  --color-brand-400: #{map.get($brand, 400)};
+  --color-brand-500: #{map.get($brand, 500)};
+  --color-brand-600: #{map.get($brand, 600)};
+  --color-brand-700: #{map.get($brand, 700)};
+  --color-brand-800: #{map.get($brand, 800)};
+  --color-brand-900: #{map.get($brand, 900)};
+  --color-brand-950: #{map.get($brand, 950)};
+
+  // Semantic brand aliases (theme-aware for subtle + strong — prevents
+  // brand-100 from rendering near-white on dark surfaces where it becomes
+  // indistinguishable from the default light theme look). `--color-brand` and
+  // `--color-brand-light` stay theme-independent (vivid brand accent reads on
+  // both surfaces).
+  --color-brand: var(--color-brand-500);
+  --color-brand-light: var(--color-brand-400);
+
+  @if $seed-mode == dark {
+    --color-brand-subtle: var(--color-brand-900);
+    --color-brand-strong: var(--color-brand-300);
+  } @else {
+    --color-brand-subtle: var(--color-brand-100);
+    --color-brand-strong: var(--color-brand-700);
+  }
+
+  // ==========================================================================
+  // ACCENT COLOR SCALE
+  // ==========================================================================
+  --color-accent-50: #{map.get($accent, 50)};
+  --color-accent-100: #{map.get($accent, 100)};
+  --color-accent-200: #{map.get($accent, 200)};
+  --color-accent-300: #{map.get($accent, 300)};
+  --color-accent-400: #{map.get($accent, 400)};
+  --color-accent-500: #{map.get($accent, 500)};
+  --color-accent-600: #{map.get($accent, 600)};
+  --color-accent-700: #{map.get($accent, 700)};
+  --color-accent-800: #{map.get($accent, 800)};
+  --color-accent-900: #{map.get($accent, 900)};
+  --color-accent-950: #{map.get($accent, 950)};
+
+  --color-accent: var(--color-accent-500);
+  --color-accent-subtle: var(--color-accent-100);
+  --color-accent-light: var(--color-accent-400);
+  --color-accent-strong: var(--color-accent-700);
+
+  // ==========================================================================
+  // STATUS COLORS — error / warning / success / info
+  // ==========================================================================
+  // `*-subtle` and `*-strong` are theme-aware — they need to flip shade per
+  // theme so Alerts (and any consumer using them for bg + title) stay
+  // legible on both light and dark surfaces. The base `*` (500 scale) is
+  // theme-independent — the vivid "this is error" hue reads on both
+  // surfaces and drives accent/stripe/icon usage. Default values below
+  // target the `$seed-mode` theme; `:root[data-theme='light']` and
+  // `:root[data-theme='dark']` blocks below override them.
+
+  --color-error: #{map.get($error, 500)};
+  --color-warning: #{map.get($warning, 500)};
+  --color-success: #{map.get($success, 500)};
+  --color-info: #{map.get($info, 500)};
+
+  @if $seed-mode == dark {
+    --color-error-subtle: #{map.get($error, 950)};
+    --color-error-strong: #{map.get($error, 300)};
+    --color-warning-subtle: #{map.get($warning, 950)};
+    --color-warning-strong: #{map.get($warning, 300)};
+    --color-success-subtle: #{map.get($success, 950)};
+    --color-success-strong: #{map.get($success, 300)};
+    --color-info-subtle: #{map.get($info, 950)};
+    --color-info-strong: #{map.get($info, 300)};
+  } @else {
+    --color-error-subtle: #{map.get($error, 100)};
+    --color-error-strong: #{map.get($error, 700)};
+    --color-warning-subtle: #{map.get($warning, 100)};
+    --color-warning-strong: #{map.get($warning, 700)};
+    --color-success-subtle: #{map.get($success, 100)};
+    --color-success-strong: #{map.get($success, 700)};
+    --color-info-subtle: #{map.get($info, 100)};
+    --color-info-strong: #{map.get($info, 700)};
+  }
+
+  // ==========================================================================
+  // NEUTRAL SCALE (raw access if needed; prefer semantic tokens below)
+  // ==========================================================================
+  --color-neutral-50: #{map.get($neutral, 50)};
+  --color-neutral-100: #{map.get($neutral, 100)};
+  --color-neutral-200: #{map.get($neutral, 200)};
+  --color-neutral-300: #{map.get($neutral, 300)};
+  --color-neutral-400: #{map.get($neutral, 400)};
+  --color-neutral-500: #{map.get($neutral, 500)};
+  --color-neutral-600: #{map.get($neutral, 600)};
+  --color-neutral-700: #{map.get($neutral, 700)};
+  --color-neutral-800: #{map.get($neutral, 800)};
+  --color-neutral-900: #{map.get($neutral, 900)};
+  --color-neutral-950: #{map.get($neutral, 950)};
+
+  // ==========================================================================
+  // SHADOWS
+  // ==========================================================================
+  --shadow-sm: #{$shadow-sm};
+  --shadow-md: #{$shadow-md};
+  --shadow-lg: #{$shadow-lg};
+  --shadow-xl: #{$shadow-xl};
+  --shadow-2xl: #{$shadow-2xl};
+  --shadow-overlay: #{$shadow-overlay};
+  --shadow-brand: #{$shadow-brand};
+  --shadow-brand-lg: #{$shadow-brand-lg};
+
+  // Card-specific shadow alias — neutral elevated card lift.
+  --shadow-card: var(--shadow-md);
+
+  // Card-tint shadow channel. Consumer override path for hue-tinted card
+  // shadows (atelier signature, brand-tinted lifts, etc.). Default falls
+  // back to `--shadow-card` so existing surfaces stay byte-for-byte.
+  // Override per theme via consumer's own theme block:
+  //   :root[data-theme='light'] {
+  //     --shadow-card-tint: 0 4px 16px rgba(10, 60, 80, 0.12);
+  //   }
+  //   :root[data-theme='dark'] {
+  //     --shadow-card-tint: 0 4px 24px rgba(70, 90, 180, 0.30);
+  //   }
+  --shadow-card-tint: var(--shadow-card);
+
+  // ==========================================================================
+  // GLOWS
+  // ==========================================================================
+  --glow-brand: #{$glow-brand};
+  --glow-brand-strong: #{$glow-brand-strong};
+  --glow-accent: #{$glow-accent};
+
+  // ==========================================================================
+  // INTERACTIVE STATES
+  // ==========================================================================
+  --hover-brand: #{$hover-brand};
+  --active-brand: #{$active-brand};
+  --hover-accent: #{$hover-accent};
+  --active-accent: #{$active-accent};
+  --focus-ring: #{$focus-ring};
+  --focus-ring-error: #{$focus-ring-error};
+
+  // ==========================================================================
+  // ANIMATION TIMING
+  // ==========================================================================
+  --duration-fast: #{$duration-fast};
+  --duration-normal: #{$duration-normal};
+  --duration-slow: #{$duration-slow};
+  // Hover-polish tokens. Tuned slower than `--duration-normal` (250ms) for
+  // atelier premium hover feel on interactive surfaces — eliminates "snap"
+  // perception in favor of smooth fade. Opt-in: library components still use
+  // `--duration-fast` / `--duration-normal` by default so modal/drawer/dialog
+  // animations stay snappy. Consumers use via
+  // `transition: background-color var(--duration-hover) ...` on buttons and
+  // `transition: border-color var(--duration-card-hover) ...` on cards.
+  --duration-hover: #{$duration-hover};
+  --duration-card-hover: #{$duration-card-hover};
+  --easing-default: #{$easing-default};
+  // Apple-style ease-out used by atelier nav transitions (arrow slide, hover
+  // lift, rule reveal). Keep both `--easing-default` (seed-controlled) and
+  // `--easing-apple` (atelier canonical) for intent clarity at call sites.
+  --easing-apple: cubic-bezier(0.2, 0.8, 0.2, 1);
+
+  // ==========================================================================
+  // ATELIER GEOMETRY — canonical fixed dimensions for the atelier signature
+  // (48×2 divider rule + bullet/corner ticks). Not seed-driven (signature
+  // intentionally stable cross-theme). Consumers may override per-project in
+  // their own :root.
+  //
+  // Rule width/height — divider rule used in heroes and section dividers.
+  // Atelier tick — bullet lists, disclosure items.
+  // Corner tick — illustration frames, comparison cells.
+  // ==========================================================================
+  --atelier-rule-width: 48px;
+  --atelier-rule-height: 2px;
+  --atelier-tick-width: 8px;
+  --atelier-tick-height: 1px;
+  // Fluid corner-tick — smaller on phones (12px) scaling up to 16px on wide
+  // viewports. Used for illustration frame L-shaped corners.
+  --atelier-corner-tick-size: clamp(12px, 1vw + 8px, 16px);
+
+  // ==========================================================================
+  // Z-INDEX SCALE (Phase 10 layering)
+  // ==========================================================================
+  --z-dropdown: #{$z-dropdown};
+  --z-sticky: #{$z-sticky};
+  --z-popover: #{$z-popover};
+  --z-tooltip: #{$z-tooltip};
+  --z-modal: #{$z-modal};
+  --z-toast: #{$z-toast};
+
+  // ==========================================================================
+  // CARD GLASS VARIANT — backdrop-filter intensity
+  // ==========================================================================
+  // Theme-aware glass surface lives in light/dark blocks below. Blur strength
+  // is theme-independent — projects can dial it up for heavier frosted glass.
+  --card-blur: 12px;
+
+  // ==========================================================================
+  // FLOATING UI — arrow dimensions (Popover, HoverCard, Tooltip)
+  // ==========================================================================
+  --popover-arrow-size: 10px;
+
+  // ==========================================================================
+  // FONT FAMILY ALIASES — semantic naming alongside primary/secondary
+  // ==========================================================================
+  // `--font-sans` is the idiomatic alias for `--font-secondary` (the body font);
+  // components that prefer sans-serif naming (Calendar, DatePicker, Toast) use
+  // this alias so the intent is explicit at the call site.
+  --font-sans: var(--font-secondary);
+
+  // ==========================================================================
+  // SEMANTIC SURFACE ALIASES — hover + muted (theme-aware via base tokens)
+  // ==========================================================================
+  // Theme-aware hover + muted shades derived from the neutral scale so they
+  // stay visually distinct from `--color-surface-raised` (which most menu /
+  // dropdown / popover surfaces use as their background). Aliasing to
+  // --color-surface-raised would make hover invisible on menu items (the
+  // hover state would have the exact same background as the container).
+  // Light theme uses neutral-200 (slightly darker than raised-100); dark
+  // theme uses neutral-700 (lighter than raised-800, "lifts" further on
+  // interaction). Default below targets `$seed-mode`.
+  @if $seed-mode == dark {
+    --color-surface-hover: #{map.get($neutral, 700)};
+    --color-surface-muted: #{map.get($neutral, 900)};
+  } @else {
+    --color-surface-hover: #{map.get($neutral, 200)};
+    --color-surface-muted: #{map.get($neutral, 200)};
+  }
+
+  // ==========================================================================
+  // CONTROL SIZING — touch-target minimum
+  // ==========================================================================
+  // Single semantic token derived from $seed-touch-target. Used at
+  // `@media (pointer: coarse)` blocks across Calendar/InputOTP/Toast/
+  // DatePicker/Carousel/Slider so all touch-min surfaces share one source
+  // of truth. Consumer override path: `@use '@bleizlabs/ui/styles' with
+  // ($seed-touch-target: 48px)` or runtime `:root { --size-touch-min: 48px; }`.
+  // Per WCAG 2.1 SC 2.5.5 (Target Size) — 44px is the minimum for
+  // pointer-input targets that aren't inline links / intentionally grouped /
+  // UA-default. Dedicated semantic instead of `--space-11` extension because
+  // 44px sits between scale steps 10 (40px) and 12 (48px) — adding 11 would
+  // break the Tailwind-style 4px-step contract for a single touch-min value.
+  --size-touch-min: #{$seed-touch-target};
+
+  // ==========================================================================
+  // SWITCH DIMENSION TOKENS
+  // ==========================================================================
+  // Library-level defaults for Switch track + thumb (md size). Switch component
+  // overrides these per-size via `.sizeSm` scope (sm-size tokens below).
+  // Projects can override library-wide (e.g., larger touch target on mobile)
+  // by redefining the tokens in their own :root scope.
+  --switch-track-w: 36px;
+  --switch-track-h: 20px;
+  --switch-thumb-size: 16px;
+  --switch-thumb-offset: 2px;
+
+  // ==========================================================================
+  // MICRO TOKENS — single-purpose dimensions outside the --space-* scale
+  // ==========================================================================
+  // Dedicated semantic tokens for single-purpose values that don't map to
+  // the base spacing scale — visual identity preservation with independent
+  // override path.
+  --badge-dot-size: 6px;            // Badge .dot (gap between --space-1 4px and --space-2 8px)
+  --border-width-accent: 3px;       // Card .accentLeft/.accentTop border-width (gap between 2px and 4px)
+
+  // ==========================================================================
+  // ICON-BOX FONT-SIZE GAP-FILL TOKEN
+  // ==========================================================================
+  // IconBox lg 22px doesn't map to base `--font-size-*` scale (xl=20, 2xl=24 —
+  // delta ±9%). Dedicated semantic meaning: IconBox size scale 14/18/22 has
+  // its own visual rhythm for icon embedded inside box.
+  --icon-box-font-lg: 22px;
+
+  // Switch sm-size dedicated tokens. Switch md uses
+  // `--switch-track-w`/`-h`/`-thumb-size` (above) as library defaults;
+  // sm-size requires dedicated tokens because the matching values in the
+  // `--space-*` scale (28/16/12 px present as --space-7/4/3) carry generic
+  // spacing semantics — Switch sm-size deserves a dedicated semantic token
+  // for independent override path.
+  --switch-track-w-sm: 28px;
+  --switch-track-h-sm: 16px;
+  --switch-thumb-size-sm: 12px;
+
+  // ==========================================================================
+  // AVATAR FONT-SIZE GAP-FILL TOKENS
+  // ==========================================================================
+  // Avatar font-sizes 10px (xs) and 26px (xl) don't map 1:1 onto the base
+  // `--font-size-*` scale (xs=12px, sm=14px, lg=18px, 2xl=24px, 3xl=30px).
+  // Dedicated semantic meaning: Avatar initials xs/xl have a dedicated
+  // readability budget independent from the typography scale. Other Avatar
+  // sizes (12/14/18) reuse `--font-size-{xs,sm,lg}`.
+  --avatar-font-xs: 10px;
+  --avatar-font-xl: 26px;
+
+  // ==========================================================================
+  // INPUT TOKENS
+  // ==========================================================================
+  // Semantic aliases for form controls (Input, Textarea, Checkbox, Switch,
+  // RadioGroup). Resolve to theme-active surface/border/brand tokens so input
+  // styling tracks light/dark automatically. Projects can override the alias
+  // (e.g., `--input-bg: var(--color-surface-raised)`) without touching the
+  // component SCSS. Focus styling reuses `--focus-ring` / `--focus-ring-error`
+  // from the INTERACTIVE STATES block above.
+  --input-bg: var(--color-surface);
+  --input-border: var(--color-border);
+  --input-border-focus: var(--color-brand);
+
+  // Addon tokens — used by Input prefix/suffix props and InputGroupText
+  // slot. Visually distinct surface that signals "this is a label, not an
+  // editable area" while staying on-theme. Projects override via the alias,
+  // not by editing component SCSS.
+  --input-addon-bg: var(--color-surface-raised);
+  --input-addon-text: var(--color-text-secondary);
+  --input-addon-border: var(--color-border);
+
+  // Select placeholder color slot. Defaults to `--color-text-secondary` so
+  // the trigger placeholder passes WCAG 2.2 AA 4.5:1 contrast on
+  // `--color-surface-raised` light theme (using `--color-text-muted` measures
+  // ~3.4:1, an AA fail). Consumers who want a dimmer placeholder can
+  // override per theme:
+  //   :root[data-theme='light'] {
+  //     --select-placeholder-color: var(--color-text-muted);
+  //   }
+  --select-placeholder-color: var(--color-text-secondary);
+
+  // ==========================================================================
+  // CONTAINER MAX-WIDTHS — used by <Container size>
+  // ==========================================================================
+  // Match the breakpoint thresholds so a Container can be capped at the
+  // viewport range it serves. `fluid` is intentionally absent — the component
+  // applies `max-width: 100%` directly when size === 'fluid'.
+  --container-sm: #{$seed-bp-sm};
+  --container-md: #{$seed-bp-md};
+  --container-lg: #{$seed-bp-lg};
+  --container-xl: #{$seed-bp-xl};
+
+  // ==========================================================================
+  // SEMANTIC COLOR ALIASES
+  // ==========================================================================
+  // `--color-background` is a common spelling across design systems; alias it
+  // to `--color-bg` so consumers can write `linear-gradient(to right,
+  // var(--color-background), transparent)` without grepping for the canonical
+  // token name. Theme-aware because it forwards the live `--color-bg` value.
+  --color-background: var(--color-bg);
+
+  // ==========================================================================
+  // DEFAULT THEME SURFACES — driven by $seed-mode
+  // ==========================================================================
+  // This block sets which theme loads before any JS runs. Runtime toggle
+  // via [data-theme] attribute overrides these below.
+
+  @if $seed-mode == dark {
+    --color-bg: #{$dark-bg};
+    --color-surface: #{$dark-surface};
+    --color-surface-raised: #{$dark-surface-raised};
+    --color-overlay: #{$dark-overlay};
+
+    --color-border: #{$dark-border};
+    --color-border-subtle: #{$dark-border-subtle};
+    --color-border-strong: #{$dark-border-strong};
+
+    --color-text-primary: #{$dark-text-primary};
+    --color-text-secondary: #{$dark-text-secondary};
+    --color-text-muted: #{$dark-text-muted};
+    --color-text-inverse: #{$dark-text-inverse};
+
+    // See ":root[data-theme='dark']" override block below for semantics +
+    // WCAG rationale.
+    --color-text-on-brand: #25292E;
+
+    --card-bg-glass: rgba(255, 255, 255, 0.04);
+  } @else {
+    --color-bg: #{$light-bg};
+    --color-surface: #{$light-surface};
+    --color-surface-raised: #{$light-surface-raised};
+    --color-overlay: #{$light-overlay};
+
+    --color-border: #{$light-border};
+    --color-border-subtle: #{$light-border-subtle};
+    --color-border-strong: #{$light-border-strong};
+
+    --color-text-primary: #{$light-text-primary};
+    --color-text-secondary: #{$light-text-secondary};
+    --color-text-muted: #{$light-text-muted};
+    --color-text-inverse: #{$light-text-inverse};
+
+    // See ":root[data-theme='light']" override block below for semantics +
+    // WCAG rationale.
+    --color-text-on-brand: #25292E;
+
+    --card-bg-glass: rgba(255, 255, 255, 0.6);
+  }
+}
+
+// ============================================================================
+// LIGHT THEME OVERRIDE — runtime toggle via [data-theme='light']
+// ============================================================================
+
+:root[data-theme='light'] {
+  --color-bg: #{$light-bg};
+  --color-surface: #{$light-surface};
+  --color-surface-raised: #{$light-surface-raised};
+  --color-overlay: #{$light-overlay};
+
+  --color-border: #{$light-border};
+  --color-border-subtle: #{$light-border-subtle};
+  --color-border-strong: #{$light-border-strong};
+
+  --color-text-primary: #{$light-text-primary};
+  --color-text-secondary: #{$light-text-secondary};
+  --color-text-muted: #{$light-text-muted};
+  --color-text-inverse: #{$light-text-inverse};
+
+  // Highest-contrast text color for content rendered on `var(--color-brand)`
+  // filled surfaces (Button primary, future brand-accent chips).
+  // `--color-text-inverse` resolves to `white` in light mode, which FAILS
+  // WCAG 2.2 AA on most mid-tone brand seeds (e.g. teal #14B8A6 yields
+  // ~2.49:1 — needs ≥4.5:1 body / ≥3:1 UI). Near-black `#25292E` yields
+  // ~5.88:1 on teal; passes AA body + AA UI. Consumers with very-dark brand
+  // seeds (e.g. navy #1E3A8A) should override this token in their
+  // globals.scss.
+  --color-text-on-brand: #25292E;
+
+  --card-bg-glass: rgba(255, 255, 255, 0.6);
+
+  // Theme-aware status subtle/strong — light theme uses low-number (tinted)
+  // backgrounds + high-number (dark) titles for contrast on light surface.
+  --color-error-subtle: #{map.get($error, 100)};
+  --color-error-strong: #{map.get($error, 700)};
+  --color-warning-subtle: #{map.get($warning, 100)};
+  --color-warning-strong: #{map.get($warning, 700)};
+  --color-success-subtle: #{map.get($success, 100)};
+  --color-success-strong: #{map.get($success, 700)};
+  --color-info-subtle: #{map.get($info, 100)};
+  --color-info-strong: #{map.get($info, 700)};
+
+  // Theme-aware hover/muted surfaces — light theme darkens raised slightly.
+  --color-surface-hover: #{map.get($neutral, 200)};
+  --color-surface-muted: #{map.get($neutral, 200)};
+
+  // Theme-aware brand subtle/strong — light theme uses tinted (100) for bg
+  // and deep (700) for text so selected/accented rows pop without washing out.
+  --color-brand-subtle: var(--color-brand-100);
+  --color-brand-strong: var(--color-brand-700);
+}
+
+// ============================================================================
+// DARK THEME OVERRIDE — runtime toggle via [data-theme='dark']
+// ============================================================================
+
+:root[data-theme='dark'] {
+  --color-bg: #{$dark-bg};
+  --color-surface: #{$dark-surface};
+  --color-surface-raised: #{$dark-surface-raised};
+  --color-overlay: #{$dark-overlay};
+
+  --color-border: #{$dark-border};
+  --color-border-subtle: #{$dark-border-subtle};
+  --color-border-strong: #{$dark-border-strong};
+
+  --color-text-primary: #{$dark-text-primary};
+  --color-text-secondary: #{$dark-text-secondary};
+  --color-text-muted: #{$dark-text-muted};
+  --color-text-inverse: #{$dark-text-inverse};
+
+  // Same near-black value as light theme. Brand color stays the same hue
+  // across themes (it's brand identity, not a surface), so the contrast math
+  // is theme-independent for mid-tone brand seeds. Decoupled from inverse
+  // semantics so light theme can fix its `white`-on-brand AA bug without
+  // affecting dark theme. See light-theme block above for full rationale +
+  // consumer override pattern for dark-brand-seed projects.
+  --color-text-on-brand: #25292E;
+
+  --card-bg-glass: rgba(255, 255, 255, 0.04);
+
+  // Theme-aware status subtle/strong — dark theme uses high-number (deep)
+  // backgrounds + low-number (light) titles for contrast on dark surface.
+  --color-error-subtle: #{map.get($error, 950)};
+  --color-error-strong: #{map.get($error, 300)};
+  --color-warning-subtle: #{map.get($warning, 950)};
+  --color-warning-strong: #{map.get($warning, 300)};
+  --color-success-subtle: #{map.get($success, 950)};
+  --color-success-strong: #{map.get($success, 300)};
+  --color-info-subtle: #{map.get($info, 950)};
+  --color-info-strong: #{map.get($info, 300)};
+
+  // Theme-aware hover/muted surfaces — dark theme lifts raised further on
+  // interaction (raised=neutral-800, hover=neutral-700), muted recedes
+  // (neutral-900) for track / focused-input-slot backgrounds.
+  --color-surface-hover: #{map.get($neutral, 700)};
+  --color-surface-muted: #{map.get($neutral, 900)};
+
+  // Theme-aware brand subtle/strong — dark theme uses deep brand-900 as bg
+  // (reads clearly on dark surface) and light brand-300 as accent text.
+  // Using brand-100 makes "selected" highlights render near-white in dark
+  // mode (Table row `selected` looks washed-out / same as default light
+  // theme).
+  --color-brand-subtle: var(--color-brand-900);
+  --color-brand-strong: var(--color-brand-300);
+}
+
+// ============================================================================
+// BASE STYLES — minimal, applied to :root + body for inherited defaults
+// ============================================================================
+// Components inherit font, color, line-height by default. Keeps component
+// SCSS focused on layout and visuals rather than repeating typography resets.
+
+:root {
+  font-family: var(--font-secondary);
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-normal);
+  color: var(--color-text-primary);
+  background: var(--color-bg);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}

@@ -1,0 +1,55 @@
+// =============================================================================
+// IconHeaderCard — universal card shell with icon-led header
+// =============================================================================
+// Pure compositional preset. Visual chrome (Card variant/padding/radius,
+// IconBox tones, Badge colors, CardSection separators) is fully delegated to
+// the dependency components — IconHeaderCard adds NO visual tokens of its
+// own. SCSS exists only to (a) carry the .root hook for component-standards
+// compliance and (b) provide micro-tweak hooks (header label margin, etc.)
+// for consumer overrides via className.
+//
+// Server-Component safe. No states (non-interactive shell). No transitions.
+// Defensive baseline reduced-motion block.
+
+// ----------------------------------------------------------------------------
+// 1. ROOT (forwarded to Card; no own visual properties)
+// ----------------------------------------------------------------------------
+.root {
+  // Intentionally empty — Card delegate owns all visual tokens.
+  // Class exists for component-standards `.root` rule + consumer override hook.
+}
+
+// ----------------------------------------------------------------------------
+// 2. HEADER ROW (Inline wrapper with IconBox + label + optional Badge)
+// ----------------------------------------------------------------------------
+.headerRow {
+  // Inline gap-2 already handles spacing; class hook for consumer overrides.
+}
+
+// ----------------------------------------------------------------------------
+// 3. HEADER LABEL (caption text — slight margin tweak vs Inline default)
+// ----------------------------------------------------------------------------
+.headerLabel {
+  // No margin override needed — Inline align="center" handles vertical centering
+  // against IconBox. Class hook reserved for future micro-tweaks (letter-spacing
+  // tightening, etc.).
+}
+
+// ----------------------------------------------------------------------------
+// 4. FOOTER SECTION TITLE (uppercase caption inside CardSection)
+// ----------------------------------------------------------------------------
+.footerSectionTitle {
+  display: block;
+  margin-bottom: var(--space-2);
+}
+
+// ----------------------------------------------------------------------------
+// 5. REDUCED MOTION (defensive baseline — IconHeaderCard has no transitions;
+//    Card / IconBox / Badge / CardSection handle their own PRM)
+// ----------------------------------------------------------------------------
+@media (prefers-reduced-motion: reduce) {
+  .root {
+    animation: none;
+    transition: none;
+  }
+}

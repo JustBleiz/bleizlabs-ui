@@ -1,0 +1,85 @@
+// Table primitives — zero-dep semantic <table> atoms (Phase 11 CI23).
+// Styling only — no sorting/filtering/pagination logic. Consumer projects
+// build DataTable wrappers on top of these primitives + TanStack Table v8
+// (or similar headless engine). Per Table decision v2 in devlog: library
+// stays zero-runtime-dep, Table complex features live per-project.
+//
+// Cross-component styling lives here (child selectors) so TableRow +
+// TableCell remain thin — variant behavior is driven by the root .root
+// class having .striped / .bordered / .compact modifiers.
+
+.root {
+  width: 100%;
+  // `border-collapse: separate` (NOT `collapse`) so the outer border-radius
+  // clips properly. With `collapse`, table cell boxes live outside the
+  // table's border box and the radius doesn't visually round the corners
+  // (known browser behavior documented in CSS spec). `border-spacing: 0`
+  // removes the gap that `separate` would otherwise create between cells.
+  border-collapse: separate;
+  border-spacing: 0;
+  font-family: var(--font-secondary);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-primary);
+  background: var(--color-surface);
+  // Default outer shell — matches Card / Input / Popover radius so Table
+  // drops into any layout looking consistent with the rest of the library.
+  // `overflow: hidden` clips the row / header / cell backgrounds (stripe,
+  // hover, selected, raised) to the rounded corners. Consumers who want a
+  // truly borderless table can pass `style={{ border: 'none', borderRadius: 0 }}`.
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+// ============================================================================
+// STRIPED — alternate row background on TableBody > TableRow:nth-child(even)
+// ============================================================================
+// Targets even rows inside TableBody specifically so TableHeader + TableFooter
+// never get striped. Uses --color-surface-raised which is the theme-aware
+// raised surface (E132 fix) — so striping flips correctly between themes.
+
+.striped :global(tbody) > :global(tr):nth-child(even) > :global(td),
+.striped :global(tbody) > :global(tr):nth-child(even) > :global(th) {
+  background: var(--color-surface-raised);
+}
+
+// ============================================================================
+// BORDERED — per-cell vertical borders (rows already have horizontal
+// separators from the default rule below). Use `border-right` only so
+// cells don't double-draw adjacent borders; the last column drops its
+// right border to sit flush with the outer table border.
+// ============================================================================
+
+.bordered :global(td):not(:last-child),
+.bordered :global(th):not(:last-child) {
+  border-right: 1px solid var(--color-border-subtle);
+}
+
+// Default horizontal row separators — every body / footer row gets a
+// bottom border, except the last row which sits flush with the outer
+// bottom border. Works uniformly with `border-collapse: separate`.
+.root :global(tbody) > :global(tr):not(:last-child) > :global(td),
+.root :global(tbody) > :global(tr):not(:last-child) > :global(th) {
+  border-bottom: 1px solid var(--color-border-subtle);
+}
+
+// TableHeader always carries a bottom border to separate from body.
+.root :global(thead) > :global(tr):last-child > :global(td),
+.root :global(thead) > :global(tr):last-child > :global(th) {
+  border-bottom: 1px solid var(--color-border);
+}
+
+// TableFooter always carries a top border.
+.root :global(tfoot) > :global(tr):first-child > :global(td),
+.root :global(tfoot) > :global(tr):first-child > :global(th) {
+  border-top: 1px solid var(--color-border);
+}
+
+// ============================================================================
+// COMPACT — reduced cell padding for dense data displays
+// ============================================================================
+
+.compact :global(td),
+.compact :global(th) {
+  padding: var(--space-1) var(--space-2);
+}

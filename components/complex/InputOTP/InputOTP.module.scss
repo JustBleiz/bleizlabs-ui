@@ -1,0 +1,238 @@
+@use '../../../styles/mixins' as mx;
+
+// InputOTP — one-time password / verification code entry (Phase 10 CI18).
+// Single hidden real <input> stretched across decorative slot cells.
+// Real input is invisible (transparent color + caret) but focusable.
+// Slots render value[index] char + fake caret indicator.
+
+// ──────────────────────────────────────────────────────────────────────────
+// .root — wrapper, positions hidden input absolute over slot container
+// ──────────────────────────────────────────────────────────────────────────
+
+.root {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  user-select: none;
+  touch-action: manipulation;
+
+  &[data-disabled='true'] {
+    cursor: not-allowed;
+  }
+}
+
+// ──────────────────────────────────────────────────────────────────────────
+// .slotsContainer — flex row wrapping Groups + Separators
+// ──────────────────────────────────────────────────────────────────────────
+
+.slotsContainer {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-3);
+  pointer-events: auto;
+}
+
+// ──────────────────────────────────────────────────────────────────────────
+// .group — cells row within a Group (paired with Separator for XXX-XXX)
+// ──────────────────────────────────────────────────────────────────────────
+
+.group {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+// ──────────────────────────────────────────────────────────────────────────
+// .slot — individual decorative cell; reads index from context
+// ──────────────────────────────────────────────────────────────────────────
+
+.slot {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--size-touch-min);
+  height: var(--size-touch-min);
+  padding: 0;
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  color: var(--color-text-primary);
+  font-family: var(--font-secondary, inherit);
+  font-size: var(--font-size-lg, 1.125rem);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  cursor: text;
+  transition:
+    border-color var(--duration-fast) var(--easing-default),
+    background-color var(--duration-fast) var(--easing-default),
+    box-shadow var(--duration-fast) var(--easing-default);
+
+  &[data-filled='true'] {
+    background-color: var(--color-surface-raised);
+  }
+
+  &[data-active='true'] {
+    border-color: var(--color-brand);
+    box-shadow: var(--focus-ring);
+    z-index: 1;
+  }
+
+  &[data-invalid='true'] {
+    border-color: var(--color-error);
+  }
+
+  &[data-invalid='true'][data-active='true'] {
+    box-shadow: var(--focus-ring-error);
+  }
+
+  &[data-disabled='true'] {
+    background-color: var(--color-surface-muted);
+    color: var(--color-text-muted);
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
+
+  @include mx.touch-target;
+}
+
+.slotChar {
+  line-height: 1;
+  pointer-events: none;
+}
+
+// ──────────────────────────────────────────────────────────────────────────
+// .caret — fake blink caret rendered in active empty slot
+// ──────────────────────────────────────────────────────────────────────────
+
+.caret {
+  position: absolute;
+  top: 20%;
+  bottom: 20%;
+  left: 50%;
+  width: 1px;
+  background-color: var(--color-text-primary);
+  transform: translateX(-50%);
+  animation: input-otp-caret-blink 1s infinite;
+  pointer-events: none;
+}
+
+@keyframes input-otp-caret-blink {
+  0%,
+  49% {
+    opacity: 1;
+  }
+  50%,
+  100% {
+    opacity: 0;
+  }
+}
+
+// When the slot is filled, show caret AFTER the char by shifting to right edge.
+.slot[data-filled='true'] .caret {
+  left: auto;
+  right: var(--space-1);
+  transform: none;
+}
+
+// ──────────────────────────────────────────────────────────────────────────
+// .separator — decorative divider between Groups (e.g. XXX-XXX layout)
+// ──────────────────────────────────────────────────────────────────────────
+
+.separator {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-text-muted);
+  pointer-events: none;
+  user-select: none;
+}
+
+// ──────────────────────────────────────────────────────────────────────────
+// .input — hidden real input, stretched across slots bounding box
+// Transparent color/caret + selection hides all native visuals while
+// preserving native keyboard + autocomplete + SMS autofill behavior.
+// ──────────────────────────────────────────────────────────────────────────
+
+.input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  outline: none;
+  background: transparent;
+  color: transparent;
+  caret-color: transparent;
+  font: inherit;
+  text-align: center;
+  letter-spacing: 1em;
+  cursor: text;
+
+  // Preserve focusability + autocomplete; hide all visual output.
+  &::selection {
+    background: transparent;
+    color: transparent;
+  }
+
+  &::-moz-selection {
+    background: transparent;
+    color: transparent;
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+  }
+}
+
+// ──────────────────────────────────────────────────────────────────────────
+// prefers-reduced-motion — disable caret blink + transitions
+// ──────────────────────────────────────────────────────────────────────────
+
+@media (prefers-reduced-motion: reduce) {
+  .slot {
+    transition: none;
+  }
+
+  .caret {
+    animation: none;
+  }
+}
+
+// ──────────────────────────────────────────────────────────────────────────
+// forced-colors: active — Windows HCM token mapping
+// ──────────────────────────────────────────────────────────────────────────
+
+@media (forced-colors: active) {
+  .slot {
+    background-color: Canvas;
+    color: CanvasText;
+    border-color: ButtonText;
+  }
+
+  .slot[data-active='true'] {
+    border-color: Highlight;
+    outline: 2px solid Highlight;
+    outline-offset: 1px;
+  }
+
+  .slot[data-invalid='true'] {
+    border-color: Mark;
+  }
+
+  .slot[data-disabled='true'] {
+    color: GrayText;
+    border-color: GrayText;
+  }
+
+  .caret {
+    background-color: CanvasText;
+  }
+
+  .separator {
+    color: GrayText;
+  }
+}

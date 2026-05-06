@@ -1,0 +1,87 @@
+// ============================================================================
+// FileChip — rounded pill chip for file attachments
+// Layout: [icon | filename (truncated) | size | actions]
+// Variants: uploaded (default) | uploading (Spinner swap) | error (tint)
+// ============================================================================
+
+.root {
+  // Component-local channel — named so the MIME SVG's intrinsic 14×14
+  // box and the swapped Spinner share one source of truth. Not a design
+  // token because design system space scale steps 4/8/12/16 — none match
+  // this chip-scale icon size. Same pattern as Button's
+  // `--button-padding-{x,y}` (see Button.module.scss).
+  --file-chip-icon-size: 14px;
+
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  max-width: 100%;
+  min-width: 0;
+  padding: var(--space-1) var(--space-2) var(--space-1) var(--space-3);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-full);
+  background-color: var(--color-surface-raised);
+  color: var(--color-text-primary);
+  transition: border-color var(--duration-hover) var(--easing-default),
+    color var(--duration-hover) var(--easing-default);
+}
+
+// --- Slots -----------------------------------------------------------------
+
+.icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: var(--file-chip-icon-size);
+  height: var(--file-chip-icon-size);
+  color: var(--color-text-secondary);
+}
+
+.filename {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.size {
+  flex: 0 0 auto;
+  font-variant-numeric: tabular-nums;
+}
+
+.actions {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  flex: 0 0 auto;
+  // Tighten against the pill's right padding so × hugs the edge.
+  margin-left: calc(var(--space-1) * -1);
+}
+
+// --- Variants --------------------------------------------------------------
+
+.variantUploaded {
+  /* Default appearance — no override needed. */
+}
+
+.variantUploading {
+  border-color: var(--color-border-strong);
+}
+
+.variantError {
+  border-color: var(--color-error);
+
+  .icon {
+    color: var(--color-error);
+  }
+}
+
+// --- Reduced motion --------------------------------------------------------
+
+@media (prefers-reduced-motion: reduce) {
+  .root {
+    transition: none;
+  }
+}

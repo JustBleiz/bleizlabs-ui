@@ -1,0 +1,56 @@
+@use '../../../styles/mixins' as mx;
+
+.root {
+  display: grid;
+  // Defensive fallback `repeat(1, minmax(0, 1fr))` mirrors Stack/Inline's
+  // var-with-fallback convention — if `columns` ever lands as undefined
+  // (untyped JS caller / serialisation gap), the grid collapses to a
+  // single column instead of becoming layout-invalid.
+  grid-template-columns: var(--grid-cols, repeat(1, minmax(0, 1fr)));
+  grid-template-rows: var(--grid-rows, none);
+  column-gap: var(--grid-column-gap, var(--space-3));
+  row-gap: var(--grid-row-gap, var(--space-3));
+  align-items: var(--grid-align, stretch);
+  justify-content: var(--grid-justify, start);
+  min-width: 0;
+}
+
+// ---------------------------------------------------------------------------
+// Responsive cascade — mobile-first. Each breakpoint inherits from the next
+// smaller via the var() fallback chain, so consumers only specify the
+// breakpoints they need (e.g. `responsive={{ md: 2, lg: 3 }}` leaves base
+// + sm = base, md = 2, lg + xl = 3).
+// ---------------------------------------------------------------------------
+
+@include mx.bp-sm {
+  .root {
+    grid-template-columns: var(--grid-cols-sm, var(--grid-cols));
+  }
+}
+
+@include mx.bp-md {
+  .root {
+    grid-template-columns: var(--grid-cols-md, var(--grid-cols-sm, var(--grid-cols)));
+  }
+}
+
+@include mx.bp-lg {
+  .root {
+    grid-template-columns: var(
+      --grid-cols-lg,
+      var(--grid-cols-md, var(--grid-cols-sm, var(--grid-cols)))
+    );
+  }
+}
+
+@include mx.bp-xl {
+  .root {
+    grid-template-columns: var(
+      --grid-cols-xl,
+      var(
+        --grid-cols-lg,
+        var(--grid-cols-md, var(--grid-cols-sm, var(--grid-cols)))
+      )
+    );
+  }
+}

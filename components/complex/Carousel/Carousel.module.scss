@@ -1,0 +1,237 @@
+@use '../../../styles/mixins' as mx;
+
+// Carousel — accessible auto-rotating content slider per APG /carousel/
+// (Phase 10 CI21). Compound flat API: .root + .viewport + .track + .slide +
+// .navButton (prev/next) + .pauseButton.
+
+// ──────────────────────────────────────────────────────────────────────────
+// .root — <section role="region" aria-roledescription="carousel">
+// ──────────────────────────────────────────────────────────────────────────
+
+.root {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  width: 100%;
+}
+
+.liveRegion {
+  @include mx.sr-only;
+}
+
+// ──────────────────────────────────────────────────────────────────────────
+// .viewport — clipping container; horizontal-only scroll via transform
+// ──────────────────────────────────────────────────────────────────────────
+
+.viewport {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  // Allow vertical page scroll but block horizontal swipe stealing.
+  touch-action: pan-y;
+  // Viewport is keyboard-focusable for ArrowLeft/Right nav.
+  cursor: grab;
+
+  &[data-dragging='true'] {
+    cursor: grabbing;
+  }
+
+  &:focus-visible {
+    @include mx.focus-ring;
+  }
+}
+
+// ──────────────────────────────────────────────────────────────────────────
+// .track — inner flex row that translates between slides
+// ──────────────────────────────────────────────────────────────────────────
+
+.track {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  // transform set inline per React (index + drag offset).
+  will-change: transform;
+}
+
+// ──────────────────────────────────────────────────────────────────────────
+// .slide — individual slide, 100% viewport width
+// ──────────────────────────────────────────────────────────────────────────
+
+.slide {
+  flex: 0 0 100%;
+  min-width: 0;
+  // Prevent child images from expanding past slide width.
+  max-width: 100%;
+
+  // Inactive slides should not receive clicks during drag; CSS guard in
+  // addition to JS aria-hidden, so keyboard focus can still reach children
+  // but accidental taps during drag don't navigate into links.
+  [data-dragging='true'] & {
+    pointer-events: none;
+  }
+}
+
+// ──────────────────────────────────────────────────────────────────────────
+// .navButton — Prev + Next buttons
+// ──────────────────────────────────────────────────────────────────────────
+
+.navButton {
+  all: unset;
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  // Atelier carousel-nav signature size 36px — sits between --space-8 (32px)
+  // and --space-10 (40px). Intentionally off the 4px-step scale, preserved
+  // for visual identity (nav buttons that are visibly slightly larger than
+  // a default 32px chip but smaller than a 40px control). Touch-min coverage
+  // for coarse pointers comes from `@media (pointer: coarse)` below.
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: var(--radius-full);
+  background: var(--color-surface-raised);
+  border: 1px solid var(--color-border);
+  color: var(--color-text-primary);
+  cursor: pointer;
+  transition:
+    background-color var(--duration-fast) var(--easing-default),
+    border-color var(--duration-fast) var(--easing-default),
+    color var(--duration-fast) var(--easing-default),
+    transform var(--duration-fast) var(--easing-default);
+
+  &:hover:not([data-disabled='true']) {
+    background: var(--color-brand);
+    border-color: var(--color-brand);
+    // v0.5.7 — was `--color-text-inverse` (white in light mode, ~2.49:1
+    // on teal — FAILS WCAG 2.2 AA). Library-wide brand-fill text audit.
+    color: var(--color-text-on-brand);
+  }
+
+  &:active:not([data-disabled='true']) {
+    transform: scale(0.96);
+  }
+
+  &:focus-visible {
+    @include mx.focus-ring;
+  }
+
+  &[data-disabled='true'] {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+
+  @media (pointer: coarse) {
+    min-width: var(--size-touch-min);
+    min-height: var(--size-touch-min);
+  }
+}
+
+// ──────────────────────────────────────────────────────────────────────────
+// .pauseButton — Play/Pause toggle (WCAG 2.2.2)
+// ──────────────────────────────────────────────────────────────────────────
+
+.pauseButton {
+  all: unset;
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--space-8);
+  height: var(--space-8);
+  border-radius: var(--radius-full);
+  background: var(--color-surface-raised);
+  border: 1px solid var(--color-border);
+  color: var(--color-text-primary);
+  cursor: pointer;
+  transition:
+    background-color var(--duration-fast) var(--easing-default),
+    border-color var(--duration-fast) var(--easing-default),
+    color var(--duration-fast) var(--easing-default);
+
+  &:hover {
+    background: var(--color-brand);
+    border-color: var(--color-brand);
+    // v0.5.7 — was `--color-text-inverse` (white in light mode, ~2.49:1
+    // on teal — FAILS WCAG 2.2 AA). Library-wide brand-fill text audit.
+    color: var(--color-text-on-brand);
+  }
+
+  &:focus-visible {
+    @include mx.focus-ring;
+  }
+
+  &[aria-pressed='true'] {
+    background: var(--color-brand);
+    border-color: var(--color-brand);
+    // v0.5.7 — was `--color-text-inverse` (white in light mode, ~2.49:1
+    // on teal — FAILS WCAG 2.2 AA). Library-wide brand-fill text audit.
+    color: var(--color-text-on-brand);
+  }
+
+  @media (pointer: coarse) {
+    min-width: var(--size-touch-min);
+    min-height: var(--size-touch-min);
+  }
+}
+
+// ──────────────────────────────────────────────────────────────────────────
+// Motion preferences
+// ──────────────────────────────────────────────────────────────────────────
+
+@media (prefers-reduced-motion: reduce) {
+  // NOTE: .track transition is set via inline style in CarouselViewport
+  // because CSS (even with !important) cannot override inline styles.
+  // Reduced-motion gating for the track lives in JS — see `trackStyle`
+  // in Carousel.tsx (isReducedMotion branch).
+
+  .navButton,
+  .pauseButton {
+    transition: none;
+  }
+
+  .navButton:active:not([data-disabled='true']) {
+    transform: none;
+  }
+}
+
+// ──────────────────────────────────────────────────────────────────────────
+// Forced colors (Windows High Contrast Mode)
+// ──────────────────────────────────────────────────────────────────────────
+
+@media (forced-colors: active) {
+  .viewport {
+    border: 1px solid CanvasText;
+    background: Canvas;
+  }
+
+  .navButton,
+  .pauseButton {
+    background: ButtonFace;
+    border-color: ButtonText;
+    color: ButtonText;
+  }
+
+  .navButton:hover:not([data-disabled='true']),
+  .pauseButton:hover,
+  .pauseButton[aria-pressed='true'] {
+    background: Highlight;
+    border-color: Highlight;
+    color: HighlightText;
+  }
+
+  .navButton[data-disabled='true'] {
+    color: GrayText;
+    border-color: GrayText;
+    opacity: 1;
+  }
+
+  .navButton:focus-visible,
+  .pauseButton:focus-visible,
+  .viewport:focus-visible {
+    outline: 2px solid Highlight;
+    outline-offset: 2px;
+  }
+}

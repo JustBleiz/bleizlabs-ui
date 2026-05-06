@@ -1,0 +1,123 @@
+.root {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: var(--space-1) var(--space-2);
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--color-text-primary);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.label {
+  display: inline-block;
+}
+
+.icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--font-size-sm);
+  line-height: 1;
+}
+
+.dot {
+  display: inline-block;
+  width: var(--badge-dot-size); // 6px (R22 (b) dedicated token)
+  height: var(--badge-dot-size);
+  border-radius: var(--radius-full);
+  background: currentcolor;
+}
+
+// ============================================================================
+// MODIFIERS
+// ============================================================================
+
+.pill {
+  border-radius: var(--radius-full);
+}
+
+.uppercase {
+  text-transform: uppercase;
+  letter-spacing: var(--letter-spacing-wider);
+}
+
+// ============================================================================
+// COLOR VARIANTS — subtle bg + strong text + matching border
+// ============================================================================
+
+.colorDefault {
+  border-color: var(--color-border-subtle);
+  background: transparent;
+  color: var(--color-text-secondary);
+}
+
+.colorBrand {
+  border-color: var(--color-brand-subtle);
+  background: var(--color-brand-subtle);
+  color: var(--color-brand-strong);
+}
+
+.colorSuccess {
+  border-color: var(--color-success-subtle);
+  background: var(--color-success-subtle);
+  color: var(--color-success-strong);
+}
+
+.colorWarning {
+  border-color: var(--color-warning-subtle);
+  background: var(--color-warning-subtle);
+  color: var(--color-warning-strong);
+}
+
+.colorError {
+  border-color: var(--color-error-subtle);
+  background: var(--color-error-subtle);
+  color: var(--color-error-strong);
+}
+
+.colorInfo {
+  border-color: var(--color-info-subtle);
+  background: var(--color-info-subtle);
+  color: var(--color-info-strong);
+}
+
+// ============================================================================
+// PULSE MODIFIER — pulses only the inner indicator (icon + dot)
+// ============================================================================
+//
+// Badge frame (border, background, label) stays static — only the leading
+// icon and dot opacity-pulse. This matches the canonical "live status"
+// notification idiom: a steady frame + label that the eye can read,
+// paired with a pulsing visual cue that signals freshness/attention.
+// Pulsing the whole badge made the label flicker and was harder to read
+// at a glance. (Dot precedent — Dot is a single indicator so its `.root`
+// pulses; Badge is a composite, so the indicator children pulse.)
+
+.pulse :is(.icon, .dot) {
+  // Local @keyframes — CSS Modules scope keyframe identifiers, so referencing
+  // a global `pulse` keyframe from _animations.scss silently no-ops under
+  // Turbopack + Next.js 16. Each animation-consuming module owns a tiny local
+  // copy (matches Dot dotPulse + Checkbox checkboxTick + RadioGroup radioDotFill).
+  animation: badgePulse 2s var(--easing-default) infinite;
+}
+
+@keyframes badgePulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pulse :is(.icon, .dot) {
+    animation: none;
+  }
+}

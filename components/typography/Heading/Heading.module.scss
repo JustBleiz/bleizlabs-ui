@@ -1,0 +1,106 @@
+.root {
+  margin: 0;
+  color: var(--heading-color, var(--color-text-primary));
+  font-family: var(--font-primary);
+  font-weight: var(--heading-weight, var(--font-weight-semibold));
+  line-height: var(--line-height-tight);
+  letter-spacing: var(--letter-spacing-tight);
+  text-align: var(--heading-align, start);
+}
+
+.sizeSm {
+  font-size: var(--font-size-sm);
+}
+
+.sizeMd {
+  font-size: var(--font-size-base);
+}
+
+.sizeLg {
+  font-size: var(--font-size-lg);
+}
+
+.sizeXl {
+  font-size: var(--font-size-xl);
+}
+
+.size2xl {
+  font-size: var(--font-size-2xl);
+}
+
+.size3xl {
+  font-size: var(--font-size-3xl);
+}
+
+.size4xl {
+  font-size: var(--font-size-4xl);
+  letter-spacing: var(--letter-spacing-tighter); // -0.025em
+}
+
+.size5xl {
+  font-size: var(--font-size-5xl);
+  letter-spacing: var(--letter-spacing-tighter);
+}
+
+// Atelier big-type display variant. Fluid clamp() ensures hero
+// headings remain legible from 375px to 1440px+ without overflow, and tight
+// 1.05 line-height replaces the default 1.25 for dense editorial typography.
+// Use with `size="display"` on Hero H1 (or any big-type H2 in atelier layout).
+// Semantic guidance: `size="5xl"` for large section headings (article intros,
+// chapter titles); `size="display"` reserved for hero/banner contexts where
+// viewport-fluid scaling is intentional.
+// Narrow-viewport note: at the 2.25rem (36px) clamp floor paired with
+// line-height 1.05, multi-line wrapped titles can read densely on <384px
+// devices — keep display headings short (≤6 words) for hero contexts.
+.sizeDisplay {
+  font-size: clamp(2.25rem, 5.5vw + 1rem, 4.5rem);
+  line-height: var(--line-height-display); // 1.05
+  letter-spacing: var(--letter-spacing-tighter);
+}
+
+// Section-scale sibling of `.sizeDisplay`. Fluid clamp() 30→48px for
+// H2 atelier parity. Keeps 1.05 line-height + `--letter-spacing-tighter`
+// rhythm of display-tier so the two tiers read as a family. Use for
+// section H2 big-type where Hero H1 uses `size="display"`.
+.sizeDisplayMd {
+  font-size: clamp(1.875rem, 4vw + 0.75rem, 3rem);
+  line-height: var(--line-height-display); // 1.05 (shared with sizeDisplay)
+  letter-spacing: var(--letter-spacing-tighter);
+}
+
+// Editorial scale tier. Three sizes filling gaps in the standard scale
+// for editorial typography contexts (login hero asides, form cards).
+// Tokens defined in `_semantics.scss` (--font-size-{hero-editorial,
+// form-card-title,form-card-subtitle}).
+
+// Hero-editorial — viewport-fluid clamp(36px → 52px) sitting between
+// `.sizeDisplayMd` (max 48px) and `.sizeDisplay` (max 72px). Atelier
+// presence without the full display tier weight; line-height 1.1 reads
+// slightly looser than display's 1.05 for multi-line aside contexts where
+// the headline often wraps. Use on `<h1>` in login asides, settings hero
+// blocks, marketing-page splash bars where display tier overpowers.
+.sizeHeroEditorial {
+  font-size: var(--font-size-hero-editorial);
+  line-height: var(--line-height-display-loose); // 1.1
+  letter-spacing: var(--letter-spacing-tighter);
+}
+
+// Form-card-title — 22px fixed (between Heading lg 18px and xl 24px).
+// Form cards typically need title emphasis below xl (which feels too loud
+// in a stacked form context) but above lg. Line-height 1.25 for compact
+// multi-line behavior; letter-spacing tight to anchor visual weight.
+.sizeFormCardTitle {
+  font-size: var(--font-size-form-card-title);
+  line-height: var(--line-height-form-card-title); // 1.25
+  letter-spacing: var(--letter-spacing-tight);
+}
+
+// Form-card-subtitle — 15px fixed (between Text small 14px and base 16px).
+// Supporting copy in form cards where base reads too dominant and small
+// reads too thin. Line-height 1.45 for readability; normal letter-spacing
+// (no tightening — this is body-tier, not headline-tier).
+.sizeFormCardSubtitle {
+  font-size: var(--font-size-form-card-subtitle);
+  line-height: var(--line-height-form-card-subtitle); // 1.45
+  letter-spacing: var(--letter-spacing-normal);
+}

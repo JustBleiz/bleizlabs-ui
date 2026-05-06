@@ -1,0 +1,259 @@
+// _animations.scss
+//
+// 16 base @keyframes + 1 utility modifier class + global prefers-reduced-motion guard.
+//
+// Keyframe groups (16 total):
+//   Entry (6):     fadeIn, fadeInUp, fadeInDown, slideInLeft, slideInRight, scaleIn
+//   Feedback (4):  pulse, shake, spin, shimmer
+//   Exit (1):      fadeOut
+//   State (5):     expandDown, collapseUp, checkmark, radioFill, switchSlide
+//
+// Utility class: `.animation-infinite` modifier (NOT a keyframe — sets
+//   animation-iteration-count: infinite on any element).
+//
+// Components use these via CSS animation property + token durations:
+//   .root { animation: fadeIn var(--duration-normal) var(--easing-default); }
+//
+// Projects may add custom keyframes (orbFloat, cardStagger, etc.) in their
+// own SCSS — these 16 are the minimum base everyone can rely on.
+//
+// Animations doc bumped to 16 keyframes in E06 (added shimmer for Skeleton).
+
+// ============================================================================
+// ENTRY ANIMATIONS
+// ============================================================================
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// v0.3.5 — Atelier rule reveal (48×2 teal divider scale-in on H1/H2 entry).
+// Added after 6+ duplicated copies across BleizLabs Hero sections. Pairs with
+// `--atelier-rule-width` / `--atelier-rule-height` tokens + `--easing-apple`.
+@keyframes ruleReveal {
+  from {
+    transform: scaleX(0);
+    opacity: 0;
+  }
+  to {
+    transform: scaleX(1);
+    opacity: 1;
+  }
+}
+
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+// ============================================================================
+// FEEDBACK ANIMATIONS — intended for infinite use (spin, pulse) or triggered (shake)
+// ============================================================================
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+@keyframes shake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-4px);
+  }
+  75% {
+    transform: translateX(4px);
+  }
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+// Skeleton shimmer — gradient sweeps across loading placeholder
+// Used by Skeleton component (Phase 3 D6) as `shimmer` variant alternative to `pulse`.
+// Component sets a `background-image: linear-gradient(...)` and animates `background-position`.
+@keyframes shimmer {
+  from {
+    background-position: -200% 0;
+  }
+  to {
+    background-position: 200% 0;
+  }
+}
+
+// ============================================================================
+// EXIT ANIMATIONS
+// ============================================================================
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+// ============================================================================
+// COMPONENT STATE ANIMATIONS — specific to interactive atoms
+// ============================================================================
+
+// Accordion open — expands from 0 height with opacity
+@keyframes expandDown {
+  from {
+    opacity: 0;
+    max-height: 0;
+  }
+  to {
+    opacity: 1;
+    max-height: 1000px;
+  }
+}
+
+// Accordion close — reverse of expandDown
+@keyframes collapseUp {
+  from {
+    opacity: 1;
+    max-height: 1000px;
+  }
+  to {
+    opacity: 0;
+    max-height: 0;
+  }
+}
+
+// Checkbox tick — scale-in when checked
+@keyframes checkmark {
+  from {
+    opacity: 0;
+    transform: scale(0);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+// RadioGroupItem dot — scale-in when selected
+// (keyframe name `radioFill` predates the RadioOption → RadioGroupItem rename
+// per D24; the keyframe identifier is kept for stability, only the consuming
+// component was renamed.)
+@keyframes radioFill {
+  from {
+    opacity: 0;
+    transform: scale(0);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+// Switch thumb — slide across on toggle
+@keyframes switchSlide {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(100%);
+  }
+}
+
+// ============================================================================
+// UTILITY — infinite modifier
+// ============================================================================
+// Add `.animation-infinite` to any element to force infinite iteration.
+// Use sparingly — infinite animations should be paused/stopped when offscreen.
+
+.animation-infinite {
+  animation-iteration-count: infinite;
+}
+
+// ============================================================================
+// REDUCED MOTION — global guard
+// ============================================================================
+// Respects user OS preference. Forces all animations to "instant" (1ms) rather
+// than disabling completely — preserves triggering semantics (e.g., onAnimationEnd
+// callbacks still fire) but visually no motion. Matches WCAG 2.3.3.
+//
+// Components can opt to fully disable animations with their own local
+// `@media (prefers-reduced-motion: reduce) { animation: none; }` override.
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 1ms !important;
+    scroll-behavior: auto !important;
+  }
+}

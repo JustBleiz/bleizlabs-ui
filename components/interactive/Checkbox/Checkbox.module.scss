@@ -1,0 +1,120 @@
+@use '../../../styles/mixins' as mx;
+
+// v0.3.0 F_B5: wrapper that stacks the clickable label + helper/error below.
+// Stays `inline-flex` so Checkbox inherits its legacy inline placement in
+// forms; consumers who want block-level stacking pass `className` with
+// `display: flex` or rely on parent Stack.
+.field {
+  display: inline-flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.root {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-3);
+  font-family: var(--font-secondary);
+  font-size: var(--font-size-base);
+  color: var(--color-text-primary);
+  line-height: var(--line-height-normal);
+  cursor: pointer;
+  user-select: none;
+
+  @include mx.touch-target;
+}
+
+// v0.3.0 F_B5: helper + error message plumbing mirrors Input/Textarea.
+.helper {
+  margin: 0;
+  font-family: var(--font-secondary);
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+  line-height: var(--line-height-normal);
+}
+
+.error {
+  // E142 L2 a11y: --color-error (red-500) was ~3.7:1 on dark surface.
+  // --color-error-strong is theme-aware (red-700 light / red-300 dark)
+  // and keeps the semantic "error red" while hitting AA.
+  color: var(--color-error-strong);
+  font-weight: var(--font-weight-medium);
+}
+
+.disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.input {
+  @include mx.sr-only;
+}
+
+.box {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--space-5);
+  height: var(--space-5);
+  flex-shrink: 0;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  color: var(--color-text-inverse);
+  transition:
+    background-color var(--duration-fast) var(--easing-default),
+    border-color var(--duration-fast) var(--easing-default);
+}
+
+.check {
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  transform: scale(0);
+}
+
+.input:focus-visible + .box {
+  @include mx.focus-ring;
+}
+
+.input:checked + .box {
+  background: var(--color-brand);
+  border-color: var(--color-brand);
+}
+
+.input:checked + .box .check {
+  // Local @keyframes — CSS Modules scope animation-name identifiers, so
+  // referencing the global `checkmark` keyframe from _animations.scss
+  // silently no-ops under Turbopack + Next.js 16. Each animation-consuming
+  // module owns a tiny local copy (matches Spinner + RadioGroup fixes and
+  // the Popover/Sheet/Drawer precedent in this library).
+  animation: checkboxTick var(--duration-fast) var(--easing-default) forwards;
+}
+
+@keyframes checkboxTick {
+  from {
+    opacity: 0;
+    transform: scale(0);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.label {
+  display: inline-flex;
+  align-items: center;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .box {
+    transition: none;
+  }
+
+  .input:checked + .box .check {
+    animation: none;
+    opacity: 1;
+    transform: scale(1);
+  }
+}

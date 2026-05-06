@@ -1,0 +1,193 @@
+// =============================================================================
+// CollapsibleZoneCard — universal collapsible info-card preset (CP10, client)
+// Header trigger: full-width <button> wrapping ZoneCard header layout
+// Body: always-mounted; collapsed via grid-template-rows: 0fr + overflow: hidden
+// (NOT via the HTML `hidden` attribute — that would short-circuit the CSS
+// transition). A11y / focus exclusion handled in .tsx via `inert` +
+// `aria-hidden` attributes, applied only when closed.
+// =============================================================================
+@use 'mixins' as mx;
+
+// -----------------------------------------------------------------------------
+// Root — section landmark, Card asChild target
+// D11 base class — `.root` declared on the outermost element. Layout-transparent
+// (display: contents) so Card composition owns visual frame (padding/radius/
+// background). The class exists for D11 conformance + as the cascade origin
+// for [data-tone] selectors below (decoupled from Card's Slot merge to avoid
+// accidentally targeting consumer's own [data-tone] attributes).
+// -----------------------------------------------------------------------------
+
+.root {
+  display: contents;
+}
+
+// -----------------------------------------------------------------------------
+// Trigger — full-width semantic button wrapping the header. Inherits no native
+// button chrome (transparent bg + zero padding/border) so visual layout matches
+// ZoneCard CP9 1:1. Cursor + focus-visible ring make affordance discoverable.
+// Per Radix #1456 / APG disclosure, button MUST own keyboard handling — no
+// custom Space/Enter listeners (native button handles these).
+// -----------------------------------------------------------------------------
+
+.trigger {
+  appearance: none;
+  width: 100%;
+  display: block;
+  margin: 0;
+  padding: 0;
+  background: transparent;
+  border: 0;
+  font: inherit;
+  color: inherit;
+  text-align: inherit;
+  cursor: pointer;
+
+  // Focus-visible — ONLY when keyboard-focused. `--focus-ring` is a full
+  // box-shadow expression (0 0 0 3px <color>) — NOT a `<color>` value — so it
+  // MUST be applied via `box-shadow`, not `outline: ... solid var(--focus-ring)`
+  // (per Card.module.scss documented precedent + lib `mx.focus-ring` mixin).
+  &:focus-visible {
+    @include mx.focus-ring;
+  }
+}
+
+// -----------------------------------------------------------------------------
+// Header — Inline composition handles flex; layout-only overrides (mirror
+// ZoneCard CP9 contract so visual parity holds when collapsed).
+// -----------------------------------------------------------------------------
+
+.header {
+  width: 100%;
+  flex-wrap: wrap;
+}
+
+.titleStack {
+  // Stack already provides flex column + gap=1.
+  // Allow shrink so long titles wrap rather than push rightSlot off card.
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
+.icon {
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+  // Tone classes below cascade `color` here for icon currentColor stroke.
+  color: var(--color-text-secondary);
+}
+
+.title {
+  // Heading default + Stack gap handle layout. Margin reset for default p
+  // is handled by Heading internally; this class reserved for per-preset
+  // typographic tweaks.
+  line-height: var(--line-height-tight);
+}
+
+.subtitle {
+  // Text default <p> margin reset (Stack column child).
+  margin: 0;
+  line-height: var(--line-height-snug);
+}
+
+.rightSlot {
+  // Push to the right edge (Inline handles natural flow; this overrides
+  // for explicit slot placement). flex-shrink: 0 prevents long titles
+  // from squashing the slot. gap-2 between collapsedSummary chip + rightSlot.
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex-shrink: 0;
+}
+
+// -----------------------------------------------------------------------------
+// Chevron — rotates 180deg when open. Pure CSS via [data-open] attribute.
+// Animation uses lib motion tokens — disabled under prefers-reduced-motion
+// (instant flip preserves state visibility but skips the spin).
+// -----------------------------------------------------------------------------
+
+.chevron {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: var(--color-text-secondary);
+  transition: transform var(--duration-fast) var(--easing-default);
+
+  &[data-open='true'] {
+    transform: rotate(180deg);
+  }
+}
+
+// -----------------------------------------------------------------------------
+// Body — always-mounted content slot (mount required by collapse animation).
+// Animation: grid-template-rows 0fr ↔ 1fr trick for height-auto smooth collapse
+// (per Radix Accordion v1 precedent + #1074 unmount-during-animation fix).
+// `overflow: hidden` clips during collapse. The HTML `hidden` attribute is
+// intentionally NOT used here (would synchronously apply `display: none` and
+// short-circuit the transition). A11y / focus exclusion handled in .tsx via
+// `inert` + `aria-hidden` attributes when closed. `forceMount` is a semantic
+// hint only — it sets `data-force-mount='true'` for consumer observation but
+// does NOT change the mount strategy (body is always mounted).
+// -----------------------------------------------------------------------------
+
+.body {
+  // Animation host — grid-row trick lets height auto-resolve from content
+  // and animate smoothly between 0 and intrinsic height. Body is ALWAYS
+  // mounted to DOM (otherwise the collapse transition would have no element
+  // to animate). Visual collapse is driven entirely by `grid-template-rows:
+  // 1fr → 0fr` + `overflow: hidden`. A11y / focus removal is handled in
+  // .tsx via `inert` + `aria-hidden` attributes (NOT the HTML `[hidden]`
+  // attribute, which would force `display: none` synchronously and short-
+  // circuit this transition).
+  display: grid;
+  grid-template-rows: 1fr;
+  transition: grid-template-rows var(--duration-normal) var(--easing-default);
+  overflow: hidden;
+
+  &[data-open='false'] {
+    grid-template-rows: 0fr;
+  }
+
+  // Inner wrapper required for grid-row trick — overflow + min-height: 0
+  // on the implicit grid item collapses correctly.
+  > * {
+    min-height: 0;
+    overflow: hidden;
+  }
+}
+
+// -----------------------------------------------------------------------------
+// Tone variants — drive icon color cascade via [data-tone] attribute (mirror
+// ZoneCard CP9 contract). Default = secondary text color (declared on .icon).
+// -----------------------------------------------------------------------------
+
+.root[data-tone='success'] .icon {
+  color: var(--color-success);
+}
+
+.root[data-tone='warning'] .icon {
+  color: var(--color-warning);
+}
+
+.root[data-tone='error'] .icon {
+  color: var(--color-error);
+}
+
+.root[data-tone='brand'] .icon {
+  color: var(--color-brand);
+}
+
+// -----------------------------------------------------------------------------
+// prefers-reduced-motion — disable both chevron rotation transition AND body
+// grid-template-rows transition. Instant state flip is APG-compliant
+// (disclosure pattern does NOT mandate animation). Per Radix #10 (custom)
+// chevron-rotation precedent: animation OFF → instant transform.
+// -----------------------------------------------------------------------------
+
+@media (prefers-reduced-motion: reduce) {
+  .chevron,
+  .body {
+    transition: none;
+  }
+}

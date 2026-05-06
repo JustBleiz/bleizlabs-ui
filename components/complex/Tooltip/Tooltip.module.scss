@@ -1,0 +1,57 @@
+@use '../../../styles/mixins' as mx;
+
+// Tooltip — modeless floating surface (Phase 10 CI6).
+// Zero runtime deps — positioning math lives in `utils/position.ts` +
+// `utils/useFloating.ts` (D5/D25 + E19 user override). No overlay, no scroll
+// lock, no focus trap — tooltip is modeless and supplemental, not a dialog.
+//
+// Forked animation pattern matches Dialog/AlertDialog/Drawer/Sheet (each
+// complex component owns its own keyframe for independence — component can
+// be copy-to-project'd without dragging global animation state).
+
+.root {
+  // Portal root positioned fixed by useFloating — no layout contribution.
+  z-index: var(--z-tooltip);
+  // Pointer events enabled only on the .content surface so the outer wrapper
+  // does not intercept clicks on elements visually underneath the tooltip.
+  pointer-events: none;
+}
+
+.content {
+  display: inline-block;
+  pointer-events: auto;
+
+  background: var(--color-surface-raised);
+  color: var(--color-text-primary);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
+
+  padding: var(--space-2) var(--space-3);
+  font-size: var(--font-size-sm);
+  line-height: 1.45;
+
+  // Long tooltips wrap — positioning engine's shift middleware keeps them in
+  // viewport bounds after wrap. The `max-width` inline style from TSX sets the
+  // final cap (default `min(320px, 90vw)`).
+  word-wrap: break-word;
+
+  animation: tooltipContentIn var(--duration-fast) var(--easing-default);
+}
+
+@keyframes tooltipContentIn {
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .content {
+    animation: none;
+  }
+}

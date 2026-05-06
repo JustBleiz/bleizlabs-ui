@@ -1,0 +1,62 @@
+/* Anchor — inline body-text link atom. Prose-integrated, always underlined. */
+
+@use '../../../styles/mixins' as mx;
+
+.root {
+  // Inherit text color from surrounding Text / Heading content so the link
+  // tracks body copy across themes without per-consumer overrides.
+  color: inherit;
+  text-decoration: underline;
+  // `currentColor` keeps the underline locked to the live color value so
+  // hover/theme changes repaint the line automatically.
+  text-decoration-color: currentColor;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 2px;
+  transition:
+    color var(--duration-fast) var(--easing-default),
+    text-decoration-color var(--duration-fast) var(--easing-default);
+}
+
+.root:hover {
+  color: var(--color-brand);
+  text-decoration-color: var(--color-brand);
+}
+
+.root:focus-visible {
+  @include mx.focus-ring;
+  // Small offset so the ring reads as a halo around the inline word rather
+  // than a tight outline hugging the glyphs.
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+  color: var(--color-brand);
+  text-decoration-color: var(--color-brand);
+}
+
+.root:active {
+  color: var(--active-brand);
+  text-decoration-color: var(--active-brand);
+}
+
+// Windows High Contrast Mode — map to system LinkText so the anchor stays
+// visible when user-agent strips custom palette. CanvasText is used for the
+// outline so focus-visible stays separable from link color.
+@media (forced-colors: active) {
+  .root {
+    color: LinkText;
+    text-decoration-color: LinkText;
+  }
+
+  .root:hover,
+  .root:focus-visible,
+  .root:active {
+    color: LinkText;
+    text-decoration-color: LinkText;
+    outline-color: CanvasText;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .root {
+    transition: none;
+  }
+}

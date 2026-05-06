@@ -1,0 +1,245 @@
+// playground.scss
+//
+// Visual QA entry for Phase 0 style fundament. Consumes the index and defines
+// minimal preview classes to render tokens in both themes.
+//
+// Compile: `node build.mjs` → compiled.css
+// View: open playground.html in browser, click theme toggle
+
+@use '../styles/index' as bui;
+
+// ============================================================================
+// LAYOUT
+// ============================================================================
+
+.preview-wrap {
+  min-height: 100vh;
+  padding: var(--padding-page);
+  background: var(--color-bg);
+  color: var(--color-text-primary);
+  font-family: var(--font-secondary);
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-normal);
+  transition:
+    background var(--duration-normal) var(--easing-default),
+    color var(--duration-normal) var(--easing-default);
+}
+
+.preview-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--gap-section);
+  padding-bottom: var(--gap-card);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.preview-title {
+  @include bui.heading-3;
+  margin: 0;
+}
+
+.preview-toggle {
+  padding: var(--space-2) var(--space-4);
+  background: var(--color-brand);
+  color: var(--color-text-inverse);
+  border: none;
+  border-radius: var(--radius-input);
+  font-family: var(--font-secondary);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  cursor: pointer;
+  transition:
+    background var(--duration-fast) var(--easing-default),
+    transform var(--duration-fast) var(--easing-default);
+
+  &:hover {
+    background: var(--hover-brand);
+  }
+
+  &:active {
+    background: var(--active-brand);
+    transform: scale(0.98);
+  }
+
+  &:focus-visible {
+    @include bui.focus-ring;
+  }
+
+  @include bui.touch-target;
+}
+
+.preview-grid {
+  display: grid;
+  gap: var(--gap-section);
+  grid-template-columns: 1fr;
+
+  @include bui.bp-lg {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+// ============================================================================
+// SECTIONS
+// ============================================================================
+
+.preview-section {
+  padding: var(--padding-card);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-sm);
+}
+
+.preview-section-title {
+  @include bui.heading-4;
+  margin: 0 0 var(--gap-card) 0;
+  color: var(--color-text-primary);
+}
+
+.preview-row {
+  display: flex;
+  align-items: center;
+  gap: var(--gap-tight);
+  margin-bottom: var(--space-2);
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.preview-label {
+  display: inline-block;
+  min-width: 160px;
+  font-family: var(--font-mono);
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+}
+
+// ============================================================================
+// COLOR SWATCHES
+// ============================================================================
+
+.preview-swatch {
+  display: inline-block;
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border);
+}
+
+.preview-swatch-row {
+  display: flex;
+  gap: var(--space-1);
+  flex-wrap: wrap;
+  margin-top: var(--space-2);
+}
+
+.preview-swatch-small {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--color-border);
+}
+
+// ============================================================================
+// SPACING / RADIUS / SHADOW PREVIEWS
+// ============================================================================
+
+.preview-box {
+  display: inline-block;
+  width: 96px;
+  height: 48px;
+  background: var(--color-brand);
+  margin-right: var(--space-2);
+  margin-bottom: var(--space-2);
+}
+
+.preview-radius-sm { border-radius: var(--radius-sm); }
+.preview-radius-md { border-radius: var(--radius-md); }
+.preview-radius-lg { border-radius: var(--radius-lg); }
+.preview-radius-xl { border-radius: var(--radius-xl); }
+.preview-radius-2xl { border-radius: var(--radius-2xl); }
+
+.preview-shadow-sm { box-shadow: var(--shadow-sm); background: var(--color-surface); }
+.preview-shadow-md { box-shadow: var(--shadow-md); background: var(--color-surface); }
+.preview-shadow-lg { box-shadow: var(--shadow-lg); background: var(--color-surface); }
+.preview-shadow-xl { box-shadow: var(--shadow-xl); background: var(--color-surface); }
+.preview-shadow-brand { box-shadow: var(--shadow-brand); background: var(--color-brand); }
+.preview-glow-brand { box-shadow: var(--glow-brand); background: var(--color-brand); }
+
+// ============================================================================
+// TYPOGRAPHY PREVIEW
+// ============================================================================
+
+.preview-h1 {
+  @include bui.heading-1;
+  margin: 0 0 var(--space-2) 0;
+}
+
+.preview-h2 {
+  @include bui.heading-2;
+  margin: 0 0 var(--space-2) 0;
+}
+
+.preview-h3 {
+  @include bui.heading-3;
+  margin: 0 0 var(--space-2) 0;
+}
+
+.preview-h4 {
+  @include bui.heading-4;
+  margin: 0 0 var(--space-2) 0;
+}
+
+.preview-body-large {
+  @include bui.body-large;
+  margin: 0 0 var(--space-2) 0;
+}
+
+.preview-body-base {
+  @include bui.body-base;
+  margin: 0 0 var(--space-2) 0;
+}
+
+.preview-body-small {
+  @include bui.body-small;
+  margin: 0 0 var(--space-2) 0;
+  color: var(--color-text-secondary);
+}
+
+.preview-caption {
+  @include bui.caption;
+  margin: 0;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+}
+
+// ============================================================================
+// ANIMATION DEMO
+// ============================================================================
+
+.preview-spin {
+  display: inline-block;
+  width: 32px;
+  height: 32px;
+  border: 3px solid var(--color-border);
+  border-top-color: var(--color-brand);
+  border-radius: 50%;
+  animation: spin var(--duration-slow) linear;
+  animation-iteration-count: infinite;
+}
+
+.preview-pulse {
+  display: inline-block;
+  width: 32px;
+  height: 32px;
+  background: var(--color-brand);
+  border-radius: 50%;
+  animation: pulse 1500ms var(--easing-default);
+  animation-iteration-count: infinite;
+}
+
+.preview-fade-in {
+  animation: fadeIn var(--duration-normal) var(--easing-default);
+}

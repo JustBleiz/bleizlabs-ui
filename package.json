@@ -1,0 +1,105 @@
+{
+  "name": "@bleizlabs/ui",
+  "version": "0.10.1",
+  "description": "Zero-dependency, fully-styled React component library with seed-based design tokens. 100+ components, WAI-ARIA compliant, SCSS Modules, React 19 + Next.js 16. Ships with `bleizlabs-ui` CLI for project scaffold.",
+  "license": "MIT",
+  "author": "BleizLabs <hello@bleizlabs.eu>",
+  "homepage": "https://github.com/BleizLabs/bleizlabs-ui#readme",
+  "bugs": "https://github.com/BleizLabs/bleizlabs-ui/issues",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/BleizLabs/bleizlabs-ui.git"
+  },
+  "keywords": [
+    "react",
+    "nextjs",
+    "component-library",
+    "ui",
+    "scss",
+    "design-system",
+    "zero-dependency",
+    "wai-aria",
+    "a11y"
+  ],
+  "type": "module",
+  "main": "./components/index.ts",
+  "module": "./components/index.ts",
+  "types": "./components/index.ts",
+  "exports": {
+    ".": {
+      "types": "./components/index.ts",
+      "default": "./components/index.ts"
+    },
+    "./styles": "./styles/index.scss",
+    "./styles/project-settings": "./styles/_project-settings.scss",
+    "./styles/*": "./styles/*",
+    "./components/*": "./components/*"
+  },
+  "sideEffects": [
+    "*.scss",
+    "*.css"
+  ],
+  "files": [
+    "components",
+    "styles",
+    "cli-dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "bin": {
+    "bleizlabs-ui": "./cli-dist/bin.js"
+  },
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint --ignore-pattern \"cli-dist/**\" --ignore-pattern \"cli/test-fixtures/**\"",
+    "lint:fix": "eslint --fix --ignore-pattern \"cli-dist/**\" --ignore-pattern \"cli/test-fixtures/**\"",
+    "typecheck": "tsc --noEmit",
+    "check:barrel": "node scripts/check-barrel.mjs",
+    "build:manifest": "node scripts/build-component-manifest.mjs",
+    "check:manifest": "node scripts/check-manifest.mjs",
+    "build:cli": "tsup --config cli/tsup.config.ts",
+    "dev:cli": "tsup --config cli/tsup.config.ts --watch",
+    "test:cli": "vitest run --config cli/vitest.config.ts",
+    "test:cli:watch": "vitest --config cli/vitest.config.ts",
+    "tokens:build": "node playground/build.mjs",
+    "tokens:verify": "node playground/build.mjs",
+    "test": "playwright test",
+    "test:smoke": "playwright test tests/smoke.spec.ts",
+    "test:e2e": "playwright test components/",
+    "test:headed": "playwright test --headed",
+    "prepublishOnly": "npm run typecheck && npm run lint && npm run check:barrel && npm run build:manifest && npm run check:manifest && npm run build:cli && npm run test:cli && npm run build"
+  },
+  "peerDependencies": {
+    "react": ">=19.0.0",
+    "react-dom": ">=19.0.0"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "^4.11.2",
+    "@axe-core/react": "^4.11.2",
+    "@inquirer/prompts": "^7.0.0",
+    "@playwright/test": "^1.59.1",
+    "@types/node": "^20.11.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "commander": "^12.1.0",
+    "eslint": "^9.0.0",
+    "eslint-config-next": "^16.2.3",
+    "next": "^16.2.3",
+    "picocolors": "^1.1.1",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "sass": "^1.83.0",
+    "tsup": "^8.3.0",
+    "typescript": "^5.6.0",
+    "vitest": "^2.1.9"
+  },
+  "engines": {
+    "node": ">=24"
+  },
+  "publishConfig": {
+    "access": "restricted",
+    "registry": "https://npm.pkg.github.com"
+  }
+}

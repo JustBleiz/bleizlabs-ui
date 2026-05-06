@@ -1,0 +1,276 @@
+// _mixins.scss
+//
+// Reusable SCSS mixins: breakpoints (mobile-first, D12), touch-target (D13),
+// typography helpers. Components @use this file via `@use '../styles/mixins' as mx`
+// and reference mixins as `@include mx.bp-md { ... }`.
+
+@use './project-settings' as *;
+
+// ============================================================================
+// BREAKPOINTS — mobile-first (min-width) per D12
+// ============================================================================
+// Usage:
+//   .root {
+//     padding: var(--space-3);
+//     @include mx.bp-md { padding: var(--space-4); }
+//     @include mx.bp-lg { padding: var(--space-6); }
+//   }
+
+@mixin bp-sm {
+  @media (min-width: $seed-bp-sm) {
+    @content;
+  }
+}
+
+@mixin bp-md {
+  @media (min-width: $seed-bp-md) {
+    @content;
+  }
+}
+
+@mixin bp-lg {
+  @media (min-width: $seed-bp-lg) {
+    @content;
+  }
+}
+
+@mixin bp-xl {
+  @media (min-width: $seed-bp-xl) {
+    @content;
+  }
+}
+
+@mixin bp-2xl {
+  @media (min-width: $seed-bp-2xl) {
+    @content;
+  }
+}
+
+// ============================================================================
+// TOUCH TARGETS — 44x44 minimum on coarse pointer (D13, WCAG 2.2 AAA)
+// ============================================================================
+// Apply to interactive atoms (Button, Checkbox, RadioGroupItem, Toggle,
+// ToggleGroup, Switch, Accordion trigger, Phase 10 triggers). Relaxed on
+// precise pointer (desktop mouse) where smaller hit targets are acceptable.
+//
+// Usage:
+//   .root {
+//     @include mx.touch-target;
+//   }
+
+@mixin touch-target {
+  // v0.7.5 — references --size-touch-min semantic token (introduced v0.7.4
+  // per WCAG 2.1 SC 2.5.5). Single source of truth across all touch-min
+  // surfaces in the library. Consumer override paths:
+  //   build-time:  @use '@bleizlabs/ui/styles' with ($seed-touch-target: 48px);
+  //   runtime:     :root { --size-touch-min: 48px; }
+  // Default 44px preserved (token resolves to seed default) — zero visual
+  // delta for existing consumers; opt-in dial-up for accessibility-stricter
+  // products (senior care, motor-impaired audiences) hits ALL components
+  // using this mixin in addition to the 6 directly-migrated v0.7.4 sites.
+  @media (pointer: coarse) {
+    min-height: var(--size-touch-min);
+    min-width: var(--size-touch-min);
+  }
+}
+
+// ============================================================================
+// TYPOGRAPHY HELPERS — presets using --font-primary / --font-secondary
+// ============================================================================
+// Keeps heading styles consistent across components without duplication.
+// Heading component uses these; page-level SCSS can too for standalone cases.
+
+@mixin heading-1 {
+  font-family: var(--font-primary);
+  font-size: var(--font-size-5xl);
+  line-height: var(--line-height-tight);
+  font-weight: var(--font-weight-bold);
+  letter-spacing: -0.025em;
+}
+
+@mixin heading-2 {
+  font-family: var(--font-primary);
+  font-size: var(--font-size-4xl);
+  line-height: var(--line-height-tight);
+  font-weight: var(--font-weight-bold);
+  letter-spacing: -0.02em;
+}
+
+@mixin heading-3 {
+  font-family: var(--font-primary);
+  font-size: var(--font-size-3xl);
+  line-height: var(--line-height-snug);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: -0.015em;
+}
+
+@mixin heading-4 {
+  font-family: var(--font-primary);
+  font-size: var(--font-size-2xl);
+  line-height: var(--line-height-snug);
+  font-weight: var(--font-weight-semibold);
+}
+
+@mixin body-large {
+  font-family: var(--font-secondary);
+  font-size: var(--font-size-lg);
+  line-height: var(--line-height-relaxed);
+  font-weight: var(--font-weight-regular);
+}
+
+@mixin body-base {
+  font-family: var(--font-secondary);
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-normal);
+  font-weight: var(--font-weight-regular);
+}
+
+@mixin body-small {
+  font-family: var(--font-secondary);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-normal);
+  font-weight: var(--font-weight-regular);
+}
+
+@mixin caption {
+  font-family: var(--font-secondary);
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-normal);
+  font-weight: var(--font-weight-medium);
+  letter-spacing: 0.01em;
+}
+
+// Atelier eyebrow typography vocabulary — 0.7rem uppercase tabular-nums
+// medium-weight 0.08em-tracked. The 0.7rem and 0.08em literals ARE the
+// eyebrow scale itself (atelier-PRESENT vocabulary), intentionally NOT
+// tokenised — they sit between `--font-size-xs` (0.75rem) and a
+// hypothetical xxs and define the eyebrow primitive. Shared by:
+//   - `Eyebrow` atom (.root, with optional numeric prefix + hairline)
+//   - `Text` variant="eyebrow" (single-element inline-light path, no ornament)
+// Layout (display, gap, align-items) stays in the consumer because Eyebrow
+// has multi-child structure while Text variant="eyebrow" is single-element.
+@mixin eyebrow-typography {
+  font-family: var(--font-secondary);
+  font-size: 0.7rem;
+  font-weight: var(--font-weight-medium);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.08em;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+// ============================================================================
+// FOCUS RING HELPER — standardized focus-visible styling
+// ============================================================================
+// Usage:
+//   .root {
+//     &:focus-visible {
+//       @include mx.focus-ring;
+//     }
+//   }
+
+@mixin focus-ring {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+
+@mixin focus-ring-error {
+  outline: none;
+  box-shadow: var(--focus-ring-error);
+}
+
+// ============================================================================
+// JOINED GROUP — collapse inner radii + dedup borders for attached controls
+// ============================================================================
+// Used by ButtonGroup (Phase 4 I1.5) and ToggleGroup (Phase 4 I7) to render
+// a row/column of children that touch each other (zero gap), with outer
+// corners keeping the requested border-radius and inner edges going flat.
+// Also dedupes shared borders so 1px + 1px doesn't render as 2px between
+// adjacent children.
+//
+// Usage (horizontal default):
+//   .root {
+//     display: inline-flex;
+//     @include mx.joined-group;
+//   }
+//
+// Vertical variant:
+//   .root[data-orientation='vertical'] {
+//     flex-direction: column;
+//     @include mx.joined-group($orientation: vertical);
+//   }
+//
+// The mixin targets `> *` direct children — works with any component
+// (Button, Toggle, custom). Children are responsible for setting their own
+// border-radius via component tokens; the mixin's collapse rules win
+// against children's `.root` class declarations via pseudo-class
+// specificity boost: `*:not(:first-child):not(:last-child)` evaluates to
+// specificity 0,2,0 (each `:not()` adds the specificity of its inner
+// pseudo-class argument — `:first-child` and `:last-child` are 0,1,0
+// each), which beats a child's single `.root` class at 0,1,0. No
+// `!important` needed; the cascade is deterministic regardless of CSS
+// Modules file load order.
+
+@mixin joined-group($orientation: horizontal) {
+  > * + * {
+    @if $orientation == horizontal {
+      margin-left: -1px;
+    } @else {
+      margin-top: -1px;
+    }
+  }
+
+  > *:not(:first-child):not(:last-child) {
+    border-radius: 0;
+  }
+
+  @if $orientation == horizontal {
+    > *:first-child:not(:last-child) {
+      border-top-right-radius: 0;
+      border-bottom-right-radius: 0;
+    }
+
+    > *:last-child:not(:first-child) {
+      border-top-left-radius: 0;
+      border-bottom-left-radius: 0;
+    }
+  } @else {
+    > *:first-child:not(:last-child) {
+      border-bottom-left-radius: 0;
+      border-bottom-right-radius: 0;
+    }
+
+    > *:last-child:not(:first-child) {
+      border-top-left-radius: 0;
+      border-top-right-radius: 0;
+    }
+  }
+
+  // Lift focused/hovered/active child above neighbors so its outline and
+  // borders aren't clipped by the next child's negative margin overlap.
+  > *:focus-visible,
+  > *:hover,
+  > *[aria-pressed='true'],
+  > *[data-state='on'] {
+    position: relative;
+    z-index: 1;
+  }
+}
+
+// ============================================================================
+// VISUALLY HIDDEN — hide from sight but keep in accessibility tree
+// ============================================================================
+// For screen-reader-only labels, native inputs behind custom UI (Switch,
+// Checkbox custom styling), etc.
+
+@mixin sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}

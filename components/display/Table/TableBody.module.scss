@@ -1,0 +1,7 @@
+// TableBody — no additional styling beyond what the root Table provides.
+// Class exists so consumers can hook page-level SCSS overrides if needed
+// and so the component exports a consistent module shape across the set.
+
+.root {
+  // Intentionally empty — tbody inherits from .root Table cascades.
+}
