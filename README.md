@@ -123,6 +123,47 @@ For a per-component props reference, see [`COMPONENT_REGISTRY.md`](../COMPONENT_
 
 ## Quick start
 
+### One-command bootstrap (v0.10.0+)
+
+After installing `@bleizlabs/ui`, the bundled CLI scaffolds a complete project wrapper layer:
+
+```bash
+npm install @bleizlabs/ui
+npx @bleizlabs/ui init
+```
+
+This generates:
+
+- `app/_components/ui/<Family>/` — thin re-exports of every lib component (105 families: 101 components + 3 utilities + 1 types-only)
+- `app/_components/ui/index.ts` — root barrel; pages import via `@/components/ui`
+- `app/_components/ui/README.md` — pattern documentation
+- `app/globals.scss` + `app/_styles/{theme,overrides}.scss` — seed-customizable styles
+- `tsconfig.json` paths — `@/components/ui/*`, `@/styles/*`
+- `next.config.{mjs,ts,cjs}` — `transpilePackages` + `sassOptions.loadPaths`
+- `AGENTS.md` + `CLAUDE.md` — agent instructions (managed BEGIN/END block)
+- `docs/component-inventory.md` — project component tracking template
+- ESLint `no-restricted-imports` patch — enforces wrapper-layer imports
+
+After lib upgrades, scaffold wrappers for newly-added components:
+
+```bash
+npm install @bleizlabs/ui@latest
+npx @bleizlabs/ui add --new
+```
+
+CLI commands:
+
+| Command | Purpose |
+|---|---|
+| `npx @bleizlabs/ui init` | Bootstrap wrapper layer + styles + configs + agent instructions |
+| `npx @bleizlabs/ui init --dry-run` | Preview without writing files |
+| `npx @bleizlabs/ui add --new` | Scaffold wrappers for newly-added lib components |
+| `npx @bleizlabs/ui add --all` | Regenerate every wrapper (preserves user-modified files) |
+| `npx @bleizlabs/ui add Button Card` | Scaffold specific named families |
+| `npx @bleizlabs/ui status` | Show installed lib version + manifest summary |
+
+Re-runs are idempotent: user-modified files (without the `// @bleizlabs/ui-generated` marker) are preserved automatically.
+
 ### Prerequisites
 
 - Node.js 20 or newer
