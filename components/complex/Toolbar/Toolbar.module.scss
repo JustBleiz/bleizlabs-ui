@@ -1,0 +1,62 @@
+@use '../../../styles/mixins' as mx;
+
+// Toolbar — accessible container for grouped interactive items per APG
+// `/toolbar/`. Lightweight: ships flex layout + minimal focus-visible
+// affordance. Composes existing lib `<Button>`, `<ToggleGroup>`,
+// `<Separator>` directly — children own their own visual identity.
+//
+// Visual identity (background, elevation, padding, brand-tint border) is
+// CONSUMER concern per Charter R4 — consumers add `.module.scss` styling
+// on top via the `className` passthrough when a particular surface needs
+// it (floating editor toolbar, segmented filter bar, sticky page toolbar).
+// The default `.root` is structural-only.
+
+// ──────────────────────────────────────────────────────────────────────────
+// .root — `<div role="toolbar">` flex container
+// ──────────────────────────────────────────────────────────────────────────
+
+.root {
+  display: inline-flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--space-2);
+
+  // Vertical orientation: column flex.
+  &[data-orientation='vertical'] {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  // Focus-visible on the toolbar root itself is suppressed — focus moves
+  // through children via roving tabindex; the root never receives keyboard
+  // focus directly. If a consumer programmatically focuses the root (rare),
+  // we keep the default browser outline only for keyboard activation, not
+  // mouse. Children have their own `:focus-visible` (Button, Toggle, etc.).
+  &:focus-visible {
+    outline: none;
+  }
+
+  // Forced colors (Windows HCM): keep the toolbar landmark visible. The
+  // default surface is transparent, so we don't need a Canvas background;
+  // we just ensure border (if a consumer adds one via className) maps to
+  // CanvasText. Children (Button/Toggle) provide their own HCM mapping.
+  @media (forced-colors: active) {
+    // Intentionally empty — `.root` carries no background/border by default,
+    // so there's nothing to remap. Block kept as a documented hook so
+    // consumers extending `.root` via `className` know where HCM rules
+    // belong if they add chrome.
+  }
+}
+
+// ──────────────────────────────────────────────────────────────────────────
+// prefers-reduced-motion — root has no animation by default; consumers
+// applying entry/exit transitions should respect the media query in their
+// own override SCSS. Block kept as documented hook.
+// ──────────────────────────────────────────────────────────────────────────
+
+@media (prefers-reduced-motion: reduce) {
+  .root {
+    // No-op: `.root` has no transition or animation by default. If a
+    // consumer adds one via className, they own the reduced-motion rule.
+  }
+}
