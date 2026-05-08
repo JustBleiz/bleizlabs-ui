@@ -126,6 +126,11 @@ export interface IconHeaderCardProps
   // to keep the interface lean.
 }
 
+/**
+ * @deprecated since 0.13.0 — product-flavored layout pattern (Card + IconBox + Heading + Badge + body + `footerSections[]` array = 4+ concerns + union-of-variations). Zero equivalent in shadcn/Radix/react-aria. Will be removed in 0.15.0.
+ *
+ * Migration: consumer composes lib primitives directly (`<Card><Stack><Inline><IconBox /><Heading /></Inline><Text />...{footers.map(...)}</Stack></Card>`) lub extracts project-local molecule jeśli pattern powtarza się 2+ identycznie. See `docs/lib-audit-2026-05-08.md` §Card Presets cluster.
+ */
 export const IconHeaderCard = forwardRef<HTMLDivElement, IconHeaderCardProps>(
   function IconHeaderCard(
     {

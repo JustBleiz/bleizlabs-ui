@@ -83,6 +83,11 @@ function wrapDescription(description: ReactNode): ReactNode {
   return description;
 }
 
+/**
+ * @deprecated since 0.13.0 — pure shortcut over `<Card><Heading><Text></Card>` (R6 reuse-first violation). Zero equivalent in shadcn/Radix/react-aria. Will be removed in 0.15.0.
+ *
+ * Migration: consumer composes `<Card><Stack gap={3}><Heading>{title}</Heading><Text>{body}</Text></Stack></Card>` inline (4 LOC). See `D:/OS/internal/bleizlabs-ui/work/2026-05_lib-audit-rebuild/docs/lib-audit-2026-05-08.md` §Card Presets cluster.
+ */
 export const ContentCard = forwardRef<HTMLDivElement, ContentCardProps>(
   function ContentCard(
     {

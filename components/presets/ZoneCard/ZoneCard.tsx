@@ -113,6 +113,11 @@ const BODY_GAP_BY_DENSITY: Record<ZoneCardDensity, 2 | 3> = {
   comfortable: 3,
 };
 
+/**
+ * @deprecated since 0.13.0 — preset bundle (Card + IconBox + Heading + Text + rightSlot + body = 6 concerns combined, R2 Principle 2 violation). Zero equivalent in shadcn/Radix/react-aria. Will be removed in 0.15.0.
+ *
+ * Migration: consumer composes `<Card><Stack><Inline><IconBox /><Heading />{action}</Inline><Text /></Stack></Card>` inline (≈4 LOC) lub project-local `<InfoZone>` molecule jeśli pattern powtarza się 2+ identycznie. See `docs/borderline-resolution-2026-05-08.md` §1.
+ */
 export const ZoneCard = forwardRef<HTMLElement, ZoneCardProps>(
   function ZoneCard(
     {

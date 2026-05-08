@@ -133,6 +133,11 @@ function wrapDescription(description: ReactNode): ReactNode {
   return description;
 }
 
+/**
+ * @deprecated since 0.13.0 — product-flavored editorial pattern (`variant: 'good' | 'bad'` is editorial-only universality). Zero equivalent in shadcn/Radix/react-aria. Will be removed in 0.15.0.
+ *
+ * Migration: marketing/editorial consumers compose `<Card variant="good|bad" />` via SCSS module variant lub project-local `<EditorialPairedCard>` molecule. See `docs/lib-audit-2026-05-08.md` §Card Presets cluster.
+ */
 export const PairedCard = forwardRef<HTMLDivElement, PairedCardProps>(
   function PairedCard(
     {

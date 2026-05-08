@@ -204,6 +204,11 @@ function DefaultChevronIcon() {
   );
 }
 
+/**
+ * @deprecated since 0.13.0 — preset bundle (ZoneCard + APG disclosure = 2 concerns; Collapsible primitive already covers behavior). Zero equivalent in shadcn/Radix/react-aria — they ship `<Collapsible>` / `<Disclosure>` separately, consumer wraps own content. Will be removed in 0.15.0.
+ *
+ * Migration: consumer composes `<Collapsible><Card><CollapsibleTrigger>...</CollapsibleTrigger><CollapsibleContent>...</CollapsibleContent></Card></Collapsible>` z lib primitives. See `docs/borderline-resolution-2026-05-08.md` §2.
+ */
 export const CollapsibleZoneCard = forwardRef<
   HTMLElement,
   CollapsibleZoneCardProps
