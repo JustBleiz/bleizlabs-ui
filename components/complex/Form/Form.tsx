@@ -268,6 +268,13 @@ export interface FormProps
  * read shared state. Native browser validation is enabled by default;
  * pass `noValidate` to suppress browser popups when layering custom
  * validation.
+ *
+ * @ref-style `forwardRef` chosen deliberately to match existing lib API surface
+ * (`Card`, `AppShell`, `FormSurface`, all complex/* compounds — all use
+ * `forwardRef`). Per `shared-molecule-extraction.md` §3 "Legacy forwardRef
+ * remains supported for ... matching an existing lib API surface". Migration
+ * to React-19 ref-as-prop would happen library-wide as a coordinated 0.x
+ * minor or 1.0.0 cutover, not per-component.
  */
 export const FormRoot = forwardRef<HTMLFormElement, FormProps>(function Form(
   { children, onSubmit, noValidate = false, action, className, ...rest },
@@ -397,6 +404,10 @@ export interface FormSubmitProps
  * inside a `<Form>` (no functional dependency on context state — submit
  * triggers form submission via native button-in-form semantics, not via
  * any context-mediated mechanism).
+ *
+ * @ref-style `forwardRef` chosen deliberately to match existing lib API surface
+ * (all complex/* compounds use forwardRef). Migration to React-19 ref-as-prop
+ * would happen library-wide as a coordinated cutover, not per-component.
  */
 export const FormSubmit = forwardRef<HTMLButtonElement, FormSubmitProps>(
   function FormSubmit({ children, asChild = false, className, ...rest }, forwardedRef) {
@@ -408,11 +419,19 @@ export const FormSubmit = forwardRef<HTMLButtonElement, FormSubmitProps>(
       return (
         <Slot
           ref={forwardedRef}
-          // @ts-expect-error — Slot's HTMLAttributes<HTMLElement> doesn't
-          // include `type` (since arbitrary elements may not accept it),
-          // but when Slot-wrapping a <button> child the type prop is
-          // structurally valid + necessary. Slot.cloneElement passes it
-          // through verbatim. Same pattern Radix Slot uses.
+          // DOCUMENTED canonical pattern. Slot's prop type is HTMLAttributes<HTMLElement>
+          // which intentionally OMITS `type` (arbitrary elements may not accept it).
+          // When Slot-wrapping a <button> child the `type="submit"` is structurally
+          // valid + REQUIRED for native form-submit semantics — Slot.cloneElement
+          // passes it through verbatim to the wrapped <button>. Same suppression
+          // pattern Radix Slot itself documents (`@radix-ui/react-slot`).
+          // Alternatives considered: (a) extending Slot's type signature globally
+          // — would leak `type` onto non-button slot consumers; (b) `as unknown as`
+          // cast — silently swallows future Slot signature regressions WITHOUT
+          // the TS-aware future-fail signal that @ts-expect-error provides
+          // (when/if Slot's signature ever does include `type`, this directive
+          // will surface a build error — that's the desired regression detector).
+          // @ts-expect-error see comment block above.
           type="submit"
           className={cn(styles.submit, className)}
           {...rest}

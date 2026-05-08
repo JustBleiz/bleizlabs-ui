@@ -10,6 +10,7 @@ import { Heading } from '@/components/typography/Heading';
 import { Text } from '@/components/typography/Text';
 import { Stack } from '@/components/layout/Stack';
 import { Inline } from '@/components/layout/Inline';
+import { Kbd } from '@/components/specialized/Kbd';
 import styles from './page.module.scss';
 
 export default function FormPlayground() {
@@ -229,18 +230,18 @@ export default function FormPlayground() {
         </Heading>
         <ul className={styles.keyList}>
           <li>
-            <kbd>Tab</kbd> &mdash; move forward through fields + submit
+            <Kbd>Tab</Kbd> &mdash; move forward through fields + submit
             button (native browser behavior)
           </li>
           <li>
-            <kbd>Shift+Tab</kbd> &mdash; move backward through fields
+            <Kbd>Shift+Tab</Kbd> &mdash; move backward through fields
           </li>
           <li>
-            <kbd>Enter</kbd> &mdash; submit form (when focus is on a
+            <Kbd>Enter</Kbd> &mdash; submit form (when focus is on a
             single-line input or the submit button)
           </li>
           <li>
-            <kbd>Esc</kbd> &mdash; clear native validation popup (when
+            <Kbd>Esc</Kbd> &mdash; clear native validation popup (when
             shown by browser)
           </li>
         </ul>

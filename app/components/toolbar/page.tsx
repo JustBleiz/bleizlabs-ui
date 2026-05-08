@@ -9,6 +9,7 @@ import { Separator } from '@/components/display/Separator';
 import { Heading } from '@/components/typography/Heading';
 import { Text } from '@/components/typography/Text';
 import { Stack } from '@/components/layout/Stack';
+import { Kbd } from '@/components/specialized/Kbd';
 import styles from './page.module.scss';
 
 export default function ToolbarPlayground() {
@@ -58,7 +59,7 @@ export default function ToolbarPlayground() {
                 <em>I</em>
               </Toggle>
               <Toggle value="underline" aria-label="Underline">
-                <span style={{ textDecoration: 'underline' }}>U</span>
+                <u>U</u>
               </Toggle>
             </ToggleGroup>
             <Separator orientation="vertical" />
@@ -88,18 +89,18 @@ export default function ToolbarPlayground() {
           </Toolbar>
           <ul className={styles.keyList}>
             <li>
-              <kbd>Tab</kbd> enters the toolbar at the first item (or
+              <Kbd>Tab</Kbd> enters the toolbar at the first item (or
               last-focused item on re-entry).
             </li>
             <li>
-              <kbd>→</kbd> / <kbd>←</kbd> moves focus between items
+              <Kbd>→</Kbd> / <Kbd>←</Kbd> moves focus between items
               (wraparound).
             </li>
             <li>
-              <kbd>Home</kbd> / <kbd>End</kbd> jumps to first / last item.
+              <Kbd>Home</Kbd> / <Kbd>End</Kbd> jumps to first / last item.
             </li>
             <li>
-              <kbd>Tab</kbd> from any item exits the toolbar to the next
+              <Kbd>Tab</Kbd> from any item exits the toolbar to the next
               document tabbable.
             </li>
           </ul>
@@ -234,29 +235,29 @@ export default function ToolbarPlayground() {
           </Text>
           <ul className={styles.keyList}>
             <li>
-              <kbd>Tab</kbd> — enter / exit the toolbar. Toolbar is a single
+              <Kbd>Tab</Kbd> — enter / exit the toolbar. Toolbar is a single
               tab-stop in the document.
             </li>
             <li>
-              <kbd>Right Arrow</kbd> / <kbd>Down Arrow</kbd> — next item
+              <Kbd>Right Arrow</Kbd> / <Kbd>Down Arrow</Kbd> — next item
               (axis depends on orientation; reversed in RTL horizontal).
             </li>
             <li>
-              <kbd>Left Arrow</kbd> / <kbd>Up Arrow</kbd> — previous item.
+              <Kbd>Left Arrow</Kbd> / <Kbd>Up Arrow</Kbd> — previous item.
             </li>
             <li>
-              <kbd>Home</kbd> — first focusable item.
+              <Kbd>Home</Kbd> — first focusable item.
             </li>
             <li>
-              <kbd>End</kbd> — last focusable item.
+              <Kbd>End</Kbd> — last focusable item.
             </li>
             <li>
-              <kbd>Enter</kbd> / <kbd>Space</kbd> — activates the focused
+              <Kbd>Enter</Kbd> / <Kbd>Space</Kbd> — activates the focused
               child (handled by Button / Toggle / Anchor itself, not by
               Toolbar root).
             </li>
             <li>
-              Modifier keys + arrows (e.g. <kbd>Cmd</kbd>+<kbd>←</kbd>) —
+              Modifier keys + arrows (e.g. <Kbd>Cmd</Kbd>+<Kbd>←</Kbd>) —
               skipped by toolbar so browser hotkeys still work.
             </li>
           </ul>

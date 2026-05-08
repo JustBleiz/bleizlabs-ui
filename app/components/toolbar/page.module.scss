@@ -25,7 +25,7 @@
 
 .demo {
   padding: var(--space-6);
-  background: var(--color-surface, var(--color-surface-raised));
+  background: var(--color-surface-raised);
   border: 1px solid var(--color-border-subtle);
   border-radius: var(--radius-md);
   display: flex;
@@ -42,14 +42,5 @@
   font-size: var(--font-size-sm);
   color: var(--color-text-secondary);
 
-  kbd {
-    display: inline-block;
-    padding: 2px 6px;
-    background: var(--color-surface-raised);
-    border: 1px solid var(--color-border-subtle);
-    border-radius: var(--radius-sm);
-    font-family: var(--font-family-mono, ui-monospace, monospace);
-    font-size: 0.85em;
-    color: var(--color-text-primary);
-  }
+  // <Kbd> atom owns kbd styling per R6 reuse-first.
 }

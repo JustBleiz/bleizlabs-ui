@@ -58,7 +58,7 @@
   gap: var(--space-2);
 
   padding: var(--space-3) var(--space-5);
-  min-height: 40px;
+  min-height: var(--space-10); // 40px — token reuse-first per R7 (Tailwind 4px scale: --space-10 = 40px)
   border-radius: var(--radius-md);
 
   background: var(--color-brand);
