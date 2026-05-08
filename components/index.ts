@@ -109,14 +109,15 @@ export * from './molecules/Timeline';
 export * from './molecules/ToggleGroupFilter';
 
 // ----------------------------------------------------------------------------
-// Card presets (11) — v0.8.0 adds CollapsibleZoneCard CP10
+// Card presets (12) — v0.13.0 adds FormSurface (renamed from FormCard, dual-export)
 // ----------------------------------------------------------------------------
 export * from './presets/ActionCard';
 export * from './presets/CollapsibleZoneCard';
 export * from './presets/ContentCard';
 export * from './presets/EntityCard';
 export * from './presets/EntityHero';
-export * from './presets/FormCard';
+export * from './presets/FormCard'; // @deprecated 0.13.0 — re-exports FormSurface; remove in 0.15.0
+export * from './presets/FormSurface';
 export * from './presets/IconHeaderCard';
 export * from './presets/PairedCard';
 export * from './presets/SidebarCard';
