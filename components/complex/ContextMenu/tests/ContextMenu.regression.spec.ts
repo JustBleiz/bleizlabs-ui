@@ -67,7 +67,18 @@ test.describe('ContextMenu — regression cases', () => {
   }) => {
     const trigger = page.getByText('Right-click me', { exact: true });
     await trigger.scrollIntoViewIfNeeded();
-    await page.evaluate(() => window.scrollBy(0, 50));
+    // Scroll + wait two rAF so close-on-scroll handler observes the scroll
+    // BEFORE the right-click opens the menu. Without this, on slower CI
+    // runners the scroll event fires AFTER mount and closes the menu —
+    // reproduces same root cause as CM-R04 fix (Playwright auto-scroll vs
+    // close-on-scroll race). See devlog 2026-04 entry.
+    await page.evaluate(
+      () =>
+        new Promise<void>((resolve) => {
+          window.scrollBy(0, 50);
+          requestAnimationFrame(() => requestAnimationFrame(() => resolve()));
+        }),
+    );
     const triggerBox = await trigger.boundingBox();
     await trigger.click({ button: 'right' });
     const menu = page.getByRole('menu');

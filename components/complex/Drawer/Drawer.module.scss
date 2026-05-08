@@ -96,6 +96,10 @@
   flex: 1 1 auto;
   min-height: 0;
   overflow-y: auto;
+  // Explicit horizontal hidden — `overflow-y: auto` would otherwise promote
+  // the cross-axis from `visible` to `auto` per CSS spec, surfacing an
+  // unwanted horizontal scrollbar when any child overflows the drawer width.
+  overflow-x: hidden;
 }
 
 .footer {

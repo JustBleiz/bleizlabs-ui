@@ -190,6 +190,13 @@
   flex: 1 1 auto;
   min-height: 0;
   overflow-y: auto;
+  // Explicit horizontal hidden — required because per CSS spec, setting
+  // `overflow-y: auto` promotes the cross-axis from `visible` to `auto`
+  // automatically. Without this rule, any child wider than the body width
+  // (long words, code blocks, accidental fixed-width content) would render
+  // a horizontal scrollbar at the bottom of left/right sheets. Vertical
+  // remains scrollable for long content.
+  overflow-x: hidden;
 }
 
 .footer {
