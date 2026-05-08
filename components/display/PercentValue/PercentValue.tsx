@@ -2,8 +2,12 @@ import { forwardRef, type HTMLAttributes, type ReactNode } from 'react';
 import { KpiValue, type KpiValueProps, type KpiValueColorOrAuto } from '../KpiValue/KpiValue';
 
 /**
- * @deprecated since v0.7.0 — merged into {@link KpiValue}. Will be
- * removed in v1.0.0. Migration:
+ * @deprecated since v0.7.0 — merged into {@link KpiValue}. Removal target
+ * updated 2026-05-08 (E05.3 AMEND): now scheduled for **0.15.0 BREAKING**
+ * alongside the wider preset-cleanup release (10 product-flavored components
+ * removed in same release). The original v1.0.0 target is deferred — `@bleizlabs/ui`
+ * stays in 0.x while the lib actively evolves; 1.0.0 cuts only after work-unit 3
+ * v3 fresh restart stabilizes the consumer surface. Migration:
  *
  * - `<PercentValue value={X} />` → `<KpiValue value={X} unit="%" />`
  *   (the `unit="%"` is special-cased to render tightly attached, matching
@@ -49,8 +53,10 @@ export interface PercentValueProps
 }
 
 /**
- * @deprecated since v0.7.0 — use {@link KpiValue} with `unit="%"`. See
- * {@link PercentValueProps} for migration details.
+ * @deprecated since v0.7.0 — use {@link KpiValue} with `unit="%"`. Removal
+ * target updated 2026-05-08 (E05.3 AMEND): **0.15.0 BREAKING** (was v1.0.0
+ * — deferred per phased semver plan). See {@link PercentValueProps} for
+ * migration details.
  */
 export const PercentValue = forwardRef<HTMLDivElement, PercentValueProps>(
   function PercentValue({ tone = 'auto', value, decimals = 0, ...rest }, ref) {

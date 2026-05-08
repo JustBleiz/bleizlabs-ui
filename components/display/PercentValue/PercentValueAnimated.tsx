@@ -8,8 +8,11 @@ import {
 import type { PercentValueProps } from './PercentValue';
 
 /**
- * @deprecated since v0.7.0 — merged into {@link KpiValueAnimated}. Will
- * be removed in v1.0.0. Migration:
+ * @deprecated since v0.7.0 — merged into {@link KpiValueAnimated}. Removal
+ * target updated 2026-05-08 (E05.3 AMEND): now scheduled for **0.15.0 BREAKING**
+ * alongside the wider preset-cleanup release. The original v1.0.0 target is
+ * deferred — `@bleizlabs/ui` stays in 0.x while the lib actively evolves.
+ * Migration:
  *
  * - `<PercentValueAnimated value={X} />` →
  *   `<KpiValueAnimated value={X} unit="%" />`
