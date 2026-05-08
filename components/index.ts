@@ -116,7 +116,8 @@ export * from './presets/CollapsibleZoneCard';
 export * from './presets/ContentCard';
 export * from './presets/EntityCard';
 export * from './presets/EntityHero';
-export * from './presets/FormCard'; // @deprecated 0.13.0 — re-exports FormSurface; remove in 0.15.0
+// @deprecated 0.13.0 — re-exports FormSurface; remove in 0.15.0
+export * from './presets/FormCard';
 export * from './presets/FormSurface';
 export * from './presets/IconHeaderCard';
 export * from './presets/PairedCard';
