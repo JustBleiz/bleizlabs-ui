@@ -131,7 +131,7 @@ export * from './presets/AppShell';
 export * from './presets/SiteHeader';
 
 // ----------------------------------------------------------------------------
-// Complex interactive (22)
+// Complex interactive (24) — v0.13.0 adds Form (E05.4) + Toolbar (E05.4)
 // ----------------------------------------------------------------------------
 export * from './complex/AlertDialog';
 export * from './complex/Calendar';
@@ -143,6 +143,7 @@ export * from './complex/DatePicker';
 export * from './complex/Dialog';
 export * from './complex/Drawer';
 export * from './complex/DropdownMenu';
+export * from './complex/Form';
 export * from './complex/HoverCard';
 export * from './complex/InputOTP';
 export * from './complex/NavigationMenu';
@@ -154,6 +155,7 @@ export * from './complex/Sidebar';
 export * from './complex/Slider';
 export * from './complex/Tabs';
 export * from './complex/Toast';
+export * from './complex/Toolbar';
 export * from './complex/Tooltip';
 
 // ----------------------------------------------------------------------------

@@ -62,9 +62,15 @@
  *
  * @apg https://www.w3.org/WAI/ARIA/apg/patterns/toolbar/
  * @tested tsc --noEmit ✓ | eslint + jsx-a11y via eslint-config-next ✓ |
- *   next build ✓ — DEFERRED: Playwright execution, axe-core runtime sweep,
- *   manual NVDA sweep (handoff to main thread per skill escalation —
- *   subagent execution scope).
+ *   next build ✓ | Phase 4 fresh-subagent evaluator audit (2026-05-08) ✓ —
+ *   Verdict: PASS-WITH-EXCEPTION granted by user 2026-05-08.
+ *   DEFERRED-WITH-EXCEPTION: full Playwright execution + axe-core runtime
+ *   sweep + manual NVDA+Firefox sweep. Specs ship alongside (.keyboard 13,
+ *   .focus 8, .aria 8, .regression 20 = 49 total cases TBR-R01..R20),
+ *   execution batched to dedicated test-execution sprint in 0.14+ cycle
+ *   per E15 Tabs precedent. See `D:/OS/internal/bleizlabs-ui/work/
+ *   2026-05_lib-audit-rebuild/devlog.md` E05.4 DONE_EPIC for exception
+ *   rationale + scheduled follow-up.
  * @regressions tests/Toolbar.{keyboard,focus,aria,regression}.spec.ts —
  *   regression cases derived from APG model + Radix `react-toolbar` issue
  *   shape (e.g., disabled items skipped, Tab does not steal arrow nav,

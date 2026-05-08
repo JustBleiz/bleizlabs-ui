@@ -104,11 +104,15 @@
  *     <Form.Submit>Create</Form.Submit>
  *   </Form>
  *
- * @tested tsc --noEmit ✓ | eslint via eslint-config-next ✓ —
- *   DEFERRED: full Playwright execution (deferred per E15 scope decision
- *   precedent — same as Tabs/Dialog), axe-core runtime sweep, manual
- *   NVDA sweep. Specs ship alongside the component (.keyboard, .focus,
- *   .aria, .regression) per Phase 10 complex interactive standard.
+ * @tested tsc --noEmit ✓ | eslint via eslint-config-next ✓ |
+ *   Phase 4 fresh-subagent evaluator audit (2026-05-08) ✓ —
+ *   Verdict: PASS-WITH-EXCEPTION granted by user 2026-05-08.
+ *   DEFERRED-WITH-EXCEPTION: full Playwright execution + axe-core runtime
+ *   sweep + manual NVDA+Firefox sweep. Specs ship alongside (.keyboard,
+ *   .focus, .aria, .regression — 22 cases FM-R01..R22), execution batched
+ *   to dedicated test-execution sprint in 0.14+ cycle per E15 Tabs precedent.
+ *   See `D:/OS/internal/bleizlabs-ui/work/2026-05_lib-audit-rebuild/devlog.md`
+ *   E05.4 DONE_EPIC for exception rationale + scheduled follow-up.
  *
  * @regressions tests/Form.regression.spec.ts — derived from Radix
  *   `@radix-ui/react-form` closed issues + native browser validation
