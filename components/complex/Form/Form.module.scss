@@ -1,0 +1,132 @@
+@use '../../../styles/mixins' as mx;
+
+// Form — accessible form root with native Constraint Validation API.
+// Phase 10 complex interactive (form-validation-aware).
+//
+// Form is a structural/behavioral component — it provides the <form>
+// shell + context for <Field> integration but does NOT impose visual
+// styling on the form layout. Children own their layout (typically
+// composed via lib <Stack> or <Inline>). The .root class is therefore
+// minimal — block layout default + flow content.
+//
+// Form.Submit ships a base submit-button class (.submit). Consumers
+// using `asChild` to wrap lib <Button> override entirely; the .submit
+// class only applies when Form.Submit renders its own native <button>.
+
+// ──────────────────────────────────────────────────────────────────────────
+// .root — <form> element wrapper
+// ──────────────────────────────────────────────────────────────────────────
+
+.root {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+
+  // Width sizing — let consumer wrappers (Card, Stack, page section) own
+  // max-width / centering. Form itself fills its container.
+  width: 100%;
+
+  // Form-level focus-visible — when programmatically focused (rare).
+  // Suppress default outline; child fields own their own focus rings via
+  // Field/Input components. Scoped to :focus-visible so JS focus shows
+  // default outline (debugging affordance).
+  &:focus-visible {
+    outline: none;
+  }
+}
+
+// ──────────────────────────────────────────────────────────────────────────
+// .submit — base submit button (when Form.Submit renders native <button>)
+// ──────────────────────────────────────────────────────────────────────────
+
+// This is the FALLBACK styling — only applied when consumer does NOT pass
+// `asChild` (i.e. Form.Submit renders its own <button>). Consumers using
+// asChild with lib <Button> override completely (Slot merges classes).
+//
+// Style mirrors the lib Button atom's primary variant baseline so the
+// fallback feels native without consumers having to reach for asChild
+// for every form. For full visual control, asChild + lib <Button> is
+// the recommended pattern.
+
+.submit {
+  // Reset native button styles so token-driven look applies cleanly.
+  all: unset;
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+
+  padding: var(--space-3) var(--space-5);
+  min-height: var(--space-10); // 40px — token reuse-first per R7 (Tailwind 4px scale: --space-10 = 40px)
+  border-radius: var(--radius-md);
+
+  background: var(--color-brand);
+  color: var(--color-text-on-brand);
+
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium, 500);
+  line-height: 1.2;
+
+  cursor: pointer;
+  user-select: none;
+
+  transition:
+    background var(--duration-fast) var(--easing-default),
+    box-shadow var(--duration-fast) var(--easing-default),
+    transform var(--duration-fast) var(--easing-default);
+
+  // Touch target — 44×44 minimum on coarse pointers (D13).
+  @media (pointer: coarse) {
+    @include mx.touch-target;
+  }
+
+  &:hover:not(:disabled):not([aria-disabled='true']) {
+    background: var(--hover-brand, var(--color-brand-strong));
+  }
+
+  &:active:not(:disabled):not([aria-disabled='true']) {
+    transform: scale(0.98);
+  }
+
+  &:focus-visible {
+    @include mx.focus-ring;
+  }
+
+  &:disabled,
+  &[aria-disabled='true'] {
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+}
+
+// ──────────────────────────────────────────────────────────────────────────
+// prefers-reduced-motion
+// ──────────────────────────────────────────────────────────────────────────
+
+@media (prefers-reduced-motion: reduce) {
+  .submit {
+    transition: none;
+  }
+}
+
+// ──────────────────────────────────────────────────────────────────────────
+// forced-colors (Windows HCM) — Phase 10 requirement
+// ──────────────────────────────────────────────────────────────────────────
+
+@media (forced-colors: active) {
+  .submit {
+    background: ButtonFace;
+    color: ButtonText;
+    border: 1px solid ButtonText;
+
+    &:disabled,
+    &[aria-disabled='true'] {
+      color: GrayText;
+      border-color: GrayText;
+      // Opacity is ignored in HCM — rely on system colors instead.
+      opacity: 1;
+    }
+  }
+}

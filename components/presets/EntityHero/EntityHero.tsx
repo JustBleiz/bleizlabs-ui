@@ -103,6 +103,11 @@ export interface EntityHeroProps
   // HTMLAttributes via `...rest` spread onto the <header> root.
 }
 
+/**
+ * @deprecated since 0.13.0 — product-flavored god-organism (architecturally identical to `<DetailPageHeader>` 11-prop anti-pattern). Slots `titleBadges` / `statusIndicators` / `progression` / `metaStrip` are union-of-variations across Service/Project/Ticket consumers. Will be removed in 0.15.0.
+ *
+ * Migration: each business surface owns its own `<XxxDetailHeader xxx={data}>` project-local organism. See `D:/OS/internal/bleizlabs-ui/work/2026-05_lib-audit-rebuild/docs/borderline-resolution-2026-05-08.md` + `D:/OS/internal/bleizlabs-v3/work/2026-05_rules-crystallization/docs/atomic-design-canon.md`.
+ */
 export const EntityHero = forwardRef<HTMLElement, EntityHeroProps>(
   function EntityHero(
     {

@@ -107,6 +107,11 @@ function wrapValue(value: ReactNode): ReactNode {
   return value;
 }
 
+/**
+ * @deprecated since 0.13.0 — product-flavored "KPI tile" (discriminated `layout` union `'stacked'|'inline'|'icon-lead'` = god-molecule symptom: mutex prop sets per layout). Zero equivalent in shadcn/Radix/react-aria. Will be removed in 0.15.0.
+ *
+ * Migration: consumer composes lib `<Card><Stack><Text type="label">{label}</Text><Heading>{value}</Heading><Inline>{change}</Inline></Stack></Card>` per własny KPI pattern, lub project-local `<DashboardKpiTile>` molecule. See `docs/lib-audit-2026-05-08.md` §Card Presets cluster.
+ */
 export const StatsCard = forwardRef<HTMLDivElement, StatsCardProps>(
   function StatsCard(props, ref) {
     const {

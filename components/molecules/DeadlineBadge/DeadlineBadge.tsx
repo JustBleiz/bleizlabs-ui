@@ -87,6 +87,11 @@ function resolveColor(
   return 'success';
 }
 
+/**
+ * @deprecated since 0.13.0 — business-domain naming "Deadline" violates R1 sniff (project/business concept). Zero equivalent in shadcn/Radix/react-aria — they ship `<Badge>` + consumer adds business label. Will be removed in 0.15.0.
+ *
+ * Migration: consumer uses lib `<Badge color={isOverdue ? 'danger' : 'warning'}>Deadline: {formatDate(d)}</Badge>` directly OR project-local `<DeadlineLabel>` molecule (project-local naming OK per R2.1). See `docs/borderline-resolution-2026-05-08.md` §3.
+ */
 export const DeadlineBadge = forwardRef<HTMLDivElement, DeadlineBadgeProps>(
   function DeadlineBadge(
     {

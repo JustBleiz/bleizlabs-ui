@@ -8,11 +8,12 @@ import { cn } from '../../utils/cn';
 import styles from './KpiValue.module.scss';
 
 /**
- * KpiValue — universal large-number metric display atom (Server Component
+ * KpiValue — universal large-number metric display molecule (Server Component
  * since v0.7.0; merged with PercentValue 2026-05-04 — single canonical
- * atom dla wszystkich big-number metrics including percentages).
+ * molecule dla wszystkich big-number metrics including percentages).
  *
- * @layer   atom (display) — Server Component
+ * @layer   molecule (display) — Server Component
+ * @reclassified 2026-05-08 (E05.3 AMEND) — was `atom` until 0.13.0. Re-classified to `molecule` because internally composes AnimatedCounter conditionally + own SVG trend icons + threshold-color logic + value/unit/trend/benchmark layout. 11 props exceed atom ≤3 budget; molecule ≤7 budget still exceeded by 4 → flagged for follow-up split into `KpiValue` (basic) + `KpiValueWithTrend`/`KpiValueWithThreshold` molecule(s) in 0.14+ cycle. See `D:/OS/internal/bleizlabs-ui/work/2026-05_lib-audit-rebuild/docs/lib-audit-2026-05-08.md` §Phase C AMEND #3.
  * @tokens  --font-primary, --font-size-{3xl,4xl,5xl,sm}, --font-weight-{semibold,medium},
  *          --line-height-tight, --letter-spacing-{tighter,normal},
  *          --color-text-{primary,secondary,muted},
@@ -25,7 +26,7 @@ import styles from './KpiValue.module.scss';
  * @deps    cn (lib). Zero icon-library deps per D5 — trend icons are inline
  *          SVG with optional `trend.icon` ReactNode slot for consumer override.
  *          Animation moved to {@link KpiValueAnimated} client wrapper.
- * @a11y    Pure presentational atom — renders <div>. Default inline trend icon is
+ * @a11y    Pure presentational molecule — renders <div>. Default inline trend icon is
  *          decorative (`aria-hidden="true"`). Trend label conveys direction in text
  *          for screen readers. SCSS includes defensive baseline reduced-motion
  *          block. Consumers add `aria-label` / `role="status"` via spread when

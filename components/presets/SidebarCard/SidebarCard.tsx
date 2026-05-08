@@ -90,6 +90,11 @@ function wrapDescription(description: ReactNode): ReactNode {
   return description;
 }
 
+/**
+ * @deprecated since 0.13.0 — visual variation harvester (lib charter explicitly forbids "NIE visual variation harvester"). Glass + uppercase label preset = consumer SCSS territory. Will be removed in 0.15.0.
+ *
+ * Migration: consumer styles `<Card>` via SCSS module + token override w `globals.scss` per shadcn pattern. See charter §"What `@bleizlabs/ui` is NOT" + `docs/lib-audit-2026-05-08.md` §Card Presets cluster.
+ */
 export const SidebarCard = forwardRef<HTMLDivElement, SidebarCardProps>(
   function SidebarCard(
     {

@@ -110,6 +110,11 @@ function wrapDescription(description: ReactNode): ReactNode {
   return description;
 }
 
+/**
+ * @deprecated since 0.13.0 — product-flavored "alert + CTA combo" preset bundle (2 concerns: alert + action). Zero equivalent in shadcn/Radix/react-aria — they ship `<Alert>` separately, consumer adds `<Button>` in children. Will be removed in 0.15.0.
+ *
+ * Migration: consumer composes `<Alert severity={...}><AlertTitle /><AlertDescription /><Button /></Alert>` lub project-local `<DashboardActionCard>` molecule. See charter §"What `@bleizlabs/ui` is NOT" + `docs/lib-audit-2026-05-08.md` §Card Presets cluster.
+ */
 export const ActionCard = forwardRef<HTMLDivElement, ActionCardProps>(
   function ActionCard(
     {

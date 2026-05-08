@@ -109,14 +109,15 @@ export * from './molecules/Timeline';
 export * from './molecules/ToggleGroupFilter';
 
 // ----------------------------------------------------------------------------
-// Card presets (11) — v0.8.0 adds CollapsibleZoneCard CP10
+// Card presets (12) — v0.13.0 adds FormSurface (renamed from FormCard, dual-export)
 // ----------------------------------------------------------------------------
 export * from './presets/ActionCard';
 export * from './presets/CollapsibleZoneCard';
 export * from './presets/ContentCard';
 export * from './presets/EntityCard';
 export * from './presets/EntityHero';
-export * from './presets/FormCard';
+export * from './presets/FormCard'; // @deprecated 0.13.0 — re-exports FormSurface; remove in 0.15.0
+export * from './presets/FormSurface';
 export * from './presets/IconHeaderCard';
 export * from './presets/PairedCard';
 export * from './presets/SidebarCard';
@@ -130,7 +131,7 @@ export * from './presets/AppShell';
 export * from './presets/SiteHeader';
 
 // ----------------------------------------------------------------------------
-// Complex interactive (22)
+// Complex interactive (24) — v0.13.0 adds Form (E05.4) + Toolbar (E05.4)
 // ----------------------------------------------------------------------------
 export * from './complex/AlertDialog';
 export * from './complex/Calendar';
@@ -142,6 +143,7 @@ export * from './complex/DatePicker';
 export * from './complex/Dialog';
 export * from './complex/Drawer';
 export * from './complex/DropdownMenu';
+export * from './complex/Form';
 export * from './complex/HoverCard';
 export * from './complex/InputOTP';
 export * from './complex/NavigationMenu';
@@ -153,6 +155,7 @@ export * from './complex/Sidebar';
 export * from './complex/Slider';
 export * from './complex/Tabs';
 export * from './complex/Toast';
+export * from './complex/Toolbar';
 export * from './complex/Tooltip';
 
 // ----------------------------------------------------------------------------
