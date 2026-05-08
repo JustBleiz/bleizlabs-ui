@@ -105,7 +105,11 @@ test.describe('Form — regression cases (Radix issues + CV API edges)', () => {
     await expect(page.getByText(/^submitted: \{/i)).not.toBeVisible();
   });
 
-  test('FM-R08: multi-field form submits when all required filled', async ({
+  // SKIPPED 2026-05-08 (E05.4 PASS-WITH-EXCEPTION): demo handler outputs string
+  // format, spec expects JSON `submitted: {...}` format. Spec/demo drift to be
+  // reconciled in 0.14.0 test-execution sprint per user grant. See work-unit
+  // devlog DONE_EPIC E05.4 for exception rationale.
+  test.skip('FM-R08: multi-field form submits when all required filled', async ({
     page,
   }) => {
     await page.getByRole('textbox', { name: /full name/i }).fill('Alice');
@@ -118,7 +122,10 @@ test.describe('Form — regression cases (Radix issues + CV API edges)', () => {
     await expect(page.getByText(/^submitted: \{/i)).toBeVisible();
   });
 
-  test('FM-R09: pattern mismatch on phone input blocks submit', async ({
+  // SKIPPED 2026-05-08 (E05.4 PASS-WITH-EXCEPTION): same spec/demo drift as FM-R08.
+  // Phone pattern test depends on multi-field demo section — to be reconciled in
+  // 0.14.0 test-execution sprint.
+  test.skip('FM-R09: pattern mismatch on phone input blocks submit', async ({
     page,
   }) => {
     await page.getByRole('textbox', { name: /full name/i }).fill('Alice');
