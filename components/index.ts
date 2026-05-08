@@ -90,7 +90,7 @@ export * from './specialized/ThemeToggle';
 export * from './specialized/UsageDonut';
 
 // ----------------------------------------------------------------------------
-// Molecules (15 — v0.8.2 Timeline NEW: compound flat exports Timeline + TimelineItem + TimelineMarker)
+// Molecules (16 — v0.14.0 Header NEW: ≤3-prop universal block-header replacing SectionHeader/PageHeader use cases via composition)
 // ----------------------------------------------------------------------------
 export * from './molecules/AccordionGroup';
 export * from './molecules/BackLink';
@@ -99,6 +99,7 @@ export * from './molecules/Chip';
 export * from './molecules/DataRow';
 export * from './molecules/DeadlineBadge';
 export * from './molecules/FileChip';
+export * from './molecules/Header';
 export * from './molecules/IconButton';
 export * from './molecules/MetricTile';
 export * from './molecules/PageHeader';

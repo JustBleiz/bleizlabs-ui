@@ -1,0 +1,31 @@
+// =============================================================================
+// Header — universal block-header molecule (M-Header)
+// Layout: [body: title + lead + badges]   [actions]
+// =============================================================================
+// Zero visual chrome — no background, border, padding, or radius. Pure flex
+// layout. Visual identity comes entirely from composed children (consumer
+// picks Heading size, Text variant, Badge styles). Parent owns external
+// spacing (Stack/Section gap). Single source per scope.
+
+.root {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-4);
+  width: 100%;
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  // Allow text inside body to truncate if consumer applies overflow rules
+  // — without min-width: 0 a long inline child would expand the flex item
+  // and push actions off the row.
+  min-width: 0;
+}
+
+.actions {
+  // Don't shrink the actions slot — keep buttons at intrinsic width.
+  flex: 0 0 auto;
+}

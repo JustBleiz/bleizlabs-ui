@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1",
   "libVersion": "0.13.1",
-  "generatedAt": "2026-05-08T21:02:08.378Z",
+  "generatedAt": "2026-05-08T22:15:57.851Z",
   "categories": {
     "layout": [
       "Container",
@@ -75,6 +75,7 @@
       "DataRow",
       "DeadlineBadge",
       "FileChip",
+      "Header",
       "IconButton",
       "MetricTile",
       "PageHeader",
@@ -924,6 +925,18 @@
       "types": [
         "FileChipProps",
         "FileChipVariant"
+      ],
+      "hooks": []
+    },
+    {
+      "family": "Header",
+      "category": "molecules",
+      "path": "molecules/Header",
+      "exports": [
+        "Header"
+      ],
+      "types": [
+        "HeaderProps"
       ],
       "hooks": []
     },
