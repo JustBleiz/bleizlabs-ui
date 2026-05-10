@@ -463,11 +463,137 @@
 }
 
 // ============================================================================
-// Mobile fallback (placeholder — full card layout next session)
+// Frozen / sticky columns
 // ============================================================================
 
-.mobile {
-  // Reserved dla next session — pełny card-stack layout
+.stickyLeft {
+  position: sticky;
+  left: 0;
+  z-index: 1;
+  background-color: var(--color-surface);
+  box-shadow: 1px 0 0 0 var(--color-border-subtle),
+    4px 0 6px -2px color-mix(in srgb, var(--color-border) 35%, transparent);
+}
+
+.stickyRight {
+  position: sticky;
+  right: 0;
+  z-index: 1;
+  background-color: var(--color-surface);
+  box-shadow: -1px 0 0 0 var(--color-border-subtle),
+    -4px 0 6px -2px color-mix(in srgb, var(--color-border) 35%, transparent);
+}
+
+// Header sticky cells inherit background z headerCell
+.stickyHeader thead .stickyLeft,
+.stickyHeader thead .stickyRight {
+  z-index: 3; // above sticky header (z-index: 2) + sticky cells (z-index: 1)
+}
+
+// Striped + sticky combination: sticky cells need solid bg
+.striped tbody .row:nth-child(even) {
+  .stickyLeft,
+  .stickyRight {
+    background-color: var(--color-surface-raised);
+  }
+}
+
+// Hover + sticky
+.hoverable .row:not(.rowDisabled):hover {
+  .stickyLeft,
+  .stickyRight {
+    background-color: var(--color-surface-hover);
+  }
+}
+
+// Selected + sticky
+.rowSelected {
+  .stickyLeft,
+  .stickyRight {
+    background-color: color-mix(in srgb, var(--color-brand) 10%, var(--color-surface));
+  }
+}
+
+// ============================================================================
+// Mobile fallback (card list)
+// ============================================================================
+
+.mobileWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.mobileCard {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--space-3);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-md);
+  transition: background-color var(--duration-fast) var(--easing-default);
+
+  &.rowClickable {
+    cursor: pointer;
+  }
+
+  &.rowSelected {
+    border-color: var(--color-brand);
+    background-color: color-mix(in srgb, var(--color-brand) 6%, var(--color-surface));
+  }
+
+  &.rowDisabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+  }
+}
+
+.mobileCardHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+}
+
+.mobileCardActions {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+.mobileCardField {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-2);
+  font-size: var(--font-size-sm);
+}
+
+.mobileCardLabel {
+  color: var(--color-text-muted);
+  font-weight: var(--font-weight-medium);
+}
+
+.mobileCardValue {
+  color: var(--color-text-primary);
+  text-align: end;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mobileExpansionPanel {
+  padding-top: var(--space-2);
+  border-top: 1px solid var(--color-border-subtle);
+  animation: dataTableExpansionReveal var(--duration-fast) var(--easing-default);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mobileExpansionPanel {
+    animation: none;
+  }
 }
 
 // ============================================================================

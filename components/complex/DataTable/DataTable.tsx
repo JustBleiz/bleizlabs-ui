@@ -698,7 +698,7 @@ export const DataTable = forwardRef(function DataTable<T>(
     loadingRowCount = 5,
     renderEmpty,
     mobileBreakpoint = 768,
-    mobileColumns: _mobileColumns,
+    mobileColumns,
     dir = 'ltr',
     'aria-label': ariaLabel,
     'aria-labelledby': ariaLabelledBy,
@@ -931,7 +931,7 @@ export const DataTable = forwardRef(function DataTable<T>(
           <TableCell
             key={col.id}
             align={col.align === 'right' ? 'end' : col.align === 'center' ? 'center' : 'start'}
-            className={cn(styles.cell, col.cellClassName)}
+            className={cn(styles.cell, stickyClass(col), col.cellClassName)}
             style={col.width ? { width: col.width } : undefined}
           >
             <Skeleton width="80%" height={14} />
@@ -960,8 +960,15 @@ export const DataTable = forwardRef(function DataTable<T>(
   };
 
   // ─────────────────────────────────────────────────────────────────────────
-  // Renderer header cell (z sort indicator)
+  // Renderer header cell (z sort indicator + sticky)
   // ─────────────────────────────────────────────────────────────────────────
+  const stickyClass = (col: ColumnDef<T>) =>
+    col.sticky === 'left'
+      ? styles.stickyLeft
+      : col.sticky === 'right'
+        ? styles.stickyRight
+        : undefined;
+
   const renderHeaderCell = (col: ColumnDef<T>) => {
     const isSorted = tableState.sortState?.columnId === col.id;
     const sortDir = isSorted ? tableState.sortState!.direction : null;
@@ -983,6 +990,7 @@ export const DataTable = forwardRef(function DataTable<T>(
           styles.headerCell,
           sortable && styles.sortableHeader,
           isSorted && styles.sortedHeader,
+          stickyClass(col),
           col.headerClassName,
         )}
         style={col.width ? { width: col.width } : undefined}
@@ -1110,7 +1118,7 @@ export const DataTable = forwardRef(function DataTable<T>(
               <TableCell
                 key={col.id}
                 align={col.align === 'right' ? 'end' : col.align === 'center' ? 'center' : 'start'}
-                className={cn(styles.cell, col.cellClassName)}
+                className={cn(styles.cell, stickyClass(col), col.cellClassName)}
                 style={col.width ? { width: col.width } : undefined}
               >
                 {content}
@@ -1133,6 +1141,129 @@ export const DataTable = forwardRef(function DataTable<T>(
       </Fragment>
     );
   };
+
+  // ─────────────────────────────────────────────────────────────────────────
+  // Renderer mobile card row (card layout fallback below mobileBreakpoint)
+  // ─────────────────────────────────────────────────────────────────────────
+  const mobileVisibleColumns = useMemo(() => {
+    if (!mobileColumns) return visibleColumns;
+    return visibleColumns.filter((c) => mobileColumns.includes(c.id));
+  }, [visibleColumns, mobileColumns]);
+
+  const renderMobileCard = (row: T, rowIndex: number) => {
+    const rowId = getRowId(row, rowIndex);
+    const variant = rowVariant?.(row) ?? 'default';
+    const disabled = rowDisabled?.(row) ?? false;
+    const selected = selectionEnabled && selectedIds.has(rowId);
+    const expanded = expansionEnabled && expandedIds.has(rowId);
+    const clickable = rowClickable && !!onRowClick && !disabled;
+
+    return (
+      <div
+        key={rowId}
+        className={cn(
+          styles.mobileCard,
+          styles[`row-${variant}`],
+          disabled && styles.rowDisabled,
+          clickable && styles.rowClickable,
+          selected && styles.rowSelected,
+        )}
+        onClick={
+          clickable
+            ? (e) => {
+                const target = e.target as HTMLElement;
+                if (
+                  target.closest(
+                    'button, a, input, select, textarea, [role="button"]',
+                  )
+                ) {
+                  return;
+                }
+                onRowClick!(row);
+              }
+            : undefined
+        }
+        role="group"
+        aria-disabled={disabled || undefined}
+        aria-selected={selectionEnabled ? selected : undefined}
+        aria-expanded={expansionEnabled ? expanded : undefined}
+      >
+        {(selectionEnabled || expansionEnabled) && (
+          <div className={styles.mobileCardHeader}>
+            <div className={styles.mobileCardActions}>
+              {selectionEnabled && (
+                <input
+                  type="checkbox"
+                  className={styles.selectionCheckbox}
+                  checked={selected}
+                  disabled={disabled}
+                  onChange={() => toggleRowSelection(rowId)}
+                  onClick={(e) => e.stopPropagation()}
+                  aria-label={labels.selectRow}
+                />
+              )}
+            </div>
+            {expansionEnabled && (
+              <button
+                type="button"
+                className={cn(
+                  styles.expansionButton,
+                  expanded && styles.expansionButtonExpanded,
+                )}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  if (!disabled) toggleRowExpansion(rowId);
+                }}
+                disabled={disabled}
+                aria-label={expanded ? labels.collapse : labels.expand}
+                aria-expanded={expanded}
+              >
+                <ChevronIcon />
+              </button>
+            )}
+          </div>
+        )}
+        {mobileVisibleColumns.map((col) => {
+          const ctx: CellContext<T> = {
+            row,
+            rowIndex,
+            rowId,
+            columnId: col.id,
+            isSelected: selected,
+            isExpanded: expanded,
+          };
+          const content = col.cell
+            ? col.cell(row, ctx)
+            : col.accessorKey != null
+              ? renderAccessorValue(row[col.accessorKey])
+              : null;
+          return (
+            <div key={col.id} className={styles.mobileCardField}>
+              <span className={styles.mobileCardLabel}>{col.header}</span>
+              <span className={styles.mobileCardValue}>{content}</span>
+            </div>
+          );
+        })}
+        {expansionEnabled && expanded && expandable && (
+          <div className={styles.mobileExpansionPanel}>
+            {expandable.renderExpanded(row)}
+          </div>
+        )}
+      </div>
+    );
+  };
+
+  const renderMobileLoading = () => (
+    <>
+      {Array.from({ length: loadingRowCount }).map((_, i) => (
+        <div key={`mskel-${i}`} className={styles.mobileCard}>
+          <Skeleton width="60%" height={16} />
+          <Skeleton width="100%" height={14} />
+          <Skeleton width="80%" height={14} />
+        </div>
+      ))}
+    </>
+  );
 
   // ─────────────────────────────────────────────────────────────────────────
   // Renderer pagination footer
@@ -1162,6 +1293,46 @@ export const DataTable = forwardRef(function DataTable<T>(
   const showError = stateMode === 'error';
   const showEmpty =
     !showLoading && !showError && tableState.visibleRows.length === 0;
+
+  // Mobile render branch — replaces table z card list
+  if (isMobile) {
+    return (
+      <div
+        ref={ref}
+        className={rootClassName}
+        data-density={density}
+        data-state={stateMode}
+        dir={dir}
+        role="grid"
+        aria-label={ariaLabel}
+        aria-labelledby={ariaLabelledBy}
+        aria-rowcount={tableState.totalRows}
+        aria-multiselectable={
+          selectionMode === 'multiple' ? true : undefined
+        }
+        aria-describedby={liveRegionId}
+        {...rest}
+      >
+        <div className={styles.mobileWrapper}>
+          {showLoading
+            ? renderMobileLoading()
+            : showError
+              ? renderErrorState()
+              : showEmpty
+                ? renderEmptyState()
+                : tableState.visibleRows.map(renderMobileCard)}
+        </div>
+        {renderPaginationFooter()}
+        <div
+          id={liveRegionId}
+          role="status"
+          aria-live="polite"
+          aria-atomic="true"
+          className={styles.liveRegion}
+        />
+      </div>
+    );
+  }
 
   return (
     <div
@@ -1261,7 +1432,11 @@ export const DataTable = forwardRef(function DataTable<T>(
                     <TableCell
                       key={col.id}
                       as="th"
-                      className={cn(styles.filterCell, col.headerClassName)}
+                      className={cn(
+                        styles.filterCell,
+                        stickyClass(col),
+                        col.headerClassName,
+                      )}
                       style={col.width ? { width: col.width } : undefined}
                     >
                       {content}
