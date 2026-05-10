@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1",
   "libVersion": "0.13.1",
-  "generatedAt": "2026-05-10T12:03:10.736Z",
+  "generatedAt": "2026-05-10T12:21:19.532Z",
   "categories": {
     "layout": [
       "Container",
@@ -867,10 +867,11 @@
       "category": "molecules",
       "path": "molecules/BreakdownList",
       "exports": [
-        "BreakdownList"
+        "BreakdownList",
+        "BreakdownListItem"
       ],
       "types": [
-        "BreakdownListItem",
+        "BreakdownListItemProps",
         "BreakdownListProps",
         "BreakdownListTone"
       ],

@@ -1,6 +1,6 @@
-export { BreakdownList } from './BreakdownList';
+export { BreakdownList, BreakdownListItem } from './BreakdownList';
 export type {
   BreakdownListProps,
-  BreakdownListItem,
+  BreakdownListItemProps,
   BreakdownListTone,
 } from './BreakdownList';

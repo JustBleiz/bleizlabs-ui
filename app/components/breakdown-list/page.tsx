@@ -1,27 +1,31 @@
 import Link from 'next/link';
-import { BreakdownList } from '@/components/molecules/BreakdownList';
+import {
+  BreakdownList,
+  BreakdownListItem,
+} from '@/components/molecules/BreakdownList';
 import { Heading } from '@/components/typography/Heading';
 import { Text } from '@/components/typography/Text';
+import { Inline } from '@/components/layout/Inline';
 import styles from './page.module.scss';
 
 const ESCALATION_REASONS = [
-  { label: 'Brak intencji', sharePercent: 45 },
-  { label: 'Frustracja użytkownika', sharePercent: 30 },
-  { label: 'Pytania spoza zakresu', sharePercent: 25 },
+  { label: 'Brak intencji', value: 45 },
+  { label: 'Frustracja użytkownika', value: 30 },
+  { label: 'Pytania spoza zakresu', value: 25 },
 ];
 
 const TRAFFIC_SOURCES = [
-  { label: 'Direct', sharePercent: 42, description: '12 500 sesji' },
-  { label: 'Organic search', sharePercent: 35, description: '10 400 sesji' },
-  { label: 'Referral', sharePercent: 23, description: '6 800 sesji' },
+  { label: 'Direct', value: 42, sessions: '12 500 sesji' },
+  { label: 'Organic search', value: 35, sessions: '10 400 sesji' },
+  { label: 'Referral', value: 23, sessions: '6 800 sesji' },
 ];
 
 const TOP_INTENTS = [
-  { label: 'Sprawdź status zamówienia', sharePercent: 38 },
-  { label: 'Zmień termin dostawy', sharePercent: 24 },
-  { label: 'Zwrot produktu', sharePercent: 18 },
-  { label: 'Zaloguj się do panelu', sharePercent: 12 },
-  { label: 'Inne', sharePercent: 8 },
+  { label: 'Sprawdź status zamówienia', value: 38 },
+  { label: 'Zmień termin dostawy', value: 24 },
+  { label: 'Zwrot produktu', value: 18 },
+  { label: 'Zaloguj się do panelu', value: 12 },
+  { label: 'Inne', value: 8 },
 ];
 
 export default function BreakdownListPlaygroundPage() {
@@ -35,10 +39,13 @@ export default function BreakdownListPlaygroundPage() {
           BreakdownList
         </Heading>
         <p className={styles.intro}>
-          Universal analytics breakdown list molecule. Composes Progress per
-          item to show share of total. Common pattern across BI dashboards
-          (top reasons, top sources, top intents). Auto-clusters analytics
-          breakdown subtree pattern across multiple consumers.
+          Universal labeled progress list (compound molecule). Shell{' '}
+          <code>&lt;BreakdownList&gt;</code> + item{' '}
+          <code>&lt;BreakdownListItem&gt;</code> — consumer iterates own data,
+          composes own label slot (plain string OR inline percent OR any
+          ReactNode), wraps own description typography. Klocek-discipline:
+          5-prop item, 2-prop shell, no forced typed array, no auto-wrap, no
+          density lockup. Bar styling delegated to Progress dependency.
         </p>
       </header>
 
@@ -48,14 +55,20 @@ export default function BreakdownListPlaygroundPage() {
         </Heading>
         <Text variant="small" color="secondary">
           tone=&quot;warning&quot; (cautionary breakdown of why AI escalates).
+          Plain string label — no inline percent display.
         </Text>
         <div className={styles.row}>
           <div className={styles.cell}>
-            <BreakdownList
-              aria-label="Najczęstsze powody eskalacji"
-              items={ESCALATION_REASONS}
-              tone="warning"
-            />
+            <BreakdownList aria-label="Najczęstsze powody eskalacji">
+              {ESCALATION_REASONS.map((item) => (
+                <BreakdownListItem
+                  key={item.label}
+                  label={item.label}
+                  value={item.value}
+                  tone="warning"
+                />
+              ))}
+            </BreakdownList>
           </div>
         </div>
       </section>
@@ -65,15 +78,32 @@ export default function BreakdownListPlaygroundPage() {
           2. Driving consumer #2 — PublicTrafficStats.sources
         </Heading>
         <Text variant="small" color="secondary">
-          tone=&quot;info&quot;, with descriptions (raw session counts).
+          tone=&quot;info&quot;. Label slot composes inline percent via{' '}
+          <code>&lt;Inline justify=&quot;between&quot;&gt;</code>; description
+          slot wraps raw count via <code>&lt;Text variant=&quot;small&quot;&gt;</code>.
         </Text>
         <div className={styles.row}>
           <div className={styles.cell}>
-            <BreakdownList
-              aria-label="Źródła ruchu"
-              items={TRAFFIC_SOURCES}
-              tone="info"
-            />
+            <BreakdownList aria-label="Źródła ruchu">
+              {TRAFFIC_SOURCES.map((item) => (
+                <BreakdownListItem
+                  key={item.label}
+                  label={
+                    <Inline justify="between" gap={2}>
+                      <span>{item.label}</span>
+                      <span>{item.value}%</span>
+                    </Inline>
+                  }
+                  value={item.value}
+                  tone="info"
+                  description={
+                    <Text variant="small" color="muted">
+                      {item.sessions}
+                    </Text>
+                  }
+                />
+              ))}
+            </BreakdownList>
           </div>
         </div>
       </section>
@@ -83,104 +113,91 @@ export default function BreakdownListPlaygroundPage() {
           3. Driving consumer #3 — TopIntentsList
         </Heading>
         <Text variant="small" color="secondary">
-          5 items, default tone=&quot;brand&quot;.
+          5 items, default tone=&quot;brand&quot;. Inline percent in label slot.
         </Text>
         <div className={styles.row}>
           <div className={styles.cell}>
-            <BreakdownList
-              aria-label="Top intencje konwersacji"
-              items={TOP_INTENTS}
-            />
+            <BreakdownList aria-label="Top intencje konwersacji">
+              {TOP_INTENTS.map((item) => (
+                <BreakdownListItem
+                  key={item.label}
+                  label={
+                    <Inline justify="between" gap={2}>
+                      <span>{item.label}</span>
+                      <span>{item.value}%</span>
+                    </Inline>
+                  }
+                  value={item.value}
+                />
+              ))}
+            </BreakdownList>
           </div>
         </div>
       </section>
 
       <section className={styles.demo}>
         <Heading level={2} size="2xl">
-          4. Tone variants (brand / info / success / warning)
+          4. Tone variants (brand / info / success / warning / error)
         </Heading>
+        <Text variant="small" color="secondary">
+          Tone affects ONLY the Progress bar color. Label and description stay
+          neutral (consumer typography).
+        </Text>
         <div className={styles.toneRow}>
-          {(['brand', 'info', 'success', 'warning'] as const).map((tone) => (
-            <div key={tone} className={styles.cell}>
-              <Text variant="caption" color="muted">
-                tone=&quot;{tone}&quot;
-              </Text>
-              <BreakdownList
-                aria-label={`Tone ${tone} demo`}
-                items={ESCALATION_REASONS}
-                tone={tone}
-              />
-            </div>
-          ))}
+          {(['brand', 'info', 'success', 'warning', 'error'] as const).map(
+            (tone) => (
+              <div key={tone} className={styles.cell}>
+                <Text variant="caption" color="muted">
+                  tone=&quot;{tone}&quot;
+                </Text>
+                <BreakdownList aria-label={`Tone ${tone} demo`}>
+                  {ESCALATION_REASONS.map((item) => (
+                    <BreakdownListItem
+                      key={item.label}
+                      label={item.label}
+                      value={item.value}
+                      tone={tone}
+                    />
+                  ))}
+                </BreakdownList>
+              </div>
+            )
+          )}
         </div>
       </section>
 
       <section className={styles.demo}>
         <Heading level={2} size="2xl">
-          5. Density variants (compact / comfortable)
+          5. Custom max scale (value=150 on max=200)
         </Heading>
-        <div className={styles.toneRow}>
+        <Text variant="small" color="secondary">
+          Pass <code>max</code> prop on item when value isn&apos;t a 0-100
+          percentage. ARIA label still derives correct percent for SR scan.
+        </Text>
+        <div className={styles.row}>
           <div className={styles.cell}>
-            <Text variant="caption" color="muted">
-              density=&quot;compact&quot;
-            </Text>
-            <BreakdownList
-              aria-label="Compact density demo"
-              items={ESCALATION_REASONS}
-              density="compact"
-            />
-          </div>
-          <div className={styles.cell}>
-            <Text variant="caption" color="muted">
-              density=&quot;comfortable&quot; (default)
-            </Text>
-            <BreakdownList
-              aria-label="Comfortable density demo"
-              items={ESCALATION_REASONS}
-              density="comfortable"
-            />
+            <BreakdownList aria-label="Custom max">
+              <BreakdownListItem label="Item A" value={150} max={200} />
+              <BreakdownListItem label="Item B" value={80} max={200} />
+              <BreakdownListItem label="Item C" value={40} max={200} />
+            </BreakdownList>
           </div>
         </div>
       </section>
 
       <section className={styles.demo}>
         <Heading level={2} size="2xl">
-          6. Edge cases (showPercent=false, custom max, empty state)
+          6. Empty state (consumer-owned)
         </Heading>
-        <div className={styles.toneRow}>
+        <Text variant="small" color="secondary">
+          Molecule never auto-wraps. Consumer renders own empty fallback when
+          data is missing — no <code>emptyMessage</code> prop bundling concerns.
+        </Text>
+        <div className={styles.row}>
           <div className={styles.cell}>
-            <Text variant="caption" color="muted">
-              showPercent=false (bars only)
+            <Text variant="small" color="muted">
+              Brak danych z ostatnich 30 dni
             </Text>
-            <BreakdownList
-              aria-label="Bars only"
-              items={ESCALATION_REASONS}
-              showPercent={false}
-            />
-          </div>
-          <div className={styles.cell}>
-            <Text variant="caption" color="muted">
-              max=200 (sharePercent on 0-200 scale)
-            </Text>
-            <BreakdownList
-              aria-label="Custom max"
-              items={[
-                { label: 'Item A', sharePercent: 150 },
-                { label: 'Item B', sharePercent: 80 },
-                { label: 'Item C', sharePercent: 40 },
-              ]}
-              max={200}
-            />
-          </div>
-          <div className={styles.cell}>
-            <Text variant="caption" color="muted">
-              Empty state
-            </Text>
-            <BreakdownList
-              aria-label="Empty demo"
-              items={[]}
-              emptyMessage="Brak danych z ostatnich 30 dni"
-            />
           </div>
         </div>
       </section>
@@ -189,23 +206,25 @@ export default function BreakdownListPlaygroundPage() {
         <Heading level={2} size="2xl">
           7. Long labels (wrap, not truncate)
         </Heading>
+        <Text variant="small" color="secondary">
+          Multi-word analytics labels wrap in label slot; Progress bar stays
+          full-width below.
+        </Text>
         <div className={styles.row}>
           <div className={styles.cell}>
-            <BreakdownList
-              aria-label="Long labels demo"
-              items={[
-                {
-                  label: 'Pytania spoza zakresu obsługi sklepu internetowego',
-                  sharePercent: 45,
-                },
-                {
-                  label: 'Reklamacje i zwroty produktów premium',
-                  sharePercent: 30,
-                },
-                { label: 'Inne', sharePercent: 25 },
-              ]}
-              tone="info"
-            />
+            <BreakdownList aria-label="Long labels demo">
+              <BreakdownListItem
+                label="Pytania spoza zakresu obsługi sklepu internetowego"
+                value={45}
+                tone="info"
+              />
+              <BreakdownListItem
+                label="Reklamacje i zwroty produktów premium"
+                value={30}
+                tone="info"
+              />
+              <BreakdownListItem label="Inne" value={25} tone="info" />
+            </BreakdownList>
           </div>
         </div>
       </section>

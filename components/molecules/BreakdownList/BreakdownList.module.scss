@@ -1,12 +1,8 @@
 // =============================================================================
-// BreakdownList — analytics breakdown list molecule
+// BreakdownList — labeled progress list compound molecule
 // =============================================================================
-// Renders list of items with inline progress bars showing each item's share.
-// Composes Progress (percent mode) per item. Pure layout + typography —
-// bar styling delegated to Progress dependency.
-//
-// Server-Component safe. No states (non-interactive display molecule).
-// Reduced motion handled by Progress dependency; defensive baseline at file end.
+// Shell renders <ul role="list">. Item renders <li> with label slot + Progress
+// + optional description slot. Server-Component safe.
 
 // ----------------------------------------------------------------------------
 // 1. ROOT (<ul role="list">)
@@ -14,6 +10,7 @@
 .root {
   display: flex;
   flex-direction: column;
+  gap: var(--space-3);
   margin: 0;
   padding: 0;
   list-style: none;
@@ -29,62 +26,24 @@
 }
 
 // ----------------------------------------------------------------------------
-// 3. ITEM HEADER (label + optional percent)
+// 3. LABEL ROW (free-form ReactNode slot — consumer brings own typography)
 // ----------------------------------------------------------------------------
-.itemHeader {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: var(--space-2);
-  font-size: var(--font-size-sm);
-  font-weight: var(--font-weight-medium);
-  line-height: var(--line-height-tight);
-}
-
-.label {
-  color: var(--color-text-primary);
+.labelRow {
   // Allow long labels to wrap rather than truncate (analytics labels can be
   // multi-word like "Pytania spoza zakresu obsługi" — truncation hides info).
+  // No font-size/color/weight — consumer wraps own Text/Inline atoms.
   overflow-wrap: anywhere;
 }
 
-.percent {
-  color: var(--color-text-secondary);
-  font-variant-numeric: tabular-nums;
-  // Right-aligned column of percent values aligns visually for quick scan.
-  flex-shrink: 0;
-}
-
-.description {
-  font-size: var(--font-size-sm);
-  color: var(--color-text-muted);
-  line-height: var(--line-height-tight);
-}
+// ----------------------------------------------------------------------------
+// 4. DESCRIPTION (optional ReactNode slot below bar — layout only, no type)
+// ----------------------------------------------------------------------------
+// .description is a layout passthrough; consumer brings own typography via
+// `<Text variant="small" color="muted">…</Text>`. No font-size/color rules
+// here — that would contradict the no-auto-wrap contract.
 
 // ----------------------------------------------------------------------------
-// 4. DENSITY VARIANTS (gap between items)
-// ----------------------------------------------------------------------------
-.densityCompact {
-  gap: var(--space-2);
-}
-
-.densityComfortable {
-  gap: var(--space-3);
-}
-
-// ----------------------------------------------------------------------------
-// 5. EMPTY STATE (renders as <li> inside the same <ul> shell — same root, same
-//    ref attachment point, same aria-label / role spread as populated state)
-// ----------------------------------------------------------------------------
-.empty {
-  font-size: var(--font-size-sm);
-  color: var(--color-text-muted);
-  line-height: var(--line-height-tight);
-}
-
-// ----------------------------------------------------------------------------
-// 6. REDUCED MOTION (defensive baseline — BreakdownList itself has no
-//    transitions; Progress handles its own PRM)
+// 5. REDUCED MOTION (defensive baseline — Progress handles its own PRM)
 // ----------------------------------------------------------------------------
 @media (prefers-reduced-motion: reduce) {
   .root {

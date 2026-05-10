@@ -1,64 +1,65 @@
-import { forwardRef, type HTMLAttributes } from 'react';
+import {
+  forwardRef,
+  type HTMLAttributes,
+  type LiHTMLAttributes,
+  type ReactNode,
+} from 'react';
 import { Progress, type ProgressPercentColor } from '../../feedback/Progress/Progress';
 import { cn } from '../../utils/cn';
 import styles from './BreakdownList.module.scss';
 
 /**
- * BreakdownList — universal analytics breakdown list molecule
+ * BreakdownList — universal labeled progress list (compound molecule).
  *
- * @layer   molecule (Phase 7, sister to DataRow / AccordionGroup)
- * @tokens  --space-{1,2,3}, --font-size-sm, --font-weight-medium,
- *          --color-text-{primary,secondary,muted}, --line-height-tight.
- *          Bar styling delegated to Progress dependency.
- * @deps    Progress (lib percent-mode), cn (lib). Server-Component safe —
- *          zero client hooks, no animation deps.
- * @a11y    Renders `<ul role="list">` + `<li>` per item. Each item's Progress
- *          carries `label="${item.label} — ${sharePercent}%"` for SR context.
- *          `aria-label` on the root list scopes the breakdown semantically.
- *          Empty state renders the same `<ul role="list">` shell with a single
- *          informational `<li>` — `ref` always resolves to `<ul>`, aria-* props
- *          and any `role` override land on the same element regardless of
- *          item count (consistent contract). Owns its inner layout —
- *          `children?: never` enforces this (mirrors KpiValue Value-family
- *          SRP convention; PercentValue merged into KpiValue v0.7.0).
- *
- * @notes   Tone enum extended `v0.7.1` — `'error'` added now that Progress
- *          ships `error-strong` color (v0.6.1 amendment). Use for high-stakes
- *          alarm patterns (overdue debt, critical-rate failures). For mid-tier
- *          caution use `'warning'`. Tone enum: `'brand' | 'info' | 'success'
- *          | 'warning' | 'error'`.
+ * @layer   molecule (compound: BreakdownList shell + BreakdownListItem)
+ * @tokens  --space-{1,3}, --font-size-sm, --font-weight-medium,
+ *          --color-text-{primary,muted}, --line-height-tight.
+ *          Bar styling delegated to Progress dependency; tone palette mapped
+ *          1:1 to Progress percent-mode colors.
+ * @deps    Progress (lib percent-mode), cn (lib). Server-Component safe — zero
+ *          client hooks, no animation deps.
+ * @a11y    Shell renders `<ul role="list">` with required `aria-label`. Items
+ *          render `<li>` containing label slot + Progress + optional description
+ *          slot. Progress accessible label derives from a `label` string when
+ *          provided ("${label} — ${percent}%"); when `label` is a ReactNode
+ *          consumer SHOULD pass native `aria-label` on the item — it is
+ *          forwarded to Progress as "${aria-label} — ${percent}%". Without
+ *          either, Progress falls back to bare percent (degraded SR context).
  *
  * @example
- * <BreakdownList
- *   aria-label="Najczęstsze powody eskalacji"
- *   items={[
- *     { label: 'Brak intencji', sharePercent: 45 },
- *     { label: 'Frustracja użytkownika', sharePercent: 30 },
- *     { label: 'Pytania spoza zakresu', sharePercent: 25 },
- *   ]}
- *   tone="warning"
- * />
+ * <BreakdownList aria-label="Najczęstsze powody eskalacji">
+ *   <BreakdownListItem label="Brak intencji" value={45} tone="warning" />
+ *   <BreakdownListItem label="Frustracja" value={30} tone="warning" />
+ *   <BreakdownListItem label="Inne" value={25} tone="warning" />
+ * </BreakdownList>
  *
  * @example
- * // Traffic sources breakdown
- * <BreakdownList
- *   aria-label="Źródła ruchu"
- *   items={[
- *     { label: 'Direct', sharePercent: 42, description: '12 500 sesji' },
- *     { label: 'Organic search', sharePercent: 35, description: '10 400 sesji' },
- *     { label: 'Referral', sharePercent: 23, description: '6 800 sesji' },
- *   ]}
- *   tone="info"
- *   density="compact"
- * />
+ * // Consumer composes label slot for inline percent display
+ * <BreakdownList aria-label="Źródła ruchu">
+ *   {sources.map(s => (
+ *     <BreakdownListItem
+ *       key={s.id}
+ *       label={
+ *         <Inline justify="between">
+ *           <span>{s.name}</span>
+ *           <span>{s.share}%</span>
+ *         </Inline>
+ *       }
+ *       value={s.share}
+ *       tone="info"
+ *       description={<Text variant="small" color="muted">{s.sessions} sesji</Text>}
+ *     />
+ *   ))}
+ * </BreakdownList>
  *
  * @example
- * // Empty state
- * <BreakdownList
- *   aria-label="Top intencje"
- *   items={[]}
- *   emptyMessage="Brak danych z ostatnich 30 dni"
- * />
+ * // Consumer owns empty state — molecule never auto-wraps
+ * {items.length === 0
+ *   ? <Text variant="small" color="muted">Brak danych</Text>
+ *   : <BreakdownList aria-label="Top intencje">
+ *       {items.map(i => <BreakdownListItem key={i.id} label={i.label} value={i.share} />)}
+ *     </BreakdownList>
+ * }
  */
 
 export type BreakdownListTone =
@@ -68,17 +69,6 @@ export type BreakdownListTone =
   | 'warning'
   | 'error';
 
-export interface BreakdownListItem {
-  /** Optional stable React key. Falls back to `${label}-${index}` when omitted; positions must be stable if labels are not unique. */
-  id?: string;
-  /** Display label for the breakdown row. */
-  label: string;
-  /** Item's share value. Interpreted as 0-100 by default; pass `max` to use a different scale. */
-  sharePercent: number;
-  /** Optional secondary text rendered below the bar (e.g. raw count, period). */
-  description?: string;
-}
-
 const TONE_TO_PROGRESS_COLOR: Record<BreakdownListTone, ProgressPercentColor> = {
   brand: 'brand',
   info: 'info',
@@ -87,95 +77,91 @@ const TONE_TO_PROGRESS_COLOR: Record<BreakdownListTone, ProgressPercentColor> = 
   error: 'error-strong',
 };
 
-const DENSITY_CLASS: Record<NonNullable<BreakdownListProps['density']>, string> = {
-  compact: styles.densityCompact!,
-  comfortable: styles.densityComfortable!,
-};
-
 export interface BreakdownListProps
   extends Omit<HTMLAttributes<HTMLUListElement>, 'children'> {
-  /** Items to render. Empty array triggers empty state with `emptyMessage`. */
-  items: BreakdownListItem[];
-  /** Bar color tone (mapped to Progress percent-mode colors). Default `'brand'`. */
-  tone?: BreakdownListTone;
-  /** Vertical gap between items. Default `'comfortable'`. */
-  density?: 'compact' | 'comfortable';
-  /** Show inline `X%` label next to each item's name. Default `true`. */
-  showPercent?: boolean;
-  /** Progress bar maximum value. Default `100` (treats `sharePercent` as 0-100). */
-  max?: number;
-  /** Message rendered when `items.length === 0`. Default `'Brak danych'`. */
-  emptyMessage?: string;
-  /** Required accessible label for the breakdown list (consumed via aria-label on `<ul>`). */
+  /** Required accessible label scoping the breakdown semantically. */
   'aria-label': string;
-  /**
-   * @internal BreakdownList owns its inner layout — children are not accepted.
-   * Use `items` prop with a render-friendly array shape.
-   */
-  children?: never;
+  /** `<BreakdownListItem>` nodes (consumer iterates own data). */
+  children: ReactNode;
 }
 
 export const BreakdownList = forwardRef<HTMLUListElement, BreakdownListProps>(
-  function BreakdownList(
+  function BreakdownList({ children, className, ...rest }, ref) {
+    return (
+      <ul ref={ref} role="list" className={cn(styles.root, className)} {...rest}>
+        {children}
+      </ul>
+    );
+  }
+);
+
+export interface BreakdownListItemProps
+  extends Omit<LiHTMLAttributes<HTMLLIElement>, 'children'> {
+  /**
+   * Label slot. Free-form ReactNode — consumer composes plain string, formatted
+   * label with inline percent (`<Inline justify="between"><span>Name</span>
+   * <span>42%</span></Inline>`), or any inline node. Molecule does NOT auto-wrap
+   * strings into Text variants — consumer brings own typography.
+   */
+  label: ReactNode;
+  /** Progress bar value. Interpreted on `0..max` scale (default `max=100`). */
+  value: number;
+  /** Progress maximum. Default `100` (treats `value` as 0-100 percent). */
+  max?: number;
+  /**
+   * Bar color tone (mapped to Progress percent-mode colors). Default `'brand'`.
+   */
+  tone?: BreakdownListTone;
+  /**
+   * Optional secondary content below bar. Free-form ReactNode — consumer wraps
+   * own typography (`<Text variant="small" color="muted">12 500 sesji</Text>`).
+   */
+  description?: ReactNode;
+  /** Item owns its inner layout — children go in `label` slot. */
+  children?: never;
+}
+
+export const BreakdownListItem = forwardRef<HTMLLIElement, BreakdownListItemProps>(
+  function BreakdownListItem(
     {
-      items,
-      tone = 'brand',
-      density = 'comfortable',
-      showPercent = true,
+      label,
+      value,
       max = 100,
-      emptyMessage = 'Brak danych',
+      tone = 'brand',
+      description,
       className,
       ...rest
     },
     ref
   ) {
     const progressColor = TONE_TO_PROGRESS_COLOR[tone];
-
-    if (items.length === 0) {
-      return (
-        <ul
-          ref={ref}
-          role="list"
-          className={cn(styles.root, DENSITY_CLASS[density], className)}
-          {...rest}
-        >
-          <li className={styles.empty}>{emptyMessage}</li>
-        </ul>
-      );
-    }
+    const clampedValue = Math.max(0, Math.min(max, value));
+    const percentLabel = `${Math.round((clampedValue / max) * 100)}%`;
+    // Derive Progress accessible label: prefer string label; fall back to
+    // consumer-supplied native `aria-label` (when label is ReactNode); finally
+    // bare percent (dev should pair ReactNode label with explicit aria-label).
+    const consumerAriaLabel =
+      typeof rest['aria-label'] === 'string' ? rest['aria-label'] : undefined;
+    const ariaLabel =
+      typeof label === 'string'
+        ? `${label} — ${percentLabel}`
+        : consumerAriaLabel
+        ? `${consumerAriaLabel} — ${percentLabel}`
+        : percentLabel;
 
     return (
-      <ul
-        ref={ref}
-        role="list"
-        className={cn(styles.root, DENSITY_CLASS[density], className)}
-        {...rest}
-      >
-        {items.map((item, index) => {
-          const key = item.id ?? `${item.label}-${index}`;
-          const percentLabel = `${Math.round(item.sharePercent)}%`;
-          const ariaLabel = `${item.label} — ${percentLabel}`;
-          return (
-            <li key={key} className={styles.item}>
-              <div className={styles.itemHeader}>
-                <span className={styles.label}>{item.label}</span>
-                {showPercent && (
-                  <span className={styles.percent}>{percentLabel}</span>
-                )}
-              </div>
-              <Progress
-                value={Math.max(0, Math.min(max, item.sharePercent))}
-                max={max}
-                color={progressColor}
-                label={ariaLabel}
-              />
-              {item.description && (
-                <span className={styles.description}>{item.description}</span>
-              )}
-            </li>
-          );
-        })}
-      </ul>
+      <li ref={ref} className={cn(styles.item, className)} {...rest}>
+        <div className={styles.labelRow}>{label}</div>
+        <Progress
+          value={clampedValue}
+          max={max}
+          color={progressColor}
+          label={ariaLabel}
+        />
+        {description ? (
+          <div className={styles.description}>{description}</div>
+        ) : null}
+      </li>
     );
   }
 );
