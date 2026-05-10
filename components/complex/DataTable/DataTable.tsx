@@ -758,8 +758,34 @@ export const DataTable = forwardRef(function DataTable<T>(
     'aria-labelledby': ariaLabelledBy,
     labels: labelsOverride,
     className,
-    ...rest
+    ...rawRest
   } = props;
+
+  // Strip discriminated-union selection fields from rest so they never leak
+  // onto the root <div> via spread (React would emit "Unknown DOM property"
+  // warnings + serialize them as bogus DOM attributes).
+  const {
+    selection: _selection,
+    selectedRow: _selectedRow,
+    defaultSelectedRow: _defaultSelectedRow,
+    selectedRows: _selectedRows,
+    defaultSelectedRows: _defaultSelectedRows,
+    onSelectionChange: _onSelectionChange,
+    ...rest
+  } = rawRest as typeof rawRest & {
+    selection?: 'none' | 'single' | 'multiple';
+    selectedRow?: T | null;
+    defaultSelectedRow?: T | null;
+    selectedRows?: T[];
+    defaultSelectedRows?: T[];
+    onSelectionChange?: (val: T | T[] | null) => void;
+  };
+  void _selection;
+  void _selectedRow;
+  void _defaultSelectedRow;
+  void _selectedRows;
+  void _defaultSelectedRows;
+  void _onSelectionChange;
 
   const labels: DataTableLabels = useMemo(
     () => ({ ...DEFAULT_DATA_TABLE_LABELS, ...labelsOverride }),
@@ -1225,7 +1251,7 @@ export const DataTable = forwardRef(function DataTable<T>(
           })}
         </TableRow>
         {expansionEnabled && expanded && expandable && (
-          <TableRow className={styles.expansionPanel}>
+          <TableRow className={styles.expansionPanel} role="presentation">
             <TableCell
               colSpan={totalCols}
               className={styles.expansionPanelCell}
@@ -1721,7 +1747,7 @@ export const DataTable = forwardRef(function DataTable<T>(
         role="grid"
         aria-label={ariaLabel}
         aria-labelledby={ariaLabelledBy}
-        aria-rowcount={tableState.totalRows}
+        aria-rowcount={tableState.totalRows + 1}
         aria-multiselectable={
           selectionMode === 'multiple' ? true : undefined
         }
@@ -1767,7 +1793,7 @@ export const DataTable = forwardRef(function DataTable<T>(
           role="grid"
           aria-label={ariaLabel}
           aria-labelledby={ariaLabelledBy}
-          aria-rowcount={tableState.totalRows}
+          aria-rowcount={tableState.totalRows + 1}
           aria-colcount={totalGridCols}
           aria-multiselectable={
             selectionMode === 'multiple' ? true : undefined
@@ -1831,7 +1857,7 @@ export const DataTable = forwardRef(function DataTable<T>(
               )}
             </TableRow>
             {hasFilterRow && (
-              <TableRow className={styles.filterRow}>
+              <TableRow className={styles.filterRow} role="presentation">
                 {selectionEnabled && (
                   <TableCell as="th" className={styles.filterCell} />
                 )}
