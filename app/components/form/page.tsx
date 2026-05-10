@@ -73,6 +73,7 @@ export default function FormPlayground() {
           >
             <Stack gap={3}>
               <Input
+                aria-label="Email"
                 name="email"
                 type="email"
                 placeholder="you@example.com"
@@ -111,6 +112,7 @@ export default function FormPlayground() {
           >
             <Stack gap={3}>
               <Input
+                aria-label="Username"
                 name="username"
                 type="text"
                 required
@@ -152,18 +154,21 @@ export default function FormPlayground() {
           >
             <Stack gap={4}>
               <Input
+                aria-label="Name"
                 name="name"
                 type="text"
                 required
                 placeholder="Jane Doe"
               />
               <Input
+                aria-label="Email"
                 name="email"
                 type="email"
                 required
                 placeholder="you@example.com"
               />
               <Input
+                aria-label="Phone"
                 name="phone"
                 type="tel"
                 pattern="[+0-9 \-()]+"
@@ -204,6 +209,7 @@ export default function FormPlayground() {
           >
             <Stack gap={3}>
               <Input
+                aria-label="Question"
                 name="question"
                 type="text"
                 required
