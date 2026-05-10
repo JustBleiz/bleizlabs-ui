@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useState } from 'react';
 import { Empty } from '@/components/feedback/Empty';
 import { Alert, type AlertVariant } from '@/components/feedback/Alert';
+import { Anchor } from '@/components/typography/Anchor';
 import { Progress } from '@/components/feedback/Progress';
 import { Button } from '@/components/interactive/Button';
 import { Heading } from '@/components/typography/Heading';
@@ -123,10 +124,13 @@ export default function FeedbackPlaygroundPage() {
 
           <Alert
             variant="info"
-            title="New library version available"
-            description="Click to view the changelog in a new tab."
-            href="#changelog"
-            timestamp="2026-04-14T14:30:00Z"
+            title={<Anchor href="#changelog">New library version available</Anchor>}
+            description={
+              <>
+                Click to view the changelog in a new tab.{' '}
+                <time dateTime="2026-04-14T14:30:00Z">2026-04-14 14:30</time>
+              </>
+            }
           />
 
           <Alert
