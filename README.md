@@ -1,5 +1,8 @@
 # @bleizlabs/ui
 
+> **Radix without the styling sweat. shadcn without the fork-forever tax.**
+> _Radix daje a11y. shadcn daje style. Tylko my dajemy oba — i propagujemy fixy przez `npm update`._
+
 > A zero-dependency, fully-styled React component library with seed-based design tokens.
 > 88 focused components, WAI-ARIA compliant, SCSS Modules, React 19 + Next.js 16.
 

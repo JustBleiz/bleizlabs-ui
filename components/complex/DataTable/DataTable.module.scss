@@ -1,0 +1,318 @@
+@use '../../../styles/mixins' as mx;
+
+// ============================================================================
+// DataTable v1 — foundation styles (sort + pagination + states + density)
+// Selection / expansion / frozen / mobile fallback / RTL polish → next sessions
+// ============================================================================
+
+.root {
+  // 1. Root structure
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  position: relative;
+  width: 100%;
+
+  // 2. Tokens
+  font-family: var(--font-secondary);
+  font-size: var(--font-size-base);
+  color: var(--color-text-primary);
+
+  // 3. Density variables (default = cozy)
+  --data-table-row-height: 44px;
+  --data-table-cell-padding-y: var(--space-2);
+  --data-table-cell-padding-x: var(--space-3);
+  --data-table-header-padding-y: var(--space-3);
+
+  &.density-compact {
+    --data-table-row-height: 36px;
+    --data-table-cell-padding-y: var(--space-1);
+    --data-table-cell-padding-x: var(--space-2);
+    --data-table-header-padding-y: var(--space-2);
+  }
+
+  &.density-comfortable {
+    --data-table-row-height: 56px;
+    --data-table-cell-padding-y: var(--space-3);
+    --data-table-cell-padding-x: var(--space-4);
+    --data-table-header-padding-y: var(--space-4);
+  }
+}
+
+// ============================================================================
+// Table wrapper + scroll handling
+// ============================================================================
+
+.tableWrapper {
+  position: relative;
+  overflow-x: auto;
+  border-radius: var(--radius-md);
+}
+
+// Sticky header
+.stickyHeader {
+  .tableWrapper {
+    max-height: 100%;
+  }
+
+  table thead {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    background: var(--color-surface);
+    box-shadow: 0 1px 0 0 var(--color-border-subtle);
+  }
+}
+
+// ============================================================================
+// Header cells
+// ============================================================================
+
+.headerCell {
+  padding-block: var(--data-table-header-padding-y);
+  padding-inline: var(--data-table-cell-padding-x);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-secondary);
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+  white-space: nowrap;
+  text-align: start;
+}
+
+.sortableHeader {
+  cursor: pointer;
+  user-select: none;
+}
+
+.sortedHeader {
+  color: var(--color-text-primary);
+}
+
+.sortButton {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  background: transparent;
+  border: 0;
+  padding: 0;
+  margin: 0;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+  text-align: inherit;
+  transition: color var(--duration-fast) var(--easing-default);
+
+  &:hover {
+    color: var(--color-text-primary);
+  }
+
+  &:focus-visible {
+    @include mx.focus-ring;
+    outline: none;
+    border-radius: var(--radius-sm);
+  }
+}
+
+.headerLabel {
+  display: inline-block;
+}
+
+.sortIndicator {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 10px;
+  height: 14px;
+  flex-shrink: 0;
+}
+
+.sortArrow {
+  fill: var(--color-text-muted);
+  transition: fill var(--duration-fast) var(--easing-default);
+}
+
+.sortArrowActive {
+  fill: var(--color-brand);
+}
+
+// ============================================================================
+// Data rows + cells
+// ============================================================================
+
+.row {
+  height: var(--data-table-row-height);
+  transition: background-color var(--duration-fast) var(--easing-default);
+}
+
+.cell {
+  padding-block: var(--data-table-cell-padding-y);
+  padding-inline: var(--data-table-cell-padding-x);
+  vertical-align: middle;
+  color: var(--color-text-primary);
+}
+
+// Row variants (visual tonacja)
+.row-default {
+  // base — no additional styling
+}
+
+.row-success {
+  background-color: color-mix(in srgb, var(--color-success) 6%, transparent);
+}
+
+.row-warning {
+  background-color: color-mix(in srgb, var(--color-warning) 6%, transparent);
+}
+
+.row-error {
+  background-color: color-mix(in srgb, var(--color-error) 6%, transparent);
+}
+
+// Hover state
+.hoverable {
+  .row:not(.rowDisabled):hover {
+    background-color: var(--color-surface-hover);
+  }
+}
+
+// Striped (every other row in body)
+.striped {
+  tbody .row:nth-child(even):not(.rowDisabled) {
+    background-color: var(--color-surface-raised);
+  }
+}
+
+// Clickable row
+.rowClickable {
+  cursor: pointer;
+}
+
+// Disabled row
+.rowDisabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+
+  .cell {
+    color: var(--color-text-muted);
+  }
+}
+
+// Skeleton row
+.skeletonRow {
+  .cell {
+    padding-block: var(--data-table-cell-padding-y);
+  }
+}
+
+// ============================================================================
+// State rows (error / empty)
+// ============================================================================
+
+.stateRow {
+  padding: var(--space-4);
+  display: flex;
+  justify-content: center;
+}
+
+.errorContent {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.retryButton {
+  appearance: none;
+  background: transparent;
+  border: 1px solid var(--color-border);
+  color: var(--color-text-primary);
+  padding-inline: var(--space-3);
+  padding-block: var(--space-1);
+  border-radius: var(--radius-sm);
+  font: inherit;
+  cursor: pointer;
+  transition:
+    background-color var(--duration-fast) var(--easing-default),
+    border-color var(--duration-fast) var(--easing-default);
+
+  &:hover {
+    background-color: var(--color-surface-hover);
+    border-color: var(--color-border-subtle);
+  }
+
+  &:focus-visible {
+    @include mx.focus-ring;
+    outline: none;
+  }
+}
+
+// ============================================================================
+// Pagination footer
+// ============================================================================
+
+.paginationFooter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+  padding-block: var(--space-2);
+}
+
+.rowCount {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+}
+
+// ============================================================================
+// Live region (sr-only)
+// ============================================================================
+
+.liveRegion {
+  @include mx.sr-only;
+}
+
+// ============================================================================
+// Mobile fallback (placeholder — full card layout next session)
+// ============================================================================
+
+.mobile {
+  // Reserved dla next session — pełny card-stack layout
+}
+
+// ============================================================================
+// Reduced motion
+// ============================================================================
+
+@media (prefers-reduced-motion: reduce) {
+  .row,
+  .sortButton,
+  .sortArrow,
+  .retryButton {
+    transition: none;
+  }
+}
+
+// ============================================================================
+// Print
+// ============================================================================
+
+@media print {
+  .paginationFooter,
+  .liveRegion {
+    display: none;
+  }
+
+  .stickyHeader table thead {
+    position: static;
+    box-shadow: none;
+  }
+
+  .row {
+    page-break-inside: avoid;
+  }
+
+  .hoverable .row:hover {
+    background: transparent;
+  }
+}
