@@ -72,6 +72,48 @@ export interface ToggleGroupFilterProps
   groupLabel?: string;
 }
 
+/**
+ * @deprecated Since 0.14.0 — duplicates lib `<ToggleGroup>` atom z thin wrapping.
+ *             Will be REMOVED in 0.15.0 BREAKING release.
+ *
+ *             **Why deprecated (per Charter sharpening 2026-05-10):**
+ *             ToggleGroupFilter duplicates lib `interactive/ToggleGroup` atom z thin wrapping
+ *             (label + groupLabel + forced typed `options: ToggleGroupFilterOption[]` array).
+ *             Klocek test #2 violation (forced data shape array) + R6 reuse-first violation.
+ *             Lib already ships ToggleGroup z proper APG behavior — consumer should use directly.
+ *
+ *             **Migration pattern:**
+ *             ```tsx
+ *             // BEFORE:
+ *             <ToggleGroupFilter
+ *               label="Filter status"
+ *               groupLabel="Status"
+ *               options={[
+ *                 { value: 'all', label: 'Wszystkie' },
+ *                 { value: 'active', label: 'Aktywne', icon: <DotIcon /> },
+ *               ]}
+ *               value={filter}
+ *               onValueChange={setFilter}
+ *             />
+ *
+ *             // AFTER (consumer composition z lib ToggleGroup atom):
+ *             <Stack gap={2}>
+ *               <Eyebrow>Status</Eyebrow>
+ *               <ToggleGroup
+ *                 type="single"
+ *                 value={filter}
+ *                 onValueChange={setFilter}
+ *                 aria-label="Filter status"
+ *               >
+ *                 <Toggle value="all">Wszystkie</Toggle>
+ *                 <Toggle value="active"><DotIcon /> Aktywne</Toggle>
+ *               </ToggleGroup>
+ *             </Stack>
+ *             ```
+ *
+ *             Lib `<ToggleGroup>` + `<Toggle>` atoms STAY — they're klocki. Only this thin
+ *             wrapper z forced array is deprecated.
+ */
 export const ToggleGroupFilter = forwardRef<
   HTMLDivElement,
   ToggleGroupFilterProps
