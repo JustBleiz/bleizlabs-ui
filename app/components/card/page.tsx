@@ -148,7 +148,7 @@ export default function CardPlaygroundPage() {
             </Text>
           </CardBody>
           <CardFooter action>
-            <Text variant="small" color="muted">3 items selected</Text>
+            <Text variant="small" color="secondary">3 items selected</Text>
             <Button variant="primary" size="sm">View all</Button>
           </CardFooter>
         </Card>

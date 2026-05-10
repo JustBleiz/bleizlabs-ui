@@ -61,11 +61,13 @@ export default function InputPlaygroundPage() {
           Input &mdash; uncontrolled
         </Heading>
         <Input
+          aria-label="Full name"
           name="name"
           placeholder="Jane Doe"
           defaultValue=""
         />
         <Input
+          aria-label="Username"
           name="username"
           placeholder="jane"
           required
@@ -77,6 +79,7 @@ export default function InputPlaygroundPage() {
           Input &mdash; controlled with error
         </Heading>
         <Input
+          aria-label="Email address"
           name="email"
           type="email"
           value={email}
@@ -90,6 +93,7 @@ export default function InputPlaygroundPage() {
           Input &mdash; with icon
         </Heading>
         <Input
+          aria-label="Search components"
           name="q"
           type="search"
           placeholder="Search components..."
@@ -102,6 +106,7 @@ export default function InputPlaygroundPage() {
           Input &mdash; disabled
         </Heading>
         <Input
+          aria-label="API key"
           name="apiKey"
           defaultValue="sk-***************"
           disabled
