@@ -3,6 +3,38 @@ import { cn } from '../../utils/cn';
 import styles from './SectionHeader.module.scss';
 
 /**
+ * @deprecated Since 0.14.0 — replaced by `<Header>` molecule (E06.1, ≤2 props children-driven).
+ *             Will be REMOVED in 0.15.0 BREAKING release.
+ *
+ *             **Migration pattern:**
+ *             ```tsx
+ *             // BEFORE:
+ *             <SectionHeader
+ *               label="Active projects"
+ *               count={6}
+ *               meta="Last activity: 3 days ago"
+ *               action={<Button variant="ghost" size="sm">All</Button>}
+ *             />
+ *
+ *             // AFTER (consumer composition with Header + lib atoms):
+ *             <Header actions={<Button variant="ghost" size="sm">All</Button>}>
+ *               <Inline gap={2} align="baseline">
+ *                 <Eyebrow>Active projects · 6</Eyebrow>
+ *                 <Text variant="caption" color="muted">Last activity: 3 days ago</Text>
+ *               </Inline>
+ *             </Header>
+ *             ```
+ *
+ *             **Why deprecated (per Charter sharpening 2026-05-10):**
+ *             - SectionHeader is opinionated 4-prop molecule (label/count/meta/action) z auto-wrap
+ *               of label string into uppercase caption styling (Charter Klocek test #4 violation —
+ *               consumer should wrap own strings explicitly).
+ *             - Header (E06.1) is canonical klocek pattern — children + actions slot, ≤2 props,
+ *               consumer composes Eyebrow / Heading / Text per surface need.
+ *             - Per atomic-design canon: lib provides primitives, consumer composes.
+ *
+ *             See migration examples in `D:/OS/internal/bleizlabs-ui/work/2026-05_lib-audit-rebuild/docs/implementation-plan-2026-05-08.md` §"ADDENDUM 2026-05-08 — Worked migration examples".
+ *
  * SectionHeader — universal section heading row molecule.
  *
  * Pattern: [gradient accent line 24px] LABEL · count   [meta][action].
@@ -62,6 +94,12 @@ export interface SectionHeaderProps
   action?: ReactNode;
 }
 
+/**
+ * @deprecated Since 0.14.0 — replaced by `<Header>` molecule (E06.1, ≤2 props children-driven).
+ *             Will be REMOVED in 0.15.0 BREAKING release.
+ *             Migration: `<Header actions={...}><Eyebrow>{label}</Eyebrow><Text>{meta}</Text></Header>`.
+ *             See full migration pattern in component file JSDoc + `D:/OS/internal/bleizlabs-ui/work/2026-05_lib-audit-rebuild/docs/implementation-plan-2026-05-08.md`.
+ */
 export const SectionHeader = forwardRef<HTMLElement, SectionHeaderProps>(
   function SectionHeader(
     { label, count, meta, action, className, ...rest },
