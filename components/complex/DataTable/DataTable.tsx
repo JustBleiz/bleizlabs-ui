@@ -635,8 +635,9 @@ export function useDataTableState<T>(
       if (pagination !== false && pagination?.pageIndex === undefined) {
         setUncontrolledPageIndex(clamped);
       }
-      pagination !== false &&
+      if (pagination !== false) {
         pagination?.onPaginationChange?.({ pageIndex: clamped, pageSize });
+      }
     },
     [totalPages, pagination, pageSize],
   );
@@ -1228,7 +1229,7 @@ export const DataTable = forwardRef(function DataTable<T>(
               }
             : undefined
         }
-        role="group"
+        role="row"
         aria-disabled={disabled || undefined}
         aria-selected={selectionEnabled ? selected : undefined}
         aria-expanded={expansionEnabled ? expanded : undefined}
@@ -1351,6 +1352,7 @@ export const DataTable = forwardRef(function DataTable<T>(
   // Main grid keyboard handler — APG `/grid/` pattern (cell-mode)
   // Widget-mode (F2/Tab inside cell) deferred — interactive children
   // remain Tab-reachable from cell natively.
+  /* eslint-disable react-hooks/preserve-manual-memoization */
   const handleGridKeyDown = useCallback(
     (e: ReactKeyboardEvent<HTMLDivElement>) => {
       const target = e.target as HTMLElement;
@@ -1492,6 +1494,7 @@ export const DataTable = forwardRef(function DataTable<T>(
       dir,
     ],
   );
+  /* eslint-enable react-hooks/preserve-manual-memoization */
 
   // ─────────────────────────────────────────────────────────────────────────
   // aria-live announcements (debounced)
@@ -1550,12 +1553,13 @@ export const DataTable = forwardRef(function DataTable<T>(
 
   useEffect(() => {
     if (!selectionEnabled) return;
-    if (selectedIds.size === 0) {
-      setLiveMessage('');
-      return;
-    }
     const t = setTimeout(
-      () => setLiveMessage(labels.selectedRows(selectedIds.size)),
+      () =>
+        setLiveMessage(
+          selectedIds.size === 0
+            ? ''
+            : labels.selectedRows(selectedIds.size),
+        ),
       300,
     );
     return () => clearTimeout(t);
@@ -1585,7 +1589,7 @@ export const DataTable = forwardRef(function DataTable<T>(
       toggleColumnVisibility: (_columnId: string) => {
         // v1: column visibility = consumer-driven via column.hidden prop.
         // Imperative toggle is no-op tutaj; consumer flips column.hidden + re-renders.
-        // Defer dedicated visibility override state do v1.x.
+        // Defer dedicated visibility override state do v1.x. _columnId reserved.
       },
       scrollToRow: (rowIndex: number) => {
         if (rowIndex < 0 || rowIndex >= totalDataRows) return;
