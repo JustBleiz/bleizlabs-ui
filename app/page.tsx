@@ -166,7 +166,7 @@ const components: ComponentLink[] = [
   {
     href: '/components/table',
     name: 'Table',
-    description: 'Semantic <table> primitives — Table + Header + Body + Footer + Row + Cell. Striped, bordered, and compact variants. Pairs with TanStack Table for sortable / filterable data tables in consumer projects.',
+    description: 'Semantic <table> primitives — Table + Header + Body + Footer + Row + Cell. Striped, bordered, and compact variants. For grid features (sort, filter, pagination, selection, expansion, frozen columns, APG /grid/ keyboard) use the 0.17.0 <DataTable> primitive — it composes Table internally.',
     phase: 'Phase 3 — Display',
     status: 'available',
   },

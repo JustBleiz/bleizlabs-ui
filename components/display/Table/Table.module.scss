@@ -1,8 +1,9 @@
 // Table primitives — zero-dep semantic <table> atoms (Phase 11 CI23).
-// Styling only — no sorting/filtering/pagination logic. Consumer projects
-// build DataTable wrappers on top of these primitives + TanStack Table v8
-// (or similar headless engine). Per Table decision v2 in devlog: library
-// stays zero-runtime-dep, Table complex features live per-project.
+// Styling only — no sorting/filtering/pagination logic. For grid features
+// (sort, filter, pagination, selection, expansion, frozen columns, APG
+// /grid/ keyboard model, aria-live announcements) use the 0.17.0
+// `complex/DataTable` primitive — it composes this Table compound
+// internally. Library stays zero-runtime-dep.
 //
 // Cross-component styling lives here (child selectors) so TableRow +
 // TableCell remain thin — variant behavior is driven by the root .root

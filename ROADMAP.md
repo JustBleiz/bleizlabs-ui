@@ -1,8 +1,8 @@
 # `@bleizlabs/ui` — Roadmap 0.16 → 1.0
 
 **Status:** DRAFT
-**Last updated:** 2026-05-10
-**Current version:** 0.16.0 (88 components)
+**Last updated:** 2026-05-11
+**Current version:** 0.17.0 (89 components)
 
 > Funkcjonalne luki biblioteki + kolejność domykania. Bez estymat czasowych — pracujemy etapami.
 
@@ -80,11 +80,13 @@ Każdy minor możemy przemieszać gdy realny priority się zmieni z internal con
 
 **Zero external deps:** Native (Array methods, IntersectionObserver opcjonalny dla sticky header detection)
 
+**Status:** SHIPPED 2026-05-11 (lib code + tests + demo + docs; consumer migrations follow-up).
+
 **DoD:**
-- [ ] `<DataTable>` ships w `complex/` z pełnym TS API
-- [ ] APG grid compliance (axe-core zero violations + Playwright keyboard/focus/aria suites)
-- [ ] Demo route z 4 use cases (basic, sortable, filterable, full-featured)
-- [ ] Co najmniej 2 internal projekty zmigrowane z hand-rolled table
+- [x] `<DataTable>` ships w `complex/` z pełnym TS API — single + multiple selection (discriminated union), expansion, frozen columns, mobile fallback, RTL via logical CSS properties, density modes, imperative handle, `useDataTableState` power-user hook
+- [x] APG grid compliance — axe-core zero violations (DT-A08 + DT-RG20), 11 Playwright suites (keyboard / focus / aria / sort / filter / pagination / selection / expansion / responsive / 12 edge-cases / 20 regression), explicit `role="row"`/`"gridcell"`/`"columnheader"` on every grid descendant
+- [x] Demo route — 6 use cases (basic, sortable+filterable, selection+pagination, full-featured z frozen+density+RTL+striped, real-world panel z onRowClick, states empty/loading/error) — exceeded planned 4
+- [ ] Co najmniej 2 internal projekty zmigrowane z hand-rolled table — **deferred do follow-up work-unit** (panel/scout-hub/leadseeker swap-outs)
 
 ---
 
@@ -344,7 +346,7 @@ Każdy minor możemy przemieszać gdy realny priority się zmieni z internal con
 ### 0.22.1 JSDoc completeness audit
 
 **Scope:**
-- Audyt wszystkich komponentów (88 + ~14 nowych = ~102): pełny header block (description, @layer, @tokens, @deps, @a11y, @example)
+- Audyt wszystkich komponentów (89 + ~13 nowych = ~102): pełny header block (description, @layer, @tokens, @deps, @a11y, @example)
 - Każdy prop ma description w JSDoc
 - Każdy deprecated prop ma `@deprecated` z migration hint
 - Standaryzacja formatu (template w `docs/component-template.md`)
