@@ -1,101 +1,93 @@
 // =============================================================================
-// MetricTile — universal compact metric tile molecule (E04.2 #7)
+// MetricTile — universal metric tile molecule (label + value + optional icon
+// + optional description). SIMPLIFIED 0.14.0/E06.9 per Charter sharpening
+// 2026-05-10 (klocek vs organism binding test): density enum removed,
+// auto-wrap of label/description into Text atoms removed. Molecule owns its
+// visual identity via own SCSS classes (caption-tier label, body-strong value,
+// small-secondary description) — consumer brings own typography atoms only
+// for description override OR custom value composition.
 // =============================================================================
+//
 // Promoted from 4 project-local name-drift cases (DetailMetric / SummaryMetric
 // / CardMetric / MetaItem) per Tier B decision-tree audit 2026-05-04.
-// Frameless by design — consumer chooses the frame (Card / metaStrip / etc.).
+// Frameless by design — consumer chooses the frame (Card / Stack / etc.).
 // Server-safe (pure presentational, no transitions on root needed beyond
 // defensive reduced-motion baseline).
 //
 // All visual rules use lib semantic tokens — zero hardcoded colors / px.
 // Layout owned by Inline + Stack atoms via composition; SCSS contributes
-// only the value-color cascade channel + density-class hooks.
+// slot typography defaults + value-color cascade channel.
 
 // ----------------------------------------------------------------------------
-// 1. ROOT (frameless, no border / background / padding)
+// 1. ROOT (frameless, no border / background / padding — consumer wraps)
 // ----------------------------------------------------------------------------
 .root {
-  // No display/flex here — Inline (compact) or Stack (comfortable) child
-  // owns the layout. Root is just the cascade channel container + density
-  // hook for consumer SCSS overrides.
+  // No display/flex here — Stack child owns the layout. Root is just the
+  // cascade channel container + className passthrough surface.
   font-family: var(--font-secondary);
   color: var(--color-text-primary);
 }
 
 // ----------------------------------------------------------------------------
-// 2. LABEL (caption-tier, muted; uppercase in comfortable density)
+// 2. LABEL (caption-tier styling via own SCSS — no Text atom wrap)
 // ----------------------------------------------------------------------------
 .label {
-  // Text atom owns variant/color/uppercase via props.
-  // Local class kept as SCSS hook for consumer overrides if needed.
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--line-height-tight);
+  letter-spacing: var(--letter-spacing-wider);
+  color: var(--color-text-muted);
+  text-transform: uppercase;
 }
 
 // ----------------------------------------------------------------------------
-// 3. VALUE (body-strong tier, tone color set via element-level inline style)
+// 3. VALUE (body-strong tier; tone color via element-level inline style)
 // ----------------------------------------------------------------------------
 .value {
-  // Tone-driven color is applied via inline `style.color` on the Text
-  // element directly (specificity-safe override that beats Text's own
-  // class rules regardless of CSS injection order). Local class kept
-  // as a SCSS hook for consumer overrides (e.g. font-variant-numeric
-  // for tabular figures).
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--line-height-snug);
+  // Tabular figures for aligned numeric metrics in card grids.
   font-variant-numeric: tabular-nums;
+  // Color is set via inline `style.color` on the element directly (specificity-
+  // safe override channel — beats class rules regardless of CSS injection
+  // order). Default fallback (no tone prop) is var(--color-text-primary)
+  // assigned at runtime via TONE_COLOR_VAR['default'].
 }
 
 // ----------------------------------------------------------------------------
-// 4. ICON (consumer slot, fixed inline-flex container)
+// 4. ICON (consumer slot — inline-flex centering, color follows current text)
 // ----------------------------------------------------------------------------
 .icon {
   // Inline-flex centering — keeps consumer SVG/icon node aligned with text
   // baseline regardless of icon node intrinsic display behavior. Width/height
-  // of icon is consumer's responsibility (they pass size prop on their icon
-  // component); MetricTile only provides the slot.
+  // is consumer's responsibility (passed on icon component); MetricTile only
+  // provides the slot.
   display: inline-flex;
   align-items: center;
   flex-shrink: 0;
-  // Icon color follows current text color cascade — consumer can pass
-  // an icon with `currentColor` stroke and it'll inherit the tone.
+  // Icon color follows current text color cascade — consumer can pass an
+  // icon with `currentColor` stroke and it'll inherit the surrounding tone.
   color: inherit;
 }
 
 // ----------------------------------------------------------------------------
-// 5. DESCRIPTION (small/secondary, comfortable-only)
+// 5. DESCRIPTION (small/secondary defaults — consumer can override via
+//    wrapping in own Text variant)
 // ----------------------------------------------------------------------------
 .description {
-  // Text atom owns variant/color. Local class for consumer override hook.
+  // Default typography — consumer wraps own Text atom for full override.
+  // Defaults provide baseline visual hierarchy when consumer passes plain
+  // ReactNode (e.g. raw string, computed number, simple inline composition).
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-snug);
+  color: var(--color-text-secondary);
 }
 
 // ----------------------------------------------------------------------------
-// 6. DENSITY VARIANTS
-// ----------------------------------------------------------------------------
-// Compact: single-row inline (icon + label + value) — meta-strip style.
-// Layout owned by Inline atom; this class is a hook for consumer overrides
-// (e.g. wrap-control, custom alignment).
-.densityCompact {
-  // Inline gap=1 align=baseline already handles structure. Hook reserved.
-}
-
-.compactRow {
-  // No layout rules — Inline atom owns. Slot for consumer overrides.
-}
-
-// Comfortable: stacked label/value/description with uppercase caption.
-.densityComfortable {
-  // Stack gap=1 already handles structure. Hook reserved.
-}
-
-.comfortableStack {
-  // No layout rules — Stack atom owns. Slot for consumer overrides.
-}
-
-.valueRow {
-  // Inline gap=2 align=baseline already handles structure. Hook reserved.
-}
-
-// ----------------------------------------------------------------------------
-// 7. REDUCED MOTION (defensive baseline — MetricTile has no transitions
-//    today, but suppresses any future addition. Inline / Stack / Text
-//    atoms handle their own PRM internally.)
+// 6. REDUCED MOTION (defensive baseline — MetricTile has no transitions
+//    today, but suppresses any future addition. Inline / Stack atoms handle
+//    their own PRM internally.)
 // ----------------------------------------------------------------------------
 @media (prefers-reduced-motion: reduce) {
   .root {

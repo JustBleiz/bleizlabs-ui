@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1",
   "libVersion": "0.13.1",
-  "generatedAt": "2026-05-08T22:15:57.851Z",
+  "generatedAt": "2026-05-10T12:03:10.736Z",
   "categories": {
     "layout": [
       "Container",
@@ -960,7 +960,6 @@
         "MetricTile"
       ],
       "types": [
-        "MetricTileDensity",
         "MetricTileProps",
         "MetricTileTone"
       ],
