@@ -31,7 +31,7 @@ export * from './typography/Heading';
 export * from './typography/Text';
 
 // ----------------------------------------------------------------------------
-// Display (13 families / 17 exports — v0.8.1 EdgeBar NEW)
+// Display (12)
 // ----------------------------------------------------------------------------
 export * from './display/AspectRatio';
 export * from './display/Avatar';
@@ -40,7 +40,6 @@ export * from './display/Card';
 export * from './display/EdgeBar';
 export * from './display/IconBox';
 export * from './display/KpiValue';
-export * from './display/PercentValue';
 export * from './display/Reveal';
 export * from './display/Separator';
 export * from './display/Skeleton';
@@ -76,7 +75,7 @@ export * from './feedback/Empty';
 export * from './feedback/Progress';
 
 // ----------------------------------------------------------------------------
-// Specialized (9)
+// Specialized (10)
 // ----------------------------------------------------------------------------
 export * from './specialized/AnimatedCounter';
 export * from './specialized/AvailabilityBar';
@@ -90,47 +89,24 @@ export * from './specialized/ThemeToggle';
 export * from './specialized/UsageDonut';
 
 // ----------------------------------------------------------------------------
-// Molecules (16 — v0.14.0 Header NEW: ≤3-prop universal block-header replacing SectionHeader/PageHeader use cases via composition)
+// Molecules (11)
 // ----------------------------------------------------------------------------
 export * from './molecules/AccordionGroup';
 export * from './molecules/BackLink';
 export * from './molecules/BreakdownList';
 export * from './molecules/Chip';
 export * from './molecules/DataRow';
-export * from './molecules/DeadlineBadge';
 export * from './molecules/FileChip';
 export * from './molecules/Header';
 export * from './molecules/IconButton';
 export * from './molecules/MetricTile';
-export * from './molecules/PageHeader';
-export * from './molecules/RevealStack';
 export * from './molecules/SectionDivider';
-export * from './molecules/SectionHeader';
 export * from './molecules/Timeline';
-export * from './molecules/ToggleGroupFilter';
 
 // ----------------------------------------------------------------------------
-// Card presets (12) — v0.13.0 adds FormSurface (renamed from FormCard, dual-export)
+// Card presets (1) — FormSurface
 // ----------------------------------------------------------------------------
-export * from './presets/ActionCard';
-export * from './presets/CollapsibleZoneCard';
-export * from './presets/ContentCard';
-export * from './presets/EntityCard';
-export * from './presets/EntityHero';
-// @deprecated 0.13.0 — re-exports FormSurface; remove in 0.15.0
-export * from './presets/FormCard';
 export * from './presets/FormSurface';
-export * from './presets/IconHeaderCard';
-export * from './presets/PairedCard';
-export * from './presets/SidebarCard';
-export * from './presets/StatsCard';
-export * from './presets/ZoneCard';
-
-// ----------------------------------------------------------------------------
-// Composition presets (2) — v0.9.0 adds AppShell
-// ----------------------------------------------------------------------------
-export * from './presets/AppShell';
-export * from './presets/SiteHeader';
 
 // ----------------------------------------------------------------------------
 // Complex interactive (25) — v0.14.0 adds Field (E06.12)

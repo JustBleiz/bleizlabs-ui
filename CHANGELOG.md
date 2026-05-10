@@ -7,6 +7,98 @@ and this project adheres to [Semantic Versioning 2.0](https://semver.org/spec/v2
 
 ## [Unreleased]
 
+## [0.16.0] — 2026-05
+
+**BREAKING release.** This version closes the deprecation cycle that began
+in 0.13.0 and continued through 0.14.0 and 0.15.0. Nineteen components
+that were marked `@deprecated` across those releases are now removed
+outright. The library shrinks from 107 to 88 focused families and lands
+firmly on the klocek charter: structural primitives plus a small
+catalogue of behavior compounds, with consumer-side composition for
+everything that previously bundled multiple concerns.
+
+### Removed (BREAKING)
+
+**Display:**
+- `PercentValue` / `PercentValueAnimated` — superseded by `KpiValue` with
+  `unit="%"` + `color="auto"` + `thresholds` + `inverse` since 0.7.0.
+
+**Molecules:**
+- `PageHeader` — superseded by `<Header>` (added in 0.14.0). Migration:
+  `<Header>` body slot composes Heading + Text + Eyebrow + Badge.
+- `SectionHeader` — superseded by `<Header>`. Migration: same pattern.
+- `DeadlineBadge` — product-flavored composition (deadline = panel /
+  order business concept). Consumers compose Badge + own deadline-
+  formatting logic.
+- `RevealStack` — thin wrapper. Migration: `<Reveal asChild><Stack>…</Stack></Reveal>`.
+- `ToggleGroupFilter` — duplicates lib `<ToggleGroup type="multiple">`
+  with thin wrapping. Use the lib `ToggleGroup` directly.
+
+**Card presets:**
+- `EntityCard` — multi-concept lockup (card + badge group + meta strip +
+  body slot). Each project composes its own business-domain card
+  (`<ProjectCard>`, `<TicketCard>`) from Card + Header + atoms.
+- `EntityHero` — universal entity detail-page hero shell (god-organism).
+  Each project composes its own detail header from Header + Card + atoms.
+- `ContentCard` — pure shortcut wrapper (`<Card><Heading><Text></Card>`).
+  Compose Card slots directly.
+- `SidebarCard` — visual variation harvester. Compose Card with consumer
+  SCSS for surface-specific styling.
+- `StatsCard` / `ActionCard` / `IconHeaderCard` / `PairedCard` —
+  preset bundles that exceeded the molecule prop budget.
+- `ZoneCard` / `CollapsibleZoneCard` — preset bundles (Card + density +
+  tone enums + summary chips).
+- `FormCard` — renamed to `FormSurface` in 0.13.0; deprecated alias
+  removed.
+
+**Composition presets:**
+- `SiteHeader` — marketing-flavored compound preset. Each project owns
+  its own marketing header molecule.
+- `AppShell` — chrome organism. Each project builds its own
+  variant-driven shell composing `<Sidebar>` + the new `<Header>` molecule.
+
+### Removed (demo pages)
+
+The corresponding playground routes are removed:
+`/components/{percent-value,page-header,section-header,reveal-stack,
+toggle-group-filter,entity-card,entity-hero,content-card,sidebar-card,
+stats-card,action-card,icon-header-card,paired-card,zone-card,
+collapsible-zone-card,form-card,site-header,app-shell}` and the
+aggregator routes `/components/presets` + `/demo`.
+
+### Migration
+
+Every removed component shipped a `@deprecated` JSDoc annotation through
+0.13.x → 0.15.x with an explicit migration pattern. Consumers who
+followed those notes need no further changes; consumers still using
+deprecated names will hit `Cannot find module` errors on import — see
+the release notes for the inline migration recipe per component.
+
+### Changed
+
+- **README** — component-count tagline updated to `88 focused components`.
+  Library description in `package.json` updated similarly.
+- **Home page playground** (`app/page.tsx`) — entries for removed
+  components and aggregator routes deleted; FormSurface gains its own
+  index entry under "Form Presets".
+- **Reveal demo** — `RevealStack` sections rewritten to use
+  `<Reveal asChild><Stack>…</Stack></Reveal>` directly, demonstrating the
+  documented migration pattern.
+- **Molecules aggregator demo** — sections for ToggleGroupFilter,
+  DeadlineBadge, and PageHeader removed. Aggregator now covers DataRow,
+  BackLink, SectionDivider, AccordionGroup, FileChip, and Accordion.
+
+### Notes
+
+- Manifest regenerated: `88 families`, `502 named exports`,
+  `libVersion 0.16.0`.
+- TypeScript, ESLint, Next build, Playwright smoke + per-component
+  suites all green on CI.
+- Library remains zero-dependency and React 19 / Next.js 16+ first.
+- Seed-token system is unchanged — projects on 0.15.x can upgrade
+  by removing imports of any removed component and substituting the
+  documented composition pattern.
+
 ## [0.15.0] — 2026-05
 
 This release sharpens the library against the **klocek charter** — a binding
@@ -389,7 +481,8 @@ First public release.
 - Distributed via GitHub Packages as a scoped package. See [README.md](README.md)
   for installation instructions.
 
-[Unreleased]: https://github.com/BleizLabs/bleizlabs-ui/compare/v0.15.0...HEAD
+[Unreleased]: https://github.com/BleizLabs/bleizlabs-ui/compare/v0.16.0...HEAD
+[0.16.0]: https://github.com/BleizLabs/bleizlabs-ui/releases/tag/v0.16.0
 [0.15.0]: https://github.com/BleizLabs/bleizlabs-ui/releases/tag/v0.15.0
 [0.14.0]: https://github.com/BleizLabs/bleizlabs-ui/releases/tag/v0.14.0
 [0.13.1]: https://github.com/BleizLabs/bleizlabs-ui/releases/tag/v0.13.1

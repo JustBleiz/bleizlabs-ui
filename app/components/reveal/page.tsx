@@ -2,7 +2,6 @@
 
 import Link from 'next/link';
 import { Reveal } from '@/components/display/Reveal';
-import { RevealStack } from '@/components/molecules/RevealStack';
 import { Stack } from '@/components/layout/Stack';
 import { Heading } from '@/components/typography/Heading';
 import { Text } from '@/components/typography/Text';
@@ -99,67 +98,64 @@ export default function RevealPlaygroundPage() {
       </section>
 
       {/* ============================================================ */}
-      {/* SECTION 4 — RevealStack composition (header + body uniform gap) */}
+      {/* SECTION 4 — Reveal + Stack composition (header + body uniform gap) */}
       {/* ============================================================ */}
       <section className={styles.demo}>
         <Heading level={2} size="2xl">
-          4. <code>&lt;RevealStack&gt;</code> — section pattern (header + body, gap 3)
+          4. <code>&lt;Reveal asChild&gt;&lt;Stack&gt;</code> — section pattern
         </Heading>
         <Text variant="small" color="muted">
-          Composition molecule: <code>&lt;Reveal&gt;</code> + <code>&lt;Stack&gt;</code>.
-          Default <code>gap=3</code> (16px) — canonical section header→body
-          uniform vertical rhythm. Replaces verbose
-          {' '}<code>&lt;Reveal&gt;&lt;Stack gap=3&gt;…&lt;/Stack&gt;&lt;/Reveal&gt;</code>.
+          Canonical section header→body pattern: wrap a Stack in Reveal via{' '}
+          <code>asChild</code> so the IntersectionObserver attaches to the
+          Stack itself.
         </Text>
-        <RevealStack
-          tag="section"
-          gap={3}
-          aria-label="Demo section"
-          className={styles.demoBoxRevealed}
-        >
-          <Heading level={3} size="lg">
-            Section header
-          </Heading>
-          <Card padding={4} radius="md">
-            <Text>Card 1 — gap 16px above (header → body)</Text>
-          </Card>
-          <Card padding={4} radius="md">
-            <Text>Card 2 — gap 16px above (body → body uniform)</Text>
-          </Card>
-          <Card padding={4} radius="md">
-            <Text>Card 3 — gap 16px above</Text>
-          </Card>
-        </RevealStack>
+        <Reveal asChild>
+          <Stack gap={3} aria-label="Demo section" className={styles.demoBoxRevealed}>
+            <Heading level={3} size="lg">
+              Section header
+            </Heading>
+            <Card padding={4} radius="md">
+              <Text>Card 1 — gap 16px above (header → body)</Text>
+            </Card>
+            <Card padding={4} radius="md">
+              <Text>Card 2 — gap 16px above (body → body uniform)</Text>
+            </Card>
+            <Card padding={4} radius="md">
+              <Text>Card 3 — gap 16px above</Text>
+            </Card>
+          </Stack>
+        </Reveal>
       </section>
 
       {/* ============================================================ */}
-      {/* SECTION 5 — RevealStack with nested body group (different gap) */}
+      {/* SECTION 5 — Reveal+Stack with nested body group (different gap) */}
       {/* ============================================================ */}
       <section className={styles.demo}>
         <Heading level={2} size="2xl">
-          5. <code>&lt;RevealStack&gt;</code> with nested body group (composition)
+          5. Reveal + Stack with nested body group (composition)
         </Heading>
         <Text variant="small" color="muted">
           When body needs tighter rhythm than header→body gap, wrap children
-          in own <code>&lt;Stack gap=2&gt;</code>. Composition over magic
-          {' '}<code>bodyGap</code> prop.
+          in own <code>&lt;Stack gap=2&gt;</code>.
         </Text>
-        <RevealStack tag="section" gap={3} className={styles.demoBoxRevealed}>
-          <Heading level={3} size="lg">
-            Header (16px below)
-          </Heading>
-          <Stack gap={2}>
-            <Card padding={3} radius="sm">
-              <Text variant="small">List item 1 (8px tighter rhythm)</Text>
-            </Card>
-            <Card padding={3} radius="sm">
-              <Text variant="small">List item 2</Text>
-            </Card>
-            <Card padding={3} radius="sm">
-              <Text variant="small">List item 3</Text>
-            </Card>
+        <Reveal asChild>
+          <Stack gap={3} className={styles.demoBoxRevealed}>
+            <Heading level={3} size="lg">
+              Header (16px below)
+            </Heading>
+            <Stack gap={2}>
+              <Card padding={3} radius="sm">
+                <Text variant="small">List item 1 (8px tighter rhythm)</Text>
+              </Card>
+              <Card padding={3} radius="sm">
+                <Text variant="small">List item 2</Text>
+              </Card>
+              <Card padding={3} radius="sm">
+                <Text variant="small">List item 3</Text>
+              </Card>
+            </Stack>
           </Stack>
-        </RevealStack>
+        </Reveal>
       </section>
 
       {/* ============================================================ */}

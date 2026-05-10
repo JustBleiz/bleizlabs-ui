@@ -1,45 +1,18 @@
 'use client';
 
 import Link from 'next/link';
-import { useState } from 'react';
 import { DataRow } from '@/components/molecules/DataRow';
 import { BackLink } from '@/components/molecules/BackLink';
 import { SectionDivider } from '@/components/molecules/SectionDivider';
 import { AccordionGroup } from '@/components/molecules/AccordionGroup';
-import {
-  ToggleGroupFilter,
-  type ToggleGroupFilterOption,
-} from '@/components/molecules/ToggleGroupFilter';
-import { DeadlineBadge } from '@/components/molecules/DeadlineBadge';
 import { FileChip } from '@/components/molecules/FileChip';
-import { PageHeader } from '@/components/molecules/PageHeader';
 import { Accordion } from '@/components/interactive/Accordion';
 import { Badge } from '@/components/display/Badge';
-import { Button } from '@/components/interactive/Button';
 import { Heading } from '@/components/typography/Heading';
 import { Text } from '@/components/typography/Text';
 import styles from './page.module.scss';
 
-const STATUS_OPTIONS: ToggleGroupFilterOption[] = [
-  { value: 'active', label: 'Active' },
-  { value: 'paused', label: 'Paused' },
-  { value: 'done', label: 'Done' },
-  { value: 'archived', label: 'Archived' },
-];
-
-// Deterministic future dates relative to a fixed session date.
-// Using string inputs so SSR output is stable regardless of when the
-// page is built; the DeadlineBadge itself is hydration-safe.
-const DEADLINES = {
-  overdue: '2026-04-10',
-  tomorrow: '2026-04-15',
-  soon: '2026-04-17',
-  later: '2026-05-01',
-};
-
 export default function MoleculesPlaygroundPage() {
-  const [statuses, setStatuses] = useState<string[]>(['active']);
-
   return (
     <main className={styles.main}>
       <header className={styles.header}>
@@ -50,13 +23,11 @@ export default function MoleculesPlaygroundPage() {
           Molecules
         </Heading>
         <Text className={styles.intro}>
-          Eight composite components built from the atom layer —{' '}
+          Five composite components built from the atom layer —{' '}
           <code>DataRow</code>, <code>BackLink</code>,{' '}
-          <code>SectionDivider</code>, <code>AccordionGroup</code>,{' '}
-          <code>ToggleGroupFilter</code>, <code>DeadlineBadge</code>,{' '}
-          <code>FileChip</code>, and <code>PageHeader</code>. They codify
-          recurring patterns so consumers don&apos;t reinvent them per
-          project.
+          <code>SectionDivider</code>, <code>AccordionGroup</code>, and{' '}
+          <code>FileChip</code>. They codify recurring patterns so consumers
+          don&apos;t reinvent them per project.
         </Text>
       </header>
 
@@ -194,82 +165,6 @@ export default function MoleculesPlaygroundPage() {
       </section>
 
       {/* ==================================================================== */}
-      {/* TOGGLEGROUPFILTER                                                     */}
-      {/* ==================================================================== */}
-      <section className={styles.section}>
-        <Heading level={2} size="2xl">
-          ToggleGroupFilter
-        </Heading>
-        <Text>
-          Thin composition over <code>ToggleGroup type=&quot;multiple&quot;</code>.
-          Flat options array → Toggle children. Consumer owns controlled state.
-          <code>groupLabel</code> prop for a visible caption.
-        </Text>
-
-        <ToggleGroupFilter
-          label="Order status filter"
-          groupLabel="Status"
-          options={STATUS_OPTIONS}
-          value={statuses}
-          onValueChange={setStatuses}
-        />
-
-        <Text>
-          <strong>Selected:</strong>{' '}
-          {statuses.length > 0 ? statuses.join(', ') : '(none)'}
-        </Text>
-
-        <div className={styles.controls}>
-          <Button variant="ghost" size="sm" onClick={() => setStatuses([])}>
-            Clear
-          </Button>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => setStatuses(['active', 'paused'])}
-          >
-            Active + paused
-          </Button>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => setStatuses(STATUS_OPTIONS.map((o) => o.value))}
-          >
-            All
-          </Button>
-        </div>
-      </section>
-
-      {/* ==================================================================== */}
-      {/* DEADLINEBADGE                                                         */}
-      {/* ==================================================================== */}
-      <section className={styles.section}>
-        <Heading level={2} size="2xl">
-          DeadlineBadge
-        </Heading>
-        <Text>
-          Badge wrapping <code>Intl.RelativeTimeFormat</code>. Hydration-safe —
-          SSR renders the absolute date, then a <code>useEffect</code> +{' '}
-          <code>requestAnimationFrame</code> pair swaps in the relative label
-          after hydration. Color mapping: overdue → error, ≤ threshold →
-          warning, else → success.
-        </Text>
-
-        <div className={styles.stack}>
-          <DeadlineBadge deadline={DEADLINES.overdue} label="Overdue:" />
-          <DeadlineBadge deadline={DEADLINES.tomorrow} label="Soon:" />
-          <DeadlineBadge deadline={DEADLINES.soon} label="This week:" />
-          <DeadlineBadge deadline={DEADLINES.later} label="Later:" />
-          <DeadlineBadge
-            deadline={DEADLINES.later}
-            label="Custom threshold (7):"
-            urgentThreshold={7}
-          />
-          <DeadlineBadge deadline={DEADLINES.soon} locale="en-US" />
-        </div>
-      </section>
-
-      {/* ==================================================================== */}
       {/* FILECHIP                                                              */}
       {/* ==================================================================== */}
       <section className={styles.section}>
@@ -327,67 +222,6 @@ export default function MoleculesPlaygroundPage() {
         </div>
       </section>
 
-      {/* ==================================================================== */}
-      {/* PAGEHEADER                                                            */}
-      {/* ==================================================================== */}
-      <section className={styles.section}>
-        <Heading level={2} size="2xl">
-          PageHeader
-        </Heading>
-        <Text>
-          Page-top title section composing <code>Heading</code> +{' '}
-          <code>Text</code> (subtitle) + optional <code>Badge</code> strip via{' '}
-          <code>Stack</code> / <code>Inline</code>. Accent fragment via{' '}
-          <code>accentStart</code> / <code>accentEnd</code> char-index
-          slicing (defensive — out-of-bounds falls back to plain title).
-          Token override channel <code>--page-header-accent</code> (defaults{' '}
-          <code>var(--color-brand)</code>). Server-safe.
-        </Text>
-
-        <div className={styles.panel}>
-          <div className={styles.stack}>
-            <Text variant="small" color="secondary">
-              Plain title (level=1, no accent, no subtitle)
-            </Text>
-            <PageHeader level={1} title="Profil" />
-          </div>
-        </div>
-
-        <div className={styles.panel}>
-          <div className={styles.stack}>
-            <Text variant="small" color="secondary">
-              Accent fragment + subtitle (level=1)
-            </Text>
-            <PageHeader
-              level={1}
-              title="Moje usługi"
-              accentStart={5}
-              accentEnd={11}
-              subtitle="Przegląd Twoich usług."
-            />
-          </div>
-        </div>
-
-        <div className={styles.panel}>
-          <div className={styles.stack}>
-            <Text variant="small" color="secondary">
-              Full — title + accent + subtitle + status badges
-            </Text>
-            <PageHeader
-              level={1}
-              title="Wykonane projekty"
-              accentStart={10}
-              accentEnd={17}
-              subtitle="Przegląd ukończonych zleceń."
-              badges={[
-                { label: 'Aktywne 3', color: 'success' },
-                { label: '1 ostrzeżenie', color: 'warning' },
-              ]}
-            />
-          </div>
-        </div>
-
-      </section>
     </main>
   );
 }
