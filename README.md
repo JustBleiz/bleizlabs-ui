@@ -1,7 +1,7 @@
 # @bleizlabs/ui
 
 > A zero-dependency, fully-styled React component library with seed-based design tokens.
-> 100+ components, WAI-ARIA compliant, SCSS Modules, React 19 + Next.js 16.
+> 107 components, WAI-ARIA compliant, SCSS Modules, React 19 + Next.js 16.
 
 [![npm](https://img.shields.io/npm/v/@bleizlabs/ui?color=cb3837&logo=npm)](https://www.npmjs.com/package/@bleizlabs/ui)
 [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
@@ -25,13 +25,14 @@ Three walls hit by every product team:
 
 ## Highlights
 
-- **100+ components** across 10 categories (layout, typography, display, interactive, feedback, specialized, molecules, card presets, composition presets, complex interactive)
+- **107 components** across 10 categories — layout, typography, display, interactive, feedback, specialized, molecules, card presets, composition presets, and complex interactive primitives
 - **Zero runtime UI dependencies** — every floating primitive, focus trap, drag gesture, date utility, and keyboard model is built in-house
 - **Seed-based design tokens** — change 5–10 seeds, the whole library follows
 - **SCSS Modules** — no Tailwind, no CSS-in-JS, no runtime style computation
 - **APG-first accessibility** — every interactive component maps to a documented WAI-ARIA Authoring Practices pattern
 - **Runtime-test-verified** — Playwright keyboard / focus / aria / regression suites + `@axe-core/playwright` WCAG 2.1 AA sweep across all playground routes
 - **React 19 + Next.js 16** — built with Server Components, Turbopack, and App Router in mind
+- **Form-friendly** — `<Form>` + `<Field>` compound for native HTML5 validation, `<Combobox>` with single- and multi-select modes, FormData multi-value serialization out of the box
 
 ## Quick start
 

@@ -64,12 +64,13 @@ export default function EntityCardPlaygroundPage() {
           EntityCard
         </Heading>
         <p className={styles.intro}>
-          Universal entity grid item preset (Phase 8 CP8). Composes
-          Card + Heading + Text + Inline + Stack + Badge. Two density
-          modes, optional accent strip (left/top), optional body slot,
-          structured props (NOT 13-slot compound). Renders as
-          <code> &lt;a&gt; </code>(via Card asChild) when <code>href</code>
-          is set; otherwise <code>&lt;div&gt;</code>. Server-safe.
+          Universal entity grid-item preset. Composes Card + Heading + Text +
+          Inline + Stack + Badge under one structured-prop API (no 13-slot
+          compound). Two density modes, optional accent strip (left or top
+          edge), optional body slot. Renders as
+          <code> &lt;a&gt;</code> (via Card <code>asChild</code>) when{' '}
+          <code>href</code> is set; otherwise <code>&lt;div&gt;</code>.
+          Server-safe.
         </p>
       </header>
 

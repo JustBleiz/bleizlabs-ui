@@ -41,11 +41,16 @@
 
   animation: hoverCardContentIn var(--duration-fast) var(--easing-default);
 
-  // Focusable container for keyboard users tabbing INTO content.
+  // Focusable container for keyboard users tabbing INTO content. The ring
+  // is keyboard-only — `:focus-visible` so click-to-focus interactions on
+  // the panel don't paint a permanent ring around every HoverCard surface.
   &:focus {
     outline: none;
   }
-  @include mx.focus-ring;
+
+  &:focus-visible {
+    @include mx.focus-ring;
+  }
 }
 
 .header {

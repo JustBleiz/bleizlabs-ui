@@ -42,18 +42,17 @@ export default function EntityHeroPlaygroundPage() {
           EntityHero
         </Heading>
         <p className={styles.intro}>
-          Universal entity detail page hero shell. Renders semantic{' '}
-          <code>&lt;header&gt;</code> landmark with backLink + title + optional
-          slots (titleBadges, description, statusIndicators, progression) +
-          optional structured meta strip. Sister to IconHeaderCard (CP6).
-          Driving consumers (Faza 3): ServiceDetailHero, ProjectDetailHeader,
-          TicketDetailHeader.
+          Universal entity detail-page hero shell. Renders a semantic{' '}
+          <code>&lt;header&gt;</code> landmark with a back-link, title, and
+          optional slots for title badges, description, status indicators,
+          and progression — plus an optional structured meta strip. Pairs
+          naturally with IconHeaderCard for downstream content surfaces.
         </p>
       </header>
 
       <section className={styles.demo}>
         <Heading level={2} size="2xl">
-          1. Driving consumer #1 — ServiceDetailHero
+          1. Service detail hero — pillar badges + status + meta strip
         </Heading>
         <Text variant="small" color="secondary">
           Service slug page hero with PillarChipGroup (faked), type badge,
@@ -94,7 +93,7 @@ export default function EntityHeroPlaygroundPage() {
 
       <section className={styles.demo}>
         <Heading level={2} size="2xl">
-          2. Driving consumer #2 — ProjectDetailHeader (with progression slot)
+          2. Project detail header — payment / status badges + progression slot
         </Heading>
         <Text variant="small" color="secondary">
           Project slug page hero with type badge, payment + status badges,
@@ -148,7 +147,7 @@ export default function EntityHeroPlaygroundPage() {
 
       <section className={styles.demo}>
         <Heading level={2} size="2xl">
-          3. Driving consumer #3 — TicketDetailHeader
+          3. Ticket detail header — status + SLA badges, no meta strip
         </Heading>
         <Text variant="small" color="secondary">
           Ticket slug page hero with status + SLA badges, no progression, no

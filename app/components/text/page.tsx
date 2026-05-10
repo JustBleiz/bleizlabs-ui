@@ -96,7 +96,7 @@ export default function TextPlaygroundPage() {
       </section>
 
       <section className={styles.demo}>
-        <Heading level={2} size="2xl">7. Eyebrow variant (v0.5.7) — inline-light atelier vocabulary</Heading>
+        <Heading level={2} size="2xl">7. Eyebrow variant — inline-light atelier vocabulary</Heading>
         <Text variant="body" color="secondary">
           The <code>variant=&quot;eyebrow&quot;</code> path reuses the same
           atelier typography as the standalone <code>Eyebrow</code> atom (0.7rem

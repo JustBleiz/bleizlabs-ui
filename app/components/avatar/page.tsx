@@ -48,11 +48,12 @@ export default function AvatarPlaygroundPage() {
       </section>
 
       <section className={styles.demo}>
-        <Heading level={2} size="2xl">3. Status indicators (consumer composes Avatar + Dot overlay)</Heading>
+        <Heading level={2} size="2xl">3. Status indicators — compose Avatar + Dot overlay</Heading>
         <Text variant="small" color="secondary">
-          Per E07.x SIMPLIFY 0.15.0 — `status` prop dropped from Avatar.
-          Consumer composes <code>{`<Avatar />`}</code> + <code>{`<Dot />`}</code> overlay
-          via positioned wrapper for status indication.
+          Avatar stays focused on identity; status indication is layered on as a
+          consumer composition. Wrap an <code>{`<Avatar />`}</code> together with{' '}
+          <code>{`<Dot />`}</code> in a positioned container to render any status
+          treatment (online, busy, away, offline) without bloating the Avatar API.
         </Text>
       </section>
 

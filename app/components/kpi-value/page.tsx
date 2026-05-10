@@ -15,20 +15,22 @@ export default function KpiValuePlaygroundPage() {
           KpiValue
         </Heading>
         <p className={styles.intro}>
-          Universal KPI big-number display atom (Server Component since
-          v0.7.0). Numeric or string value + unit label + optional trend
-          indicator. Symmetric pair with PercentValue. Animated count-up via
-          sister <code>KpiValueAnimated</code> client wrapper.
+          Universal KPI big-number display atom. Server Component by default —
+          renders a numeric or string value, an optional unit label, and an
+          optional trend indicator. The companion{' '}
+          <code>KpiValueAnimated</code> client wrapper provides an entrance
+          count-up.
         </p>
       </header>
 
       <section className={styles.demo}>
         <Heading level={2} size="2xl">
-          1. Driving consumers (4 panel/services pillar cards)
+          1. Dashboard pillar cards — 4 typical KPI patterns
         </Heading>
         <Text variant="small" color="secondary">
-          Mirrors Faza 3 wrapper use cases: ConversionStats, PackageRevenueOverview,
-          PublicTrafficStats, SatisfactionScore.
+          Typical dashboard use cases: conversion stats, revenue overview,
+          public traffic, satisfaction score — anywhere a single high-impact
+          number leads the visual hierarchy.
         </Text>
         <div className={styles.row}>
           <div className={styles.cell}>

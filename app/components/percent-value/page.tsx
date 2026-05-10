@@ -22,17 +22,17 @@ export default function PercentDisplayPlaygroundPage() {
         </Heading>
         <p className={styles.intro}>
           Universal large-percentage display via the unified KpiValue atom.
-          Pass <code>unit=&quot;%&quot;</code> for tight inline percent rendering,
-          add <code>color=&quot;auto&quot;</code> + <code>thresholds</code> +
-          <code>inverse</code> for tone-derived color. PercentValue merged
-          into KpiValue v0.7.0; legacy alias path retained through v0.7.x
-          (deprecated).
+          Pass <code>unit=&quot;%&quot;</code> for tight inline percent
+          rendering and combine <code>color=&quot;auto&quot;</code> with{' '}
+          <code>thresholds</code> + <code>inverse</code> for tone-driven color
+          (e.g., low-is-good metrics). The standalone <code>PercentValue</code>
+          export was merged into KpiValue and remains as a deprecated alias.
         </p>
       </header>
 
       <section className={styles.demo}>
         <Heading level={2} size="2xl">
-          1. Driving consumer (EscalationRateGauge)
+          1. Escalation rate gauge — inverse thresholds + benchmark caption
         </Heading>
         <Text variant="small" color="secondary">
           inverse=true (lower escalation = better), thresholds success≤15%

@@ -38,12 +38,12 @@ export default function FileChipPlaygroundPage() {
         </Heading>
         <p className={styles.intro}>
           File attachment chip with three variants:{' '}
-          <code>uploaded</code> (default, MIME-icon + remove),{' '}
+          <code>uploaded</code> (default — MIME icon + remove),{' '}
           <code>uploading</code> (Spinner replaces icon, remove hidden),{' '}
-          <code>error</code> (error border + retry button). Auto-detects MIME
-          category for the leading icon (image / video / audio / text /
-          archive / document). File size formatted human-readably (B / KB /
-          MB / GB / TB). Promoted v0.4.4-v0.4.5 from panel attachment lists.
+          <code>error</code> (error border + retry button). Auto-detects the
+          MIME category for the leading icon (image, video, audio, text,
+          archive, document). File size renders human-readably (B / KB / MB /
+          GB / TB).
         </p>
       </header>
 

@@ -50,13 +50,13 @@ export default function ButtonPlaygroundPage() {
 
       <section className={styles.section}>
         <Heading level={2} size="2xl">
-          Shapes (v0.4.0)
+          Shapes
         </Heading>
         <Text className={styles.intro}>
-          <code>shape</code> prop is orthogonal to <code>variant</code> and{' '}
-          <code>size</code>. Default <code>&quot;rounded&quot;</code> is
-          backward-compatible with v0.3.x (same computed border-radius);{' '}
-          <code>&quot;pill&quot;</code> resolves to <code>--radius-full</code>.
+          The <code>shape</code> prop is orthogonal to <code>variant</code> and{' '}
+          <code>size</code>. Default <code>&quot;rounded&quot;</code> uses the
+          standard radius scale; <code>&quot;pill&quot;</code> resolves to{' '}
+          <code>--radius-full</code> for fully-rounded edges.
         </Text>
         <div className={styles.row}>
           {SHAPES.map((shape) => (

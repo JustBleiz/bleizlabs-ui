@@ -311,9 +311,9 @@ function ShortcutDemo() {
           4. useSidebar hook + Cmd+B shortcut
         </Heading>
         <Text variant="small" color="muted">
-          Consumer binds keyboard shortcut via{' '}
-          <code>useSidebar()</code>. Library does not bind keys automatically
-          (D8 separation of concerns).
+          Consumers bind keyboard shortcuts via the <code>useSidebar()</code>{' '}
+          hook. The library never binds keys automatically — keyboard policy
+          stays the consumer&apos;s responsibility.
         </Text>
       </header>
       <div className={styles.previewShell}>

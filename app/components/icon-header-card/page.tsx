@@ -65,20 +65,20 @@ export default function IconHeaderCardPlaygroundPage() {
           IconHeaderCard
         </Heading>
         <p className={styles.intro}>
-          Universal admin/dashboard card shell with icon-led header. Composes
-          Card + IconBox + optional Badge + optional CardSection footers.
-          Designed to host KpiValue / PercentValue / BreakdownList /
-          MetricBar / arbitrary content via <code>children</code> body slot.
-          Sister to ContentCard / StatsCard / ActionCard family (Phase 8 CP6).
+          Universal admin / dashboard card shell with an icon-led header.
+          Composes Card + IconBox + optional Badge + optional CardSection
+          footers. Hosts KpiValue, PercentValue, BreakdownList, MetricBar, or
+          any arbitrary content via the <code>children</code> body slot. Part
+          of the ContentCard / StatsCard / ActionCard family.
         </p>
       </header>
 
       <section className={styles.demo}>
         <Heading level={2} size="2xl">
-          1. Driving consumer pattern — KpiValue body
+          1. KpiValue body — typical conversion-stats pattern
         </Heading>
         <Text variant="small" color="secondary">
-          ConversionStatsCard wrapper (Faza 3): IconHeaderCard shell + KpiValue body.
+          Conversion stats card pattern: IconHeaderCard shell wrapping a KpiValue body.
         </Text>
         <div className={styles.cardGrid}>
           <IconHeaderCard
@@ -115,7 +115,7 @@ export default function IconHeaderCardPlaygroundPage() {
           2. PercentValue body + BreakdownList footer
         </Heading>
         <Text variant="small" color="secondary">
-          EscalationRateCard wrapper (Faza 3): PercentValue body + footer with
+          Escalation rate card pattern: PercentValue body + footer with
           BreakdownList in CardSection.
         </Text>
         <div className={styles.cardGrid}>
