@@ -30,6 +30,7 @@ import { Alert } from '../../feedback/Alert';
 import { Skeleton } from '../../display/Skeleton';
 import { Pagination } from '../../specialized/Pagination';
 import { Input } from '../../interactive/Input';
+import { Button } from '../../interactive/Button';
 import styles from './DataTable.module.scss';
 
 /**
@@ -59,11 +60,21 @@ import styles from './DataTable.module.scss';
  *          Default mode = client-side (slice po filter+sort). Server-side
  *          gdy `pagination.totalRows` jest podane (controlled).
  *
- *          v1 status: foundation skeleton (sort + pagination + states +
- *          density + striped/hoverable + sticky header). Selection,
- *          expansion, filter UI, frozen columns, mobile fallback, RTL,
- *          aria-live, full APG keyboard, imperative handle → w kolejnych
- *          sesjach implementacyjnych.
+ *          v1 ships: foundation + sort + filter UI + pagination + selection
+ *          (single/multiple) + expansion + frozen columns + mobile card
+ *          fallback + RTL + APG cell-mode keyboard + roving tabindex +
+ *          aria-live announcements + imperative handle. Widget-mode (F2/Esc)
+ *          deferred — cells with interactive children currently rely on
+ *          standard Tab order escaping the grid.
+ *
+ *          Library-first internal exceptions: raw `<button>` retained for the
+ *          column-header sort control + in-cell expansion chevrons (tight
+ *          column-header layout + icon-only cell density that lib `Button`
+ *          padding would overflow). Raw `<input type="checkbox">` retained
+ *          for selection cells — lib `Checkbox` requires `name` + label
+ *          children for form context; gridcell selection needs aria-label-only.
+ *          Future: introduce a bare `Checkbox` variant + `IconButton` cell-size
+ *          option, then collapse these here.
  *
  * @example
  *   import { DataTable, type ColumnDef } from '@bleizlabs/ui';
@@ -218,7 +229,15 @@ interface DataTableBaseProps<T> extends Omit<HTMLAttributes<HTMLDivElement>, 'ch
   data: T[];
   /** Definicje kolumn. Stable reference (useMemo) dla perf. */
   columns: ColumnDef<T>[];
-  /** Stabilne ID wiersza dla selection/expansion stability across reloads. */
+  /**
+   * Stable row ID derivation — REQUIRED when `selection !== 'none'` AND pagination
+   * is enabled, because the default uses the visible-page index, which shifts
+   * across pages and silently desyncs selection state.
+   *
+   * Recommended: `getRowId={(row) => row.id}` (ignore index, derive from data).
+   * Default (`String(index)`) is safe ONLY when pagination is off and selection
+   * is `'none'`.
+   */
   getRowId?: (row: T, index: number) => string;
   /** Tonacja density wpływająca na row height + padding. Domyślnie 'cozy'. */
   density?: DataTableDensity;
@@ -473,42 +492,52 @@ function paginateRows<T>(
 // SELECTION HELPERS (discriminated union extraction)
 // ============================================================================
 
-interface ExtractedSelectionConfig<T> {
-  mode: 'none' | 'single' | 'multiple';
-  controlledValue: T | T[] | null | undefined;
-  defaultValue: T | T[] | null | undefined;
-  onChange: ((val: T | null | T[]) => void) | undefined;
-}
+type ExtractedSelectionConfig<T> =
+  | {
+      mode: 'none';
+      controlledValue: undefined;
+      defaultValue: undefined;
+      onChange: undefined;
+    }
+  | {
+      mode: 'single';
+      controlledValue: T | null | undefined;
+      defaultValue: T | null | undefined;
+      onChange: ((row: T | null) => void) | undefined;
+    }
+  | {
+      mode: 'multiple';
+      controlledValue: T[] | undefined;
+      defaultValue: T[] | undefined;
+      onChange: ((rows: T[]) => void) | undefined;
+    };
 
 /**
- * Narrow discriminated union selection props into single shape.
- * Type-erased via `any` cast — TS dyskryminator (`selection` literal) gwarantuje
- * runtime correctness na podstawie mode value.
+ * Narrow discriminated union selection props into a discriminated runtime config.
+ * Exhaustive on `props.selection` literal — TS narrows each branch automatically,
+ * no escape-hatch casts needed.
  */
 function extractSelectionConfig<T>(
   props: DataTableProps<T>,
 ): ExtractedSelectionConfig<T> {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const anyProps = props as any;
-  const mode: 'none' | 'single' | 'multiple' = anyProps.selection ?? 'none';
-  if (mode === 'single') {
+  if (props.selection === 'single') {
     return {
-      mode,
-      controlledValue: anyProps.selectedRow,
-      defaultValue: anyProps.defaultSelectedRow,
-      onChange: anyProps.onSelectionChange,
+      mode: 'single',
+      controlledValue: props.selectedRow,
+      defaultValue: props.defaultSelectedRow,
+      onChange: props.onSelectionChange,
     };
   }
-  if (mode === 'multiple') {
+  if (props.selection === 'multiple') {
     return {
-      mode,
-      controlledValue: anyProps.selectedRows,
-      defaultValue: anyProps.defaultSelectedRows,
-      onChange: anyProps.onSelectionChange,
+      mode: 'multiple',
+      controlledValue: props.selectedRows,
+      defaultValue: props.defaultSelectedRows,
+      onChange: props.onSelectionChange,
     };
   }
   return {
-    mode,
+    mode: 'none',
     controlledValue: undefined,
     defaultValue: undefined,
     onChange: undefined,
@@ -678,6 +707,25 @@ export const DataTable = forwardRef(function DataTable<T>(
   props: DataTableProps<T>,
   ref: ForwardedRef<DataTableHandle<T>>,
 ) {
+  // Dev-mode contract check: default index-based getRowId is unsafe for selection
+  // across pages because page-local row index ≠ data-array index. Selection state
+  // silently desyncs after pagination/sort/filter. Consumer MUST provide a stable
+  // ID derivation function (e.g. `(row) => row.id`) when selection is enabled.
+  if (process.env.NODE_ENV !== 'production') {
+    if (
+      props.selection &&
+      props.selection !== 'none' &&
+      props.getRowId === undefined &&
+      props.pagination !== false
+    ) {
+      console.warn(
+        '[DataTable] `selection` is enabled but `getRowId` is missing. ' +
+          'The default uses visible-page index, which shifts across pages and ' +
+          'desyncs selection. Provide a stable ID, e.g. `getRowId={(row) => row.id}`.',
+      );
+    }
+  }
+
   const {
     data,
     columns,
@@ -777,7 +825,10 @@ export const DataTable = forwardRef(function DataTable<T>(
   // ─────────────────────────────────────────────────────────────────────────
   // Selection state (controlled vs uncontrolled, single + multiple modes)
   // ─────────────────────────────────────────────────────────────────────────
-  const selectionConfig = useMemo(() => extractSelectionConfig(props), [props]);
+  // React Compiler auto-memoizes pure derivations from props; manual useMemo on
+  // `[props]` would always invalidate (consumer rerenders pass a fresh props
+  // identity). Leave the call inline and let the compiler emit the cache.
+  const selectionConfig = extractSelectionConfig(props);
   const selectionMode = selectionConfig.mode;
   const isControlledSelection = selectionConfig.controlledValue !== undefined;
 
@@ -952,9 +1003,9 @@ export const DataTable = forwardRef(function DataTable<T>(
       <div className={styles.errorContent}>
         {errorMessage && <span>{errorMessage}</span>}
         {onRetry && (
-          <button type="button" className={styles.retryButton} onClick={onRetry}>
+          <Button variant="secondary" size="sm" onClick={onRetry}>
             {labels.retry}
-          </button>
+          </Button>
         )}
       </div>
     </Alert>
@@ -1052,6 +1103,7 @@ export const DataTable = forwardRef(function DataTable<T>(
     return (
       <Fragment key={rowId}>
         <TableRow
+          aria-rowindex={rowIndex + 2}
           className={cn(
             styles.row,
             styles[`row-${variant}`],
@@ -1594,7 +1646,13 @@ export const DataTable = forwardRef(function DataTable<T>(
       scrollToRow: (rowIndex: number) => {
         if (rowIndex < 0 || rowIndex >= totalDataRows) return;
         const el = document.getElementById(cellDomId(rowIndex + 1, 0));
-        el?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        const prefersReducedMotion =
+          typeof window !== 'undefined' &&
+          window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        el?.scrollIntoView({
+          behavior: prefersReducedMotion ? 'auto' : 'smooth',
+          block: 'center',
+        });
       },
     }),
     [
@@ -1719,7 +1777,7 @@ export const DataTable = forwardRef(function DataTable<T>(
           onKeyDown={handleGridKeyDown}
         >
           <TableHeader>
-            <TableRow>
+            <TableRow aria-rowindex={1}>
               {selectionEnabled && (
                 <TableCell
                   as="th"
@@ -1835,14 +1893,15 @@ export const DataTable = forwardRef(function DataTable<T>(
 
       {renderPaginationFooter()}
 
-      {/* aria-live region (announcements wire up w next session) */}
       <div
         id={liveRegionId}
         role="status"
         aria-live="polite"
         aria-atomic="true"
         className={styles.liveRegion}
-      />
+      >
+        {liveMessage}
+      </div>
     </div>
   );
 }) as <T>(

@@ -384,7 +384,7 @@
       top: 50%;
       height: 2px;
       transform: translateY(-50%);
-      background: white;
+      background: var(--color-surface);
       border-radius: 1px;
     }
   }
@@ -416,31 +416,6 @@
   display: flex;
   align-items: center;
   gap: var(--space-3);
-}
-
-.retryButton {
-  appearance: none;
-  background: transparent;
-  border: 1px solid var(--color-border);
-  color: var(--color-text-primary);
-  padding-inline: var(--space-3);
-  padding-block: var(--space-1);
-  border-radius: var(--radius-sm);
-  font: inherit;
-  cursor: pointer;
-  transition:
-    background-color var(--duration-fast) var(--easing-default),
-    border-color var(--duration-fast) var(--easing-default);
-
-  &:hover {
-    background-color: var(--color-surface-hover);
-    border-color: var(--color-border-subtle);
-  }
-
-  &:focus-visible {
-    @include mx.focus-ring;
-    outline: none;
-  }
 }
 
 // ============================================================================
@@ -629,8 +604,7 @@
 @media (prefers-reduced-motion: reduce) {
   .row,
   .sortButton,
-  .sortArrow,
-  .retryButton {
+  .sortArrow {
     transition: none;
   }
 }
