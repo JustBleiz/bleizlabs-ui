@@ -22,9 +22,11 @@ import styles from './Table.module.scss';
  * @notes   Server-Component safe. Variants compose via props — `bordered`
  *          adds full borders between cells, `striped` alternates row
  *          backgrounds, `compact` reduces cell padding. All three can
- *          combine. The library stays zero-runtime-dep — sorting,
- *          filtering, pagination, virtualization live in consumer
- *          DataTable wrappers built on TanStack (or similar).
+ *          combine. The library stays zero-runtime-dep. For grid features
+ *          (sort, filter, pagination, selection, expansion, frozen columns,
+ *          APG `/grid/` keyboard model, aria-live announcements), see the
+ *          `DataTable` primitive added in 0.17.0 — it composes this Table
+ *          compound internally.
  *
  * @example
  * <Table>

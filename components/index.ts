@@ -117,6 +117,7 @@ export * from './complex/Carousel';
 export * from './complex/Combobox';
 export * from './complex/Command';
 export * from './complex/ContextMenu';
+export * from './complex/DataTable';
 export * from './complex/DatePicker';
 export * from './complex/Dialog';
 export * from './complex/Drawer';
