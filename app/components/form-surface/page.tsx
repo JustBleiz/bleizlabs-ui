@@ -1,3 +1,5 @@
+'use client';
+
 import Link from 'next/link';
 import { FormSurface } from '@/components/presets/FormSurface';
 import { CardHeader, CardBody, CardFooter } from '@/components/display/Card';
