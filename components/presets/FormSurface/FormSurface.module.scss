@@ -1,29 +1,10 @@
-// FormSurface — Phase 8 E13 (renamed from FormCard in 0.13.0).
-// Form-wrapped Card preset. Outer .formWrapper is semantic only (no visual styling).
-// Card atom owns all visual chrome. Header/body/footer inherit slot layout.
-
-.formWrapper {
-  display: contents;
-}
+// =============================================================================
+// FormSurface — semantic <form> wrapper around Card surface
+// =============================================================================
+// `<form>` is the structural root and receives consumer `className` per
+// root-element convention. `display: contents` so the form has zero layout
+// impact — Card remains the visible surface and layout participant.
 
 .root {
-  // Inherits Card atom styling.
-}
-
-.header {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-1);
-}
-
-.body {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-4);
-}
-
-.footer {
-  // CardFooter action-mode layout inherited from Card atom.
-  // Gap matches ContentCard footer for consistent footer spacing across presets.
-  gap: var(--space-3);
+  display: contents;
 }
