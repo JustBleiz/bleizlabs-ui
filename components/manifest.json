@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1",
   "libVersion": "0.14.0",
-  "generatedAt": "2026-05-10T13:39:35.165Z",
+  "generatedAt": "2026-05-10T14:30:18.841Z",
   "categories": {
     "layout": [
       "Container",
@@ -1330,9 +1330,11 @@
         "ComboboxItemProps",
         "ComboboxItemRecord",
         "ComboboxLabelProps",
+        "ComboboxMultiProps",
         "ComboboxPlacement",
         "ComboboxProps",
-        "ComboboxSeparatorProps"
+        "ComboboxSeparatorProps",
+        "ComboboxSingleProps"
       ],
       "hooks": []
     },

@@ -82,3 +82,28 @@
   font-family: var(--font-family-mono, ui-monospace, monospace);
   font-size: var(--font-size-sm);
 }
+
+// Multi-select demo blocks (section 7) — separate per-example padding +
+// border so each demo (uncontrolled, controlled, form) reads as its own
+// playground. Mirrors the section's existing visual rhythm.
+.demoBlock {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  background: var(--color-surface, var(--color-surface-raised));
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-md);
+}
+
+// Controlled multi-select state row — chips + clear button + count
+// inline. Wraps on narrow viewports so badges flow naturally.
+.controlledRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+  padding-top: var(--space-1);
+  border-top: 1px dashed var(--color-border-subtle);
+  margin-top: var(--space-1);
+}

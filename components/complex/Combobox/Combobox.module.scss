@@ -57,6 +57,97 @@
   }
 }
 
+// ============================================================================
+// MULTI-SELECT CHIPS WRAPPER (multiple={true} mode)
+// ============================================================================
+//
+// When `multiple` is enabled, the trigger renders selected values as inline
+// chips left of the input. The wrapper is a flex-wrap row so chips overflow
+// naturally to a second line on narrow viewports. Chips are non-focusable
+// (keyboard removal via Backspace-on-empty-input) — clicking the chip's ×
+// button removes that single value. Search input continues at the end of
+// the chip row, sharing the same baseline.
+
+.multiInner {
+  display: flex;
+  flex: 1;
+  min-width: 0;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-1);
+  padding: var(--space-2) var(--space-3);
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  max-width: 100%;
+  padding: var(--space-1) var(--space-2);
+  background: var(--color-surface-raised);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-secondary);
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-normal);
+  color: var(--color-text-primary);
+  user-select: none;
+}
+
+.chipLabel {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.chipRemove {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: var(--space-4);
+  height: var(--space-4);
+  padding: 0;
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-sm);
+  color: var(--color-text-muted);
+  cursor: pointer;
+  transition:
+    background-color var(--duration-fast) var(--easing-default),
+    color var(--duration-fast) var(--easing-default);
+
+  > svg {
+    width: 100%;
+    height: 100%;
+  }
+
+  &:hover:not(:disabled) {
+    background: var(--color-surface-hover);
+    color: var(--color-text-primary);
+  }
+
+  &:focus-visible {
+    @include mx.focus-ring;
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+}
+
+// In multi mode the editable input is a flex child of the chips row, NOT
+// the trigger root. Reset its padding (parent owns inset) and let it take
+// remaining row width with a sensible min-width so the user always has a
+// caret target even when chips fill the line.
+.multiInner .input {
+  padding: 0;
+  min-width: 80px;
+  flex: 1;
+}
+
 .triggerInvalid {
   border-color: var(--color-error);
 
