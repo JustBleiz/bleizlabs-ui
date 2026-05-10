@@ -149,6 +149,44 @@ export interface PageHeaderProps
   actions?: ReactNode;
 }
 
+/**
+ * @deprecated Since 0.14.0 — replaced by `<Header>` molecule (E06.1, ≤2 props children-driven).
+ *             Will be REMOVED in 0.15.0 BREAKING release.
+ *
+ *             **Migration pattern:**
+ *             ```tsx
+ *             // BEFORE:
+ *             <PageHeader
+ *               title="Settings"
+ *               subtitle="Manage your account preferences"
+ *               level={1}
+ *               size="3xl"
+ *               accentStart="brand"
+ *               accentEnd="brand-strong"
+ *               badges={[<Badge>Beta</Badge>]}
+ *               actions={<ButtonGroup>...</ButtonGroup>}
+ *             />
+ *
+ *             // AFTER (consumer composition):
+ *             <Header actions={<ButtonGroup>...</ButtonGroup>}>
+ *               <Heading level={1} size="3xl" accent={{ start: 'brand', end: 'brand-strong' }}>
+ *                 Settings
+ *               </Heading>
+ *               <Text variant="lead">Manage your account preferences</Text>
+ *               <Inline gap={2}><Badge>Beta</Badge></Inline>
+ *             </Header>
+ *             ```
+ *
+ *             **Why deprecated (per Charter sharpening 2026-05-10):**
+ *             PageHeader is god-molecule z 9 props bundling 4 concerns: heading + lead text +
+ *             accent gradient + badges slot + actions slot. Original audit recommended SIMPLIFY 9→7,
+ *             ale user direction 2026-05-10 — better to delete god-molecule than collapse props.
+ *             Atomic-design canon: lib provides primitives (Heading accent + Text variant +
+ *             Inline gap + Badge — wszystkie istnieją), consumer composes. Migration cost
+ *             (~5 mins per call site) marginal vs SIMPLIFY refactor + future re-evaluation.
+ *
+ *             See full migration examples in `D:/OS/internal/bleizlabs-ui/work/2026-05_lib-audit-rebuild/docs/implementation-plan-2026-05-08.md` §"ADDENDUM 2026-05-08".
+ */
 export const PageHeader = forwardRef<HTMLDivElement, PageHeaderProps>(
   function PageHeader(
     {

@@ -93,6 +93,40 @@ export interface RevealStackProps extends HTMLAttributes<HTMLElement> {
   disabled?: boolean;
 }
 
+/**
+ * @deprecated Since 0.14.0 — TRUE trivial composition (R6 reuse-first violation).
+ *             Will be REMOVED in 0.15.0 BREAKING release.
+ *
+ *             **Why deprecated (per Charter sharpening 2026-05-10):**
+ *             RevealStack is `<Reveal><Stack>{children}</Stack></Reveal>` literal — bundles 2
+ *             independent concerns (Reveal animation + Stack layout) z 9 props (tag, asChild, gap,
+ *             align, justify, threshold, rootMargin, immediate, disabled). Lib już ma both atoms
+ *             (`<Reveal>` w display/, `<Stack>` w layout/). NO unique value-add — generates noise
+ *             without saving consumer time.
+ *
+ *             Per Charter R6 reuse-first + anti-extreme principle: "molecule jest TRULY trivial
+ *             (`<Reveal><Stack>` literal, no value-add) → DELETE".
+ *
+ *             **Migration pattern:**
+ *             ```tsx
+ *             // BEFORE:
+ *             <RevealStack gap={4} align="center" threshold={0.2}>
+ *               <Heading>Title</Heading>
+ *               <Text>Body</Text>
+ *             </RevealStack>
+ *
+ *             // AFTER (consumer composition — 1-2 lines z lib atoms):
+ *             <Reveal threshold={0.2}>
+ *               <Stack gap={4} align="center">
+ *                 <Heading>Title</Heading>
+ *                 <Text>Body</Text>
+ *               </Stack>
+ *             </Reveal>
+ *             ```
+ *
+ *             Lib atoms (`<Reveal>`, `<Stack>`) STAY — they're klocki. Only this trivial
+ *             composition wrapper is deprecated.
+ */
 export const RevealStack = forwardRef<HTMLElement, RevealStackProps>(
   function RevealStack(
     {

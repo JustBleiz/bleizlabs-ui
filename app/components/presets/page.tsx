@@ -1,7 +1,13 @@
 import Link from 'next/link';
 import { ContentCard } from '@/components/presets/ContentCard';
 import { SidebarCard } from '@/components/presets/SidebarCard';
-import { FormCard } from '@/components/presets/FormCard';
+import { FormSurface } from '@/components/presets/FormSurface';
+import {
+  CardHeader,
+  CardBody,
+  CardFooter,
+} from '@/components/display/Card';
+import { Stack } from '@/components/layout/Stack';
 import { StatsCard } from '@/components/presets/StatsCard';
 import { ActionCard } from '@/components/presets/ActionCard';
 import { Button } from '@/components/interactive/Button';
@@ -101,7 +107,7 @@ export default function PresetsPlaygroundPage() {
           Five opinionated Card presets for common product surfaces —{' '}
           <code>ContentCard</code> for articles and blocks,{' '}
           <code>SidebarCard</code> for dashboard rails,{' '}
-          <code>FormCard</code> for native forms with submit actions,{' '}
+          <code>FormSurface</code> for native forms with submit actions,{' '}
           <code>StatsCard</code> for numeric displays, and{' '}
           <code>ActionCard</code> for notifications that demand a response.
         </Text>
@@ -186,52 +192,51 @@ export default function PresetsPlaygroundPage() {
       </section>
 
       {/* ==================================================================== */}
-      {/* FORMCARD                                                              */}
+      {/* FORMSURFACE                                                           */}
       {/* ==================================================================== */}
       <section className={styles.section}>
         <Heading level={2} size="2xl">
-          FormCard
+          FormSurface
         </Heading>
         <Text color="muted">
-          Renders a semantic <code>&lt;form&gt;</code> element by default
-          (<code>asForm=true</code>) so native validation and autofill work.
-          Footer slot uses CardFooter action mode for submit placement.
+          Renders a semantic <code>&lt;form&gt;</code> wrapper around a Card
+          surface. Consumer composes <code>&lt;CardHeader&gt;</code>,{' '}
+          <code>&lt;CardBody&gt;</code>, <code>&lt;CardFooter&gt;</code> slots
+          via children — molecule does NOT auto-wrap title/description strings.
         </Text>
 
         <div className={styles.grid}>
-          <FormCard
-            title="Contact details"
-            description="Used for delivery and notifications."
-            noValidate
-            footer={
-              <>
-                <Text variant="small" color="secondary">
-                  We never share your info.
-                </Text>
-                <Button type="submit">Save</Button>
-              </>
-            }
-          >
-            <Input name="fullName" label="Full name" placeholder="Jan Kowalski" />
-            <Input
-              name="email"
-              label="Email"
-              type="email"
-              placeholder="jan@example.com"
-            />
-          </FormCard>
-
-          <FormCard
-            asForm={false}
-            title="Preview mode (asForm=false)"
-            description="Renders as plain Card div — no form semantics."
-            footer={<Button variant="ghost">Close</Button>}
-          >
-            <Text>
-              Use when you need the form visual without the{' '}
-              <code>&lt;form&gt;</code> element (e.g., inside another form).
-            </Text>
-          </FormCard>
+          <FormSurface noValidate aria-labelledby="contact-title">
+            <CardHeader>
+              <Heading id="contact-title" level={3} size="lg">
+                Contact details
+              </Heading>
+              <Text variant="body" color="muted">
+                Used for delivery and notifications.
+              </Text>
+            </CardHeader>
+            <CardBody>
+              <Stack gap={4}>
+                <Input
+                  name="fullName"
+                  label="Full name"
+                  placeholder="Jan Kowalski"
+                />
+                <Input
+                  name="email"
+                  label="Email"
+                  type="email"
+                  placeholder="jan@example.com"
+                />
+              </Stack>
+            </CardBody>
+            <CardFooter action>
+              <Text variant="small" color="secondary">
+                We never share your info.
+              </Text>
+              <Button type="submit">Save</Button>
+            </CardFooter>
+          </FormSurface>
         </div>
       </section>
 

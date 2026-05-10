@@ -1,0 +1,33 @@
+// =============================================================================
+// Field — form-row compound (label + control + description + messages)
+// =============================================================================
+// Layout passthrough only — visual identity owned by composed Label / Input /
+// Text atoms. Sub-parts use minimal typographic seeds that consumer can
+// override via className or surrounding atom variant.
+
+.root {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.label {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  line-height: var(--line-height-tight);
+  color: var(--color-text-primary);
+}
+
+.description {
+  margin: 0;
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-tight);
+  color: var(--color-text-muted);
+}
+
+.message {
+  margin: 0;
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-tight);
+  color: var(--color-error);
+}

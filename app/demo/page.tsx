@@ -18,6 +18,7 @@ import {
   Card,
   CardHeader,
   CardBody,
+  CardFooter,
 } from '@/components/display/Card';
 import { Badge } from '@/components/display/Badge';
 import { Separator } from '@/components/display/Separator';
@@ -69,7 +70,7 @@ import { DeadlineBadge } from '@/components/molecules/DeadlineBadge';
 // Presets (Phase 8)
 import { ContentCard } from '@/components/presets/ContentCard';
 import { SidebarCard } from '@/components/presets/SidebarCard';
-import { FormCard } from '@/components/presets/FormCard';
+import { FormSurface } from '@/components/presets/FormSurface';
 import { StatsCard } from '@/components/presets/StatsCard';
 import { ActionCard } from '@/components/presets/ActionCard';
 
@@ -849,7 +850,7 @@ export default function DemoPage() {
           Phase 8 — Card Presets
         </Heading>
         <Text color="muted">
-          ContentCard, SidebarCard, FormCard, StatsCard, ActionCard — compositional presets over Card + slots.
+          ContentCard, SidebarCard, FormSurface, StatsCard, ActionCard — compositional presets over Card + slots.
         </Text>
 
         <div className={styles.grid}>
@@ -869,17 +870,28 @@ export default function DemoPage() {
             <Text variant="small">Settings</Text>
           </SidebarCard>
 
-          <FormCard
-            asForm={false}
-            title="FormCard"
-            description="Renders a <form> element by default; asForm=false switches to plain card."
-            footer={<Button variant="ghost">Close preview</Button>}
-          >
-            <Text>
-              Wraps the inner Card via display: contents so the form has zero
-              visual footprint.
-            </Text>
-          </FormCard>
+          <FormSurface aria-labelledby="form-surface-demo-title">
+            <CardHeader>
+              <Heading id="form-surface-demo-title" level={3} size="lg">
+                FormSurface
+              </Heading>
+              <Text variant="body" color="muted">
+                Semantic &lt;form&gt; around Card surface; consumer composes
+                CardHeader / CardBody / CardFooter slots directly.
+              </Text>
+            </CardHeader>
+            <CardBody>
+              <Text>
+                Wraps the inner Card via display: contents so the form has zero
+                visual footprint.
+              </Text>
+            </CardBody>
+            <CardFooter action>
+              <Button type="button" variant="ghost">
+                Close preview
+              </Button>
+            </CardFooter>
+          </FormSurface>
 
           <StatsCard
             label="Monthly revenue"

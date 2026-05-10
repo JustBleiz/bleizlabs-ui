@@ -222,6 +222,23 @@ function useSiteHeaderContext(componentName: string): SiteHeaderContextValue {
 // SiteHeader (root)
 // ============================================================================
 
+/**
+ * @deprecated Since 0.14.0 — replaced by project-local marketing/site-chrome composition.
+ *             Will be REMOVED in 0.15.0 BREAKING release. Same applies to all sub-exports
+ *             (SiteHeaderBrand, SiteHeaderNav, SiteHeaderActions, SiteHeaderMobileToggle).
+ *
+ *             **Why deprecated (per Charter sharpening 2026-05-10):**
+ *             SiteHeader is compound preset z 5 sub-exports bundling marketing-flavor concerns:
+ *             9 props na root z `containerSize`, `mobileSheetTitle`, `position`, `size`, `variant`,
+ *             `bordered` — multi-axis surface organism. Marketing-flavor inherent w design.
+ *
+ *             Per user direct quote 2026-05-10: "lib NIE pod jakikolwiek projekt" — marketing chrome
+ *             organism jest project responsibility.
+ *
+ *             **Migration:** Project-local `app/_components/shared/layout/MarketingHeader/` composing
+ *             lib `<Header>` (E06.1) + lib atoms (`Inline`, `Stack`, `Anchor`, `Button`). Project owns
+ *             own brand assets, nav structure, mobile drawer behavior, sticky/scrolled states.
+ */
 export const SiteHeader = forwardRef<HTMLElement, SiteHeaderProps>(function SiteHeader(
   {
     variant = 'solid',
@@ -338,6 +355,7 @@ export const SiteHeader = forwardRef<HTMLElement, SiteHeaderProps>(function Site
 // SiteHeaderBrand
 // ============================================================================
 
+/** @deprecated Since 0.14.0 — sub-export of deprecated SiteHeader. Will be REMOVED in 0.15.0. See SiteHeader JSDoc for migration. */
 export const SiteHeaderBrand = forwardRef<HTMLDivElement, SiteHeaderBrandProps>(
   function SiteHeaderBrand({ asChild = false, className, children, ...rest }, ref) {
     // Ensure Brand is only ever rendered once (header bar). Inside Sheet slot,
@@ -356,6 +374,7 @@ export const SiteHeaderBrand = forwardRef<HTMLDivElement, SiteHeaderBrandProps>(
 // SiteHeaderNav
 // ============================================================================
 
+/** @deprecated Since 0.14.0 — sub-export of deprecated SiteHeader. Will be REMOVED in 0.15.0. See SiteHeader JSDoc for migration. */
 export const SiteHeaderNav = forwardRef<HTMLElement, SiteHeaderNavProps>(
   function SiteHeaderNav(
     { 'aria-label': ariaLabel, gap, className, children, ...rest },
@@ -412,6 +431,7 @@ export const SiteHeaderNav = forwardRef<HTMLElement, SiteHeaderNavProps>(
 // SiteHeaderActions
 // ============================================================================
 
+/** @deprecated Since 0.14.0 — sub-export of deprecated SiteHeader. Will be REMOVED in 0.15.0. See SiteHeader JSDoc for migration. */
 export const SiteHeaderActions = forwardRef<HTMLDivElement, SiteHeaderActionsProps>(
   function SiteHeaderActions({ gap = 2, className, children, ...rest }, ref) {
     useSiteHeaderContext('SiteHeaderActions');
@@ -436,6 +456,7 @@ export const SiteHeaderActions = forwardRef<HTMLDivElement, SiteHeaderActionsPro
 // SiteHeaderMobileToggle
 // ============================================================================
 
+/** @deprecated Since 0.14.0 — sub-export of deprecated SiteHeader. Will be REMOVED in 0.15.0. See SiteHeader JSDoc for migration. */
 export const SiteHeaderMobileToggle = forwardRef<
   HTMLButtonElement,
   SiteHeaderMobileToggleProps

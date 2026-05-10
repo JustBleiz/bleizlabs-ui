@@ -274,6 +274,67 @@ const DENSITY_CLASS: Record<EntityCardDensity, string> = {
   comfortable: styles.densityComfortable!,
 };
 
+/**
+ * @deprecated Since 0.14.0 — replaced by project-local `<XxxCard xxx={data}>` business-domain organisms.
+ *             Will be REMOVED in 0.15.0 BREAKING release.
+ *
+ *             **Why deprecated (per Charter sharpening 2026-05-10 — klocek vs organism binding test):**
+ *             EntityCard FAILS multiple klocek tests:
+ *             - **#1 single concept FAIL** — bundles 4 concerns: Card surface + header (icon + title) +
+ *               description + structured slots (badges array + meta strip array + body).
+ *             - **#2 data-shape neutrality FAIL** — forces consumer's data into typed `EntityCardBadge[]`
+ *               + `EntityCardMetaItem[]` arrays. Each project's actual entity data has different shape
+ *               (Project: client+deadline+stage; Ticket: assignee+priority+sla; Lead: company+source+score).
+ *             - **#3 visual-lockup FAIL** — `density='compact'|'comfortable'` enum maps fixed
+ *               (padding+radius+heading-size+gap) combo. Consumer can't override one axis independently.
+ *             - **#4 auto-wrap FAIL** — auto-wraps `description: string` into `<Text variant="body" color="secondary">`.
+ *               Consumer should wrap explicitly.
+ *             - **#6 prop budget FAIL** — 11 props on organism layer (R2 budget ≤3 ideal).
+ *
+ *             **Migration pattern (project-local business organism per Charter R2.1):**
+ *             ```tsx
+ *             // BEFORE:
+ *             <EntityCard
+ *               title={project.name}
+ *               href={`/panel/projekty/${project.slug}`}
+ *               icon={project.icon}
+ *               description={project.description}
+ *               badges={project.badges}
+ *               metaItems={[{ icon: <UserIcon />, label: 'Owner', value: project.owner }]}
+ *               density="compact"
+ *               accentPosition="left"
+ *               accentColor="var(--color-success)"
+ *             />
+ *
+ *             // AFTER — own ProjectCard organism in `app/_components/shared/organisms/ProjectCard/`:
+ *             function ProjectCard({ project }: { project: Project }) {
+ *               return (
+ *                 <Card padding={4} radius="md" hoverable asChild>
+ *                   <Link href={`/panel/projekty/${project.slug}`}>
+ *                     <Stack gap={2}>
+ *                       <Inline gap={2} align="center">
+ *                         {project.icon}
+ *                         <Heading level={3} size="md">{project.name}</Heading>
+ *                       </Inline>
+ *                       <Text variant="body" color="secondary">{project.description}</Text>
+ *                       <Inline gap={2} wrap>
+ *                         {project.badges.map(b => <Badge key={b.id} label={b.label} color={b.color} />)}
+ *                       </Inline>
+ *                       <ProjectMetaStrip owner={project.owner} deadline={project.deadline} />
+ *                     </Stack>
+ *                   </Link>
+ *                 </Card>
+ *               );
+ *             }
+ *             ```
+ *
+ *             Each consumer surface (panel/bleizos/scout-hub admin) builds own `<ProjectCard>` /
+ *             `<TicketCard>` / `<LeadCard>` z own typed data prop + own data shape — no forced lib shape.
+ *             Lib atoms (Card + Heading + Text + Inline + Stack + Badge) STAY as klocki — to NIE są
+ *             deprecated, tylko lib-level lockup composing them is.
+ *
+ *             See migration analysis in `D:/OS/internal/bleizlabs-ui/work/2026-05_lib-audit-rebuild/docs/lib-definition-2026-05-10.md`.
+ */
 export const EntityCard = forwardRef<HTMLElement, EntityCardProps>(
   function EntityCard(
     {

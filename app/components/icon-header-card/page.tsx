@@ -1,5 +1,8 @@
 import Link from 'next/link';
-import { BreakdownList } from '@/components/molecules/BreakdownList';
+import {
+  BreakdownList,
+  BreakdownListItem,
+} from '@/components/molecules/BreakdownList';
 import { KpiValue, KpiValueAnimated } from '@/components/display/KpiValue';
 import { IconHeaderCard } from '@/components/presets/IconHeaderCard';
 import { Heading } from '@/components/typography/Heading';
@@ -40,15 +43,15 @@ const ICON_HEART = 'M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0
 const ICON_SHIELD = 'M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z';
 
 const ESCALATION_REASONS = [
-  { label: 'Brak intencji', sharePercent: 45 },
-  { label: 'Frustracja użytkownika', sharePercent: 30 },
-  { label: 'Pytania spoza zakresu', sharePercent: 25 },
+  { label: 'Brak intencji', value: 45 },
+  { label: 'Frustracja użytkownika', value: 30 },
+  { label: 'Pytania spoza zakresu', value: 25 },
 ];
 
 const TRAFFIC_SOURCES = [
-  { label: 'Direct', sharePercent: 42, description: '12 500 sesji' },
-  { label: 'Organic search', sharePercent: 35, description: '10 400 sesji' },
-  { label: 'Referral', sharePercent: 23, description: '6 800 sesji' },
+  { label: 'Direct', value: 42 },
+  { label: 'Organic search', value: 35 },
+  { label: 'Referral', value: 23 },
 ];
 
 export default function IconHeaderCardPlaygroundPage() {
@@ -125,11 +128,16 @@ export default function IconHeaderCardPlaygroundPage() {
               {
                 title: 'Najczęstsze powody eskalacji',
                 children: (
-                  <BreakdownList
-                    aria-label="Powody eskalacji"
-                    items={ESCALATION_REASONS}
-                    tone="warning"
-                  />
+                  <BreakdownList aria-label="Powody eskalacji">
+                    {ESCALATION_REASONS.map((item) => (
+                      <BreakdownListItem
+                        key={item.label}
+                        label={item.label}
+                        value={item.value}
+                        tone="warning"
+                      />
+                    ))}
+                  </BreakdownList>
                 ),
               },
             ]}
@@ -152,12 +160,16 @@ export default function IconHeaderCardPlaygroundPage() {
               {
                 title: 'Źródła ruchu',
                 children: (
-                  <BreakdownList
-                    aria-label="Źródła ruchu"
-                    items={TRAFFIC_SOURCES}
-                    tone="info"
-                    density="compact"
-                  />
+                  <BreakdownList aria-label="Źródła ruchu">
+                    {TRAFFIC_SOURCES.map((item) => (
+                      <BreakdownListItem
+                        key={item.label}
+                        label={item.label}
+                        value={item.value}
+                        tone="info"
+                      />
+                    ))}
+                  </BreakdownList>
                 ),
               },
             ]}
@@ -226,26 +238,26 @@ export default function IconHeaderCardPlaygroundPage() {
               {
                 title: 'Top intencje',
                 children: (
-                  <BreakdownList
-                    aria-label="Top intencje"
-                    items={[
-                      { label: 'Status zamówienia', sharePercent: 38 },
-                      { label: 'Zmiana terminu', sharePercent: 24 },
-                      { label: 'Zwrot produktu', sharePercent: 18 },
-                    ]}
-                    density="compact"
-                  />
+                  <BreakdownList aria-label="Top intencje">
+                    <BreakdownListItem label="Status zamówienia" value={38} />
+                    <BreakdownListItem label="Zmiana terminu" value={24} />
+                    <BreakdownListItem label="Zwrot produktu" value={18} />
+                  </BreakdownList>
                 ),
               },
               {
                 title: 'Powody eskalacji',
                 children: (
-                  <BreakdownList
-                    aria-label="Powody eskalacji"
-                    items={ESCALATION_REASONS}
-                    tone="warning"
-                    density="compact"
-                  />
+                  <BreakdownList aria-label="Powody eskalacji">
+                    {ESCALATION_REASONS.map((item) => (
+                      <BreakdownListItem
+                        key={item.label}
+                        label={item.label}
+                        value={item.value}
+                        tone="warning"
+                      />
+                    ))}
+                  </BreakdownList>
                 ),
               },
             ]}

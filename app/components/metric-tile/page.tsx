@@ -55,11 +55,13 @@ export default function MetricTilePlaygroundPage() {
 
       <section className={styles.demo}>
         <Heading level={2} size="2xl">
-          1. Compact density — single-row meta tile
+          1. Basic — label + value
         </Heading>
         <Text variant="small" color="secondary">
-          Inline layout `[icon? + label + value]`. Suitable for
-          EntityHero metaStrip-style multi-metric rows. Icon optional.
+          Stacked layout: caption-tier label above body-strong value
+          (with optional icon flanking value + optional description below).
+          Suitable for card-grid tiles where each metric gets equal real-estate.
+          Icon optional.
         </Text>
         <div className={styles.metaStrip}>
           <MetricTile label="Status" value="Aktywna" />
@@ -83,7 +85,7 @@ export default function MetricTilePlaygroundPage() {
 
       <section className={styles.demo}>
         <Heading level={2} size="2xl">
-          2. Comfortable density — stacked card-tile layout
+          2. With description (custom typography via Text wrapper)
         </Heading>
         <Text variant="small" color="secondary">
           Stack layout: uppercase caption label above body-strong value
@@ -94,7 +96,6 @@ export default function MetricTilePlaygroundPage() {
         <div className={styles.cardGrid}>
           <div className={styles.cardFrame}>
             <MetricTile
-              density="comfortable"
               label="Następna faktura"
               value="1 500 PLN"
               description="Termin: 15 maja"
@@ -102,7 +103,6 @@ export default function MetricTilePlaygroundPage() {
           </div>
           <div className={styles.cardFrame}>
             <MetricTile
-              density="comfortable"
               label="Otwarte zgłoszenia"
               value="12"
               description="ostatnie 7 dni"
@@ -111,7 +111,6 @@ export default function MetricTilePlaygroundPage() {
           </div>
           <div className={styles.cardFrame}>
             <MetricTile
-              density="comfortable"
               label="Konwersje"
               value="42"
               description="+12% vs poprzedni okres"
@@ -120,7 +119,6 @@ export default function MetricTilePlaygroundPage() {
           </div>
           <div className={styles.cardFrame}>
             <MetricTile
-              density="comfortable"
               label="Account manager"
               value="Anna Kowalska"
               icon={<PlaceholderIcon d={ICON_USER} />}
@@ -140,7 +138,6 @@ export default function MetricTilePlaygroundPage() {
         <div className={styles.toneRow}>
           <div className={styles.cardFrame}>
             <MetricTile
-              density="comfortable"
               label="Default"
               value="42"
               description="primary text color"
@@ -148,7 +145,6 @@ export default function MetricTilePlaygroundPage() {
           </div>
           <div className={styles.cardFrame}>
             <MetricTile
-              density="comfortable"
               label="Success"
               value="98.5%"
               tone="success"
@@ -157,7 +153,6 @@ export default function MetricTilePlaygroundPage() {
           </div>
           <div className={styles.cardFrame}>
             <MetricTile
-              density="comfortable"
               label="Warning"
               value="22%"
               tone="warning"
@@ -166,7 +161,6 @@ export default function MetricTilePlaygroundPage() {
           </div>
           <div className={styles.cardFrame}>
             <MetricTile
-              density="comfortable"
               label="Error"
               value="3"
               tone="error"
@@ -175,7 +169,6 @@ export default function MetricTilePlaygroundPage() {
           </div>
           <div className={styles.cardFrame}>
             <MetricTile
-              density="comfortable"
               label="Brand"
               value="MRR"
               tone="brand"
@@ -187,17 +180,15 @@ export default function MetricTilePlaygroundPage() {
 
       <section className={styles.demo}>
         <Heading level={2} size="2xl">
-          4. With and without icon — comfortable density
+          4. With and without icon
         </Heading>
         <Text variant="small" color="secondary">
           Icon slot is optional and decorative (slot wrapper applies
-          aria-hidden automatically). Icon flanks value in comfortable
-          density, leads label in compact density.
+          aria-hidden automatically). Icon flanks value in the inline row.
         </Text>
         <div className={styles.cardGrid}>
           <div className={styles.cardFrame}>
             <MetricTile
-              density="comfortable"
               label="Bez ikony"
               value="—"
               description="MetricTile without icon prop"
@@ -205,7 +196,6 @@ export default function MetricTilePlaygroundPage() {
           </div>
           <div className={styles.cardFrame}>
             <MetricTile
-              density="comfortable"
               label="Z ikoną"
               value="42"
               icon={<PlaceholderIcon d={ICON_CHART} />}
@@ -227,7 +217,6 @@ export default function MetricTilePlaygroundPage() {
         <div className={styles.cardGrid}>
           <div className={styles.cardFrame}>
             <MetricTile
-              density="comfortable"
               label="Composed value"
               value={
                 <>
@@ -241,7 +230,6 @@ export default function MetricTilePlaygroundPage() {
           </div>
           <div className={styles.cardFrame}>
             <MetricTile
-              density="comfortable"
               label="Link value"
               value={<Link href="#">Sklep online</Link>}
               icon={<PlaceholderIcon d={ICON_BRIEFCASE} />}
@@ -249,7 +237,6 @@ export default function MetricTilePlaygroundPage() {
           </div>
           <div className={styles.cardFrame}>
             <MetricTile
-              density="comfortable"
               label="Pre-formatted"
               value="1 234,56 PLN"
               description="consumer-formatted z Intl.NumberFormat"
@@ -260,18 +247,19 @@ export default function MetricTilePlaygroundPage() {
 
       <section className={styles.demo}>
         <Heading level={2} size="2xl">
-          6. Density comparison — compact vs comfortable
+          6. With vs without description
         </Heading>
         <Text variant="small" color="secondary">
-          Same data rendered at both densities. Compact = single-row meta
-          strip; Comfortable = stacked card tile.
+          Description slot is optional. When omitted, MetricTile renders
+          label + value only. When provided, consumer brings own typography
+          (or uses default `.description` class styling for plain ReactNode).
         </Text>
         <div className={styles.row}>
           <div className={styles.cell}>
             <Text variant="caption" color="muted">
-              compact
+              without description
             </Text>
-            <div className={styles.metaStrip}>
+            <div className={styles.cardFrame}>
               <MetricTile
                 label="Status"
                 value="Aktywna"
@@ -281,11 +269,10 @@ export default function MetricTilePlaygroundPage() {
           </div>
           <div className={styles.cell}>
             <Text variant="caption" color="muted">
-              comfortable
+              with description
             </Text>
             <div className={styles.cardFrame}>
               <MetricTile
-                density="comfortable"
                 label="Status"
                 value="Aktywna"
                 icon={<PlaceholderIcon d={ICON_USER} />}

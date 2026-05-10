@@ -1,6 +1,2 @@
 export { MetricTile } from './MetricTile';
-export type {
-  MetricTileProps,
-  MetricTileDensity,
-  MetricTileTone,
-} from './MetricTile';
+export type { MetricTileProps, MetricTileTone } from './MetricTile';

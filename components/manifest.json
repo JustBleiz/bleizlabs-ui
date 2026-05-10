@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1",
-  "libVersion": "0.13.1",
-  "generatedAt": "2026-05-08T21:02:08.378Z",
+  "libVersion": "0.14.0",
+  "generatedAt": "2026-05-10T12:55:12.664Z",
   "categories": {
     "layout": [
       "Container",
@@ -75,6 +75,7 @@
       "DataRow",
       "DeadlineBadge",
       "FileChip",
+      "Header",
       "IconButton",
       "MetricTile",
       "PageHeader",
@@ -111,6 +112,7 @@
       "Dialog",
       "Drawer",
       "DropdownMenu",
+      "Field",
       "Form",
       "HoverCard",
       "InputOTP",
@@ -866,10 +868,11 @@
       "category": "molecules",
       "path": "molecules/BreakdownList",
       "exports": [
-        "BreakdownList"
+        "BreakdownList",
+        "BreakdownListItem"
       ],
       "types": [
-        "BreakdownListItem",
+        "BreakdownListItemProps",
         "BreakdownListProps",
         "BreakdownListTone"
       ],
@@ -928,6 +931,18 @@
       "hooks": []
     },
     {
+      "family": "Header",
+      "category": "molecules",
+      "path": "molecules/Header",
+      "exports": [
+        "Header"
+      ],
+      "types": [
+        "HeaderProps"
+      ],
+      "hooks": []
+    },
+    {
       "family": "IconButton",
       "category": "molecules",
       "path": "molecules/IconButton",
@@ -947,7 +962,6 @@
         "MetricTile"
       ],
       "types": [
-        "MetricTileDensity",
         "MetricTileProps",
         "MetricTileTone"
       ],
@@ -1447,6 +1461,28 @@
         "DropdownMenuProps",
         "DropdownMenuSeparatorProps",
         "DropdownMenuTriggerProps"
+      ],
+      "hooks": []
+    },
+    {
+      "family": "Field",
+      "category": "complex",
+      "path": "complex/Field",
+      "exports": [
+        "Field",
+        "FieldControl",
+        "FieldDescription",
+        "FieldLabel",
+        "FieldMessage",
+        "FieldRoot"
+      ],
+      "types": [
+        "FieldControlProps",
+        "FieldDescriptionProps",
+        "FieldLabelProps",
+        "FieldMessageProps",
+        "FieldProps",
+        "FieldValidityMatch"
       ],
       "hooks": []
     },

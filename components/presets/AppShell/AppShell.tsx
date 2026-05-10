@@ -126,6 +126,50 @@ export interface AppShellProps
   children: ReactNode;
 }
 
+/**
+ * @deprecated Since 0.14.0 — replaced by project-local AppShell z `variant` prop per Variant-first canon.
+ *             Will be REMOVED in 0.15.0 BREAKING release.
+ *
+ *             **Why deprecated (per Charter sharpening 2026-05-10):**
+ *             AppShell is chrome organism z 12 props composing 4 concerns: SidebarProvider state +
+ *             sidebar slot + topNav slot + mobileTrigger slot + main content. Multi-axis chrome
+ *             lockup (rich provider config: defaultOpen + breakpoint + collapseMode + persist + cookie).
+ *
+ *             Per user direct quote 2026-05-10: "lib NIE pod jakikolwiek projekt" — chrome organism
+ *             jest project responsibility. Variant-first canon (per `shared-molecule-extraction.md`):
+ *             ONE project-local AppShell z `variant="bleizos"|"panel"|"marketing"` config map,
+ *             NOT lib-level preset that consumers wire up.
+ *
+ *             **Migration pattern (project-local):**
+ *             ```tsx
+ *             // Project-local `app/_components/shared/layout/AppShell/AppShell.tsx`:
+ *             import { Sidebar } from '@bleizlabs/ui'; // ← lib primitive (KLOCEK) STAYS
+ *
+ *             const SHELL_CONFIG = {
+ *               panel: { sidebar: <PanelSidebar />, topNav: <PanelTopNav /> },
+ *               bleizos: { sidebar: <BleizosSidebar />, topNav: <BleizosTopNav /> },
+ *               marketing: { topNav: <MarketingHeader /> },
+ *             };
+ *
+ *             export function AppShell({ variant, children }) {
+ *               const config = SHELL_CONFIG[variant];
+ *               return (
+ *                 <Sidebar.Provider>
+ *                   <Inline>
+ *                     {config.sidebar}
+ *                     <Stack as="main">
+ *                       {config.topNav}
+ *                       {children}
+ *                     </Stack>
+ *                   </Inline>
+ *                 </Sidebar.Provider>
+ *               );
+ *             }
+ *             ```
+ *
+ *             Lib `<Sidebar>` (complex/) STAYS as klocek — APG `/disclosure/` primitive dla
+ *             sidenav. Only the AppShell preset (lib-level chrome lockup) is deprecated.
+ */
 export const AppShell = forwardRef<HTMLDivElement, AppShellProps>(
   function AppShell(
     {
