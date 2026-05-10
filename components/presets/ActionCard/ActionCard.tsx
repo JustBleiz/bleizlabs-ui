@@ -142,11 +142,10 @@ export const ActionCard = forwardRef<HTMLDivElement, ActionCardProps>(
       <Card
         ref={ref}
         variant="accent"
-        accentColor={mapping.accent}
-        accentPosition="left"
         padding={padding}
         radius={radius}
         className={cn(styles.root, styles[`severity-${severity}`], className)}
+        style={{ '--card-accent-color': mapping.accent } as React.CSSProperties}
         {...cardProps}
       >
         <CardBody className={styles.body}>

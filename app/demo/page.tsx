@@ -368,7 +368,7 @@ export default function DemoPage() {
             </CardBody>
           </Card>
 
-          <Card variant="accent" accentPosition="left">
+          <Card variant="accent">
             <CardBody>
               <Stack gap={2}>
                 <Heading level={3} size="md">
@@ -1092,7 +1092,7 @@ export default function DemoPage() {
             <CardBody>
               <Stack gap={3}>
                 <Text variant="small" color="muted">
-                  Hover-triggered floating surface. First validate-in-production consumer of E23 floating primitives. SC 1.4.13 compliant — dismissable, hoverable, persistent. Desktop-only (touch users get focus path).
+                  Hover-triggered floating surface. First validate-in-production consumer of E23 floating primitives. SC 1.4.13 compliant — dismissable,, persistent. Desktop-only (touch users get focus path).
                 </Text>
                 <Text>
                   Hover over{' '}

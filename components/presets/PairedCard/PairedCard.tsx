@@ -170,8 +170,6 @@ export const PairedCard = forwardRef<HTMLDivElement, PairedCardProps>(
       <Card
         ref={ref}
         variant="accent"
-        accentPosition="left"
-        accentColor="var(--paired-card-accent)"
         padding={padding}
         radius={radius}
         className={cn(

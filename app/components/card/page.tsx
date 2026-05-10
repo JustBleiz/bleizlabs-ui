@@ -46,7 +46,7 @@ export default function CardPlaygroundPage() {
       <section className={styles.demo}>
         <Heading level={2} size="2xl">2. Accent border position</Heading>
         <div className={styles.grid}>
-          <Card variant="accent" accentPosition="left">
+          <Card variant="accent">
             <CardHeader>
               <Heading level={3} size="lg">Accent left</Heading>
             </CardHeader>
@@ -54,7 +54,7 @@ export default function CardPlaygroundPage() {
               <Text>Default brand accent on the left edge.</Text>
             </CardBody>
           </Card>
-          <Card variant="accent" accentPosition="top" accentColor="var(--color-success)">
+          <Card variant="accent">
             <CardHeader>
               <Heading level={3} size="lg">Accent top — success</Heading>
             </CardHeader>
@@ -68,7 +68,7 @@ export default function CardPlaygroundPage() {
       <section className={styles.demo}>
         <Heading level={2} size="2xl">3. Hoverable + asChild interactive</Heading>
         <div className={styles.grid}>
-          <Card hoverable asChild>
+          <Card asChild>
             <a href="#hover-demo">
               <CardHeader>
                 <Heading level={3} size="lg">Hoverable link card</Heading>
@@ -81,9 +81,9 @@ export default function CardPlaygroundPage() {
               </CardBody>
             </a>
           </Card>
-          <Card hoverable variant="elevated">
+          <Card variant="elevated">
             <CardHeader>
-              <Heading level={3} size="lg">Elevated + hoverable</Heading>
+              <Heading level={3} size="lg">Elevated +</Heading>
             </CardHeader>
             <CardBody>
               <Text>Combination: starting shadow + hover lift.</Text>
