@@ -4,12 +4,15 @@ import {
   forwardRef,
   Fragment,
   useCallback,
+  useEffect,
   useId,
   useMemo,
+  useRef,
   useState,
   type ReactNode,
   type ReactElement,
   type HTMLAttributes,
+  type KeyboardEvent as ReactKeyboardEvent,
 } from 'react';
 import { cn } from '../../utils/cn';
 import { useMatchMedia } from '../../utils/match-media';
@@ -969,10 +972,11 @@ export const DataTable = forwardRef(function DataTable<T>(
         ? styles.stickyRight
         : undefined;
 
-  const renderHeaderCell = (col: ColumnDef<T>) => {
+  const renderHeaderCell = (col: ColumnDef<T>, gridColIdx: number) => {
     const isSorted = tableState.sortState?.columnId === col.id;
     const sortDir = isSorted ? tableState.sortState!.direction : null;
     const sortable = !!col.sortable;
+    const focused = isCellFocused(0, gridColIdx);
     const ariaSort: 'ascending' | 'descending' | 'none' | undefined = sortable
       ? sortDir === 'asc'
         ? 'ascending'
@@ -991,11 +995,17 @@ export const DataTable = forwardRef(function DataTable<T>(
           sortable && styles.sortableHeader,
           isSorted && styles.sortedHeader,
           stickyClass(col),
+          focused && styles.cellFocused,
           col.headerClassName,
         )}
         style={col.width ? { width: col.width } : undefined}
         aria-sort={ariaSort}
+        aria-colindex={gridColIdx + 1}
         scope="col"
+        id={cellDomId(0, gridColIdx)}
+        tabIndex={focused ? 0 : -1}
+        onFocus={() => handleCellFocus(0, gridColIdx)}
+        data-cell-nav="true"
       >
         {sortable ? (
           <button
@@ -1068,7 +1078,17 @@ export const DataTable = forwardRef(function DataTable<T>(
           aria-expanded={expansionEnabled ? expanded : undefined}
         >
           {selectionEnabled && (
-            <TableCell className={styles.selectionCell}>
+            <TableCell
+              className={cn(
+                styles.selectionCell,
+                isCellFocused(rowIndex + 1, 0) && styles.cellFocused,
+              )}
+              id={cellDomId(rowIndex + 1, 0)}
+              tabIndex={isCellFocused(rowIndex + 1, 0) ? 0 : -1}
+              onFocus={() => handleCellFocus(rowIndex + 1, 0)}
+              data-cell-nav="true"
+              aria-colindex={1}
+            >
               <input
                 type="checkbox"
                 className={styles.selectionCheckbox}
@@ -1081,7 +1101,18 @@ export const DataTable = forwardRef(function DataTable<T>(
             </TableCell>
           )}
           {expansionEnabled && (
-            <TableCell className={styles.expansionCell}>
+            <TableCell
+              className={cn(
+                styles.expansionCell,
+                isCellFocused(rowIndex + 1, selectionOffset) &&
+                  styles.cellFocused,
+              )}
+              id={cellDomId(rowIndex + 1, selectionOffset)}
+              tabIndex={isCellFocused(rowIndex + 1, selectionOffset) ? 0 : -1}
+              onFocus={() => handleCellFocus(rowIndex + 1, selectionOffset)}
+              data-cell-nav="true"
+              aria-colindex={selectionOffset + 1}
+            >
               <button
                 type="button"
                 className={cn(
@@ -1100,7 +1131,9 @@ export const DataTable = forwardRef(function DataTable<T>(
               </button>
             </TableCell>
           )}
-          {visibleColumns.map((col) => {
+          {visibleColumns.map((col, dataColIdx) => {
+            const gridColIdx = totalLeadingCols + dataColIdx;
+            const cellFocused = isCellFocused(rowIndex + 1, gridColIdx);
             const ctx: CellContext<T> = {
               row,
               rowIndex,
@@ -1118,8 +1151,18 @@ export const DataTable = forwardRef(function DataTable<T>(
               <TableCell
                 key={col.id}
                 align={col.align === 'right' ? 'end' : col.align === 'center' ? 'center' : 'start'}
-                className={cn(styles.cell, stickyClass(col), col.cellClassName)}
+                className={cn(
+                  styles.cell,
+                  stickyClass(col),
+                  cellFocused && styles.cellFocused,
+                  col.cellClassName,
+                )}
                 style={col.width ? { width: col.width } : undefined}
+                id={cellDomId(rowIndex + 1, gridColIdx)}
+                tabIndex={cellFocused ? 0 : -1}
+                onFocus={() => handleCellFocus(rowIndex + 1, gridColIdx)}
+                data-cell-nav="true"
+                aria-colindex={gridColIdx + 1}
               >
                 {content}
               </TableCell>
@@ -1253,6 +1296,266 @@ export const DataTable = forwardRef(function DataTable<T>(
     );
   };
 
+  // ─────────────────────────────────────────────────────────────────────────
+  // APG grid keyboard model + roving tabindex + aria-live announcements
+  // ─────────────────────────────────────────────────────────────────────────
+  // Grid coords:
+  //   row 0    = header row
+  //   row 1..N = data rows (visibleRows.length)
+  //   col 0..M = total cols (selection + expansion + visibleColumns)
+  const selectionOffset = selectionEnabled ? 1 : 0;
+  const expansionOffset = expansionEnabled ? 1 : 0;
+  const totalLeadingCols = selectionOffset + expansionOffset;
+  const totalGridCols = visibleColumns.length + totalLeadingCols;
+  const totalDataRows = tableState.visibleRows.length;
+  const lastFocusActionRef = useRef<'mount' | 'user'>('mount');
+  const [focusedCell, setFocusedCell] = useState<{ row: number; col: number }>({
+    row: 0,
+    col: 0,
+  });
+  const [liveMessage, setLiveMessage] = useState('');
+
+  const cellDomId = useCallback(
+    (row: number, col: number) => `${gridId}-r${row}-c${col}`,
+    [gridId],
+  );
+
+  const isCellFocused = useCallback(
+    (row: number, col: number) =>
+      focusedCell.row === row && focusedCell.col === col,
+    [focusedCell],
+  );
+
+  // Move DOM focus when focusedCell changes (skip initial mount)
+  useEffect(() => {
+    if (lastFocusActionRef.current !== 'user') return;
+    const el = document.getElementById(
+      cellDomId(focusedCell.row, focusedCell.col),
+    );
+    el?.focus();
+  }, [focusedCell, cellDomId]);
+
+  // Sync focus state when user clicks/tabs into a cell
+  const handleCellFocus = useCallback(
+    (row: number, col: number) => {
+      setFocusedCell({ row, col });
+    },
+    [],
+  );
+
+  // Main grid keyboard handler — APG `/grid/` pattern (cell-mode)
+  // Widget-mode (F2/Tab inside cell) deferred — interactive children
+  // remain Tab-reachable from cell natively.
+  const handleGridKeyDown = useCallback(
+    (e: ReactKeyboardEvent<HTMLDivElement>) => {
+      const target = e.target as HTMLElement;
+      // Only handle keys when focus is on a navigable cell (data-cell-nav)
+      if (!target.matches('[data-cell-nav]')) return;
+
+      const ctrl = e.ctrlKey || e.metaKey;
+      let next: { row: number; col: number } | null = null;
+
+      switch (e.key) {
+        case 'ArrowDown':
+          next = {
+            row: Math.min(totalDataRows, focusedCell.row + 1),
+            col: focusedCell.col,
+          };
+          break;
+        case 'ArrowUp':
+          next = {
+            row: Math.max(0, focusedCell.row - 1),
+            col: focusedCell.col,
+          };
+          break;
+        case 'ArrowRight':
+          next = {
+            row: focusedCell.row,
+            col:
+              dir === 'rtl'
+                ? Math.max(0, focusedCell.col - 1)
+                : Math.min(totalGridCols - 1, focusedCell.col + 1),
+          };
+          break;
+        case 'ArrowLeft':
+          next = {
+            row: focusedCell.row,
+            col:
+              dir === 'rtl'
+                ? Math.min(totalGridCols - 1, focusedCell.col + 1)
+                : Math.max(0, focusedCell.col - 1),
+          };
+          break;
+        case 'Home':
+          next = ctrl
+            ? { row: 1, col: 0 } // first DATA cell
+            : { row: focusedCell.row, col: 0 };
+          break;
+        case 'End':
+          next = ctrl
+            ? { row: totalDataRows, col: totalGridCols - 1 }
+            : { row: focusedCell.row, col: totalGridCols - 1 };
+          break;
+        case 'PageDown':
+          next = {
+            row: Math.min(totalDataRows, focusedCell.row + 10),
+            col: focusedCell.col,
+          };
+          break;
+        case 'PageUp':
+          next = {
+            row: Math.max(0, focusedCell.row - 10),
+            col: focusedCell.col,
+          };
+          break;
+        case ' ':
+          // Space toggles selection of focused data row (gdy selection enabled)
+          if (selectionEnabled && focusedCell.row >= 1) {
+            const dataRowIdx = focusedCell.row - 1;
+            const row = tableState.visibleRows[dataRowIdx];
+            if (row !== undefined) {
+              const disabled = rowDisabled?.(row) ?? false;
+              if (!disabled) {
+                const rowId = getRowId(row, dataRowIdx);
+                toggleRowSelection(rowId);
+                e.preventDefault();
+              }
+            }
+          }
+          break;
+        case 'Enter':
+          if (focusedCell.row === 0) {
+            // Header → toggle sort gdy sortable
+            const dataColIdx = focusedCell.col - totalLeadingCols;
+            const col = dataColIdx >= 0 ? visibleColumns[dataColIdx] : undefined;
+            if (col?.sortable) {
+              tableState.toggleSort(col.id);
+              e.preventDefault();
+            }
+          } else if (focusedCell.row >= 1) {
+            const dataRowIdx = focusedCell.row - 1;
+            const row = tableState.visibleRows[dataRowIdx];
+            if (row !== undefined) {
+              const disabled = rowDisabled?.(row) ?? false;
+              if (disabled) break;
+              // Enter on expansion column → toggle expansion
+              if (
+                expansionEnabled &&
+                focusedCell.col === selectionOffset
+              ) {
+                toggleRowExpansion(getRowId(row, dataRowIdx));
+                e.preventDefault();
+              } else if (
+                selectionEnabled &&
+                focusedCell.col === 0
+              ) {
+                toggleRowSelection(getRowId(row, dataRowIdx));
+                e.preventDefault();
+              } else if (onRowClick && rowClickable) {
+                onRowClick(row);
+                e.preventDefault();
+              }
+            }
+          }
+          break;
+        default:
+          break;
+      }
+
+      if (next) {
+        e.preventDefault();
+        lastFocusActionRef.current = 'user';
+        setFocusedCell(next);
+      }
+    },
+    [
+      focusedCell,
+      totalGridCols,
+      totalDataRows,
+      totalLeadingCols,
+      selectionOffset,
+      selectionEnabled,
+      expansionEnabled,
+      tableState,
+      visibleColumns,
+      getRowId,
+      rowDisabled,
+      toggleRowSelection,
+      toggleRowExpansion,
+      onRowClick,
+      rowClickable,
+      dir,
+    ],
+  );
+
+  // ─────────────────────────────────────────────────────────────────────────
+  // aria-live announcements (debounced)
+  // ─────────────────────────────────────────────────────────────────────────
+  useEffect(() => {
+    if (!tableState.sortState) return;
+    const col = visibleColumns.find(
+      (c) => c.id === tableState.sortState!.columnId,
+    );
+    if (!col) return;
+    const colName = typeof col.header === 'string' ? col.header : col.id;
+    const dirLabel =
+      tableState.sortState.direction === 'asc'
+        ? labels.sortAscending
+        : labels.sortDescending;
+    const t = setTimeout(
+      () => setLiveMessage(`${dirLabel}: ${colName}`),
+      300,
+    );
+    return () => clearTimeout(t);
+  }, [tableState.sortState, visibleColumns, labels]);
+
+  useEffect(() => {
+    const t = setTimeout(
+      () =>
+        setLiveMessage(
+          labels.showingRows(tableState.visibleRows.length, tableState.totalRows),
+        ),
+      300,
+    );
+    return () => clearTimeout(t);
+  }, [
+    tableState.visibleRows.length,
+    tableState.totalRows,
+    effectiveFilters,
+    globalFilter,
+    labels,
+  ]);
+
+  useEffect(() => {
+    if (pagination === false) return;
+    const t = setTimeout(
+      () =>
+        setLiveMessage(
+          labels.pageOf(tableState.pageIndex + 1, tableState.totalPages),
+        ),
+      300,
+    );
+    return () => clearTimeout(t);
+  }, [
+    tableState.pageIndex,
+    tableState.totalPages,
+    pagination,
+    labels,
+  ]);
+
+  useEffect(() => {
+    if (!selectionEnabled) return;
+    if (selectedIds.size === 0) {
+      setLiveMessage('');
+      return;
+    }
+    const t = setTimeout(
+      () => setLiveMessage(labels.selectedRows(selectedIds.size)),
+      300,
+    );
+    return () => clearTimeout(t);
+  }, [selectedIds, selectionEnabled, labels]);
+
   const renderMobileLoading = () => (
     <>
       {Array.from({ length: loadingRowCount }).map((_, i) => (
@@ -1329,7 +1632,9 @@ export const DataTable = forwardRef(function DataTable<T>(
           aria-live="polite"
           aria-atomic="true"
           className={styles.liveRegion}
-        />
+        >
+          {liveMessage}
+        </div>
       </div>
     );
   }
@@ -1351,16 +1656,13 @@ export const DataTable = forwardRef(function DataTable<T>(
           aria-label={ariaLabel}
           aria-labelledby={ariaLabelledBy}
           aria-rowcount={tableState.totalRows}
-          aria-colcount={
-            visibleColumns.length +
-            (selectionEnabled ? 1 : 0) +
-            (expansionEnabled ? 1 : 0)
-          }
+          aria-colcount={totalGridCols}
           aria-multiselectable={
             selectionMode === 'multiple' ? true : undefined
           }
           aria-describedby={liveRegionId}
           id={gridId}
+          onKeyDown={handleGridKeyDown}
         >
           <TableHeader>
             <TableRow>
@@ -1368,7 +1670,16 @@ export const DataTable = forwardRef(function DataTable<T>(
                 <TableCell
                   as="th"
                   scope="col"
-                  className={cn(styles.headerCell, styles.selectionCell)}
+                  className={cn(
+                    styles.headerCell,
+                    styles.selectionCell,
+                    isCellFocused(0, 0) && styles.cellFocused,
+                  )}
+                  id={cellDomId(0, 0)}
+                  tabIndex={isCellFocused(0, 0) ? 0 : -1}
+                  onFocus={() => handleCellFocus(0, 0)}
+                  data-cell-nav="true"
+                  aria-colindex={1}
                 >
                   {selectionMode === 'multiple' && (
                     <input
@@ -1390,11 +1701,22 @@ export const DataTable = forwardRef(function DataTable<T>(
                 <TableCell
                   as="th"
                   scope="col"
-                  className={cn(styles.headerCell, styles.expansionCell)}
+                  className={cn(
+                    styles.headerCell,
+                    styles.expansionCell,
+                    isCellFocused(0, selectionOffset) && styles.cellFocused,
+                  )}
+                  id={cellDomId(0, selectionOffset)}
+                  tabIndex={isCellFocused(0, selectionOffset) ? 0 : -1}
+                  onFocus={() => handleCellFocus(0, selectionOffset)}
+                  data-cell-nav="true"
+                  aria-colindex={selectionOffset + 1}
                   aria-label="Expand"
                 />
               )}
-              {visibleColumns.map(renderHeaderCell)}
+              {visibleColumns.map((col, i) =>
+                renderHeaderCell(col, totalLeadingCols + i),
+              )}
             </TableRow>
             {hasFilterRow && (
               <TableRow className={styles.filterRow}>
