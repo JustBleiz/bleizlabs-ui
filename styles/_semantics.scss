@@ -662,3 +662,55 @@ body {
   padding: 0;
   min-height: 100dvh;
 }
+
+// ────────────────────────────────────────────────────────────────────────
+// Reset — professional baseline addressing common surface-embedding issues
+// (raw <p>, <h*>, <ul>, <button> default browser margins/sizing breaking
+// Card/Section padding rhythm). Conservative scope: strips only what
+// reliably causes drift; leaves semantic decisions (anchor styling, button
+// cursor, font sizes) to consumer atoms or surface SCSS.
+// ────────────────────────────────────────────────────────────────────────
+
+// 1. Universal border-box — padding/border counted INSIDE width box. Without
+//    this, raw <input>/<button>/<textarea> with padding overflow Card surfaces.
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+// 2. Margin reset on flow content elements — browser defaults (e.g. h1=0.67em,
+//    p=1em) break Card/Section padding rhythm when consumer embeds raw markup.
+//    Lib <Heading>/<Text> atoms own their own margins; raw elements get clean
+//    slate (consumer composes spacing via Stack/Inline gap or own SCSS).
+h1, h2, h3, h4, h5, h6,
+p, figure, blockquote,
+dl, dd, pre,
+ul, ol {
+  margin: 0;
+}
+
+// 3. ARIA-aware list reset — only strip visual styling when author marks list
+//    as presentational via role="list". Semantic <ul>/<ol> retain bullets.
+//    Aligns with WAI-ARIA APG list-role pattern + Andy Bell's modern reset.
+ul[role='list'],
+ol[role='list'] {
+  padding-left: 0;
+  list-style: none;
+}
+
+// 4. Form element font inheritance — browsers ship <button>/<input>/<select>/
+//    <textarea> with system font (e.g. -webkit-small-control), breaking
+//    typographic consistency inside surfaces. Force inherit from :root.
+button, input, select, textarea, optgroup {
+  font: inherit;
+  color: inherit;
+  letter-spacing: inherit;
+}
+
+// 5. Media block-level + responsive — prevents inline-baseline gap below
+//    images and overflow when image natural width exceeds Card width.
+img, picture, video, canvas, svg {
+  display: block;
+  max-width: 100%;
+}
