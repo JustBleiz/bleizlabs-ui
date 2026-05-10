@@ -436,14 +436,14 @@ export default function DemoPage() {
             <Inline gap={3} align="center">
               <Avatar alt="Anna Kowalska" fallback="AK" size="xs" />
               <Avatar alt="Jan Kowalski" fallback="JK" size="sm" />
-              <Avatar alt="Marta Bak" fallback="MB" size="md" status="online" />
-              <Avatar alt="Piotr Wolski" fallback="PW" size="lg" status="busy" />
+              <Avatar alt="Marta Bak" fallback="MB" size="md" />
+              <Avatar alt="Piotr Wolski" fallback="PW" size="lg" />
               <Avatar
                 alt="Tomasz Nowak"
                 fallback="TN"
                 size="xl"
                 shape="rounded"
-                status="away"
+
               />
             </Inline>
           </Stack>

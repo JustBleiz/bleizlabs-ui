@@ -412,7 +412,7 @@ export default function SpecializedPlaygroundPage() {
           <UsageDonut
             label="Incident severity"
             size="lg"
-            strokeWidth={20}
+
             segments={[
               { label: 'Critical', value: 2 },
               { label: 'High', value: 5 },

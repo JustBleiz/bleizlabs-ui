@@ -2,14 +2,12 @@ import Link from 'next/link';
 import {
   Avatar,
   type AvatarSize,
-  type AvatarStatus,
 } from '@/components/display/Avatar';
 import { Heading } from '@/components/typography/Heading';
 import { Text } from '@/components/typography/Text';
 import styles from './page.module.scss';
 
 const SIZES: AvatarSize[] = ['xs', 'sm', 'md', 'lg', 'xl'];
-const STATUSES: AvatarStatus[] = ['online', 'offline', 'busy', 'away'];
 
 export default function AvatarPlaygroundPage() {
   return (
@@ -50,20 +48,12 @@ export default function AvatarPlaygroundPage() {
       </section>
 
       <section className={styles.demo}>
-        <Heading level={2} size="2xl">3. Status indicators</Heading>
-        <div className={styles.row}>
-          {STATUSES.map((status) => (
-            <div key={status} className={styles.cell}>
-              <Avatar
-                fallback="UX"
-                alt={`User (${status})`}
-                size="lg"
-                status={status}
-              />
-              <Text variant="caption" color="muted">{status}</Text>
-            </div>
-          ))}
-        </div>
+        <Heading level={2} size="2xl">3. Status indicators (consumer composes Avatar + Dot overlay)</Heading>
+        <Text variant="small" color="secondary">
+          Per E07.x SIMPLIFY 0.15.0 — `status` prop dropped from Avatar.
+          Consumer composes <code>{`<Avatar />`}</code> + <code>{`<Dot />`}</code> overlay
+          via positioned wrapper for status indication.
+        </Text>
       </section>
 
       <section className={styles.demo}>
@@ -78,7 +68,7 @@ export default function AvatarPlaygroundPage() {
             src="https://i.pravatar.cc/80?img=20"
             alt="Demo user"
             size="lg"
-            status="online"
+
           />
           <Text variant="caption" color="muted">
             (External pravatar — used here only for visual demo)

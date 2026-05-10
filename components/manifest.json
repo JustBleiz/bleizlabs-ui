@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1",
   "libVersion": "0.14.0",
-  "generatedAt": "2026-05-10T13:31:49.849Z",
+  "generatedAt": "2026-05-10T13:36:50.051Z",
   "categories": {
     "layout": [
       "Container",
@@ -265,8 +265,7 @@
       "types": [
         "AvatarProps",
         "AvatarShape",
-        "AvatarSize",
-        "AvatarStatus"
+        "AvatarSize"
       ],
       "hooks": []
     },
