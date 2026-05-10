@@ -2175,7 +2175,31 @@ export function ComboboxContent({ children, className, ...rest }: ComboboxConten
     };
   }, []);
 
-  if (!open) return null;
+  // When closed, mount children invisibly so they register with the root
+  // context (label cache, value lookup). Critical for multi-mode chip
+  // rendering when `defaultValue` is set on first paint — chips read
+  // `getLabelByValue` which falls back to the raw value string if the
+  // label cache is empty. Items use `display: none` sentinels under their
+  // own visibility filter, so this hidden mount adds zero visible DOM —
+  // it just lets the registration `useLayoutEffect` run.
+  //
+  // The `aria-hidden` + `tabIndex={-1}` + `display: none` triple ensures
+  // the hidden tree is invisible to AT, keyboard, and visual users alike.
+  // Single mode also benefits: `getLabel` lookups work even before the
+  // first open (e.g. for a controlled value that needs label resolution
+  // for the input display).
+  if (!open) {
+    return (
+      <div
+        style={{ display: 'none' }}
+        aria-hidden="true"
+        tabIndex={-1}
+        data-combobox-hidden-mount=""
+      >
+        {children}
+      </div>
+    );
+  }
 
   return (
     <FloatingPortal>
