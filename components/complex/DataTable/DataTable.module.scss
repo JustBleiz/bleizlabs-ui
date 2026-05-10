@@ -152,11 +152,8 @@
   color: var(--color-text-primary);
 }
 
-// Row variants (visual tonacja)
-.row-default {
-  // base — no additional styling
-}
-
+// Row variants (visual tonacja) — `.row-default` is intentional no-op
+// reserved as a symmetric class hook for consumer override.
 .row-success {
   background-color: color-mix(in srgb, var(--color-success) 6%, transparent);
 }
@@ -379,8 +376,7 @@
     &::after {
       content: '';
       position: absolute;
-      left: 2px;
-      right: 2px;
+      inset-inline: 2px;
       top: 50%;
       height: 2px;
       transform: translateY(-50%);

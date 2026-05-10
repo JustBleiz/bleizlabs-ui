@@ -999,20 +999,25 @@ export const DataTable = forwardRef(function DataTable<T>(
   // ─────────────────────────────────────────────────────────────────────────
   const renderLoadingRows = () => {
     return Array.from({ length: loadingRowCount }).map((_, rowIdx) => (
-      <TableRow key={`skeleton-${rowIdx}`} className={styles.skeletonRow}>
+      <TableRow
+        key={`skeleton-${rowIdx}`}
+        role="row"
+        className={styles.skeletonRow}
+      >
         {selectionEnabled && (
-          <TableCell className={styles.selectionCell}>
+          <TableCell role="gridcell" className={styles.selectionCell}>
             <Skeleton width={16} height={16} />
           </TableCell>
         )}
         {expansionEnabled && (
-          <TableCell className={styles.expansionCell}>
+          <TableCell role="gridcell" className={styles.expansionCell}>
             <Skeleton width={16} height={16} />
           </TableCell>
         )}
         {visibleColumns.map((col) => (
           <TableCell
             key={col.id}
+            role="gridcell"
             align={col.align === 'right' ? 'end' : col.align === 'center' ? 'center' : 'start'}
             className={cn(styles.cell, stickyClass(col), col.cellClassName)}
             style={col.width ? { width: col.width } : undefined}
@@ -1069,6 +1074,7 @@ export const DataTable = forwardRef(function DataTable<T>(
       <TableCell
         key={col.id}
         as="th"
+        role="columnheader"
         align={col.align === 'right' ? 'end' : col.align === 'center' ? 'center' : 'start'}
         className={cn(
           styles.headerCell,
@@ -1129,6 +1135,7 @@ export const DataTable = forwardRef(function DataTable<T>(
     return (
       <Fragment key={rowId}>
         <TableRow
+          role="row"
           aria-rowindex={rowIndex + 2}
           className={cn(
             styles.row,
@@ -1160,6 +1167,7 @@ export const DataTable = forwardRef(function DataTable<T>(
         >
           {selectionEnabled && (
             <TableCell
+              role="gridcell"
               className={cn(
                 styles.selectionCell,
                 isCellFocused(rowIndex + 1, 0) && styles.cellFocused,
@@ -1183,6 +1191,7 @@ export const DataTable = forwardRef(function DataTable<T>(
           )}
           {expansionEnabled && (
             <TableCell
+              role="gridcell"
               className={cn(
                 styles.expansionCell,
                 isCellFocused(rowIndex + 1, selectionOffset) &&
@@ -1231,6 +1240,7 @@ export const DataTable = forwardRef(function DataTable<T>(
             return (
               <TableCell
                 key={col.id}
+                role="gridcell"
                 align={col.align === 'right' ? 'end' : col.align === 'center' ? 'center' : 'start'}
                 className={cn(
                   styles.cell,
@@ -1803,11 +1813,12 @@ export const DataTable = forwardRef(function DataTable<T>(
           onKeyDown={handleGridKeyDown}
         >
           <TableHeader>
-            <TableRow aria-rowindex={1}>
+            <TableRow role="row" aria-rowindex={1}>
               {selectionEnabled && (
                 <TableCell
                   as="th"
                   scope="col"
+                  role="columnheader"
                   className={cn(
                     styles.headerCell,
                     styles.selectionCell,
@@ -1839,6 +1850,7 @@ export const DataTable = forwardRef(function DataTable<T>(
                 <TableCell
                   as="th"
                   scope="col"
+                  role="columnheader"
                   className={cn(
                     styles.headerCell,
                     styles.expansionCell,

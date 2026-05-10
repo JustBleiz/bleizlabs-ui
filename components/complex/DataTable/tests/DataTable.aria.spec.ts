@@ -86,15 +86,33 @@ test.describe('DataTable — ARIA + accessibility tree', () => {
     await expect(expandedRow.first()).toBeVisible();
   });
 
-  test('DT-A07 — aria-live polite region exists for announcements', async ({
+  test('DT-A07 — aria-live polite region exists AND populates after sort', async ({
     page,
   }) => {
-    const liveRegion = page.locator('[aria-live="polite"]').first();
-    await expect(liveRegion).toHaveCount(1).catch(async () => {
-      // At least one polite live region somewhere on the demo
-      const count = await page.locator('[aria-live="polite"]').count();
-      expect(count).toBeGreaterThanOrEqual(1);
-    });
+    const liveRegions = page.locator('[aria-live="polite"]');
+    const count = await liveRegions.count();
+    expect(count).toBeGreaterThanOrEqual(1);
+
+    // Trigger a sort in the sortable+filterable grid and assert the live
+    // region near it gets a text update. Use the nearest live region inside
+    // the same grid's wrapper (each DataTable instance ships its own).
+    const grids = page.getByRole('grid');
+    const sortableGrid = grids.nth(1);
+    const sortBtn = sortableGrid.getByRole('button', { name: /Sort/ }).nth(1);
+    await sortBtn.click();
+    // Wait past the 300ms debounce
+    await page.waitForTimeout(500);
+    // Locate the live region inside the same DataTable wrapper
+    const dtWrapper = sortableGrid.locator(
+      'xpath=ancestor::div[contains(@class, "datatable") or contains(@class, "dataTable")][1]',
+    );
+    const inGridRegion = dtWrapper.locator('[aria-live="polite"]').first();
+    const fallbackRegion = page.locator('[aria-live="polite"]');
+    const targetRegion = (await inGridRegion.count())
+      ? inGridRegion
+      : fallbackRegion.first();
+    const text = (await targetRegion.textContent())?.trim() ?? '';
+    expect(text.length).toBeGreaterThan(0);
   });
 
   test('DT-A08 — axe-core: zero violations on /components/data-table', async ({
