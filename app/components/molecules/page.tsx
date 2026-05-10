@@ -202,7 +202,7 @@ export default function MoleculesPlaygroundPage() {
         <Text>
           Thin composition over <code>ToggleGroup type=&quot;multiple&quot;</code>.
           Flat options array → Toggle children. Consumer owns controlled state.
-          <code>groupLabel</code> prop for a visible uppercase caption.
+          <code>groupLabel</code> prop for a visible caption.
         </Text>
 
         <ToggleGroupFilter

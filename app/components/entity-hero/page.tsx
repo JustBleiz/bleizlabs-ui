@@ -70,7 +70,7 @@ export default function EntityHeroPlaygroundPage() {
               </>
             }
             description="Inteligentna obsługa zamówień 24/7 z eskalacją do agenta."
-            statusIndicators={<Badge color="success" label="Aktywna" dot />}
+            statusIndicators={<Badge color="success" label="Aktywna" />}
             metaStrip={[
               {
                 icon: <PlaceholderIcon d={ICON_LINK} />,
@@ -114,8 +114,8 @@ export default function EntityHeroPlaygroundPage() {
             description="Pełna migracja sklepu z Magento 2 do Shopify Plus z zachowaniem SEO i historii zamówień."
             statusIndicators={
               <>
-                <Badge color="warning" label="Oczekuje płatności" dot />
-                <Badge color="success" label="W realizacji" dot />
+                <Badge color="warning" label="Oczekuje płatności" />
+                <Badge color="success" label="W realizacji" />
               </>
             }
             progression={
@@ -162,8 +162,8 @@ export default function EntityHeroPlaygroundPage() {
             description="Klient zgłasza brak możliwości logowania od dziś rana."
             statusIndicators={
               <>
-                <Badge color="warning" label="W toku" dot />
-                <Badge color="error" label="SLA: 1h" dot />
+                <Badge color="warning" label="W toku" />
+                <Badge color="error" label="SLA: 1h" />
               </>
             }
           />
@@ -242,8 +242,8 @@ export default function EntityHeroPlaygroundPage() {
             description="Pełna obsługa głosowa z transkrypcją, analityką sentymentu i eskalacją do agenta. Dostępna 24/7 w 5 językach."
             statusIndicators={
               <>
-                <Badge color="success" label="Aktywna" dot />
-                <Badge color="success" label="Płatność OK" dot />
+                <Badge color="success" label="Aktywna" />
+                <Badge color="success" label="Płatność OK" />
                 <Badge color="info" label="Wersja 2.4" />
               </>
             }

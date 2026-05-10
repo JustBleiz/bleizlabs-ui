@@ -160,7 +160,7 @@ export default function PresetsPlaygroundPage() {
           SidebarCard
         </Heading>
         <Text color="muted">
-          Glass variant by default with optional uppercase <code>label</code>{' '}
+          Glass variant by default with optional <code>label</code>{' '}
           slot above the header. Smaller defaults (<code>padding={'{4}'}</code>{' '}
           + <code>radius=&quot;md&quot;</code>) for narrower viewports.
         </Text>

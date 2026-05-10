@@ -1,43 +1,43 @@
-import {
-  forwardRef,
-  type HTMLAttributes,
-  type ReactNode,
-} from 'react';
+import { forwardRef, type HTMLAttributes, type ReactNode } from 'react';
 import { Slot } from '../../utils/Slot';
 import { cn } from '../../utils/cn';
 import styles from './Badge.module.scss';
 
 /**
- * Badge — small status / category indicator.
+ * Badge — small status / category indicator (klocek atom).
  *
  * @tokens  --color-{brand,success,warning,error,info}-{subtle,strong},
  *          --color-border-subtle, --color-text-{primary,secondary},
- *          --space-{1,2}, --font-size-xs, --font-weight-medium,
- *          --letter-spacing-wider, --radius-{sm,full,badge},
- *          --easing-default
+ *          --space-{1,2}, --font-size-{xs,sm}, --font-weight-medium,
+ *          --radius-{sm,full}.
+ * @a11y    Renders `<span>` by default — inline neutral element. Use `asChild`
+ *          to project onto `<time dateTime="...">` for semantic timestamps.
+ *          Color is decorative only — meaning must also be conveyed in `label`.
  *
- * @a11y    Renders `<span>` by default — inline neutral element.
- *          Use `asChild` to project onto `<time dateTime="...">` for
- *          semantic timestamps. Color is decorative only — meaning
- *          must also be conveyed in the `label`. `pulse` is purely
- *          visual — never the sole carrier of urgency; pair with
- *          color + label so the meaning survives reduced-motion.
- *          `pulse` animates only the leading `icon` / `dot` — the
- *          frame + label stay static so the text is always readable.
- *          Pass `icon` or `dot` together with `pulse` for the cue
- *          to be visible.
+ * @notes   SIMPLIFY 0.15.0 — dropped 3 props (`uppercase`, `pulse`, `dot`).
+ *          Migration patterns:
+ *          - uppercase → consumer SCSS class on Badge or label content
+ *            (`<Badge label={<span style={{textTransform:'uppercase'}}>...`)
+ *          - pulse → consumer composes `<Dot pulse>` + `<Badge>` overlay or
+ *            wraps Badge with own pulse animation (data-attr + own keyframe)
+ *          - dot → consumer composes `<Dot>` + `<Badge>` (`<Inline gap={1}>
+ *            <Dot color="success" /><Badge label="Active" /></Inline>`)
  *
  * @example
  * <Badge label="Active" color="success" />
  *
- * <Badge asChild color="info" dot>
+ * @example
+ * // Semantic time via asChild
+ * <Badge asChild color="info">
  *   <time dateTime="2026-04-14">Apr 14</time>
  * </Badge>
  *
  * @example
- * // Notification badge with pulse. Pulse inherits global reduced-motion
- * // guard so it auto-stops for users who opt out of animations.
- * <Badge color="warning" label="3" icon={<IconBell />} pill pulse />
+ * // Live indicator (consumer composes Dot + Badge)
+ * <Inline gap={1}>
+ *   <Dot color="success" pulse />
+ *   <Badge label="Live" color="success" />
+ * </Inline>
  */
 export type BadgeColor =
   | 'default'
@@ -48,21 +48,18 @@ export type BadgeColor =
   | 'info';
 
 export interface BadgeProps extends HTMLAttributes<HTMLSpanElement> {
-  /** Visible label text (required when `asChild` is false; ignored when `asChild` is true and `children` is used instead). */
+  /** Visible label text (required when `asChild` is false). */
   label?: string;
   /** Semantic color. Default `default` (neutral border-only). */
   color?: BadgeColor;
   /** Fully rounded pill shape. Default `false` (uses `--radius-sm`). */
   pill?: boolean;
-  /** Uppercase text + wider letter-spacing. Default `false`. */
-  uppercase?: boolean;
   /** Optional leading icon (rendered left of the label). */
   icon?: ReactNode;
-  /** Show a small filled dot left of the label. Default `false`. */
-  dot?: boolean;
-  /** Pulse only the leading `icon` / `dot` (badge frame + label stay static). Pass `icon` or `dot` for the cue to be visible. Inherits global reduced-motion guard. Default `false`. */
-  pulse?: boolean;
-  /** Render as the single child element via Slot. When true, the child element supplies its own text and `label` is ignored. */
+  /**
+   * Render as the single child element via Slot. When true, child supplies
+   * own text and `label` is ignored.
+   */
   asChild?: boolean;
 }
 
@@ -80,16 +77,13 @@ export const Badge = forwardRef<HTMLSpanElement, BadgeProps>(function Badge(
     label,
     color = 'default',
     pill = false,
-    uppercase = false,
     icon,
-    dot = false,
-    pulse = false,
     asChild = false,
     className,
     children,
     ...rest
   },
-  ref,
+  ref
 ) {
   const Comp = asChild ? Slot : 'span';
 
@@ -97,7 +91,6 @@ export const Badge = forwardRef<HTMLSpanElement, BadgeProps>(function Badge(
     children
   ) : (
     <>
-      {dot ? <span aria-hidden="true" className={styles.dot} /> : null}
       {icon ? (
         <span aria-hidden="true" className={styles.icon}>
           {icon}
@@ -114,9 +107,7 @@ export const Badge = forwardRef<HTMLSpanElement, BadgeProps>(function Badge(
         styles.root,
         COLOR_CLASS[color],
         pill && styles.pill,
-        uppercase && styles.uppercase,
-        pulse && styles.pulse,
-        className,
+        className
       )}
       {...rest}
     >

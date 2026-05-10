@@ -25,25 +25,12 @@
   line-height: 1;
 }
 
-.dot {
-  display: inline-block;
-  width: var(--badge-dot-size); // 6px (R22 (b) dedicated token)
-  height: var(--badge-dot-size);
-  border-radius: var(--radius-full);
-  background: currentcolor;
-}
-
 // ============================================================================
 // MODIFIERS
 // ============================================================================
 
 .pill {
   border-radius: var(--radius-full);
-}
-
-.uppercase {
-  text-transform: uppercase;
-  letter-spacing: var(--letter-spacing-wider);
 }
 
 // ============================================================================
@@ -84,40 +71,4 @@
   border-color: var(--color-info-subtle);
   background: var(--color-info-subtle);
   color: var(--color-info-strong);
-}
-
-// ============================================================================
-// PULSE MODIFIER — pulses only the inner indicator (icon + dot)
-// ============================================================================
-//
-// Badge frame (border, background, label) stays static — only the leading
-// icon and dot opacity-pulse. This matches the canonical "live status"
-// notification idiom: a steady frame + label that the eye can read,
-// paired with a pulsing visual cue that signals freshness/attention.
-// Pulsing the whole badge made the label flicker and was harder to read
-// at a glance. (Dot precedent — Dot is a single indicator so its `.root`
-// pulses; Badge is a composite, so the indicator children pulse.)
-
-.pulse :is(.icon, .dot) {
-  // Local @keyframes — CSS Modules scope keyframe identifiers, so referencing
-  // a global `pulse` keyframe from _animations.scss silently no-ops under
-  // Turbopack + Next.js 16. Each animation-consuming module owns a tiny local
-  // copy (matches Dot dotPulse + Checkbox checkboxTick + RadioGroup radioDotFill).
-  animation: badgePulse 2s var(--easing-default) infinite;
-}
-
-@keyframes badgePulse {
-  0%,
-  100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.5;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .pulse :is(.icon, .dot) {
-    animation: none;
-  }
 }

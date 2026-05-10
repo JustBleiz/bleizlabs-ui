@@ -265,7 +265,7 @@ export default function DemoPage() {
         <Text color="muted">Stack, Inline, Container, Section — flex primitives + semantic bands.</Text>
 
         <div className={styles.demoCard}>
-          <Text variant="caption" color="muted" uppercase>
+          <Text variant="caption" color="muted">
             Stack
           </Text>
           <Stack gap={3}>
@@ -276,7 +276,7 @@ export default function DemoPage() {
         </div>
 
         <div className={styles.demoCard}>
-          <Text variant="caption" color="muted" uppercase>
+          <Text variant="caption" color="muted">
             Inline
           </Text>
           <Inline gap={3} align="center">
@@ -288,7 +288,7 @@ export default function DemoPage() {
         </div>
 
         <div className={styles.demoCard}>
-          <Text variant="caption" color="muted" uppercase>
+          <Text variant="caption" color="muted">
             Container + Section
           </Text>
           <Section bg="raised" py={4}>
@@ -322,8 +322,8 @@ export default function DemoPage() {
             <Text variant="small" color="muted">
               Small muted — secondary metadata.
             </Text>
-            <Text variant="caption" uppercase color="muted">
-              Caption uppercase
+            <Text variant="caption" color="muted">
+              Caption
             </Text>
           </Stack>
         </div>
@@ -396,7 +396,7 @@ export default function DemoPage() {
         </div>
 
         <div className={styles.demoCard}>
-          <Text variant="caption" color="muted" uppercase>
+          <Text variant="caption" color="muted">
             Badges
           </Text>
           <Inline gap={2} wrap>
@@ -406,20 +406,20 @@ export default function DemoPage() {
             <Badge color="warning">Warning</Badge>
             <Badge color="error">Error</Badge>
             <Badge color="info">Info</Badge>
-            <Badge color="brand" dot>
-              With dot
+            <Badge color="brand">
+              With
             </Badge>
             <Badge color="success" pill>
               Pill
             </Badge>
-            <Badge color="warning" uppercase>
+            <Badge color="warning">
               Uppercase
             </Badge>
           </Inline>
         </div>
 
         <div className={styles.demoCard}>
-          <Text variant="caption" color="muted" uppercase>
+          <Text variant="caption" color="muted">
             Separators, IconBoxes, Avatars
           </Text>
           <Stack gap={4}>
@@ -450,7 +450,7 @@ export default function DemoPage() {
         </div>
 
         <div className={styles.demoCard}>
-          <Text variant="caption" color="muted" uppercase>
+          <Text variant="caption" color="muted">
             Skeleton, Spinner, AspectRatio
           </Text>
           <Stack gap={3}>
@@ -495,7 +495,7 @@ export default function DemoPage() {
         </Text>
 
         <div className={styles.demoCard}>
-          <Text variant="caption" color="muted" uppercase>
+          <Text variant="caption" color="muted">
             Buttons
           </Text>
           <Inline gap={3} wrap>
@@ -524,7 +524,7 @@ export default function DemoPage() {
         </div>
 
         <div className={styles.demoCard}>
-          <Text variant="caption" color="muted" uppercase>
+          <Text variant="caption" color="muted">
             Inputs
           </Text>
           <Stack gap={3}>
@@ -570,7 +570,7 @@ export default function DemoPage() {
         </div>
 
         <div className={styles.demoCard}>
-          <Text variant="caption" color="muted" uppercase>
+          <Text variant="caption" color="muted">
             Selection controls
           </Text>
           <Stack gap={3}>
@@ -620,7 +620,7 @@ export default function DemoPage() {
         </div>
 
         <div className={styles.demoCard}>
-          <Text variant="caption" color="muted" uppercase>
+          <Text variant="caption" color="muted">
             Accordion
           </Text>
           <Accordion defaultOpen question="What is bleizlabs-ui?">
@@ -674,7 +674,7 @@ export default function DemoPage() {
         </div>
 
         <div className={styles.demoCard}>
-          <Text variant="caption" color="muted" uppercase>
+          <Text variant="caption" color="muted">
             Progress
           </Text>
           <Stack gap={3}>
@@ -700,13 +700,13 @@ export default function DemoPage() {
         </Text>
 
         <div className={styles.demoCard}>
-          <Text variant="caption" color="muted" uppercase>
+          <Text variant="caption" color="muted">
             Dots + MetricBar + AnimatedCounter
           </Text>
           <Stack gap={3}>
             <Inline gap={3} align="center">
               <Dot color="success" label="Online" />
-              <Dot color="warning" pulse label="Pending" />
+              <Dot color="warning" label="Pending" />
               <Dot color="error" label="Offline" />
               <Dot color="info" label="Syncing" />
             </Inline>
@@ -718,7 +718,7 @@ export default function DemoPage() {
         </div>
 
         <div className={styles.demoCard}>
-          <Text variant="caption" color="muted" uppercase>
+          <Text variant="caption" color="muted">
             Navigation
           </Text>
           <Stack gap={3}>
@@ -739,7 +739,7 @@ export default function DemoPage() {
         </div>
 
         <div className={styles.demoCard}>
-          <Text variant="caption" color="muted" uppercase>
+          <Text variant="caption" color="muted">
             UsageDonut, AvailabilityBar, Kbd
           </Text>
           <div className={styles.specializedGrid}>
@@ -782,7 +782,7 @@ export default function DemoPage() {
         </Text>
 
         <div className={styles.demoCard}>
-          <Text variant="caption" color="muted" uppercase>
+          <Text variant="caption" color="muted">
             DataRow + DeadlineBadge
           </Text>
           <Stack gap={2}>
@@ -795,7 +795,7 @@ export default function DemoPage() {
         </div>
 
         <div className={styles.demoCard}>
-          <Text variant="caption" color="muted" uppercase>
+          <Text variant="caption" color="muted">
             SectionDivider + BackLink
           </Text>
           <Stack gap={3}>
@@ -808,7 +808,7 @@ export default function DemoPage() {
         </div>
 
         <div className={styles.demoCard}>
-          <Text variant="caption" color="muted" uppercase>
+          <Text variant="caption" color="muted">
             AccordionGroup (single mode)
           </Text>
           <AccordionGroup mode="single">
@@ -825,7 +825,7 @@ export default function DemoPage() {
         </div>
 
         <div className={styles.demoCard}>
-          <Text variant="caption" color="muted" uppercase>
+          <Text variant="caption" color="muted">
             ToggleGroupFilter
           </Text>
           <ToggleGroupFilter

@@ -143,16 +143,16 @@ export default function EdgeBarPlaygroundPage() {
         </p>
         <div className={styles.cardRow}>
           <div className={styles.demoCard}>
-            <EdgeBar color="success" pulse />
-            <p className={styles.cardLabel}>success + pulse</p>
+            <EdgeBar color="success" />
+            <p className={styles.cardLabel}>success +</p>
           </div>
           <div className={styles.demoCard}>
-            <EdgeBar color="warning" pulse />
-            <p className={styles.cardLabel}>warning + pulse</p>
+            <EdgeBar color="warning" />
+            <p className={styles.cardLabel}>warning +</p>
           </div>
           <div className={styles.demoCard}>
-            <EdgeBar color="error" pulse thickness="lg" />
-            <p className={styles.cardLabel}>error + pulse + lg</p>
+            <EdgeBar color="error" thickness="lg" />
+            <p className={styles.cardLabel}>error + + lg</p>
           </div>
         </div>
       </section>
@@ -204,10 +204,10 @@ export default function EdgeBarPlaygroundPage() {
             <p className={styles.rowMeta}>warning left-edge — needs attention</p>
           </div>
           <div className={styles.demoRow}>
-            <EdgeBar position="left" color="error" pulse />
+            <EdgeBar position="left" color="error" />
             <p className={styles.rowTitle}>Outage: Edge CDN</p>
             <p className={styles.rowMeta}>
-              error left-edge + pulse — active incident
+              error left-edge + — active incident
             </p>
           </div>
         </div>
