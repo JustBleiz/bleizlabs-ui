@@ -473,22 +473,41 @@
 // Frozen / sticky columns
 // ============================================================================
 
+// Sticky cells use logical properties — automatic RTL handling via dir attr.
+// API `sticky: 'left' | 'right'` = "start" / "end" of reading direction.
+//   LTR: stickyLeft → physically left (inline-start), stickyRight → right (end)
+//   RTL: stickyLeft → physically right (inline-start), stickyRight → left (end)
 .stickyLeft {
   position: sticky;
-  left: 0;
+  inset-inline-start: 0;
   z-index: 1;
   background-color: var(--color-surface);
-  box-shadow: 1px 0 0 0 var(--color-border-subtle),
+  box-shadow:
+    1px 0 0 0 var(--color-border-subtle),
     4px 0 6px -2px color-mix(in srgb, var(--color-border) 35%, transparent);
 }
 
 .stickyRight {
   position: sticky;
-  right: 0;
+  inset-inline-end: 0;
   z-index: 1;
   background-color: var(--color-surface);
-  box-shadow: -1px 0 0 0 var(--color-border-subtle),
+  box-shadow:
+    -1px 0 0 0 var(--color-border-subtle),
     -4px 0 6px -2px color-mix(in srgb, var(--color-border) 35%, transparent);
+}
+
+// In RTL, mirror box-shadow direction
+[dir='rtl'] .stickyLeft {
+  box-shadow:
+    -1px 0 0 0 var(--color-border-subtle),
+    -4px 0 6px -2px color-mix(in srgb, var(--color-border) 35%, transparent);
+}
+
+[dir='rtl'] .stickyRight {
+  box-shadow:
+    1px 0 0 0 var(--color-border-subtle),
+    4px 0 6px -2px color-mix(in srgb, var(--color-border) 35%, transparent);
 }
 
 // Header sticky cells inherit background z headerCell

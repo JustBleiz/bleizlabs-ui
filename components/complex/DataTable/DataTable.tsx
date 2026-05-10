@@ -6,12 +6,14 @@ import {
   useCallback,
   useEffect,
   useId,
+  useImperativeHandle,
   useMemo,
   useRef,
   useState,
   type ReactNode,
   type ReactElement,
   type HTMLAttributes,
+  type ForwardedRef,
   type KeyboardEvent as ReactKeyboardEvent,
 } from 'react';
 import { cn } from '../../utils/cn';
@@ -673,7 +675,7 @@ function defaultGetRowId<T>(_row: T, index: number): string {
 
 export const DataTable = forwardRef(function DataTable<T>(
   props: DataTableProps<T>,
-  ref: React.ForwardedRef<HTMLDivElement>,
+  ref: ForwardedRef<DataTableHandle<T>>,
 ) {
   const {
     data,
@@ -1296,6 +1298,9 @@ export const DataTable = forwardRef(function DataTable<T>(
     );
   };
 
+  // Root ref dla wrapper div (DOM)
+  const rootRef = useRef<HTMLDivElement | null>(null);
+
   // ─────────────────────────────────────────────────────────────────────────
   // APG grid keyboard model + roving tabindex + aria-live announcements
   // ─────────────────────────────────────────────────────────────────────────
@@ -1556,6 +1561,51 @@ export const DataTable = forwardRef(function DataTable<T>(
     return () => clearTimeout(t);
   }, [selectedIds, selectionEnabled, labels]);
 
+  // ─────────────────────────────────────────────────────────────────────────
+  // Imperative DataTableHandle API
+  // ─────────────────────────────────────────────────────────────────────────
+  useImperativeHandle(
+    ref,
+    () => ({
+      getSelectedRows: (): T[] =>
+        data.filter((r, i) => selectedIds.has(getRowId(r, i))),
+      clearSelection: () => {
+        if (!isControlledSelection) setUncontrolledSelectedIds(new Set());
+        if (selectionMode === 'single') {
+          (selectionConfig.onChange as ((r: T | null) => void) | undefined)?.(
+            null,
+          );
+        } else if (selectionMode === 'multiple') {
+          (selectionConfig.onChange as ((rs: T[]) => void) | undefined)?.([]);
+        }
+      },
+      toggleRowExpanded: (rowId: string) => {
+        toggleRowExpansion(rowId);
+      },
+      toggleColumnVisibility: (_columnId: string) => {
+        // v1: column visibility = consumer-driven via column.hidden prop.
+        // Imperative toggle is no-op tutaj; consumer flips column.hidden + re-renders.
+        // Defer dedicated visibility override state do v1.x.
+      },
+      scrollToRow: (rowIndex: number) => {
+        if (rowIndex < 0 || rowIndex >= totalDataRows) return;
+        const el = document.getElementById(cellDomId(rowIndex + 1, 0));
+        el?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      },
+    }),
+    [
+      data,
+      selectedIds,
+      getRowId,
+      isControlledSelection,
+      selectionMode,
+      selectionConfig,
+      toggleRowExpansion,
+      totalDataRows,
+      cellDomId,
+    ],
+  );
+
   const renderMobileLoading = () => (
     <>
       {Array.from({ length: loadingRowCount }).map((_, i) => (
@@ -1601,7 +1651,7 @@ export const DataTable = forwardRef(function DataTable<T>(
   if (isMobile) {
     return (
       <div
-        ref={ref}
+        ref={rootRef}
         className={rootClassName}
         data-density={density}
         data-state={stateMode}
@@ -1641,7 +1691,7 @@ export const DataTable = forwardRef(function DataTable<T>(
 
   return (
     <div
-      ref={ref}
+      ref={rootRef}
       className={rootClassName}
       data-density={density}
       data-state={stateMode}
@@ -1792,7 +1842,7 @@ export const DataTable = forwardRef(function DataTable<T>(
     </div>
   );
 }) as <T>(
-  props: DataTableProps<T> & { ref?: React.ForwardedRef<HTMLDivElement> },
+  props: DataTableProps<T> & { ref?: ForwardedRef<DataTableHandle<T>> },
 ) => ReactElement;
 
 // ============================================================================
