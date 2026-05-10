@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { Heading } from '@/components/typography/Heading';
 import styles from './page.module.scss';
 
 interface ComponentLink {
@@ -10,392 +11,596 @@ interface ComponentLink {
 }
 
 const components: ComponentLink[] = [
+  // ── Phase 1 — Layout ───────────────────────────────────────────────────
   {
     href: '/components/stack',
     name: 'Stack',
-    description: 'Vertical flex layout atom with gap, align, justify, divider.',
+    description: 'Vertical flex layout primitive with gap, alignment, justification, and optional dividers between items.',
     phase: 'Phase 1 — Layout',
     status: 'available',
   },
   {
     href: '/components/inline',
     name: 'Inline',
-    description: 'Horizontal flex layout atom with wrap and collapseBelow.',
+    description: 'Horizontal flex layout primitive with wrap support and a responsive collapse-below breakpoint.',
     phase: 'Phase 1 — Layout',
     status: 'available',
   },
   {
     href: '/components/container',
     name: 'Container',
-    description: 'Max-width centered wrapper with size + padding variants.',
+    description: 'Max-width centered wrapper with size and padding variants for page and section gutters.',
     phase: 'Phase 1 — Layout',
     status: 'available',
   },
   {
     href: '/components/section',
     name: 'Section',
-    description:
-      'Full-width semantic band with bg variants and tag override.',
+    description: 'Full-width semantic band with background variants and a configurable HTML tag.',
     phase: 'Phase 1 — Layout',
     status: 'available',
   },
   {
+    href: '/components/grid-layout',
+    name: 'GridLayout',
+    description: 'Multi-column CSS Grid primitive with number shorthand, arbitrary templates, and a mobile-first responsive cascade.',
+    phase: 'Phase 1 — Layout',
+    status: 'available',
+  },
+
+  // ── Phase 2 — Typography ───────────────────────────────────────────────
+  {
     href: '/components/heading',
     name: 'Heading',
-    description:
-      'Semantic h1-h6 with decoupled visual size, weight, color, align, asChild.',
+    description: 'Semantic h1–h6 with decoupled visual size, weight, color, alignment, and asChild polymorphism.',
     phase: 'Phase 2 — Typography',
     status: 'available',
   },
   {
     href: '/components/text',
     name: 'Text',
-    description:
-      'Universal body text with five variants, weight, color, uppercase, asChild.',
+    description: 'Universal body text with five variants, weight, color, uppercase, and asChild polymorphism.',
     phase: 'Phase 2 — Typography',
     status: 'available',
   },
   {
+    href: '/components/anchor',
+    name: 'Anchor',
+    description: 'Inline text link with underline strategy, external indicator, and color tone variants.',
+    phase: 'Phase 2 — Typography',
+    status: 'available',
+  },
+  {
+    href: '/components/eyebrow',
+    name: 'Eyebrow',
+    description: 'Atelier kicker label — small uppercase caption with numeric prefix and hairline ornament.',
+    phase: 'Phase 2 — Typography',
+    status: 'available',
+  },
+  {
+    href: '/components/text-link',
+    name: 'TextLink',
+    description: 'Inline text link styled for inline use within paragraphs and lists.',
+    phase: 'Phase 2 — Typography',
+    status: 'available',
+  },
+
+  // ── Phase 3 — Display ──────────────────────────────────────────────────
+  {
     href: '/components/card',
     name: 'Card',
-    description:
-      'Surface container with 4 variants, hoverable, accent positions, and 4 flat slot components.',
+    description: 'Surface container with variants, hoverable state, accent positions, and four flat slot components for header / body / footer / section.',
     phase: 'Phase 3 — Display',
     status: 'available',
   },
   {
     href: '/components/badge',
     name: 'Badge',
-    description:
-      'Inline status / category indicator with 6 colors, pill, dot, icon, uppercase, asChild.',
+    description: 'Inline status / category indicator with five colors, pill shape, optional icon, and asChild polymorphism.',
     phase: 'Phase 3 — Display',
     status: 'available',
   },
   {
     href: '/components/separator',
     name: 'Separator',
-    description:
-      'Divider line with subtle / gradient / brand variants, horizontal + vertical orientation.',
+    description: 'Divider line with subtle / gradient / brand variants and horizontal or vertical orientation.',
     phase: 'Phase 3 — Display',
     status: 'available',
   },
   {
     href: '/components/icon-box',
     name: 'IconBox',
-    description:
-      'Square icon container with 5 variants, 3 sizes, and asChild for interactive use.',
+    description: 'Square icon container with five visual variants, three sizes, and asChild polymorphism for interactive use.',
     phase: 'Phase 3 — Display',
     status: 'available',
   },
   {
     href: '/components/avatar',
     name: 'Avatar',
-    description:
-      'User identity with image / initials fallback chain, 5 sizes, status indicator.',
+    description: 'User identity element with image / initials fallback chain, five sizes, and circle or rounded shape.',
     phase: 'Phase 3 — Display',
     status: 'available',
   },
   {
     href: '/components/skeleton',
     name: 'Skeleton',
-    description:
-      'Loading placeholder with text / rect / circle variants and pulse / shimmer animations.',
+    description: 'Loading placeholder with text / rect / circle variants and pulse / shimmer animations.',
     phase: 'Phase 3 — Display',
     status: 'available',
   },
   {
     href: '/components/spinner',
     name: 'Spinner',
-    description:
-      'Inline loading indicator with 4 sizes, 3 colors, and accessible status semantics.',
+    description: 'Inline loading indicator with four sizes, three color tones, and accessible status semantics.',
     phase: 'Phase 3 — Display',
     status: 'available',
   },
   {
     href: '/components/aspect-ratio',
     name: 'AspectRatio',
-    description:
-      'Media container with fixed aspect ratio for images, video, iframes (Tier B).',
+    description: 'Media container with a fixed aspect ratio for images, video, and embedded iframes.',
     phase: 'Phase 3 — Display',
     status: 'available',
   },
   {
+    href: '/components/edge-bar',
+    name: 'EdgeBar',
+    description: 'Decorative edge accent — a thin colored strip aligned to one side of a positioned container.',
+    phase: 'Phase 3 — Display',
+    status: 'available',
+  },
+  {
+    href: '/components/kpi-value',
+    name: 'KpiValue',
+    description: 'Universal big-number KPI display with optional unit label and trend indicator. Server-safe with a companion animated count-up wrapper.',
+    phase: 'Phase 3 — Display',
+    status: 'available',
+  },
+  {
+    href: '/components/percent-value',
+    name: 'KpiValue (percent mode)',
+    description: 'Percent-tier rendering via KpiValue — tone-driven color (auto + thresholds + inverse) for low-is-good metrics.',
+    phase: 'Phase 3 — Display',
+    status: 'available',
+  },
+  {
+    href: '/components/reveal',
+    name: 'Reveal',
+    description: 'Scroll-into-view entrance animation primitive with reduced-motion fallback.',
+    phase: 'Phase 3 — Display',
+    status: 'available',
+  },
+  {
+    href: '/components/reveal-stack',
+    name: 'RevealStack',
+    description: 'Stack composition that staggers child Reveal entrances on scroll into view.',
+    phase: 'Phase 3 — Display',
+    status: 'available',
+  },
+  {
+    href: '/components/table',
+    name: 'Table',
+    description: 'Semantic <table> primitives — Table + Header + Body + Footer + Row + Cell. Striped, bordered, and compact variants. Pairs with TanStack Table for sortable / filterable data tables in consumer projects.',
+    phase: 'Phase 3 — Display',
+    status: 'available',
+  },
+
+  // ── Phase 4 — Interactive ──────────────────────────────────────────────
+  {
     href: '/components/button',
-    name: 'Button + ButtonGroup',
-    description:
-      '5 variants, 3 sizes, icon + iconOnly + href fallback + asChild. ButtonGroup joins via joined-group mixin (server-safe).',
-    phase: 'Phase 4 — Simple Interactive',
+    name: 'Button',
+    description: 'Five variants, three sizes, icon-only mode, href fallback, and asChild polymorphism.',
+    phase: 'Phase 4 — Interactive',
     status: 'available',
   },
   {
     href: '/components/button-group',
     name: 'ButtonGroup',
-    description:
-      'Joined row/column of related buttons — attached collapses inner radii + dedupes 1px borders via joined-group mixin. Server-safe, role="group" with required aria-label.',
-    phase: 'Phase 4 — Simple Interactive',
+    description: 'Joined row or column of related buttons — collapses inner radii and dedupes 1px borders. Server-safe with required aria-label.',
+    phase: 'Phase 4 — Interactive',
     status: 'available',
   },
   {
     href: '/components/input',
-    name: 'Input + Label + Textarea',
-    description:
-      'Form trio with controlled / uncontrolled state, auto-id label coupling, error + helper, start/end icons.',
-    phase: 'Phase 4 — Simple Interactive',
+    name: 'Input',
+    description: 'Headless styled <input> wrapper. Type variants, invalid state, start/end icons, prefix/suffix slots. Pairs with Field for validated form rows.',
+    phase: 'Phase 4 — Interactive',
     status: 'available',
   },
   {
     href: '/components/label',
     name: 'Label',
-    description:
-      'Form-coupled <label htmlFor> atom with optional required indicator + visual disabled state. Use directly when composing custom form layouts (Input renders its own internal Label).',
-    phase: 'Phase 4 — Simple Interactive',
+    description: 'Form-coupled label atom with required indicator and visual disabled state. Use directly when composing custom form layouts.',
+    phase: 'Phase 4 — Interactive',
     status: 'available',
   },
   {
     href: '/components/textarea',
     name: 'Textarea',
-    description:
-      'Multi-line text input. Resize prop (none/vertical/horizontal/both), error + helperText, hideLabel for sr-only labels, auto-id via useId (split from Input per D24 shadcn flat pattern).',
-    phase: 'Phase 4 — Simple Interactive',
+    description: 'Multi-line text input with resize control, error and helper text, and an option for visually-hidden labels.',
+    phase: 'Phase 4 — Interactive',
     status: 'available',
   },
   {
     href: '/components/selection',
     name: 'Checkbox + RadioGroup',
-    description:
-      'Native form inputs with custom styling, checkmark + radioFill animations, controlled state, context-driven group.',
-    phase: 'Phase 4 — Simple Interactive',
+    description: 'Native form inputs with custom styling, animated checkmark and radio fill, controlled state, and context-driven groups.',
+    phase: 'Phase 4 — Interactive',
     status: 'available',
   },
   {
     href: '/components/toggles',
     name: 'Toggle + Switch + Accordion',
-    description:
-      'Toggle (aria-pressed), ToggleGroup (single/multiple, joined-group reuse), Switch (animated thumb), Accordion (APG disclosure).',
-    phase: 'Phase 4 — Simple Interactive',
+    description: 'Press-state Toggle, segmented ToggleGroup, on/off Switch, and APG-compliant Accordion — four state-heavy interactive primitives.',
+    phase: 'Phase 4 — Interactive',
     status: 'available',
   },
   {
     href: '/components/input-production',
-    name: 'Input Production Hardening',
-    description:
-      'E08 — Input prefix/suffix/counter/clearable/loading, InputGroup + InputGroupText, NumberInput, MaskedInput, PhoneInput, PasswordInput.',
-    phase: 'Phase 4 — Simple Interactive (E08)',
+    name: 'Input variants',
+    description: 'Production input variants — InputGroup, NumberInput, MaskedInput, PhoneInput, PasswordInput.',
+    phase: 'Phase 4 — Interactive',
     status: 'available',
   },
+
+  // ── Phase 5 — Feedback ─────────────────────────────────────────────────
   {
     href: '/components/feedback',
     name: 'Feedback',
-    description:
-      'E09 — Empty (zero-result slot + CTA), Alert (4 variants + opt-in dismiss + href body), Progress (discriminated union stages XOR percent).',
+    description: 'Empty (zero-result slot with optional CTA), Alert (four variants with optional dismiss), Progress (stages or percent — discriminated union).',
     phase: 'Phase 5 — Feedback',
     status: 'available',
   },
+
+  // ── Phase 6 — Specialized ──────────────────────────────────────────────
   {
     href: '/components/specialized',
     name: 'Specialized',
-    description:
-      'E10+E11 — Dot, MetricBar, AnimatedCounter, Breadcrumb, Pagination (Tier A) + UsageDonut, AvailabilityBar, Kbd (Tier B). Phase 6 complete.',
+    description: 'Dot, MetricBar, AnimatedCounter, Breadcrumb, Pagination, UsageDonut, AvailabilityBar, and Kbd — focused single-purpose primitives.',
     phase: 'Phase 6 — Specialized',
     status: 'available',
   },
   {
     href: '/components/availability-bar',
     name: 'AvailabilityBar',
-    description:
-      'Day-by-day status strip — ok/warning/down cells in a CSS grid scaled via --availability-cells channel. role="img" wrapper with summary aria-label; per-day native title tooltips. Server-safe.',
-    phase: 'Phase 6 — Specialized (Tier B)',
+    description: 'Day-by-day status strip — ok / warning / down cells in a CSS grid. Summary aria-label with per-day native title tooltips. Server-safe.',
+    phase: 'Phase 6 — Specialized',
     status: 'available',
   },
   {
+    href: '/components/theme-toggle',
+    name: 'ThemeToggle',
+    description: 'Single-button light/dark theme switcher driving the html data-theme attribute. Cross-tab sync via the storage event.',
+    phase: 'Phase 6 — Specialized',
+    status: 'available',
+  },
+
+  // ── Phase 7 — Molecules ────────────────────────────────────────────────
+  {
     href: '/components/molecules',
     name: 'Molecules',
-    description:
-      'E12 — DataRow, BackLink, SectionDivider, AccordionGroup (single/multiple), ToggleGroupFilter, DeadlineBadge (hydration-safe countdown).',
+    description: 'DataRow, BackLink, SectionDivider, AccordionGroup, ToggleGroupFilter, DeadlineBadge — focused two-to-five-atom compositions.',
+    phase: 'Phase 7 — Molecules',
+    status: 'available',
+  },
+  {
+    href: '/components/header',
+    name: 'Header',
+    description: 'Universal block-header molecule — body content (children) plus an optional right-aligned actions slot. Renders a semantic <header> element.',
+    phase: 'Phase 7 — Molecules',
+    status: 'available',
+  },
+  {
+    href: '/components/breakdown-list',
+    name: 'BreakdownList',
+    description: 'Stacked progress-bar breakdown with label, value, and optional description per item. Brand, success, warning, error, and info tones.',
+    phase: 'Phase 7 — Molecules',
+    status: 'available',
+  },
+  {
+    href: '/components/metric-tile',
+    name: 'MetricTile',
+    description: 'Universal metric tile — label, value (free-form ReactNode), optional icon, optional description, and a tone-driven value color.',
+    phase: 'Phase 7 — Molecules',
+    status: 'available',
+  },
+  {
+    href: '/components/timeline',
+    name: 'Timeline',
+    description: 'Vertical timeline compound — Timeline + TimelineItem + TimelineMarker + TimelineContent. Connector lines and tone-driven markers.',
+    phase: 'Phase 7 — Molecules',
+    status: 'available',
+  },
+  {
+    href: '/components/chip',
+    name: 'Chip',
+    description: 'Display chip with leading icon, label, and optional remove button. Tonal variants for status, category, and tag use cases.',
+    phase: 'Phase 7 — Molecules',
+    status: 'available',
+  },
+  {
+    href: '/components/file-chip',
+    name: 'FileChip',
+    description: 'File attachment chip with uploaded / uploading / error variants. Auto-detects the MIME category for the leading icon.',
+    phase: 'Phase 7 — Molecules',
+    status: 'available',
+  },
+  {
+    href: '/components/icon-button',
+    name: 'IconButton',
+    description: 'Compact icon-only button molecule — wraps Button with iconOnly = true and a required aria-label.',
     phase: 'Phase 7 — Molecules',
     status: 'available',
   },
   {
     href: '/components/toggle-group-filter',
     name: 'ToggleGroupFilter',
-    description:
-      'Filter-chip row — controlled multi-select wrapper over ToggleGroup type="multiple". Maps flat options array to Toggle children, optional groupLabel uppercase caption above the row.',
+    description: 'Filter-chip row — controlled multi-select wrapper over ToggleGroup with an optional uppercase group label.',
     phase: 'Phase 7 — Molecules',
     status: 'available',
   },
+
+  // ── Phase 8 — Card Presets ─────────────────────────────────────────────
   {
     href: '/components/presets',
     name: 'Card Presets',
-    description:
-      'E13 — ContentCard, SidebarCard, FormCard, StatsCard (stacked/inline/icon-lead), ActionCard (severity-driven accent).',
+    description: 'ContentCard, SidebarCard, FormSurface, StatsCard, ActionCard — opinionated card compositions for common dashboard patterns.',
     phase: 'Phase 8 — Card Presets',
     status: 'available',
   },
   {
-    href: '/demo',
-    name: 'Demo showcase',
-    description:
-      'E14 — one-stop showcase of all 66 components in 9 phase sections (incl. Phase 10 complex interactive) with runtime theme toggle.',
-    phase: 'Phase 9 — Demo & Docs',
+    href: '/components/icon-header-card',
+    name: 'IconHeaderCard',
+    description: 'Universal admin card with an icon-led header, optional badge, and configurable footer. Hosts KpiValue, BreakdownList, or arbitrary content.',
+    phase: 'Phase 8 — Card Presets',
     status: 'available',
   },
   {
+    href: '/components/entity-card',
+    name: 'EntityCard',
+    description: 'Universal entity grid-item preset composing Card with structured props for title, badges, meta, and body. (Deprecated — see CHANGELOG.)',
+    phase: 'Phase 8 — Card Presets',
+    status: 'available',
+  },
+  {
+    href: '/components/entity-hero',
+    name: 'EntityHero',
+    description: 'Universal entity detail-page hero shell with back-link, title, status indicators, and meta strip. (Deprecated — see CHANGELOG.)',
+    phase: 'Phase 8 — Card Presets',
+    status: 'available',
+  },
+  {
+    href: '/components/zone-card',
+    name: 'ZoneCard',
+    description: 'Tonal-zone card preset for status-grouped content. (Deprecated — see CHANGELOG.)',
+    phase: 'Phase 8 — Card Presets',
+    status: 'available',
+  },
+  {
+    href: '/components/collapsible-zone-card',
+    name: 'CollapsibleZoneCard',
+    description: 'ZoneCard variant with a built-in expand/collapse summary section. (Deprecated — see CHANGELOG.)',
+    phase: 'Phase 8 — Card Presets',
+    status: 'available',
+  },
+  {
+    href: '/components/paired-card',
+    name: 'PairedCard',
+    description: 'Two-pane Card layout for side-by-side comparison patterns. (Deprecated — see CHANGELOG.)',
+    phase: 'Phase 8 — Card Presets',
+    status: 'available',
+  },
+  {
+    href: '/components/page-header',
+    name: 'PageHeader',
+    description: 'Page-level hero header with eyebrow, heading, description, and action row. (Deprecated — replaced by Header. See CHANGELOG.)',
+    phase: 'Phase 8 — Card Presets',
+    status: 'available',
+  },
+  {
+    href: '/components/section-header',
+    name: 'SectionHeader',
+    description: 'Section-level header with title and action row. (Deprecated — replaced by Header. See CHANGELOG.)',
+    phase: 'Phase 8 — Card Presets',
+    status: 'available',
+  },
+  {
+    href: '/components/site-header',
+    name: 'SiteHeader',
+    description: 'Page-level site navigation with mobile drawer. (Deprecated — see CHANGELOG.)',
+    phase: 'Phase 8 — Card Presets',
+    status: 'available',
+  },
+  {
+    href: '/components/app-shell',
+    name: 'AppShell',
+    description: 'Application shell composition combining Sidebar, top navigation, and main content. (Deprecated — see CHANGELOG.)',
+    phase: 'Phase 8 — Card Presets',
+    status: 'available',
+  },
+
+  // ── Phase 9 — Demo & Docs ──────────────────────────────────────────────
+  {
+    href: '/demo',
+    name: 'Demo showcase',
+    description: 'One-stop showcase of every component with runtime light/dark theme toggle.',
+    phase: 'Phase 9 — Demo & Docs',
+    status: 'available',
+  },
+
+  // ── Phase 10 — Complex Interactive ─────────────────────────────────────
+  {
     href: '/components/dialog',
     name: 'Dialog',
-    description:
-      'E15 CI1 — modal dialog with portal, focus trap, scroll lock, Escape close. First Phase 10 complex interactive. APG /dialog-modal/ pattern.',
+    description: 'Modal dialog with portal, focus trap, scroll lock, and Escape close. Implements the WAI-ARIA APG /dialog-modal/ pattern.',
     phase: 'Phase 10 — Complex Interactive',
     status: 'available',
   },
   {
     href: '/components/alert-dialog',
     name: 'AlertDialog',
-    description:
-      'E16 CI2 — modal alert dialog with required aria-describedby, least-destructive initial focus, background inert, confirm/cancel action row. APG /alertdialog/ pattern. Reuses useFocusTrap from Dialog.',
+    description: 'Modal alert dialog with required aria-describedby, least-destructive initial focus, and a confirm/cancel action row. APG /alertdialog/.',
     phase: 'Phase 10 — Complex Interactive',
     status: 'available',
   },
   {
     href: '/components/drawer',
     name: 'Drawer',
-    description:
-      'E17 CI3 — bottom-positioned modal sheet. Slide-up keyframe, top-only border-radius, iOS safe-area-inset, sticky footer with scrollable body, height variants (sm/md/lg dvh). APG /dialog-modal/ modifier. Reuses useFocusTrap from Dialog.',
+    description: 'Bottom-positioned modal sheet with slide-up animation, sticky footer, and iOS safe-area-inset handling.',
     phase: 'Phase 10 — Complex Interactive',
     status: 'available',
   },
   {
     href: '/components/sheet',
     name: 'Sheet',
-    description:
-      'E18 CI4 — 4-directional side panel (left/right/top/bottom). Per-side animation, inner-corner border-radius, safe-area-inset. Horizontal uses width variants, vertical uses height. Closes the Drawer family. Reuses useFocusTrap.',
+    description: 'Four-directional side panel (left / right / top / bottom) with per-side animation and width or height variants.',
     phase: 'Phase 10 — Complex Interactive',
     status: 'available',
   },
   {
     href: '/components/tooltip',
     name: 'Tooltip',
-    description:
-      'E19 CI6 — modeless floating label on hover/focus. Own positioning engine (utils/position.ts + utils/useFloating.ts, zero deps), 12 placements with flip + shift, TooltipProvider delay group, SC 1.4.13 compliant (dismissable + hoverable + focus parity). APG /tooltip/.',
+    description: 'Modeless floating label on hover and focus. Twelve placements with flip and shift, optional delay group provider, and SC 1.4.13 compliance. APG /tooltip/.',
     phase: 'Phase 10 — Complex Interactive',
     status: 'available',
   },
   {
     href: '/components/popover',
     name: 'Popover',
-    description:
-      'E20 CI5 — floating panel anchored to a trigger. Compound flat API (Popover + PopoverTrigger + PopoverContent). Extends positioning engine with arrow middleware + optional arrow ref in useFloating. Non-modal default or opt-in modal (reuses useFocusTrap). Outside-click pointerdown capture dismiss. APG /dialog-modal/ modeless modifier.',
+    description: 'Floating panel anchored to a trigger. Optional arrow, non-modal default with opt-in modal mode, outside-click and Escape dismiss.',
     phase: 'Phase 10 — Complex Interactive',
     status: 'available',
   },
   {
     href: '/components/dropdown-menu',
     name: 'DropdownMenu',
-    description:
-      'E21 CI7 — accessible menu with 7 compound flat exports (DropdownMenu + Trigger + Content + Item + Separator + Label + Group). Full APG /menu/ keyboard model: Enter/Space/ArrowDown opens first item, ArrowUp opens last, arrow keys cycle with wraparound, Home/End jump, typeahead (multi-char buffer 500ms reset), Escape restores focus, Tab closes. Own compound API (does not reuse Popover — role="dialog" incompatible). onSelect cancelable event for future Checkbox/Radio items.',
+    description: 'Accessible menu with seven compound exports. Full APG /menu/ keyboard model — arrow cycle with wraparound, Home/End, multi-character typeahead, Escape.',
     phase: 'Phase 10 — Complex Interactive',
     status: 'available',
   },
   {
     href: '/components/context-menu',
     name: 'ContextMenu',
-    description:
-      'E22 CI8 — right-click menu per APG /menu/. Inherits full DropdownMenu keyboard model + adds contextmenu event trigger, position-at-cursor via direct computePosition call (skip useFloating), native browser context menu suppression, close-on-scroll convention. 7 flat compound exports. E23 floating primitives consumer (dismiss + portal + focus + state + context).',
+    description: 'Right-click menu per APG /menu/. Inherits the DropdownMenu keyboard model and adds positioning at the cursor and native context-menu suppression.',
     phase: 'Phase 10 — Complex Interactive',
     status: 'available',
   },
   {
     href: '/components/hover-card',
     name: 'HoverCard',
-    description:
-      'E24 CI9 — hover-triggered floating surface for rich contextual content (user profile previews, link previews). Compound flat API (HoverCard + Provider + Trigger + Content). FIRST validate-in-production consumer of E23 floating primitives (useFloatingState + FloatingPortal + createFloatingContext + useFloating). Skips useFloatingDismiss + useFloatingFocus (closes via mouseleave + grace area, not Escape; non-modal so no focus trap). Tooltip-style timer pattern + delay group + coarse pointer detection. SC 1.4.13 compliant. role="dialog" aria-modal="false" (NOT tooltip — interactive content). Desktop-only (touch users get focus path).',
+    description: 'Hover-triggered floating surface for rich contextual content (user previews, link previews). Delay group provider and grace-area dismiss.',
     phase: 'Phase 10 — Complex Interactive',
     status: 'available',
   },
   {
     href: '/components/navigation-menu',
     name: 'NavigationMenu',
-    description:
-      'E25 CI10 — accessible navigation menubar per APG /menubar/. 7 named exports (NavigationMenu + List + Item + Trigger + Content + Link + Provider). Roving tabindex via DOM attribute updates (no React re-render). Right/Left arrow cycle menubar, Down/Enter/Space opens submenu first item, Up opens last, Escape returns to parent menubar item, Tab exits menubar entirely, Home/End scope-aware, typeahead 500ms reset. NavigationMenuProvider mirrors HoverCardProvider delay group. Hover (200ms default — snappier than HoverCard 700ms) + click + keyboard, coarse pointer skips hover. Validate-in-production #2 of E23 primitives — first consumer to combine useFloatingFocus + useFloatingDismiss together. Standalone Link items can render directly inside menubar without aria-haspopup (mixed dropdown + standalone navigation pattern).',
+    description: 'Accessible navigation menubar per APG /menubar/. Roving tabindex, hover and click and keyboard activation, scope-aware Home/End and typeahead.',
     phase: 'Phase 10 — Complex Interactive',
     status: 'available',
   },
   {
     href: '/components/tabs',
     name: 'Tabs',
-    description:
-      'E26 CI11 — accessible tabs widget per APG /tabs/. 4 compound flat exports (Tabs + TabsList + TabsTrigger + TabsContent). Self-contained — zero E23 floating primitives needed (content inline, not floating). Roving tabindex pattern reused from NavigationMenu via inline helper. 3 variants (underline default, pill, segmented iOS-style). Horizontal + vertical orientations. Automatic activation (default — tab activates on focus) OR manual (Space/Enter required, for async-loaded panels). Auto-generated IDs via useId wire aria-controls + aria-labelledby. Tabpanel tabindex={0} so Tab from active trigger moves focus INTO panel per APG composite widget contract. Disabled triggers skipped by arrow nav + Home/End. RTL support via dir prop. Modifier-key guard (Cmd/Ctrl/Alt/Shift + arrow not intercepted — browser hotkeys like Cmd+← back-nav take precedence, Radix TB-R04 fix).',
+    description: 'Accessible tabs widget per APG /tabs/. Three visual variants, horizontal and vertical orientation, automatic or manual activation, RTL support.',
     phase: 'Phase 10 — Complex Interactive',
     status: 'available',
   },
   {
     href: '/components/select',
     name: 'Select',
-    description:
-      'E27 CI12 — accessible single-value dropdown form field per APG /combobox/ collapsed-listbox (select-only) + /listbox/. 8 compound flat exports (Select + Trigger + Value + Content + Group + Label + Item + Separator). FIRST listbox sub-family in Phase 10. aria-activedescendant pattern — focus stays on the trigger, highlighted option is virtual (differs from NavigationMenu/Tabs roving tabindex). E23 primitives consumed 4/5: useFloatingState + createFloatingContext + FloatingPortal + useFloatingDismiss; skips useFloatingFocus because focus never leaves trigger. Inline value state (string | null) and typeahead per E27 Phase 2 self-audit override — Rule of Three extraction deferred to E28 Combobox as 4th consumer. Full APG keyboard: Space/Enter/Arrow open, Home/End, PageDown/Up ±10, Enter/Space commit, Escape no-commit, Tab commit + propagate (Radix convention), Alt+ArrowUp no-commit, printable char typeahead 500ms reset. Form participation via hidden <input> synced to value when name prop provided. aria-disabled only (NOT native disabled) per NavigationMenu/Tabs precedent.',
+    description: 'Single-value select form field per APG /combobox/ collapsed-listbox + /listbox/. Eight compound exports, full keyboard model with typeahead, hidden-input form participation.',
     phase: 'Phase 10 — Complex Interactive',
     status: 'available',
   },
   {
     href: '/components/combobox',
     name: 'Combobox',
-    description:
-      'E28 CI13 — accessible autocomplete input per APG /combobox/ editable variant. 8 compound flat exports (Combobox + Input + Content + Item + Empty + Group + Label + Separator). SECOND listbox sub-family — pattern-child of Select E27. Extends Select with text input trigger + case-insensitive contains filter on item textContent/textValue. Consumes 4/5 E23 primitives (same as Select — skips useFloatingFocus). Three filter modes: "auto" default (built-in substring match), false (consumer-controlled via search prop + pre-filtered items), or custom function (items, search) => items[]. Hidden items omitted from DOM when non-matching. Radix Strategy A blur — auto-commit on exact match + revert input to committed value label on mismatch. Escape (closed + non-empty search) clears search keeping value; Escape (open) closes + reverts search. Alt+ArrowDown opens showing ALL items ignoring filter. IME composition events (onCompositionStart/End) guard prevents mid-char opens for CJK users. acceptFreeText prop opt-in for tag-input patterns where Enter commits typed text on no-match. ComboboxEmpty slot renders when filter yields 0 matches. 4 state slots (open, value, search, highlightedId). Rule of Three extractions (useFloatingValueState<T> + useTypeahead<T>) DEFERRED to E29 dedicated refactor sprint per E23 FloatingRoot precedent.',
+    description: 'Editable single- or multi-select form field per APG /combobox/ with live filter. Multi-select renders inline chips with Backspace-to-remove. FormData multi-value serialization.',
+    phase: 'Phase 10 — Complex Interactive',
+    status: 'available',
+  },
+  {
+    href: '/components/calendar',
+    name: 'Calendar',
+    description: 'Standalone month-view calendar with keyboard navigation, range selection, and locale-aware day labels.',
+    phase: 'Phase 10 — Complex Interactive',
+    status: 'available',
+  },
+  {
+    href: '/components/date-picker',
+    name: 'DatePicker',
+    description: 'Date input combining a Calendar popover with a typed input fallback. Supports min/max bounds and disabled-date predicates.',
+    phase: 'Phase 10 — Complex Interactive',
+    status: 'available',
+  },
+  {
+    href: '/components/toast',
+    name: 'Toast',
+    description: 'Non-modal notification toaster with auto-dismiss timer, action slot, and stacked toast queue.',
     phase: 'Phase 10 — Complex Interactive',
     status: 'available',
   },
   {
     href: '/components/slider',
     name: 'Slider',
-    description:
-      'E33 CI14 — accessible single-thumb value selector per APG /slider/. 4 compound flat exports (Slider + SliderTrack + SliderRange + SliderThumb). FIRST drag-gesture primitive consumer in the library. Zero-dep drag via PointerEvent + setPointerCapture on track (React onPointer* handlers receive events via capture bubble even when pointer leaves visible bounds). role="slider" on thumb with aria-valuenow/min/max/orientation/valuetext. Keyboard: Arrow ±step, Shift+Arrow ±largeStep (default step×10 Radix convention), PageUp/Dn ±largeStep, Home/End → min/max. Modifier guard Ctrl/Meta/Alt skip (Shift IS largeStep). RTL horizontal mirror (ArrowLeft = increase when dir="rtl"); vertical Up always increases. `inverted` prop composable with RTL via XOR. Decimal-step precision-safe via Math.round((raw - min) / step) * step + min + toFixed(decimals). Disabled via aria-disabled only (focusable). ReadOnly focusable + no changes. Form participation via hidden <input type="range"> when name prop set. Touch target 44×44 via ::before pseudo at @media (pointer: coarse) — visible thumb 1.125rem. forced-colors: active HCM block. formatValue callback → aria-valuetext override. onValueCommit fires on pointerup + keyboard keyup. Pattern-parent for Carousel CI21 + future range slider + splitter + Drawer resize handle.',
+    description: 'Single-thumb value selector per APG /slider/. Keyboard arrow steps with Shift large-step, RTL mirror, decimal-step precision-safe, hidden range input for forms.',
     phase: 'Phase 10 — Complex Interactive',
     status: 'available',
   },
   {
     href: '/components/carousel',
     name: 'Carousel',
-    description:
-      'E34 CI21 — accessible auto-rotating content slider per APG /carousel/. 6 compound flat exports (Carousel + CarouselViewport + CarouselSlide + CarouselPrev + CarouselNext + CarouselPause). SECOND drag-gesture primitive consumer + FIRST auto-rotation + FIRST live-region component. role="region" aria-roledescription="carousel" + required aria-label; slides role="group" aria-roledescription="slide" aria-label="N of M" + aria-hidden when not current. WCAG 2.2.2 pause control — CarouselPause button aria-pressed toggle required when autoRotate (renders null otherwise). WCAG 1.4.13 pause on hover/focus/visibilitychange + prefers-reduced-motion reactive via pauseReasons Set state (React 19 refs-rule compliant — state not ref so derived isPaused/isReducedMotion/shouldRotate are safe during render). Live region role="status" aria-live="polite" aria-atomic="true" announces "Slide N of M" on index change; silent during auto-rotation by default, opt-in via announceAutoRotate. Initial mount silent via render-time prop-sync sentinel (E31 precedent). Drag via PointerEvent + setPointerCapture on viewport — 2nd consumer reusing Slider E33 pattern. Snap threshold max(viewportWidth * 0.2, 40px). touch-action: pan-y blocks horizontal swipe stealing without blocking vertical page scroll. Keyboard on viewport (tabIndex=0): ArrowLeft/Right prev/next (RTL-mirrored), Home/End, modifier-key guard. Linear clamp default; `loop?` wraps. Nav buttons aria-disabled at edges or total ≤ 1. Phase 5 CRIT fix: prefers-reduced-motion transition suppression MUST live in JS inline trackStyle (CSS !important cannot override inline style — dead rule removed from SCSS). Drag INLINE per Rule of Three — extraction to utils/gesture/usePointerDrag.ts deferred until 3rd consumer (ScrollArea thumb CI20). Pattern-parent for future multi-slide variant + grouped picker.',
+    description: 'Auto-rotating content slider per APG /carousel/. WCAG 2.2.2 pause control, polite live region, pointer-drag, RTL-mirrored arrow keys.',
     phase: 'Phase 10 — Complex Interactive',
     status: 'available',
   },
   {
     href: '/components/scroll-area',
     name: 'ScrollArea',
-    description:
-      'E35 CI20 — custom-scrollbar wrapper preserving native scroll. 5 compound flat exports (ScrollArea + ScrollAreaViewport + ScrollAreaScrollbar + ScrollAreaThumb + ScrollAreaCorner). THIRD drag-gesture primitive consumer → TRIGGERS Rule of Three for utils/gesture/usePointerDrag.ts extraction (deferred to E36 refactor Epic per E23 FloatingRoot + E29 useFloatingValueState precedent). No APG pattern (scroll regions implicit browser behavior); WCAG 2.1.1 satisfied via viewport tabIndex=0 preserving native PageUp/Dn/Arrow/Home/End/Space keyboard scroll. Native scrollbars hidden (scrollbar-width: none + ::-webkit-scrollbar display:none + -ms-overflow-style: none). Our scrollbars VISUAL + POINTER-DRAG only, not keyboard-focusable. 4 visibility modes: always (design tools) + scroll DEFAULT (auto-hide 600ms linger OS convention) + hover (desktop minimalist) + auto (pointer:fine scroll mode, pointer:coarse entirely hidden so mobile native takes over). Proportional thumb size clientSize/scrollSize * trackSize with 24px floor. Drag via setPointerCapture + ratio-based scrollTo({behavior:instant}) method call (NOT direct viewport.scrollTop=X assignment per React 19 react-hooks/immutability rule). Track click-to-page scrollBy({behavior:smooth|instant}) PRM-reactive. Single ResizeObserver on viewport + first content child; metrics state prev/next comparison avoids redundant re-renders. Auto-default children via React.Children type-check traversal (Phase 5 CRIT bug fix — initial truthy check was broken because ReactElement is truthy). usePointerCoarse + useReducedMotion via useSyncExternalStore/matchMedia reactive. forced-colors HCM block. Pattern-parent for future DataTable.',
+    description: 'Custom-scrollbar wrapper preserving native scroll. Four visibility modes, proportional thumb sizing, pointer-coarse fallback to native scrollbars.',
     phase: 'Phase 10 — Complex Interactive',
     status: 'available',
   },
   {
     href: '/components/input-otp',
     name: 'InputOTP',
-    description:
-      'E36 CI18 — one-time password / verification code entry. 4 compound flat exports (InputOTP + InputOTPGroup + InputOTPSlot + InputOTPSeparator). Single semantic <input> stretched absolutely across decorative slot cells (guilhermerodz input-otp zero-dep reimplementation per D5/D25). Real input transparent color/caret + ::selection → hidden but focusable; slots aria-hidden="true" decorative, read index from context + render value[index] char + fake CSS caret. Slot click → setSelectionRange(i,i) repositions caret driving active-slot highlight via data-active. Pattern filter — "numeric" (default), "alphanumeric", "alpha", or custom RegExp — invalid chars rejected silently via onBeforeInput preventDefault + onChange safety filter. IME composition guard (isComposingRef + key="Process" + keyCode=229) per E28 Combobox precedent. Paste handler strips whitespace/hyphens, filters by pattern, truncates at maxLength, splices at caret. onComplete fires ONCE per transition to full length via prevCompleteRef (initialized false — defaultValue full-length still triggers first user completion). autoComplete="one-time-code" DEFAULT enables iOS Safari 12+ + Android Chrome 84+ SMS autofill. inputMode derived from pattern. Auto-default Slots when no children via internal DefaultSlots component. Form participation via name on single real input. 44×44 touch target via @include touch-target mixin. forced-colors: active HCM block. prefers-reduced-motion disables caret blink + transitions. WCAG 2.1 SC 1.1.1 DEV-mode warning if missing both aria-label + aria-labelledby. Pattern-parent for future PinInput / ConfirmationCode / license-key entry.',
+    description: 'One-time password / verification code entry. Pattern-aware filter (numeric / alphanumeric / custom), iOS SMS autofill, paste-friendly.',
     phase: 'Phase 10 — Complex Interactive',
     status: 'available',
   },
   {
     href: '/components/command',
     name: 'Command',
-    description:
-      'E37 CI19 — Cmd+K command palette. SECOND composition Epic after DatePicker E31. 9 compound flat exports (Command + CommandInput + CommandList + CommandEmpty + CommandGroup + CommandItem + CommandSeparator + CommandShortcut + CommandLoading) + useCommandShortcut hook. Combines APG /combobox/ editable (text input + filtered listbox) + /dialog-modal/ (modal shell with focus trap, Escape close, backdrop dismiss, scroll lock, inert siblings). Reuses Dialog E15 useFocusTrap + FloatingPortal E23 — does NOT compose Combobox E28 code (E28 carries floating machinery Command doesn\'t need; reimplements filter + listbox with shared PATTERNS: IME guard, deriveTextFromChildren, aria-activedescendant, first-visible-enabled auto-highlight). Item registry via STATE Map (new Map on mutation) per React 19 react-hooks/refs rule. Render-time prop-sync highlight reset (E34 Carousel precedent) when open/search/visible items change. Filter modes: "auto" substring default, false (consumer-owned items), or custom (items, search) => visibleIds[] function. Group heading auto-hides when all children filter out (forceMount prop opts out). CommandShortcut = decorative inline kbd pill (aria-hidden). commitHighlighted dispatches synthetic "cmd-select" CustomEvent on item element; item listens via addEventListener for controller-style commit. List key handler registered via setState callback (not context-reachable ref slot per React 19 immutability). useCommandShortcut hook optional — binds Cmd+K/Ctrl+K globally to toggle open state (consumer-owned per D8 separation of concerns). Keyboard: type filters live, ArrowDown/Up navigates with wraparound + skip disabled, Home/End first/last, PageDown/Up ±10, Enter commits highlighted, Escape closes + restore focus, Tab cycles focus trap, backdrop click dismisses. WCAG 2.1 SC 1.1.1 DEV-mode warn if missing aria-label + aria-labelledby. Pattern-parent for SearchBar (non-modal combobox in header) + Spotlight (floating search) + Admin Center (nested pages).',
+    description: 'Command palette combining APG /combobox/ + /dialog-modal/. Filtered listbox, Cmd+K shortcut hook, decorative shortcut chips, modal focus trap.',
     phase: 'Phase 10 — Complex Interactive',
-    status: 'available',
-  },
-  {
-    href: '/components/table',
-    name: 'Table',
-    description:
-      'E138 CI23 — semantic <table> primitives (zero-dep) — Table + TableHeader + TableBody + TableFooter + TableRow + TableCell (6 compound flat exports). Variants: striped (alternate body rows), bordered (full-grid), compact (reduced padding). TableRow: hoverable + selected + disabled states with aria-selected / aria-disabled. TableCell: as="td"|"th" + align="start"|"center"|"end" + width prop. Per Table decision v2 in devlog: complex DataTable (sorting/filtering/pagination) lives per consumer project (TanStack Table v8 composed against these primitives) — library stays zero-runtime-dep. Pattern-parent for admin dashboards, invoice lines, analytics readouts.',
-    phase: 'Phase 11 — Display',
     status: 'available',
   },
   {
     href: '/components/sidebar',
     name: 'Sidebar',
-    description:
-      'E38 CI22 FINISHER — lands 80/80 Phase 10 COMPLETE. Composition — APG /disclosure/ (trigger + collapsible panel with aria-expanded/aria-controls) + plain navigation (<nav> + <a> + aria-current="page"). 9 compound flat exports (SidebarProvider + Sidebar + SidebarTrigger + SidebarHeader + SidebarContent + SidebarFooter + SidebarGroup + SidebarItem + SidebarSeparator) + useSidebar hook. Responsive: desktop fixed <aside> rail (sticky, border, 280px) + mobile drawer via FloatingPortal E23 + useFocusTrap (Dialog E15) + scroll lock + inert siblings + Escape + backdrop dismiss (all inline — single dispatch, no outside-click hook). Mobile breakpoint default 768px (overridable) via useSyncExternalStore + matchMedia (Carousel E34 / ScrollArea E35 precedent — triggers Rule of Three for useMatchMedia<T> extraction deferred to post-Phase 10 refactor). Opt-in cookie persistence (persist prop + cookieName) — consumer reads cookie in Server Component layout and passes to defaultOpen for SSR-friendly no-flash hydration. SidebarItem polymorphic via asChild (Next.js Link wrappers), isActive → aria-current="page" + data-active, disabled → aria-disabled + tabIndex=-1 + onClick preventDefault (link stays focusable per Tabs/NavigationMenu/Select precedent; native disabled invalid on <a>). SidebarTrigger polymorphic, default renders hamburger SVG that flips on open state. SidebarGroup role="group" + optional label prop auto-wires aria-labelledby. SidebarSeparator role="separator" aria-orientation="horizontal". side="left" | "right" explicit (no RTL auto-mirror). collapseMode "offcanvas" (default — desktop hides fully, mobile drawer) | "none" (always visible). 44×44 touch target on Trigger + Item via @include touch-target mixin. forced-colors: active HCM block (Canvas/CanvasText/LinkText/Highlight/HighlightText/GrayText/ButtonText). prefers-reduced-motion disables drawer animations + transitions. Cmd+B shortcut NOT built-in — consumer opts in via useSidebar() hook + own window keydown listener (D8 separation of concerns). WCAG 2.1 SC 1.1.1 DEV-mode warn if missing aria-label + aria-labelledby. Defers icon collapse mode (needs Tooltip E19), SidebarRail drag-resize, floating/inset variants, nested submenus — YAGNI / post-Phase-10 scope. Pattern-parent for future dashboard layouts + admin shells + settings panes.',
+    description: 'Responsive navigation sidebar — fixed desktop rail and mobile drawer with focus trap. Nine compound exports plus a useSidebar hook for keyboard shortcuts.',
+    phase: 'Phase 10 — Complex Interactive',
+    status: 'available',
+  },
+  {
+    href: '/components/form',
+    name: 'Form',
+    description: 'Accessible form root with validation gating. Pairs with Field for declarative label / control / description / message wiring.',
+    phase: 'Phase 10 — Complex Interactive',
+    status: 'available',
+  },
+  {
+    href: '/components/field',
+    name: 'Field',
+    description: 'Form-row compound — Field + Label + Control + Description + Message. Native HTML5 Constraint Validation API; integrates with Form or works standalone.',
+    phase: 'Phase 10 — Complex Interactive',
+    status: 'available',
+  },
+  {
+    href: '/components/toolbar',
+    name: 'Toolbar',
+    description: 'Accessible toolbar per APG /toolbar/. Roving tabindex, separators, optional orientation, RTL-aware arrow keys.',
     phase: 'Phase 10 — Complex Interactive',
     status: 'available',
   },
@@ -405,10 +610,12 @@ export default function HomePage() {
   return (
     <main className={styles.main}>
       <header className={styles.header}>
-        <h1>bleizlabs-ui</h1>
+        <Heading level={1} size="3xl">@bleizlabs/ui</Heading>
         <p>
-          Internal dev playground. Each link below renders a component in
-          isolation against the live token system.
+          Interactive playground for every component shipped by the library.
+          Each link below renders a single component in isolation against the
+          live token system — switch themes, exercise keyboard models, and
+          inspect ARIA contracts in real time.
         </p>
       </header>
       <ul className={styles.grid}>

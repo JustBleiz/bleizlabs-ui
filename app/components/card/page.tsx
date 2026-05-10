@@ -6,6 +6,7 @@ import {
   CardFooter,
   CardSection,
 } from '@/components/display/Card';
+import { Button } from '@/components/interactive/Button';
 import { Heading } from '@/components/typography/Heading';
 import { Text } from '@/components/typography/Text';
 import styles from './page.module.scss';
@@ -46,7 +47,7 @@ export default function CardPlaygroundPage() {
       <section className={styles.demo}>
         <Heading level={2} size="2xl">2. Accent border position</Heading>
         <div className={styles.grid}>
-          <Card variant="accent" accentPosition="left">
+          <Card variant="accent">
             <CardHeader>
               <Heading level={3} size="lg">Accent left</Heading>
             </CardHeader>
@@ -54,7 +55,7 @@ export default function CardPlaygroundPage() {
               <Text>Default brand accent on the left edge.</Text>
             </CardBody>
           </Card>
-          <Card variant="accent" accentPosition="top" accentColor="var(--color-success)">
+          <Card variant="accent">
             <CardHeader>
               <Heading level={3} size="lg">Accent top — success</Heading>
             </CardHeader>
@@ -66,27 +67,42 @@ export default function CardPlaygroundPage() {
       </section>
 
       <section className={styles.demo}>
-        <Heading level={2} size="2xl">3. Hoverable + asChild interactive</Heading>
+        <Heading level={2} size="2xl">3. Interactive card via asChild</Heading>
+        <Text variant="small" color="secondary">
+          The previous <code>hoverable</code> prop was dropped in 0.15.0. To
+          make a Card interactive, wrap it around a real interactive element
+          (anchor, button) using <code>asChild</code> and apply hover/focus
+          styling via the consumer&apos;s own SCSS module on the Card&apos;s
+          <code>className</code>. The <code>.interactive</code> class on this
+          page&apos;s module shows the canonical pattern (1px lift + stronger
+          shadow on hover, focus-visible ring).
+        </Text>
         <div className={styles.grid}>
-          <Card hoverable asChild>
+          <Card asChild className={styles.interactive}>
             <a href="#hover-demo">
               <CardHeader>
-                <Heading level={3} size="lg">Hoverable link card</Heading>
-                <Text variant="caption" color="muted">Click me — uses asChild + a tag</Text>
+                <Heading level={3} size="lg">Interactive link card</Heading>
+                <Text variant="caption" color="muted">
+                  Hover or focus me — anchor tag via asChild
+                </Text>
               </CardHeader>
               <CardBody>
                 <Text>
-                  Hover lifts the card 1px and adds a stronger shadow. Focus-visible adds a ring.
+                  Hover lifts the card 1px and strengthens the shadow.
+                  Focus-visible adds a ring around the whole surface.
                 </Text>
               </CardBody>
             </a>
           </Card>
-          <Card hoverable variant="elevated">
+          <Card variant="elevated">
             <CardHeader>
-              <Heading level={3} size="lg">Elevated + hoverable</Heading>
+              <Heading level={3} size="lg">Elevated (static)</Heading>
             </CardHeader>
             <CardBody>
-              <Text>Combination: starting shadow + hover lift.</Text>
+              <Text>
+                Static elevated variant — no interactive treatment because
+                the Card is a plain div without <code>asChild</code>.
+              </Text>
             </CardBody>
           </Card>
         </div>
@@ -120,14 +136,20 @@ export default function CardPlaygroundPage() {
         <Card padding={5}>
           <CardHeader>
             <Heading level={3} size="lg">Action footer demo</Heading>
-            <Text variant="caption" color="muted">Footer extends to card edges and uses raised bg.</Text>
+            <Text variant="caption" color="muted">
+              Footer extends to card edges and uses a raised background.
+            </Text>
           </CardHeader>
           <CardBody>
-            <Text>The action prop on CardFooter creates a full-bleed footer suitable for primary CTAs.</Text>
+            <Text>
+              The <code>action</code> prop on CardFooter creates a full-bleed
+              footer suitable for primary CTAs — drop a real Button into the
+              slot.
+            </Text>
           </CardBody>
           <CardFooter action>
-            <Text variant="small">3 items selected</Text>
-            <Text variant="small" color="brand">View all →</Text>
+            <Text variant="small" color="secondary">3 items selected</Text>
+            <Button variant="primary" size="sm">View all</Button>
           </CardFooter>
         </Card>
       </section>

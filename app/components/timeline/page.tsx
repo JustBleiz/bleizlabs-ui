@@ -117,7 +117,7 @@ export default function TimelinePlaygroundPage() {
         </Heading>
         <p className={styles.sectionDescription}>
           Pass <code>icon</code> prop to <code>TimelineMarker</code> to
-          replace the default dot with a 14px centered icon. Use any icon
+          replace the default with a 14px centered icon. Use any icon
           library (Tabler, Lucide, Heroicons, etc.).
         </p>
         <div className={styles.demoCard}>
@@ -349,7 +349,7 @@ export default function TimelinePlaygroundPage() {
         </Heading>
         <p className={styles.sectionDescription}>
           Pass <code>children</code> to <code>TimelineMarker</code> to
-          replace the dot AND icon entirely. Useful for avatar markers
+          replace the AND icon entirely. Useful for avatar markers
           (commit author), badge markers (priority), or custom widgets.
         </p>
         <div className={styles.demoCard}>

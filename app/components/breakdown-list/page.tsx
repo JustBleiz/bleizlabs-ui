@@ -51,7 +51,7 @@ export default function BreakdownListPlaygroundPage() {
 
       <section className={styles.demo}>
         <Heading level={2} size="2xl">
-          1. Driving consumer #1 — EscalationRateGauge.topReasons
+          1. Cautionary breakdown — top escalation reasons
         </Heading>
         <Text variant="small" color="secondary">
           tone=&quot;warning&quot; (cautionary breakdown of why AI escalates).
@@ -75,7 +75,7 @@ export default function BreakdownListPlaygroundPage() {
 
       <section className={styles.demo}>
         <Heading level={2} size="2xl">
-          2. Driving consumer #2 — PublicTrafficStats.sources
+          2. Traffic-source breakdown — composed labels with inline percent
         </Heading>
         <Text variant="small" color="secondary">
           tone=&quot;info&quot;. Label slot composes inline percent via{' '}
@@ -110,7 +110,7 @@ export default function BreakdownListPlaygroundPage() {
 
       <section className={styles.demo}>
         <Heading level={2} size="2xl">
-          3. Driving consumer #3 — TopIntentsList
+          3. Top-N list pattern — five items, brand tone
         </Heading>
         <Text variant="small" color="secondary">
           5 items, default tone=&quot;brand&quot;. Inline percent in label slot.

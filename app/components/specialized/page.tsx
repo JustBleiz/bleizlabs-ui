@@ -117,7 +117,7 @@ export default function SpecializedPlaygroundPage() {
         </Heading>
         <Text>
           Status indicator with 6 colors (aligned with Badge), 3 sizes, and an
-          optional pulse animation plus sr-only label.
+          optional animation plus sr-only label.
         </Text>
 
         <div className={styles.row}>
@@ -155,7 +155,7 @@ export default function SpecializedPlaygroundPage() {
 
         <div className={styles.row}>
           <span className={styles.inline}>
-            <Dot color="error" pulse label="System offline" /> System offline
+            <Dot color="error" label="System offline" /> System offline
             (pulse + sr-only label)
           </span>
         </div>
@@ -412,7 +412,7 @@ export default function SpecializedPlaygroundPage() {
           <UsageDonut
             label="Incident severity"
             size="lg"
-            strokeWidth={20}
+
             segments={[
               { label: 'Critical', value: 2 },
               { label: 'High', value: 5 },

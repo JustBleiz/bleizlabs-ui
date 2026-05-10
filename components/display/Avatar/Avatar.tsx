@@ -34,11 +34,15 @@ import styles from './Avatar.module.scss';
  * @example
  * <Avatar src="/me.jpg" alt="Anna Kowalski" />
  * <Avatar fallback="AK" alt="Anna Kowalski" size="lg" />
- * <Avatar fallback="AK" alt="Anna Kowalski" status="online" />
+ * @example
+ * // Status indicator — consumer composes <Avatar> + <Dot> overlay (E07.x SIMPLIFY 0.15.0):
+ * <span style={{ position: 'relative' }}>
+ *   <Avatar fallback="AK" alt="Anna Kowalski" />
+ *   <Dot color="success" style={{ position: 'absolute', bottom: 0, right: 0 }} />
+ * </span>
  */
 export type AvatarSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
 export type AvatarShape = 'circle' | 'rounded';
-export type AvatarStatus = 'online' | 'offline' | 'busy' | 'away';
 
 export interface AvatarProps extends HTMLAttributes<HTMLSpanElement> {
   /** Image source URL. Optional — falls back to `fallback` initials. */
@@ -51,8 +55,6 @@ export interface AvatarProps extends HTMLAttributes<HTMLSpanElement> {
   size?: AvatarSize;
   /** Shape. Default `circle`. */
   shape?: AvatarShape;
-  /** Optional status dot rendered at bottom-right. */
-  status?: AvatarStatus;
   /** Render as the single child element via Slot. */
   asChild?: boolean;
 }
@@ -65,13 +67,6 @@ const SIZE_CLASS: Record<AvatarSize, string> = {
   xl: styles.sizeXl!,
 };
 
-const STATUS_CLASS: Record<AvatarStatus, string> = {
-  online: styles.statusOnline!,
-  offline: styles.statusOffline!,
-  busy: styles.statusBusy!,
-  away: styles.statusAway!,
-};
-
 export const Avatar = forwardRef<HTMLSpanElement, AvatarProps>(function Avatar(
   {
     src,
@@ -79,7 +74,6 @@ export const Avatar = forwardRef<HTMLSpanElement, AvatarProps>(function Avatar(
     fallback,
     size = 'md',
     shape = 'circle',
-    status,
     asChild = false,
     className,
     style,
@@ -112,12 +106,6 @@ export const Avatar = forwardRef<HTMLSpanElement, AvatarProps>(function Avatar(
         <span aria-hidden="true" className={styles.fallback}>
           {fallback}
         </span>
-      ) : null}
-      {status ? (
-        <span
-          aria-hidden="true"
-          className={cn(styles.status, STATUS_CLASS[status])}
-        />
       ) : null}
     </Comp>
   );

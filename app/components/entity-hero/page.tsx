@@ -42,18 +42,17 @@ export default function EntityHeroPlaygroundPage() {
           EntityHero
         </Heading>
         <p className={styles.intro}>
-          Universal entity detail page hero shell. Renders semantic{' '}
-          <code>&lt;header&gt;</code> landmark with backLink + title + optional
-          slots (titleBadges, description, statusIndicators, progression) +
-          optional structured meta strip. Sister to IconHeaderCard (CP6).
-          Driving consumers (Faza 3): ServiceDetailHero, ProjectDetailHeader,
-          TicketDetailHeader.
+          Universal entity detail-page hero shell. Renders a semantic{' '}
+          <code>&lt;header&gt;</code> landmark with a back-link, title, and
+          optional slots for title badges, description, status indicators,
+          and progression — plus an optional structured meta strip. Pairs
+          naturally with IconHeaderCard for downstream content surfaces.
         </p>
       </header>
 
       <section className={styles.demo}>
         <Heading level={2} size="2xl">
-          1. Driving consumer #1 — ServiceDetailHero
+          1. Service detail hero — pillar badges + status + meta strip
         </Heading>
         <Text variant="small" color="secondary">
           Service slug page hero with PillarChipGroup (faked), type badge,
@@ -70,7 +69,7 @@ export default function EntityHeroPlaygroundPage() {
               </>
             }
             description="Inteligentna obsługa zamówień 24/7 z eskalacją do agenta."
-            statusIndicators={<Badge color="success" label="Aktywna" dot />}
+            statusIndicators={<Badge color="success" label="Aktywna" />}
             metaStrip={[
               {
                 icon: <PlaceholderIcon d={ICON_LINK} />,
@@ -94,7 +93,7 @@ export default function EntityHeroPlaygroundPage() {
 
       <section className={styles.demo}>
         <Heading level={2} size="2xl">
-          2. Driving consumer #2 — ProjectDetailHeader (with progression slot)
+          2. Project detail header — payment / status badges + progression slot
         </Heading>
         <Text variant="small" color="secondary">
           Project slug page hero with type badge, payment + status badges,
@@ -114,8 +113,8 @@ export default function EntityHeroPlaygroundPage() {
             description="Pełna migracja sklepu z Magento 2 do Shopify Plus z zachowaniem SEO i historii zamówień."
             statusIndicators={
               <>
-                <Badge color="warning" label="Oczekuje płatności" dot />
-                <Badge color="success" label="W realizacji" dot />
+                <Badge color="warning" label="Oczekuje płatności" />
+                <Badge color="success" label="W realizacji" />
               </>
             }
             progression={
@@ -148,7 +147,7 @@ export default function EntityHeroPlaygroundPage() {
 
       <section className={styles.demo}>
         <Heading level={2} size="2xl">
-          3. Driving consumer #3 — TicketDetailHeader
+          3. Ticket detail header — status + SLA badges, no meta strip
         </Heading>
         <Text variant="small" color="secondary">
           Ticket slug page hero with status + SLA badges, no progression, no
@@ -162,8 +161,8 @@ export default function EntityHeroPlaygroundPage() {
             description="Klient zgłasza brak możliwości logowania od dziś rana."
             statusIndicators={
               <>
-                <Badge color="warning" label="W toku" dot />
-                <Badge color="error" label="SLA: 1h" dot />
+                <Badge color="warning" label="W toku" />
+                <Badge color="error" label="SLA: 1h" />
               </>
             }
           />
@@ -242,8 +241,8 @@ export default function EntityHeroPlaygroundPage() {
             description="Pełna obsługa głosowa z transkrypcją, analityką sentymentu i eskalacją do agenta. Dostępna 24/7 w 5 językach."
             statusIndicators={
               <>
-                <Badge color="success" label="Aktywna" dot />
-                <Badge color="success" label="Płatność OK" dot />
+                <Badge color="success" label="Aktywna" />
+                <Badge color="success" label="Płatność OK" />
                 <Badge color="info" label="Wersja 2.4" />
               </>
             }

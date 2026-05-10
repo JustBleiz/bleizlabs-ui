@@ -56,11 +56,19 @@ const COUNTRIES: ReadonlyArray<{ value: string; label: string }> = [
 export default function ComboboxPlayground() {
   const [controlledValue, setControlledValue] = useState<string | null>('pl');
   const [submittedValue, setSubmittedValue] = useState<string | null>(null);
+  const [multiValue, setMultiValue] = useState<string[]>(['pl', 'de']);
+  const [submittedMulti, setSubmittedMulti] = useState<string[] | null>(null);
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     setSubmittedValue(String(data.get('country') ?? ''));
+  }
+
+  function handleMultiSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const data = new FormData(event.currentTarget);
+    setSubmittedMulti(data.getAll('countries').map((v) => String(v)));
   }
 
   return (
@@ -350,7 +358,136 @@ export default function ComboboxPlayground() {
       {/* ────────────────────────────────────────────────────────────── */}
       <section className={styles.section}>
         <Heading level={2} size="lg">
-          7. Keyboard walkthrough
+          7. Multi-select (multiple={`{true}`})
+        </Heading>
+        <Text variant="body" color="muted">
+          Pass <code>multiple</code> to switch the Combobox into multi-select
+          mode. Picking an item TOGGLES it in/out of the selection array, the
+          listbox stays open, and the search clears for the next pick.
+          Selected values render as inline chips left of the input. Backspace
+          on empty input removes the last chip — standard tag-input gesture.
+        </Text>
+
+        {/* 7.1 Uncontrolled multi-select */}
+        <div className={styles.demoBlock}>
+          <Text variant="small" weight="semibold">
+            7.1 Uncontrolled — defaultValue + onValueChange
+          </Text>
+          <Combobox
+            multiple
+            defaultValue={['pl', 'de']}
+            onValueChange={(values) => {
+              console.log('multi onValueChange', values);
+            }}
+          >
+            <ComboboxInput placeholder="Add countries..." aria-label="Countries" />
+            <ComboboxContent>
+              {COUNTRIES.map((country) => (
+                <ComboboxItem key={country.value} value={country.value}>
+                  {country.label}
+                </ComboboxItem>
+              ))}
+              <ComboboxEmpty>No countries match.</ComboboxEmpty>
+            </ComboboxContent>
+          </Combobox>
+        </div>
+
+        {/* 7.2 Controlled multi-select */}
+        <div className={styles.demoBlock}>
+          <Text variant="small" weight="semibold">
+            7.2 Controlled — external state, current value displayed below
+          </Text>
+          <Combobox
+            multiple
+            value={multiValue}
+            onValueChange={setMultiValue}
+          >
+            <ComboboxInput
+              placeholder="Search countries..."
+              aria-label="Controlled multi countries"
+            />
+            <ComboboxContent>
+              {COUNTRIES.map((country) => (
+                <ComboboxItem key={country.value} value={country.value}>
+                  {country.label}
+                </ComboboxItem>
+              ))}
+              <ComboboxEmpty>No matches.</ComboboxEmpty>
+            </ComboboxContent>
+          </Combobox>
+          <div className={styles.controlledRow}>
+            <Text variant="small" color="muted">
+              Selected ({multiValue.length}):
+            </Text>
+            {multiValue.length === 0 ? (
+              <Text variant="small" color="muted">
+                <em>(empty)</em>
+              </Text>
+            ) : (
+              multiValue.map((v) => {
+                const found = COUNTRIES.find((c) => c.value === v);
+                return (
+                  <Badge key={v} color="brand">
+                    {found?.label ?? v}
+                  </Badge>
+                );
+              })
+            )}
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setMultiValue([])}
+              disabled={multiValue.length === 0}
+            >
+              Clear
+            </Button>
+          </div>
+        </div>
+
+        {/* 7.3 Form participation — FormData multi-value */}
+        <div className={styles.demoBlock}>
+          <Text variant="small" weight="semibold">
+            7.3 Form participation — FormData multi-value (
+            <code>formData.getAll(name)</code>)
+          </Text>
+          <form onSubmit={handleMultiSubmit}>
+            <Stack gap={3}>
+              <Combobox multiple name="countries" defaultValue={['fr', 'es']}>
+                <ComboboxInput
+                  placeholder="Pick countries..."
+                  aria-label="Form countries"
+                />
+                <ComboboxContent>
+                  {COUNTRIES.map((country) => (
+                    <ComboboxItem key={country.value} value={country.value}>
+                      {country.label}
+                    </ComboboxItem>
+                  ))}
+                  <ComboboxEmpty>No matches.</ComboboxEmpty>
+                </ComboboxContent>
+              </Combobox>
+              <Button type="submit" variant="primary">
+                Submit
+              </Button>
+              {submittedMulti !== null && (
+                <div className={styles.submittedValue}>
+                  Submitted (<code>getAll</code>):{' '}
+                  <strong>
+                    {submittedMulti.length === 0
+                      ? '(empty array)'
+                      : submittedMulti.join(', ')}
+                  </strong>
+                </div>
+              )}
+            </Stack>
+          </form>
+        </div>
+      </section>
+
+      {/* ────────────────────────────────────────────────────────────── */}
+      <section className={styles.section}>
+        <Heading level={2} size="lg">
+          8. Keyboard walkthrough
         </Heading>
         <Text variant="body" color="muted">
           Tab into any Combobox input above, then try every key from the APG{' '}
@@ -409,6 +546,42 @@ export default function ComboboxPlayground() {
           <li>
             <kbd>Cmd</kbd>+<kbd>Arrow</kbd> / <kbd>Ctrl</kbd>+<kbd>Arrow</kbd> — NOT
             intercepted (text-input navigation preserved).
+          </li>
+        </ul>
+        <Text variant="body" color="muted">
+          Multi-mode overrides (
+          <code>multiple={`{true}`}</code>):
+        </Text>
+        <ul className={styles.keyList}>
+          <li>
+            <kbd>Space</kbd> (open) — TOGGLE highlighted in selection array,
+            keep listbox open, clear search. APG <code>/listbox/</code>{' '}
+            multi-selectable simple model. (Single mode: Space falls through
+            as a literal filter character.)
+          </li>
+          <li>
+            <kbd>Enter</kbd> (open + highlighted) — TOGGLE highlighted (NOT
+            commit-and-close as in single mode). Listbox stays open, search
+            clears.
+          </li>
+          <li>
+            <kbd>Backspace</kbd> (input value empty, no modifiers) — remove
+            LAST selected chip. Standard tag-input gesture (Gmail recipients,
+            GitHub topics).
+          </li>
+          <li>
+            <kbd>Tab</kbd> (open) — close + clear search. Does NOT toggle
+            highlighted (Tab = &quot;I&apos;m done picking&quot;, not
+            commit). Selections persist as chips.
+          </li>
+          <li>
+            <kbd>Escape</kbd> (open) — close + clear search. Selections
+            persist (chips remain) — no revert-to-committed-label since multi
+            mode has no single committed label.
+          </li>
+          <li>
+            <kbd>Click</kbd> on chip × button — remove that single value,
+            restore focus to input.
           </li>
         </ul>
       </section>

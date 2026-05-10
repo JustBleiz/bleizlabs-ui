@@ -71,7 +71,10 @@
   &:hover {
     text-decoration-thickness: 2px;
   }
-  @include mx.focus-ring;
+
+  &:focus-visible {
+    @include mx.focus-ring;
+  }
 }
 
 .avatarButton {
@@ -80,7 +83,10 @@
   padding: 0;
   cursor: pointer;
   border-radius: 50%;
-  @include mx.focus-ring;
+
+  &:focus-visible {
+    @include mx.focus-ring;
+  }
 }
 
 .feed {

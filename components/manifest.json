@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1",
-  "libVersion": "0.14.0",
-  "generatedAt": "2026-05-10T12:55:12.664Z",
+  "libVersion": "0.15.0",
+  "generatedAt": "2026-05-10T15:44:12.101Z",
   "categories": {
     "layout": [
       "Container",
@@ -265,8 +265,7 @@
       "types": [
         "AvatarProps",
         "AvatarShape",
-        "AvatarSize",
-        "AvatarStatus"
+        "AvatarSize"
       ],
       "hooks": []
     },
@@ -295,7 +294,6 @@
         "CardSection"
       ],
       "types": [
-        "CardAccentPosition",
         "CardBodyProps",
         "CardDirection",
         "CardFooterProps",
@@ -1332,9 +1330,11 @@
         "ComboboxItemProps",
         "ComboboxItemRecord",
         "ComboboxLabelProps",
+        "ComboboxMultiProps",
         "ComboboxPlacement",
         "ComboboxProps",
-        "ComboboxSeparatorProps"
+        "ComboboxSeparatorProps",
+        "ComboboxSingleProps"
       ],
       "hooks": []
     },

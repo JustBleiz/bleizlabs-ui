@@ -119,8 +119,8 @@ export interface IconHeaderCardProps
   padding?: SpaceIndex;
   /** Card border radius. Forwarded to Card. Default `'lg'`. */
   radius?: CardRadius;
-  /** Optional opt-in hover effect (forwarded to Card). Default `false`. */
-  hoverable?: CardProps['hoverable'];
+  /** @deprecated removed since Card no longer supports `hoverable`. No-op. */
+  hoverable?: boolean;
   // Note: `aria-label` and other aria-* props are inherited from
   // HTMLAttributes via `...rest` spread onto the Card root. Not re-declared
   // to keep the interface lean.
@@ -144,19 +144,19 @@ export const IconHeaderCard = forwardRef<HTMLDivElement, IconHeaderCardProps>(
       variant = 'default',
       padding = 5,
       radius = 'lg',
-      hoverable = false,
+      hoverable: _hoverable,
       className,
       ...rest
     },
     ref
   ) {
+    void _hoverable;
     return (
       <Card
         ref={ref}
         variant={variant}
         padding={padding}
         radius={radius}
-        hoverable={hoverable}
         className={cn(styles.root, className)}
         {...rest}
       >

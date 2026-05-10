@@ -23,7 +23,7 @@ export default function SkeletonPlaygroundPage() {
 
       <section className={styles.demo}>
         <Heading level={2} size="2xl">2. Text variant — multiple lines</Heading>
-        <Skeleton variant="text" lines={4} />
+        <Skeleton variant="text" />
       </section>
 
       <section className={styles.demo}>
@@ -52,7 +52,7 @@ export default function SkeletonPlaygroundPage() {
         <Heading level={2} size="2xl">6. Card-shaped composition</Heading>
         <div className={styles.cardSkeleton}>
           <Skeleton variant="rect" height={160} />
-          <Skeleton variant="text" lines={3} />
+          <Skeleton variant="text" />
           <div className={styles.row}>
             <Skeleton variant="circle" width={32} height={32} />
             <Skeleton variant="text" width="60%" />

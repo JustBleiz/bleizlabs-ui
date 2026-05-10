@@ -15,6 +15,7 @@ import { FileChip } from '@/components/molecules/FileChip';
 import { PageHeader } from '@/components/molecules/PageHeader';
 import { Accordion } from '@/components/interactive/Accordion';
 import { Badge } from '@/components/display/Badge';
+import { Button } from '@/components/interactive/Button';
 import { Heading } from '@/components/typography/Heading';
 import { Text } from '@/components/typography/Text';
 import styles from './page.module.scss';
@@ -202,7 +203,7 @@ export default function MoleculesPlaygroundPage() {
         <Text>
           Thin composition over <code>ToggleGroup type=&quot;multiple&quot;</code>.
           Flat options array → Toggle children. Consumer owns controlled state.
-          <code>groupLabel</code> prop for a visible uppercase caption.
+          <code>groupLabel</code> prop for a visible caption.
         </Text>
 
         <ToggleGroupFilter
@@ -219,18 +220,23 @@ export default function MoleculesPlaygroundPage() {
         </Text>
 
         <div className={styles.controls}>
-          <button type="button" onClick={() => setStatuses([])}>
+          <Button variant="ghost" size="sm" onClick={() => setStatuses([])}>
             Clear
-          </button>
-          <button type="button" onClick={() => setStatuses(['active', 'paused'])}>
+          </Button>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => setStatuses(['active', 'paused'])}
+          >
             Active + paused
-          </button>
-          <button
-            type="button"
+          </Button>
+          <Button
+            variant="ghost"
+            size="sm"
             onClick={() => setStatuses(STATUS_OPTIONS.map((o) => o.value))}
           >
             All
-          </button>
+          </Button>
         </div>
       </section>
 

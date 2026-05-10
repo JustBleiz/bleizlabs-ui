@@ -11,10 +11,10 @@ export default function GridLayoutPlaygroundPage() {
         </Link>
         <h1>GridLayout</h1>
         <p>
-          Multi-column CSS Grid layout atom (v0.5.5). Universal multi-column
-          primitive sitting alongside Stack / Inline / Container / Section.
-          Supports number shorthand, arbitrary CSS grid templates, mobile-first
-          responsive cascade, and asChild Slot polymorphism.
+          Multi-column CSS Grid layout atom — universal multi-column primitive
+          sitting alongside Stack / Inline / Container / Section. Supports
+          number shorthand, arbitrary CSS grid templates, mobile-first
+          responsive cascade, and <code>asChild</code> Slot polymorphism.
         </p>
       </header>
 

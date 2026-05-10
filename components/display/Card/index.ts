@@ -4,7 +4,6 @@ export {
   type CardVariant,
   type CardRadius,
   type CardDirection,
-  type CardAccentPosition,
 } from './Card';
 export { CardHeader, type CardHeaderProps } from './CardHeader';
 export { CardBody, type CardBodyProps } from './CardBody';

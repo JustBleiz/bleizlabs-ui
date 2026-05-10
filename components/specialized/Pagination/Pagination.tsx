@@ -88,12 +88,6 @@ export interface PaginationProps
   /** Number of sibling pages shown on each side of the current page in full mode. Default `1`. */
   siblingCount?: number;
   /**
-   * Accessible label for the `<nav>`. Default `'Pagination'`.
-   * @deprecated v0.3.0 — use `labels.nav` instead. Kept for backward
-   * compatibility; if both are set, `labels.nav` wins.
-   */
-  ariaLabel?: string;
-  /**
    * v0.3.0 F_B9 i18n: translations for aria-labels and compact format.
    * Any field omitted falls back to the English default.
    */
@@ -167,18 +161,15 @@ export const Pagination = forwardRef<HTMLElement, PaginationProps>(
       onPageChange,
       variant = 'full',
       siblingCount = 1,
-      ariaLabel,
       labels,
       className,
       ...rest
     },
     ref,
   ) {
-    // v0.3.0 F_B9: merge translations with English defaults. `labels.nav`
-    // wins over deprecated `ariaLabel` prop (backward compatible).
+    // v0.3.0 F_B9: merge translations with English defaults via `labels.nav`.
     const L: Required<PaginationLabels> = {
       ...DEFAULT_LABELS,
-      ...(ariaLabel !== undefined ? { nav: ariaLabel } : {}),
       ...labels,
     };
     const safeCurrent = Math.max(1, Math.min(totalPages, currentPage));

@@ -77,13 +77,6 @@ export interface UsageDonutProps
   /**
    * Stroke width inside the 100×100 viewBox. Default `14`.
    *
-   * Derivation: `14` leaves radius `50 - 14/2 = 43`, giving a ~30% inner
-   * hole by area — the sweet spot between "ring" (too thin, looks like
-   * gauge) and "pie" (too thick, loses donut affordance). Values between
-   * `10` and `18` stay readable; outside that range the center label
-   * collides with the arc or the arc becomes hairline.
-   */
-  strokeWidth?: number;
   /** Accessible name — required. Used on both the wrapper and the SVG. */
   label: string;
   /** Optional center slot (e.g. big number + caption). */
@@ -119,7 +112,6 @@ export const UsageDonut = forwardRef<HTMLDivElement, UsageDonutProps>(
       segments,
       total,
       size = 'md',
-      strokeWidth = 14,
       label,
       centerLabel,
       className,
@@ -127,6 +119,9 @@ export const UsageDonut = forwardRef<HTMLDivElement, UsageDonutProps>(
     },
     ref,
   ) {
+    // strokeWidth derived from canonical default (14) — sweet spot between
+    // "ring" (too thin) and "pie" (too thick). Per E07.x SIMPLIFY 0.15.0.
+    const strokeWidth = 14;
     const radius = 50 - strokeWidth / 2;
     const circumference = 2 * Math.PI * radius;
 

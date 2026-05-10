@@ -265,7 +265,7 @@ export default function DemoPage() {
         <Text color="muted">Stack, Inline, Container, Section — flex primitives + semantic bands.</Text>
 
         <div className={styles.demoCard}>
-          <Text variant="caption" color="muted" uppercase>
+          <Text variant="caption" color="muted">
             Stack
           </Text>
           <Stack gap={3}>
@@ -276,7 +276,7 @@ export default function DemoPage() {
         </div>
 
         <div className={styles.demoCard}>
-          <Text variant="caption" color="muted" uppercase>
+          <Text variant="caption" color="muted">
             Inline
           </Text>
           <Inline gap={3} align="center">
@@ -288,7 +288,7 @@ export default function DemoPage() {
         </div>
 
         <div className={styles.demoCard}>
-          <Text variant="caption" color="muted" uppercase>
+          <Text variant="caption" color="muted">
             Container + Section
           </Text>
           <Section bg="raised" py={4}>
@@ -322,8 +322,8 @@ export default function DemoPage() {
             <Text variant="small" color="muted">
               Small muted — secondary metadata.
             </Text>
-            <Text variant="caption" uppercase color="muted">
-              Caption uppercase
+            <Text variant="caption" color="muted">
+              Caption
             </Text>
           </Stack>
         </div>
@@ -368,7 +368,7 @@ export default function DemoPage() {
             </CardBody>
           </Card>
 
-          <Card variant="accent" accentPosition="left">
+          <Card variant="accent">
             <CardBody>
               <Stack gap={2}>
                 <Heading level={3} size="md">
@@ -396,7 +396,7 @@ export default function DemoPage() {
         </div>
 
         <div className={styles.demoCard}>
-          <Text variant="caption" color="muted" uppercase>
+          <Text variant="caption" color="muted">
             Badges
           </Text>
           <Inline gap={2} wrap>
@@ -406,20 +406,20 @@ export default function DemoPage() {
             <Badge color="warning">Warning</Badge>
             <Badge color="error">Error</Badge>
             <Badge color="info">Info</Badge>
-            <Badge color="brand" dot>
-              With dot
+            <Badge color="brand">
+              With
             </Badge>
             <Badge color="success" pill>
               Pill
             </Badge>
-            <Badge color="warning" uppercase>
+            <Badge color="warning">
               Uppercase
             </Badge>
           </Inline>
         </div>
 
         <div className={styles.demoCard}>
-          <Text variant="caption" color="muted" uppercase>
+          <Text variant="caption" color="muted">
             Separators, IconBoxes, Avatars
           </Text>
           <Stack gap={4}>
@@ -436,25 +436,25 @@ export default function DemoPage() {
             <Inline gap={3} align="center">
               <Avatar alt="Anna Kowalska" fallback="AK" size="xs" />
               <Avatar alt="Jan Kowalski" fallback="JK" size="sm" />
-              <Avatar alt="Marta Bak" fallback="MB" size="md" status="online" />
-              <Avatar alt="Piotr Wolski" fallback="PW" size="lg" status="busy" />
+              <Avatar alt="Marta Bak" fallback="MB" size="md" />
+              <Avatar alt="Piotr Wolski" fallback="PW" size="lg" />
               <Avatar
                 alt="Tomasz Nowak"
                 fallback="TN"
                 size="xl"
                 shape="rounded"
-                status="away"
+
               />
             </Inline>
           </Stack>
         </div>
 
         <div className={styles.demoCard}>
-          <Text variant="caption" color="muted" uppercase>
+          <Text variant="caption" color="muted">
             Skeleton, Spinner, AspectRatio
           </Text>
           <Stack gap={3}>
-            <Skeleton variant="text" lines={3} />
+            <Skeleton variant="text" />
             <Skeleton variant="rect" style={{ height: 64 }} />
             <Inline gap={3} align="center">
               <Spinner size="xs" />
@@ -495,7 +495,7 @@ export default function DemoPage() {
         </Text>
 
         <div className={styles.demoCard}>
-          <Text variant="caption" color="muted" uppercase>
+          <Text variant="caption" color="muted">
             Buttons
           </Text>
           <Inline gap={3} wrap>
@@ -524,26 +524,22 @@ export default function DemoPage() {
         </div>
 
         <div className={styles.demoCard}>
-          <Text variant="caption" color="muted" uppercase>
+          <Text variant="caption" color="muted">
             Inputs
           </Text>
           <Stack gap={3}>
             <Input
               name="demoName"
-              label="Name"
               placeholder="Jan Kowalski"
-              helperText="Imię i nazwisko"
             />
             <Input
               name="demoEmail"
-              label="Email"
               type="email"
               placeholder="jan@example.com"
-              error="Nieprawidłowy email"
             />
             <InputGroup aria-label="Price with currency">
               <InputGroupText>$</InputGroupText>
-              <Input label="Price" name="demoPrice" hideLabel placeholder="100" />
+              <Input name="demoPrice" placeholder="100" />
               <InputGroupText>USD</InputGroupText>
             </InputGroup>
             <NumberInput
@@ -570,7 +566,7 @@ export default function DemoPage() {
         </div>
 
         <div className={styles.demoCard}>
-          <Text variant="caption" color="muted" uppercase>
+          <Text variant="caption" color="muted">
             Selection controls
           </Text>
           <Stack gap={3}>
@@ -620,7 +616,7 @@ export default function DemoPage() {
         </div>
 
         <div className={styles.demoCard}>
-          <Text variant="caption" color="muted" uppercase>
+          <Text variant="caption" color="muted">
             Accordion
           </Text>
           <Accordion defaultOpen question="What is bleizlabs-ui?">
@@ -674,7 +670,7 @@ export default function DemoPage() {
         </div>
 
         <div className={styles.demoCard}>
-          <Text variant="caption" color="muted" uppercase>
+          <Text variant="caption" color="muted">
             Progress
           </Text>
           <Stack gap={3}>
@@ -700,13 +696,13 @@ export default function DemoPage() {
         </Text>
 
         <div className={styles.demoCard}>
-          <Text variant="caption" color="muted" uppercase>
+          <Text variant="caption" color="muted">
             Dots + MetricBar + AnimatedCounter
           </Text>
           <Stack gap={3}>
             <Inline gap={3} align="center">
               <Dot color="success" label="Online" />
-              <Dot color="warning" pulse label="Pending" />
+              <Dot color="warning" label="Pending" />
               <Dot color="error" label="Offline" />
               <Dot color="info" label="Syncing" />
             </Inline>
@@ -718,7 +714,7 @@ export default function DemoPage() {
         </div>
 
         <div className={styles.demoCard}>
-          <Text variant="caption" color="muted" uppercase>
+          <Text variant="caption" color="muted">
             Navigation
           </Text>
           <Stack gap={3}>
@@ -739,7 +735,7 @@ export default function DemoPage() {
         </div>
 
         <div className={styles.demoCard}>
-          <Text variant="caption" color="muted" uppercase>
+          <Text variant="caption" color="muted">
             UsageDonut, AvailabilityBar, Kbd
           </Text>
           <div className={styles.specializedGrid}>
@@ -782,7 +778,7 @@ export default function DemoPage() {
         </Text>
 
         <div className={styles.demoCard}>
-          <Text variant="caption" color="muted" uppercase>
+          <Text variant="caption" color="muted">
             DataRow + DeadlineBadge
           </Text>
           <Stack gap={2}>
@@ -795,7 +791,7 @@ export default function DemoPage() {
         </div>
 
         <div className={styles.demoCard}>
-          <Text variant="caption" color="muted" uppercase>
+          <Text variant="caption" color="muted">
             SectionDivider + BackLink
           </Text>
           <Stack gap={3}>
@@ -808,7 +804,7 @@ export default function DemoPage() {
         </div>
 
         <div className={styles.demoCard}>
-          <Text variant="caption" color="muted" uppercase>
+          <Text variant="caption" color="muted">
             AccordionGroup (single mode)
           </Text>
           <AccordionGroup mode="single">
@@ -825,7 +821,7 @@ export default function DemoPage() {
         </div>
 
         <div className={styles.demoCard}>
-          <Text variant="caption" color="muted" uppercase>
+          <Text variant="caption" color="muted">
             ToggleGroupFilter
           </Text>
           <ToggleGroupFilter
@@ -1092,7 +1088,7 @@ export default function DemoPage() {
             <CardBody>
               <Stack gap={3}>
                 <Text variant="small" color="muted">
-                  Hover-triggered floating surface. First validate-in-production consumer of E23 floating primitives. SC 1.4.13 compliant — dismissable, hoverable, persistent. Desktop-only (touch users get focus path).
+                  Hover-triggered floating surface. First validate-in-production consumer of E23 floating primitives. SC 1.4.13 compliant — dismissable,, persistent. Desktop-only (touch users get focus path).
                 </Text>
                 <Text>
                   Hover over{' '}

@@ -41,7 +41,6 @@ import styles from './Skeleton.module.scss';
  */
 export type SkeletonVariant = 'text' | 'rect' | 'circle';
 export type SkeletonAnimation = 'pulse' | 'shimmer' | 'none';
-export type SkeletonAriaLive = 'off' | 'polite' | 'assertive';
 
 export interface SkeletonProps extends HTMLAttributes<HTMLDivElement> {
   /** Shape variant. Default `text`. */
@@ -50,18 +49,10 @@ export interface SkeletonProps extends HTMLAttributes<HTMLDivElement> {
   width?: string | number;
   /** Height (CSS length). Default depends on variant. */
   height?: string | number;
-  /** Number of text lines (only used when `variant="text"`). Default 1. */
-  lines?: number;
   /** Animation style. Default `pulse`. */
   animation?: SkeletonAnimation;
   /** Hidden screen-reader label. Default `Loading`. */
   label?: string;
-  /**
-   * Explicit `aria-live` level. Default `undefined` (no attribute emitted)
-   * to avoid announcement storms when rendering many skeletons — opt-in per
-   * loading region. Typical usage: set `polite` on one wrapping Skeleton.
-   */
-  ariaLive?: SkeletonAriaLive;
 }
 
 const ANIMATION_CLASS: Record<SkeletonAnimation, string | undefined> = {
@@ -81,10 +72,8 @@ export const Skeleton = forwardRef<HTMLDivElement, SkeletonProps>(
       variant = 'text',
       width,
       height,
-      lines = 1,
       animation = 'pulse',
       label = 'Loading',
-      ariaLive,
       className,
       style,
       ...rest
@@ -101,23 +90,15 @@ export const Skeleton = forwardRef<HTMLDivElement, SkeletonProps>(
           ref={ref}
           role="status"
           aria-busy="true"
-          {...(ariaLive !== undefined ? { 'aria-live': ariaLive } : {})}
           className={cn(styles.textGroup, className)}
           style={style}
           {...rest}
         >
-          {Array.from({ length: lines }).map((_, i) => {
-            const isLast = i === lines - 1;
-            const lineWidth = isLast && lines > 1 ? '80%' : widthValue;
-            return (
-              <span
-                key={i}
-                aria-hidden="true"
-                className={cn(styles.root, styles.text, animationClass)}
-                style={{ width: lineWidth }}
-              />
-            );
-          })}
+          <span
+            aria-hidden="true"
+            className={cn(styles.root, styles.text, animationClass)}
+            style={{ width: widthValue }}
+          />
           <span className={styles.srOnly}>{label}</span>
         </div>
       );
@@ -134,7 +115,6 @@ export const Skeleton = forwardRef<HTMLDivElement, SkeletonProps>(
         ref={ref}
         role="status"
         aria-busy="true"
-        {...(ariaLive !== undefined && { 'aria-live': ariaLive })}
         className={cn(
           styles.root,
           variant === 'circle' ? styles.circle : styles.rect,

@@ -143,8 +143,13 @@
   // Listbox rhythm — small vertical padding, items own their own horizontal
   // padding so the surface edges stay flush with item hover backgrounds.
   padding: var(--space-1) 0;
+  // Width matches trigger via `--reference-width` published by useFloating
+  // (every reposition measures `getBoundingClientRect().width`). `min-width`
+  // floors narrow triggers; `max-width` viewport-guards on small screens.
+  // Trigger wider than the floor → listbox matches 1:1.
+  width: var(--reference-width);
   min-width: 200px;
-  max-width: min(360px, 90vw);
+  max-width: 90vw;
 
   // Scrollable when the option list exceeds the viewport height.
   max-height: min(320px, calc(100vh - var(--space-8)));

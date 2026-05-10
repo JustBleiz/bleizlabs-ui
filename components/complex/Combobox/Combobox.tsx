@@ -1,10 +1,28 @@
 'use client';
 
 /**
- * Combobox — editable single-select form field per WAI-ARIA APG /combobox/
- * (editable listbox variant). Pattern-child of Select (E27, CI12) — extends
- * the collapsed-listbox-with-typeahead model into a fully editable text input
- * whose value drives a live-filtered listbox of suggestions.
+ * Combobox — editable single-OR-multi-select form field per WAI-ARIA APG
+ * /combobox/ (editable listbox variant) + /listbox/ multi-selectable
+ * extension. Pattern-child of Select (E27, CI12) — extends the collapsed-
+ * listbox-with-typeahead model into a fully editable text input whose value
+ * drives a live-filtered listbox of suggestions.
+ *
+ * Single vs multi mode (E07.12 0.15.0 AMEND, 2026-05-10):
+ *   `multiple={false}` (default): value is `string | null`, picking an item
+ *   replaces the value, closes the listbox, and syncs the input to the
+ *   committed label. Strict select-from-list with `acceptFreeText` opt-in.
+ *
+ *   `multiple={true}`: value is `string[]` (set semantics, input order),
+ *   picking an item TOGGLES it in/out of the array, the listbox STAYS OPEN,
+ *   and the search clears so the user can pick the next option immediately.
+ *   Selected values render as inline chips left of the input — Backspace on
+ *   empty input removes the last chip (standard tag-input gesture). Hidden
+ *   form input renders one per selected value (FormData multi-value
+ *   serialization — `formData.getAll(name)` on the server).
+ *
+ *   Discriminated union via the `multiple` flag enforces correct value/
+ *   defaultValue/onValueChange types at compile time — `multiple={true}`
+ *   requires `value: string[]` and emits `onValueChange(values: string[])`.
  *
  * @layer complex-interactive (Phase 10 CI13)
  * @tokens --input-bg, --input-border, --input-border-focus, --color-text-primary,
@@ -19,22 +37,24 @@
  *   `utils/useFloating.ts` (E19/E20 primitive). Portal + dismiss + context via
  *   shared `utils/floating/` composable primitives (E23):
  *   `createFloatingContext` + `useFloatingState` (open/close) +
- *   `useFloatingValueState` (committed value — E29 extraction) +
  *   `useFloatingDismiss` + `FloatingPortal`. **Skipped** `useFloatingFocus` —
  *   focus stays on the editable input (the trigger IS the input under the
  *   APG editable-combobox pattern), so there is no focus target inside the
  *   listbox to move to. Highlight is exposed via `aria-activedescendant` on
- *   the input. Value state (`string | null`) now flows through the shared
- *   `useFloatingValueState<string>` primitive (E29 — post-Tabs E26 / Select E27,
- *   Rule of Three strict pass with NavigationMenu E25 + Combobox E28 as the
- *   fourth consumer). Hook owns the controlled/uncontrolled hybrid, identity-
- *   guarded setter, and `latestValueRef` pattern that originally lived inline
- *   here. Public `onValueChange` narrows to `(value: string) => void` (null
- *   transitions do NOT fire the callback — consumers observe null via
- *   controlled mode, mirroring Radix + Select), so we wrap the hook's
- *   `onValueChange` at the boundary to filter nulls. Search state (`string`,
- *   never null) stays inline — different semantics, empty string is a valid
- *   state and the hook's `T | null` shape does not fit.
+ *   the input.
+ *
+ *   Value state is managed inline (NOT via `useFloatingValueState` — that
+ *   shared single-value hook was removed from this file in E07.12 when
+ *   multi-select support was added). Selection is canonically a `string[]`
+ *   regardless of mode: single mode uses a 0-or-1-element array internally
+ *   and exposes the first element as `string | null` for backward
+ *   compatibility; multi mode exposes the full array. The dual-mode
+ *   discriminated union, the toggle-vs-replace branching in `selectValue`,
+ *   and FormData multi-value serialization made the shared single-value
+ *   hook a poor fit. The `latestValueRef` pattern is preserved here as
+ *   `valuesRef` with the same identity-guard semantics: `applySelection`
+ *   no-ops when the next array equals the current one (length + values).
+ *   Search state (`string`, never null) stays inline.
  *
  * @a11y APG /combobox/ editable-listbox + /listbox/:
  *   Input: `role="combobox"` + `aria-autocomplete="list"` + `aria-expanded` +
@@ -44,9 +64,11 @@
  *   is used (NOT the native `disabled` attribute) so AT users can discover
  *   the field even when it is non-interactive — same precedent as Select
  *   (E27), NavigationMenu (E25), Tabs (E26). Listbox: `role="listbox"` +
- *   `aria-labelledby={inputId}` + `aria-multiselectable={false}` (explicit
- *   per Select Phase 5 IMP-2). Items: `role="option"` + `aria-selected` +
- *   `aria-disabled` when disabled. Groups: `role="group" aria-labelledby`
+ *   `aria-labelledby={inputId}` + `aria-multiselectable` (explicit — set to
+ *   `false` in single mode per Select Phase 5 IMP-2, set to `true` in
+ *   multi mode per APG /listbox/ multi-selectable extension). Items:
+ *   `role="option"` + `aria-selected` (reflects per-value selected state in
+ *   both modes) + `aria-disabled` when disabled. Groups: `role="group" aria-labelledby`
  *   pointing at a nested ComboboxLabel id. Label: plain `<div>` with id (no
  *   role) — the group's `aria-labelledby` resolves the accessible name via
  *   the label's text content without announcing the label as a separate
@@ -93,10 +115,42 @@
  *   - Tab/Shift+Tab: commit highlighted + close + let Tab propagate. When
  *     no highlight, just close — Tab still moves focus to the next field.
  *
+ *   Multi-mode keyboard overrides (E07.12 — `multiple={true}` only):
+ *   - Space (open): TOGGLE highlighted option in selection array, KEEP
+ *     listbox open, CLEAR search for the next pick. APG /listbox/
+ *     multi-selectable simple model. preventDefault so the literal space
+ *     character does NOT also land in the search filter. (Single mode:
+ *     Space is NOT intercepted — falls through as a literal space char in
+ *     the filter, since combobox is filter-based.)
+ *   - Enter (open, with highlight): TOGGLE highlighted (NOT commit-and-
+ *     close as in single mode) — listbox stays open, search clears.
+ *     Without highlight + acceptFreeText: append raw search to selection,
+ *     listbox stays open, search clears.
+ *   - Tab (open): close + clear search; do NOT toggle highlighted. In
+ *     multi mode Tab is "I'm done picking", not "commit". Selections
+ *     persist as chips.
+ *   - Escape (open): close + clear search; selections persist (chips
+ *     remain). No revert-to-committed-label since there is no single
+ *     committed label in multi mode.
+ *   - Backspace (input value empty, any open state, no modifiers): remove
+ *     LAST selected chip — standard tag-input gesture (Gmail recipients,
+ *     GitHub topics, Slack channels). When the input is non-empty,
+ *     Backspace edits the search character normally.
+ *
+ *   Multi-mode mouse:
+ *   - Click on item: TOGGLE in selection array, KEEP listbox open, CLEAR
+ *     search, restore focus to input.
+ *   - Click on chip × button: remove that single value, restore focus to
+ *     input. (× is `tabIndex={-1}` so Tab order stays input-only.)
+ *   - Click on clear-all button (×): clear ALL selections + clear search
+ *     in both modes. Visibility differs by mode — see clear button rules
+ *     in ComboboxInput.
+ *
  *   Mouse: pointermove on item highlights (hover syncs the keyboard
- *   highlight); click on item commits + closes; click on chevron toggles
- *   open; click on clear button clears search + value; click on input does
- *   NOT toggle (matches Radix — typing/arrow opens, click to focus only).
+ *   highlight); click on item commits + closes (single) or toggles + keeps
+ *   open (multi); click on chevron toggles open; click on clear button
+ *   clears search + value(s); click on input does NOT toggle (matches
+ *   Radix — typing/arrow opens, click to focus only).
  *
  *   Focus stays on the editable input at ALL times — the listbox itself is
  *   `tabIndex={-1}` (receives no focus). This is the APG editable-combobox
@@ -168,9 +222,16 @@
  *   from-list field by default).
  *
  *   Form participation: when the `name` prop is provided, Combobox renders
- *   a hidden `<input type="hidden">` synced with the current value.
- *   `required` + `disabled` propagate to the hidden input so native form
- *   validation and FormData serialization work without consumer plumbing.
+ *   hidden `<input type="hidden">` element(s) synced with the current
+ *   value(s). Single mode: ONE hidden input (preserves backward-compat —
+ *   always rendered, value is empty string when no selection so native
+ *   `required` validation can fail on empty submit). Multi mode: ONE
+ *   hidden input PER selected value, all sharing the same `name` (FormData
+ *   multi-value — server reads via `formData.getAll(name)`); when zero
+ *   selections AND `required`, a single empty-value hidden input is
+ *   rendered as a validation guard so `required` fires on empty submit;
+ *   when zero selections AND NOT `required`, no hidden input is rendered.
+ *   `disabled` propagates to all hidden inputs.
  *
  * @apg https://www.w3.org/WAI/ARIA/apg/patterns/combobox/
  * @tested tsc --noEmit ✓ | eslint + jsx-a11y via eslint-config-next ✓ |
@@ -183,6 +244,7 @@
  *   CB-R06 blur commit, CB-R07 IME composition guard, CB-R16 SSR portal,
  *   CB-R17 Escape bubble). Full enumeration deferred to consumer adoption.
  * @example
+ *   // Single-select (default)
  *   <Combobox name="country" defaultValue="pl" onValueChange={(v) => ...}>
  *     <ComboboxInput placeholder="Search a country..." aria-label="Country" />
  *     <ComboboxContent>
@@ -197,6 +259,26 @@
  *         <ComboboxItem value="us">United States</ComboboxItem>
  *       </ComboboxGroup>
  *       <ComboboxEmpty>No countries match.</ComboboxEmpty>
+ *     </ComboboxContent>
+ *   </Combobox>
+ *
+ * @example
+ *   // Multi-select — picking toggles, listbox stays open, search clears,
+ *   // selected values render as chips left of the input. Backspace on
+ *   // empty input removes the last chip.
+ *   <Combobox
+ *     multiple
+ *     name="tags"
+ *     defaultValue={['design', 'a11y']}
+ *     onValueChange={(values) => setTags(values)}
+ *   >
+ *     <ComboboxInput placeholder="Add tags..." aria-label="Tags" />
+ *     <ComboboxContent>
+ *       <ComboboxItem value="design">Design</ComboboxItem>
+ *       <ComboboxItem value="a11y">Accessibility</ComboboxItem>
+ *       <ComboboxItem value="perf">Performance</ComboboxItem>
+ *       <ComboboxItem value="security">Security</ComboboxItem>
+ *       <ComboboxEmpty>No matching tag.</ComboboxEmpty>
  *     </ComboboxContent>
  *   </Combobox>
  */
@@ -224,7 +306,6 @@ import { type Placement } from '../../utils/position';
 import {
   createFloatingContext,
   useFloatingState,
-  useFloatingValueState,
   useFloatingDismiss,
   FloatingPortal,
 } from '../../utils/floating';
@@ -285,16 +366,44 @@ interface ComboboxContextValue {
   /** Open state of the listbox. */
   open: boolean;
   setOpen: (next: boolean) => void;
-  /** Currently committed value (null when empty). Read-only — use selectValue() to mutate. */
+  /**
+   * Multi-select mode flag. When `true`, item clicks toggle selection
+   * (instead of replace), the listbox stays open after a pick, the search
+   * clears, and the input renders selected values as inline chips. Selected
+   * state lives in `selectedValues` (canonical) — `value` is always `null`
+   * in multi mode and MUST NOT be read.
+   */
+  multiple: boolean;
+  /**
+   * Single-mode committed value (null when empty). Always `null` in multi
+   * mode — read `selectedValues` instead. Read-only — use `selectValue()`
+   * to mutate.
+   */
   value: string | null;
   /**
    * Live ref mirror of `value` — used inside callbacks that should not
-   * re-memoize on every value change (e.g. `selectValue`, `commitHighlighted`,
-   * blur revert). Readers should always `valueRef.current`, never the
-   * memoized `value`.
+   * re-memoize on every value change (e.g. blur revert). Readers should
+   * use `valueRef.current`, never the memoized `value`. Always `null` in
+   * multi mode.
    */
   valueRef: MutableRefObject<string | null>;
-  /** Commit a new value — fires onValueChange when the value differs. */
+  /** Canonical selection state — works in both modes. */
+  selectedValues: string[];
+  /**
+   * Live ref mirror of `selectedValues` — used inside callbacks that
+   * should not re-memoize on every selection change (e.g. Backspace-on-
+   * empty handler, blur logic).
+   */
+  valuesRef: MutableRefObject<string[]>;
+  /**
+   * Test whether a given value is currently selected. Unified API for items
+   * that drives `aria-selected` + visual indicator regardless of mode.
+   */
+  isSelected: (value: string) => boolean;
+  /**
+   * Commit a value — single mode REPLACES, multi mode TOGGLES. Pass `null`
+   * to clear ALL selections in either mode (× button).
+   */
   selectValue: (next: string | null) => void;
   /** Current search text (controlled or uncontrolled). */
   search: string;
@@ -374,19 +483,13 @@ const [ComboboxContextProvider, useComboboxContext] =
 // Combobox root — state holder, item registry, filter logic, context provider
 // ──────────────────────────────────────────────────────────────────────────
 
-export interface ComboboxProps {
+/**
+ * Shared props for both single-select and multi-select modes. The `multiple`
+ * flag in the discriminated union below selects which value/defaultValue/
+ * onValueChange shape applies.
+ */
+interface ComboboxBaseProps {
   children: ReactNode;
-  /** Controlled value. Pass `null` for "no selection". When provided, component is controlled. */
-  value?: string | null;
-  /** Uncontrolled initial value. Ignored when `value` is provided. Default `null`. */
-  defaultValue?: string | null;
-  /**
-   * Fires every time the committed value changes. Argument is a `string`
-   * (never `null`); when Combobox is cleared, no callback fires. Consumers
-   * who need to observe null transitions should use the controlled `value`
-   * prop. Mirrors Select semantics.
-   */
-  onValueChange?: (value: string) => void;
   /** Controlled search text. When provided, search state is controlled. */
   search?: string;
   /** Uncontrolled initial search. Default `''`. */
@@ -408,12 +511,17 @@ export interface ComboboxProps {
    * When `true`, Enter (without an active highlight) commits the raw search
    * text as the value, and blur accepts the raw search as a value when no
    * exact item match is found. Default `false` (strict select-from-list).
+   * Multi-mode note: in `multiple={true}` mode, free-text Enter appends the
+   * raw search to the selected array (deduplicated).
    */
   acceptFreeText?: boolean;
   /**
-   * Form field name. When provided, Combobox renders a hidden `<input>`
-   * synced with `value` so native form submission + FormData serialization
-   * work. `required` + `disabled` propagate to the hidden input.
+   * Form field name. When provided, Combobox renders hidden `<input>`(s)
+   * synced with the current value(s) so native form submission + FormData
+   * serialization work. In single mode: one hidden input with the current
+   * value. In multi mode: one hidden input per selected value, all sharing
+   * the same name (FormData multi-value — `formData.getAll(name)` on the
+   * server). `required` + `disabled` propagate to the hidden input(s).
    */
   name?: string;
   /** Root-level disabled — blocks input interaction + form submission. */
@@ -431,26 +539,65 @@ export interface ComboboxProps {
   collisionPadding?: number;
 }
 
-export function Combobox({
-  children,
-  value: controlledValue,
-  defaultValue = null,
-  onValueChange,
-  search: controlledSearch,
-  defaultSearch = '',
-  onSearchChange,
-  open: controlledOpen,
-  defaultOpen = false,
-  onOpenChange,
-  filter = 'auto',
-  acceptFreeText = false,
-  name,
-  disabled = false,
-  required = false,
-  placement = 'bottom-start',
-  sideOffset = 4,
-  collisionPadding = 8,
-}: ComboboxProps) {
+/**
+ * Single-select mode (`multiple={false}` or omitted) — current default
+ * shape preserved for backward compatibility.
+ */
+export interface ComboboxSingleProps extends ComboboxBaseProps {
+  /** Single-select mode. Default. */
+  multiple?: false;
+  /** Controlled value. Pass `null` for "no selection". When provided, component is controlled. */
+  value?: string | null;
+  /** Uncontrolled initial value. Ignored when `value` is provided. Default `null`. */
+  defaultValue?: string | null;
+  /**
+   * Fires every time the committed value changes. Argument is a `string`
+   * (never `null`); when Combobox is cleared, no callback fires. Consumers
+   * who need to observe null transitions should use the controlled `value`
+   * prop. Mirrors Select semantics.
+   */
+  onValueChange?: (value: string) => void;
+}
+
+/**
+ * Multi-select mode (`multiple={true}`) — value/defaultValue/onValueChange
+ * narrow to `string[]` so consumer wiring is type-safe at compile time.
+ * Picking an item TOGGLES it in/out of the array, the listbox stays open,
+ * and the search clears for the next pick.
+ */
+export interface ComboboxMultiProps extends ComboboxBaseProps {
+  /** Multi-select mode. */
+  multiple: true;
+  /** Controlled values array. Set semantics — duplicates ignored. */
+  value?: string[];
+  /** Uncontrolled initial values. Default `[]`. */
+  defaultValue?: string[];
+  /** Fires on every selection change — receives the full updated array. */
+  onValueChange?: (values: string[]) => void;
+}
+
+export type ComboboxProps = ComboboxSingleProps | ComboboxMultiProps;
+
+export function Combobox(props: ComboboxProps) {
+  const {
+    children,
+    search: controlledSearch,
+    defaultSearch = '',
+    onSearchChange,
+    open: controlledOpen,
+    defaultOpen = false,
+    onOpenChange,
+    filter = 'auto',
+    acceptFreeText = false,
+    name,
+    disabled = false,
+    required = false,
+    placement = 'bottom-start',
+    sideOffset = 4,
+    collisionPadding = 8,
+  } = props;
+  const multiple = props.multiple === true;
+
   const reactId = useId();
   const inputId = `${reactId}-input`;
   const contentId = `${reactId}-listbox`;
@@ -464,30 +611,140 @@ export function Combobox({
     onOpenChange,
   });
 
-  // Controlled/uncontrolled value — routed through shared `useFloatingValueState`
-  // primitive (E29 extraction). Hook owns the controlled/uncontrolled hybrid,
-  // the identity-guarded setter (no-ops when `next === valueRef.current`), and
-  // the `latestValueRef` pattern that was critical for avoiding mass re-
-  // registration of ComboboxItems — their `useLayoutEffect` depends on
-  // `registerItem`/`unregisterItem` identity via context, which in turn
-  // depends on `selectValue` identity, which MUST stay stable across value
-  // changes. Public `onValueChange` narrows to `(value: string) => void`
-  // (null transitions do NOT fire — consumers observe them via controlled
-  // mode, mirroring Radix + Select), so wrap at the boundary to filter nulls.
-  // The wrapper is memoized so the hook sees a stable callback identity —
-  // otherwise `setValue` would churn on every render and defeat the
-  // `latestValueRef` guarantee that keeps item registrations stable.
-  const handleValueChange = useCallback(
-    (next: string | null) => {
-      if (next !== null) onValueChange?.(next);
+  // ────────────────────────────────────────────────────────────────────────
+  // Unified selection state — internally always `string[]`, externally
+  // discriminated via `multiple` flag.
+  //
+  // Single mode:  external value is `string | null`        ↔  internal `[]` or `[v]`
+  // Multi mode:   external value is `string[]`             ↔  internal same array
+  //
+  // Internal canonical state is `selectedValues: string[]`. Order = pick
+  // sequence (multi) or single-element (single). Set semantics enforced via
+  // dedup on every mutation. The `valueRef` mirror is consumed by callbacks
+  // that need the latest committed selection without re-memoizing.
+  // ────────────────────────────────────────────────────────────────────────
+
+  const isValueControlled = props.value !== undefined;
+
+  const externalToArray = useCallback(
+    (next: string | string[] | null | undefined): string[] => {
+      if (next == null) return [];
+      if (Array.isArray(next)) return Array.from(new Set(next));
+      return [next];
     },
-    [onValueChange],
+    [],
   );
-  const { value, setValue: selectValue, valueRef } = useFloatingValueState<string>({
-    controlledValue,
-    defaultValue: defaultValue ?? null,
-    onValueChange: handleValueChange,
+
+  // Initial uncontrolled state — derive from defaultValue depending on mode.
+  const initialUncontrolled = useMemo<string[]>(() => {
+    if (multiple) {
+      const dv = (props as ComboboxMultiProps).defaultValue;
+      return Array.isArray(dv) ? Array.from(new Set(dv)) : [];
+    }
+    const dv = (props as ComboboxSingleProps).defaultValue;
+    return typeof dv === 'string' ? [dv] : [];
+    // Initial state — intentionally only computed once; later prop changes
+    // are reflected via the controlled-value branch below, not via
+    // re-derivation of uncontrolled initial state.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const [uncontrolledValues, setUncontrolledValues] = useState<string[]>(initialUncontrolled);
+
+  // Resolved selection — controlled value wins when present.
+  const selectedValues: string[] = useMemo(() => {
+    if (!isValueControlled) return uncontrolledValues;
+    return externalToArray(props.value);
+  }, [isValueControlled, props.value, uncontrolledValues, externalToArray]);
+
+  // Live ref mirror — read by callbacks that should not re-memoize.
+  const valuesRef = useRef<string[]>(selectedValues);
+  useLayoutEffect(() => {
+    valuesRef.current = selectedValues;
   });
+
+  // Stable onValueChange dispatcher — branches on mode to fire the correct
+  // signature. `props` is read from a ref so the dispatcher identity stays
+  // stable across renders (avoiding context churn that would re-register
+  // every ComboboxItem on every parent render).
+  const propsRef = useRef(props);
+  useLayoutEffect(() => {
+    propsRef.current = props;
+  });
+
+  const fireChange = useCallback((nextArray: string[]) => {
+    const current = propsRef.current;
+    if (current.multiple === true) {
+      current.onValueChange?.(nextArray);
+    } else {
+      // Single mode emits string only on non-empty commit (mirrors Radix +
+      // Select — null transitions are observable via controlled `value`).
+      const first = nextArray[0];
+      if (first !== undefined) current.onValueChange?.(first);
+    }
+  }, []);
+
+  // Apply a new selection array. Dedupes, no-ops on identity, syncs
+  // uncontrolled state, fires onValueChange.
+  const applySelection = useCallback(
+    (nextArrayRaw: string[]) => {
+      const nextArray = Array.from(new Set(nextArrayRaw));
+      const prev = valuesRef.current;
+      // Identity guard — same length + same values in same order.
+      if (
+        prev.length === nextArray.length &&
+        prev.every((v, i) => v === nextArray[i])
+      ) {
+        return;
+      }
+      if (!isValueControlled) setUncontrolledValues(nextArray);
+      fireChange(nextArray);
+    },
+    [isValueControlled, fireChange],
+  );
+
+  // selectValue — mode-aware: single replaces, multi toggles. Used by item
+  // clicks + Enter commit + free-text commit. Both modes accept a `string`
+  // value; in multi mode passing an existing value REMOVES it (toggle),
+  // passing a new value APPENDS it.
+  const selectValue = useCallback(
+    (next: string | null) => {
+      const current = valuesRef.current;
+      if (next === null) {
+        // Clear-all gesture (× button). Works in both modes.
+        if (current.length === 0) return;
+        applySelection([]);
+        return;
+      }
+      if (propsRef.current.multiple === true) {
+        // Toggle semantics: remove if present, append if not.
+        if (current.includes(next)) {
+          applySelection(current.filter((v) => v !== next));
+        } else {
+          applySelection([...current, next]);
+        }
+      } else {
+        // Single mode: replace.
+        applySelection([next]);
+      }
+    },
+    [applySelection],
+  );
+
+  // Backward-compat single-mode shape — context exposes `value: string | null`
+  // for code paths that haven't been migrated to `selectedValues`. In multi
+  // mode `value` is always null (multi consumers MUST read `selectedValues`).
+  const value: string | null = multiple ? null : selectedValues[0] ?? null;
+  const valueRef = useRef<string | null>(value);
+  useLayoutEffect(() => {
+    valueRef.current = value;
+  });
+
+  // isSelected — unified API that works in both modes. Items use this to
+  // drive aria-selected + visual checkmark indicator.
+  const isSelected = useCallback((target: string) => {
+    return valuesRef.current.includes(target);
+  }, []);
 
   // Controlled/uncontrolled search — second hybrid slot, same pattern.
   const isSearchControlled = controlledSearch !== undefined;
@@ -693,8 +950,12 @@ export function Combobox({
     () => ({
       open,
       setOpen,
+      multiple,
       value,
       valueRef,
+      selectedValues,
+      valuesRef,
+      isSelected,
       selectValue,
       search,
       searchRef,
@@ -724,8 +985,12 @@ export function Combobox({
     [
       open,
       setOpen,
+      multiple,
       value,
       valueRef,
+      selectedValues,
+      valuesRef,
+      isSelected,
       selectValue,
       search,
       updateSearch,
@@ -754,16 +1019,86 @@ export function Combobox({
   return (
     <ComboboxContextProvider value={contextValue}>
       {children}
-      {name !== undefined && (
+      {name !== undefined && renderHiddenInputs(name, selectedValues, multiple, disabled, required)}
+    </ComboboxContextProvider>
+  );
+}
+
+/**
+ * Hidden form input rendering — branches on mode.
+ *
+ * Single mode:    one `<input type="hidden">` with the current value (or
+ *                 empty string when no selection — preserves existing
+ *                 backward-compat behavior of always rendering a hidden
+ *                 input when `name` is set, so server-side parsing of an
+ *                 unselected combobox still gets the empty string AND
+ *                 native `required` validation can fail on empty submit).
+ *
+ * Multi mode:     one `<input type="hidden">` per selected value, all
+ *                 sharing the same `name`. Server reads via
+ *                 `formData.getAll(name)` (standard FormData multi-value).
+ *
+ *                 When zero values are selected: render NO hidden input
+ *                 in the non-required case (server gets empty
+ *                 `getAll()` — natural representation of "no selections").
+ *                 In the required case, render ONE empty-value hidden
+ *                 input so the browser's native `required` validation
+ *                 fires on submit (otherwise the validator sees no input
+ *                 by that name and silently allows empty submission).
+ *                 The empty placeholder is NOT marked `required` itself
+ *                 once selections exist — only the empty-state guard
+ *                 needs that attribute.
+ *
+ *                 The `required` flag also propagates to populated inputs
+ *                 in single mode (where consumer expects standard form
+ *                 semantics) but is NOT propagated to multi-mode populated
+ *                 inputs: a non-empty value on `<input required>` always
+ *                 satisfies the validator, so the redundant flag is just
+ *                 noise.
+ */
+function renderHiddenInputs(
+  name: string,
+  selectedValues: string[],
+  multiple: boolean,
+  disabled: boolean,
+  required: boolean,
+): ReactNode {
+  if (multiple) {
+    if (selectedValues.length === 0) {
+      if (!required) return null;
+      // Empty-state required guard: a single empty hidden input so the
+      // browser's `required` constraint fails on submit when the user has
+      // selected nothing. The disabled flag still propagates so a disabled
+      // multi-combobox bypasses validation entirely (consistent with
+      // single mode).
+      return (
         <input
           type="hidden"
           name={name}
-          value={value ?? ''}
+          value=""
           disabled={disabled || undefined}
-          required={required || undefined}
+          required
         />
-      )}
-    </ComboboxContextProvider>
+      );
+    }
+    return selectedValues.map((v) => (
+      <input
+        key={v}
+        type="hidden"
+        name={name}
+        value={v}
+        disabled={disabled || undefined}
+      />
+    ));
+  }
+  return (
+    <input
+      type="hidden"
+      name={name}
+      value={selectedValues[0] ?? ''}
+      disabled={disabled || undefined}
+      required={required || undefined}
+    />
   );
 }
 
@@ -841,8 +1176,11 @@ export const ComboboxInput = forwardRef<HTMLInputElement, ComboboxInputProps>(
     const {
       open,
       setOpen,
+      multiple,
       value,
       valueRef,
+      selectedValues,
+      valuesRef,
       selectValue,
       search,
       searchRef,
@@ -854,6 +1192,7 @@ export const ComboboxInput = forwardRef<HTMLInputElement, ComboboxInputProps>(
       required,
       getOrderedItems,
       getLabelByValue,
+      getItemByValue,
       listboxKeyHandlerRef,
       highlightedId,
       acceptFreeText,
@@ -974,9 +1313,18 @@ export const ComboboxInput = forwardRef<HTMLInputElement, ComboboxInputProps>(
         // Defer the auto-commit / revert by one microtask so any in-flight
         // pointerdown → click sequence on an item commits first.
         setTimeout(() => {
-          // If a commit closed the listbox + advanced state already, bail.
-          // openRef is the safest signal: a successful commit closes the
-          // listbox, so if it's still open we're in pure-blur territory.
+          // Multi-mode blur: just clear the search so the input is empty
+          // for the next focus. Selections persist as chips. There is no
+          // single "committed label" to revert to in multi mode; explicit
+          // chip × or clear-all is the way to remove selections.
+          if (multiple) {
+            updateSearch('');
+            if (openRef.current) setOpen(false);
+            return;
+          }
+
+          // Single-mode blur: auto-commit on exact match, else revert to
+          // committed value's label (or empty when nothing committed).
           const currentSearch = searchRef.current;
           const currentValue = valueRef.current;
 
@@ -1021,6 +1369,7 @@ export const ComboboxInput = forwardRef<HTMLInputElement, ComboboxInputProps>(
       [
         onBlur,
         disabled,
+        multiple,
         contentId,
         searchRef,
         valueRef,
@@ -1044,6 +1393,32 @@ export const ComboboxInput = forwardRef<HTMLInputElement, ComboboxInputProps>(
         // CB-R07.
         if (isComposingRef.current) return;
         if (event.key === 'Process' || event.keyCode === 229) return;
+
+        // Multi-mode Backspace-on-empty — remove last chip. Standard tag-
+        // input gesture (Gmail recipients, GitHub topics, Slack channels).
+        // Fires in BOTH open and closed states so the user can prune
+        // selections without closing the listbox first. Guard: only when
+        // the input value is empty AND there's at least one selection AND
+        // there are no modifiers (Ctrl+Backspace = delete word, leave that
+        // to the browser even though search is already empty in our case).
+        if (
+          multiple &&
+          event.key === 'Backspace' &&
+          !event.ctrlKey &&
+          !event.metaKey &&
+          !event.altKey &&
+          !event.shiftKey &&
+          searchRef.current === ''
+        ) {
+          const current = valuesRef.current;
+          if (current.length > 0) {
+            event.preventDefault();
+            const last = current[current.length - 1];
+            if (last !== undefined) selectValue(last); // toggle = remove since it's currently selected
+            return;
+          }
+          // Empty selection too — fall through (no-op).
+        }
 
         // OPEN STATE — route to Content's listbox handler via the shared
         // ref slot. Single-path discipline (Select CRIT-1).
@@ -1072,8 +1447,9 @@ export const ComboboxInput = forwardRef<HTMLInputElement, ComboboxInputProps>(
             if (search !== '') {
               event.preventDefault();
               updateSearch('');
-              // Don't clear value — Escape on closed input is a "narrow
-              // my view back to default" gesture, not "deselect".
+              // Don't clear selections — Escape on closed input is a
+              // "narrow my view back to default" gesture, not "deselect".
+              // (Both modes — same semantics.)
             }
             return;
           }
@@ -1094,6 +1470,10 @@ export const ComboboxInput = forwardRef<HTMLInputElement, ComboboxInputProps>(
       [
         onKeyDown,
         disabled,
+        multiple,
+        valuesRef,
+        searchRef,
+        selectValue,
         open,
         search,
         updateSearch,
@@ -1131,13 +1511,44 @@ export const ComboboxInput = forwardRef<HTMLInputElement, ComboboxInputProps>(
         if (disabled) return;
         event.preventDefault();
         updateSearch('');
+        // selectValue(null) clears ALL selections in both modes.
         selectValue(null);
         inputRef.current?.focus();
       },
       [disabled, updateSearch, selectValue, inputRef],
     );
 
-    const showClearButton = !hideClear && (search !== '' || value !== null);
+    // Multi-mode chip × button — removes a single value from the selection
+    // array. Toggle semantics in selectValue handle the actual removal:
+    // since the value is currently selected, calling selectValue(v) toggles
+    // it off. Focus is restored to the input so keyboard interaction
+    // continues smoothly.
+    const handleChipRemove = useCallback(
+      (event: React.MouseEvent<HTMLButtonElement>, chipValue: string) => {
+        if (disabled) return;
+        event.preventDefault();
+        event.stopPropagation();
+        selectValue(chipValue);
+        inputRef.current?.focus();
+      },
+      [disabled, selectValue, inputRef],
+    );
+
+    const handleChipMouseDown = useCallback(
+      (event: React.MouseEvent<HTMLButtonElement>) => {
+        // Same focus protection as the trigger's other secondary buttons.
+        event.preventDefault();
+      },
+      [],
+    );
+
+    // Clear button visibility:
+    // Single mode: shown when search is non-empty OR a value is committed.
+    // Multi mode:  shown when search is non-empty OR at least one selection
+    //              exists (clears ALL chips on click).
+    const showClearButton =
+      !hideClear &&
+      (search !== '' || (multiple ? selectedValues.length > 0 : value !== null));
 
     const ariaProps = {
       id: inputId,
@@ -1154,6 +1565,31 @@ export const ComboboxInput = forwardRef<HTMLInputElement, ComboboxInputProps>(
       'aria-activedescendant': open && highlightedId ? highlightedId : undefined,
     };
 
+    // The editable `<input>` element. In single mode it sits directly as a
+    // child of the trigger (current rendering). In multi mode it sits as
+    // the LAST child of the `.multiInner` chips wrapper so chips and the
+    // input share the same flex-wrap row.
+    const inputEl = (
+      <input
+        ref={mergedRef}
+        {...ariaProps}
+        type="text"
+        autoComplete="off"
+        spellCheck={false}
+        // Always controlled — `search` is the single source of truth.
+        value={search}
+        placeholder={multiple && selectedValues.length > 0 ? undefined : placeholder}
+        className={styles.input}
+        onChange={handleChange}
+        onKeyDown={handleKeyDown}
+        onFocus={handleFocus}
+        onBlur={handleBlur}
+        onCompositionStart={handleCompositionStart}
+        onCompositionEnd={handleCompositionEnd}
+        {...rest}
+      />
+    );
+
     return (
       <div
         className={cn(
@@ -1165,25 +1601,48 @@ export const ComboboxInput = forwardRef<HTMLInputElement, ComboboxInputProps>(
         data-state={open ? 'open' : 'closed'}
         data-disabled={disabled ? '' : undefined}
         data-invalid={invalid ? '' : undefined}
+        data-multiple={multiple ? '' : undefined}
       >
-        <input
-          ref={mergedRef}
-          {...ariaProps}
-          type="text"
-          autoComplete="off"
-          spellCheck={false}
-          // Always controlled — `search` is the single source of truth.
-          value={search}
-          placeholder={placeholder}
-          className={styles.input}
-          onChange={handleChange}
-          onKeyDown={handleKeyDown}
-          onFocus={handleFocus}
-          onBlur={handleBlur}
-          onCompositionStart={handleCompositionStart}
-          onCompositionEnd={handleCompositionEnd}
-          {...rest}
-        />
+        {multiple ? (
+          <div className={styles.multiInner}>
+            {selectedValues.map((chipValue) => {
+              // Resolve label via cache-aware lookup. When the listbox is
+              // closed and items have unmounted, this falls back to the
+              // persistent label cache (set on first registration).
+              const label = getLabelByValue(chipValue) ?? chipValue;
+              const itemDisabled = getItemByValue(chipValue)?.disabled === true;
+              return (
+                <span key={chipValue} className={styles.chip} data-value={chipValue}>
+                  <span className={styles.chipLabel}>{label}</span>
+                  <button
+                    type="button"
+                    tabIndex={-1}
+                    aria-label={`Remove ${label}`}
+                    className={styles.chipRemove}
+                    onMouseDown={handleChipMouseDown}
+                    onClick={(e) => handleChipRemove(e, chipValue)}
+                    disabled={disabled || itemDisabled || undefined}
+                  >
+                    <svg
+                      viewBox="0 0 16 16"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      aria-hidden="true"
+                    >
+                      <path d="M4 4l8 8M12 4l-8 8" />
+                    </svg>
+                  </button>
+                </span>
+              );
+            })}
+            {inputEl}
+          </div>
+        ) : (
+          inputEl
+        )}
         {showClearButton ? (
           <button
             type="button"
@@ -1256,6 +1715,7 @@ export function ComboboxContent({ children, className, ...rest }: ComboboxConten
   const {
     open,
     setOpen,
+    multiple,
     valueRef,
     selectValue,
     search,
@@ -1288,15 +1748,27 @@ export function ComboboxContent({ children, className, ...rest }: ComboboxConten
   const { setReference, setFloating } = refs;
 
   // Bridge input DOM into useFloating's reference setter on open. We
-  // anchor on the input wrapper (the `.trigger` div) rather than the bare
-  // input so the listbox aligns to the visual bounds of the trigger box —
-  // but the input ref points at the `<input>` itself for focus restoration.
-  // Walk parentElement once at open-time to resolve the wrapper.
+  // anchor on the OUTER `.trigger` div so the listbox aligns to the visual
+  // bounds of the trigger border-box (not the inner chip wrapper, which in
+  // multi mode grows with chip rows and would float the listbox too high).
+  //
+  // DOM hierarchy:
+  //   single mode:   .trigger > input              (parentElement = .trigger ✓)
+  //   multi mode:    .trigger > .multiInner > input (parentElement = .multiInner ✗)
+  //
+  // We walk up until we find an element with `data-state` (the attribute is
+  // set on the `.trigger` wrapper only — chips and other intermediate
+  // wrappers do not carry it). That makes the resolution mode-agnostic and
+  // robust against future DOM changes inside the trigger.
   useLayoutEffect(() => {
     if (!open) return;
     const inputNode = inputRef.current;
-    const wrapper = inputNode?.parentElement ?? inputNode ?? null;
-    if (wrapper) setReference(wrapper);
+    if (!inputNode) return;
+    let walker: HTMLElement | null = inputNode.parentElement;
+    while (walker && !walker.hasAttribute('data-state')) {
+      walker = walker.parentElement;
+    }
+    setReference(walker ?? inputNode);
   }, [open, inputRef, setReference]);
 
   const mergedPopperRef = useCallback(
@@ -1316,10 +1788,19 @@ export function ComboboxContent({ children, className, ...rest }: ComboboxConten
     open,
     onDismiss: () => {
       setOpen(false);
-      // On outside-click dismiss, treat the gesture like a blur+revert:
-      // the user clicked somewhere else, so commit-on-exact-match-or-
-      // revert-to-committed-label keeps the input consistent with the
-      // value field.
+      // Multi-mode dismiss: just clear the search so the input is empty
+      // for the next interaction. Selections persist as chips and require
+      // explicit per-chip remove or clear-all. There is no
+      // "auto-commit-on-exact-match" path in multi mode — that gesture
+      // already happens via item click / Enter while the listbox is open.
+      if (multiple) {
+        updateSearch('');
+        return;
+      }
+      // Single-mode dismiss: treat the gesture like a blur+revert — the
+      // user clicked somewhere else, so commit-on-exact-match-or-revert-
+      // to-committed-label keeps the input consistent with the value
+      // field.
       const items = getOrderedItems();
       const trimmed = search.trim();
       const needle = trimmed.toLowerCase();
@@ -1358,9 +1839,13 @@ export function ComboboxContent({ children, className, ...rest }: ComboboxConten
   // Initialize highlight on open + reset highlight on filter change.
   // Items have already registered via their own useLayoutEffect (child
   // effects commit before parent effects), so getOrderedItems() returns
-  // the full list here. We seed the highlight to the current value when
-  // it's still visible under the filter; otherwise the first visible
-  // enabled item.
+  // the full list here.
+  //
+  // Single mode: seed to the current value when it's still visible under
+  // the filter; otherwise the first visible enabled item.
+  // Multi mode: seed to the first selected value that is still visible
+  // (so re-opening the listbox restores cursor to "where the user last
+  // committed"); otherwise the first visible enabled item.
   useLayoutEffect(() => {
     if (!open) return;
 
@@ -1371,11 +1856,24 @@ export function ComboboxContent({ children, className, ...rest }: ComboboxConten
       return;
     }
 
-    const current = valueRef.current;
-    const currentRecord =
-      current !== null
-        ? visible.find((it) => it.value === current)
-        : undefined;
+    let currentRecord: ComboboxItemRecord | undefined;
+    if (multiple) {
+      // Use the first selected value that's still visible. valuesRef is
+      // accessed inside the layout effect (not in render) per the
+      // subscribe-to-external-system pattern used elsewhere in this file.
+      const selected = ctx.valuesRef.current;
+      for (const v of selected) {
+        const found = visible.find((it) => it.value === v);
+        if (found) {
+          currentRecord = found;
+          break;
+        }
+      }
+    } else {
+      const current = valueRef.current;
+      currentRecord =
+        current !== null ? visible.find((it) => it.value === current) : undefined;
+    }
     const initial = currentRecord ?? visible[0];
     if (!initial) return;
 
@@ -1391,20 +1889,29 @@ export function ComboboxContent({ children, className, ...rest }: ComboboxConten
     return () => {
       setHighlight(null, 'mouse');
     };
-  }, [open, search, valueRef, visibleItemIds, getOrderedItems, setHighlight]);
+  }, [open, search, multiple, valueRef, ctx.valuesRef, visibleItemIds, getOrderedItems, setHighlight]);
 
-  // Commit the currently highlighted option + close + restore focus to
-  // input. Fired by Enter / Tab / item click.
+  // Commit the currently highlighted option. Behavior branches on mode:
+  //   Single — replace value, sync search to label, CLOSE listbox.
+  //   Multi  — toggle value in array, CLEAR search, KEEP listbox open so
+  //            the user can pick the next option immediately.
+  // Fired by Enter / Tab / item click.
   const commitHighlighted = useCallback(
     (restoreFocus = true) => {
       const currentId = highlightedId;
       if (!currentId) {
         // No highlight — Enter with acceptFreeText commits the raw search
-        // as the value; otherwise no-op (just close).
+        // as the value; otherwise no-op. In multi mode, free-text commit
+        // appends and keeps the listbox open + clears search.
         if (acceptFreeText) {
           const trimmed = search.trim();
           if (trimmed !== '') {
             selectValue(trimmed);
+            if (multiple) {
+              updateSearch('');
+              if (restoreFocus) inputRef.current?.focus();
+              return;
+            }
           }
         }
         setOpen(false);
@@ -1419,12 +1926,18 @@ export function ComboboxContent({ children, className, ...rest }: ComboboxConten
         return;
       }
       selectValue(record.value);
+      if (multiple) {
+        updateSearch('');
+        if (restoreFocus) inputRef.current?.focus();
+        return;
+      }
       updateSearch(record.textContent);
       setOpen(false);
       if (restoreFocus) inputRef.current?.focus();
     },
     [
       highlightedId,
+      multiple,
       acceptFreeText,
       search,
       getOrderedItems,
@@ -1472,7 +1985,13 @@ export function ComboboxContent({ children, className, ...rest }: ComboboxConten
         }
         case 'ArrowUp': {
           if (isAltArrowUp) {
-            // Alt+ArrowUp — close without commit + revert.
+            // Alt+ArrowUp — close without commit. Single mode reverts the
+            // search to the committed label (consistent with Escape).
+            // Multi mode just clears the search (no single committed
+            // label exists; selections persist as chips). The unified
+            // code below resolves to '' in multi mode because
+            // `valueRef.current` is always null in multi mode — same
+            // outcome, no branch needed.
             event.preventDefault();
             setOpen(false);
             const committed = valueRef.current
@@ -1557,7 +2076,18 @@ export function ComboboxContent({ children, className, ...rest }: ComboboxConten
           // current value's label. preventDefault so parent dismiss
           // listeners (e.g. parent Dialog) don't also fire — single source
           // of truth for Escape inside the listbox (matches Select).
+          //
+          // Multi mode: Escape just closes + clears search. Selections
+          // persist (chips remain). There is no single "committed label"
+          // to revert to — explicit chip × or clear-all is the way to
+          // remove selections.
           event.preventDefault();
+          if (multiple) {
+            updateSearch('');
+            setOpen(false);
+            inputRef.current?.focus();
+            return;
+          }
           const committed = valueRef.current
             ? getLabelByValue(valueRef.current) ?? ''
             : '';
@@ -1567,15 +2097,39 @@ export function ComboboxContent({ children, className, ...rest }: ComboboxConten
           return;
         }
         case 'Tab': {
-          // Commit highlighted + close + let Tab propagate. restoreFocus
-          // is `false` so the browser's Tab focus advancement is not
-          // cancelled by a .focus() call on the input (Select Phase 5
-          // CRIT-2). When no highlight, just close without commit.
+          // Single mode: commit highlighted + close + let Tab propagate.
+          // restoreFocus is `false` so the browser's Tab focus advancement
+          // is not cancelled by a .focus() call on the input (Select
+          // Phase 5 CRIT-2). When no highlight, just close without commit.
+          //
+          // Multi mode: Tab leaves the field — close + clear search, do
+          // NOT toggle the highlighted item (Space/Enter is the toggle
+          // gesture; Tab is "I'm done picking"). Selections persist.
+          if (multiple) {
+            updateSearch('');
+            setOpen(false);
+            return;
+          }
           if (highlightedId) {
             commitHighlighted(false);
           } else {
             setOpen(false);
           }
+          return;
+        }
+        case ' ':
+        case 'Spacebar': {
+          // Multi mode only: Space toggles the highlighted item per APG
+          // multi-selectable listbox simple model. preventDefault so the
+          // space character does NOT also land in the search input — in
+          // multi mode the input is a filter, and toggling-via-space
+          // should not also pollute the filter with a space character.
+          // Single mode: Space falls through to default (lands in input
+          // as a literal space — combobox is filter-based).
+          if (!multiple) return;
+          if (hasModifier || event.altKey) return;
+          event.preventDefault();
+          commitHighlighted();
           return;
         }
         default:
@@ -1588,6 +2142,7 @@ export function ComboboxContent({ children, className, ...rest }: ComboboxConten
     },
     [
       open,
+      multiple,
       highlightedId,
       visibleItemIds,
       getOrderedItems,
@@ -1620,7 +2175,31 @@ export function ComboboxContent({ children, className, ...rest }: ComboboxConten
     };
   }, []);
 
-  if (!open) return null;
+  // When closed, mount children invisibly so they register with the root
+  // context (label cache, value lookup). Critical for multi-mode chip
+  // rendering when `defaultValue` is set on first paint — chips read
+  // `getLabelByValue` which falls back to the raw value string if the
+  // label cache is empty. Items use `display: none` sentinels under their
+  // own visibility filter, so this hidden mount adds zero visible DOM —
+  // it just lets the registration `useLayoutEffect` run.
+  //
+  // The `aria-hidden` + `tabIndex={-1}` + `display: none` triple ensures
+  // the hidden tree is invisible to AT, keyboard, and visual users alike.
+  // Single mode also benefits: `getLabel` lookups work even before the
+  // first open (e.g. for a controlled value that needs label resolution
+  // for the input display).
+  if (!open) {
+    return (
+      <div
+        style={{ display: 'none' }}
+        aria-hidden="true"
+        tabIndex={-1}
+        data-combobox-hidden-mount=""
+      >
+        {children}
+      </div>
+    );
+  }
 
   return (
     <FloatingPortal>
@@ -1634,7 +2213,7 @@ export function ComboboxContent({ children, className, ...rest }: ComboboxConten
           id={contentId}
           role="listbox"
           aria-labelledby={inputId}
-          aria-multiselectable={false}
+          aria-multiselectable={multiple}
           tabIndex={-1}
           data-state="open"
           data-placement={actualPlacement}
@@ -1773,7 +2352,9 @@ function ComboboxItemImpl({
 }: ComboboxItemProps) {
   const ctx = useComboboxContext('<ComboboxItem>');
   const {
-    value: selectedValue,
+    multiple,
+    isSelected: isValueSelected,
+    selectedValues,
     selectValue,
     updateSearch,
     setOpen,
@@ -1789,7 +2370,15 @@ function ComboboxItemImpl({
   const itemId = `${reactId}-option`;
   const elementRef = useRef<HTMLDivElement | null>(null);
 
-  const isSelected = selectedValue === value;
+  // `selectedValues` reference changes on every selection mutation (root
+  // useMemo deps include it). Subscribing to it here ensures the memoized
+  // ComboboxItem re-renders when its own selected status flips — toggle
+  // in multi mode, replace in single mode. `isValueSelected` reads from
+  // `valuesRef` (stable identity) so the call itself does not subscribe;
+  // the `void` statement below forces the React reconciler to treat
+  // `selectedValues` as a context dependency for this item.
+  void selectedValues; // forces re-render via context subscription on selection change
+  const isSelected = isValueSelected(value);
   const isHighlighted = highlightedId === itemId;
 
   // Register with root on mount, unregister on unmount. Re-register when
@@ -1839,6 +2428,20 @@ function ComboboxItemImpl({
     (event: React.MouseEvent<HTMLDivElement>) => {
       onClick?.(event);
       if (disabled) return;
+      // Multi mode: toggle selection, KEEP listbox open, CLEAR search so
+      // the user can immediately filter to the next pick. Focus stays on
+      // input (aria-activedescendant pattern). No label sync — selected
+      // values render as chips left of the input, the search field is for
+      // filtering only.
+      //
+      // Single mode: replace selection, sync search to committed label,
+      // close listbox, restore focus to input.
+      if (multiple) {
+        selectValue(value);
+        updateSearch('');
+        inputRef.current?.focus();
+        return;
+      }
       const element = elementRef.current;
       const label = textValue ?? element?.textContent ?? '';
       selectValue(value);
@@ -1846,7 +2449,7 @@ function ComboboxItemImpl({
       setOpen(false);
       inputRef.current?.focus();
     },
-    [disabled, value, textValue, selectValue, updateSearch, setOpen, inputRef, onClick],
+    [disabled, multiple, value, textValue, selectValue, updateSearch, setOpen, inputRef, onClick],
   );
 
   // Visibility filter — when this item's id is not in the visible set

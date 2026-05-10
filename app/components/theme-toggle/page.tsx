@@ -15,14 +15,14 @@ export default function ThemeTogglePlaygroundPage() {
           ThemeToggle
         </Heading>
         <p className={styles.intro}>
-          Single-button light/dark theme switcher. Composes the lib{' '}
+          Single-button light/dark theme switcher. Built on the lib{' '}
           <code>Button</code> atom (<code>variant=&quot;ghost&quot;</code>{' '}
           <code>size=&quot;sm&quot;</code> <code>iconOnly</code>) with inline
           sun/moon SVGs. The <code>&lt;html data-theme&gt;</code> attribute is
-          the single source of truth — <code>useSyncExternalStore</code>{' '}
-          subscribes via <code>MutationObserver</code>, persists to{' '}
-          <code>localStorage</code> as best-effort. Cross-tab sync via{' '}
-          <code>storage</code> event. Zero runtime UI dependencies (D5/D25).
+          the single source of truth — the component subscribes via{' '}
+          <code>useSyncExternalStore</code> + <code>MutationObserver</code>,
+          persists to <code>localStorage</code>, and syncs across tabs via the{' '}
+          <code>storage</code> event. Zero runtime UI dependencies.
         </p>
       </header>
 
@@ -89,8 +89,8 @@ export default function ThemeTogglePlaygroundPage() {
         </Heading>
         <Text variant="small" color="secondary">
           ThemeToggle drops into any horizontal layout — its Button atom
-          inherits the surrounding flex / inline rhythm. Touch target stays
-          44×44 on coarse pointers (D13).
+          inherits the surrounding flex / inline rhythm. The touch target
+          stays 44×44 px on coarse pointers (WCAG 2.2 AAA).
         </Text>
         <div className={styles.frame}>
           <div className={styles.toolbar}>

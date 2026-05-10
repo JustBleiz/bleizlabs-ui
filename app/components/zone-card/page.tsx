@@ -76,7 +76,7 @@ export default function ZoneCardPlaygroundPage() {
         <ZoneCard
           icon={<PlaceholderIcon d={ICON_SETTINGS} />}
           title="Konfiguracja"
-          rightSlot={<Badge color="success" dot label="Produkcja" />}
+          rightSlot={<Badge color="success" label="Produkcja" />}
         >
           <ul className={styles.dataList} aria-label="Konfiguracja">
             <li className={styles.dataRow}>
@@ -99,7 +99,7 @@ export default function ZoneCardPlaygroundPage() {
           icon={<PlaceholderIcon d={ICON_SETTINGS} />}
           title="Bezpieczenstwo domeny"
           subtitle="SSL + DNS + cert renewal"
-          rightSlot={<Badge color="success" dot label="Wazny" />}
+          rightSlot={<Badge color="success" label="Wazny" />}
         >
           <Text variant="body" color="secondary">
             Subtitle prop renders caption-styled muted text below title.
@@ -119,7 +119,7 @@ export default function ZoneCardPlaygroundPage() {
           <ZoneCard
             icon={<PlaceholderIcon d={ICON_NETWORK} />}
             title="Hosting"
-            rightSlot={<Badge color="success" dot label="Aktywny" />}
+            rightSlot={<Badge color="success" label="Aktywny" />}
             tone="success"
           >
             <Text variant="small" color="secondary">
@@ -129,7 +129,7 @@ export default function ZoneCardPlaygroundPage() {
           <ZoneCard
             icon={<PlaceholderIcon d={ICON_DATABASE} />}
             title="Baza danych"
-            rightSlot={<Badge color="warning" dot label="Uwaga" />}
+            rightSlot={<Badge color="warning" label="Uwaga" />}
             tone="warning"
           >
             <Text variant="small" color="secondary">
@@ -139,7 +139,7 @@ export default function ZoneCardPlaygroundPage() {
           <ZoneCard
             icon={<PlaceholderIcon d={ICON_DATABASE} />}
             title="Storage"
-            rightSlot={<Badge color="error" dot label="Limit" />}
+            rightSlot={<Badge color="error" label="Limit" />}
             tone="error"
           >
             <Text variant="small" color="secondary">

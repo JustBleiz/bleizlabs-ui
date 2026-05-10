@@ -222,12 +222,10 @@ export default function DialogPlaygroundPage() {
             </>
           }
         >
-          <Input name="projectName" label="Project name" placeholder="My project" />
+          <Input name="projectName" placeholder="My project" />
           <Input
             name="projectSlug"
-            label="Slug"
             placeholder="my-project"
-            helperText="Lowercase letters, numbers and hyphens only."
           />
         </Dialog>
       </section>
