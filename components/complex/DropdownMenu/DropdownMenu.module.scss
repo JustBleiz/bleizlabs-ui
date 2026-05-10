@@ -29,8 +29,13 @@
   // Menu-specific layout — tight vertical rhythm, no padding (items + separators
   // + labels own their own padding so the surface edges are flush with content).
   padding: var(--space-1);
+  // Width matches trigger via `--reference-width` published by useFloating.
+  // `min-width: 180px` floors narrow triggers (icon-only buttons, kebab
+  // menus). `max-width: 90vw` viewport-guards on small screens. Wide
+  // triggers (toolbar-style buttons) get a menu that matches their width.
+  width: var(--reference-width);
   min-width: 180px;
-  max-width: min(320px, 90vw);
+  max-width: 90vw;
 
   // Scrollable when content exceeds viewport height (long menus).
   max-height: min(480px, calc(100vh - var(--space-8)));

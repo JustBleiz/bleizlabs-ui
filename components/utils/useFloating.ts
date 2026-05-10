@@ -118,6 +118,15 @@ export function useFloating(options: UseFloatingOptions): UseFloatingResult {
     placement,
   });
   const [arrowCoords, setArrowCoords] = useState<{ x?: number; y?: number }>({});
+  // Trigger width — published as `--reference-width` CSS custom property on
+  // the floating element so SCSS can size the popper to match (e.g.
+  // `width: var(--reference-width); min-width: 200px;`). Critical for
+  // listbox-family components (Select, Combobox, DropdownMenu,
+  // NavigationMenu) where the popped surface should match the trigger
+  // width with a minimum-width floor for narrow triggers. Components that
+  // do not need this (Tooltip, Popover, ContextMenu where the trigger
+  // doesn't determine width) can simply ignore the variable.
+  const [referenceWidth, setReferenceWidth] = useState<number>(0);
 
   const arrowRef = arrow?.ref;
   const arrowPadding = arrow?.padding;
@@ -155,6 +164,12 @@ export function useFloating(options: UseFloatingOptions): UseFloatingResult {
         ? prev
         : result,
     );
+
+    // Reference width — measured on every update so the popper can match
+    // the trigger width via `--reference-width` CSS variable. Same bail-
+    // out guard as coords above: identity-stable when unchanged.
+    const nextWidth = Math.round(referenceRect.width);
+    setReferenceWidth((prev) => (prev === nextWidth ? prev : nextWidth));
 
     // Optional arrow pass — skipped entirely when `arrow` option is omitted.
     if (arrowRef?.current) {
@@ -233,6 +248,13 @@ export function useFloating(options: UseFloatingOptions): UseFloatingResult {
     left: 0,
     transform: `translate3d(${Math.round(coords.x)}px, ${Math.round(coords.y)}px, 0)`,
     willChange: 'transform',
+    // Trigger-width custom property — listbox-family popovers (Select,
+    // Combobox, DropdownMenu, NavigationMenu) read this in SCSS via
+    // `width: var(--reference-width)` to match trigger width, with their
+    // own `min-width` setting the floor for narrow triggers. Components
+    // that don't need width-matching (Tooltip, Popover, HoverCard,
+    // ContextMenu) ignore the variable.
+    ['--reference-width' as 'width']: `${referenceWidth}px`,
   };
 
   // Arrow styles — only populated when caller supplied an arrow ref AND the

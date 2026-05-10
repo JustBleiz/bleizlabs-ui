@@ -330,8 +330,15 @@
   box-shadow: var(--shadow-lg);
 
   padding: var(--space-1) 0;
+  // Width matches trigger via `--reference-width` published by useFloating
+  // hook (measured `getBoundingClientRect().width` on every reposition).
+  // `min-width` floors narrow triggers (icon-only / compact filter inputs)
+  // so the listbox stays usable. `max-width` is a viewport guard for very
+  // wide triggers + small viewports (mobile landscape forms). When trigger
+  // width exceeds the floor, listbox matches it 1:1.
+  width: var(--reference-width);
   min-width: 200px;
-  max-width: min(360px, 90vw);
+  max-width: 90vw;
 
   // Scrollable when filtered list exceeds the viewport.
   max-height: min(320px, calc(100vh - var(--space-8)));

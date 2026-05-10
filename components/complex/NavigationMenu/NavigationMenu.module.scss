@@ -135,8 +135,14 @@
   box-shadow: var(--shadow-lg);
 
   padding: var(--space-1);
+  // Width matches trigger via `--reference-width` published by useFloating.
+  // `min-width: 220px` floors narrow nav triggers. `max-width: 90vw`
+  // viewport-guards on small screens. Wide triggers get a submenu matched
+  // to their width — preserves visual continuity between trigger label
+  // and submenu surface.
+  width: var(--reference-width);
   min-width: 220px;
-  max-width: min(360px, 90vw);
+  max-width: 90vw;
 
   // Scrollable when content exceeds viewport height (long submenus).
   max-height: min(480px, calc(100vh - var(--space-8)));
