@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1",
-  "libVersion": "0.15.0",
-  "generatedAt": "2026-05-10T15:44:12.101Z",
+  "libVersion": "0.16.0",
+  "generatedAt": "2026-05-10T16:50:29.243Z",
   "categories": {
     "layout": [
       "Container",
@@ -24,7 +24,6 @@
       "EdgeBar",
       "IconBox",
       "KpiValue",
-      "PercentValue",
       "Reveal",
       "Separator",
       "Skeleton",
@@ -73,33 +72,15 @@
       "BreakdownList",
       "Chip",
       "DataRow",
-      "DeadlineBadge",
       "FileChip",
       "Header",
       "IconButton",
       "MetricTile",
-      "PageHeader",
-      "RevealStack",
       "SectionDivider",
-      "SectionHeader",
-      "Timeline",
-      "ToggleGroupFilter"
+      "Timeline"
     ],
     "presets": [
-      "ActionCard",
-      "AppShell",
-      "CollapsibleZoneCard",
-      "ContentCard",
-      "EntityCard",
-      "EntityHero",
-      "FormCard",
-      "FormSurface",
-      "IconHeaderCard",
-      "PairedCard",
-      "SidebarCard",
-      "SiteHeader",
-      "StatsCard",
-      "ZoneCard"
+      "FormSurface"
     ],
     "complex": [
       "AlertDialog",
@@ -346,21 +327,6 @@
         "KpiTrendDirection",
         "KpiValueAnimatedProps",
         "KpiValueProps"
-      ],
-      "hooks": []
-    },
-    {
-      "family": "PercentValue",
-      "category": "display",
-      "path": "display/PercentValue",
-      "exports": [
-        "PercentValue",
-        "PercentValueAnimated"
-      ],
-      "types": [
-        "PercentValueAnimatedProps",
-        "PercentValueProps",
-        "PercentValueTone"
       ],
       "hooks": []
     },
@@ -904,18 +870,6 @@
       "hooks": []
     },
     {
-      "family": "DeadlineBadge",
-      "category": "molecules",
-      "path": "molecules/DeadlineBadge",
-      "exports": [
-        "DeadlineBadge"
-      ],
-      "types": [
-        "DeadlineBadgeProps"
-      ],
-      "hooks": []
-    },
-    {
       "family": "FileChip",
       "category": "molecules",
       "path": "molecules/FileChip",
@@ -966,32 +920,6 @@
       "hooks": []
     },
     {
-      "family": "PageHeader",
-      "category": "molecules",
-      "path": "molecules/PageHeader",
-      "exports": [
-        "PageHeader"
-      ],
-      "types": [
-        "PageHeaderBadge",
-        "PageHeaderLevel",
-        "PageHeaderProps"
-      ],
-      "hooks": []
-    },
-    {
-      "family": "RevealStack",
-      "category": "molecules",
-      "path": "molecules/RevealStack",
-      "exports": [
-        "RevealStack"
-      ],
-      "types": [
-        "RevealStackProps"
-      ],
-      "hooks": []
-    },
-    {
       "family": "SectionDivider",
       "category": "molecules",
       "path": "molecules/SectionDivider",
@@ -1001,18 +929,6 @@
       "types": [
         "SectionDividerAlign",
         "SectionDividerProps"
-      ],
-      "hooks": []
-    },
-    {
-      "family": "SectionHeader",
-      "category": "molecules",
-      "path": "molecules/SectionHeader",
-      "exports": [
-        "SectionHeader"
-      ],
-      "types": [
-        "SectionHeaderProps"
       ],
       "hooks": []
     },
@@ -1034,117 +950,6 @@
       "hooks": []
     },
     {
-      "family": "ToggleGroupFilter",
-      "category": "molecules",
-      "path": "molecules/ToggleGroupFilter",
-      "exports": [
-        "ToggleGroupFilter"
-      ],
-      "types": [
-        "ToggleGroupFilterOption",
-        "ToggleGroupFilterProps"
-      ],
-      "hooks": []
-    },
-    {
-      "family": "ActionCard",
-      "category": "presets",
-      "path": "presets/ActionCard",
-      "exports": [
-        "ActionCard"
-      ],
-      "types": [
-        "ActionCardProps",
-        "ActionCardSeverity"
-      ],
-      "hooks": []
-    },
-    {
-      "family": "AppShell",
-      "category": "presets",
-      "path": "presets/AppShell",
-      "exports": [
-        "AppShell"
-      ],
-      "types": [
-        "AppShellProps",
-        "AppShellProviderConfig"
-      ],
-      "hooks": []
-    },
-    {
-      "family": "CollapsibleZoneCard",
-      "category": "presets",
-      "path": "presets/CollapsibleZoneCard",
-      "exports": [
-        "CollapsibleZoneCard"
-      ],
-      "types": [
-        "CollapsibleZoneCardProps",
-        "CollapsibleZoneCardSummaryChip",
-        "ZoneCardDensity",
-        "ZoneCardProps",
-        "ZoneCardTone"
-      ],
-      "hooks": []
-    },
-    {
-      "family": "ContentCard",
-      "category": "presets",
-      "path": "presets/ContentCard",
-      "exports": [
-        "ContentCard"
-      ],
-      "types": [
-        "ContentCardProps"
-      ],
-      "hooks": []
-    },
-    {
-      "family": "EntityCard",
-      "category": "presets",
-      "path": "presets/EntityCard",
-      "exports": [
-        "EntityCard"
-      ],
-      "types": [
-        "EntityCardAccentPosition",
-        "EntityCardBadge",
-        "EntityCardDensity",
-        "EntityCardMetaItem",
-        "EntityCardProps"
-      ],
-      "hooks": []
-    },
-    {
-      "family": "EntityHero",
-      "category": "presets",
-      "path": "presets/EntityHero",
-      "exports": [
-        "EntityHero",
-        "EntityHero as DetailPageHero"
-      ],
-      "types": [
-        "EntityHeroMetaItem",
-        "EntityHeroMetaItem as DetailPageHeroMetaItem",
-        "EntityHeroProps",
-        "EntityHeroProps as DetailPageHeroProps"
-      ],
-      "hooks": []
-    },
-    {
-      "family": "FormCard",
-      "category": "presets",
-      "path": "presets/FormCard",
-      "exports": [
-        "FormCard"
-      ],
-      "types": [
-        "FormCardProps"
-      ],
-      "hooks": []
-    },
-    {
       "family": "FormSurface",
       "category": "presets",
       "path": "presets/FormSurface",
@@ -1153,95 +958,6 @@
       ],
       "types": [
         "FormSurfaceProps"
-      ],
-      "hooks": []
-    },
-    {
-      "family": "IconHeaderCard",
-      "category": "presets",
-      "path": "presets/IconHeaderCard",
-      "exports": [
-        "IconHeaderCard"
-      ],
-      "types": [
-        "IconHeaderCardFooterSection",
-        "IconHeaderCardProps"
-      ],
-      "hooks": []
-    },
-    {
-      "family": "PairedCard",
-      "category": "presets",
-      "path": "presets/PairedCard",
-      "exports": [
-        "PairedCard"
-      ],
-      "types": [
-        "PairedCardProps",
-        "PairedCardVariant"
-      ],
-      "hooks": []
-    },
-    {
-      "family": "SidebarCard",
-      "category": "presets",
-      "path": "presets/SidebarCard",
-      "exports": [
-        "SidebarCard"
-      ],
-      "types": [
-        "SidebarCardProps"
-      ],
-      "hooks": []
-    },
-    {
-      "family": "SiteHeader",
-      "category": "presets",
-      "path": "presets/SiteHeader",
-      "exports": [
-        "SiteHeader",
-        "SiteHeaderActions",
-        "SiteHeaderBrand",
-        "SiteHeaderMobileToggle",
-        "SiteHeaderNav"
-      ],
-      "types": [
-        "SiteHeaderActionsProps",
-        "SiteHeaderBrandProps",
-        "SiteHeaderContainerSize",
-        "SiteHeaderMobileToggleProps",
-        "SiteHeaderNavProps",
-        "SiteHeaderPosition",
-        "SiteHeaderProps",
-        "SiteHeaderSize",
-        "SiteHeaderVariant"
-      ],
-      "hooks": []
-    },
-    {
-      "family": "StatsCard",
-      "category": "presets",
-      "path": "presets/StatsCard",
-      "exports": [
-        "StatsCard"
-      ],
-      "types": [
-        "StatsCardLayout",
-        "StatsCardProps"
-      ],
-      "hooks": []
-    },
-    {
-      "family": "ZoneCard",
-      "category": "presets",
-      "path": "presets/ZoneCard",
-      "exports": [
-        "ZoneCard"
-      ],
-      "types": [
-        "ZoneCardDensity",
-        "ZoneCardProps",
-        "ZoneCardTone"
       ],
       "hooks": []
     },

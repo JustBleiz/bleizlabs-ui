@@ -21,7 +21,6 @@ function SearchIcon() {
 export default function InputPlaygroundPage() {
   const [email, setEmail] = useState('');
   const [bio, setBio] = useState('');
-  const showEmailError = email.length > 0 && !email.includes('@');
 
   return (
     <main className={styles.main}>
