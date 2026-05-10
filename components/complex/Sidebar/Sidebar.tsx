@@ -115,10 +115,6 @@ export interface SidebarProviderProps extends HTMLAttributes<HTMLDivElement> {
   defaultOpen?: boolean;
   /** Fires on open/close transitions (controlled + uncontrolled). */
   onOpenChange?: (open: boolean) => void;
-  /** Persist open state to cookie. Default `false`. Opt-in to avoid surprise cookies. */
-  persist?: boolean;
-  /** Cookie name for persistence. Default `'bleizlabs-sidebar'`. */
-  cookieName?: string;
   /** Mobile breakpoint in px. Below this width, sidebar renders as drawer. Default `768`. */
   breakpoint?: number;
   /** Provider renders a wrapper div for layout purposes. Pass `false` to render children only. */
@@ -223,16 +219,6 @@ export function useSidebar(): UseSidebarReturn {
 }
 
 // ============================================================================
-// Cookie helpers
-// ============================================================================
-
-function writeSidebarCookie(name: string, value: boolean): void {
-  if (typeof document === 'undefined') return;
-  const maxAge = 60 * 60 * 24 * 7;
-  document.cookie = `${name}=${value ? 'true' : 'false'}; max-age=${maxAge}; path=/; samesite=lax`;
-}
-
-// ============================================================================
 // SidebarProvider
 // ============================================================================
 
@@ -242,8 +228,6 @@ export const SidebarProvider = forwardRef<HTMLDivElement, SidebarProviderProps>(
       open: controlledOpen,
       defaultOpen = true,
       onOpenChange,
-      persist = false,
-      cookieName = 'bleizlabs-sidebar',
       breakpoint = 768,
       asChild = false,
       className,
@@ -265,9 +249,8 @@ export const SidebarProvider = forwardRef<HTMLDivElement, SidebarProviderProps>(
       (next: boolean) => {
         if (!isControlled) setUncontrolledOpen(next);
         onOpenChange?.(next);
-        if (persist) writeSidebarCookie(cookieName, next);
       },
-      [isControlled, onOpenChange, persist, cookieName],
+      [isControlled, onOpenChange],
     );
 
     const toggle = useCallback(() => {

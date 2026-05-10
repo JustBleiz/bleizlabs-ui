@@ -454,7 +454,7 @@ export default function DemoPage() {
             Skeleton, Spinner, AspectRatio
           </Text>
           <Stack gap={3}>
-            <Skeleton variant="text" lines={3} />
+            <Skeleton variant="text" />
             <Skeleton variant="rect" style={{ height: 64 }} />
             <Inline gap={3} align="center">
               <Spinner size="xs" />
