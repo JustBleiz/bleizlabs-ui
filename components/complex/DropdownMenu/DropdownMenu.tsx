@@ -62,7 +62,10 @@
  */
 
 import {
+  cloneElement,
   forwardRef,
+  isValidElement,
+  Children as ReactChildren,
   useCallback,
   useEffect,
   useId,
@@ -72,6 +75,7 @@ import {
   useState,
   type ButtonHTMLAttributes,
   type HTMLAttributes,
+  type ReactElement,
   type ReactNode,
   type RefObject,
 } from 'react';
@@ -222,10 +226,66 @@ export interface DropdownMenuTriggerProps
    * onClick/onKeyDown. When `false` (default), renders a native `<button>`.
    */
   asChild?: boolean;
+  /**
+   * Render a built-in chevron-down indicator after the trigger label. Default
+   * `false` (Radix-style generic trigger — DropdownMenu may also be triggered
+   * by an Avatar, IconButton, or any non-button element where a chevron would
+   * be visually wrong). Set `true` for the common Button-trigger case to get
+   * the standard "click to open" affordance without composing the icon
+   * manually. Works in both native and `asChild` modes:
+   *  - native mode: chevron renders inside the native `<button>` after children
+   *  - `asChild` mode: chevron is appended to the wrapped element's existing
+   *    children via `cloneElement`. Wrapping element MUST accept `children`
+   *    array and apply gap (`Button` does this via its own `gap: var(--space-2)`
+   *    rule — recommended trigger element when `withChevron` is on).
+   */
+  withChevron?: boolean;
+}
+
+/**
+ * Inline chevron-down svg matching Select's chevron pattern (linie 883-885).
+ * `aria-hidden` since the affordance is purely visual — `aria-haspopup="menu"`
+ * already conveys the "this opens a menu" semantics to AT.
+ */
+function DropdownChevronIcon() {
+  return (
+    <svg
+      width="14"
+      height="14"
+      viewBox="0 0 16 16"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      <path d="M4 6l4 4 4-4" />
+    </svg>
+  );
+}
+
+/**
+ * Append chevron to an asChild trigger's children. Uses `cloneElement` z 3rd
+ * argument variadic children pattern — preserves existing child content and
+ * adds chevron as final child. Wrapping element must apply gap (Button does).
+ */
+function appendChevronToChild(child: ReactElement): ReactElement {
+  const childProps = (child.props ?? {}) as { children?: ReactNode };
+  const existing = ReactChildren.toArray(childProps.children);
+  return cloneElement(
+    child,
+    undefined,
+    ...existing,
+    <DropdownChevronIcon key="__dd-chevron" />
+  );
 }
 
 export const DropdownMenuTrigger = forwardRef<HTMLElement, DropdownMenuTriggerProps>(
-  function DropdownMenuTrigger({ children, asChild = false, onClick, onKeyDown, ...rest }, forwardedRef) {
+  function DropdownMenuTrigger(
+    { children, asChild = false, withChevron = false, onClick, onKeyDown, ...rest },
+    forwardedRef
+  ) {
     const ctx = useDropdownMenuContext('<DropdownMenuTrigger>');
     const { open, setOpen, triggerId, contentId, triggerRef } = ctx;
 
@@ -274,6 +334,13 @@ export const DropdownMenuTrigger = forwardRef<HTMLElement, DropdownMenuTriggerPr
     };
 
     if (asChild) {
+      // When withChevron + asChild, append chevron to the wrapped element's
+      // children before passing to Slot. Slot handles ref/className/event
+      // merging on the cloned child; we only adjust children here.
+      const slotChild =
+        withChevron && isValidElement(children)
+          ? appendChevronToChild(children as ReactElement)
+          : children;
       return (
         <Slot
           ref={mergedRef}
@@ -287,7 +354,7 @@ export const DropdownMenuTrigger = forwardRef<HTMLElement, DropdownMenuTriggerPr
             onKeyDown?.(event as unknown as React.KeyboardEvent<HTMLButtonElement>);
           }}
         >
-          {children}
+          {slotChild}
         </Slot>
       );
     }
@@ -308,6 +375,7 @@ export const DropdownMenuTrigger = forwardRef<HTMLElement, DropdownMenuTriggerPr
         {...rest}
       >
         {children}
+        {withChevron ? <DropdownChevronIcon /> : null}
       </button>
     );
   },
