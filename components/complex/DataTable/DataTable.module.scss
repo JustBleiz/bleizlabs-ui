@@ -198,6 +198,196 @@
   }
 }
 
+// Selected row
+.rowSelected {
+  background-color: color-mix(in srgb, var(--color-brand) 8%, transparent);
+
+  &:hover {
+    background-color: color-mix(in srgb, var(--color-brand) 12%, transparent);
+  }
+}
+
+// Selection column (checkbox cell)
+.selectionCell {
+  width: 44px;
+  min-width: 44px;
+  padding-block: var(--data-table-cell-padding-y);
+  padding-inline: var(--data-table-cell-padding-x);
+  text-align: center;
+}
+
+// Filter row (drugi `<tr>` w `<thead>`)
+.filterRow {
+  background: var(--color-surface);
+}
+
+.filterCell {
+  padding-block: var(--space-2);
+  padding-inline: var(--data-table-cell-padding-x);
+  border-bottom: 1px solid var(--color-border-subtle);
+  vertical-align: middle;
+}
+
+// Expansion column (chevron toggle cell)
+.expansionCell {
+  width: 44px;
+  min-width: 44px;
+  padding-block: var(--data-table-cell-padding-y);
+  padding-inline: var(--data-table-cell-padding-x);
+  text-align: center;
+}
+
+.expansionButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  margin: 0;
+  background: transparent;
+  border: 0;
+  border-radius: var(--radius-sm);
+  color: var(--color-text-muted);
+  cursor: pointer;
+  transition:
+    color var(--duration-fast) var(--easing-default),
+    background-color var(--duration-fast) var(--easing-default),
+    transform var(--duration-fast) var(--easing-default);
+
+  &:hover:not(:disabled) {
+    color: var(--color-text-primary);
+    background-color: var(--color-surface-hover);
+  }
+
+  &:focus-visible {
+    @include mx.focus-ring;
+    outline: none;
+  }
+
+  &:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+
+  svg {
+    transition: transform var(--duration-fast) var(--easing-default);
+  }
+}
+
+.expansionButtonExpanded {
+  color: var(--color-text-primary);
+
+  svg {
+    transform: rotate(90deg);
+  }
+}
+
+// Expansion panel row + cell
+.rowExpanded {
+  // base row when its panel is open — visual cue (subtle bg)
+  background-color: var(--color-surface-raised);
+}
+
+.expansionPanel {
+  // The second `<tr>` containing renderExpanded content
+}
+
+.expansionPanelCell {
+  padding: 0;
+  background-color: var(--color-surface-raised);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.expansionPanelContent {
+  padding-block: var(--space-3);
+  padding-inline: var(--space-4);
+  animation: dataTableExpansionReveal var(--duration-fast) var(--easing-default);
+}
+
+@keyframes dataTableExpansionReveal {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .expansionButton svg {
+    transition: none;
+  }
+  .expansionPanelContent {
+    animation: none;
+  }
+}
+
+.selectionCheckbox {
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  margin: 0;
+  cursor: pointer;
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+  transition:
+    background-color var(--duration-fast) var(--easing-default),
+    border-color var(--duration-fast) var(--easing-default);
+  display: inline-block;
+  position: relative;
+  vertical-align: middle;
+
+  &:hover:not(:disabled) {
+    border-color: var(--color-brand);
+  }
+
+  &:focus-visible {
+    @include mx.focus-ring;
+    outline: none;
+  }
+
+  &:checked {
+    background-color: var(--color-brand);
+    border-color: var(--color-brand);
+
+    &::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='white' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'><polyline points='3 8 6.5 11.5 13 5'/></svg>");
+      background-repeat: no-repeat;
+      background-position: center;
+      background-size: 14px 14px;
+    }
+  }
+
+  &:indeterminate {
+    background-color: var(--color-brand);
+    border-color: var(--color-brand);
+
+    &::after {
+      content: '';
+      position: absolute;
+      left: 2px;
+      right: 2px;
+      top: 50%;
+      height: 2px;
+      transform: translateY(-50%);
+      background: white;
+      border-radius: 1px;
+    }
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
 // Skeleton row
 .skeletonRow {
   .cell {

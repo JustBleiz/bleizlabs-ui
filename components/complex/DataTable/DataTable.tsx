@@ -2,6 +2,7 @@
 
 import {
   forwardRef,
+  Fragment,
   useCallback,
   useId,
   useMemo,
@@ -23,6 +24,7 @@ import { Empty } from '../../feedback/Empty';
 import { Alert } from '../../feedback/Alert';
 import { Skeleton } from '../../display/Skeleton';
 import { Pagination } from '../../specialized/Pagination';
+import { Input } from '../../interactive/Input';
 import styles from './DataTable.module.scss';
 
 /**
@@ -463,6 +465,52 @@ function paginateRows<T>(
 }
 
 // ============================================================================
+// SELECTION HELPERS (discriminated union extraction)
+// ============================================================================
+
+interface ExtractedSelectionConfig<T> {
+  mode: 'none' | 'single' | 'multiple';
+  controlledValue: T | T[] | null | undefined;
+  defaultValue: T | T[] | null | undefined;
+  onChange: ((val: T | null | T[]) => void) | undefined;
+}
+
+/**
+ * Narrow discriminated union selection props into single shape.
+ * Type-erased via `any` cast — TS dyskryminator (`selection` literal) gwarantuje
+ * runtime correctness na podstawie mode value.
+ */
+function extractSelectionConfig<T>(
+  props: DataTableProps<T>,
+): ExtractedSelectionConfig<T> {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const anyProps = props as any;
+  const mode: 'none' | 'single' | 'multiple' = anyProps.selection ?? 'none';
+  if (mode === 'single') {
+    return {
+      mode,
+      controlledValue: anyProps.selectedRow,
+      defaultValue: anyProps.defaultSelectedRow,
+      onChange: anyProps.onSelectionChange,
+    };
+  }
+  if (mode === 'multiple') {
+    return {
+      mode,
+      controlledValue: anyProps.selectedRows,
+      defaultValue: anyProps.defaultSelectedRows,
+      onChange: anyProps.onSelectionChange,
+    };
+  }
+  return {
+    mode,
+    controlledValue: undefined,
+    defaultValue: undefined,
+    onChange: undefined,
+  };
+}
+
+// ============================================================================
 // STATE HOOK
 // ============================================================================
 
@@ -642,8 +690,8 @@ export const DataTable = forwardRef(function DataTable<T>(
     onSortChange,
     globalFilter,
     columnFilters,
-    onColumnFiltersChange: _onColumnFiltersChange,
-    expandable: _expandable,
+    onColumnFiltersChange,
+    expandable,
     state: stateMode = 'idle',
     errorMessage,
     onRetry,
@@ -673,6 +721,39 @@ export const DataTable = forwardRef(function DataTable<T>(
     [columns],
   );
 
+  // Column filters (controlled vs uncontrolled)
+  const isControlledFilters = columnFilters !== undefined;
+  const [internalColumnFilters, setInternalColumnFilters] =
+    useState<ColumnFiltersState>({});
+  const effectiveFilters: ColumnFiltersState = isControlledFilters
+    ? columnFilters!
+    : internalColumnFilters;
+
+  const handleColumnFilterChange = useCallback(
+    (columnId: string, value: unknown) => {
+      const next: ColumnFiltersState = { ...effectiveFilters };
+      if (value == null || value === '') {
+        delete next[columnId];
+      } else {
+        next[columnId] = value;
+      }
+      if (!isControlledFilters) setInternalColumnFilters(next);
+      onColumnFiltersChange?.(next);
+    },
+    [effectiveFilters, isControlledFilters, onColumnFiltersChange],
+  );
+
+  // Detect czy jakaś kolumna ma filter UI (decyduje czy renderować filter row)
+  const hasFilterRow = useMemo(
+    () =>
+      columns.some(
+        (c) =>
+          !c.hidden && (c.filterable || c.renderFilter) !== undefined &&
+          (!!c.filterable || !!c.renderFilter),
+      ),
+    [columns],
+  );
+
   // State machine
   const tableState = useDataTableState({
     data,
@@ -681,11 +762,141 @@ export const DataTable = forwardRef(function DataTable<T>(
     sort,
     onSortChange,
     globalFilter,
-    columnFilters,
+    columnFilters: effectiveFilters,
     pagination,
   });
 
   const isMobile = useMatchMedia(`(max-width: ${mobileBreakpoint - 1}px)`);
+
+  // ─────────────────────────────────────────────────────────────────────────
+  // Selection state (controlled vs uncontrolled, single + multiple modes)
+  // ─────────────────────────────────────────────────────────────────────────
+  const selectionConfig = useMemo(() => extractSelectionConfig(props), [props]);
+  const selectionMode = selectionConfig.mode;
+  const isControlledSelection = selectionConfig.controlledValue !== undefined;
+
+  const computeIdsFromRows = useCallback(
+    (rows: T[] | T | null | undefined): Set<string> => {
+      if (rows == null) return new Set();
+      const arr = Array.isArray(rows) ? rows : [rows];
+      const ids = arr
+        .map((r) => {
+          const idx = data.indexOf(r);
+          return idx >= 0 ? getRowId(r, idx) : '';
+        })
+        .filter((s) => s !== '');
+      return new Set(ids);
+    },
+    [data, getRowId],
+  );
+
+  const [uncontrolledSelectedIds, setUncontrolledSelectedIds] = useState<
+    Set<string>
+  >(() => {
+    if (selectionMode === 'none') return new Set();
+    return computeIdsFromRows(selectionConfig.defaultValue as T | T[] | null);
+  });
+
+  const selectedIds = useMemo<Set<string>>(() => {
+    if (!isControlledSelection) return uncontrolledSelectedIds;
+    return computeIdsFromRows(selectionConfig.controlledValue as T | T[] | null);
+  }, [
+    isControlledSelection,
+    uncontrolledSelectedIds,
+    selectionConfig.controlledValue,
+    computeIdsFromRows,
+  ]);
+
+  const emitSelectionChange = useCallback(
+    (nextIds: Set<string>) => {
+      if (!isControlledSelection) setUncontrolledSelectedIds(nextIds);
+      if (!selectionConfig.onChange) return;
+      if (selectionMode === 'single') {
+        const id = nextIds.values().next().value;
+        const row = id
+          ? data.find((r, i) => getRowId(r, i) === id) ?? null
+          : null;
+        (selectionConfig.onChange as (r: T | null) => void)(row);
+      } else if (selectionMode === 'multiple') {
+        const rows = data.filter((r, i) => nextIds.has(getRowId(r, i)));
+        (selectionConfig.onChange as (rs: T[]) => void)(rows);
+      }
+    },
+    [
+      isControlledSelection,
+      selectionMode,
+      selectionConfig.onChange,
+      data,
+      getRowId,
+    ],
+  );
+
+  const toggleRowSelection = useCallback(
+    (rowId: string) => {
+      if (selectionMode === 'none') return;
+      if (selectionMode === 'single') {
+        const next = selectedIds.has(rowId) ? new Set<string>() : new Set([rowId]);
+        emitSelectionChange(next);
+      } else {
+        const next = new Set(selectedIds);
+        if (next.has(rowId)) next.delete(rowId);
+        else next.add(rowId);
+        emitSelectionChange(next);
+      }
+    },
+    [selectionMode, selectedIds, emitSelectionChange],
+  );
+
+  const toggleAllVisibleSelection = useCallback(() => {
+    if (selectionMode !== 'multiple') return;
+    const visibleIds = tableState.visibleRows.map((r, i) => getRowId(r, i));
+    const allSelected =
+      visibleIds.length > 0 && visibleIds.every((id) => selectedIds.has(id));
+    const next = new Set(selectedIds);
+    if (allSelected) {
+      visibleIds.forEach((id) => next.delete(id));
+    } else {
+      visibleIds.forEach((id) => next.add(id));
+    }
+    emitSelectionChange(next);
+  }, [
+    selectionMode,
+    tableState.visibleRows,
+    selectedIds,
+    getRowId,
+    emitSelectionChange,
+  ]);
+
+  const headerSelectionState = useMemo<'none' | 'some' | 'all'>(() => {
+    if (selectionMode !== 'multiple') return 'none';
+    const visibleIds = tableState.visibleRows.map((r, i) => getRowId(r, i));
+    if (visibleIds.length === 0) return 'none';
+    const selectedVisible = visibleIds.filter((id) => selectedIds.has(id));
+    if (selectedVisible.length === 0) return 'none';
+    if (selectedVisible.length === visibleIds.length) return 'all';
+    return 'some';
+  }, [selectionMode, tableState.visibleRows, selectedIds, getRowId]);
+
+  const selectionEnabled = selectionMode !== 'none';
+
+  // ─────────────────────────────────────────────────────────────────────────
+  // Expansion state (uncontrolled w v1)
+  // ─────────────────────────────────────────────────────────────────────────
+  const expansionEnabled = !!expandable;
+  const [expandedIds, setExpandedIds] = useState<Set<string>>(new Set());
+
+  const toggleRowExpansion = useCallback(
+    (rowId: string) => {
+      setExpandedIds((prev) => {
+        const next = new Set(prev);
+        if (next.has(rowId)) next.delete(rowId);
+        else next.add(rowId);
+        return next;
+      });
+    },
+    [],
+  );
+
 
   // ─────────────────────────────────────────────────────────────────────────
   // Wrapper props
@@ -706,6 +917,16 @@ export const DataTable = forwardRef(function DataTable<T>(
   const renderLoadingRows = () => {
     return Array.from({ length: loadingRowCount }).map((_, rowIdx) => (
       <TableRow key={`skeleton-${rowIdx}`} className={styles.skeletonRow}>
+        {selectionEnabled && (
+          <TableCell className={styles.selectionCell}>
+            <Skeleton width={16} height={16} />
+          </TableCell>
+        )}
+        {expansionEnabled && (
+          <TableCell className={styles.expansionCell}>
+            <Skeleton width={16} height={16} />
+          </TableCell>
+        )}
         {visibleColumns.map((col) => (
           <TableCell
             key={col.id}
@@ -792,63 +1013,124 @@ export const DataTable = forwardRef(function DataTable<T>(
   };
 
   // ─────────────────────────────────────────────────────────────────────────
-  // Renderer data row
+  // Renderer data row (+ optional expansion panel)
   // ─────────────────────────────────────────────────────────────────────────
   const renderDataRow = (row: T, rowIndex: number) => {
     const rowId = getRowId(row, rowIndex);
     const variant = rowVariant?.(row) ?? 'default';
     const disabled = rowDisabled?.(row) ?? false;
+    const selected = selectionEnabled && selectedIds.has(rowId);
+    const expanded = expansionEnabled && expandedIds.has(rowId);
     const clickable = rowClickable && !!onRowClick && !disabled;
 
+    const totalCols =
+      visibleColumns.length +
+      (selectionEnabled ? 1 : 0) +
+      (expansionEnabled ? 1 : 0);
+
     return (
-      <TableRow
-        key={rowId}
-        className={cn(
-          styles.row,
-          styles[`row-${variant}`],
-          disabled && styles.rowDisabled,
-          clickable && styles.rowClickable,
-        )}
-        onClick={
-          clickable
-            ? (e) => {
-                // Don't fire onRowClick gdy clik na interactive child
-                const target = e.target as HTMLElement;
-                if (target.closest('button, a, input, select, textarea, [role="button"]')) {
-                  return;
+      <Fragment key={rowId}>
+        <TableRow
+          className={cn(
+            styles.row,
+            styles[`row-${variant}`],
+            disabled && styles.rowDisabled,
+            clickable && styles.rowClickable,
+            selected && styles.rowSelected,
+            expanded && styles.rowExpanded,
+          )}
+          onClick={
+            clickable
+              ? (e) => {
+                  // Don't fire onRowClick gdy clik na interactive child
+                  const target = e.target as HTMLElement;
+                  if (
+                    target.closest(
+                      'button, a, input, select, textarea, [role="button"]',
+                    )
+                  ) {
+                    return;
+                  }
+                  onRowClick!(row);
                 }
-                onRowClick!(row);
-              }
-            : undefined
-        }
-        aria-disabled={disabled || undefined}
-      >
-        {visibleColumns.map((col) => {
-          const ctx: CellContext<T> = {
-            row,
-            rowIndex,
-            rowId,
-            columnId: col.id,
-            isSelected: false, // TODO selection state next session
-            isExpanded: false, // TODO expansion state next session
-          };
-          const content = col.cell
-            ? col.cell(row, ctx)
-            : col.accessorKey != null
-              ? renderAccessorValue(row[col.accessorKey])
-              : null;
-          return (
-            <TableCell
-              key={col.id}
-              align={col.align === 'right' ? 'end' : col.align === 'center' ? 'center' : 'start'}
-              className={cn(styles.cell, col.cellClassName)}
-              style={col.width ? { width: col.width } : undefined}
-            >
-              {content}
+              : undefined
+          }
+          aria-disabled={disabled || undefined}
+          aria-selected={selectionEnabled ? selected : undefined}
+          aria-expanded={expansionEnabled ? expanded : undefined}
+        >
+          {selectionEnabled && (
+            <TableCell className={styles.selectionCell}>
+              <input
+                type="checkbox"
+                className={styles.selectionCheckbox}
+                checked={selected}
+                disabled={disabled}
+                onChange={() => toggleRowSelection(rowId)}
+                onClick={(e) => e.stopPropagation()}
+                aria-label={labels.selectRow}
+              />
             </TableCell>
-          );
-        })}
-      </TableRow>
+          )}
+          {expansionEnabled && (
+            <TableCell className={styles.expansionCell}>
+              <button
+                type="button"
+                className={cn(
+                  styles.expansionButton,
+                  expanded && styles.expansionButtonExpanded,
+                )}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  if (!disabled) toggleRowExpansion(rowId);
+                }}
+                disabled={disabled}
+                aria-label={expanded ? labels.collapse : labels.expand}
+                aria-expanded={expanded}
+              >
+                <ChevronIcon />
+              </button>
+            </TableCell>
+          )}
+          {visibleColumns.map((col) => {
+            const ctx: CellContext<T> = {
+              row,
+              rowIndex,
+              rowId,
+              columnId: col.id,
+              isSelected: selected,
+              isExpanded: expanded,
+            };
+            const content = col.cell
+              ? col.cell(row, ctx)
+              : col.accessorKey != null
+                ? renderAccessorValue(row[col.accessorKey])
+                : null;
+            return (
+              <TableCell
+                key={col.id}
+                align={col.align === 'right' ? 'end' : col.align === 'center' ? 'center' : 'start'}
+                className={cn(styles.cell, col.cellClassName)}
+                style={col.width ? { width: col.width } : undefined}
+              >
+                {content}
+              </TableCell>
+            );
+          })}
+        </TableRow>
+        {expansionEnabled && expanded && expandable && (
+          <TableRow className={styles.expansionPanel}>
+            <TableCell
+              colSpan={totalCols}
+              className={styles.expansionPanelCell}
+            >
+              <div className={styles.expansionPanelContent}>
+                {expandable.renderExpanded(row)}
+              </div>
+            </TableCell>
+          </TableRow>
+        )}
+      </Fragment>
     );
   };
 
@@ -898,12 +1180,96 @@ export const DataTable = forwardRef(function DataTable<T>(
           aria-label={ariaLabel}
           aria-labelledby={ariaLabelledBy}
           aria-rowcount={tableState.totalRows}
-          aria-colcount={visibleColumns.length}
+          aria-colcount={
+            visibleColumns.length +
+            (selectionEnabled ? 1 : 0) +
+            (expansionEnabled ? 1 : 0)
+          }
+          aria-multiselectable={
+            selectionMode === 'multiple' ? true : undefined
+          }
           aria-describedby={liveRegionId}
           id={gridId}
         >
           <TableHeader>
-            <TableRow>{visibleColumns.map(renderHeaderCell)}</TableRow>
+            <TableRow>
+              {selectionEnabled && (
+                <TableCell
+                  as="th"
+                  scope="col"
+                  className={cn(styles.headerCell, styles.selectionCell)}
+                >
+                  {selectionMode === 'multiple' && (
+                    <input
+                      type="checkbox"
+                      className={styles.selectionCheckbox}
+                      ref={(node) => {
+                        if (node) {
+                          node.indeterminate = headerSelectionState === 'some';
+                        }
+                      }}
+                      checked={headerSelectionState === 'all'}
+                      onChange={toggleAllVisibleSelection}
+                      aria-label={labels.selectAll}
+                    />
+                  )}
+                </TableCell>
+              )}
+              {expansionEnabled && (
+                <TableCell
+                  as="th"
+                  scope="col"
+                  className={cn(styles.headerCell, styles.expansionCell)}
+                  aria-label="Expand"
+                />
+              )}
+              {visibleColumns.map(renderHeaderCell)}
+            </TableRow>
+            {hasFilterRow && (
+              <TableRow className={styles.filterRow}>
+                {selectionEnabled && (
+                  <TableCell as="th" className={styles.filterCell} />
+                )}
+                {expansionEnabled && (
+                  <TableCell as="th" className={styles.filterCell} />
+                )}
+                {visibleColumns.map((col) => {
+                  const columnName =
+                    typeof col.header === 'string' ? col.header : col.id;
+                  const filterValue = effectiveFilters[col.id] ?? '';
+
+                  let content: ReactNode = null;
+                  if (col.renderFilter) {
+                    content = col.renderFilter(filterValue, (next) =>
+                      handleColumnFilterChange(col.id, next),
+                    );
+                  } else if (col.filterable) {
+                    // Default text filter Input
+                    content = (
+                      <Input
+                        value={String(filterValue)}
+                        onChange={(e) =>
+                          handleColumnFilterChange(col.id, e.target.value)
+                        }
+                        placeholder={labels.filterPlaceholder(columnName)}
+                        aria-label={labels.filterPlaceholder(columnName)}
+                      />
+                    );
+                  }
+
+                  return (
+                    <TableCell
+                      key={col.id}
+                      as="th"
+                      className={cn(styles.filterCell, col.headerClassName)}
+                      style={col.width ? { width: col.width } : undefined}
+                    >
+                      {content}
+                    </TableCell>
+                  );
+                })}
+              </TableRow>
+            )}
           </TableHeader>
           <TableBody>
             {showLoading
@@ -943,6 +1309,27 @@ function renderAccessorValue(value: unknown): ReactNode {
   if (typeof value === 'boolean') return value ? 'Yes' : 'No';
   if (typeof value === 'object') return null;
   return String(value);
+}
+
+/** Chevron icon dla expansion toggle (right when collapsed, rotates via CSS). */
+function ChevronIcon() {
+  return (
+    <svg
+      width="12"
+      height="12"
+      viewBox="0 0 12 12"
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+      focusable="false"
+    >
+      <polyline points="4 2 8 6 4 10" />
+    </svg>
+  );
 }
 
 /** Sort direction indicator icon. */
