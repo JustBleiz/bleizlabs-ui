@@ -530,20 +530,16 @@ export default function DemoPage() {
           <Stack gap={3}>
             <Input
               name="demoName"
-              label="Name"
               placeholder="Jan Kowalski"
-              helperText="Imię i nazwisko"
             />
             <Input
               name="demoEmail"
-              label="Email"
               type="email"
               placeholder="jan@example.com"
-              error="Nieprawidłowy email"
             />
             <InputGroup aria-label="Price with currency">
               <InputGroupText>$</InputGroupText>
-              <Input label="Price" name="demoPrice" hideLabel placeholder="100" />
+              <Input name="demoPrice" placeholder="100" />
               <InputGroupText>USD</InputGroupText>
             </InputGroup>
             <NumberInput

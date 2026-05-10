@@ -152,9 +152,8 @@ export default function PopoverPlaygroundPage() {
                 </>
               }
             >
-              <Input label="Name" name="name" placeholder="Search by name" />
+              <Input name="name" placeholder="Search by name" />
               <Input
-                label="Email"
                 name="email"
                 type="email"
                 placeholder="user@example.com"

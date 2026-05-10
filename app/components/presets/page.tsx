@@ -219,12 +219,10 @@ export default function PresetsPlaygroundPage() {
               <Stack gap={4}>
                 <Input
                   name="fullName"
-                  label="Full name"
                   placeholder="Jan Kowalski"
                 />
                 <Input
                   name="email"
-                  label="Email"
                   type="email"
                   placeholder="jan@example.com"
                 />

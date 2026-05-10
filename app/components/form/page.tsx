@@ -73,7 +73,6 @@ export default function FormPlayground() {
           >
             <Stack gap={3}>
               <Input
-                label="Email"
                 name="email"
                 type="email"
                 placeholder="you@example.com"
@@ -112,12 +111,10 @@ export default function FormPlayground() {
           >
             <Stack gap={3}>
               <Input
-                label="Username (min 3 chars)"
                 name="username"
                 type="text"
                 required
                 minLength={3}
-                helperText="Validation runs in onSubmit, not browser popup"
               />
               <Inline gap={2}>
                 <Form.Submit asChild>
@@ -155,26 +152,22 @@ export default function FormPlayground() {
           >
             <Stack gap={4}>
               <Input
-                label="Full name"
                 name="name"
                 type="text"
                 required
                 placeholder="Jane Doe"
               />
               <Input
-                label="Email"
                 name="email"
                 type="email"
                 required
                 placeholder="you@example.com"
               />
               <Input
-                label="Phone"
                 name="phone"
                 type="tel"
                 pattern="[+0-9 \-()]+"
                 placeholder="+48 123 456 789"
-                helperText="Digits, spaces, +, -, ( ) only"
               />
               <Textarea
                 label="Bio (optional)"
@@ -211,7 +204,6 @@ export default function FormPlayground() {
           >
             <Stack gap={3}>
               <Input
-                label="Quick question"
                 name="question"
                 type="text"
                 required

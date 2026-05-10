@@ -12,7 +12,6 @@ export function ForceMountExample() {
         forceMount
       >
         <Input
-          label="Persistent input (state survives collapse)"
           name="czc-demo-input"
           placeholder="Type here, then toggle"
         />

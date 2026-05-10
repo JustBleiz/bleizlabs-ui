@@ -67,31 +67,25 @@ export default function InputProductionPlaygroundPage() {
         </Heading>
 
         <div className={styles.row}>
-          <Input label="Price" name="price-simple" prefix="$" placeholder="0.00" />
-          <Input label="Weight" name="weight" suffix="kg" placeholder="0" />
-          <Input label="Domain" name="domain" prefix="https://" placeholder="example.com" />
-          <Input label="Email handle" name="handle" prefix="@" placeholder="jane" />
+          <Input name="price-simple" prefix="$" placeholder="0.00" />
+          <Input name="weight" suffix="kg" placeholder="0" />
+          <Input name="domain" prefix="https://" placeholder="example.com" />
+          <Input name="handle" prefix="@" placeholder="jane" />
         </div>
 
         <Input
-          label="Bio"
           name="bio"
           value={bio}
           onChange={(e) => setBio(e.target.value)}
           maxLength={140}
-          showCounter
-          helperText="Tell us something about yourself"
           placeholder="I build things..."
         />
 
         <div className={styles.row}>
           <Input
-            label="Search"
             name="search"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            clearable
-            loading={loading}
             startIcon={<SearchIcon />}
             placeholder="Search anything..."
           />
@@ -110,19 +104,19 @@ export default function InputProductionPlaygroundPage() {
 
         <InputGroup aria-label="Price in USD with decimals">
           <InputGroupText>$</InputGroupText>
-          <Input label="Price" name="group-price" hideLabel placeholder="0" />
+          <Input name="group-price" placeholder="0" />
           <InputGroupText>.00</InputGroupText>
         </InputGroup>
 
         <InputGroup aria-label="Website URL with check button">
           <InputGroupText>https://</InputGroupText>
-          <Input label="Website" name="group-site" hideLabel placeholder="example.com" />
+          <Input name="group-site" placeholder="example.com" />
           <Button variant="secondary">Check</Button>
         </InputGroup>
 
         <InputGroup aria-label="Email with domain hint">
           <InputGroupText>@</InputGroupText>
-          <Input label="Username" name="group-user" hideLabel placeholder="jane" />
+          <Input name="group-user" placeholder="jane" />
           <InputGroupText>.com</InputGroupText>
         </InputGroup>
       </section>

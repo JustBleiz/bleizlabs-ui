@@ -61,14 +61,11 @@ export default function InputPlaygroundPage() {
           Input &mdash; uncontrolled
         </Heading>
         <Input
-          label="Full name"
           name="name"
           placeholder="Jane Doe"
           defaultValue=""
-          helperText="As shown on your ID"
         />
         <Input
-          label="Username"
           name="username"
           placeholder="jane"
           required
@@ -80,12 +77,10 @@ export default function InputPlaygroundPage() {
           Input &mdash; controlled with error
         </Heading>
         <Input
-          label="Email address"
           name="email"
           type="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          error={showEmailError ? 'Email must contain @' : undefined}
           required
         />
       </section>
@@ -95,7 +90,6 @@ export default function InputPlaygroundPage() {
           Input &mdash; with icon
         </Heading>
         <Input
-          label="Search"
           name="q"
           type="search"
           placeholder="Search components..."
@@ -108,7 +102,6 @@ export default function InputPlaygroundPage() {
           Input &mdash; disabled
         </Heading>
         <Input
-          label="API key"
           name="apiKey"
           defaultValue="sk-***************"
           disabled
