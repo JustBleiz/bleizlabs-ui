@@ -230,13 +230,13 @@ test.describe('DataTable — regressions', () => {
     const grids = page.getByRole('grid');
     const grid = grids.nth(3);
     await grid.scrollIntoViewIfNeeded();
-    // Sticky positioning lives on header cells (columnheaders), not on the
-    // row element itself — picking any header cell and reading its computed
-    // position is the reliable check.
+    // Sticky positioning lives on the <thead> element (not on individual
+    // header cells) per the SCSS rule `.stickyHeader table thead`.
     const headerCell = grid.locator('[role="columnheader"]').first();
-    const position = await headerCell.evaluate(
-      (el) => window.getComputedStyle(el).position,
-    );
+    const position = await headerCell.evaluate((el) => {
+      const thead = el.closest('thead');
+      return thead ? window.getComputedStyle(thead).position : '';
+    });
     expect(position).toBe('sticky');
   });
 

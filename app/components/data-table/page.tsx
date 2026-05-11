@@ -399,6 +399,7 @@ export default function DataTablePlaygroundPage() {
                 name="rtl-toggle"
                 label="RTL direction"
                 hideLabel
+                aria-label="RTL direction"
                 checked={dir === 'rtl'}
                 onCheckedChange={(checked) => setDir(checked ? 'rtl' : 'ltr')}
               />
@@ -411,6 +412,7 @@ export default function DataTablePlaygroundPage() {
                 name="striped-toggle"
                 label="Striped rows"
                 hideLabel
+                aria-label="Striped rows"
                 checked={striped}
                 onCheckedChange={setStriped}
               />

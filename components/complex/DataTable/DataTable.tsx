@@ -1030,16 +1030,22 @@ export const DataTable = forwardRef(function DataTable<T>(
   };
 
   const renderErrorState = () => (
-    <Alert variant="critical" title={labels.errorTitle}>
-      <div className={styles.errorContent}>
-        {errorMessage && <span>{errorMessage}</span>}
-        {onRetry && (
-          <Button variant="secondary" size="sm" onClick={onRetry}>
-            {labels.retry}
-          </Button>
-        )}
-      </div>
-    </Alert>
+    <Alert
+      variant="critical"
+      title={labels.errorTitle}
+      description={
+        errorMessage || onRetry ? (
+          <div className={styles.errorContent}>
+            {errorMessage && <span>{errorMessage}</span>}
+            {onRetry && (
+              <Button variant="secondary" size="sm" onClick={onRetry}>
+                {labels.retry}
+              </Button>
+            )}
+          </div>
+        ) : undefined
+      }
+    />
   );
 
   const renderEmptyState = () => {
@@ -1758,7 +1764,7 @@ export const DataTable = forwardRef(function DataTable<T>(
         data-density={density}
         data-state={stateMode}
         dir={dir}
-        role="grid"
+        role={expansionEnabled ? 'treegrid' : 'grid'}
         aria-label={ariaLabel}
         aria-labelledby={ariaLabelledBy}
         aria-rowcount={tableState.totalRows + 1}
@@ -1804,7 +1810,7 @@ export const DataTable = forwardRef(function DataTable<T>(
         <Table
           striped={striped}
           compact={density === 'compact'}
-          role="grid"
+          role={expansionEnabled ? 'treegrid' : 'grid'}
           aria-label={ariaLabel}
           aria-labelledby={ariaLabelledBy}
           aria-rowcount={tableState.totalRows + 1}

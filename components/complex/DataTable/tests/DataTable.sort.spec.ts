@@ -20,25 +20,17 @@ test.describe('DataTable — sort behavior', () => {
 
   test('DT-S01 — click cycles asc → desc → none', async ({ page }) => {
     const grids = page.getByRole('grid');
-    const grid = grids.nth(1); // sortable+filterable
-    // Find a header that is NOT initially sorted
-    const headers = grid.getByRole('columnheader');
-    // defaultSort sorts 'name' asc; pick another column
-    const sortButtons = grid.getByRole('button', { name: /sort/i });
-    const btnCount = await sortButtons.count();
-    expect(btnCount).toBeGreaterThan(1);
-    const secondBtn = sortButtons.nth(1);
-    // Find the columnheader ancestor of the second button
-    await secondBtn.click();
-    await page.waitForTimeout(50);
-    const header = headers.filter({ has: secondBtn }).first();
-    await expect(header).toHaveAttribute('aria-sort', 'ascending');
-    await secondBtn.click();
-    await page.waitForTimeout(50);
-    await expect(header).toHaveAttribute('aria-sort', 'descending');
-    await secondBtn.click();
-    await page.waitForTimeout(50);
-    const finalSort = await header.getAttribute('aria-sort');
+    const grid = grids.nth(1); // sortable+filterable (4 cols, all sortable)
+    // defaultSort is on column 0 (name); cycle column 1 (owner) instead to
+    // observe a clean none → asc → desc → none progression.
+    const ownerHeader = grid.getByRole('columnheader').nth(1);
+    const ownerBtn = ownerHeader.getByRole('button', { name: /sort/i });
+    await ownerBtn.click();
+    await expect(ownerHeader).toHaveAttribute('aria-sort', 'ascending');
+    await ownerBtn.click();
+    await expect(ownerHeader).toHaveAttribute('aria-sort', 'descending');
+    await ownerBtn.click();
+    const finalSort = await ownerHeader.getAttribute('aria-sort');
     expect(['none', null]).toContain(finalSort);
   });
 
