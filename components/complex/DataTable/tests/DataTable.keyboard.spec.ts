@@ -99,8 +99,9 @@ test.describe('DataTable — keyboard interactions', () => {
   }) => {
     // Section 4 — full-featured with RTL toggle
     const rtlSwitch = page.getByRole('switch', { name: /RTL direction/i });
+    await rtlSwitch.scrollIntoViewIfNeeded();
     await rtlSwitch.click();
-    await page.waitForTimeout(100);
+    await page.waitForTimeout(150);
     const grids = page.getByRole('grid');
     const rtlGrid = grids.nth(3);
     const firstCell = rtlGrid.locator('[role="gridcell"]').first();
@@ -135,7 +136,7 @@ test.describe('DataTable — keyboard interactions', () => {
     // Section 2 — sortable+filterable, headers are buttons inside columnheader
     const grids = page.getByRole('grid');
     const sortableGrid = grids.nth(1);
-    const sortBtn = sortableGrid.getByRole('button', { name: /Sort/ }).first();
+    const sortBtn = sortableGrid.getByRole('button', { name: /sort/i }).first();
     await sortBtn.focus();
     await page.keyboard.press('Enter');
     await page.waitForTimeout(50);

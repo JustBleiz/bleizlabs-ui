@@ -24,7 +24,7 @@ test.describe('DataTable — sort behavior', () => {
     // Find a header that is NOT initially sorted
     const headers = grid.getByRole('columnheader');
     // defaultSort sorts 'name' asc; pick another column
-    const sortButtons = grid.getByRole('button', { name: /Sort/ });
+    const sortButtons = grid.getByRole('button', { name: /sort/i });
     const btnCount = await sortButtons.count();
     expect(btnCount).toBeGreaterThan(1);
     const secondBtn = sortButtons.nth(1);
@@ -63,7 +63,7 @@ test.describe('DataTable — sort behavior', () => {
   test('DT-S04 — only one column has aria-sort != none at a time', async ({ page }) => {
     const grids = page.getByRole('grid');
     const grid = grids.nth(1);
-    const sortBtns = grid.getByRole('button', { name: /Sort/ });
+    const sortBtns = grid.getByRole('button', { name: /sort/i });
     await sortBtns.nth(2).click();
     await page.waitForTimeout(50);
     const activeHeaders = grid.locator(
@@ -77,7 +77,7 @@ test.describe('DataTable — sort behavior', () => {
     const grids = page.getByRole('grid');
     const grid = grids.first();
     const headers = grid.getByRole('columnheader');
-    const sortBtnsInBasic = grid.getByRole('button', { name: /Sort/ });
+    const sortBtnsInBasic = grid.getByRole('button', { name: /sort/i });
     expect(await sortBtnsInBasic.count()).toBe(0);
     await expect(headers.first()).toBeVisible();
   });
@@ -85,7 +85,7 @@ test.describe('DataTable — sort behavior', () => {
   test('DT-S06 — desc sort reverses visible row order', async ({ page }) => {
     const grids = page.getByRole('grid');
     const grid = grids.nth(1);
-    const sortBtns = grid.getByRole('button', { name: /Sort/ });
+    const sortBtns = grid.getByRole('button', { name: /sort/i });
     // Click name header twice — defaultSort is asc, second click → desc
     await sortBtns.first().click();
     await page.waitForTimeout(50);

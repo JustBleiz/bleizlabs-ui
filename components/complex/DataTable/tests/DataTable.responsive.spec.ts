@@ -30,17 +30,16 @@ test.describe('DataTable — responsive behavior', () => {
   test('DT-R02 — narrow viewport (320px) switches to card layout', async ({ page }) => {
     await page.setViewportSize({ width: 360, height: 800 });
     await page.goto('/components/data-table');
-    // mobileBreakpoint default 768 → mobile fallback active
-    // Mobile fallback uses role="row" for each card but no role="columnheader"
-    const grid = page.getByRole('grid').nth(4); // real-world section
-    const isVisible = await grid.isVisible().catch(() => false);
-    if (isVisible) {
-      const headers = grid.getByRole('columnheader');
-      const headerCount = await headers.count();
-      // Mobile mode either drops headers entirely or renders cards — either way
-      // we expect either 0 headers or a fundamentally different structure
-      expect(headerCount === 0 || headerCount === 1).toBe(true);
-    }
+    await page.waitForLoadState('networkidle');
+    // useMatchMedia is a client-side hook — wait for hydration to commit the
+    // mobile state before asserting on the rendered structure.
+    await page.waitForTimeout(300);
+    // Mobile layout drops role="columnheader" entirely (no <thead>). Verify
+    // the basic section (first grid) carries zero columnheaders.
+    const firstGrid = page.getByRole('grid').first();
+    await firstGrid.scrollIntoViewIfNeeded();
+    const headerCount = await firstGrid.getByRole('columnheader').count();
+    expect(headerCount).toBe(0);
   });
 
   test('DT-R03 — sticky header retains visibility after vertical scroll', async ({

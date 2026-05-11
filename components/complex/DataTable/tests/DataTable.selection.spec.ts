@@ -120,7 +120,7 @@ test.describe('DataTable — selection behavior', () => {
       .first();
     await firstCb.check();
     await page.waitForTimeout(50);
-    const sortBtn = grid.getByRole('button', { name: /Sort/ }).first();
+    const sortBtn = grid.getByRole('button', { name: /sort/i }).first();
     if (await sortBtn.isVisible().catch(() => false)) {
       await sortBtn.click();
       await page.waitForTimeout(100);

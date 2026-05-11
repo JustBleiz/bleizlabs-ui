@@ -22,7 +22,7 @@ test.describe('DataTable — focus management', () => {
     page,
   }) => {
     const grid = page.getByRole('grid').first();
-    const tabbableCells = grid.locator('[role="gridcell"][tabindex="0"]');
+    const tabbableCells = grid.locator(':is([role="gridcell"], [role="columnheader"])[tabindex="0"]');
     const allCells = grid.locator('[role="gridcell"]');
     const tabbableCount = await tabbableCells.count();
     const allCount = await allCells.count();
@@ -34,7 +34,7 @@ test.describe('DataTable — focus management', () => {
     page,
   }) => {
     const grid = page.getByRole('grid').first();
-    const rovingCell = grid.locator('[role="gridcell"][tabindex="0"]').first();
+    const rovingCell = grid.locator(':is([role="gridcell"], [role="columnheader"])[tabindex="0"]').first();
     await rovingCell.focus();
     await expect(rovingCell).toBeFocused();
   });
@@ -43,15 +43,15 @@ test.describe('DataTable — focus management', () => {
     page,
   }) => {
     const grid = page.getByRole('grid').first();
-    const initialRoving = grid.locator('[role="gridcell"][tabindex="0"]').first();
+    const initialRoving = grid.locator(':is([role="gridcell"], [role="columnheader"])[tabindex="0"]').first();
     await initialRoving.focus();
     await page.keyboard.press('ArrowDown');
     await page.waitForTimeout(50);
     // After move — exactly one cell should still have tabindex=0
-    const tabbableCount = await grid.locator('[role="gridcell"][tabindex="0"]').count();
+    const tabbableCount = await grid.locator(':is([role="gridcell"], [role="columnheader"])[tabindex="0"]').count();
     expect(tabbableCount).toBe(1);
     // And the roving cell should be focused
-    const newRoving = grid.locator('[role="gridcell"][tabindex="0"]').first();
+    const newRoving = grid.locator(':is([role="gridcell"], [role="columnheader"])[tabindex="0"]').first();
     await expect(newRoving).toBeFocused();
   });
 
@@ -62,7 +62,7 @@ test.describe('DataTable — focus management', () => {
     await target.click();
     await page.waitForTimeout(50);
     await expect(target).toHaveAttribute('tabindex', '0');
-    const tabbableCount = await grid.locator('[role="gridcell"][tabindex="0"]').count();
+    const tabbableCount = await grid.locator(':is([role="gridcell"], [role="columnheader"])[tabindex="0"]').count();
     expect(tabbableCount).toBe(1);
   });
 
@@ -83,7 +83,7 @@ test.describe('DataTable — focus management', () => {
     // Section 2 — sortable
     const grids = page.getByRole('grid');
     const sortableGrid = grids.nth(1);
-    const headerBtn = sortableGrid.getByRole('button', { name: /Sort/ }).first();
+    const headerBtn = sortableGrid.getByRole('button', { name: /sort/i }).first();
     await headerBtn.focus();
     await expect(headerBtn).toBeFocused();
     await page.keyboard.press('Enter');

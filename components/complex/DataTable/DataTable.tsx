@@ -1447,6 +1447,10 @@ export const DataTable = forwardRef(function DataTable<T>(
       // Only handle keys when focus is on a navigable cell (data-cell-nav)
       if (!target.matches('[data-cell-nav]')) return;
 
+      // Pass-through for Alt-modified arrow keys — Alt+Left/Right is browser
+      // history navigation and must not be hijacked by grid focus movement.
+      if (e.altKey) return;
+
       const ctrl = e.ctrlKey || e.metaKey;
       let next: { row: number; col: number } | null = null;
 

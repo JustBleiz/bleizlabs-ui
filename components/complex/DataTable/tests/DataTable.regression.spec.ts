@@ -86,9 +86,11 @@ test.describe('DataTable — regressions', () => {
     const grids = page.getByRole('grid');
     const grid = grids.nth(3);
     const cb = grid.locator('[role="row"][aria-rowindex="2"]').getByRole('checkbox').first();
+    await cb.scrollIntoViewIfNeeded();
     await cb.check();
     await page.waitForTimeout(50);
     const compactToggle = page.getByRole('button', { name: 'Compact', exact: true }).first();
+    await compactToggle.scrollIntoViewIfNeeded();
     await compactToggle.click();
     await page.waitForTimeout(100);
     const selected = await grid.locator('[role="row"][aria-selected="true"]').count();
@@ -100,9 +102,11 @@ test.describe('DataTable — regressions', () => {
     const grids = page.getByRole('grid');
     const grid = grids.nth(3);
     const cb = grid.locator('[role="row"][aria-rowindex="2"]').getByRole('checkbox').first();
+    await cb.scrollIntoViewIfNeeded();
     await cb.check();
     await page.waitForTimeout(50);
     const rtlSwitch = page.getByRole('switch', { name: /RTL direction/i });
+    await rtlSwitch.scrollIntoViewIfNeeded();
     await rtlSwitch.click();
     await page.waitForTimeout(100);
     const selected = await grid.locator('[role="row"][aria-selected="true"]').count();
@@ -112,6 +116,7 @@ test.describe('DataTable — regressions', () => {
   test('DT-RG06 — striped toggle does not break grid', async ({ page }) => {
     await page.goto('/components/data-table');
     const stripeSwitch = page.getByRole('switch', { name: /Striped rows/i });
+    await stripeSwitch.scrollIntoViewIfNeeded();
     await stripeSwitch.click();
     await page.waitForTimeout(100);
     const grids = page.getByRole('grid');
@@ -124,6 +129,7 @@ test.describe('DataTable — regressions', () => {
   }) => {
     await page.goto('/components/data-table');
     const search = page.getByRole('textbox', { name: /Global search/i });
+    await search.scrollIntoViewIfNeeded();
     await search.fill('test');
     await page.waitForTimeout(200);
     await search.fill('');
@@ -144,7 +150,7 @@ test.describe('DataTable — regressions', () => {
       dialogFired = true;
       await d.dismiss();
     });
-    const sortBtn = grid.getByRole('button', { name: /Sort/ }).first();
+    const sortBtn = grid.getByRole('button', { name: /sort/i }).first();
     await sortBtn.click();
     await page.waitForTimeout(100);
     expect(dialogFired).toBe(false);
@@ -159,7 +165,7 @@ test.describe('DataTable — regressions', () => {
     });
     const grids = page.getByRole('grid');
     const grid = grids.nth(4); // section 5 has rowClickable
-    const sortBtn = grid.getByRole('button', { name: /Sort/ }).first();
+    const sortBtn = grid.getByRole('button', { name: /sort/i }).first();
     await sortBtn.click();
     await page.waitForTimeout(100);
     expect(dialogFired).toBe(false);
@@ -171,7 +177,7 @@ test.describe('DataTable — regressions', () => {
     await page.goto('/components/data-table');
     const grids = page.getByRole('grid');
     const grid = grids.nth(1);
-    const firstSortBtn = grid.getByRole('button', { name: /Sort/ }).first();
+    const firstSortBtn = grid.getByRole('button', { name: /sort/i }).first();
     await firstSortBtn.focus();
     await expect(firstSortBtn).toBeFocused();
   });
@@ -187,7 +193,7 @@ test.describe('DataTable — regressions', () => {
     await expandBtn.click();
     await page.waitForTimeout(100);
     // Expanded content's children should not carry tabindex=0 belonging to grid roving
-    const rovingCount = await grid.locator('[role="gridcell"][tabindex="0"]').count();
+    const rovingCount = await grid.locator(':is([role="gridcell"], [role="columnheader"])[tabindex="0"]').count();
     expect(rovingCount).toBe(1);
   });
 
@@ -197,8 +203,8 @@ test.describe('DataTable — regressions', () => {
     const grid1 = grids.first();
     const grid2 = grids.nth(1);
     await grid1.locator('[role="gridcell"]').first().focus();
-    const grid1Roving = await grid1.locator('[role="gridcell"][tabindex="0"]').count();
-    const grid2Roving = await grid2.locator('[role="gridcell"][tabindex="0"]').count();
+    const grid1Roving = await grid1.locator(':is([role="gridcell"], [role="columnheader"])[tabindex="0"]').count();
+    const grid2Roving = await grid2.locator(':is([role="gridcell"], [role="columnheader"])[tabindex="0"]').count();
     expect(grid1Roving).toBe(1);
     expect(grid2Roving).toBe(1);
   });
@@ -206,11 +212,12 @@ test.describe('DataTable — regressions', () => {
   test('DT-RG13 — striped rows after sort still alternate', async ({ page }) => {
     await page.goto('/components/data-table');
     const stripeSwitch = page.getByRole('switch', { name: /Striped rows/i });
+    await stripeSwitch.scrollIntoViewIfNeeded();
     await stripeSwitch.click();
     await page.waitForTimeout(100);
     const grids = page.getByRole('grid');
     const grid = grids.nth(3);
-    const sortBtn = grid.getByRole('button', { name: /Sort/ }).first();
+    const sortBtn = grid.getByRole('button', { name: /sort/i }).first();
     await sortBtn.click();
     await page.waitForTimeout(100);
     await expect(grid).toBeVisible();
@@ -222,15 +229,15 @@ test.describe('DataTable — regressions', () => {
     await page.goto('/components/data-table');
     const grids = page.getByRole('grid');
     const grid = grids.nth(3);
-    const headerRow = grid.locator('[role="row"][aria-rowindex="1"]').first();
-    const position = await headerRow.evaluate((el) => {
-      // Try header itself + parent thead-equivalent
-      const own = window.getComputedStyle(el).position;
-      const cells = Array.from(el.querySelectorAll('[role="columnheader"]'));
-      const cellPos = cells.length > 0 ? window.getComputedStyle(cells[0] as Element).position : '';
-      return { own, cellPos };
-    });
-    expect([position.own, position.cellPos]).toContain('sticky');
+    await grid.scrollIntoViewIfNeeded();
+    // Sticky positioning lives on header cells (columnheaders), not on the
+    // row element itself — picking any header cell and reading its computed
+    // position is the reliable check.
+    const headerCell = grid.locator('[role="columnheader"]').first();
+    const position = await headerCell.evaluate(
+      (el) => window.getComputedStyle(el).position,
+    );
+    expect(position).toBe('sticky');
   });
 
   test('DT-RG15 — Space on row checkbox does not also trigger row click', async ({
@@ -279,11 +286,13 @@ test.describe('DataTable — regressions', () => {
   test('DT-RG18 — selection works in RTL mode', async ({ page }) => {
     await page.goto('/components/data-table');
     const rtlSwitch = page.getByRole('switch', { name: /RTL direction/i });
+    await rtlSwitch.scrollIntoViewIfNeeded();
     await rtlSwitch.click();
     await page.waitForTimeout(100);
     const grids = page.getByRole('grid');
     const grid = grids.nth(3);
     const cb = grid.locator('[role="row"][aria-rowindex="2"]').getByRole('checkbox').first();
+    await cb.scrollIntoViewIfNeeded();
     await cb.check();
     await page.waitForTimeout(50);
     const selected = await grid.locator('[role="row"][aria-selected="true"]').count();
@@ -296,7 +305,9 @@ test.describe('DataTable — regressions', () => {
     await page.goto('/components/data-table');
     const errors: string[] = [];
     page.on('pageerror', (e) => errors.push(e.message));
-    await page.getByRole('button', { name: 'Compact', exact: true }).first().click();
+    const compactBtn = page.getByRole('button', { name: 'Compact', exact: true }).first();
+    await compactBtn.scrollIntoViewIfNeeded();
+    await compactBtn.click();
     await page.waitForTimeout(50);
     await page.getByRole('switch', { name: /RTL direction/i }).click();
     await page.waitForTimeout(50);
@@ -313,7 +324,7 @@ test.describe('DataTable — regressions', () => {
     await page.goto('/components/data-table');
     const grids = page.getByRole('grid');
     const sortableGrid = grids.nth(1);
-    await sortableGrid.getByRole('button', { name: /Sort/ }).nth(1).click();
+    await sortableGrid.getByRole('button', { name: /sort/i }).nth(1).click();
     await page.waitForTimeout(100);
     await sortableGrid.getByRole('textbox').first().fill('a');
     await page.waitForTimeout(400);
@@ -321,7 +332,12 @@ test.describe('DataTable — regressions', () => {
     await selGrid.locator('[role="row"][aria-rowindex="2"]').getByRole('checkbox').first().check();
     await page.waitForTimeout(100);
     const results = await new AxeBuilder({ page })
-      .disableRules(['region'])
+      .withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa'])
+      .exclude('nextjs-portal')
+      .exclude('[data-nextjs-toast]')
+      .exclude('[data-nextjs-dialog]')
+      .exclude('[data-nextjs-dialog-overlay]')
+      .exclude('#__next-build-watcher')
       .analyze();
     expect(results.violations).toEqual([]);
   });

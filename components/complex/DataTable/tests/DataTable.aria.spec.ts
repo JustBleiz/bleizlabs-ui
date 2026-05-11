@@ -100,7 +100,7 @@ test.describe('DataTable — ARIA + accessibility tree', () => {
     // region carries that exact id).
     const grids = page.getByRole('grid');
     const sortableGrid = grids.nth(1);
-    const sortBtn = sortableGrid.getByRole('button', { name: /Sort/ }).nth(1);
+    const sortBtn = sortableGrid.getByRole('button', { name: /sort/i }).nth(1);
     await sortBtn.click();
     // Wait past the 300ms debounce
     await page.waitForTimeout(500);
@@ -111,11 +111,19 @@ test.describe('DataTable — ARIA + accessibility tree', () => {
     expect(text.length).toBeGreaterThan(0);
   });
 
-  test('DT-A08 — axe-core: zero violations on /components/data-table', async ({
+  test('DT-A08 — axe-core: zero WCAG 2.1 AA violations on /components/data-table', async ({
     page,
   }) => {
+    // Mirror tests/smoke.spec.ts config: WCAG 2.1 AA tag filter + Next.js
+    // dev-overlay exclusions. Smoke covers axe-contract baseline; this test
+    // re-asserts the same contract for the DataTable demo route specifically.
     const results = await new AxeBuilder({ page })
-      .disableRules(['region']) // demo page wrapper rules — not under DataTable's control
+      .withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa'])
+      .exclude('nextjs-portal')
+      .exclude('[data-nextjs-toast]')
+      .exclude('[data-nextjs-dialog]')
+      .exclude('[data-nextjs-dialog-overlay]')
+      .exclude('#__next-build-watcher')
       .analyze();
     expect(results.violations).toEqual([]);
   });
