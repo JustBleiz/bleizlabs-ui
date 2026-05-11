@@ -94,23 +94,19 @@ test.describe('DataTable — ARIA + accessibility tree', () => {
     expect(count).toBeGreaterThanOrEqual(1);
 
     // Trigger a sort in the sortable+filterable grid and assert the live
-    // region near it gets a text update. Use the nearest live region inside
-    // the same grid's wrapper (each DataTable instance ships its own).
+    // region populates. CSS-module class names are hashed, so anchor the
+    // wrapper via the grid's aria-describedby → live region id relationship
+    // (the grid declares `aria-describedby={liveRegionId}` and the live
+    // region carries that exact id).
     const grids = page.getByRole('grid');
     const sortableGrid = grids.nth(1);
     const sortBtn = sortableGrid.getByRole('button', { name: /Sort/ }).nth(1);
     await sortBtn.click();
     // Wait past the 300ms debounce
     await page.waitForTimeout(500);
-    // Locate the live region inside the same DataTable wrapper
-    const dtWrapper = sortableGrid.locator(
-      'xpath=ancestor::div[contains(@class, "datatable") or contains(@class, "dataTable")][1]',
-    );
-    const inGridRegion = dtWrapper.locator('[aria-live="polite"]').first();
-    const fallbackRegion = page.locator('[aria-live="polite"]');
-    const targetRegion = (await inGridRegion.count())
-      ? inGridRegion
-      : fallbackRegion.first();
+    const liveRegionId = await sortableGrid.getAttribute('aria-describedby');
+    expect(liveRegionId).toBeTruthy();
+    const targetRegion = page.locator(`#${liveRegionId}`);
     const text = (await targetRegion.textContent())?.trim() ?? '';
     expect(text.length).toBeGreaterThan(0);
   });
