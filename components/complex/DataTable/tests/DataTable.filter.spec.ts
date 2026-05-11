@@ -11,6 +11,7 @@
  */
 
 import { test, expect } from '@playwright/test';
+import { allGrids } from './_helpers';
 
 test.describe('DataTable — filter behavior', () => {
   test.beforeEach(async ({ page }) => {
@@ -19,7 +20,7 @@ test.describe('DataTable — filter behavior', () => {
   });
 
   test('DT-FL01 — text filter on header narrows rows', async ({ page }) => {
-    const grids = page.getByRole('grid');
+    const grids = allGrids(page);
     const grid = grids.nth(1);
     const filterInputs = grid.getByRole('textbox');
     const inputCount = await filterInputs.count();
@@ -33,7 +34,7 @@ test.describe('DataTable — filter behavior', () => {
 
   test('DT-FL02 — global filter narrows full-featured grid', async ({ page }) => {
     const search = page.getByRole('textbox', { name: /Global search/i });
-    const grids = page.getByRole('grid');
+    const grids = allGrids(page);
     const grid = grids.nth(3);
     const before = await grid.locator('[role="row"]:not([aria-rowindex="1"])').count();
     await search.fill('Mobile');
@@ -43,7 +44,7 @@ test.describe('DataTable — filter behavior', () => {
   });
 
   test('DT-FL03 — clearing filter restores rows', async ({ page }) => {
-    const grids = page.getByRole('grid');
+    const grids = allGrids(page);
     const grid = grids.nth(1);
     const filterInputs = grid.getByRole('textbox');
     const initial = await grid.locator('[role="row"]:not([aria-rowindex="1"])').count();
@@ -56,7 +57,7 @@ test.describe('DataTable — filter behavior', () => {
   });
 
   test('DT-FL04 — filter is case-insensitive', async ({ page }) => {
-    const grids = page.getByRole('grid');
+    const grids = allGrids(page);
     const grid = grids.nth(1);
     const filterInputs = grid.getByRole('textbox');
     await filterInputs.first().fill('ATELIER');
@@ -69,7 +70,7 @@ test.describe('DataTable — filter behavior', () => {
   });
 
   test('DT-FL05 — filter to no-match produces empty body', async ({ page }) => {
-    const grids = page.getByRole('grid');
+    const grids = allGrids(page);
     const grid = grids.nth(1);
     const filterInputs = grid.getByRole('textbox');
     await filterInputs.first().fill('ZZZNeverMatchXYZ');
@@ -81,7 +82,7 @@ test.describe('DataTable — filter behavior', () => {
   test('DT-FL06 — filter input has aria-label including column name', async ({
     page,
   }) => {
-    const grids = page.getByRole('grid');
+    const grids = allGrids(page);
     const grid = grids.nth(1);
     const firstInput = grid.getByRole('textbox').first();
     const label = await firstInput.getAttribute('aria-label');

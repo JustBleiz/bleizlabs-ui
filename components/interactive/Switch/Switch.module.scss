@@ -63,6 +63,11 @@
   background: var(--color-border);
   border-radius: var(--switch-track-h);
   transition: background-color var(--duration-fast) var(--easing-default);
+  // Decorative visual — click is handled by parent <label> wrapping the
+  // input. Without pointer-events: none, the track sits on top of the
+  // visually-hidden input and intercepts programmatic clicks (Playwright,
+  // synthetic dispatch) before label's native for-association can fire.
+  pointer-events: none;
 }
 
 .input:focus-visible + .track {

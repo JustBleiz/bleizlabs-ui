@@ -1098,6 +1098,8 @@ export const DataTable = forwardRef(function DataTable<T>(
         tabIndex={focused ? 0 : -1}
         onFocus={() => handleCellFocus(0, gridColIdx)}
         data-cell-nav="true"
+        data-row={0}
+        data-col={gridColIdx}
       >
         {sortable ? (
           <button
@@ -1142,7 +1144,9 @@ export const DataTable = forwardRef(function DataTable<T>(
       <Fragment key={rowId}>
         <TableRow
           role="row"
-          aria-rowindex={rowIndex + 2}
+          aria-rowindex={
+            tableState.pageIndex * tableState.pageSize + rowIndex + 2
+          }
           className={cn(
             styles.row,
             styles[`row-${variant}`],
@@ -1182,6 +1186,8 @@ export const DataTable = forwardRef(function DataTable<T>(
               tabIndex={isCellFocused(rowIndex + 1, 0) ? 0 : -1}
               onFocus={() => handleCellFocus(rowIndex + 1, 0)}
               data-cell-nav="true"
+              data-row={rowIndex + 1}
+              data-col={0}
               aria-colindex={1}
             >
               <input
@@ -1207,6 +1213,8 @@ export const DataTable = forwardRef(function DataTable<T>(
               tabIndex={isCellFocused(rowIndex + 1, selectionOffset) ? 0 : -1}
               onFocus={() => handleCellFocus(rowIndex + 1, selectionOffset)}
               data-cell-nav="true"
+              data-row={rowIndex + 1}
+              data-col={selectionOffset}
               aria-colindex={selectionOffset + 1}
             >
               <button
@@ -1259,6 +1267,8 @@ export const DataTable = forwardRef(function DataTable<T>(
                 tabIndex={cellFocused ? 0 : -1}
                 onFocus={() => handleCellFocus(rowIndex + 1, gridColIdx)}
                 data-cell-nav="true"
+                data-row={rowIndex + 1}
+                data-col={gridColIdx}
                 aria-colindex={gridColIdx + 1}
               >
                 {content}
@@ -1457,66 +1467,81 @@ export const DataTable = forwardRef(function DataTable<T>(
       // history navigation and must not be hijacked by grid focus movement.
       if (e.altKey) return;
 
+      // Read current focused cell from DOM target's data-row/data-col attrs.
+      // React state (`focusedCell`) can be stale when keydown fires before
+      // setState commits — happens with Playwright programmatic .focus()
+      // + immediate .keyboard.press(). DOM attrs are the source of truth.
+      const focused = {
+        row: parseInt(
+          target.dataset.row ?? String(focusedCell.row),
+          10,
+        ),
+        col: parseInt(
+          target.dataset.col ?? String(focusedCell.col),
+          10,
+        ),
+      };
+
       const ctrl = e.ctrlKey || e.metaKey;
       let next: { row: number; col: number } | null = null;
 
       switch (e.key) {
         case 'ArrowDown':
           next = {
-            row: Math.min(totalDataRows, focusedCell.row + 1),
-            col: focusedCell.col,
+            row: Math.min(totalDataRows, focused.row + 1),
+            col: focused.col,
           };
           break;
         case 'ArrowUp':
           next = {
-            row: Math.max(0, focusedCell.row - 1),
-            col: focusedCell.col,
+            row: Math.max(0, focused.row - 1),
+            col: focused.col,
           };
           break;
         case 'ArrowRight':
           next = {
-            row: focusedCell.row,
+            row: focused.row,
             col:
               dir === 'rtl'
-                ? Math.max(0, focusedCell.col - 1)
-                : Math.min(totalGridCols - 1, focusedCell.col + 1),
+                ? Math.max(0, focused.col - 1)
+                : Math.min(totalGridCols - 1, focused.col + 1),
           };
           break;
         case 'ArrowLeft':
           next = {
-            row: focusedCell.row,
+            row: focused.row,
             col:
               dir === 'rtl'
-                ? Math.min(totalGridCols - 1, focusedCell.col + 1)
-                : Math.max(0, focusedCell.col - 1),
+                ? Math.min(totalGridCols - 1, focused.col + 1)
+                : Math.max(0, focused.col - 1),
           };
           break;
         case 'Home':
           next = ctrl
             ? { row: 1, col: 0 } // first DATA cell
-            : { row: focusedCell.row, col: 0 };
+            : { row: focused.row, col: 0 };
           break;
         case 'End':
           next = ctrl
             ? { row: totalDataRows, col: totalGridCols - 1 }
-            : { row: focusedCell.row, col: totalGridCols - 1 };
+            : { row: focused.row, col: totalGridCols - 1 };
           break;
         case 'PageDown':
           next = {
-            row: Math.min(totalDataRows, focusedCell.row + 10),
-            col: focusedCell.col,
+            row: Math.min(totalDataRows, focused.row + 10),
+            col: focused.col,
           };
           break;
         case 'PageUp':
           next = {
-            row: Math.max(0, focusedCell.row - 10),
-            col: focusedCell.col,
+            row: Math.max(0, focused.row - 10),
+            col: focused.col,
           };
           break;
         case ' ':
           // Space toggles selection of focused data row (gdy selection enabled)
-          if (selectionEnabled && focusedCell.row >= 1) {
-            const dataRowIdx = focusedCell.row - 1;
+          if (selectionEnabled && focused.row >= 1) {
+            const dataRowIdx = focused.row - 1;
             const row = tableState.visibleRows[dataRowIdx];
             if (row !== undefined) {
               const disabled = rowDisabled?.(row) ?? false;
@@ -1529,16 +1554,16 @@ export const DataTable = forwardRef(function DataTable<T>(
           }
           break;
         case 'Enter':
-          if (focusedCell.row === 0) {
+          if (focused.row === 0) {
             // Header → toggle sort gdy sortable
-            const dataColIdx = focusedCell.col - totalLeadingCols;
+            const dataColIdx = focused.col - totalLeadingCols;
             const col = dataColIdx >= 0 ? visibleColumns[dataColIdx] : undefined;
             if (col?.sortable) {
               tableState.toggleSort(col.id);
               e.preventDefault();
             }
-          } else if (focusedCell.row >= 1) {
-            const dataRowIdx = focusedCell.row - 1;
+          } else if (focused.row >= 1) {
+            const dataRowIdx = focused.row - 1;
             const row = tableState.visibleRows[dataRowIdx];
             if (row !== undefined) {
               const disabled = rowDisabled?.(row) ?? false;
@@ -1546,13 +1571,13 @@ export const DataTable = forwardRef(function DataTable<T>(
               // Enter on expansion column → toggle expansion
               if (
                 expansionEnabled &&
-                focusedCell.col === selectionOffset
+                focused.col === selectionOffset
               ) {
                 toggleRowExpansion(getRowId(row, dataRowIdx));
                 e.preventDefault();
               } else if (
                 selectionEnabled &&
-                focusedCell.col === 0
+                focused.col === 0
               ) {
                 toggleRowSelection(getRowId(row, dataRowIdx));
                 e.preventDefault();

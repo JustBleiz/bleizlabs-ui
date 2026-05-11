@@ -12,6 +12,7 @@
  */
 
 import { test, expect } from '@playwright/test';
+import { allGrids } from './_helpers';
 
 test.describe('DataTable — selection behavior', () => {
   test.beforeEach(async ({ page }) => {
@@ -20,7 +21,7 @@ test.describe('DataTable — selection behavior', () => {
   });
 
   test('DT-SE01 — row checkbox toggles aria-selected', async ({ page }) => {
-    const grids = page.getByRole('grid');
+    const grids = allGrids(page);
     const grid = grids.nth(2);
     const firstDataRow = grid.locator('[role="row"][aria-rowindex="2"]');
     const cb = firstDataRow.getByRole('checkbox').first();
@@ -32,7 +33,7 @@ test.describe('DataTable — selection behavior', () => {
   });
 
   test('DT-SE02 — header checkbox selects all visible page rows', async ({ page }) => {
-    const grids = page.getByRole('grid');
+    const grids = allGrids(page);
     const grid = grids.nth(2);
     const headerCb = grid.getByRole('checkbox', { name: /Select all/i });
     await headerCb.check();
@@ -44,7 +45,7 @@ test.describe('DataTable — selection behavior', () => {
   test('DT-SE03 — header checkbox is indeterminate with partial selection', async ({
     page,
   }) => {
-    const grids = page.getByRole('grid');
+    const grids = allGrids(page);
     const grid = grids.nth(2);
     const firstCb = grid
       .locator('[role="row"][aria-rowindex="2"]')
@@ -60,7 +61,7 @@ test.describe('DataTable — selection behavior', () => {
   });
 
   test('DT-SE04 — toggling header when fully selected clears all', async ({ page }) => {
-    const grids = page.getByRole('grid');
+    const grids = allGrids(page);
     const grid = grids.nth(2);
     const headerCb = grid.getByRole('checkbox', { name: /Select all/i });
     await headerCb.check();
@@ -74,7 +75,7 @@ test.describe('DataTable — selection behavior', () => {
   test('DT-SE05 — selection persists across pagination (stable getRowId)', async ({
     page,
   }) => {
-    const grids = page.getByRole('grid');
+    const grids = allGrids(page);
     const grid = grids.nth(2);
     const section = grid.locator('xpath=ancestor::section[1]');
     const firstRowCb = grid
@@ -98,7 +99,7 @@ test.describe('DataTable — selection behavior', () => {
   });
 
   test('DT-SE06 — selection count label updates', async ({ page }) => {
-    const grids = page.getByRole('grid');
+    const grids = allGrids(page);
     const grid = grids.nth(2);
     const section = grid.locator('xpath=ancestor::section[1]');
     const cb = grid
@@ -112,7 +113,7 @@ test.describe('DataTable — selection behavior', () => {
   });
 
   test('DT-SE07 — selection survives column sort', async ({ page }) => {
-    const grids = page.getByRole('grid');
+    const grids = allGrids(page);
     const grid = grids.nth(2);
     const firstCb = grid
       .locator('[role="row"][aria-rowindex="2"]')

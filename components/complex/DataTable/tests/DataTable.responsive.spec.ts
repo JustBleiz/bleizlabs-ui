@@ -9,6 +9,7 @@
  */
 
 import { test, expect } from '@playwright/test';
+import { allGrids } from './_helpers';
 
 test.describe('DataTable — responsive behavior', () => {
   test.beforeEach(async ({ page }) => {
@@ -20,7 +21,7 @@ test.describe('DataTable — responsive behavior', () => {
   }) => {
     await page.setViewportSize({ width: 1280, height: 800 });
     await page.goto('/components/data-table');
-    const grid = page.getByRole('grid').first();
+    const grid = allGrids(page).first();
     await expect(grid).toBeVisible();
     const rows = grid.getByRole('row');
     const rowCount = await rows.count();
@@ -36,7 +37,7 @@ test.describe('DataTable — responsive behavior', () => {
     await page.waitForTimeout(300);
     // Mobile layout drops role="columnheader" entirely (no <thead>). Verify
     // the basic section (first grid) carries zero columnheaders.
-    const firstGrid = page.getByRole('grid').first();
+    const firstGrid = allGrids(page).first();
     await firstGrid.scrollIntoViewIfNeeded();
     const headerCount = await firstGrid.getByRole('columnheader').count();
     expect(headerCount).toBe(0);
@@ -47,7 +48,7 @@ test.describe('DataTable — responsive behavior', () => {
   }) => {
     await page.setViewportSize({ width: 1280, height: 600 });
     await page.goto('/components/data-table');
-    const grid = page.getByRole('grid').nth(3); // full-featured stickyHeader
+    const grid = allGrids(page).nth(3); // full-featured stickyHeader
     await grid.scrollIntoViewIfNeeded();
     const headerRow = grid.locator('[role="row"][aria-rowindex="1"]').first();
     await expect(headerRow).toBeVisible();
@@ -64,7 +65,7 @@ test.describe('DataTable — responsive behavior', () => {
   }) => {
     await page.setViewportSize({ width: 800, height: 700 });
     await page.goto('/components/data-table');
-    const grid = page.getByRole('grid').nth(3); // full-featured has frozen left + right
+    const grid = allGrids(page).nth(3); // full-featured has frozen left + right
     await grid.scrollIntoViewIfNeeded();
     // Find scroll container and scroll it horizontally
     const scrollContainer = grid.locator('xpath=ancestor::div[contains(@class, "scrollContainer") or contains(@style, "overflow")][1]');

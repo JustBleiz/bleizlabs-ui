@@ -10,6 +10,7 @@
  */
 
 import { test, expect } from '@playwright/test';
+import { allGrids } from './_helpers';
 
 test.describe('DataTable — expansion behavior', () => {
   test.beforeEach(async ({ page }) => {
@@ -20,7 +21,7 @@ test.describe('DataTable — expansion behavior', () => {
   test('DT-EX01 — clicking expand button toggles aria-expanded on row', async ({
     page,
   }) => {
-    const grids = page.getByRole('grid');
+    const grids = allGrids(page);
     const grid = grids.nth(3); // full-featured has expandable
     const firstRow = grid.locator('[role="row"][aria-rowindex="2"]');
     const before = await firstRow.getAttribute('aria-expanded');
@@ -34,7 +35,7 @@ test.describe('DataTable — expansion behavior', () => {
   test('DT-EX02 — expanded content (description text) renders after toggle', async ({
     page,
   }) => {
-    const grids = page.getByRole('grid');
+    const grids = allGrids(page);
     const grid = grids.nth(3);
     const firstRow = grid.locator('[role="row"][aria-rowindex="2"]');
     const expandBtn = firstRow.getByRole('button', { name: /Expand row/ }).first();
@@ -46,7 +47,7 @@ test.describe('DataTable — expansion behavior', () => {
   });
 
   test('DT-EX03 — collapse hides expanded content', async ({ page }) => {
-    const grids = page.getByRole('grid');
+    const grids = allGrids(page);
     const grid = grids.nth(3);
     const firstRow = grid.locator('[role="row"][aria-rowindex="2"]');
     const expandBtn = firstRow.getByRole('button', { name: /Expand row/ }).first();
@@ -59,7 +60,7 @@ test.describe('DataTable — expansion behavior', () => {
   });
 
   test('DT-EX04 — multiple rows can be expanded simultaneously', async ({ page }) => {
-    const grids = page.getByRole('grid');
+    const grids = allGrids(page);
     const grid = grids.nth(3);
     const row1 = grid.locator('[role="row"][aria-rowindex="2"]');
     const row2 = grid.locator('[role="row"][aria-rowindex="3"]');
@@ -74,7 +75,7 @@ test.describe('DataTable — expansion behavior', () => {
   test('DT-EX05 — expand button aria-label flips between "Expand row" and "Collapse row"', async ({
     page,
   }) => {
-    const grids = page.getByRole('grid');
+    const grids = allGrids(page);
     const grid = grids.nth(3);
     const firstRow = grid.locator('[role="row"][aria-rowindex="2"]');
     const btn = firstRow

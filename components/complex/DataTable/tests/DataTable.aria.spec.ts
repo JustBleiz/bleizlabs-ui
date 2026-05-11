@@ -13,6 +13,7 @@
  */
 
 import { test, expect } from '@playwright/test';
+import { allGrids } from './_helpers';
 import AxeBuilder from '@axe-core/playwright';
 
 test.describe('DataTable — ARIA + accessibility tree', () => {
@@ -24,7 +25,7 @@ test.describe('DataTable — ARIA + accessibility tree', () => {
   test('DT-A01 — root role="grid" has aria-rowcount + aria-colcount + aria-label', async ({
     page,
   }) => {
-    const grids = page.getByRole('grid');
+    const grids = allGrids(page);
     const count = await grids.count();
     expect(count).toBeGreaterThanOrEqual(1);
     const first = grids.first();
@@ -34,7 +35,7 @@ test.describe('DataTable — ARIA + accessibility tree', () => {
   });
 
   test('DT-A02 — columnheaders carry aria-sort state', async ({ page }) => {
-    const grids = page.getByRole('grid');
+    const grids = allGrids(page);
     const sortableGrid = grids.nth(1);
     const headers = sortableGrid.getByRole('columnheader');
     const firstHeader = headers.first();
@@ -46,7 +47,7 @@ test.describe('DataTable — ARIA + accessibility tree', () => {
   test('DT-A03 — rows have aria-rowindex, header row = 1, data rows start at 2', async ({
     page,
   }) => {
-    const grid = page.getByRole('grid').first();
+    const grid = allGrids(page).first();
     const rows = grid.getByRole('row');
     const firstRowIndex = await rows.first().getAttribute('aria-rowindex');
     expect(firstRowIndex).toBe('1');
@@ -55,7 +56,7 @@ test.describe('DataTable — ARIA + accessibility tree', () => {
   });
 
   test('DT-A04 — gridcells have aria-colindex starting at 1', async ({ page }) => {
-    const grid = page.getByRole('grid').first();
+    const grid = allGrids(page).first();
     const firstCell = grid.locator('[role="gridcell"]').first();
     const colIdx = await firstCell.getAttribute('aria-colindex');
     expect(colIdx).toBe('1');
@@ -63,7 +64,7 @@ test.describe('DataTable — ARIA + accessibility tree', () => {
 
   test('DT-A05 — selected row gets aria-selected="true"', async ({ page }) => {
     // Section 3 — selection multiple, click first row's checkbox
-    const grids = page.getByRole('grid');
+    const grids = allGrids(page);
     const selectionGrid = grids.nth(2);
     const firstDataRow = selectionGrid.locator('[role="row"][aria-rowindex="2"]');
     const rowCheckbox = firstDataRow.getByRole('checkbox').first();
@@ -74,7 +75,7 @@ test.describe('DataTable — ARIA + accessibility tree', () => {
 
   test('DT-A06 — expanded row sets aria-expanded="true"', async ({ page }) => {
     // Section 4 — full-featured, has expandable
-    const grids = page.getByRole('grid');
+    const grids = allGrids(page);
     const fullGrid = grids.nth(3);
     const expandBtn = fullGrid
       .getByRole('button', { name: /Expand row|Collapse row/ })
@@ -98,7 +99,7 @@ test.describe('DataTable — ARIA + accessibility tree', () => {
     // wrapper via the grid's aria-describedby → live region id relationship
     // (the grid declares `aria-describedby={liveRegionId}` and the live
     // region carries that exact id).
-    const grids = page.getByRole('grid');
+    const grids = allGrids(page);
     const sortableGrid = grids.nth(1);
     const sortBtn = sortableGrid.getByRole('button', { name: /sort/i }).nth(1);
     await sortBtn.click();

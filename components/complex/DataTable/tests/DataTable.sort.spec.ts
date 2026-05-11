@@ -11,6 +11,7 @@
  */
 
 import { test, expect } from '@playwright/test';
+import { allGrids } from './_helpers';
 
 test.describe('DataTable — sort behavior', () => {
   test.beforeEach(async ({ page }) => {
@@ -19,7 +20,7 @@ test.describe('DataTable — sort behavior', () => {
   });
 
   test('DT-S01 — click cycles asc → desc → none', async ({ page }) => {
-    const grids = page.getByRole('grid');
+    const grids = allGrids(page);
     const grid = grids.nth(1); // sortable+filterable (4 cols, all sortable)
     // defaultSort is on column 0 (name); cycle column 1 (owner) instead to
     // observe a clean none → asc → desc → none progression.
@@ -35,7 +36,7 @@ test.describe('DataTable — sort behavior', () => {
   });
 
   test('DT-S02 — aria-sort initially ascending due to defaultSort', async ({ page }) => {
-    const grids = page.getByRole('grid');
+    const grids = allGrids(page);
     const grid = grids.nth(1); // defaultSort: { columnId: 'name', direction: 'asc' }
     const ascHeader = grid.locator('[role="columnheader"][aria-sort="ascending"]');
     await expect(ascHeader).toHaveCount(1);
@@ -43,7 +44,7 @@ test.describe('DataTable — sort behavior', () => {
 
   test('DT-S03 — defaultSort sets initial visible row order', async ({ page }) => {
     // Section 2: defaultSort name asc — rows should be alphabetical
-    const grids = page.getByRole('grid');
+    const grids = allGrids(page);
     const grid = grids.nth(1);
     const firstCell = grid.locator('[role="row"][aria-rowindex="2"] [role="gridcell"]').first();
     const secondCell = grid.locator('[role="row"][aria-rowindex="3"] [role="gridcell"]').first();
@@ -53,7 +54,7 @@ test.describe('DataTable — sort behavior', () => {
   });
 
   test('DT-S04 — only one column has aria-sort != none at a time', async ({ page }) => {
-    const grids = page.getByRole('grid');
+    const grids = allGrids(page);
     const grid = grids.nth(1);
     const sortBtns = grid.getByRole('button', { name: /sort/i });
     await sortBtns.nth(2).click();
@@ -66,7 +67,7 @@ test.describe('DataTable — sort behavior', () => {
 
   test('DT-S05 — unsortable column header has no sort button', async ({ page }) => {
     // Section 1 — basic columns are not sortable
-    const grids = page.getByRole('grid');
+    const grids = allGrids(page);
     const grid = grids.first();
     const headers = grid.getByRole('columnheader');
     const sortBtnsInBasic = grid.getByRole('button', { name: /sort/i });
@@ -75,7 +76,7 @@ test.describe('DataTable — sort behavior', () => {
   });
 
   test('DT-S06 — desc sort reverses visible row order', async ({ page }) => {
-    const grids = page.getByRole('grid');
+    const grids = allGrids(page);
     const grid = grids.nth(1);
     const sortBtns = grid.getByRole('button', { name: /sort/i });
     // Click name header twice — defaultSort is asc, second click → desc

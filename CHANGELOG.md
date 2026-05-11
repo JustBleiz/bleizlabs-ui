@@ -17,13 +17,16 @@ dependencies maintained.
 ### Added
 
 **Complex interactive:**
-- `DataTable<T>` — declarative grid primitive z TanStack-style `columns` +
-  `data` API + discriminated-union selection mode (`'none' | 'single' | 'multiple'`).
+- `DataTable<T>` — declarative grid primitive z `columns` + `data` API +
+  discriminated-union selection mode (`'none' | 'single' | 'multiple'`).
   Klocek-compliant: single concept, data-shape neutral via generic `T`,
   no opinionated visual lockups (consumer drives density/dir/striped/sticky
-  via independent opt-in props). Ships full APG `/grid/` pattern:
-  `role="grid"` + explicit `role="row"`/`"gridcell"`/`"columnheader"` on
-  every descendant, `aria-rowcount`/`aria-rowindex`/`aria-colcount`/`aria-colindex`,
+  via independent opt-in props). Ships full APG `/grid/` (or `/treegrid/`
+  when `expandable` is provided per WAI-ARIA 1.2 + axe
+  `aria-conditional-attr`) pattern: `role="grid"` by default, `role="treegrid"`
+  gdy `expandable` enabled, plus explicit `role="row"`/`"gridcell"`/
+  `"columnheader"` on every descendant,
+  `aria-rowcount`/`aria-rowindex`/`aria-colcount`/`aria-colindex`,
   `aria-sort` synced to column sort state, `aria-selected`/`aria-expanded`
   on selectable + expandable rows, `aria-multiselectable` on multi-select
   grids, `aria-live="polite"` debounced announcements for sort/filter/page/

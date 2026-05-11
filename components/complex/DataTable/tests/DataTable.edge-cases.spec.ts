@@ -17,6 +17,7 @@
  */
 
 import { test, expect } from '@playwright/test';
+import { allGrids } from './_helpers';
 
 test.describe('DataTable — edge cases', () => {
   test.beforeEach(async ({ page }) => {
@@ -81,7 +82,7 @@ test.describe('DataTable — edge cases', () => {
   });
 
   test('DT-EC06 — disabled (archived) row cannot be selected', async ({ page }) => {
-    const grids = page.getByRole('grid');
+    const grids = allGrids(page);
     const grid = grids.nth(3); // full-featured: archived rows are disabled
     // Find a row that has aria-disabled or class that suggests disabled
     const disabledRow = grid
@@ -101,7 +102,7 @@ test.describe('DataTable — edge cases', () => {
     // triggers an alert exactly once. Disabled rows live in section 4 but
     // section 4 has no onRowClick handler, so the negative-case fire check
     // collapses to "row remains in DOM after click attempt".
-    const grids = page.getByRole('grid');
+    const grids = allGrids(page);
     const grid = grids.nth(4); // section 5 — real-world panel
     await grid.scrollIntoViewIfNeeded();
     // Section 5 has no aria-disabled rows (no rowDisabled prop). Verify no
@@ -118,7 +119,7 @@ test.describe('DataTable — edge cases', () => {
   });
 
   test('DT-EC08 — filter producing zero results does not crash', async ({ page }) => {
-    const grids = page.getByRole('grid');
+    const grids = allGrids(page);
     const grid = grids.nth(1);
     const filterInputs = grid.getByRole('textbox');
     await filterInputs.first().fill('ZZZZZZZZ_no_match');
@@ -133,14 +134,14 @@ test.describe('DataTable — edge cases', () => {
 
   test('DT-EC09 — single-row data set renders correctly', async ({ page }) => {
     // Basic section is 5 rows — assert it renders without errors
-    const grid = page.getByRole('grid').first();
+    const grid = allGrids(page).first();
     const rows = grid.locator('[role="row"]:not([aria-rowindex="1"])');
     const count = await rows.count();
     expect(count).toBe(5);
   });
 
   test('DT-EC11 — rapid Next clicks do not exceed max page', async ({ page }) => {
-    const grids = page.getByRole('grid');
+    const grids = allGrids(page);
     const grid = grids.nth(1); // 20 rows, pageSize 10 → 2 pages
     const section = grid.locator('xpath=ancestor::section[1]');
     const nextBtn = section.getByRole('button', { name: /next|»/i }).first();
@@ -158,7 +159,7 @@ test.describe('DataTable — edge cases', () => {
   }) => {
     const errors: string[] = [];
     page.on('pageerror', (e) => errors.push(e.message));
-    const grid = page.getByRole('grid').first();
+    const grid = allGrids(page).first();
     const cell = grid.locator('[role="gridcell"]').first();
     await cell.focus();
     for (let i = 0; i < 15; i++) {

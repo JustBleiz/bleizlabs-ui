@@ -12,6 +12,7 @@
  */
 
 import { test, expect } from '@playwright/test';
+import { allGrids } from './_helpers';
 
 test.describe('DataTable — pagination behavior', () => {
   test.beforeEach(async ({ page }) => {
@@ -21,7 +22,7 @@ test.describe('DataTable — pagination behavior', () => {
 
   test('DT-P01 — Next button advances to page 2', async ({ page }) => {
     // Section 2 — 20 rows, pageSize 10 → 2 pages
-    const grids = page.getByRole('grid');
+    const grids = allGrids(page);
     const grid = grids.nth(1);
     // Look for Next button near the grid
     const section = grid.locator('xpath=ancestor::section[1]');
@@ -34,7 +35,7 @@ test.describe('DataTable — pagination behavior', () => {
   });
 
   test('DT-P02 — Prev returns to page 1 after Next', async ({ page }) => {
-    const grids = page.getByRole('grid');
+    const grids = allGrids(page);
     const grid = grids.nth(1);
     const section = grid.locator('xpath=ancestor::section[1]');
     const nextBtn = section.getByRole('button', { name: /next|następna|»/i }).first();
@@ -51,7 +52,7 @@ test.describe('DataTable — pagination behavior', () => {
     page,
   }) => {
     // Section 4 — 47 rows, pageSize 10 → 5 pages
-    const grids = page.getByRole('grid');
+    const grids = allGrids(page);
     const grid = grids.nth(3);
     const section = grid.locator('xpath=ancestor::section[1]');
     // Try to find Last button by accessible name (if exposed)
@@ -77,7 +78,7 @@ test.describe('DataTable — pagination behavior', () => {
   });
 
   test('DT-P04 — pageSize selector changes rows per page', async ({ page }) => {
-    const grids = page.getByRole('grid');
+    const grids = allGrids(page);
     const grid = grids.nth(3);
     const section = grid.locator('xpath=ancestor::section[1]');
     // pageSizeOptions: [5, 10, 20, 50] — try to find combobox or select
@@ -96,7 +97,7 @@ test.describe('DataTable — pagination behavior', () => {
   });
 
   test('DT-P05 — Page label format "Page X of Y"', async ({ page }) => {
-    const grids = page.getByRole('grid');
+    const grids = allGrids(page);
     const grid = grids.nth(1);
     const section = grid.locator('xpath=ancestor::section[1]');
     const label = section.getByText(/Page \d+ of \d+/).first();
@@ -106,7 +107,7 @@ test.describe('DataTable — pagination behavior', () => {
   test('DT-P06 — Basic section (pagination=false) has no pagination footer', async ({
     page,
   }) => {
-    const grids = page.getByRole('grid');
+    const grids = allGrids(page);
     const grid = grids.first();
     const section = grid.locator('xpath=ancestor::section[1]');
     const pageLabel = section.getByText(/Page \d+ of \d+/);
@@ -116,7 +117,7 @@ test.describe('DataTable — pagination behavior', () => {
   test('DT-P07 — Showing N of M reflects current visible vs total', async ({
     page,
   }) => {
-    const grids = page.getByRole('grid');
+    const grids = allGrids(page);
     const grid = grids.nth(1);
     const section = grid.locator('xpath=ancestor::section[1]');
     const label = section.getByText(/Showing \d+ of \d+ rows/).first();

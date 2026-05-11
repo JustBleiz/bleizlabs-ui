@@ -19,6 +19,7 @@
  */
 
 import { test, expect } from '@playwright/test';
+import { allGrids } from './_helpers';
 
 test.describe('DataTable — keyboard interactions', () => {
   test.beforeEach(async ({ page }) => {
@@ -27,7 +28,7 @@ test.describe('DataTable — keyboard interactions', () => {
   });
 
   test('DT-K01 — ArrowRight moves focus to next cell horizontally', async ({ page }) => {
-    const grid = page.getByRole('grid').first();
+    const grid = allGrids(page).first();
     const firstCell = grid.locator('[role="gridcell"]').first();
     await firstCell.focus();
     const before = await firstCell.getAttribute('aria-colindex');
@@ -41,7 +42,7 @@ test.describe('DataTable — keyboard interactions', () => {
   test('DT-K02 — ArrowDown moves focus to cell in next row, same column', async ({
     page,
   }) => {
-    const grid = page.getByRole('grid').first();
+    const grid = allGrids(page).first();
     const firstCell = grid.locator('[role="gridcell"]').first();
     await firstCell.focus();
     const beforeCol = await firstCell.getAttribute('aria-colindex');
@@ -56,7 +57,7 @@ test.describe('DataTable — keyboard interactions', () => {
   });
 
   test('DT-K03 — Home jumps to first cell of current row', async ({ page }) => {
-    const grid = page.getByRole('grid').first();
+    const grid = allGrids(page).first();
     const cells = grid.locator('[role="gridcell"]');
     await cells.nth(2).focus();
     await page.keyboard.press('Home');
@@ -67,7 +68,7 @@ test.describe('DataTable — keyboard interactions', () => {
   });
 
   test('DT-K04 — End jumps to last cell of current row', async ({ page }) => {
-    const grid = page.getByRole('grid').first();
+    const grid = allGrids(page).first();
     const firstCell = grid.locator('[role="gridcell"]').first();
     await firstCell.focus();
     await page.keyboard.press('End');
@@ -79,7 +80,7 @@ test.describe('DataTable — keyboard interactions', () => {
   });
 
   test('DT-K05 — Ctrl+Home jumps to first cell of grid', async ({ page }) => {
-    const grid = page.getByRole('grid').first();
+    const grid = allGrids(page).first();
     const cells = grid.locator('[role="gridcell"]');
     const count = await cells.count();
     await cells.nth(Math.min(5, count - 1)).focus();
@@ -100,9 +101,9 @@ test.describe('DataTable — keyboard interactions', () => {
     // Section 4 — full-featured with RTL toggle
     const rtlSwitch = page.getByRole('switch', { name: /RTL direction/i });
     await rtlSwitch.scrollIntoViewIfNeeded();
-    await rtlSwitch.click();
+    await rtlSwitch.click({ force: true });
     await page.waitForTimeout(150);
-    const grids = page.getByRole('grid');
+    const grids = allGrids(page);
     const rtlGrid = grids.nth(3);
     const firstCell = rtlGrid.locator('[role="gridcell"]').first();
     await firstCell.focus();
@@ -119,7 +120,7 @@ test.describe('DataTable — keyboard interactions', () => {
     page,
   }) => {
     // Section 3 — selection multiple
-    const grids = page.getByRole('grid');
+    const grids = allGrids(page);
     const selectionGrid = grids.nth(2);
     // Focus first gridcell of first row
     const firstRow = selectionGrid.locator('[role="row"][aria-rowindex="2"]');
@@ -134,7 +135,7 @@ test.describe('DataTable — keyboard interactions', () => {
 
   test('DT-K08 — Enter on header cell activates sort', async ({ page }) => {
     // Section 2 — sortable+filterable, headers are buttons inside columnheader
-    const grids = page.getByRole('grid');
+    const grids = allGrids(page);
     const sortableGrid = grids.nth(1);
     const sortBtn = sortableGrid.getByRole('button', { name: /sort/i }).first();
     await sortBtn.focus();
@@ -150,7 +151,7 @@ test.describe('DataTable — keyboard interactions', () => {
   test('DT-K09 — Alt+ArrowRight passes through (does not change focus)', async ({
     page,
   }) => {
-    const grid = page.getByRole('grid').first();
+    const grid = allGrids(page).first();
     const firstCell = grid.locator('[role="gridcell"]').first();
     await firstCell.focus();
     const before = await firstCell.getAttribute('aria-colindex');

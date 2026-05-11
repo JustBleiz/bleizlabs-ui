@@ -507,7 +507,7 @@ const components: ComponentLink[] = [
   {
     href: '/components/data-table',
     name: 'DataTable',
-    description: 'Generic-data grid primitive z TanStack-style declarative columns + data, single/multiple selection, expansion, frozen columns, mobile card fallback. Full APG /grid/ keyboard model + aria-live announcements.',
+    description: 'Generic-data grid primitive z declarative columns + data API, single/multiple selection, expansion, frozen columns, mobile card fallback. Full APG /grid/ (lub /treegrid/ z expansion) keyboard model + aria-live announcements.',
     phase: 'Phase 10 — Complex Interactive',
     status: 'available',
   },
