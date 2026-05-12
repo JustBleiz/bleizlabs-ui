@@ -30,6 +30,7 @@ Każda pozycja ma:
 0.18.1  ✓  Field re-register loop fix         SHIPPED 2026-05-12 (single-file patch)
 0.19.0  ✓  Forms expansion                    SHIPPED 2026-05-12 (93 → 96 — FileUpload, TagsInput, Stepper)
 0.20.0  ✓  Charts pack                        SHIPPED 2026-05-12 (96 → 100 — LineChart, AreaChart, Sparkline, PieChart + _shared/chart-math extraction)
+0.20.1  →  Demo bug sweep                     [18 bugs found in demo 2026-05-12 — runtime/visual/a11y patches]
 0.21.0  →  Polish batch                       [4 quick wins]
 0.22.0  →  Housekeeping                       [API freeze prep — bez RC]
 0.23.0+ →  Open-ended minor releases          [post-housekeeping nowe potrzeby gdy się ujawnią]
@@ -44,8 +45,9 @@ Każda pozycja ma:
 2. **Date/Time drugi** — 4 powiązane komponenty współdzielą Calendar + Date utils, naturalny batch
 3. **Forms trzeci** — FileUpload, TagsInput, Stepper domykają core form story
 4. **Charts czwarte** — dashboard layer po formach
-5. **Polish piąte** — 4 małe komponenty = szybki release, momentum
-6. **Housekeeping szóste** — sprzątanie przed API freeze
+5. **Demo bug sweep (0.20.1)** — 18 bugs found 2026-05-12, sweep przed Polish żeby fresh components nie inheritowały pułapek
+6. **Polish piąte** — 4 małe komponenty = szybki release, momentum
+7. **Housekeeping szóste** — sprzątanie przed API freeze
 
 Każdy minor możemy przemieszać gdy realny priority się zmieni z internal consumer perspective. Roadmap to kompas, nie GPS.
 
@@ -315,6 +317,85 @@ Cycle: E01.1 FileUpload → E01.2 TagsInput → E01.3 Stepper sequentially.
 
 ---
 
+## 0.20.1 — Demo bug sweep
+
+**Status:** PLANNED. Discovered 2026-05-12 by user during demo walkthrough po 0.20.0 ship. 18 bugs found across existing components — runtime errors, missing renders, visual inconsistencies, broken interactions. Patch cycle (NIE minor) bo wyłącznie bugfixy na shipped surface.
+
+**Why:** Demo dev app jest jedynym continuous-integration surface dla wszystkich 100 komponentów. Bugi tutaj = bugi w consumer projects. Sweep przed 0.21.0 polish batch żeby fresh-built Polish components nie inheritowały tych samych pułapek.
+
+**Methodology (canonical per user 2026-05-12):** *"pewnie niektóre na siebie nachodzą albo oddziałowują ze sobą, więc dobrze jest przed każdym fixem zweryfikować czy nadal występuje."* + *"nie tylko trzeba to sprawdzić w demo ale sprawdzić gdzie powstaje źródło, czy źródłem problemu jest nasza implementacja w demo, czy może źródłem problemu jest jednak kod źródłowy."*
+
+Każdy bug pre-fix MANDATORY:
+1. **Reproduce** — `mcp__next-devtools__nextjs_call get_errors` + visual check na current main HEAD; verify że bug nadal występuje (NIE auto-assume z listy)
+2. **Root-cause triage** — bug może mieć 1 z 3 źródeł:
+   - **(a) DEMO PAGE** — `app/components/<name>/page.tsx` lub `.module.scss` — wrong prop usage, wrong import path, demo-only typo
+   - **(b) LIB SOURCE** — `components/<layer>/<Name>/<Name>.tsx` lub `.module.scss` — actual component bug, missing variant, broken prop wiring, a11y violation
+   - **(c) BOTH** — demo exposes lib bug poprzez configuration unique do demo
+   - Read affected demo page FIRST + lib source SECOND; compare prop contract z JSDoc; confirm który layer owns the bug
+3. **Fix location decision** — patch lands gdzie source jest:
+   - DEMO bug → fix tylko `app/components/<name>/page.tsx` (zero lib touch)
+   - LIB bug → fix lib source + regression spec w `<Name>.regression.spec.ts` + verify demo still works
+   - BOTH → fix lib first (source of truth), then fix demo to match corrected API
+4. **Confirm not downstream symptom** — niektóre bugs mogą być side-effects wcześniejszych fixów (B05 TextLink underline może być related do B11 Textarea resize jeśli oba dotykają shared display tokens). Read previous commits w sweep przed implementacją kolejnego fix
+5. **Implement minimum patch** — najwęższa zmiana likwidująca root cause; zero refactor scope-creep
+6. **Re-verify post-fix** — `get_errors` clean + visual check demo + regression spec PASS gdy applicable + axe-core delta zero
+
+**Tagging w commitach:** `fix(0.20.1/B##): <demo|lib|both> — <component> — <symptom>` żeby split-stats były czytelne post-sweep.
+
+**Bug roster (P0-P3 priority by impact; root-cause guess: D=demo, L=lib, B=both, ?=unknown):**
+
+### P0 — Console errors (blocks clean dev experience)
+
+- [ ] **B01 [?]** Stack demo — 2 console errors (capture errors first → triage)
+- [ ] **B03 [?]** Section demo — 2 console errors (capture + triage)
+- [ ] **B06 [?]** Cards demo — 2 console errors (capture + triage)
+- [ ] **B07a [B?]** Badge demo "5. asChild → semantic time element" — nie renderuje się + 2× console error. Likely lib asChild Slot polymorphism bug LUB demo passes invalid child shape
+
+### P1 — Functional breaks (interaction / render fails)
+
+- [ ] **B02 [B?]** Inline demo "5. asChild — renders <nav>" — nie renderuje się. asChild Slot bug LUB demo composition
+- [ ] **B04 [?]** Eyebrow demo "6. asChild (project onto label semantics)" — verify rendering + a11y semantics
+- [ ] **B09 [L?]** EdgeBar demo "5. Pulsing — opacity cycle for alert/live indicators" — animation nie działa. Likely lib `@keyframes` missing lub `prefers-reduced-motion` over-eagerly disables
+- [ ] **B10 [?]** Label demo "5. asChild → semantic legend" — verify rendering + a11y semantics
+- [ ] **B11 [L]** Textarea `resize="horizontal"` nie działa w żadnym przykładzie. Lib bug: prop nie wired do `resize: horizontal` CSS, lub `.module.scss` `resize: vertical !important` shadows. Demo passes prop correctly
+- [ ] **B12 [D?]** BreakdownList "6. Empty state (consumer-owned)" — puste. Likely demo nie renderuje custom empty content (empty state = consumer-owned slot, demo zapomniało wpisać)
+- [ ] **B15 [L]** Combobox "3. Controlled mode with external state" — "clear" button nie działa. Lib bug: controlled-mode value reset gdy onClear wywołane bez `value` prop callback wired, lub demo nie passes onChange. Read source + demo
+- [ ] **B18 [L]** LineChart "8. Animation off (animate=false)" — popover pokazuje raw timestamp (`17119296000000`). Lib bug: `formatX` ścieżka pomija formatter gdy animacja off (likely `animate ? formatter(x) : x` reversed condition)
+
+### P2 — Visual / proportion issues
+
+- [ ] **B05 [L]** TextLink hover underline 100% szerokości kontenera zamiast tekstu. Lib SCSS bug: `text-decoration: underline` na `<a>` block-level lub `width: 100%` shadow on hover state
+- [ ] **B08 [L]** Badge "7. Live status — Dot pulse composition" — Dot za duży. Likely fix: add `<Dot size="xs|s">` variants do lib (brak `xs` w current API) — patrz `Dot.tsx` size enum + amend
+- [ ] **B13 [L]** Button `variant="warning"` — brak transition. Lib SCSS bug: warning variant nie inherituje shared transition declaration (likely override `transition: none` lub missing `transition` w warning rule block)
+- [ ] **B14 [L?]** AlertDialog — opis przesuwa się 1-2px po 0.5s. Animation finish state bug LUB font swap LUB layout reflow. Read AlertDialog.module.scss + check `animation-fill-mode`
+- [ ] **B17 [B]** DataTable search Input za duży. Demo: użyć `size="s|xs"`; lib: verify że Input ma `size="xs"` wariant (jeśli brak → amend lib first, then demo)
+
+### P3 — Catalog completeness
+
+- [ ] **B16 [D]** Demo home catalog brakuje TimePicker + DateTimePicker (shipped w 0.18.0). Demo-only fix: add cards do `app/page.tsx` + verify `components/date-time-picker/page.tsx` + `components/time-picker/page.tsx` istnieją (lib code shipped, demo catalog out of sync)
+
+**Scope:**
+- Wyłącznie bugfixy na shipped surface (zero new components, zero API breaks)
+- Każdy fix = own commit z regression spec gdy applicable
+- Single PR po wszystkich 18 fixach (lub split P0+P1 vs P2+P3 jeśli pierwsza partia trwa >dzień)
+
+**NIE w v0.20.1:**
+- Nowe komponenty (Banner/AvatarGroup/Rating/Collapsible → 0.21.0)
+- 0.20.0 a11y follow-up dla LineChart+AreaChart (describedby + tab-entry — osobny patch 0.20.2)
+- 0.20.0 test sprint (Playwright + axe-core + NVDA 4 charts — osobny patch 0.20.3)
+
+**DoD pack 0.20.1:**
+- [ ] 18 bugs PASS (zero `get_errors` console output dla affected demo routes)
+- [ ] Regression specs dla każdego applicable bug (B11 Textarea resize, B15 Combobox clear, B18 LineChart formatter, B13 Button warning transition)
+- [ ] axe-core regression suite passes (no introduction of new a11y violations from fixes)
+- [ ] Demo walkthrough po 0.20.1 ship — user confirms wszystkie 18 PASS
+
+**Layer:** Cross-cutting — atoms, molecules, complex, specialized.
+
+**Zero external deps:** None — all fixes use existing tooling.
+
+---
+
 ## 0.21.0 — Polish batch
 
 **Why:** 4 małe komponenty domykające standardowe display + feedback gaps. Szybki release, każdy low-effort, każdy realnie potrzebny.
@@ -479,6 +560,7 @@ Dokumentacja docs site, marketing launches, external a11y audit, business model 
 
 ## Changelog tego dokumentu
 
+- **2026-05-12 v0.4** — 0.20.1 Demo bug sweep dodany jako patch przed 0.21.0 Polish. 18 bugs found by user during demo walkthrough po 0.20.0 ship (4× P0 console errors, 8× P1 functional, 5× P2 visual, 1× P3 catalog completeness). Methodology: pre-fix mandatory `get_errors` verification + downstream-symptom check (bo niektóre mogą się nachodzić).
 - **2026-05-10 v0.3** — Funkcjonalne luki audit. DnD usunięty (defer to external demand). 11 nowych komponentów dodanych: DateRangePicker, TimeInput, TimePicker, DateTimePicker, FileUpload, TagsInput, Stepper, AvatarGroup, Rating, Collapsible, Banner. Phasing 0.17 → 1.0 = 6 minor + RC. Zero external deps policy utrzymane.
 - **2026-05-10 v0.2** — Refocus: tylko funkcjonalne luki, bez estymat czasowych, bez adoption layer.
 - **2026-05-10 v0.1** — Initial draft.
