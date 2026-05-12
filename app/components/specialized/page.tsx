@@ -99,12 +99,16 @@ export default function SpecializedPlaygroundPage() {
           Specialized
         </Heading>
         <Text className={styles.intro}>
-          Eight focused primitives for data display and navigation —{' '}
+          Fourteen focused primitives for data display and navigation —{' '}
           <code>Dot</code>, <code>MetricBar</code>, <code>AnimatedCounter</code>,{' '}
           <code>Breadcrumb</code>, <code>Pagination</code>,{' '}
-          <code>UsageDonut</code>, <code>AvailabilityBar</code>, and{' '}
-          <code>Kbd</code>. Each solves one problem well, composes with the
-          rest of the library, and reads from the shared token system.
+          <code>UsageDonut</code>, <code>AvailabilityBar</code>,{' '}
+          <code>Kbd</code>, <code>ThemeToggle</code>, plus the chart family{' '}
+          <code>BarChart</code>, <code>LineChart</code>, <code>AreaChart</code>,{' '}
+          <code>Sparkline</code>, <code>PieChart</code> (0.20.0). Each solves
+          one problem well, composes with the rest of the library, and reads
+          from the shared token system. Individual chart demos live on
+          dedicated routes — link from the home index.
         </Text>
       </header>
 
