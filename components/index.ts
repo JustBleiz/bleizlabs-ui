@@ -77,16 +77,20 @@ export * from './feedback/Empty';
 export * from './feedback/Progress';
 
 // ----------------------------------------------------------------------------
-// Specialized (10)
+// Specialized (14)
 // ----------------------------------------------------------------------------
 export * from './specialized/AnimatedCounter';
+export * from './specialized/AreaChart';
 export * from './specialized/AvailabilityBar';
 export * from './specialized/BarChart';
 export * from './specialized/Breadcrumb';
 export * from './specialized/Dot';
 export * from './specialized/Kbd';
+export * from './specialized/LineChart';
 export * from './specialized/MetricBar';
 export * from './specialized/Pagination';
+export * from './specialized/PieChart';
+export * from './specialized/Sparkline';
 export * from './specialized/ThemeToggle';
 export * from './specialized/UsageDonut';
 

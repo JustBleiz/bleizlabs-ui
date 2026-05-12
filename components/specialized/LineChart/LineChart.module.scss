@@ -1,0 +1,293 @@
+// =============================================================================
+// LineChart — multi-series SVG line chart (0.20.0 E01.1, Phase 10 complex)
+// =============================================================================
+// Token-only colors. Zero new lib tokens (Charter R7). Component-local
+// channels expose stroke width + point radius + grid opacity + tooltip
+// position for consumer SCSS override without specificity wars. Reduced-
+// motion suppresses path-draw + tooltip fade. Forced-colors keeps paths
+// visible in Windows High Contrast.
+
+@use '../../../styles/mixins' as mx;
+
+// ----------------------------------------------------------------------------
+// 1. ROOT — outer wrapper, positioning context for tooltip
+// ----------------------------------------------------------------------------
+
+.root {
+  --linechart-path-stroke-width: 2px;
+  --linechart-point-radius: 4px;
+  --linechart-grid-opacity: 1;
+  --linechart-aspect: calc(16 / 9);
+  --linechart-tooltip-x: 0%;
+  --linechart-tooltip-y: 0%;
+
+  position: relative;
+  display: block;
+  width: 100%;
+  color: var(--color-text-primary);
+  font-family: inherit;
+
+  &:focus {
+    outline: none;
+  }
+}
+
+// ----------------------------------------------------------------------------
+// 2. SVG CONTAINER — fills root, aspect-ratio fallback for SSR (LC-R17/R18)
+// ----------------------------------------------------------------------------
+
+.svgContainer {
+  position: relative;
+  width: 100%;
+  aspect-ratio: var(--linechart-aspect);
+}
+
+.svgContainer[data-explicit-height='true'] {
+  aspect-ratio: auto;
+  height: 100%;
+}
+
+.svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+// ----------------------------------------------------------------------------
+// 3. AXES — line + ticks + labels
+// ----------------------------------------------------------------------------
+
+.axisLine {
+  stroke: var(--color-border);
+  stroke-width: 1px;
+  fill: none;
+}
+
+.gridLine {
+  stroke: var(--color-border-subtle);
+  stroke-width: 1px;
+  fill: none;
+  opacity: var(--linechart-grid-opacity);
+}
+
+.tickLabel {
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-regular);
+  fill: var(--color-text-secondary);
+  font-variant-numeric: tabular-nums;
+}
+
+// ----------------------------------------------------------------------------
+// 4. PATH — series line
+// ----------------------------------------------------------------------------
+
+.path {
+  fill: none;
+  stroke-width: var(--linechart-path-stroke-width);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.pathAnimating {
+  // pathLength normalized to 1 via SVG attribute on the <path> element
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: linechartPathDraw var(--duration-normal) var(--easing-default) forwards;
+}
+
+@keyframes linechartPathDraw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+// ----------------------------------------------------------------------------
+// 5. DATA POINTS — focusable <circle>s, roving tabindex
+// ----------------------------------------------------------------------------
+
+.point {
+  cursor: pointer;
+  transition:
+    r var(--duration-fast) var(--easing-default),
+    opacity var(--duration-fast) var(--easing-default);
+  r: var(--linechart-point-radius);
+  stroke: var(--color-surface);
+  stroke-width: 2;
+
+  &:hover {
+    r: calc(var(--linechart-point-radius) + 2px);
+  }
+
+  &:focus {
+    outline: none;
+  }
+
+  &:focus-visible {
+    @include mx.focus-ring;
+    r: calc(var(--linechart-point-radius) + 2px);
+  }
+
+  &[data-active='true'] {
+    r: calc(var(--linechart-point-radius) + 2px);
+  }
+}
+
+// ----------------------------------------------------------------------------
+// 6. CROSSHAIR — vertical line follows active X
+// ----------------------------------------------------------------------------
+
+.crosshair {
+  stroke: var(--color-border-strong);
+  stroke-width: 1px;
+  stroke-dasharray: 4 4;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity var(--duration-fast) var(--easing-default);
+}
+
+.crosshairVisible {
+  opacity: 1;
+}
+
+// ----------------------------------------------------------------------------
+// 7. TOOLTIP — surface positioned absolutely over plot area
+// ----------------------------------------------------------------------------
+
+.tooltip {
+  position: absolute;
+  top: var(--linechart-tooltip-y);
+  left: var(--linechart-tooltip-x);
+  transform: translate(-50%, calc(-100% - 12px));
+  pointer-events: none;
+  background: var(--color-surface-raised);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-md);
+  padding: var(--space-2) var(--space-3);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-primary);
+  opacity: 0;
+  transition: opacity var(--duration-fast) var(--easing-default);
+  z-index: 1;
+  min-width: 140px;
+  max-width: 240px;
+  white-space: nowrap;
+}
+
+.tooltipVisible {
+  opacity: 1;
+}
+
+.tooltipTitle {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+  font-weight: var(--font-weight-regular);
+  margin-block-end: var(--space-1);
+}
+
+.tooltipRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  font-size: var(--font-size-sm);
+  line-height: 1.4;
+
+  & + & {
+    margin-block-start: var(--space-1);
+  }
+}
+
+.tooltipSwatch {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: var(--radius-full);
+  flex-shrink: 0;
+}
+
+.tooltipName {
+  color: var(--color-text-secondary);
+  font-weight: var(--font-weight-medium);
+  margin-inline-end: auto;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 140px;
+}
+
+.tooltipValue {
+  color: var(--color-text-primary);
+  font-variant-numeric: tabular-nums;
+  font-weight: var(--font-weight-medium);
+}
+
+// ----------------------------------------------------------------------------
+// 8. EMPTY STATE — default render
+// ----------------------------------------------------------------------------
+
+.empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
+}
+
+.emptyText {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
+}
+
+// ----------------------------------------------------------------------------
+// 9. SR ONLY — visually-hidden a11y table + ids
+// ----------------------------------------------------------------------------
+
+.srOnly {
+  @include mx.sr-only;
+}
+
+// ----------------------------------------------------------------------------
+// 10. REDUCED MOTION
+// ----------------------------------------------------------------------------
+
+@media (prefers-reduced-motion: reduce) {
+  .pathAnimating {
+    animation: none;
+    stroke-dasharray: none;
+    stroke-dashoffset: 0;
+  }
+
+  .crosshair,
+  .tooltip,
+  .point {
+    transition: none;
+  }
+}
+
+// ----------------------------------------------------------------------------
+// 11. FORCED COLORS — Windows High Contrast (LC-R12)
+// ----------------------------------------------------------------------------
+
+@media (forced-colors: active) {
+  .path {
+    stroke: CanvasText;
+  }
+  .axisLine,
+  .gridLine {
+    stroke: GrayText;
+  }
+  .point {
+    stroke: Canvas;
+    fill: CanvasText;
+  }
+  .tooltip {
+    border-color: CanvasText;
+    background: Canvas;
+    color: CanvasText;
+  }
+  .crosshair {
+    stroke: CanvasText;
+  }
+}

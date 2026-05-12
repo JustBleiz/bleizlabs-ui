@@ -1,0 +1,268 @@
+// =============================================================================
+// PieChart — SVG pie + donut chart (0.20.0 E01.4, final chart in pack)
+// =============================================================================
+// Token-only colors. Zero new lib tokens (Charter R7). Component-local
+// channels: stroke-width (segment separator), aspect (square default),
+// tooltip-{x,y} (absolute tooltip position). Reduced-motion suppresses
+// enter animation + tooltip fade. Forced-colors keeps segment outlines
+// visible via CanvasText stroke.
+
+@use '../../../styles/mixins' as mx;
+
+// ----------------------------------------------------------------------------
+// 1. ROOT — outer wrapper, positioning context for tooltip + center label
+// ----------------------------------------------------------------------------
+
+.root {
+  --piechart-segment-stroke-width: 2px;
+  --piechart-aspect: 1;
+  --piechart-tooltip-x: 50%;
+  --piechart-tooltip-y: 50%;
+
+  position: relative;
+  display: block;
+  width: 100%;
+  color: var(--color-text-primary);
+  font-family: inherit;
+
+  &:focus {
+    outline: none;
+  }
+}
+
+// ----------------------------------------------------------------------------
+// 2. SVG CONTAINER — square aspect-ratio + center-label positioning context
+// ----------------------------------------------------------------------------
+
+.svgContainer {
+  position: relative;
+  width: 100%;
+  aspect-ratio: var(--piechart-aspect);
+}
+
+.svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+// ----------------------------------------------------------------------------
+// 3. SEGMENT — focusable wedge / donut arc
+// ----------------------------------------------------------------------------
+
+.segment {
+  cursor: pointer;
+  stroke: var(--color-surface);
+  stroke-width: var(--piechart-segment-stroke-width);
+  stroke-linejoin: round;
+  transition:
+    transform var(--duration-fast) var(--easing-default),
+    opacity var(--duration-fast) var(--easing-default);
+  transform-origin: center;
+  transform-box: fill-box;
+
+  &:hover {
+    opacity: 0.85;
+  }
+
+  &:focus {
+    outline: none;
+  }
+
+  &:focus-visible {
+    @include mx.focus-ring;
+  }
+
+  &[data-active='true'] {
+    opacity: 0.92;
+  }
+}
+
+.segmentAnimating {
+  animation: piechartSegmentEnter var(--duration-normal) var(--easing-default) forwards;
+  opacity: 0;
+}
+
+@keyframes piechartSegmentEnter {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+// ----------------------------------------------------------------------------
+// 4. SEGMENT LABELS — on-segment percentages (optional via showLabels prop)
+// ----------------------------------------------------------------------------
+
+.segmentLabel {
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  fill: var(--color-surface);
+  pointer-events: none;
+  font-variant-numeric: tabular-nums;
+  paint-order: stroke fill;
+  stroke: rgba(0, 0, 0, 0.35);
+  stroke-width: 0.4px;
+}
+
+// ----------------------------------------------------------------------------
+// 5. CENTER LABEL — donut hole content
+// ----------------------------------------------------------------------------
+
+.centerLabel {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  color: var(--color-text-primary);
+  font-size: var(--font-size-sm);
+  text-align: center;
+  line-height: 1.2;
+  max-width: 55%;
+}
+
+// ----------------------------------------------------------------------------
+// 6. TOOLTIP — surface positioned absolutely over plot area
+// ----------------------------------------------------------------------------
+
+.tooltip {
+  position: absolute;
+  top: var(--piechart-tooltip-y);
+  left: var(--piechart-tooltip-x);
+  transform: translate(-50%, calc(-100% - 12px));
+  pointer-events: none;
+  background: var(--color-surface-raised);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-md);
+  padding: var(--space-2) var(--space-3);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-primary);
+  opacity: 0;
+  transition: opacity var(--duration-fast) var(--easing-default);
+  z-index: 1;
+  min-width: 140px;
+  max-width: 220px;
+  white-space: nowrap;
+}
+
+.tooltipVisible {
+  opacity: 1;
+}
+
+.tooltipRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+  margin-block-end: var(--space-1);
+}
+
+.tooltipSwatch {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: var(--radius-full);
+  flex-shrink: 0;
+}
+
+.tooltipName {
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-secondary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.tooltipValueRow {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-2);
+  justify-content: space-between;
+}
+
+.tooltipValue {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  font-variant-numeric: tabular-nums;
+  color: var(--color-text-primary);
+}
+
+.tooltipPercent {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+  font-variant-numeric: tabular-nums;
+}
+
+// ----------------------------------------------------------------------------
+// 7. EMPTY STATE
+// ----------------------------------------------------------------------------
+
+.empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
+}
+
+.emptyText {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
+}
+
+// ----------------------------------------------------------------------------
+// 8. SR ONLY — visually-hidden a11y table + ids
+// ----------------------------------------------------------------------------
+
+.srOnly {
+  @include mx.sr-only;
+}
+
+// ----------------------------------------------------------------------------
+// 9. REDUCED MOTION
+// ----------------------------------------------------------------------------
+
+@media (prefers-reduced-motion: reduce) {
+  .segmentAnimating {
+    animation: none;
+    opacity: 1;
+  }
+
+  .segment,
+  .tooltip {
+    transition: none;
+  }
+}
+
+// ----------------------------------------------------------------------------
+// 10. FORCED COLORS — Windows High Contrast
+// ----------------------------------------------------------------------------
+
+@media (forced-colors: active) {
+  .segment {
+    stroke: CanvasText;
+    fill: GrayText;
+  }
+  .segment[data-active='true'] {
+    fill: CanvasText;
+  }
+  .segmentLabel {
+    fill: CanvasText;
+    stroke: Canvas;
+  }
+  .tooltip {
+    border-color: CanvasText;
+    background: Canvas;
+    color: CanvasText;
+  }
+  .centerLabel {
+    color: CanvasText;
+  }
+}

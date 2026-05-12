@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1",
-  "libVersion": "0.19.0",
-  "generatedAt": "2026-05-12T15:46:06.955Z",
+  "libVersion": "0.20.0",
+  "generatedAt": "2026-05-12T18:58:16.637Z",
   "categories": {
     "layout": [
       "Container",
@@ -58,13 +58,17 @@
     ],
     "specialized": [
       "AnimatedCounter",
+      "AreaChart",
       "AvailabilityBar",
       "BarChart",
       "Breadcrumb",
       "Dot",
       "Kbd",
+      "LineChart",
       "MetricBar",
       "Pagination",
+      "PieChart",
+      "Sparkline",
       "ThemeToggle",
       "UsageDonut"
     ],
@@ -719,6 +723,23 @@
       "hooks": []
     },
     {
+      "family": "AreaChart",
+      "category": "specialized",
+      "path": "specialized/AreaChart",
+      "exports": [
+        "AreaChart"
+      ],
+      "types": [
+        "AreaChartAxisConfig",
+        "AreaChartDatum",
+        "AreaChartInterpolation",
+        "AreaChartProps",
+        "AreaChartSeries",
+        "AreaChartTooltipContext"
+      ],
+      "hooks": []
+    },
+    {
       "family": "AvailabilityBar",
       "category": "specialized",
       "path": "specialized/AvailabilityBar",
@@ -787,6 +808,23 @@
       "hooks": []
     },
     {
+      "family": "LineChart",
+      "category": "specialized",
+      "path": "specialized/LineChart",
+      "exports": [
+        "LineChart"
+      ],
+      "types": [
+        "LineChartAxisConfig",
+        "LineChartDatum",
+        "LineChartInterpolation",
+        "LineChartProps",
+        "LineChartSeries",
+        "LineChartTooltipContext"
+      ],
+      "hooks": []
+    },
+    {
       "family": "MetricBar",
       "category": "specialized",
       "path": "specialized/MetricBar",
@@ -808,6 +846,34 @@
       "types": [
         "PaginationProps",
         "PaginationVariant"
+      ],
+      "hooks": []
+    },
+    {
+      "family": "PieChart",
+      "category": "specialized",
+      "path": "specialized/PieChart",
+      "exports": [
+        "PieChart"
+      ],
+      "types": [
+        "PieChartDatum",
+        "PieChartProps",
+        "PieChartTooltipContext",
+        "PieChartVariant"
+      ],
+      "hooks": []
+    },
+    {
+      "family": "Sparkline",
+      "category": "specialized",
+      "path": "specialized/Sparkline",
+      "exports": [
+        "Sparkline"
+      ],
+      "types": [
+        "SparklineInterpolation",
+        "SparklineProps"
       ],
       "hooks": []
     },
