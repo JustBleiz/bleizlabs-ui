@@ -113,14 +113,22 @@
   }
 }
 
+// 0.20.1 B14 fix: dropped `scale(0.98)` → `scale(1)` because the
+// post-animation pass produced a visible 1-2px text shift in the
+// description body — once the scale transform settles to 1, the
+// browser re-rasterizes text at native resolution and subpixel hinting
+// can land differently than during the scaled state. `translateY` +
+// `opacity` alone delivers the "rise from below + fade in" feel
+// without the rasterization artifact. Empirically reported as
+// "description przesuwa się o 1-2px w górę po ~0.5s".
 @keyframes alertDialogContentIn {
   from {
     opacity: 0;
-    transform: translateY(8px) scale(0.98);
+    transform: translateY(8px);
   }
   to {
     opacity: 1;
-    transform: translateY(0) scale(1);
+    transform: translateY(0);
   }
 }
 

@@ -910,6 +910,40 @@ export function Combobox(props: ComboboxProps) {
     [],
   );
 
+  // Controlled-value → uncontrolled-search sync (0.20.1 B15 fix). When the
+  // consumer owns `value` (single mode) and lets search stay uncontrolled,
+  // programmatic value changes (e.g. external <Button onClick={() =>
+  // setControlledValue(null)}> "Clear") must re-sync the input display.
+  // Without this, the input keeps showing the previous value's label
+  // forever — the one-shot init sync below only fires once after first
+  // registry fill and never tracks subsequent transitions.
+  //
+  // Guards:
+  //   - single mode only (multiple uses chips, not input text for committed)
+  //   - controlled value (consumer is authoritative — own intentional change)
+  //   - uncontrolled search (we never overwrite controlled search)
+  //   - value actually transitioned (cheap identity guard)
+  //
+  // The effect is intentionally generous — it ALSO fires when value changes
+  // because the user picked from the listbox (selectValue → onValueChange
+  // → consumer setState → value prop changes), but updateSearch's identity
+  // guard (`if (next === searchRef.current) return`) makes those passes
+  // no-ops.
+  const prevControlledValueRef = useRef<string | null | undefined>(
+    multiple ? undefined : (props as ComboboxSingleProps).value,
+  );
+  useEffect(() => {
+    if (multiple) return;
+    if (!isValueControlled) return;
+    if (isSearchControlled) return;
+    const next = (props as ComboboxSingleProps).value ?? null;
+    if (prevControlledValueRef.current === next) return;
+    prevControlledValueRef.current = next;
+    const nextLabel = next !== null ? (getLabelByValue(next) ?? '') : '';
+    setUncontrolledSearch(nextLabel);
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- intentionally reads `props.value` via narrowed cast; getLabelByValue + flags are stable
+  }, [(props as ComboboxSingleProps).value, multiple, isValueControlled, isSearchControlled]);
+
   // One-shot initial search sync (E28 Phase 5 IMP-4): when the consumer
   // passes `defaultValue="pl"` without `defaultSearch`, the input initially
   // shows '' because items haven't registered yet. After the first registry

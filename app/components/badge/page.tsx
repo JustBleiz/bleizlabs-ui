@@ -97,18 +97,20 @@ export default function BadgePlaygroundPage() {
         <Text variant="small" color="secondary">
           The Badge atom is static by design. For live indicators (online,
           recording, streaming), compose Badge with{' '}
-          <code>&lt;Dot pulse /&gt;</code> in the icon slot — the dot pulses
-          while the frame and label stay legible. The pulse animation
-          inherits the global <code>prefers-reduced-motion</code> guard.
+          <code>&lt;Dot size=&quot;xs&quot; pulse /&gt;</code> in the icon slot —
+          the dot pulses while the frame and label stay legible. The pulse
+          animation inherits the global <code>prefers-reduced-motion</code>{' '}
+          guard. Use <code>size=&quot;xs&quot;</code> (4px) inside Badge so the
+          dot reads as a status pip, not a primary visual.
         </Text>
         <div className={styles.row}>
-          <Badge label="LIVE" color="error" pill icon={<Dot color="error" pulse />} />
-          <Badge label="Recording" color="error" pill icon={<Dot color="error" pulse />} />
-          <Badge label="Online" color="success" pill icon={<Dot color="success" pulse />} />
+          <Badge label="LIVE" color="error" pill icon={<Dot size="xs" color="error" pulse />} />
+          <Badge label="Recording" color="error" pill icon={<Dot size="xs" color="error" pulse />} />
+          <Badge label="Online" color="success" pill icon={<Dot size="xs" color="success" pulse />} />
           <Badge
             label="Updating"
             color="info"
-            icon={<Dot color="info" pulse />}
+            icon={<Dot size="xs" color="info" pulse />}
           />
         </div>
       </section>

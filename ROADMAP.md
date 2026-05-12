@@ -2,7 +2,7 @@
 
 **Status:** DRAFT
 **Last updated:** 2026-05-12
-**Current version:** 0.20.0 (100 components)
+**Current version:** 0.20.1 (100 components — patch release, 11 demo bug fixes)
 
 > Funkcjonalne luki biblioteki + kolejność domykania. Bez estymat czasowych — pracujemy etapami.
 
@@ -30,6 +30,8 @@ Każda pozycja ma:
 0.18.1  ✓  Field re-register loop fix         SHIPPED 2026-05-12 (single-file patch)
 0.19.0  ✓  Forms expansion                    SHIPPED 2026-05-12 (93 → 96 — FileUpload, TagsInput, Stepper)
 0.20.0  ✓  Charts pack                        SHIPPED 2026-05-12 (96 → 100 — LineChart, AreaChart, Sparkline, PieChart + _shared/chart-math extraction)
+0.20.1  ✓  Demo bug sweep (partial)            SHIPPED 2026-05-12 [11 of 18 bugs — non-asChild; 7 asChild bugs deferred to 0.20.2]
+0.20.2  →  Slot architectural patch           [Slot + 7 forwardRef consumers → React 19 ref-as-prop migration; fixes B01/B03/B06/B07a/B02/B04/B10]
 0.21.0  →  Polish batch                       [4 quick wins]
 0.22.0  →  Housekeeping                       [API freeze prep — bez RC]
 0.23.0+ →  Open-ended minor releases          [post-housekeeping nowe potrzeby gdy się ujawnią]
@@ -44,8 +46,10 @@ Każda pozycja ma:
 2. **Date/Time drugi** — 4 powiązane komponenty współdzielą Calendar + Date utils, naturalny batch
 3. **Forms trzeci** — FileUpload, TagsInput, Stepper domykają core form story
 4. **Charts czwarte** — dashboard layer po formach
-5. **Polish piąte** — 4 małe komponenty = szybki release, momentum
-6. **Housekeeping szóste** — sprzątanie przed API freeze
+5. **Demo bug sweep (0.20.1, partial)** — 11 z 18 non-asChild bugs found 2026-05-12, sweep przed Polish
+6. **Slot architectural patch (0.20.2)** — 7 asChild bugs class-wide; lib-wide forwardRef → React 19 ref-as-prop migration (Slot + 7+ consumers)
+7. **Polish piąte** — 4 małe komponenty = szybki release, momentum
+8. **Housekeeping szóste** — sprzątanie przed API freeze
 
 Każdy minor możemy przemieszać gdy realny priority się zmieni z internal consumer perspective. Roadmap to kompas, nie GPS.
 
@@ -315,6 +319,148 @@ Cycle: E01.1 FileUpload → E01.2 TagsInput → E01.3 Stepper sequentially.
 
 ---
 
+## 0.20.1 — Demo bug sweep
+
+**Status:** PLANNED. Discovered 2026-05-12 by user during demo walkthrough po 0.20.0 ship. 18 bugs found across existing components — runtime errors, missing renders, visual inconsistencies, broken interactions. Patch cycle (NIE minor) bo wyłącznie bugfixy na shipped surface.
+
+**Why:** Demo dev app jest jedynym continuous-integration surface dla wszystkich 100 komponentów. Bugi tutaj = bugi w consumer projects. Sweep przed 0.21.0 polish batch żeby fresh-built Polish components nie inheritowały tych samych pułapek.
+
+**Methodology (canonical per user 2026-05-12):** *"pewnie niektóre na siebie nachodzą albo oddziałowują ze sobą, więc dobrze jest przed każdym fixem zweryfikować czy nadal występuje."* + *"nie tylko trzeba to sprawdzić w demo ale sprawdzić gdzie powstaje źródło, czy źródłem problemu jest nasza implementacja w demo, czy może źródłem problemu jest jednak kod źródłowy."*
+
+Każdy bug pre-fix MANDATORY:
+1. **Reproduce** — `mcp__next-devtools__nextjs_call get_errors` + visual check na current main HEAD; verify że bug nadal występuje (NIE auto-assume z listy)
+2. **Root-cause triage** — bug może mieć 1 z 3 źródeł:
+   - **(a) DEMO PAGE** — `app/components/<name>/page.tsx` lub `.module.scss` — wrong prop usage, wrong import path, demo-only typo
+   - **(b) LIB SOURCE** — `components/<layer>/<Name>/<Name>.tsx` lub `.module.scss` — actual component bug, missing variant, broken prop wiring, a11y violation
+   - **(c) BOTH** — demo exposes lib bug poprzez configuration unique do demo
+   - Read affected demo page FIRST + lib source SECOND; compare prop contract z JSDoc; confirm który layer owns the bug
+3. **Fix location decision** — patch lands gdzie source jest:
+   - DEMO bug → fix tylko `app/components/<name>/page.tsx` (zero lib touch)
+   - LIB bug → fix lib source + regression spec w `<Name>.regression.spec.ts` + verify demo still works
+   - BOTH → fix lib first (source of truth), then fix demo to match corrected API
+4. **Confirm not downstream symptom** — niektóre bugs mogą być side-effects wcześniejszych fixów (B05 TextLink underline może być related do B11 Textarea resize jeśli oba dotykają shared display tokens). Read previous commits w sweep przed implementacją kolejnego fix
+5. **Implement minimum patch** — najwęższa zmiana likwidująca root cause; zero refactor scope-creep
+6. **Re-verify post-fix** — `get_errors` clean + visual check demo + regression spec PASS gdy applicable + axe-core delta zero
+
+**Tagging w commitach:** `fix(0.20.1/B##): <demo|lib|both> — <component> — <symptom>` żeby split-stats były czytelne post-sweep.
+
+**Bug roster (P0-P3 priority by impact; root-cause guess: D=demo, L=lib, B=both, ?=unknown):**
+
+### P0 — Console errors (blocks clean dev experience)
+
+> **DEFERRED 2026-05-12 to 0.20.2 Slot architectural patch:** B01/B03/B06/B07a + likely P1 B02/B04/B10 share SAME root cause class — `Slot` component's `'use client'` + `forwardRef` pattern produces hydration mismatch in Next.js 16.2+ + React 19 dev mode when consumer (Card/Stack/Section/Badge/Inline/Eyebrow/Label) uses `asChild` prop. Two fix attempts during 0.20.1 sweep BOTH failed: (a) removing `'use client'` from Slot triggers "Refs cannot be used in Server Components" because Card/etc. wrap with `forwardRef`; (b) converting Slot to React 19 ref-as-prop alone insufficient — Card's outer `forwardRef` wrapper cascades same error. Proper fix requires lib-wide architectural migration: Card + Stack + Section + Badge + Inline + Eyebrow + Label `forwardRef` → React 19 ref-as-prop AND Slot RSC-compatible AND audit every consumer that uses `<X asChild>` pattern. This is dedicated **0.20.2 Slot architectural patch** cycle, NOT a 0.20.1 single-line fix. Production unaffected — dev-only warning per Slot.tsx existing comment.
+
+- [ ] **B01 [L — DEFERRED to 0.20.2]** Stack demo — `<Stack asChild><ul>` hydration mismatch. Shared root cause class.
+- [ ] **B03 [L — DEFERRED to 0.20.2]** Section demo — `<Section asChild><article>` hydration mismatch. Shared root cause class.
+- [ ] **B06 [L — DEFERRED to 0.20.2]** Cards demo — `<Card asChild><a href="#hover-demo">` hydration mismatch. Shared root cause class.
+- [ ] **B07a [L — DEFERRED to 0.20.2]** Badge demo "5. asChild → semantic time element" — `<Badge asChild><time>` hydration mismatch. Shared root cause class.
+
+### P1 — Functional breaks (interaction / render fails)
+
+- [ ] **B02 [L — DEFERRED to 0.20.2]** Inline demo "5. asChild — renders <nav>". Shared Slot asChild root cause class.
+- [ ] **B04 [L — DEFERRED to 0.20.2]** Eyebrow demo "6. asChild (project onto label semantics)". Shared Slot asChild root cause class.
+- [ ] **B09 [L?]** EdgeBar demo "5. Pulsing — opacity cycle for alert/live indicators" — animation nie działa. Likely lib `@keyframes` missing lub `prefers-reduced-motion` over-eagerly disables
+- [ ] **B10 [L — DEFERRED to 0.20.2]** Label demo "5. asChild → semantic legend". Shared Slot asChild root cause class.
+- [ ] **B11 [L]** Textarea `resize="horizontal"` nie działa w żadnym przykładzie. Lib bug: prop nie wired do `resize: horizontal` CSS, lub `.module.scss` `resize: vertical !important` shadows. Demo passes prop correctly
+- [ ] **B12 [D?]** BreakdownList "6. Empty state (consumer-owned)" — puste. Likely demo nie renderuje custom empty content (empty state = consumer-owned slot, demo zapomniało wpisać)
+- [ ] **B15 [L]** Combobox "3. Controlled mode with external state" — "clear" button nie działa. Lib bug: controlled-mode value reset gdy onClear wywołane bez `value` prop callback wired, lub demo nie passes onChange. Read source + demo
+- [ ] **B18 [L]** LineChart "8. Animation off (animate=false)" — popover pokazuje raw timestamp (`17119296000000`). Lib bug: `formatX` ścieżka pomija formatter gdy animacja off (likely `animate ? formatter(x) : x` reversed condition)
+
+### P2 — Visual / proportion issues
+
+- [ ] **B05 [L]** TextLink hover underline 100% szerokości kontenera zamiast tekstu. Lib SCSS bug: `text-decoration: underline` na `<a>` block-level lub `width: 100%` shadow on hover state
+- [ ] **B08 [L]** Badge "7. Live status — Dot pulse composition" — Dot za duży. Likely fix: add `<Dot size="xs|s">` variants do lib (brak `xs` w current API) — patrz `Dot.tsx` size enum + amend
+- [ ] **B13 [L]** Button `variant="warning"` — brak transition. Lib SCSS bug: warning variant nie inherituje shared transition declaration (likely override `transition: none` lub missing `transition` w warning rule block)
+- [ ] **B14 [L?]** AlertDialog — opis przesuwa się 1-2px po 0.5s. Animation finish state bug LUB font swap LUB layout reflow. Read AlertDialog.module.scss + check `animation-fill-mode`
+- [ ] **B17 [B]** DataTable search Input za duży. Demo: użyć `size="s|xs"`; lib: verify że Input ma `size="xs"` wariant (jeśli brak → amend lib first, then demo)
+
+### P3 — Catalog completeness
+
+- [ ] **B16 [D]** Demo home catalog brakuje TimePicker + DateTimePicker (shipped w 0.18.0). Demo-only fix: add cards do `app/page.tsx` + verify `components/date-time-picker/page.tsx` + `components/time-picker/page.tsx` istnieją (lib code shipped, demo catalog out of sync)
+
+**Scope:**
+- Wyłącznie bugfixy na shipped surface (zero new components, zero API breaks)
+- Każdy fix = own commit z regression spec gdy applicable
+- Single PR po wszystkich 18 fixach (lub split P0+P1 vs P2+P3 jeśli pierwsza partia trwa >dzień)
+
+**NIE w v0.20.1:**
+- Nowe komponenty (Banner/AvatarGroup/Rating/Collapsible → 0.21.0)
+- 7 asChild bugs (B01/B03/B06/B07a/B02/B04/B10) — Slot architectural sweep → osobny patch 0.20.2
+- 0.20.0 a11y follow-up dla LineChart+AreaChart (describedby + tab-entry — osobny patch 0.20.3)
+- 0.20.0 test sprint (Playwright + axe-core + NVDA 4 charts — osobny patch 0.20.4)
+
+**DoD pack 0.20.1 (SHIPPED 2026-05-12):**
+- [x] 11 of 18 bugs PASS (7 asChild bugs deferred to 0.20.2)
+  - LIB: B11 Textarea resize, B18 LineChart tooltip, B15 Combobox clear, B05 TextLink underline, B13 Button warning, B14 AlertDialog scale, B08 Dot xs size (mixed)
+  - DEMO: B16 catalog 4 cards, B09 EdgeBar pulse, B12 BreakdownList empty, B17 DataTable Input narrow
+- [x] tsc clean (no new diagnostics)
+- [x] eslint clean (0 errors via `npm run lint`)
+- [x] check:barrel + check:manifest clean (manifest libVersion 0.20.1)
+- [ ] Demo walkthrough po 0.20.1 ship — user confirms 11 PASS + acknowledges 7 deferred to 0.20.2
+
+**Layer:** Cross-cutting — atoms, molecules, complex, specialized.
+
+**Zero external deps:** None — all fixes use existing tooling.
+
+---
+
+## 0.20.2 — Slot architectural patch
+
+**Status:** PLANNED. Discovered during 0.20.1 sweep (2026-05-12) gdy fix attempts na pojedyncze asChild bugs ujawniły class-wide root cause requiring coordinated lib-wide migration.
+
+**Why:** 7 z 18 demo bugs (B01 Stack, B02 Inline, B03 Section, B04 Eyebrow, B06 Card, B07a Badge, B10 Label) wszystkie wynikają z hydration mismatch w `<X asChild>` pattern w Next.js 16.2+ + React 19 dev mode. Slot.tsx ma `'use client'` + `forwardRef`; consumers (Card/Stack/Section/etc.) ALSO wrap z `forwardRef`. Połączenie powoduje że server renderuje projected child tag (np. `<a>`), ale client first paint renderuje host's default tag (np. `<div>`).
+
+**Two 0.20.1 fix attempts FAILED:**
+1. Remove `'use client'` from Slot → "Refs cannot be used in Server Components" — Card's outer forwardRef cascades the error
+2. Convert Slot to React 19 ref-as-prop (no forwardRef) alone → same cascade error from Card
+
+**Required scope (coordinated migration):**
+- `Slot` — convert from `forwardRef<HTMLElement, SlotProps>` to function component z `ref` as regular prop (React 19 native pattern). Drop `'use client'` directive.
+- `Card`, `Stack`, `Section`, `Badge`, `Inline`, `Eyebrow`, `Label` — wszystkie 7 consumers asChild: migrate from `forwardRef<HTMLElement, Props>` do function component z `ref: Ref<HTMLElement>` as regular prop.
+- Audit every other consumer of `<X asChild>` pattern (potentially more components: Heading? Text? Anchor? Container? Section? Reveal?) — check each for hydration warning on dev console, migrate if affected.
+- Verify ref forwarding still works for consumers that pass refs (Intersection observers, focus management, third-party integrations). Spec coverage: regression test that asserts ref attachment after migration.
+- Verify event handler chaining still works (mergeProps in Slot unchanged, but verify consumer can pass `<X asChild><a onClick={fn}>` and handler fires correctly).
+
+**Klocek check:** N/A — architectural fix, not component addition. Zero API change for consumers (asChild prop behavior identical, just no dev warning).
+
+**Methodology:**
+1. Audit `forwardRef` usage across lib: `grep -r "forwardRef" components/`. Estimate scope.
+2. Create migration spec: each forwardRef → ref-as-prop pattern, with side-by-side example.
+3. Migrate Slot first (foundation).
+4. Migrate 7 P0/P1 demo-affected consumers (Card/Stack/Section/Badge/Inline/Eyebrow/Label).
+5. Verify 7 demos pass via `get_errors` clean.
+6. Migrate remaining forwardRef users if any (audit during migration).
+7. Update `Heading.tsx`, `Anchor.tsx`, etc. if they also expose asChild.
+8. Re-test full demo surface — `get_errors` clean across all 100+ component routes.
+9. Update docs/lint rules if any forbid raw `forwardRef` import going forward.
+
+**Scope:**
+- Wyłącznie architectural migration (zero new components, zero API breaks dla asChild consumers)
+- Lib-wide forwardRef → ref-as-prop sweep
+- 7 demo bugs (B01/B02/B03/B04/B06/B07a/B10) fixed jako side-effect
+
+**NIE w v0.20.2:**
+- Nowe komponenty (Banner/AvatarGroup/Rating/Collapsible → 0.21.0)
+- 11 non-asChild bugs (B05/B08/B09/B11/B12/B13/B14/B15/B16/B17/B18) — ship w 0.20.1
+
+**DoD pack 0.20.2:**
+- [ ] Slot migrated do ref-as-prop, no `'use client'` directive
+- [ ] 7 asChild consumers migrated (Card/Stack/Section/Badge/Inline/Eyebrow/Label)
+- [ ] Audit identified + migrated all other asChild consumers w lib
+- [ ] Wszystkie 7 demo routes (`/components/{stack,section,card,badge,inline,eyebrow,label}`) — `get_errors` clean
+- [ ] No regression w demo routes używających ref attachment (Intersection observer, focus management consumers)
+- [ ] No regression w event handler chaining via asChild
+- [ ] tsc + eslint + check:barrel + check:manifest clean
+- [ ] Playwright per-component suite passes
+
+**Layer:** Cross-cutting lib internals (Slot util + 7+ atom/molecule consumers).
+
+**Zero external deps:** None — uses React 19 native API.
+
+**Risk:** HIGH — touch foundational primitives used across 100+ component family. Mitigation: full regression suite + manual demo walkthrough across all asChild call sites pre-PR.
+
+---
+
 ## 0.21.0 — Polish batch
 
 **Why:** 4 małe komponenty domykające standardowe display + feedback gaps. Szybki release, każdy low-effort, każdy realnie potrzebny.
@@ -479,6 +625,8 @@ Dokumentacja docs site, marketing launches, external a11y audit, business model 
 
 ## Changelog tego dokumentu
 
+- **2026-05-12 v0.5** — 0.20.2 Slot architectural patch wydzielony po failed fix attempts na P0 console errors. Root cause class-wide: Slot's `'use client'` + forwardRef + 7+ consumer forwardRefs combine into hydration mismatch w Next.js 16.2+ + React 19 dev mode dla asChild pattern. 7 z 18 bugs (B01/B02/B03/B04/B06/B07a/B10) deferred do 0.20.2 — lib-wide ref-as-prop migration. 11 non-asChild bugs (B05/B08/B09/B11/B12/B13/B14/B15/B16/B17/B18) zostają w 0.20.1.
+- **2026-05-12 v0.4** — 0.20.1 Demo bug sweep dodany jako patch przed 0.21.0 Polish. 18 bugs found by user during demo walkthrough po 0.20.0 ship (4× P0 console errors, 8× P1 functional, 5× P2 visual, 1× P3 catalog completeness). Methodology: pre-fix mandatory `get_errors` verification + downstream-symptom check (bo niektóre mogą się nachodzić).
 - **2026-05-10 v0.3** — Funkcjonalne luki audit. DnD usunięty (defer to external demand). 11 nowych komponentów dodanych: DateRangePicker, TimeInput, TimePicker, DateTimePicker, FileUpload, TagsInput, Stepper, AvatarGroup, Rating, Collapsible, Banner. Phasing 0.17 → 1.0 = 6 minor + RC. Zero external deps policy utrzymane.
 - **2026-05-10 v0.2** — Refocus: tylko funkcjonalne luki, bez estymat czasowych, bez adoption layer.
 - **2026-05-10 v0.1** — Initial draft.

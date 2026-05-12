@@ -192,11 +192,15 @@ export default function BreakdownListPlaygroundPage() {
         <Text variant="small" color="secondary">
           Molecule never auto-wraps. Consumer renders own empty fallback when
           data is missing — no <code>emptyMessage</code> prop bundling concerns.
+          The placeholder UI below is the consumer&apos;s, not the lib&apos;s.
         </Text>
         <div className={styles.row}>
-          <div className={styles.cell}>
-            <Text variant="small" color="muted">
+          <div className={styles.empty}>
+            <Text variant="caption" color="muted">
               Brak danych z ostatnich 30 dni
+            </Text>
+            <Text variant="small" color="secondary">
+              Wróć po pierwszej eskalacji — wykres pojawi się automatycznie.
             </Text>
           </div>
         </div>

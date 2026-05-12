@@ -4,6 +4,18 @@
 
 .root {
   display: inline-flex;
+  // 0.20.1 B05 fix: keep the bottom-border underline pinned to the
+  // text+arrow content, not stretched across the parent container.
+  // `display: inline-flex` alone shrinks to content in block/inline
+  // parents, but when the parent is `display: flex; flex-direction:
+  // column` (or any flex parent with default `align-items: stretch`),
+  // the TextLink becomes a flex item and the algorithm overrides the
+  // intrinsic inline-flex sizing — the element stretches to the
+  // parent's cross-axis. `width: fit-content` re-asserts content
+  // sizing across all parent layout modes (flex / grid / block) so
+  // the hover underline visually wraps the text instead of the entire
+  // row.
+  width: fit-content;
   align-items: center;
   gap: var(--space-2);
   color: var(--color-text-primary);

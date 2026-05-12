@@ -25,6 +25,14 @@
 // SIZES
 // ============================================================================
 
+.sizeXs {
+  // 0.20.1 B08: 4px diameter — for Dot-inside-Badge live-status
+  // compositions where the default `sm` (8px) feels oversized vs the
+  // badge text. Standard pulse indicator scale at this size.
+  width: var(--space-1);
+  height: var(--space-1);
+}
+
 .sizeSm {
   width: var(--space-2);
   height: var(--space-2);

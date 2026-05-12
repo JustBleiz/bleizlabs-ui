@@ -143,16 +143,16 @@ export default function EdgeBarPlaygroundPage() {
         </p>
         <div className={styles.cardRow}>
           <div className={styles.demoCard}>
-            <EdgeBar color="success" />
-            <p className={styles.cardLabel}>success +</p>
+            <EdgeBar color="success" pulse />
+            <p className={styles.cardLabel}>success + pulse</p>
           </div>
           <div className={styles.demoCard}>
-            <EdgeBar color="warning" />
-            <p className={styles.cardLabel}>warning +</p>
+            <EdgeBar color="warning" pulse />
+            <p className={styles.cardLabel}>warning + pulse</p>
           </div>
           <div className={styles.demoCard}>
-            <EdgeBar color="error" thickness="lg" />
-            <p className={styles.cardLabel}>error + + lg</p>
+            <EdgeBar color="error" thickness="lg" pulse />
+            <p className={styles.cardLabel}>error + pulse + lg</p>
           </div>
         </div>
       </section>

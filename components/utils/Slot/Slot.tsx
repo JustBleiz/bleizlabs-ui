@@ -9,6 +9,22 @@
 // (SSR output and client re-render are functionally identical) and does not
 // occur in production. Making Slot RSC breaks any component whose playground
 // or consumer passes handlers through asChild.
+//
+// KNOWN ISSUE (0.20.1 sweep, 2026-05-12): in Next.js 16.2+ + React 19 dev
+// mode, the hydration-diff warning surfaces as an actual error overlay on
+// pages that use asChild on consumers wrapped in forwardRef (Card, Stack,
+// Section, Badge, Inline, Eyebrow, Label). Server pre-renders the projected
+// tag; client first paint renders the host's default tag. Two attempted
+// fixes during 0.20.1 (remove `'use client'` directive; convert to React 19
+// ref-as-prop) BOTH failed — Card.tsx's forwardRef wrapper cascades the
+// "Refs cannot be used in Server Components" error to Slot when Slot is
+// RSC-compatible. A proper fix requires migrating Card + Stack + Section +
+// Badge + Inline + Eyebrow + Label from `forwardRef` to React 19 ref-as-prop
+// AND making Slot RSC-compatible simultaneously. That is a lib-wide
+// architectural sweep deferred to a dedicated 0.20.x patch cycle.
+//
+// Until then: the dev console warnings on /components/{stack,section,card,
+// badge,inline,eyebrow,label} are visible but production is unaffected.
 import {
   cloneElement,
   forwardRef,

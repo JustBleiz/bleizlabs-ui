@@ -427,6 +427,7 @@ export default function DataTablePlaygroundPage() {
                 onChange={(e) => setGlobalSearch(e.target.value)}
                 placeholder="Global search…"
                 aria-label="Global search"
+                className={styles.searchInput}
               />
             </Inline>
             <Text variant="small">

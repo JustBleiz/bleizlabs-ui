@@ -49,4 +49,14 @@
 
 .searchInline {
   min-width: 280px;
+
+  // 0.20.1 B17: tighten the demo search input — the default Input is
+  // full-bleed and reads too large in a toolbar context. Lib Input has
+  // no `size` variant yet (potential 0.21+ lib enhancement); for the
+  // patch cycle we constrain it via demo SCSS only. Width matches the
+  // canonical mid-density toolbar control (~240px).
+  .searchInput {
+    max-width: 240px;
+    flex: 0 1 240px;
+  }
 }
