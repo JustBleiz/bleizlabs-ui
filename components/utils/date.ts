@@ -368,6 +368,74 @@ export function combineDateTime(date: Date, time: string): Date {
 }
 
 /**
+ * Format Date as ISO 8601 local datetime string `"YYYY-MM-DDTHH:MM:SS"` —
+ * NO timezone suffix. Represents local wall-clock time at the user's device.
+ *
+ * Server-side parsers MUST treat the string as local naive datetime (NOT UTC).
+ * Useful for combining `<DateTimePicker>` value with backend storage that
+ * keeps the wall-clock semantic (e.g. meeting at "14:00 local", recurring
+ * deadlines).
+ *
+ * @example
+ *   toIsoDateTimeString(new Date(2026, 4, 15, 14, 30, 0))
+ *   // → "2026-05-15T14:30:00"
+ */
+export function toIsoDateTimeString(date: Date): string {
+  const y = date.getFullYear();
+  const m = String(date.getMonth() + 1).padStart(2, '0');
+  const d = String(date.getDate()).padStart(2, '0');
+  const h = String(date.getHours()).padStart(2, '0');
+  const mm = String(date.getMinutes()).padStart(2, '0');
+  const ss = String(date.getSeconds()).padStart(2, '0');
+  return `${y}-${m}-${d}T${h}:${mm}:${ss}`;
+}
+
+/**
+ * Parse ISO 8601 local datetime string `"YYYY-MM-DDTHH:MM:SS"` (no tz suffix)
+ * into a local-timezone Date. Returns `null` on malformed input or invalid
+ * date/time components. Symmetric counterpart to `toIsoDateTimeString`.
+ *
+ * Accepts trailing `":SS"` optional → also parses `"YYYY-MM-DDTHH:MM"`.
+ *
+ * @example
+ *   parseIsoDateTimeString('2026-05-15T14:30:00')  // local Date
+ *   parseIsoDateTimeString('2026-05-15T14:30')     // local Date (seconds=0)
+ *   parseIsoDateTimeString('bogus')                // null
+ */
+export function parseIsoDateTimeString(iso: string): Date | null {
+  if (typeof iso !== 'string' || iso === '') return null;
+  const match = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})(?::(\d{2}))?$/.exec(iso);
+  if (!match || !match[1] || !match[2] || !match[3] || !match[4] || !match[5]) return null;
+  const y = Number(match[1]);
+  const mo = Number(match[2]) - 1;
+  const d = Number(match[3]);
+  const h = Number(match[4]);
+  const mi = Number(match[5]);
+  const s = match[6] ? Number(match[6]) : 0;
+  if (
+    Number.isNaN(y) ||
+    Number.isNaN(mo) ||
+    Number.isNaN(d) ||
+    Number.isNaN(h) ||
+    Number.isNaN(mi) ||
+    Number.isNaN(s)
+  ) {
+    return null;
+  }
+  if (mo < 0 || mo > 11 || d < 1 || d > 31) return null;
+  if (h < 0 || h > 23 || mi < 0 || mi > 59 || s < 0 || s > 59) return null;
+  const dt = new Date(y, mo, d, h, mi, s, 0);
+  if (
+    dt.getFullYear() !== y ||
+    dt.getMonth() !== mo ||
+    dt.getDate() !== d
+  ) {
+    return null;
+  }
+  return dt;
+}
+
+/**
  * Resolve display hour cycle for a locale.
  *
  * Maps `Intl.DateTimeFormat(locale).resolvedOptions().hourCycle`:

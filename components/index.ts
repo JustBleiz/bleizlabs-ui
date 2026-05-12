@@ -110,7 +110,7 @@ export * from './molecules/Timeline';
 export * from './presets/FormSurface';
 
 // ----------------------------------------------------------------------------
-// Complex interactive (28) — 0.18.0 adds DateRangePicker (E01.1) + TimePicker (E01.3)
+// Complex interactive (29) — 0.18.0 adds DateRangePicker (E01.1) + TimePicker (E01.3) + DateTimePicker (E01.4)
 // ----------------------------------------------------------------------------
 export * from './complex/AlertDialog';
 export * from './complex/Calendar';
@@ -121,6 +121,7 @@ export * from './complex/ContextMenu';
 export * from './complex/DataTable';
 export * from './complex/DatePicker';
 export * from './complex/DateRangePicker';
+export * from './complex/DateTimePicker';
 export * from './complex/Dialog';
 export * from './complex/Drawer';
 export * from './complex/DropdownMenu';

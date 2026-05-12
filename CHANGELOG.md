@@ -138,6 +138,58 @@ Spec coverage: 6 spec files + `_helpers` — 40 PASS / 0 fail / 0 skip.
 Net manifest after 0.18.0 cycle to date: 89 → 92 families (DateRangePicker +
 TimeInput + TimePicker). Remaining 0.18.0 sub-Epics: E01.4 DateTimePicker.
 
+**E01.4 DateTimePicker v1 — Calendar + TimeInput compound in single popover**
+
+New `complex/DateTimePicker` compound (root + `Input` + `Content`).
+Composes existing `<Calendar>` (E30) + `<TimeInput>` (E01.2) inline within
+a single popover surface. Three Tab stops in dialog (Calendar roving
+cell → hour spinbutton → minute spinbutton, plus optional seconds +
+AM/PM toggle). Form output is ISO 8601 local datetime
+(`"YYYY-MM-DDTHH:MM:SS"`, no tz suffix — server treats as local wall-
+clock per plan AD3).
+
+Features:
+- Compound: `DateTimePicker` + `DateTimePickerInput` + `DateTimePickerContent`
+- Value type `Date | null` (not string) — `<DateTimePicker>` works with
+  the JS `Date` primitive directly; `toIsoDateTimeString` / `parseIsoDateTimeString`
+  serializers cover form bridge
+- Inline `<TimeInput>` (NOT `<TimePicker>` popover) — single popover
+  surface preferred per plan I3 Recommended
+- `withSeconds`, `hourCycle '12h' | '24h'`, `timeStep`, `min`/`max`,
+  `disabledDates` all propagate to inner Calendar + TimeInput
+- Calendar select preserves existing time component; TimeInput nudge
+  preserves existing date component; either-axis edit produces fully
+  combined Date via `combineDateTime` utility
+- Form: hidden `<input type="hidden" name>` with ISO 8601 local datetime;
+  `required` propagates for native `:invalid`
+
+2 new util helpers in `utils/date.ts`:
+- `toIsoDateTimeString(date) → "YYYY-MM-DDTHH:MM:SS"` (no tz suffix)
+- `parseIsoDateTimeString(iso) → Date | null` (accepts trailing `:SS`
+  optional)
+
+Time-zone semantics — documented:
+- Emitted ISO string carries NO tz suffix; represents local wall-clock
+  time at user's device
+- Server parsers MUST treat as local-naive datetime, NOT UTC
+- DST trap: `combineDateTime` uses `Date.setHours` which normalizes
+  non-existent local times (e.g. 02:30 on spring-forward day → 03:30)
+
+Keyboard model (input): Alt+ArrowDown opens + focuses first Calendar
+cell; Alt+ArrowUp closes; Enter parses typed `"YYYY-MM-DDTHH:MM"` or
+`"YYYY-MM-DD HH:MM"` (space normalized to ISO T) → commit + close on
+valid, `aria-invalid` on parse failure; Escape closes; IME composition
+guard.
+
+Spec coverage: 5 spec files + `_helpers` — 29 PASS / 1 documented skip
+(`DT-R01 click-outside dismiss` — shared primitive covered by TP-R08;
+DateTimePicker's larger dialog footprint blocks Playwright's pointerdown
+synthesis on small viewports). Axe-core zero violations.
+
+Net manifest after full 0.18.0 cycle: 89 → 93 families (DateRangePicker
++ TimeInput + TimePicker + DateTimePicker). 0.18.0 component scope
+complete.
+
 **Polish — Select + Combobox `.itemText` multi-line friendly**
 
 Dropped forced single-line truncation (`white-space: nowrap;

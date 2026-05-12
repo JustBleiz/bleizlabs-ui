@@ -110,7 +110,10 @@ Cycle progress:
 - [x] E01.3 TimePicker v1 — combobox input + popover with scrollable
       hour/minute/seconds/AM-PM listbox columns; step filter; 40/40
       Playwright tests PASS.
-- [ ] E01.4 DateTimePicker — Calendar + TimeInput compound in single popover.
+- [x] E01.4 DateTimePicker v1 — Calendar + TimeInput inline compound in
+      single popover, 3 tab stops, ISO 8601 local datetime form output,
+      29/30 Playwright tests PASS (1 documented skip — shared dismiss
+      primitive covered by TP-R08).
 - [ ] Phase 7.1 audit + release pipeline (PR → tag v0.18.0 → npm publish).
 
 **Why:** Aktualnie `<DatePicker>` = single date only. Brak zakresu dat (analytics, booking, reporty), brak czasu (scheduling, deadlines), brak combined date+time. 4 powiązane komponenty naturalnie batchują się w jeden release bo współdzielą Calendar + Intl + Date utils.
