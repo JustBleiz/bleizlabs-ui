@@ -2,7 +2,7 @@
 
 **Status:** DRAFT
 **Last updated:** 2026-05-12
-**Current version:** 0.18.1 (93 components)
+**Current version:** 0.19.0 (96 components)
 
 > Funkcjonalne luki biblioteki + kolejność domykania. Bez estymat czasowych — pracujemy etapami.
 
@@ -28,7 +28,7 @@ Każda pozycja ma:
 0.17.0  ✓  DataTable v1                       SHIPPED 2026-05-11 (89 → 89, baseline +1 family)
 0.18.0  ✓  Date/Time pack                     SHIPPED 2026-05-12 (89 → 93 families)
 0.18.1  ✓  Field re-register loop fix         SHIPPED 2026-05-12 (single-file patch)
-0.19.0  ◐  Forms expansion                    IN PROGRESS [3 form primitives — FileUpload, TagsInput, Stepper]
+0.19.0  ✓  Forms expansion                    SHIPPED 2026-05-12 (93 → 96 — FileUpload, TagsInput, Stepper)
 0.20.0  →  Charts pack                        [SVG-based, dashboard layer]
 0.21.0  →  Polish batch                       [4 quick wins]
 0.22.0  →  Housekeeping                       [API freeze prep — bez RC]
