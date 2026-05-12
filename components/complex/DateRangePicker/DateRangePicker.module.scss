@@ -122,6 +122,17 @@
 // ──────────────────────────────────────────────────────────────────────────
 
 .content {
+  // 0.18.0 BUGFIX — explicit `width: max-content` so the fixed-positioned
+  // popover (top:0 left:0 + transform translate3d via floatingStyles)
+  // shrink-wraps to inner content. Without this, `width: auto` on a
+  // block-level fixed element with `top:0; left:0;` and no `right`
+  // expands the box across the viewport in Chrome/Firefox/Safari
+  // (header `justify-content: space-between` then spreads chevrons to
+  // viewport edges and the Calendar grid renders below the fold).
+  // Mirrors the same fix applied to DatePicker / TimePicker / DateTimePicker
+  // on the 0.18.0 branch.
+  width: max-content;
+  max-width: calc(100vw - 2 * var(--space-3));
   background: var(--color-surface-raised);
   border: 1px solid var(--color-border-subtle);
   border-radius: var(--radius-md);

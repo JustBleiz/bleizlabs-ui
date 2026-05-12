@@ -54,6 +54,11 @@
 }
 
 .content {
+  // 0.18.0 BUGFIX — explicit `width: max-content` so the fixed-positioned
+  // popover shrink-wraps to inner Calendar grid + TimeInput row. Sibling
+  // fix to DatePicker / DateRangePicker / TimePicker on 0.18.0 branch.
+  width: max-content;
+  max-width: calc(100vw - 2 * var(--space-3));
   z-index: var(--z-popover);
   display: flex;
   flex-direction: column;

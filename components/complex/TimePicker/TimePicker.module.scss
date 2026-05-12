@@ -54,6 +54,12 @@
 }
 
 .content {
+  // 0.18.0 BUGFIX — explicit `width: max-content` so the fixed-positioned
+  // popover shrink-wraps to inner listbox columns. Without it the same
+  // viewport-fill bug as DatePicker/DateRangePicker applies (flex row
+  // expands across viewport, listboxes stretch column-wide).
+  width: max-content;
+  max-width: calc(100vw - 2 * var(--space-3));
   z-index: var(--z-popover);
   display: flex;
   gap: var(--space-2);
