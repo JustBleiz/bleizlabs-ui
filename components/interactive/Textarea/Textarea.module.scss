@@ -37,7 +37,13 @@
 }
 
 .textarea {
-  flex: 1;
+  // 0.20.1 B11 fix: was `flex: 1; min-width: 0;` — flex-grow forces the
+  // textarea to refill the wrap's width immediately after user drag,
+  // so horizontal resize had no visible effect. Using `width: 100%`
+  // gives the same default sizing (fills .wrap) but lets the user-agent
+  // resize handle replace the inline width without flex layout fighting
+  // back. Vertical resize is unaffected.
+  width: 100%;
   min-width: 0;
   padding: var(--space-3) var(--space-4);
   background: transparent;
