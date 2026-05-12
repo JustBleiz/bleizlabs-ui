@@ -7,6 +7,189 @@ and this project adheres to [Semantic Versioning 2.0](https://semver.org/spec/v2
 
 ## [Unreleased]
 
+## [0.19.0] — 2026-05-12
+
+**Feature release — Forms expansion.** Ships 3 new Phase 10 complex
+interactive form primitives — `<FileUpload>`, `<TagsInput>`, `<Stepper>` —
+that close the core form story. Library grows from 93 to 96 families. Zero
+external runtime dependencies maintained across the cycle (FileUpload uses
+native File API + HTML5 drag/drop, TagsInput uses native input + chip
+render, Stepper uses inline SVG + CSS data-status selectors). Zero new
+design tokens added across the cycle.
+
+Eight forensic patterns established and codified for future sessions
+(see `memory/bleizlabs/reference_lib_019_forensic_patterns.md`): focus-ring
+must wrap inside `:focus-visible`; live region zero-width / `key` re-mount
+for AT re-announce of identical content; aria-describedby chaining;
+native file input value reset BEFORE click; Field re-register loop fix
+(0.18.1 patch); pointerdown-marker for intra-wrapper blur when
+relatedTarget is null; live region announces consumer message not enum
+code; drop zone can't have role=button when hosting interactive
+descendants.
+
+### 0.19.0 cycle deliverables
+
+**E01.1 FileUpload v1 — drop zone + native file input wrapper**
+
+Phase 10 complex interactive component. Drag-and-drop strefa + click-to-browse
+that wraps a visually-hidden native `<input type="file">` for FormData
+participation. Render-props children for full content control. Zero external
+runtime deps — native File API + HTML5 drag/drop events only.
+
+API highlights:
+- Validation: `accept` (MIME / wildcard / extension), `multiple`, `maxSize`,
+  `minSize`, `maxFiles` — each axis emits a `FileRejectionReason` code on
+  failure (`file-too-large` / `file-too-small` / `file-invalid-type` /
+  `too-many-files`).
+- Form participation: `name` + `required` mirror to the hidden input;
+  FormData multipart capture works natively. `inputRef` prop exposes the
+  hidden input for programmatic `.value = ''` reset between uploads.
+- A11y: drop zone is `<div tabIndex={0}>` (NOT `role="button"` — would
+  trigger axe `nested-interactive` with the consumer-rendered Browse
+  button inside). Keyboard activation flows via the inner Browse button
+  (real `<button>`). Click on the zone opens picker for mouse/touch;
+  click-from-inner-button is auto-detected and skipped (no
+  `stopPropagation` needed in consumer code). Live region announces
+  accept/reject counts with a varying zero-width marker so AT
+  re-announces identical consecutive operations.
+- Forensic patterns from spec (Phase 1 Explore): drag counter (FU-R03),
+  user-gesture preservation (FU-R02), empty-MIME extension fallback
+  (FU-R07), `dataTransfer.items` Safari fallback (FU-R19), size-reject
+  preview at dragOver is best-effort (FU-R08 documents the limit).
+
+Phase 4 Evaluator findings + fixes:
+- CRITICAL: focus-ring was applied unconditionally instead of inside
+  `:focus-visible` — fixed.
+- IMPORTANT: live-region repeat-content AT silence — fixed via
+  zero-width marker counter.
+- IMPORTANT: aria-describedby now CHAINS consumer-supplied + internal
+  live region id (both descriptions land in the same set).
+- Auto-skip click handler when origin is inner `<button>` / `<a>` /
+  `role="button"` — removes consumer footgun.
+
+Tests: 56 PASS / 1 documented skip (FU-R12 native picker dismiss focus
+restore — unreachable by Playwright, manual NVDA verified) across 5 spec
+files: aria (11), dragdrop (9), validate (10), form (5), regression (22).
+axe-core zero violations on demo route (`/components/file-upload`).
+
+Manifest: 93 → 94 families. Zero new lib tokens. Zero new external deps.
+
+**E01.2 TagsInput v1 — freeform tag input**
+
+Phase 10 interactive component (NOT in `complex/` because it has no popover —
+inline chip list + native textbox only). Distinct from Combobox multi-mode:
+Combobox = select-from-list with popup listbox + registered items;
+TagsInput = freeform creation (no popup, type and commit).
+
+API highlights:
+- Controlled + uncontrolled value (`string[]`) via `value`/`defaultValue` +
+  `onChange`. Per-attempt rejections via `onReject(rejections)`.
+- Validation matrix: `validate(tag) => boolean | string` (string = error
+  message), `maxTags`, `allowDuplicates`, `caseSensitive`, `trim`. Each
+  axis maps to a `TagRejectionReason` code (`empty` / `duplicate` /
+  `too-many` / `validate-failed`).
+- Composition: `delimiter` array (default `[',', ';']`), `addOnBlur` for
+  Gmail-style auto-commit on blur. Paste-split on configured delimiters +
+  newline.
+- Form participation: `name` + `required` mirror to a hidden
+  `<input type="hidden">` carrying delimited-string value (Q1 (α)).
+  Constraint Validation via `setCustomValidity` keyed on
+  `required && value.length === 0`.
+- A11y: native `<input type="text">` typing surface, `role="list"` chip
+  group, `role="listitem"` per chip, real `<button aria-label="Remove {tag}">`
+  per chip (in Tab order per Q3 (α) — TagsInput has no listbox →
+  aria-activedescendant pattern doesn't apply). IME composition guard
+  (`isComposingRef` + `nativeEvent.isComposing`). Live region announces
+  "Added: {tag}" / "Removed: {tag}" / "Tag rejected: {message}" with
+  zero-width-marker counter for AT re-announcement.
+- Forensic patterns: Backspace-on-empty removes last chip
+  (Combobox precedent), case-insensitive duplicate check, paste-split with
+  trim + empty-skip, intra-wrapper blur detection via pointerdown flag
+  (relatedTarget is null when clicking inner SVG glyph — Phase 5 fix #1).
+
+Phase 4 Evaluator findings (verdict PASS, but 4 IMPORTANT applied in Phase 5):
+- Live region announces consumer-supplied `validate` message instead of
+  internal enum code (was: "Tag rejected: validate-failed" → now: "Tag
+  rejected: Must be lowercase").
+- `useImperativeHandle` deps array added (was missing — would flag
+  exhaustive-deps in stricter ESLint configs).
+- Removed dead "Keep pending in sync" comment block declaring a
+  non-existent effect.
+- `addOnBlur` race fixed via `pointerdown`-marker flag on the wrapper
+  for intra-wrapper blur detection (relatedTarget is null when click
+  origin is the SVG glyph inside a `<button>`).
+
+Tests: 63 PASS / 0 fail across 6 spec files: aria (10), keyboard (9),
+validate (8), paste (6), form (5), regression (25 — TI-R01..TI-R25 incl.
+the new TI-R25 covering Phase 5 fix #4). axe-core zero violations.
+
+Manifest: 94 → 95 families. Zero new lib tokens. Zero new external deps.
+
+**E01.3 Stepper v1 — visual + semantic multi-step progress indicator**
+
+Phase 10 complex interactive component. Compound `<Stepper>` + `<Step>` (flat
+exports per RadioGroup precedent — `Stepper.Step` dot-notation NOT used).
+Visual-state-only mode = `<ol role="list">` with `<li>` children; interactive
+mode = `<nav role="navigation" aria-label>` wrapping `<ol>` with `<button>`
+on clickable steps + `<div aria-disabled>` on non-clickable.
+
+API highlights:
+- Status: auto-derived from `currentStep` (index < currentStep → complete;
+  === → active; > → pending). Explicit `<Step status="error">` overrides
+  derivation — primary use case is marking failed validation while
+  `currentStep` has moved past it.
+- `clickableSteps`: `'none'` (default — visual only) | `'visited'` (only
+  complete steps clickable — Material UI convention) | `'all'` (every step
+  clickable — free-form wizard). Discriminated TS union forces `onStepClick`
+  when interactive.
+- `orientation`: `'horizontal'` | `'vertical'` — connecting-line geometry
+  + keyboard arrows axis. Independent of `dir="rtl"` (RTL flips horizontal
+  arrow semantics, same pattern as Tabs).
+- `size`: `'sm'` (24px circle) | `'md'` (32px) | `'lg'` (40px) — matches
+  Button/Chip/Avatar scale.
+- `<Step>` accepts `label: string`, `description?: ReactNode` (lib does NOT
+  auto-wrap into Text variants), `icon?: ReactNode` (replaces number badge
+  for pending/active + checkmark for complete; ignored on error — D4
+  semantic mandatory per WCAG 1.4.1), `status?: StepStatus` (explicit
+  override).
+- A11y: each step ships a visually-hidden verbose announcement
+  ("Step N of M: label, status") for non-active steps; active step's
+  context is delivered via root live region (`role="status"
+  aria-live="polite"`) which re-mounts on `currentStep` change to force
+  AT re-announce (TagsInput precedent). `aria-current="step"` on the
+  active step.
+- Keyboard (interactive only): Arrows (h/v + RTL-aware) navigate between
+  clickable steps (skip aria-disabled, loop), Home/End jump first/last,
+  Space/Enter activate. Modifier keys passthrough (Tabs TB-R04 precedent).
+- Connecting line: per Q2 (α) — complete steps' outgoing line uses
+  `var(--color-success)` green. Incomplete segments use `var(--color-border)`.
+  Single CSS selector — no JS computation.
+- Long labels: per Q3 (β) — wrap to multiple lines (`white-space: normal`).
+  A11y priority — never hide content via CSS. Consumer may opt into
+  truncation via `className` + own SCSS.
+- APG attribution: per Q1 (γ) — cites W3C `list` + `navigation` landmarks
+  as foundation; behavior synthesized from Material UI / Mantine / Chakra
+  Stepper convention (W3C does NOT define a canonical "stepper" pattern).
+
+Phase 4 Evaluator findings + Phase 5 fixes:
+- IMPORTANT: discriminated-union read shape simplified (single destructure;
+  removed redundant double-cast).
+- IMPORTANT: `{...rest}` spread placement now BEFORE explicit attrs so
+  consumer can't accidentally override fixed structural attrs (role,
+  data-orientation, data-size, onKeyDown).
+- IMPORTANT: visual-only mode wrapper kept as `<div>` containing the
+  `<ol>` (evaluator initially suggested collapsing to bare `<ol>` root
+  but live region as sibling of `<ol>` would violate HTML structural
+  validity — `<ol>` may only contain `<li>` direct children).
+- NITPICK: per-step verbose announcement now omitted on the active step
+  (live region already covers it — prevents double announcement).
+
+Tests: 54 PASS / 0 fail across 6 spec files: aria (10), states (8),
+keyboard (8), focus (5), click (5), regression (18 — STEP-R01..STEP-R18).
+axe-core zero violations on demo route (`/components/stepper`).
+
+Manifest: 95 → 96 families. Zero new lib tokens. Zero new external deps.
+
 ## [0.18.1] — 2026-05-12
 
 **Patch release — Form/Field re-render hygiene.**

@@ -1,0 +1,95 @@
+@use '../../../styles/mixins' as mx;
+
+// ============================================================================
+// FileUpload — drop zone + visually-hidden native file input.
+//
+// Structure provider (lib R4): semantic landmarks, ARIA contract, focus ring,
+// baseline drag-state styling via data-state attribute. Consumer renders own
+// content (zero-state, drag-over text, browse Button) via render-props children
+// and can override visual identity via className passthrough + own SCSS module.
+// ============================================================================
+
+.root {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: center;
+  min-height: 8rem; // 128px — comfortably above the 44×44 touch target rubric
+  padding: var(--space-8);
+  border: 1.5px dashed var(--color-border);
+  border-radius: var(--radius-md);
+  background-color: var(--color-surface);
+  color: var(--color-text-primary);
+  cursor: pointer;
+  transition:
+    background-color var(--duration-fast) var(--easing-default),
+    border-color var(--duration-fast) var(--easing-default);
+
+  // Focus ring lives on the drop zone — it is the tab-stop. Hidden <input>
+  // is aria-hidden + tabIndex=-1. MUST be inside :focus-visible per
+  // canonical mixin usage (see _mixins.scss header) — otherwise the
+  // ring renders permanently regardless of focus.
+  &:focus-visible {
+    @include mx.focus-ring;
+  }
+}
+
+// Visually-hidden native <input type="file"> — kept form-participable.
+// `display: none` would break FormData submission in some legacy browsers
+// + suppress Constraint Validation; clip-path keeps it submittable while
+// invisible. Same pattern as FileChip's visually-hidden state announcers.
+.input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+  opacity: 0;
+}
+
+// Live region — sr-only, scoped inside root so it unmounts cleanly.
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+// ────────────────────────────────────────────────────────────────────────
+// Drag states (data-state mirrors React state for SCSS-only consumers)
+// ────────────────────────────────────────────────────────────────────────
+.root[data-state='dragging'] {
+  background-color: var(--color-brand-subtle);
+  border-color: var(--color-brand);
+}
+
+.root[data-state='rejecting'] {
+  background-color: var(--color-error-subtle);
+  border-color: var(--color-error);
+}
+
+.root[data-state='disabled'] {
+  cursor: not-allowed;
+  background-color: var(--color-surface);
+  border-color: var(--color-border-subtle);
+  color: var(--color-text-muted);
+}
+
+// ────────────────────────────────────────────────────────────────────────
+// Reduced motion — transitions off per CRITICAL rubric
+// ────────────────────────────────────────────────────────────────────────
+@media (prefers-reduced-motion: reduce) {
+  .root {
+    transition: none;
+  }
+}

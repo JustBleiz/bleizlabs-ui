@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1",
-  "libVersion": "0.18.1",
-  "generatedAt": "2026-05-12T12:31:51.568Z",
+  "libVersion": "0.19.0",
+  "generatedAt": "2026-05-12T15:46:06.955Z",
   "categories": {
     "layout": [
       "Container",
@@ -44,6 +44,7 @@
       "PhoneInput",
       "RadioGroup",
       "Switch",
+      "TagsInput",
       "TextLink",
       "Textarea",
       "TimeInput",
@@ -98,6 +99,7 @@
       "Drawer",
       "DropdownMenu",
       "Field",
+      "FileUpload",
       "Form",
       "HoverCard",
       "InputOTP",
@@ -108,6 +110,7 @@
       "Sheet",
       "Sidebar",
       "Slider",
+      "Stepper",
       "Tabs",
       "TimePicker",
       "Toast",
@@ -583,6 +586,22 @@
       "types": [
         "SwitchProps",
         "SwitchSize"
+      ],
+      "hooks": []
+    },
+    {
+      "family": "TagsInput",
+      "category": "interactive",
+      "path": "interactive/TagsInput",
+      "exports": [
+        "TagsInput"
+      ],
+      "types": [
+        "TagRejection",
+        "TagRejectionReason",
+        "TagValidateResult",
+        "TagsInputProps",
+        "TagsInputSize"
       ],
       "hooks": []
     },
@@ -1280,6 +1299,21 @@
       "hooks": []
     },
     {
+      "family": "FileUpload",
+      "category": "complex",
+      "path": "complex/FileUpload",
+      "exports": [
+        "FileUpload"
+      ],
+      "types": [
+        "FileRejection",
+        "FileRejectionReason",
+        "FileUploadProps",
+        "FileUploadRenderProps"
+      ],
+      "hooks": []
+    },
+    {
       "family": "Form",
       "category": "complex",
       "path": "complex/Form",
@@ -1493,6 +1527,24 @@
         "SliderRangeProps",
         "SliderThumbProps",
         "SliderTrackProps"
+      ],
+      "hooks": []
+    },
+    {
+      "family": "Stepper",
+      "category": "complex",
+      "path": "complex/Stepper",
+      "exports": [
+        "Step",
+        "Stepper"
+      ],
+      "types": [
+        "StepProps",
+        "StepStatus",
+        "StepperClickableSteps",
+        "StepperOrientation",
+        "StepperProps",
+        "StepperSize"
       ],
       "hooks": []
     },
