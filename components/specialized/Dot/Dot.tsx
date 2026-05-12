@@ -37,12 +37,12 @@ export type DotColor =
   | 'error'
   | 'info';
 
-export type DotSize = 'sm' | 'md' | 'lg';
+export type DotSize = 'xs' | 'sm' | 'md' | 'lg';
 
 export interface DotProps extends HTMLAttributes<HTMLSpanElement> {
   /** Semantic color. Default `'default'` (neutral). Matches Badge's 6-color palette. */
   color?: DotColor;
-  /** Visual size (sm=8px, md=12px, lg=16px diameter). Default `'md'`. */
+  /** Visual size (xs=4px, sm=8px, md=12px, lg=16px diameter). Default `'md'`. */
   size?: DotSize;
   /** Infinite opacity pulse animation (inherits reduced-motion guard). Default `false`. */
   pulse?: boolean;
@@ -62,6 +62,7 @@ const COLOR_CLASS: Record<DotColor, string> = {
 };
 
 const SIZE_CLASS: Record<DotSize, string> = {
+  xs: styles.sizeXs!,
   sm: styles.sizeSm!,
   md: styles.sizeMd!,
   lg: styles.sizeLg!,
