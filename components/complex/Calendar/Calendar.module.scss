@@ -90,7 +90,16 @@
 // ──────────────────────────────────────────────────────────────────────────
 
 .grid {
-  width: 100%;
+  // 0.18.0 BUGFIX — was `width: 100%` which combined with the inner
+  // `1fr` row-grid columns + cell `aspect-ratio: 1/1` formed a circular
+  // layout dependency whenever Calendar sat inside a shrink-to-fit
+  // ancestor (e.g. DateRangePicker `.monthsRow` flex item inside the
+  // fixed-positioned popover). Browser fallback assigned cells huge
+  // dimensions (cells 142,855×142,855 px, grid 1M×857k px). Anchoring
+  // grid + row tracks to the explicit touch-target size (44px) removes
+  // the circular dependency — cell widths are definite, aspect-ratio
+  // resolves cleanly.
+  width: max-content;
   border-collapse: separate;
   border-spacing: 0;
   table-layout: fixed;
@@ -102,7 +111,7 @@
 
 .gridHeadRow {
   display: grid;
-  grid-template-columns: repeat(7, 1fr);
+  grid-template-columns: repeat(7, var(--size-touch-min));
   gap: 2px;
 }
 
@@ -124,7 +133,7 @@
 
 .row {
   display: grid;
-  grid-template-columns: repeat(7, 1fr);
+  grid-template-columns: repeat(7, var(--size-touch-min));
   gap: 2px;
 }
 

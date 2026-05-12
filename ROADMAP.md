@@ -92,6 +92,30 @@ Każdy minor możemy przemieszać gdy realny priority się zmieni z internal con
 
 ## 0.18.0 — Date/Time pack
 
+**Status:** IN PROGRESS on `work/0.18-datetime-pack` branch (lib repo). Plan
+revision v2 (post-adversarial-audit) at
+`internal/bleizlabs-ui/work/2026-05_0.18-datetime-pack/docs/implementation-plan-2026-05-12.md`.
+
+Cycle progress:
+- [x] E01.0 Calendar AMEND (commit `57b29a3`) — opt-in `cellExtras` +
+      `onCellHover` + `onGridMouseLeave` props (Phase 1 prerequisite for
+      DateRangePicker range overlay).
+- [x] E01.1 DateRangePicker v1 (commit `62db846`) — multi-month range picker
+      with 1/2/3-month layout + form integration + 58/60 Playwright tests
+      PASS (2 documented skips for Playwright synthetic-event limitations).
+- [x] E01.2 TimeInput v1 — inline HH:MM(:SS) `role="spinbutton"` trio + AM/PM
+      `role="switch"` toggle, own implementation per audit C1; 48/48 Playwright
+      tests PASS; 5 new time helpers in `utils/date.ts` (parseTime, formatTime,
+      clampTime, combineDateTime, resolveHourCycle).
+- [x] E01.3 TimePicker v1 — combobox input + popover with scrollable
+      hour/minute/seconds/AM-PM listbox columns; step filter; 40/40
+      Playwright tests PASS.
+- [x] E01.4 DateTimePicker v1 — Calendar + TimeInput inline compound in
+      single popover, 3 tab stops, ISO 8601 local datetime form output,
+      29/30 Playwright tests PASS (1 documented skip — shared dismiss
+      primitive covered by TP-R08).
+- [ ] Phase 7.1 audit + release pipeline (PR → tag v0.18.0 → npm publish).
+
 **Why:** Aktualnie `<DatePicker>` = single date only. Brak zakresu dat (analytics, booking, reporty), brak czasu (scheduling, deadlines), brak combined date+time. 4 powiązane komponenty naturalnie batchują się w jeden release bo współdzielą Calendar + Intl + Date utils.
 
 ### 0.18.1 DateRangePicker

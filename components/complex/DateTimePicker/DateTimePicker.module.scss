@@ -1,0 +1,89 @@
+@use '../../../styles/mixins' as mx;
+
+// DateTimePicker — combobox input + popover with Calendar grid above +
+// inline TimeInput below. Mirrors DatePicker shell with extended dialog
+// content rows.
+
+.root {
+  display: inline-block;
+  position: relative;
+}
+
+.input {
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  padding: var(--space-3) var(--space-4);
+  background: var(--input-bg);
+  border: 1px solid var(--input-border);
+  border-radius: var(--radius-input);
+  color: var(--color-text-primary);
+  font-family: var(--font-secondary);
+  font-size: var(--font-size-base);
+  font-variant-numeric: tabular-nums;
+  line-height: var(--line-height-normal);
+  outline: none;
+  transition:
+    border-color var(--duration-fast) var(--easing-default),
+    box-shadow var(--duration-fast) var(--easing-default);
+
+  &::placeholder {
+    color: var(--color-text-secondary);
+  }
+
+  &:focus-visible {
+    border-color: var(--input-border-focus);
+    @include mx.focus-ring;
+  }
+
+  &[aria-invalid='true'] {
+    border-color: var(--color-error);
+
+    &:focus-visible {
+      @include mx.focus-ring-error;
+    }
+  }
+
+  @include mx.touch-target;
+}
+
+.inputDisabled {
+  cursor: not-allowed;
+  background: var(--input-bg-disabled, var(--input-bg));
+  color: var(--color-text-muted);
+}
+
+.content {
+  // 0.18.0 BUGFIX — explicit `width: max-content` so the fixed-positioned
+  // popover shrink-wraps to inner Calendar grid + TimeInput row. Sibling
+  // fix to DatePicker / DateRangePicker / TimePicker on 0.18.0 branch.
+  width: max-content;
+  max-width: calc(100vw - 2 * var(--space-3));
+  z-index: var(--z-popover);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-3);
+  background: var(--color-surface-raised);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+}
+
+.calendar {
+  // Calendar owns its own border + padding via the Calendar SCSS — let it
+  // sit naturally inside the dialog.
+}
+
+.timeRow {
+  display: flex;
+  justify-content: flex-start;
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--color-border-subtle);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .input {
+    transition: none;
+  }
+}

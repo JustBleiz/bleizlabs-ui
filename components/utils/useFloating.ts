@@ -117,6 +117,21 @@ export function useFloating(options: UseFloatingOptions): UseFloatingResult {
     y: 0,
     placement,
   });
+  // 0.18.0 BUGFIX — track whether the floating element has been measured
+  // since this open cycle. Initial render commits coords=(0,0) BEFORE
+  // useLayoutEffect+ref callbacks can measure the actual position. Without
+  // this flag the floating element paints at viewport-(0,0) for one frame,
+  // then jumps to its measured position — a visible flicker observed when
+  // opening DateRangePicker / DateTimePicker / DatePicker popovers (user
+  // report 2026-05-12: "popover opens above the input first then jumps
+  // down below").
+  //
+  // Solution: hide via `visibility: hidden` until first `update()` runs,
+  // flip to visible synchronously inside update(). The floating element
+  // is still laid out (so its dimensions are measurable) but never paints
+  // at the wrong position. Reset to hidden on every close→reopen so the
+  // guard re-arms.
+  const [isPositioned, setIsPositioned] = useState(false);
   const [arrowCoords, setArrowCoords] = useState<{ x?: number; y?: number }>({});
   // Trigger width — published as `--reference-width` CSS custom property on
   // the floating element so SCSS can size the popper to match (e.g.
@@ -164,6 +179,12 @@ export function useFloating(options: UseFloatingOptions): UseFloatingResult {
         ? prev
         : result,
     );
+
+    // Flip visibility flag synchronously with first coords commit so the
+    // floating element paints AT the measured position rather than at
+    // (0,0). State updates inside React's same-tick batch — coords change
+    // + isPositioned flip render together, no intermediate paint.
+    setIsPositioned(true);
 
     // Reference width — measured on every update so the popper can match
     // the trigger width via `--reference-width` CSS variable. Same bail-
@@ -216,6 +237,17 @@ export function useFloating(options: UseFloatingOptions): UseFloatingResult {
   // Continuous reposition while open — scroll (capture phase to catch ancestor
   // scrolls), resize, and size changes on either element. Cleanup on close /
   // unmount so we never leak listeners.
+  // Re-arm the isPositioned flag every time we transition open=true → false
+  // so a closed-then-reopened popover doesn't paint at the previous-cycle
+  // coords for one frame before re-measurement. React-recommended
+  // prev-value sentinel pattern (setState during render, allowed when
+  // guarded against infinite loop via primitive comparison).
+  const [prevOpen, setPrevOpen] = useState(open);
+  if (open !== prevOpen) {
+    setPrevOpen(open);
+    if (!open) setIsPositioned(false);
+  }
+
   useLayoutEffect(() => {
     if (!open) return;
     const reference = referenceRef.current;
@@ -248,6 +280,20 @@ export function useFloating(options: UseFloatingOptions): UseFloatingResult {
     left: 0,
     transform: `translate3d(${Math.round(coords.x)}px, ${Math.round(coords.y)}px, 0)`,
     willChange: 'transform',
+    // 0.18.0 BUGFIX — was `visibility: isPositioned ? 'visible' : 'hidden'`
+    // to suppress the (0,0) initial-coords paint flash. Reverted because
+    // `visibility: hidden` propagates to descendants and prevents the
+    // dialog's focusable children from receiving programmatic focus on
+    // open (broke DR-FCS01 Alt+ArrowDown moves focus into Calendar +
+    // DatePicker arrow-nav). The real fix is in the SCSS modules
+    // themselves — every popover's entrance keyframe now animates ONLY
+    // opacity, never transform, so useFloating's inline
+    // `translate3d(x, y, 0)` is the sole positioning source of truth.
+    // React 18 layout-effect batching merges the (0,0) initial render
+    // with the measured-coords render inside the same paint cycle, so
+    // no flash is observable. `isPositioned` flag retained for potential
+    // future use (e.g., consumer-driven entrance animation gate).
+    opacity: isPositioned ? 1 : 0,
     // Trigger-width custom property — listbox-family popovers (Select,
     // Combobox, DropdownMenu, NavigationMenu) read this in SCSS via
     // `width: var(--reference-width)` to match trigger width, with their

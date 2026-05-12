@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1",
-  "libVersion": "0.17.0",
-  "generatedAt": "2026-05-12T07:30:46.842Z",
+  "libVersion": "0.18.0",
+  "generatedAt": "2026-05-12T10:58:04.746Z",
   "categories": {
     "layout": [
       "Container",
@@ -46,6 +46,7 @@
       "Switch",
       "TextLink",
       "Textarea",
+      "TimeInput",
       "Toggle",
       "ToggleGroup"
     ],
@@ -91,6 +92,8 @@
       "ContextMenu",
       "DataTable",
       "DatePicker",
+      "DateRangePicker",
+      "DateTimePicker",
       "Dialog",
       "Drawer",
       "DropdownMenu",
@@ -106,6 +109,7 @@
       "Sidebar",
       "Slider",
       "Tabs",
+      "TimePicker",
       "Toast",
       "Toolbar",
       "Tooltip"
@@ -604,6 +608,18 @@
       ],
       "types": [
         "TextLinkProps"
+      ],
+      "hooks": []
+    },
+    {
+      "family": "TimeInput",
+      "category": "interactive",
+      "path": "interactive/TimeInput",
+      "exports": [
+        "TimeInput"
+      ],
+      "types": [
+        "TimeInputProps"
       ],
       "hooks": []
     },
@@ -1155,6 +1171,39 @@
       "hooks": []
     },
     {
+      "family": "DateRangePicker",
+      "category": "complex",
+      "path": "complex/DateRangePicker",
+      "exports": [
+        "DateRangePicker",
+        "DateRangePickerContent",
+        "DateRangePickerInput"
+      ],
+      "types": [
+        "DateRange",
+        "DateRangePickerContentProps",
+        "DateRangePickerInputProps",
+        "DateRangePickerProps"
+      ],
+      "hooks": []
+    },
+    {
+      "family": "DateTimePicker",
+      "category": "complex",
+      "path": "complex/DateTimePicker",
+      "exports": [
+        "DateTimePicker",
+        "DateTimePickerContent",
+        "DateTimePickerInput"
+      ],
+      "types": [
+        "DateTimePickerContentProps",
+        "DateTimePickerInputProps",
+        "DateTimePickerProps"
+      ],
+      "hooks": []
+    },
+    {
       "family": "Dialog",
       "category": "complex",
       "path": "complex/Dialog",
@@ -1466,6 +1515,22 @@
         "TabsOrientation",
         "TabsProps",
         "TabsTriggerProps"
+      ],
+      "hooks": []
+    },
+    {
+      "family": "TimePicker",
+      "category": "complex",
+      "path": "complex/TimePicker",
+      "exports": [
+        "TimePicker",
+        "TimePickerContent",
+        "TimePickerInput"
+      ],
+      "types": [
+        "TimePickerContentProps",
+        "TimePickerInputProps",
+        "TimePickerProps"
       ],
       "hooks": []
     },

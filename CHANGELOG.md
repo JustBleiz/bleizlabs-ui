@@ -7,6 +7,209 @@ and this project adheres to [Semantic Versioning 2.0](https://semver.org/spec/v2
 
 ## [Unreleased]
 
+### 0.18.0 cycle progress (on `work/0.18-datetime-pack` branch)
+
+**E01.0 Calendar AMEND — opt-in cell-extras + hover callbacks (commit `57b29a3`)**
+
+3 additive opt-in props on `<Calendar>` (zero BC risk, single-consumer
+Calendars unaffected):
+- `cellExtras?: (date, ctx) => HTMLAttributes<HTMLTableCellElement>` — per-cell
+  attribute slot, spread BEFORE fixed `role`/`aria-selected`/`className` so
+  consumer cannot override grid semantics. Primary use: `data-*` attrs for
+  CSS-driven overlays (range preview, badges).
+- `onCellHover?: (date) => void` — cell `mouseenter` callback, opt-in for
+  hover-driven UI. Not fired on hidden outside-month cells.
+- `onGridMouseLeave?: () => void` — grid-level `mouseleave` callback, pairs
+  with `onCellHover` for clearing hover tail.
+
+Spec coverage: `Calendar.cellExtras.spec.ts` (3 cases — defaults unchanged,
+data-* attrs land via DateRangePicker consumer, hover wiring proven).
+Existing 7 Calendar spec files behavior unchanged.
+
+**E01.1 DateRangePicker v1 — multi-month range selection (commit `62db846`)**
+
+New `complex/DateRangePicker` compound (root + `Input` + `Content`). Composes
+Calendar AMEND + 5 floating primitives into a popover range picker per
+WAI-ARIA APG `/datepicker-dialog/` modified for range.
+
+Features:
+- Range state machine: idle → pendingFrom → commit (with reorder on click 2 <
+  click 1); committed-restart on next click; programmatic clear-to-null
+  override clears `pendingFrom` (audit-fix C3 2026-05-12).
+- `numberOfMonths: 1 | 2 | 3` opt-in layout axis (single sync'd chevron header).
+- Cross-Calendar focus: HARD STOP boundary — arrows stay within single grid,
+  Tab moves to next Calendar's `tabIndex=0` cell.
+- Hover preview via `cellExtras` → `data-range-hover-tail`. Cleared on
+  `onGridMouseLeave` + popover close.
+- Typed input parsing: `"YYYY-MM-DD → YYYY-MM-DD"` (em-dash) OR
+  `"YYYY-MM-DD -> YYYY-MM-DD"` (ASCII arrow). Half-date sets `pendingFrom`.
+- Form participation Path A: renders `${name}_from` + `${name}_to` hidden
+  inputs (ISO `yyyy-mm-dd`); when `required=true`, both render even when null
+  to surface native HTML5 `:invalid`; when `required=false`, null bound omitted.
+- A11y: range bounds use `data-range-start` / `data-range-end` + `aria-label`
+  augmentation ("...{date}, in selected range"). Dialog `aria-modal="false"`
+  (outside dismiss, no focus trap). axe-core zero violations.
+- RTL: `dir="rtl"` propagates to all child Calendars; months row uses logical
+  flex so later month renders visually on LEFT.
+
+Spec coverage: 11 spec files (`_helpers` + aria + range + keyboard + focus +
+hover + months + locale + form + disabled + regression) — 58 PASS / 2
+documented `test.skip` (Playwright synthetic-event limitations on
+portal-rendered cells; manual verification path documented in test JSDoc).
+
+**E01.2 TimeInput v1 — bespoke `role="spinbutton"` HH:MM(:SS) trio**
+
+New `interactive/TimeInput` flat component (not compound). Bespoke
+`role="spinbutton"` implementation per WAI-ARIA APG `/spinbutton/` — does
+NOT compose `<NumberInput>` per audit C1 finding (NumberInput owns its own
+`<input>` with InputHTMLAttributes passthrough that conflicts with
+spinbutton ARIA).
+
+Features:
+- 2-3 spinbutton fields (hours, minutes, optional seconds) inside
+  `<div role="group" aria-label>`. Each field carries `aria-valuenow`,
+  `aria-valuemin`/`max`, `aria-valuetext`, per-field `aria-label`
+  ("Hours" / "Minutes" / "Seconds").
+- `hourCycle: '12h' | '24h'` opt-in prop (auto-derived from locale via
+  `resolveHourCycle` when omitted). 12h mode renders `<button role="switch"
+  aria-checked>` AM/PM toggle at logical-end of group. `onValueChange`
+  ALWAYS emits 24h ISO regardless of display cycle (per plan AD2).
+- Keyboard model per spinbutton: ArrowUp/Down ±1 (hours/seconds) or ±step
+  (minutes); PageUp/Down ±10/±15/±10; Home/End jump to field bounds;
+  direct digit type with 2-digit buffer + auto-advance on completion or
+  when single-digit completion is unambiguous (e.g. typing "3" in 24h
+  hours auto-advances since "3X" with X≥0 would exceed 23); `:` separator
+  commits buffer; Backspace clears buffer (empty-buffer Backspace retreats
+  to previous field); IME composition guard.
+- `min`/`max` clamping at commit boundary via lexical `clampTime` (ISO
+  zero-padding is monotonic).
+- Form participation: single hidden input renders `"HH:MM"` (or
+  `"HH:MM:SS"`) under `name`. `required` propagates so empty surfaces
+  native `:invalid`.
+- 5 new util helpers extending `utils/date.ts` — `parseTime`, `formatTime`,
+  `clampTime`, `combineDateTime`, `resolveHourCycle` (last reserved for
+  DateTimePicker E01.4 consumer; first 4 used by TimeInput directly).
+- Race-condition fix: `isAdvancingRef` flag suppresses the synchronous
+  blur fired by `ref.focus()` during auto-advance — without it, the
+  leaving field's blur handler would re-flush its now-stale single-digit
+  buffer over the just-written 2-digit commit (forensic finding caught
+  during runtime test exec 2026-05-12).
+
+Spec coverage: 6 spec files (`_helpers` + aria + keyboard + format +
+bounds + form + focus + regression) — 48 PASS / 0 fail / 0 skip. Includes
+axe-core zero violations on demo route.
+
+Net manifest after 0.18.0 cycle to date: 89 → 91 families (DateRangePicker +
+TimeInput). Remaining 0.18.0 sub-Epics: E01.3 TimePicker · E01.4
+DateTimePicker.
+
+**E01.3 TimePicker v1 — combobox + listbox columns popover**
+
+New `complex/TimePicker` compound (root + `Input` + `Content`). Composes 5
+floating primitives + 4 time helpers from `utils/date.ts` (shared with
+TimeInput E01.2). Pattern follows DatePicker E142 (editable combobox
+input + popover dialog) with listbox columns inside the popover instead
+of a Calendar grid.
+
+Features:
+- Compound: `TimePicker` + `TimePickerInput` (combobox) + `TimePickerContent`
+  (popover dialog with 2-3 scrollable listbox columns)
+- `hourCycle: '12h' | '24h'` opt-in (auto-derived from locale via
+  `resolveHourCycle`); 12h adds AM/PM listbox at logical-end
+- `step` filters minute listbox content (e.g. step=15 → 4 options)
+- `withSeconds` adds 3rd listbox column
+- `min` / `max` clamp committed value via lexical `clampTime`
+- Form participation: hidden `<input type="hidden" name>` carrying 24h ISO;
+  `required` flag propagates for native `:invalid`
+- Keyboard model (input): Alt+ArrowDown opens + focuses first hour option,
+  Alt+ArrowUp closes, Enter parses typed `"HH:MM"` (24h) or `"HH:MM AM/PM"`
+  (12h) and commits + closes on valid input or sets `aria-invalid` on
+  invalid input; Escape closes; IME composition guard
+- Keyboard model (listbox option): ArrowUp/Down nav with `scrollIntoView`,
+  Home/End jump bounds, Enter/Space commits + advances focus to next
+  listbox (h → m → s? → p? → close + return focus to input), Escape closes
+- A11y: input `role="combobox" aria-haspopup="listbox"`; dialog
+  `role="dialog" aria-modal="false" aria-label="Time picker"`; per-listbox
+  `role="listbox" aria-label`; options `role="option" aria-selected`;
+  axe-core zero violations on demo route
+
+Spec coverage: 6 spec files + `_helpers` — 40 PASS / 0 fail / 0 skip.
+
+Net manifest after 0.18.0 cycle to date: 89 → 92 families (DateRangePicker +
+TimeInput + TimePicker). Remaining 0.18.0 sub-Epics: E01.4 DateTimePicker.
+
+**E01.4 DateTimePicker v1 — Calendar + TimeInput compound in single popover**
+
+New `complex/DateTimePicker` compound (root + `Input` + `Content`).
+Composes existing `<Calendar>` (E30) + `<TimeInput>` (E01.2) inline within
+a single popover surface. Three Tab stops in dialog (Calendar roving
+cell → hour spinbutton → minute spinbutton, plus optional seconds +
+AM/PM toggle). Form output is ISO 8601 local datetime
+(`"YYYY-MM-DDTHH:MM:SS"`, no tz suffix — server treats as local wall-
+clock per plan AD3).
+
+Features:
+- Compound: `DateTimePicker` + `DateTimePickerInput` + `DateTimePickerContent`
+- Value type `Date | null` (not string) — `<DateTimePicker>` works with
+  the JS `Date` primitive directly; `toIsoDateTimeString` / `parseIsoDateTimeString`
+  serializers cover form bridge
+- Inline `<TimeInput>` (NOT `<TimePicker>` popover) — single popover
+  surface preferred per plan I3 Recommended
+- `withSeconds`, `hourCycle '12h' | '24h'`, `timeStep`, `min`/`max`,
+  `disabledDates` all propagate to inner Calendar + TimeInput
+- Calendar select preserves existing time component; TimeInput nudge
+  preserves existing date component; either-axis edit produces fully
+  combined Date via `combineDateTime` utility
+- Form: hidden `<input type="hidden" name>` with ISO 8601 local datetime;
+  `required` propagates for native `:invalid`
+
+2 new util helpers in `utils/date.ts`:
+- `toIsoDateTimeString(date) → "YYYY-MM-DDTHH:MM:SS"` (no tz suffix)
+- `parseIsoDateTimeString(iso) → Date | null` (accepts trailing `:SS`
+  optional)
+
+Time-zone semantics — documented:
+- Emitted ISO string carries NO tz suffix; represents local wall-clock
+  time at user's device
+- Server parsers MUST treat as local-naive datetime, NOT UTC
+- DST trap: `combineDateTime` uses `Date.setHours` which normalizes
+  non-existent local times (e.g. 02:30 on spring-forward day → 03:30)
+
+Keyboard model (input): Alt+ArrowDown opens + focuses first Calendar
+cell; Alt+ArrowUp closes; Enter parses typed `"YYYY-MM-DDTHH:MM"` or
+`"YYYY-MM-DD HH:MM"` (space normalized to ISO T) → commit + close on
+valid, `aria-invalid` on parse failure; Escape closes; IME composition
+guard.
+
+Spec coverage: 5 spec files + `_helpers` — 29 PASS / 1 documented skip
+(`DT-R01 click-outside dismiss` — shared primitive covered by TP-R08;
+DateTimePicker's larger dialog footprint blocks Playwright's pointerdown
+synthesis on small viewports). Axe-core zero violations.
+
+Net manifest after full 0.18.0 cycle: 89 → 93 families (DateRangePicker
++ TimeInput + TimePicker + DateTimePicker). 0.18.0 component scope
+complete.
+
+**Polish — Select + Combobox `.itemText` multi-line friendly**
+
+Dropped forced single-line truncation (`white-space: nowrap;
+text-overflow: ellipsis; overflow: hidden;`) from `.itemText` in both
+`<Select>` and `<Combobox>` listbox item slots. Listbox items often carry
+multi-line content (name + role, label + description); the previous
+ellipsis policy clipped that content invisibly.
+
+After the change:
+- Single-line text renders unchanged (no wrap needed at any width)
+- Long single-line values WRAP to next line instead of clipping (WCAG 1.4.4
+  content-loss alignment)
+- Multi-line consumer content (e.g. `<>{name}<br/>{role}</>`) renders fully
+- `.item` keeps `align-items: center` + min-height 32 for single-line
+  ergonomics; rows grow naturally for multi-line content
+- Consumers needing explicit ellipsis can layer it via className passthrough
+  (Charter R3 — lib provides slot, consumer controls visual rhythm)
+
+No prop API change; 82 Select + Combobox Playwright tests pass unchanged.
+
 ## [0.17.0] — 2026-05
 
 **Feature release.** Ships `<DataTable>` as a flagship generic-data grid

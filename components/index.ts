@@ -47,7 +47,7 @@ export * from './display/Spinner';
 export * from './display/Table';
 
 // ----------------------------------------------------------------------------
-// Interactive (17)
+// Interactive (18) — 0.18.0 adds TimeInput (E01.2)
 // ----------------------------------------------------------------------------
 export * from './interactive/Accordion';
 export * from './interactive/Button';
@@ -64,6 +64,7 @@ export * from './interactive/RadioGroup';
 export * from './interactive/Switch';
 export * from './interactive/Textarea';
 export * from './interactive/TextLink';
+export * from './interactive/TimeInput';
 export * from './interactive/Toggle';
 export * from './interactive/ToggleGroup';
 
@@ -109,7 +110,7 @@ export * from './molecules/Timeline';
 export * from './presets/FormSurface';
 
 // ----------------------------------------------------------------------------
-// Complex interactive (26) — 0.17.0 adds DataTable (E01)
+// Complex interactive (29) — 0.18.0 adds DateRangePicker (E01.1) + TimePicker (E01.3) + DateTimePicker (E01.4)
 // ----------------------------------------------------------------------------
 export * from './complex/AlertDialog';
 export * from './complex/Calendar';
@@ -119,6 +120,8 @@ export * from './complex/Command';
 export * from './complex/ContextMenu';
 export * from './complex/DataTable';
 export * from './complex/DatePicker';
+export * from './complex/DateRangePicker';
+export * from './complex/DateTimePicker';
 export * from './complex/Dialog';
 export * from './complex/Drawer';
 export * from './complex/DropdownMenu';
@@ -134,6 +137,7 @@ export * from './complex/Sheet';
 export * from './complex/Sidebar';
 export * from './complex/Slider';
 export * from './complex/Tabs';
+export * from './complex/TimePicker';
 export * from './complex/Toast';
 export * from './complex/Toolbar';
 export * from './complex/Tooltip';
