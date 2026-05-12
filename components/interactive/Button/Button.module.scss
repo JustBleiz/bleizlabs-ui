@@ -27,12 +27,20 @@
   // (150ms, snappy) → `--duration-hover` (280ms, atelier polish). Matches
   // bleizlabs-web E167 site-wide pattern — smoother button hover w B2B atelier
   // context. Consumers can override via seed `$seed-duration-hover` in `@use`.
+  //
+  // 0.20.1 B13 fix: `filter` added to the property list because
+  // `.variantWarning` animates hover/active via `filter: brightness(...)`
+  // (no `--hover-warning` / `--active-warning` token analog to brand);
+  // without `filter` in the transition list, brightness changes snapped
+  // instantly while other variants smoothly faded, producing a visible
+  // "jump" feel on warning-only.
   transition:
     background-color var(--duration-hover) var(--easing-default),
     border-color var(--duration-hover) var(--easing-default),
     color var(--duration-hover) var(--easing-default),
     box-shadow var(--duration-hover) var(--easing-default),
-    transform var(--duration-hover) var(--easing-default);
+    transform var(--duration-hover) var(--easing-default),
+    filter var(--duration-hover) var(--easing-default);
 
   @include mx.touch-target;
 
