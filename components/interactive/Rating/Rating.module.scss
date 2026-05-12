@@ -1,0 +1,118 @@
+@use '../../../styles/mixins' as mx;
+
+// Rating — APG radio-rating pattern. Stars rendered as two-layer SVG:
+// outline (always full size) + fill (clipped to --rating-star-fill,
+// 0..1) so hover preview + readOnly fractional values share one path.
+
+.root {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  // Channel default — every star inherits unless overridden by inline
+  // style during hover preview / fractional render.
+  --rating-star-fill: 0;
+}
+
+.sizeSm {
+  --rating-star-size: var(--space-4);
+}
+
+.sizeMd {
+  --rating-star-size: var(--space-5);
+}
+
+.sizeLg {
+  --rating-star-size: var(--space-6);
+}
+
+.star {
+  position: relative;
+  display: inline-flex;
+  width: var(--rating-star-size);
+  height: var(--rating-star-size);
+  cursor: pointer;
+  color: var(--color-border);
+  outline: none;
+  transition:
+    color var(--duration-fast) var(--easing-default),
+    transform var(--duration-fast) var(--easing-default);
+
+  &:focus-visible {
+    @include mx.focus-ring;
+    border-radius: var(--radius-sm);
+  }
+
+  &:hover {
+    transform: scale(1.08);
+  }
+}
+
+.starChecked {
+  // Outline emphasizes the committed star even when the fill overlay is
+  // visually identical — useful in dense lists where the user scans the
+  // row quickly. Filter slightly intensifies the warning color.
+}
+
+.starOutline,
+.starFill {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  fill: currentColor;
+  pointer-events: none;
+}
+
+.starOutline {
+  // Outline layer — neutral border color so unselected stars read as
+  // ghosted placeholders. Filled layer on top covers this when active.
+  color: var(--color-border);
+}
+
+.starFillClip {
+  position: absolute;
+  inset: 0;
+  // Width-based clip: 0% empty, 100% fully filled. Supports any
+  // fractional value between (e.g. 0.5 → half-star).
+  width: calc(var(--rating-star-fill) * 100%);
+  height: 100%;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.starFill {
+  // Warning tone matches universal star convention (amber/gold) while
+  // staying within the seeded semantic palette — consumers retheme via
+  // `--color-warning` override in globals.scss.
+  color: var(--color-warning);
+}
+
+.readOnly {
+  .star {
+    cursor: default;
+
+    &:hover {
+      transform: none;
+    }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .star {
+    transition: none;
+
+    &:hover {
+      transform: none;
+    }
+  }
+}
+
+@media (forced-colors: active) {
+  .starOutline {
+    color: CanvasText;
+  }
+
+  .starFill {
+    color: Highlight;
+  }
+}

@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1",
   "libVersion": "0.20.1",
-  "generatedAt": "2026-05-12T20:39:47.995Z",
+  "generatedAt": "2026-05-12T20:52:30.268Z",
   "categories": {
     "layout": [
       "Container",
@@ -43,6 +43,7 @@
       "PasswordInput",
       "PhoneInput",
       "RadioGroup",
+      "Rating",
       "Switch",
       "TagsInput",
       "TextLink",
@@ -580,6 +581,19 @@
       "hooks": [
         "useRadioGroupContext"
       ]
+    },
+    {
+      "family": "Rating",
+      "category": "interactive",
+      "path": "interactive/Rating",
+      "exports": [
+        "Rating"
+      ],
+      "types": [
+        "RatingProps",
+        "RatingSize"
+      ],
+      "hooks": []
     },
     {
       "family": "Switch",
