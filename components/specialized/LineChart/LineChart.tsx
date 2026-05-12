@@ -723,7 +723,19 @@ export const LineChart = forwardRef<HTMLDivElement, LineChartProps>(
         seriesId: activeData.s.id,
         seriesName: activeData.s.name,
         color: activeData.s.color,
-        datum: activeData.datum,
+        // 0.20.1 B18 fix: restore the public-shape datum. Internally we
+        // carry `NormalizedDatum` ({ origX, x: number, y, label }) — `x`
+        // is the normalized numeric value. Public `LineChartTooltipContext`
+        // exposes `datum: LineChartDatum` ({ x: number | Date | string,
+        // y, label }), so consumers expect `datum.x` to match the original
+        // value they passed in. Without this remap, Date series leaked
+        // raw timestamps (e.g. "17119296000000") into the default tooltip
+        // and into custom `renderTooltip` slot consumers reading `ctx.datum.x`.
+        datum: {
+          x: activeData.datum.origX,
+          y: activeData.datum.y,
+          label: activeData.datum.label,
+        },
         pointIndex: activeTarget!.pointIdx,
         allSeriesAtX,
       };
