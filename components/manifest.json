@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1",
   "libVersion": "0.19.0",
-  "generatedAt": "2026-05-12T17:36:37.379Z",
+  "generatedAt": "2026-05-12T18:17:49.645Z",
   "categories": {
     "layout": [
       "Container",
@@ -67,6 +67,7 @@
       "LineChart",
       "MetricBar",
       "Pagination",
+      "Sparkline",
       "ThemeToggle",
       "UsageDonut"
     ],
@@ -844,6 +845,19 @@
       "types": [
         "PaginationProps",
         "PaginationVariant"
+      ],
+      "hooks": []
+    },
+    {
+      "family": "Sparkline",
+      "category": "specialized",
+      "path": "specialized/Sparkline",
+      "exports": [
+        "Sparkline"
+      ],
+      "types": [
+        "SparklineInterpolation",
+        "SparklineProps"
       ],
       "hooks": []
     },

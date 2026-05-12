@@ -1,0 +1,148 @@
+// =============================================================================
+// Sparkline — tiny inline single-series chart (0.20.0 E01.3)
+// =============================================================================
+// Token-only colors. Zero new lib tokens (Charter R7). Component-local
+// channels expose stroke width + fill opacity + aspect for consumer SCSS
+// override without specificity wars. Reduced-motion suppresses path-draw
+// + fill fade. Forced-colors keeps line stroke visible; area becomes
+// near-invisible (sr-only table carries data in High Contrast).
+
+@use '../../../styles/mixins' as mx;
+
+// ----------------------------------------------------------------------------
+// 1. ROOT — outer wrapper
+// ----------------------------------------------------------------------------
+
+.root {
+  --sparkline-stroke-width: 2px;
+  --sparkline-fill-opacity: 0.2;
+  --sparkline-aspect: 4;
+
+  position: relative;
+  display: inline-block;
+  width: 100%;
+  font-family: inherit;
+}
+
+// ----------------------------------------------------------------------------
+// 2. SVG CONTAINER — aspect-ratio sizing for inline embedding
+// ----------------------------------------------------------------------------
+
+.svgContainer {
+  position: relative;
+  width: 100%;
+  aspect-ratio: var(--sparkline-aspect);
+}
+
+.svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+// ----------------------------------------------------------------------------
+// 3. AREA — filled region between line and baseline
+// ----------------------------------------------------------------------------
+
+.area {
+  stroke: none;
+  transition: opacity var(--duration-fast) var(--easing-default);
+}
+
+.areaAnimating {
+  animation: sparklineAreaFade var(--duration-normal) var(--easing-default) forwards;
+  opacity: 0;
+}
+
+@keyframes sparklineAreaFade {
+  to {
+    opacity: 1;
+  }
+}
+
+// ----------------------------------------------------------------------------
+// 4. PATH — line stroke (rendered on top of area)
+// ----------------------------------------------------------------------------
+
+.path {
+  fill: none;
+  stroke-width: var(--sparkline-stroke-width);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.pathAnimating {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: sparklinePathDraw var(--duration-normal) var(--easing-default) forwards;
+}
+
+@keyframes sparklinePathDraw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+// ----------------------------------------------------------------------------
+// 5. EMPTY STATE
+// ----------------------------------------------------------------------------
+
+.empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-xs);
+}
+
+.emptyText {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-xs);
+}
+
+// ----------------------------------------------------------------------------
+// 6. SR ONLY — visually-hidden a11y table + ids
+// ----------------------------------------------------------------------------
+
+.srOnly {
+  @include mx.sr-only;
+}
+
+// ----------------------------------------------------------------------------
+// 7. REDUCED MOTION
+// ----------------------------------------------------------------------------
+
+@media (prefers-reduced-motion: reduce) {
+  .pathAnimating {
+    animation: none;
+    stroke-dasharray: none;
+    stroke-dashoffset: 0;
+  }
+
+  .areaAnimating {
+    animation: none;
+    opacity: 1;
+  }
+
+  .path,
+  .area {
+    transition: none;
+  }
+}
+
+// ----------------------------------------------------------------------------
+// 8. FORCED COLORS — Windows High Contrast
+// ----------------------------------------------------------------------------
+
+@media (forced-colors: active) {
+  .path {
+    stroke: CanvasText;
+  }
+  .area {
+    fill: GrayText;
+    opacity: 0.4;
+  }
+}
