@@ -63,13 +63,18 @@ test.describe('DateRangePicker — regression cases', () => {
     await expect(dialogOf(page)).toBeVisible();
   });
 
-  test('DR-R16 — controlled value prop change clears pendingFrom', async ({ page }) => {
+  test('DR-R16 — controlled value clear-to-null override clears pendingFrom (audit-fix C3)', async ({
+    page,
+  }) => {
     const picker = rangeBy(page, 'Two-month side-by-side');
     await openPicker(picker);
     // Pick a date to set pendingFrom (overriding committed via demo controls)
     const cells = page.locator('button[data-calendar-cell]');
     await cells.first().dispatchEvent('click');
-    // Now click "Clear" button in demo — this calls setTwoMonth({from:null,to:null})
+    // Click demo's Clear button → consumer calls setTwoMonth({from:null,to:null}).
+    // Per audit-fix C3 — MUST clear pendingFrom even though new value is
+    // {null,null} (previously the truthy-bound guard skipped this, leaving
+    // stale pendingFrom that would corrupt next selection).
     const clearBtn = page.getByRole('button', { name: 'Clear' });
     await clearBtn.click({ force: true });
     // Reopen — no preview tail should remain

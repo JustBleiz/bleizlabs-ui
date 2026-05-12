@@ -320,16 +320,16 @@ export const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
     const [pendingFrom, setPendingFrom] = useState<Date | null>(null);
     const [hovered, setHoveredState] = useState<Date | null>(null);
 
-    // Sync pendingFrom + hovered on external value prop change to a committed range
-    // (controlled override mid-selection). Same "adjust state during render"
-    // pattern as DatePicker's prevValue sentinel.
+    // Sync pendingFrom + hovered on ANY external value prop change (controlled
+    // override). Per audit-fix C3 — must clear `pendingFrom` even on clear-to-null
+    // override, otherwise the next click 2 would commit a range against a STALE
+    // half-state pendingFrom. Same "adjust state during render" pattern as
+    // DatePicker's prevValue sentinel.
     const [prevControlledValue, setPrevControlledValue] = useState(controlledValue);
     if (controlledValue !== prevControlledValue) {
       setPrevControlledValue(controlledValue);
-      if (controlledValue && (controlledValue.from || controlledValue.to)) {
-        setPendingFrom(null);
-        setHoveredState(null);
-      }
+      setPendingFrom(null);
+      setHoveredState(null);
     }
 
     // Search state — typed text representation of committed range
@@ -468,7 +468,11 @@ export const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
       queueMicrotask(() => {
         const content = contentRef.current;
         if (!content) return;
-        const targetIso = toIsoDateString(range.from ?? startOfDay(new Date()));
+        // Per audit-fix I4: prefer pendingFrom when half-range in progress so
+        // the user lands at click-1's anchor rather than today.
+        const targetIso = toIsoDateString(
+          range.from ?? pendingFrom ?? startOfDay(new Date()),
+        );
         const preferred = content.querySelector<HTMLElement>(
           `button[data-calendar-cell="${targetIso}"]`,
         );
@@ -477,7 +481,7 @@ export const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
         );
         (preferred ?? fallback)?.focus();
       });
-    }, [range.from]);
+    }, [range.from, pendingFrom]);
 
     const openPopup = useCallback(
       (focusCalendar = false) => {
@@ -635,7 +639,10 @@ function renderHiddenInputs(name: string, range: DateRange, required: boolean): 
 // ──────────────────────────────────────────────────────────────────────────
 // Input text formatting + parsing
 
-const RANGE_SEP_RE = /\s*(?:→|->|\/)\s*/;
+// Per audit-fix I5: regex narrowed to em-dash + ASCII arrow only (matches JSDoc
+// `@a11y` keyboard model + form/regression specs). The `/` separator was
+// undocumented in user-facing JSDoc and not exercised by tests.
+const RANGE_SEP_RE = /\s*(?:→|->)\s*/;
 
 function formatRangeForInput(range: DateRange): string {
   if (range.from && range.to) {

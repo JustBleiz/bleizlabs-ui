@@ -7,6 +7,60 @@ and this project adheres to [Semantic Versioning 2.0](https://semver.org/spec/v2
 
 ## [Unreleased]
 
+### 0.18.0 cycle progress (on `work/0.18-datetime-pack` branch)
+
+**E01.0 Calendar AMEND — opt-in cell-extras + hover callbacks (commit `57b29a3`)**
+
+3 additive opt-in props on `<Calendar>` (zero BC risk, single-consumer
+Calendars unaffected):
+- `cellExtras?: (date, ctx) => HTMLAttributes<HTMLTableCellElement>` — per-cell
+  attribute slot, spread BEFORE fixed `role`/`aria-selected`/`className` so
+  consumer cannot override grid semantics. Primary use: `data-*` attrs for
+  CSS-driven overlays (range preview, badges).
+- `onCellHover?: (date) => void` — cell `mouseenter` callback, opt-in for
+  hover-driven UI. Not fired on hidden outside-month cells.
+- `onGridMouseLeave?: () => void` — grid-level `mouseleave` callback, pairs
+  with `onCellHover` for clearing hover tail.
+
+Spec coverage: `Calendar.cellExtras.spec.ts` (3 cases — defaults unchanged,
+data-* attrs land via DateRangePicker consumer, hover wiring proven).
+Existing 7 Calendar spec files behavior unchanged.
+
+**E01.1 DateRangePicker v1 — multi-month range selection (commit `62db846`)**
+
+New `complex/DateRangePicker` compound (root + `Input` + `Content`). Composes
+Calendar AMEND + 5 floating primitives into a popover range picker per
+WAI-ARIA APG `/datepicker-dialog/` modified for range.
+
+Features:
+- Range state machine: idle → pendingFrom → commit (with reorder on click 2 <
+  click 1); committed-restart on next click; programmatic clear-to-null
+  override clears `pendingFrom` (audit-fix C3 2026-05-12).
+- `numberOfMonths: 1 | 2 | 3` opt-in layout axis (single sync'd chevron header).
+- Cross-Calendar focus: HARD STOP boundary — arrows stay within single grid,
+  Tab moves to next Calendar's `tabIndex=0` cell.
+- Hover preview via `cellExtras` → `data-range-hover-tail`. Cleared on
+  `onGridMouseLeave` + popover close.
+- Typed input parsing: `"YYYY-MM-DD → YYYY-MM-DD"` (em-dash) OR
+  `"YYYY-MM-DD -> YYYY-MM-DD"` (ASCII arrow). Half-date sets `pendingFrom`.
+- Form participation Path A: renders `${name}_from` + `${name}_to` hidden
+  inputs (ISO `yyyy-mm-dd`); when `required=true`, both render even when null
+  to surface native HTML5 `:invalid`; when `required=false`, null bound omitted.
+- A11y: range bounds use `data-range-start` / `data-range-end` + `aria-label`
+  augmentation ("...{date}, in selected range"). Dialog `aria-modal="false"`
+  (outside dismiss, no focus trap). axe-core zero violations.
+- RTL: `dir="rtl"` propagates to all child Calendars; months row uses logical
+  flex so later month renders visually on LEFT.
+
+Spec coverage: 11 spec files (`_helpers` + aria + range + keyboard + focus +
+hover + months + locale + form + disabled + regression) — 58 PASS / 2
+documented `test.skip` (Playwright synthetic-event limitations on
+portal-rendered cells; manual verification path documented in test JSDoc).
+
+Net manifest after 0.18.0 cycle to date: 89 → 90 families (DateRangePicker).
+Remaining 0.18.0 sub-Epics: E01.2 TimeInput · E01.3 TimePicker · E01.4
+DateTimePicker.
+
 ## [0.17.0] — 2026-05
 
 **Feature release.** Ships `<DataTable>` as a flagship generic-data grid
