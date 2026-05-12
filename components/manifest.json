@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1",
   "libVersion": "0.20.1",
-  "generatedAt": "2026-05-12T20:52:30.268Z",
+  "generatedAt": "2026-05-12T21:02:20.571Z",
   "categories": {
     "layout": [
       "Container",
@@ -94,6 +94,7 @@
       "AlertDialog",
       "Calendar",
       "Carousel",
+      "Collapsible",
       "Combobox",
       "Command",
       "ContextMenu",
@@ -1149,6 +1150,22 @@
         "CarouselProps",
         "CarouselSlideProps",
         "CarouselViewportProps"
+      ],
+      "hooks": []
+    },
+    {
+      "family": "Collapsible",
+      "category": "complex",
+      "path": "complex/Collapsible",
+      "exports": [
+        "Collapsible",
+        "CollapsibleContent",
+        "CollapsibleTrigger"
+      ],
+      "types": [
+        "CollapsibleContentProps",
+        "CollapsibleProps",
+        "CollapsibleTriggerProps"
       ],
       "hooks": []
     },

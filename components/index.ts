@@ -122,6 +122,7 @@ export * from './presets/FormSurface';
 export * from './complex/AlertDialog';
 export * from './complex/Calendar';
 export * from './complex/Carousel';
+export * from './complex/Collapsible';
 export * from './complex/Combobox';
 export * from './complex/Command';
 export * from './complex/ContextMenu';
