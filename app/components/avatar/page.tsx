@@ -3,9 +3,26 @@ import {
   Avatar,
   type AvatarSize,
 } from '@/components/display/Avatar';
+import { Dot, type DotColor } from '@/components/specialized/Dot';
 import { Heading } from '@/components/typography/Heading';
 import { Text } from '@/components/typography/Text';
 import styles from './page.module.scss';
+
+interface StatusExample {
+  key: string;
+  label: string;
+  color: DotColor;
+  pulse?: boolean;
+  initials: string;
+  name: string;
+}
+
+const STATUSES: StatusExample[] = [
+  { key: 'online', label: 'online', color: 'success', initials: 'AK', name: 'Anna online', pulse: true },
+  { key: 'busy', label: 'busy', color: 'error', initials: 'JD', name: 'John busy' },
+  { key: 'away', label: 'away', color: 'warning', initials: 'MS', name: 'Mark away' },
+  { key: 'offline', label: 'offline', color: 'default', initials: 'EW', name: 'Eve offline' },
+];
 
 const SIZES: AvatarSize[] = ['xs', 'sm', 'md', 'lg', 'xl'];
 
@@ -55,6 +72,23 @@ export default function AvatarPlaygroundPage() {
           <code>{`<Dot />`}</code> in a positioned container to render any status
           treatment (online, busy, away, offline) without bloating the Avatar API.
         </Text>
+        <div className={styles.row}>
+          {STATUSES.map((s) => (
+            <div key={s.key} className={styles.cell}>
+              <div className={styles.statusWrapper}>
+                <Avatar fallback={s.initials} alt={s.name} size="lg" />
+                <Dot
+                  color={s.color}
+                  size="md"
+                  pulse={s.pulse}
+                  label={`Status: ${s.label}`}
+                  className={styles.statusDot}
+                />
+              </div>
+              <Text variant="caption" color="muted">{s.label}</Text>
+            </div>
+          ))}
+        </div>
       </section>
 
       <section className={styles.demo}>
