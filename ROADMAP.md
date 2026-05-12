@@ -103,8 +103,10 @@ Cycle progress:
 - [x] E01.1 DateRangePicker v1 (commit `62db846`) — multi-month range picker
       with 1/2/3-month layout + form integration + 58/60 Playwright tests
       PASS (2 documented skips for Playwright synthetic-event limitations).
-- [ ] E01.2 TimeInput — inline HH:MM(:SS) `role="spinbutton"` trio (own
-      implementation, NOT NumberInput composition per audit fix C1).
+- [x] E01.2 TimeInput v1 — inline HH:MM(:SS) `role="spinbutton"` trio + AM/PM
+      `role="switch"` toggle, own implementation per audit C1; 48/48 Playwright
+      tests PASS; 5 new time helpers in `utils/date.ts` (parseTime, formatTime,
+      clampTime, combineDateTime, resolveHourCycle).
 - [ ] E01.3 TimePicker — popover variant wrapping listbox-based hour/min
       selection.
 - [ ] E01.4 DateTimePicker — Calendar + TimeInput compound in single popover.

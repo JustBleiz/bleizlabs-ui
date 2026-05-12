@@ -261,3 +261,135 @@ export function formatFullDate(date: Date, locale: string): string {
     day: 'numeric',
   }).format(date);
 }
+
+// ──────────────────────────────────────────────────────────────────────────
+// Time (0.18.0 — E01.2 TimeInput)
+
+/**
+ * Parse a 24h ISO time string into a `{h, m, s}` tuple. Accepts:
+ *   - "HH:MM"     → `{h, m, s: 0}`
+ *   - "HH:MM:SS"  → `{h, m, s}`
+ *
+ * Returns `null` for malformed input or out-of-range values (h > 23, m > 59,
+ * s > 59). Validates lexically — does NOT round leap seconds.
+ *
+ * @example
+ *   parseTime('14:30')    // { h: 14, m: 30, s: 0 }
+ *   parseTime('09:00:45') // { h: 9, m: 0, s: 45 }
+ *   parseTime('25:00')    // null
+ *   parseTime('')         // null
+ */
+export function parseTime(iso: string): { h: number; m: number; s: number } | null {
+  if (typeof iso !== 'string' || iso === '') return null;
+  const m3 = /^(\d{2}):(\d{2}):(\d{2})$/.exec(iso);
+  if (m3) {
+    const h = Number(m3[1]);
+    const m = Number(m3[2]);
+    const s = Number(m3[3]);
+    if (h >= 0 && h <= 23 && m >= 0 && m <= 59 && s >= 0 && s <= 59) return { h, m, s };
+    return null;
+  }
+  const m2 = /^(\d{2}):(\d{2})$/.exec(iso);
+  if (m2) {
+    const h = Number(m2[1]);
+    const m = Number(m2[2]);
+    if (h >= 0 && h <= 23 && m >= 0 && m <= 59) return { h, m, s: 0 };
+    return null;
+  }
+  return null;
+}
+
+/**
+ * Format a `{h, m, s?}` tuple as a 24h ISO time string. Zero-padded.
+ *   - `withSeconds=false` (default) → `"HH:MM"`
+ *   - `withSeconds=true`            → `"HH:MM:SS"` (s defaults to 0 when omitted)
+ *
+ * Always emits 24h regardless of locale — hourCycle is a DISPLAY concern only.
+ *
+ * @example
+ *   formatTime({ h: 14, m: 30 })                  // "14:30"
+ *   formatTime({ h: 9, m: 0, s: 45 }, true)       // "09:00:45"
+ *   formatTime({ h: 14, m: 30 }, true)            // "14:30:00"
+ */
+export function formatTime(
+  t: { h: number; m: number; s?: number },
+  withSeconds = false,
+): string {
+  const hh = String(t.h).padStart(2, '0');
+  const mm = String(t.m).padStart(2, '0');
+  if (withSeconds) {
+    const ss = String(t.s ?? 0).padStart(2, '0');
+    return `${hh}:${mm}:${ss}`;
+  }
+  return `${hh}:${mm}`;
+}
+
+/**
+ * Clamp a 24h ISO time string to `[min, max]` inclusive. Compares lexically
+ * — works because zero-padded `HH:MM[:SS]` is monotonic.
+ *
+ * Returns the clamped ISO string (unchanged if `min`/`max` omitted or `t`
+ * already within range). Does NOT validate `t`, `min`, `max` — caller's
+ * responsibility (use `parseTime` first if uncertain).
+ *
+ * @example
+ *   clampTime('08:00', '09:00', '17:00')  // "09:00"
+ *   clampTime('14:30', '09:00', '17:00')  // "14:30"
+ *   clampTime('18:00', '09:00', '17:00')  // "17:00"
+ */
+export function clampTime(t: string, min?: string, max?: string): string {
+  let result = t;
+  if (min && result < min) result = min;
+  if (max && result > max) result = max;
+  return result;
+}
+
+/**
+ * Combine a `Date` (date component) with a 24h ISO time string into a new
+ * `Date`. Uses `setHours` which is DST-aware: non-existent local times on
+ * Spring-forward day get normalized forward (`02:30` on a DST-skip day
+ * becomes `03:30`); ambiguous times on Fall-back day pick the first occurrence
+ * per JS Date defaults. Document this behavior in caller JSDoc when relevant.
+ *
+ * Returns a new Date (immutable). Falls back to `new Date(date)` (input
+ * cloned, time unchanged) when `time` is malformed.
+ *
+ * @example
+ *   combineDateTime(new Date(2026, 4, 15), '14:30')      // 2026-05-15 14:30:00
+ *   combineDateTime(new Date(2026, 4, 15), '09:00:45')   // 2026-05-15 09:00:45
+ *   combineDateTime(new Date(2026, 4, 15), 'bogus')      // 2026-05-15 00:00:00 (cloned)
+ */
+export function combineDateTime(date: Date, time: string): Date {
+  const parsed = parseTime(time);
+  const result = new Date(date);
+  if (!parsed) return result;
+  result.setHours(parsed.h, parsed.m, parsed.s, 0);
+  return result;
+}
+
+/**
+ * Resolve display hour cycle for a locale.
+ *
+ * Maps `Intl.DateTimeFormat(locale).resolvedOptions().hourCycle`:
+ *   - `'h11'` / `'h12'` → `'12h'` (am/pm cultures: en-US, en-CA, en-AU, etc.)
+ *   - `'h23'` / `'h24'` → `'24h'` (24h cultures: pl-PL, de-DE, fr-FR, etc.)
+ *
+ * Falls back to `hour12` boolean when `hourCycle` is unset (older browsers),
+ * then to `'24h'` on any throw (invalid locale tag).
+ *
+ * @example
+ *   resolveHourCycle('en-US')  // '12h'
+ *   resolveHourCycle('pl-PL')  // '24h'
+ *   resolveHourCycle('ja-JP')  // '24h'
+ */
+export function resolveHourCycle(locale: string): '12h' | '24h' {
+  try {
+    const opts = new Intl.DateTimeFormat(locale, { hour: 'numeric' }).resolvedOptions();
+    const hc = (opts as { hourCycle?: string }).hourCycle;
+    if (hc === 'h11' || hc === 'h12') return '12h';
+    if (hc === 'h23' || hc === 'h24') return '24h';
+    return opts.hour12 ? '12h' : '24h';
+  } catch {
+    return '24h';
+  }
+}

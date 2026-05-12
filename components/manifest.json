@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1",
   "libVersion": "0.17.0",
-  "generatedAt": "2026-05-12T09:26:53.233Z",
+  "generatedAt": "2026-05-12T10:08:49.156Z",
   "categories": {
     "layout": [
       "Container",
@@ -46,6 +46,7 @@
       "Switch",
       "TextLink",
       "Textarea",
+      "TimeInput",
       "Toggle",
       "ToggleGroup"
     ],
@@ -605,6 +606,18 @@
       ],
       "types": [
         "TextLinkProps"
+      ],
+      "hooks": []
+    },
+    {
+      "family": "TimeInput",
+      "category": "interactive",
+      "path": "interactive/TimeInput",
+      "exports": [
+        "TimeInput"
+      ],
+      "types": [
+        "TimeInputProps"
       ],
       "hooks": []
     },

@@ -1,0 +1,164 @@
+@use '../../../styles/mixins' as mx;
+
+// TimeInput shares the visual shell with NumberInput (input border, focus
+// ring, error border + helper text below). Inside the shell we render a
+// flex row of fixed-width spinbutton fields separated by visual ":"
+// characters plus an optional AM/PM toggle button at the logical end.
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  width: 100%;
+}
+
+.fieldDisabled {
+  cursor: not-allowed;
+}
+
+.inputWrap {
+  position: relative;
+  display: inline-flex;
+  align-items: stretch;
+  gap: var(--space-1);
+  padding: var(--space-2) var(--space-3);
+  background: var(--input-bg);
+  border: 1px solid var(--input-border);
+  border-radius: var(--radius-input);
+  transition:
+    border-color var(--duration-fast) var(--easing-default),
+    box-shadow var(--duration-fast) var(--easing-default);
+
+  &:focus-within {
+    border-color: var(--input-border-focus);
+    @include mx.focus-ring;
+  }
+}
+
+.inputWrapError {
+  border-color: var(--color-error);
+
+  &:focus-within {
+    border-color: var(--color-error);
+    @include mx.focus-ring-error;
+  }
+}
+
+.inputWrapDisabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.spin {
+  display: inline-block;
+  min-width: 2.25ch;
+  width: 2.25ch;
+  padding: 0;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--color-text-primary);
+  font-family: var(--font-secondary);
+  font-size: var(--font-size-base);
+  font-variant-numeric: tabular-nums;
+  line-height: var(--line-height-normal);
+  text-align: center;
+  caret-color: transparent;
+  cursor: pointer;
+  appearance: none;
+
+  &:focus-visible {
+    color: var(--color-brand);
+    background: color-mix(in srgb, var(--color-brand) 10%, transparent);
+    border-radius: var(--radius-sm);
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    color: var(--color-text-muted);
+  }
+
+  @include mx.touch-target;
+}
+
+.separator {
+  display: inline-flex;
+  align-items: center;
+  color: var(--color-text-secondary);
+  font-family: var(--font-secondary);
+  font-size: var(--font-size-base);
+  font-variant-numeric: tabular-nums;
+  line-height: var(--line-height-normal);
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.period {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 3ch;
+  margin-inline-start: var(--space-2);
+  padding: var(--space-1) var(--space-2);
+  background: var(--input-addon-bg);
+  border: 1px solid var(--input-addon-border);
+  border-radius: var(--radius-sm);
+  color: var(--input-addon-text);
+  font-family: var(--font-secondary);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  line-height: var(--line-height-normal);
+  cursor: pointer;
+  transition:
+    background var(--duration-fast) var(--easing-default),
+    color var(--duration-fast) var(--easing-default),
+    border-color var(--duration-fast) var(--easing-default);
+
+  &:hover:not(:disabled) {
+    background: color-mix(in srgb, var(--color-brand) 15%, var(--input-addon-bg));
+    color: var(--color-text-primary);
+  }
+
+  &:focus-visible {
+    @include mx.focus-ring;
+  }
+
+  &[aria-checked='true'] {
+    background: var(--color-brand);
+    border-color: var(--color-brand);
+    color: var(--color-brand-text);
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+  }
+}
+
+.helper {
+  margin: 0;
+  font-family: var(--font-secondary);
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+  line-height: var(--line-height-normal);
+}
+
+.error {
+  margin: 0;
+  font-family: var(--font-secondary);
+  font-size: var(--font-size-xs);
+  // Use error-strong (theme-aware AA-compliant) per NumberInput precedent.
+  color: var(--color-error-strong);
+  font-weight: var(--font-weight-medium);
+  line-height: var(--line-height-normal);
+}
+
+.srOnly {
+  @include mx.sr-only;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .inputWrap,
+  .period {
+    transition: none;
+  }
+}

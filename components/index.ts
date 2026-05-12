@@ -47,7 +47,7 @@ export * from './display/Spinner';
 export * from './display/Table';
 
 // ----------------------------------------------------------------------------
-// Interactive (17)
+// Interactive (18) — 0.18.0 adds TimeInput (E01.2)
 // ----------------------------------------------------------------------------
 export * from './interactive/Accordion';
 export * from './interactive/Button';
@@ -64,6 +64,7 @@ export * from './interactive/RadioGroup';
 export * from './interactive/Switch';
 export * from './interactive/Textarea';
 export * from './interactive/TextLink';
+export * from './interactive/TimeInput';
 export * from './interactive/Toggle';
 export * from './interactive/ToggleGroup';
 

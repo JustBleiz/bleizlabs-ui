@@ -57,8 +57,50 @@ hover + months + locale + form + disabled + regression) — 58 PASS / 2
 documented `test.skip` (Playwright synthetic-event limitations on
 portal-rendered cells; manual verification path documented in test JSDoc).
 
-Net manifest after 0.18.0 cycle to date: 89 → 90 families (DateRangePicker).
-Remaining 0.18.0 sub-Epics: E01.2 TimeInput · E01.3 TimePicker · E01.4
+**E01.2 TimeInput v1 — bespoke `role="spinbutton"` HH:MM(:SS) trio**
+
+New `interactive/TimeInput` flat component (not compound). Bespoke
+`role="spinbutton"` implementation per WAI-ARIA APG `/spinbutton/` — does
+NOT compose `<NumberInput>` per audit C1 finding (NumberInput owns its own
+`<input>` with InputHTMLAttributes passthrough that conflicts with
+spinbutton ARIA).
+
+Features:
+- 2-3 spinbutton fields (hours, minutes, optional seconds) inside
+  `<div role="group" aria-label>`. Each field carries `aria-valuenow`,
+  `aria-valuemin`/`max`, `aria-valuetext`, per-field `aria-label`
+  ("Hours" / "Minutes" / "Seconds").
+- `hourCycle: '12h' | '24h'` opt-in prop (auto-derived from locale via
+  `resolveHourCycle` when omitted). 12h mode renders `<button role="switch"
+  aria-checked>` AM/PM toggle at logical-end of group. `onValueChange`
+  ALWAYS emits 24h ISO regardless of display cycle (per plan AD2).
+- Keyboard model per spinbutton: ArrowUp/Down ±1 (hours/seconds) or ±step
+  (minutes); PageUp/Down ±10/±15/±10; Home/End jump to field bounds;
+  direct digit type with 2-digit buffer + auto-advance on completion or
+  when single-digit completion is unambiguous (e.g. typing "3" in 24h
+  hours auto-advances since "3X" with X≥0 would exceed 23); `:` separator
+  commits buffer; Backspace clears buffer (empty-buffer Backspace retreats
+  to previous field); IME composition guard.
+- `min`/`max` clamping at commit boundary via lexical `clampTime` (ISO
+  zero-padding is monotonic).
+- Form participation: single hidden input renders `"HH:MM"` (or
+  `"HH:MM:SS"`) under `name`. `required` propagates so empty surfaces
+  native `:invalid`.
+- 5 new util helpers extending `utils/date.ts` — `parseTime`, `formatTime`,
+  `clampTime`, `combineDateTime`, `resolveHourCycle` (last reserved for
+  DateTimePicker E01.4 consumer; first 4 used by TimeInput directly).
+- Race-condition fix: `isAdvancingRef` flag suppresses the synchronous
+  blur fired by `ref.focus()` during auto-advance — without it, the
+  leaving field's blur handler would re-flush its now-stale single-digit
+  buffer over the just-written 2-digit commit (forensic finding caught
+  during runtime test exec 2026-05-12).
+
+Spec coverage: 6 spec files (`_helpers` + aria + keyboard + format +
+bounds + form + focus + regression) — 48 PASS / 0 fail / 0 skip. Includes
+axe-core zero violations on demo route.
+
+Net manifest after 0.18.0 cycle to date: 89 → 91 families (DateRangePicker +
+TimeInput). Remaining 0.18.0 sub-Epics: E01.3 TimePicker · E01.4
 DateTimePicker.
 
 ## [0.17.0] — 2026-05
