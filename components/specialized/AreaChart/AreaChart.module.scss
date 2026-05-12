@@ -1,0 +1,330 @@
+// =============================================================================
+// AreaChart — multi-series SVG area chart (0.20.0 E01.2, Phase 10 complex)
+// =============================================================================
+// Token-only colors. Zero new lib tokens (Charter R7). Component-local
+// channels mirror LineChart channels (stroke-width / point-radius / grid
+// opacity / aspect / tooltip-x/y) plus `--areachart-fill-opacity` for
+// consumer SCSS override without specificity wars. Reduced-motion suppresses
+// path-draw + fill fade + tooltip transition. Forced-colors keeps paths +
+// areas visible in Windows High Contrast.
+
+@use '../../../styles/mixins' as mx;
+
+// ----------------------------------------------------------------------------
+// 1. ROOT — outer wrapper, positioning context for tooltip
+// ----------------------------------------------------------------------------
+
+.root {
+  --areachart-path-stroke-width: 2px;
+  --areachart-point-radius: 4px;
+  --areachart-grid-opacity: 1;
+  --areachart-aspect: calc(16 / 9);
+  --areachart-fill-opacity: 0.3;
+  --areachart-tooltip-x: 0%;
+  --areachart-tooltip-y: 0%;
+
+  position: relative;
+  display: block;
+  width: 100%;
+  color: var(--color-text-primary);
+  font-family: inherit;
+
+  &:focus {
+    outline: none;
+  }
+}
+
+// ----------------------------------------------------------------------------
+// 2. SVG CONTAINER — fills root, aspect-ratio fallback for SSR
+// ----------------------------------------------------------------------------
+
+.svgContainer {
+  position: relative;
+  width: 100%;
+  aspect-ratio: var(--areachart-aspect);
+}
+
+.svgContainer[data-explicit-height='true'] {
+  aspect-ratio: auto;
+  height: 100%;
+}
+
+.svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+// ----------------------------------------------------------------------------
+// 3. AXES — line + ticks + labels
+// ----------------------------------------------------------------------------
+
+.axisLine {
+  stroke: var(--color-border);
+  stroke-width: 1px;
+  fill: none;
+}
+
+.gridLine {
+  stroke: var(--color-border-subtle);
+  stroke-width: 1px;
+  fill: none;
+  opacity: var(--areachart-grid-opacity);
+}
+
+.tickLabel {
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-regular);
+  fill: var(--color-text-secondary);
+  font-variant-numeric: tabular-nums;
+}
+
+// ----------------------------------------------------------------------------
+// 4. AREA — filled region between line and baseline
+// ----------------------------------------------------------------------------
+
+.area {
+  stroke: none;
+  // Fill is set inline (series color OR url(#gradient-id) when gradient prop).
+  // Per-series fill-opacity is set inline; this declaration is the consumer
+  // override hook (when consumer SCSS targets .area to apply a uniform tweak).
+  transition: opacity var(--duration-fast) var(--easing-default);
+}
+
+.areaAnimating {
+  animation: areachartAreaFade var(--duration-normal) var(--easing-default) forwards;
+  opacity: 0;
+}
+
+@keyframes areachartAreaFade {
+  to {
+    opacity: 1;
+  }
+}
+
+// ----------------------------------------------------------------------------
+// 5. PATH — series line stroke (rendered on top of area)
+// ----------------------------------------------------------------------------
+
+.path {
+  fill: none;
+  stroke-width: var(--areachart-path-stroke-width);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.pathAnimating {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: areachartPathDraw var(--duration-normal) var(--easing-default) forwards;
+}
+
+@keyframes areachartPathDraw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+// ----------------------------------------------------------------------------
+// 6. DATA POINTS — focusable <circle>s, roving tabindex
+// ----------------------------------------------------------------------------
+
+.point {
+  cursor: pointer;
+  transition:
+    r var(--duration-fast) var(--easing-default),
+    opacity var(--duration-fast) var(--easing-default);
+  r: var(--areachart-point-radius);
+  stroke: var(--color-surface);
+  stroke-width: 2;
+
+  &:hover {
+    r: calc(var(--areachart-point-radius) + 2px);
+  }
+
+  &:focus {
+    outline: none;
+  }
+
+  &:focus-visible {
+    @include mx.focus-ring;
+    r: calc(var(--areachart-point-radius) + 2px);
+  }
+
+  &[data-active='true'] {
+    r: calc(var(--areachart-point-radius) + 2px);
+  }
+}
+
+// ----------------------------------------------------------------------------
+// 7. CROSSHAIR — vertical line follows active X
+// ----------------------------------------------------------------------------
+
+.crosshair {
+  stroke: var(--color-border-strong);
+  stroke-width: 1px;
+  stroke-dasharray: 4 4;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity var(--duration-fast) var(--easing-default);
+}
+
+.crosshairVisible {
+  opacity: 1;
+}
+
+// ----------------------------------------------------------------------------
+// 8. TOOLTIP — surface positioned absolutely over plot area
+// ----------------------------------------------------------------------------
+
+.tooltip {
+  position: absolute;
+  top: var(--areachart-tooltip-y);
+  left: var(--areachart-tooltip-x);
+  transform: translate(-50%, calc(-100% - 12px));
+  pointer-events: none;
+  background: var(--color-surface-raised);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-md);
+  padding: var(--space-2) var(--space-3);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-primary);
+  opacity: 0;
+  transition: opacity var(--duration-fast) var(--easing-default);
+  z-index: 1;
+  min-width: 140px;
+  max-width: 240px;
+  white-space: nowrap;
+}
+
+.tooltipVisible {
+  opacity: 1;
+}
+
+.tooltipTitle {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+  font-weight: var(--font-weight-regular);
+  margin-block-end: var(--space-1);
+}
+
+.tooltipRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  font-size: var(--font-size-sm);
+  line-height: 1.4;
+
+  & + & {
+    margin-block-start: var(--space-1);
+  }
+}
+
+.tooltipSwatch {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: var(--radius-full);
+  flex-shrink: 0;
+}
+
+.tooltipName {
+  color: var(--color-text-secondary);
+  font-weight: var(--font-weight-medium);
+  margin-inline-end: auto;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 140px;
+}
+
+.tooltipValue {
+  color: var(--color-text-primary);
+  font-variant-numeric: tabular-nums;
+  font-weight: var(--font-weight-medium);
+}
+
+// ----------------------------------------------------------------------------
+// 9. EMPTY STATE — default render
+// ----------------------------------------------------------------------------
+
+.empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
+}
+
+.emptyText {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
+}
+
+// ----------------------------------------------------------------------------
+// 10. SR ONLY — visually-hidden a11y table + ids
+// ----------------------------------------------------------------------------
+
+.srOnly {
+  @include mx.sr-only;
+}
+
+// ----------------------------------------------------------------------------
+// 11. REDUCED MOTION
+// ----------------------------------------------------------------------------
+
+@media (prefers-reduced-motion: reduce) {
+  .pathAnimating {
+    animation: none;
+    stroke-dasharray: none;
+    stroke-dashoffset: 0;
+  }
+
+  .areaAnimating {
+    animation: none;
+    opacity: 1;
+  }
+
+  .crosshair,
+  .tooltip,
+  .point,
+  .area {
+    transition: none;
+  }
+}
+
+// ----------------------------------------------------------------------------
+// 12. FORCED COLORS — Windows High Contrast
+// ----------------------------------------------------------------------------
+
+@media (forced-colors: active) {
+  .path {
+    stroke: CanvasText;
+  }
+  .area {
+    // Forced-colors strips fill from non-text elements; keep area-vs-line
+    // layering perceivable via reduced GrayText opacity. Line stroke +
+    // sr-only table still carry the primary data signal.
+    fill: GrayText;
+    opacity: 0.4;
+  }
+  .axisLine,
+  .gridLine {
+    stroke: GrayText;
+  }
+  .point {
+    stroke: Canvas;
+    fill: CanvasText;
+  }
+  .tooltip {
+    border-color: CanvasText;
+    background: Canvas;
+    color: CanvasText;
+  }
+  .crosshair {
+    stroke: CanvasText;
+  }
+}

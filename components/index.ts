@@ -77,9 +77,10 @@ export * from './feedback/Empty';
 export * from './feedback/Progress';
 
 // ----------------------------------------------------------------------------
-// Specialized (10)
+// Specialized (12)
 // ----------------------------------------------------------------------------
 export * from './specialized/AnimatedCounter';
+export * from './specialized/AreaChart';
 export * from './specialized/AvailabilityBar';
 export * from './specialized/BarChart';
 export * from './specialized/Breadcrumb';
