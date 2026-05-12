@@ -243,13 +243,18 @@
 // ──────────────────────────────────────────────────────────────────────────
 
 @keyframes dateRangePickerContentIn {
+  // 0.18.0 BUGFIX — animate ONLY opacity, never transform. The popover's
+  // `transform` is reserved by `useFloating`'s inline `translate3d(x, y, 0)`
+  // for positioning. Adding `transform: translateY(-4px)` here override
+  // the inline style for the duration of the animation, dropping the
+  // popover at viewport-(0, -4) for ~200ms before "jumping" to the
+  // correct measured position. Forensic finding 2026-05-12 — user-
+  // reported "popover opens above input then jumps below".
   from {
     opacity: 0;
-    transform: translateY(-4px);
   }
   to {
     opacity: 1;
-    transform: translateY(0);
   }
 }
 

@@ -481,11 +481,11 @@
 @keyframes comboboxContentIn {
   from {
     opacity: 0;
-    transform: translateY(-4px) scale(0.97);
+    // 0.18.0 BUGFIX — transform managed by useFloating (see DateRangePicker forensic note)
   }
   to {
     opacity: 1;
-    transform: translateY(0) scale(1);
+    // 0.18.0 BUGFIX — transform managed by useFloating (see DateRangePicker forensic note)
   }
 }
 

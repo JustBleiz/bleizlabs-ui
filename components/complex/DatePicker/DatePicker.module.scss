@@ -145,14 +145,17 @@
   }
 }
 
+// 0.18.0 BUGFIX — animate ONLY opacity, never transform. useFloating's
+// inline `translate3d(x,y,0)` is the positioning truth — any keyframe
+// transform would override it and drop the popover at viewport-(0,-4)
+// for the animation duration before snapping to the measured position.
 @keyframes datePickerContentIn {
   from {
     opacity: 0;
-    transform: translateY(-4px);
   }
   to {
     opacity: 1;
-    transform: translateY(0);
+    /* transform managed by useFloating */
   }
 }
 
