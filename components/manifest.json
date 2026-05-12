@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1",
   "libVersion": "0.17.0",
-  "generatedAt": "2026-05-12T10:08:49.156Z",
+  "generatedAt": "2026-05-12T10:40:25.951Z",
   "categories": {
     "layout": [
       "Container",
@@ -108,6 +108,7 @@
       "Sidebar",
       "Slider",
       "Tabs",
+      "TimePicker",
       "Toast",
       "Toolbar",
       "Tooltip"
@@ -1497,6 +1498,22 @@
         "TabsOrientation",
         "TabsProps",
         "TabsTriggerProps"
+      ],
+      "hooks": []
+    },
+    {
+      "family": "TimePicker",
+      "category": "complex",
+      "path": "complex/TimePicker",
+      "exports": [
+        "TimePicker",
+        "TimePickerContent",
+        "TimePickerInput"
+      ],
+      "types": [
+        "TimePickerContentProps",
+        "TimePickerInputProps",
+        "TimePickerProps"
       ],
       "hooks": []
     },

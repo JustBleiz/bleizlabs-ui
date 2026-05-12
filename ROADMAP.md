@@ -107,8 +107,9 @@ Cycle progress:
       `role="switch"` toggle, own implementation per audit C1; 48/48 Playwright
       tests PASS; 5 new time helpers in `utils/date.ts` (parseTime, formatTime,
       clampTime, combineDateTime, resolveHourCycle).
-- [ ] E01.3 TimePicker — popover variant wrapping listbox-based hour/min
-      selection.
+- [x] E01.3 TimePicker v1 — combobox input + popover with scrollable
+      hour/minute/seconds/AM-PM listbox columns; step filter; 40/40
+      Playwright tests PASS.
 - [ ] E01.4 DateTimePicker — Calendar + TimeInput compound in single popover.
 - [ ] Phase 7.1 audit + release pipeline (PR → tag v0.18.0 → npm publish).
 

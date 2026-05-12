@@ -1,0 +1,133 @@
+@use '../../../styles/mixins' as mx;
+
+// TimePicker — combobox input + popover with scrollable listboxes.
+// Shares input shell with NumberInput/Input atoms; popover styling mirrors
+// DatePicker/Combobox dialog conventions.
+
+.root {
+  display: inline-block;
+  position: relative;
+}
+
+.input {
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  padding: var(--space-3) var(--space-4);
+  background: var(--input-bg);
+  border: 1px solid var(--input-border);
+  border-radius: var(--radius-input);
+  color: var(--color-text-primary);
+  font-family: var(--font-secondary);
+  font-size: var(--font-size-base);
+  font-variant-numeric: tabular-nums;
+  line-height: var(--line-height-normal);
+  outline: none;
+  transition:
+    border-color var(--duration-fast) var(--easing-default),
+    box-shadow var(--duration-fast) var(--easing-default);
+
+  &::placeholder {
+    color: var(--color-text-secondary);
+  }
+
+  &:focus-visible {
+    border-color: var(--input-border-focus);
+    @include mx.focus-ring;
+  }
+
+  &[aria-invalid='true'] {
+    border-color: var(--color-error);
+
+    &:focus-visible {
+      @include mx.focus-ring-error;
+    }
+  }
+
+  @include mx.touch-target;
+}
+
+.inputDisabled {
+  cursor: not-allowed;
+  background: var(--input-bg-disabled, var(--input-bg));
+  color: var(--color-text-muted);
+}
+
+.content {
+  z-index: var(--z-popover);
+  display: flex;
+  gap: var(--space-2);
+  padding: var(--space-2);
+  background: var(--color-surface-raised);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+  // Each listbox sets max-height; gap separates columns visually.
+}
+
+.listbox {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  max-height: 240px;
+  min-width: 56px;
+  overflow-y: auto;
+  scroll-behavior: smooth;
+  border-radius: var(--radius-sm);
+  // Subtle inner contrast so columns read as discrete tracks.
+  background: color-mix(in srgb, var(--color-surface-raised) 92%, var(--color-text-primary) 1%);
+
+  &:focus-visible {
+    outline: none;
+  }
+}
+
+.option {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-2) var(--space-3);
+  font-family: var(--font-secondary);
+  font-size: var(--font-size-sm);
+  font-variant-numeric: tabular-nums;
+  line-height: var(--line-height-normal);
+  color: var(--color-text-primary);
+  cursor: pointer;
+  user-select: none;
+  border-radius: var(--radius-sm);
+  outline: none;
+  transition:
+    background var(--duration-fast) var(--easing-default),
+    color var(--duration-fast) var(--easing-default);
+
+  &:hover {
+    background: var(--color-surface-hover);
+  }
+
+  &:focus-visible {
+    @include mx.focus-ring;
+  }
+
+  @include mx.touch-target;
+}
+
+.optionSelected {
+  background: var(--color-brand);
+  color: var(--color-brand-text);
+  font-weight: var(--font-weight-medium);
+
+  &:hover {
+    background: var(--color-brand);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .input,
+  .option {
+    transition: none;
+  }
+
+  .listbox {
+    scroll-behavior: auto;
+  }
+}

@@ -103,6 +103,41 @@ Net manifest after 0.18.0 cycle to date: 89 → 91 families (DateRangePicker +
 TimeInput). Remaining 0.18.0 sub-Epics: E01.3 TimePicker · E01.4
 DateTimePicker.
 
+**E01.3 TimePicker v1 — combobox + listbox columns popover**
+
+New `complex/TimePicker` compound (root + `Input` + `Content`). Composes 5
+floating primitives + 4 time helpers from `utils/date.ts` (shared with
+TimeInput E01.2). Pattern follows DatePicker E142 (editable combobox
+input + popover dialog) with listbox columns inside the popover instead
+of a Calendar grid.
+
+Features:
+- Compound: `TimePicker` + `TimePickerInput` (combobox) + `TimePickerContent`
+  (popover dialog with 2-3 scrollable listbox columns)
+- `hourCycle: '12h' | '24h'` opt-in (auto-derived from locale via
+  `resolveHourCycle`); 12h adds AM/PM listbox at logical-end
+- `step` filters minute listbox content (e.g. step=15 → 4 options)
+- `withSeconds` adds 3rd listbox column
+- `min` / `max` clamp committed value via lexical `clampTime`
+- Form participation: hidden `<input type="hidden" name>` carrying 24h ISO;
+  `required` flag propagates for native `:invalid`
+- Keyboard model (input): Alt+ArrowDown opens + focuses first hour option,
+  Alt+ArrowUp closes, Enter parses typed `"HH:MM"` (24h) or `"HH:MM AM/PM"`
+  (12h) and commits + closes on valid input or sets `aria-invalid` on
+  invalid input; Escape closes; IME composition guard
+- Keyboard model (listbox option): ArrowUp/Down nav with `scrollIntoView`,
+  Home/End jump bounds, Enter/Space commits + advances focus to next
+  listbox (h → m → s? → p? → close + return focus to input), Escape closes
+- A11y: input `role="combobox" aria-haspopup="listbox"`; dialog
+  `role="dialog" aria-modal="false" aria-label="Time picker"`; per-listbox
+  `role="listbox" aria-label`; options `role="option" aria-selected`;
+  axe-core zero violations on demo route
+
+Spec coverage: 6 spec files + `_helpers` — 40 PASS / 0 fail / 0 skip.
+
+Net manifest after 0.18.0 cycle to date: 89 → 92 families (DateRangePicker +
+TimeInput + TimePicker). Remaining 0.18.0 sub-Epics: E01.4 DateTimePicker.
+
 **Polish — Select + Combobox `.itemText` multi-line friendly**
 
 Dropped forced single-line truncation (`white-space: nowrap;
