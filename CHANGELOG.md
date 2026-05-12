@@ -58,11 +58,33 @@ dependencies maintained.
 
   Tests: 11 Playwright spec suites covering keyboard + focus management +
   ARIA + sort + filter + pagination + selection + expansion + responsive +
-  12 edge cases + 20 regression cases. Demo route at
+  12 edge cases + 20 regression cases (89 cases total). Demo route at
   `/components/data-table` ships 6 use cases against 47 mock projects.
 
   See `ROADMAP.md` and `work/2026-05_0.17-datatable/docs/datatable-v1-plan.md`
   for full design rationale.
+
+### Fixed
+
+Hardening from post-implementation adversarial audit (caught issues that
+9 prior audit iterations missed by reading specs statically instead of
+running them):
+
+- `aria-rowindex` math on data rows now includes `pageIndex * pageSize`
+  offset so screen readers announce "row 12 of 47" on page 2 instead of
+  the page-relative position.
+- Filter row promoted to `role="row"` with `aria-rowindex={2}` (was
+  `role="presentation"`). Resolves axe-core `aria-required-children`
+  violation on `treegrid` (filter `<input>` children are now valid
+  descendants of `<th role="columnheader">`).
+- Keyboard handler now reads cell coordinates from `target.dataset.row`
+  / `target.dataset.col` instead of stale React state. Fixes ArrowDown
+  + Space activation when interaction follows immediately after
+  programmatic focus (synthetic dispatch races React's render commit).
+- `<Switch>` track no longer intercepts pointer events. The decorative
+  `<span class="track">` previously sat on top of the sr-only `<input>`
+  with default `pointer-events: auto`, blocking programmatic clicks on
+  the input. Native UX preserved — `<label>` still toggles on click.
 
 ## [0.16.0] — 2026-05
 

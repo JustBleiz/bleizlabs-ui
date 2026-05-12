@@ -268,9 +268,10 @@ export default function DataTablePlaygroundPage() {
         <Text className={styles.intro}>
           Generic-data grid primitive z deklaratywnymi column defs, sortowaniem,
           filtrowaniem, paginacją, selection, expansion, frozen columns, mobile
-          fallback i pełnym APG <code>/grid/</code> keyboard model. Composes 10+
-          lib primitives (Table compound, Pagination, Checkbox, Input,
-          Skeleton, Empty, Alert) — zero external runtime deps.
+          fallback i pełnym APG <code>/grid/</code> (lub <code>/treegrid/</code>
+          z <code>expandable</code>) keyboard model. Composes 10+ lib primitives
+          (Table compound, Pagination, Checkbox, Input, Skeleton, Empty, Alert)
+          — zero external runtime deps.
         </Text>
       </header>
 
