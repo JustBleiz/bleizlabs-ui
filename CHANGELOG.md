@@ -7,6 +7,42 @@ and this project adheres to [Semantic Versioning 2.0](https://semver.org/spec/v2
 
 ## [Unreleased]
 
+## [0.18.1] — 2026-05-12
+
+**Patch release — Form/Field re-render hygiene.**
+
+### Fixed
+
+- `<Field>` rendered inside `<Form>` no longer triggers an infinite
+  re-register loop ("Maximum update depth exceeded" at `Form.tsx:305`).
+  The Field effect that calls `formCtx.registerField(name)` now depends on
+  the stable `useCallback([])` reference instead of the wrapping `formCtx`
+  context object. Without the fix:
+  `mount → registerField → setValidityVersion → ctxValue re-memo →
+  effect cleanup (unregister + bump) → re-register (bump) → ∞`.
+  The Form-side `registerField` was already stable; only the Field-side
+  dependency array was wrong. Single-file change in
+  `components/complex/Field/Field.tsx`. Regression covered by
+  `Form.regression.spec.ts` FM-R23 — visits `/components/field`, listens
+  for `pageerror` + console errors, asserts zero "Maximum update depth
+  exceeded" messages. Form regression suite: 40 PASS / 3 documented skip.
+
+  Discovered via runtime check on the demo route after 0.18.0 publish.
+  Static checks (tsc + ESLint + 437 Playwright unit specs) all green —
+  surfaced only at render time when Field mounts inside Form. Codified
+  as a permanent post-push verification rule: `mcp__next-devtools__
+  nextjs_call get_errors` must report clean state before every push.
+
+## [0.18.0] — 2026-05-12
+
+**Feature release — Date/Time pack.** Ships 4 new complex date/time
+components plus a Calendar amendment + a Select/Combobox `.itemText`
+polish. Library grows from 89 to 93 families. Zero external runtime
+dependencies maintained. Two user-reported runtime regressions (Calendar
+1M-px layout explosion, popover position flicker) caught + fixed pre-publish
+with permanent regression suites (CAL-LB01–07, FLICK-01–04). Forensic
+patterns persisted to memory for future sessions.
+
 ### 0.18.0 cycle progress (on `work/0.18-datetime-pack` branch)
 
 **E01.0 Calendar AMEND — opt-in cell-extras + hover callbacks (commit `57b29a3`)**

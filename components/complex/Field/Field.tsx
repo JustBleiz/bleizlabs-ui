@@ -173,11 +173,17 @@ const FieldRoot = forwardRef<HTMLDivElement, FieldProps>(function Field(
     };
   }, []);
 
-  // Register with Form (no-op when standalone)
+  // Register with Form (no-op when standalone).
+  // Depend on the stable `registerField` reference (Form wraps it in
+  // `useCallback([])`), NOT the wrapping `formCtx` object — the context value
+  // is re-memoized whenever `validityVersion` bumps (which `registerField`
+  // itself triggers), so depending on the whole object creates a
+  // mount → bump → re-memo → cleanup → re-register infinite loop.
+  const registerField = formCtx?.registerField;
   useEffect(() => {
-    if (!formCtx) return;
-    return formCtx.registerField(name);
-  }, [formCtx, name]);
+    if (!registerField) return;
+    return registerField(name);
+  }, [registerField, name]);
 
   // Wire native ValidityState listeners on the captured control element.
   useEffect(() => {
