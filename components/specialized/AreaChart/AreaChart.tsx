@@ -105,13 +105,31 @@ import {
   type ReactNode,
 } from 'react';
 import { cn } from '../../utils/cn';
+import {
+  type ChartInterpolation,
+  clamp01,
+  defaultColorForIndex,
+  defaultYFormat,
+  formatX,
+  generateAreaPath,
+  generateLinearPath,
+  generateSmoothPath,
+  getDomain,
+  niceTicks,
+  normalizeX,
+  scaleLinear,
+} from '../_shared/chart-math';
 import styles from './AreaChart.module.scss';
 
 // ──────────────────────────────────────────────────────────────────────────
 // Types
 // ──────────────────────────────────────────────────────────────────────────
 
-export type AreaChartInterpolation = 'linear' | 'smooth';
+/**
+ * Re-export of the shared `ChartInterpolation` union for back-compat —
+ * consumers may import `AreaChartInterpolation` directly.
+ */
+export type AreaChartInterpolation = ChartInterpolation;
 
 /**
  * Single data point on a series. X can be numeric (continuous), Date (time
@@ -236,177 +254,13 @@ export interface AreaChartProps
 }
 
 // ──────────────────────────────────────────────────────────────────────────
-// Default colors (shared with LineChart for cross-chart consistency)
+// Math + formatting helpers live in `../_shared/chart-math` since 0.20.0
+// E01.3 extraction (Rule of Three intra-lib at Sparkline). AreaChart's
+// formerly-cloned helpers (scaleLinear / getDomain / niceTicks /
+// generateLinearPath / generateSmoothPath / generateAreaPath / normalizeX
+// / formatX / defaultYFormat / clamp01 / defaultColorForIndex) are now
+// imported at the top of this file.
 // ──────────────────────────────────────────────────────────────────────────
-
-const DEFAULT_COLORS = [
-  'var(--color-brand)',
-  'var(--color-success)',
-  'var(--color-warning)',
-  'var(--color-info)',
-  'var(--color-error)',
-] as const;
-
-function defaultColorForIndex(idx: number): string {
-  return DEFAULT_COLORS[idx % DEFAULT_COLORS.length]!;
-}
-
-// ──────────────────────────────────────────────────────────────────────────
-// Math helpers — pure functions, zero deps (cloned from LineChart for
-// klocek independence — independent semver, no cross-component coupling)
-// ──────────────────────────────────────────────────────────────────────────
-
-function scaleLinear(
-  domain: [number, number],
-  range: [number, number],
-): (v: number) => number {
-  const [d0, d1] = domain;
-  const [r0, r1] = range;
-  const span = d1 - d0;
-  if (span === 0) return () => (r0 + r1) / 2;
-  return (v: number) => r0 + ((v - d0) / span) * (r1 - r0);
-}
-
-function getDomain(values: number[], padding = 0): [number, number] {
-  if (values.length === 0) return [0, 1];
-  const min = Math.min(...values);
-  const max = Math.max(...values);
-  if (min === max) {
-    const pad = Math.abs(min) * 0.05 || 1;
-    return [min - pad, max + pad];
-  }
-  const span = max - min;
-  return [min - span * padding, max + span * padding];
-}
-
-function niceTicks(domain: [number, number], targetCount = 5): number[] {
-  const [d0, d1] = domain;
-  const span = d1 - d0;
-  if (span === 0) return [d0];
-  const roughStep = span / targetCount;
-  const magnitude = Math.pow(10, Math.floor(Math.log10(Math.abs(roughStep))));
-  const normalized = roughStep / magnitude;
-  let step: number;
-  if (normalized < 1.5) step = 1 * magnitude;
-  else if (normalized < 3) step = 2 * magnitude;
-  else if (normalized < 7) step = 5 * magnitude;
-  else step = 10 * magnitude;
-  const start = Math.ceil(d0 / step) * step;
-  const end = Math.floor(d1 / step) * step;
-  const ticks: number[] = [];
-  for (let v = start; v <= end + step / 1000; v += step) {
-    ticks.push(Number(v.toFixed(10)));
-  }
-  return ticks;
-}
-
-function generateLinearPath(points: Array<{ x: number; y: number }>): string {
-  if (points.length === 0) return '';
-  const first = points[0]!;
-  if (points.length === 1) return `M ${first.x} ${first.y}`;
-  const segments = points.slice(1).map((p) => `L ${p.x} ${p.y}`);
-  return `M ${first.x} ${first.y} ${segments.join(' ')}`;
-}
-
-function generateSmoothPath(
-  points: Array<{ x: number; y: number }>,
-  tension = 0.5,
-): string {
-  if (points.length === 0) return '';
-  const first = points[0]!;
-  if (points.length === 1) return `M ${first.x} ${first.y}`;
-  if (points.length === 2) {
-    return `M ${first.x} ${first.y} L ${points[1]!.x} ${points[1]!.y}`;
-  }
-  const out: string[] = [`M ${first.x} ${first.y}`];
-  const k = tension;
-  for (let i = 0; i < points.length - 1; i++) {
-    const p0 = i === 0 ? points[i]! : points[i - 1]!;
-    const p1 = points[i]!;
-    const p2 = points[i + 1]!;
-    const p3 = i + 2 < points.length ? points[i + 2]! : p2;
-    const c1x = p1.x + ((p2.x - p0.x) * k) / 3;
-    const c1y = p1.y + ((p2.y - p0.y) * k) / 3;
-    const c2x = p2.x - ((p3.x - p1.x) * k) / 3;
-    const c2y = p2.y - ((p3.y - p1.y) * k) / 3;
-    out.push(`C ${c1x} ${c1y} ${c2x} ${c2y} ${p2.x} ${p2.y}`);
-  }
-  return out.join(' ');
-}
-
-/**
- * Generate the closed filled-area path: top edge follows the line path
- * (linear or smooth), bottom edge runs along the baseline (typically y=0,
- * or yDomain[0] when domain is fully positive/negative). Path is closed
- * (Z) so SVG fill renders the region between line and baseline.
- *
- * Baseline strategy (matches Recharts default `dataMin >= 0 ? 0 : dataMin`):
- *   - If domain spans zero (min < 0 < max): baseline = 0 (zero-crossing —
- *     areas above zero fill upward toward data, below zero fill downward
- *     toward data; same visual semantics as Recharts/Mantine default).
- *   - Else (all positive or all negative): baseline = yDomain[0] (=
- *     dataMin after padding — bottom of plot in SVG y-inverted space).
- *     For all-negative data this means area fills from data points DOWN
- *     to the plot floor (data point at top = full-column area). Consumer
- *     can override via `yAxis.domain` if a different baseline is needed
- *     (e.g. `domain: [maxY, 0]` to anchor area to chart top instead).
- */
-function generateAreaPath(
-  points: Array<{ x: number; y: number }>,
-  baselineY: number,
-  interpolation: AreaChartInterpolation,
-): string {
-  if (points.length === 0) return '';
-  const top =
-    interpolation === 'linear'
-      ? generateLinearPath(points)
-      : generateSmoothPath(points);
-  const last = points[points.length - 1]!;
-  const first = points[0]!;
-  // top path → drop to baseline at last X → line to baseline at first X → close
-  return `${top} L ${last.x} ${baselineY} L ${first.x} ${baselineY} Z`;
-}
-
-function normalizeX(
-  value: number | Date | string,
-  ordinalIndex: number,
-): number {
-  if (value instanceof Date) return value.getTime();
-  if (typeof value === 'number') return value;
-  return ordinalIndex;
-}
-
-function formatX(
-  value: number | Date | string,
-  fmt: AreaChartAxisConfig['tickFormat'],
-  fallbackLabel?: string,
-): string {
-  if (fmt) return fmt(value);
-  if (fallbackLabel != null) return fallbackLabel;
-  if (value instanceof Date) {
-    // ISO-like deterministic format — `toLocaleDateString()` without an
-    // explicit locale would defer to the environment's default which differs
-    // between Node.js (server) and the browser (client), producing hydration
-    // mismatches. Consumer can override via `xAxis.tickFormat` for richer
-    // formatting with explicit locale + timeZone.
-    const y = value.getUTCFullYear();
-    const m = String(value.getUTCMonth() + 1).padStart(2, '0');
-    const d = String(value.getUTCDate()).padStart(2, '0');
-    return `${y}-${m}-${d}`;
-  }
-  return String(value);
-}
-
-function defaultYFormat(v: number): string {
-  return Number.isInteger(v) ? String(v) : v.toFixed(2).replace(/\.?0+$/, '');
-}
-
-function clamp01(v: number): number {
-  if (Number.isNaN(v)) return 0.3;
-  if (v < 0) return 0;
-  if (v > 1) return 1;
-  return v;
-}
 
 // ──────────────────────────────────────────────────────────────────────────
 // Internal types for normalized series

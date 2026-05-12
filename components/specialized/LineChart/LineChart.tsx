@@ -103,13 +103,29 @@ import {
   type ReactNode,
 } from 'react';
 import { cn } from '../../utils/cn';
+import {
+  type ChartInterpolation,
+  defaultColorForIndex,
+  defaultYFormat,
+  formatX,
+  generateLinearPath,
+  generateSmoothPath,
+  getDomain,
+  niceTicks,
+  normalizeX,
+  scaleLinear,
+} from '../_shared/chart-math';
 import styles from './LineChart.module.scss';
 
 // ──────────────────────────────────────────────────────────────────────────
 // Types
 // ──────────────────────────────────────────────────────────────────────────
 
-export type LineChartInterpolation = 'linear' | 'smooth';
+/**
+ * Re-export of the shared `ChartInterpolation` union for back-compat —
+ * consumers may import `LineChartInterpolation` directly.
+ */
+export type LineChartInterpolation = ChartInterpolation;
 
 /**
  * Single data point on a series. X can be numeric (continuous), Date (time
@@ -212,136 +228,13 @@ export interface LineChartProps
 }
 
 // ──────────────────────────────────────────────────────────────────────────
-// Default colors (UsageDonut precedent — cycle through 5 semantic colors)
+// Math + formatting helpers live in `../_shared/chart-math` since 0.20.0
+// E01.3 extraction (Rule of Three intra-lib at Sparkline). LineChart's
+// formerly-inline helpers (scaleLinear / getDomain / niceTicks /
+// generateLinearPath / generateSmoothPath / normalizeX / formatX /
+// defaultYFormat / defaultColorForIndex / DEFAULT_COLORS) are now imported
+// at the top of this file.
 // ──────────────────────────────────────────────────────────────────────────
-
-const DEFAULT_COLORS = [
-  'var(--color-brand)',
-  'var(--color-success)',
-  'var(--color-warning)',
-  'var(--color-info)',
-  'var(--color-error)',
-] as const;
-
-function defaultColorForIndex(idx: number): string {
-  return DEFAULT_COLORS[idx % DEFAULT_COLORS.length]!;
-}
-
-// ──────────────────────────────────────────────────────────────────────────
-// Math helpers — pure functions, zero deps
-// ──────────────────────────────────────────────────────────────────────────
-
-function scaleLinear(
-  domain: [number, number],
-  range: [number, number],
-): (v: number) => number {
-  const [d0, d1] = domain;
-  const [r0, r1] = range;
-  const span = d1 - d0;
-  if (span === 0) return () => (r0 + r1) / 2;
-  return (v: number) => r0 + ((v - d0) / span) * (r1 - r0);
-}
-
-function getDomain(values: number[], padding = 0): [number, number] {
-  if (values.length === 0) return [0, 1];
-  const min = Math.min(...values);
-  const max = Math.max(...values);
-  if (min === max) {
-    const pad = Math.abs(min) * 0.05 || 1;
-    return [min - pad, max + pad];
-  }
-  const span = max - min;
-  return [min - span * padding, max + span * padding];
-}
-
-function niceTicks(domain: [number, number], targetCount = 5): number[] {
-  const [d0, d1] = domain;
-  const span = d1 - d0;
-  if (span === 0) return [d0];
-  const roughStep = span / targetCount;
-  const magnitude = Math.pow(10, Math.floor(Math.log10(Math.abs(roughStep))));
-  const normalized = roughStep / magnitude;
-  let step: number;
-  if (normalized < 1.5) step = 1 * magnitude;
-  else if (normalized < 3) step = 2 * magnitude;
-  else if (normalized < 7) step = 5 * magnitude;
-  else step = 10 * magnitude;
-  const start = Math.ceil(d0 / step) * step;
-  const end = Math.floor(d1 / step) * step;
-  const ticks: number[] = [];
-  for (let v = start; v <= end + step / 1000; v += step) {
-    ticks.push(Number(v.toFixed(10)));
-  }
-  return ticks;
-}
-
-function generateLinearPath(points: Array<{ x: number; y: number }>): string {
-  if (points.length === 0) return '';
-  const first = points[0]!;
-  if (points.length === 1) return `M ${first.x} ${first.y}`;
-  const segments = points.slice(1).map((p) => `L ${p.x} ${p.y}`);
-  return `M ${first.x} ${first.y} ${segments.join(' ')}`;
-}
-
-function generateSmoothPath(
-  points: Array<{ x: number; y: number }>,
-  tension = 0.5,
-): string {
-  if (points.length === 0) return '';
-  const first = points[0]!;
-  if (points.length === 1) return `M ${first.x} ${first.y}`;
-  if (points.length === 2) {
-    return `M ${first.x} ${first.y} L ${points[1]!.x} ${points[1]!.y}`;
-  }
-  const out: string[] = [`M ${first.x} ${first.y}`];
-  const k = tension;
-  for (let i = 0; i < points.length - 1; i++) {
-    const p0 = i === 0 ? points[i]! : points[i - 1]!;
-    const p1 = points[i]!;
-    const p2 = points[i + 1]!;
-    const p3 = i + 2 < points.length ? points[i + 2]! : p2;
-    const c1x = p1.x + ((p2.x - p0.x) * k) / 3;
-    const c1y = p1.y + ((p2.y - p0.y) * k) / 3;
-    const c2x = p2.x - ((p3.x - p1.x) * k) / 3;
-    const c2y = p2.y - ((p3.y - p1.y) * k) / 3;
-    out.push(`C ${c1x} ${c1y} ${c2x} ${c2y} ${p2.x} ${p2.y}`);
-  }
-  return out.join(' ');
-}
-
-function normalizeX(
-  value: number | Date | string,
-  ordinalIndex: number,
-): number {
-  if (value instanceof Date) return value.getTime();
-  if (typeof value === 'number') return value;
-  return ordinalIndex;
-}
-
-function formatX(
-  value: number | Date | string,
-  fmt: LineChartAxisConfig['tickFormat'],
-  fallbackLabel?: string,
-): string {
-  if (fmt) return fmt(value);
-  if (fallbackLabel != null) return fallbackLabel;
-  if (value instanceof Date) {
-    // ISO-like deterministic format — `toLocaleDateString()` without an
-    // explicit locale would defer to the environment's default which differs
-    // between Node.js (server) and the browser (client), producing hydration
-    // mismatches. Consumer can override via `xAxis.tickFormat` for richer
-    // formatting with explicit locale + timeZone.
-    const y = value.getUTCFullYear();
-    const m = String(value.getUTCMonth() + 1).padStart(2, '0');
-    const d = String(value.getUTCDate()).padStart(2, '0');
-    return `${y}-${m}-${d}`;
-  }
-  return String(value);
-}
-
-function defaultYFormat(v: number): string {
-  return Number.isInteger(v) ? String(v) : v.toFixed(2).replace(/\.?0+$/, '');
-}
 
 // ──────────────────────────────────────────────────────────────────────────
 // Internal types for normalized series
