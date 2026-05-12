@@ -1,0 +1,320 @@
+@use '../../../styles/mixins' as mx;
+
+// ============================================================================
+// Stepper — visual + semantic multi-step progress indicator
+//
+// Layout canon (Material UI alignment):
+//   horizontal → circle ON TOP, label BELOW, connecting line between circles
+//   vertical   → circle ON LEFT, label RIGHT, connecting line between circles
+//
+// Status states drive everything via `.step[data-status]` selectors. Size
+// scale via `.root[data-size]` mapping to component-local channels.
+// ============================================================================
+
+// Component-local channels — tied to data-size selector. Values reuse
+// existing --space-* scale (R7-compliant). No new design tokens.
+.root {
+  --stepper-circle-size: var(--space-8);          // 32px (md default)
+  --stepper-number-size: 0.875rem;                // 14px
+  --stepper-label-size: 0.875rem;
+  --stepper-description-size: 0.75rem;            // 12px
+}
+
+.root[data-size='sm'] {
+  --stepper-circle-size: var(--space-6);          // 24px
+  --stepper-number-size: 0.75rem;                 // 12px
+  --stepper-label-size: 0.75rem;
+  --stepper-description-size: 0.6875rem;          // 11px
+}
+
+.root[data-size='lg'] {
+  --stepper-circle-size: var(--space-10);         // 40px
+  --stepper-number-size: 1rem;                    // 16px
+  --stepper-label-size: 1rem;
+  --stepper-description-size: 0.875rem;
+}
+
+// ============================================================================
+// Layout — root + list
+// ============================================================================
+
+.root {
+  display: block;
+}
+
+.list {
+  display: flex;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+
+  &[data-orientation='horizontal'] {
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 0;                       // step ::after handles spacing via left/right
+  }
+
+  &[data-orientation='vertical'] {
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--space-4);
+  }
+}
+
+// ============================================================================
+// Step container
+// ============================================================================
+
+.step {
+  position: relative;       // anchor for connecting line ::after
+  display: flex;
+}
+
+// HORIZONTAL — circle on top, label below. Equal flex distribution.
+.list[data-orientation='horizontal'] .step {
+  flex: 1 1 0;
+  min-width: 0;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: var(--space-2);
+  padding: 0 var(--space-3);
+}
+
+// VERTICAL — circle on left, label right.
+.list[data-orientation='vertical'] .step {
+  flex: 0 1 auto;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: var(--space-3);
+}
+
+// Connecting line — rendered as ::after pseudo on each step except the last.
+.step:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  background-color: var(--color-border);
+  transition: background-color var(--duration-fast) var(--easing-default);
+  pointer-events: none;
+  z-index: 0;
+}
+
+// HORIZONTAL — line sits at vertical center of circle, runs from this step's
+// circle right edge to the next step's circle left edge. Because every step
+// has the same width (flex: 1) and the circle is centered within the step,
+// the line spans `50% + circle-size/2` from circle right to step's right edge,
+// then continues through the next step's left padding until it meets the
+// next circle's left edge. We render the line by anchoring it relative to
+// the current step's center.
+.list[data-orientation='horizontal'] .step:not(:last-child)::after {
+  top: calc(var(--stepper-circle-size) / 2 - 1px);
+  left: calc(50% + var(--stepper-circle-size) / 2 + var(--space-1));
+  right: calc(-50% + var(--stepper-circle-size) / 2 + var(--space-1));
+  height: 2px;
+}
+
+// VERTICAL — line runs from this step's circle bottom edge to the next
+// step's circle top edge.
+.list[data-orientation='vertical'] .step:not(:last-child)::after {
+  left: calc(var(--stepper-circle-size) / 2 - 1px);
+  top: calc(var(--stepper-circle-size) + var(--space-2));
+  height: calc(var(--space-4) - var(--space-2) * 2);
+  width: 2px;
+}
+
+// Connecting line "complete" — Q2 (α): success green when step is complete.
+.step[data-status='complete']:not(:last-child)::after {
+  background-color: var(--color-success);
+}
+
+// ============================================================================
+// Step circle (badge)
+// ============================================================================
+
+.stepCircle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--stepper-circle-size);
+  height: var(--stepper-circle-size);
+  flex-shrink: 0;
+  border-radius: var(--radius-full);
+  border: 2px solid var(--color-border-strong);
+  background-color: var(--color-surface);
+  color: var(--color-text-secondary);
+  font-size: var(--stepper-number-size);
+  font-weight: 600;
+  position: relative;                 // sit above the connecting line z-index
+  z-index: 1;
+  transition:
+    background-color var(--duration-fast) var(--easing-default),
+    border-color var(--duration-fast) var(--easing-default),
+    color var(--duration-fast) var(--easing-default);
+
+  .step[data-status='active'] & {
+    background-color: var(--color-brand);
+    border-color: var(--color-brand);
+    color: var(--color-text-on-brand);
+  }
+
+  .step[data-status='complete'] & {
+    background-color: var(--color-success);
+    border-color: var(--color-success);
+    color: var(--color-text-on-brand);
+  }
+
+  .step[data-status='error'] & {
+    background-color: var(--color-error);
+    border-color: var(--color-error);
+    color: var(--color-text-on-brand);
+  }
+}
+
+// ============================================================================
+// Text content (label + description)
+// ============================================================================
+
+.stepContent {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  min-width: 0;
+}
+
+// HORIZONTAL — content is centered below circle
+.list[data-orientation='horizontal'] .stepContent {
+  align-items: center;
+  text-align: center;
+  width: 100%;
+}
+
+// VERTICAL — content sits next to circle, top-aligned
+.list[data-orientation='vertical'] .stepContent {
+  align-items: flex-start;
+  padding-top: calc((var(--stepper-circle-size) - var(--stepper-label-size) * 1.4) / 2);
+  // Small top padding so label vertically aligns with circle center; falls
+  // back gracefully across sm/md/lg sizes via var arithmetic.
+}
+
+.stepLabel {
+  font-size: var(--stepper-label-size);
+  font-weight: 500;
+  color: var(--color-text-muted);
+  line-height: 1.4;
+  word-break: break-word;            // Q3 (β) — wrap rather than overflow
+
+  .step[data-status='active'] &,
+  .step[data-status='complete'] & {
+    color: var(--color-text-primary);
+  }
+
+  .step[data-status='error'] & {
+    color: var(--color-error-strong);
+  }
+}
+
+.stepDescription {
+  font-size: var(--stepper-description-size);
+  color: var(--color-text-secondary);
+  line-height: 1.4;
+}
+
+// ============================================================================
+// Interactive (button) step
+// ============================================================================
+
+.stepButton {
+  // Reset native button defaults
+  appearance: none;
+  background: transparent;
+  border: 0;
+  margin: 0;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+  text-align: inherit;
+
+  // Layout — mirror .step layout (column horizontal, row vertical) so the
+  // button replaces the inline structure without breaking the visual.
+  display: flex;
+  width: 100%;
+
+  // Hit area — small size needs extra padding to reach ≥40px effective
+  padding: var(--space-1);
+  margin: calc(-1 * var(--space-1));
+  border-radius: var(--radius-md);
+
+  &:focus-visible {
+    @include mx.focus-ring;
+  }
+
+  &[aria-disabled='true'] {
+    cursor: not-allowed;
+  }
+}
+
+.list[data-orientation='horizontal'] .stepButton {
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.list[data-orientation='vertical'] .stepButton {
+  flex-direction: row;
+  align-items: flex-start;
+  gap: var(--space-3);
+}
+
+// Hover state — only for clickable (button not aria-disabled)
+.stepButton:not([aria-disabled='true']):hover .stepCircle {
+  transform: scale(1.05);
+}
+
+// Non-clickable inner div in interactive mode (visited mode pending/active steps)
+.stepInner {
+  display: flex;
+  width: 100%;
+}
+
+.list[data-orientation='horizontal'] .stepInner {
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.list[data-orientation='vertical'] .stepInner {
+  flex-direction: row;
+  align-items: flex-start;
+  gap: var(--space-3);
+}
+
+// ============================================================================
+// Reduced motion
+// ============================================================================
+
+@media (prefers-reduced-motion: reduce) {
+  .stepCircle,
+  .step:not(:last-child)::after {
+    transition: none;
+  }
+
+  .stepButton:not([aria-disabled='true']):hover .stepCircle {
+    transform: none;
+  }
+}
+
+// ============================================================================
+// sr-only — visually hidden but AT-accessible
+// ============================================================================
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}

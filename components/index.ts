@@ -138,6 +138,7 @@ export * from './complex/Select';
 export * from './complex/Sheet';
 export * from './complex/Sidebar';
 export * from './complex/Slider';
+export * from './complex/Stepper';
 export * from './complex/Tabs';
 export * from './complex/TimePicker';
 export * from './complex/Toast';

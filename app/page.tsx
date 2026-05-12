@@ -525,6 +525,13 @@ const components: ComponentLink[] = [
     phase: 'Phase 10 — Complex Interactive',
     status: 'available',
   },
+  {
+    href: '/components/stepper',
+    name: 'Stepper',
+    description: 'Multi-step visual progress indicator with optional keyboard navigation when clickable. Compound Stepper + Step parts. Auto-derives status from currentStep (complete / active / pending); explicit status="error" overrides. Visual mode = list landmark; interactive mode = navigation landmark with roving tabindex + ARG-key activation. Six demo use cases. Zero external deps.',
+    phase: 'Phase 10 — Complex Interactive',
+    status: 'available',
+  },
 ];
 
 export default function HomePage() {
