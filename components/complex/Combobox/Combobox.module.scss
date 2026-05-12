@@ -416,11 +416,15 @@
 }
 
 .itemText {
+  // 0.18.0 — drop forced single-line truncation. Listbox items often carry
+  // multi-line content (name + role, label + description). `.item` keeps
+  // `align-items: center` + min-height 32 for single-line ergonomics; rows
+  // grow naturally when consumer renders multi-line children. Consumer can
+  // re-enable ellipsis via className passthrough if a specific surface needs
+  // hard truncation. Charter R3 — lib provides slot, consumer controls
+  // visual rhythm. Aligns with WCAG 1.4.4 (no content loss).
   flex: 1;
   min-width: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
 }
 
 .itemIndicator {

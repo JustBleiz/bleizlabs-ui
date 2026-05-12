@@ -103,6 +103,26 @@ Net manifest after 0.18.0 cycle to date: 89 → 91 families (DateRangePicker +
 TimeInput). Remaining 0.18.0 sub-Epics: E01.3 TimePicker · E01.4
 DateTimePicker.
 
+**Polish — Select + Combobox `.itemText` multi-line friendly**
+
+Dropped forced single-line truncation (`white-space: nowrap;
+text-overflow: ellipsis; overflow: hidden;`) from `.itemText` in both
+`<Select>` and `<Combobox>` listbox item slots. Listbox items often carry
+multi-line content (name + role, label + description); the previous
+ellipsis policy clipped that content invisibly.
+
+After the change:
+- Single-line text renders unchanged (no wrap needed at any width)
+- Long single-line values WRAP to next line instead of clipping (WCAG 1.4.4
+  content-loss alignment)
+- Multi-line consumer content (e.g. `<>{name}<br/>{role}</>`) renders fully
+- `.item` keeps `align-items: center` + min-height 32 for single-line
+  ergonomics; rows grow naturally for multi-line content
+- Consumers needing explicit ellipsis can layer it via className passthrough
+  (Charter R3 — lib provides slot, consumer controls visual rhythm)
+
+No prop API change; 82 Select + Combobox Playwright tests pass unchanged.
+
 ## [0.17.0] — 2026-05
 
 **Feature release.** Ships `<DataTable>` as a flagship generic-data grid
