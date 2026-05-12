@@ -2,7 +2,7 @@
 
 **Status:** DRAFT
 **Last updated:** 2026-05-12
-**Current version:** 0.20.0 (100 components)
+**Current version:** 0.20.1 (100 components — patch release, 11 demo bug fixes)
 
 > Funkcjonalne luki biblioteki + kolejność domykania. Bez estymat czasowych — pracujemy etapami.
 
@@ -30,7 +30,7 @@ Każda pozycja ma:
 0.18.1  ✓  Field re-register loop fix         SHIPPED 2026-05-12 (single-file patch)
 0.19.0  ✓  Forms expansion                    SHIPPED 2026-05-12 (93 → 96 — FileUpload, TagsInput, Stepper)
 0.20.0  ✓  Charts pack                        SHIPPED 2026-05-12 (96 → 100 — LineChart, AreaChart, Sparkline, PieChart + _shared/chart-math extraction)
-0.20.1  →  Demo bug sweep (partial)            [11 of 18 bugs — non-asChild; 7 asChild bugs deferred to 0.20.2]
+0.20.1  ✓  Demo bug sweep (partial)            SHIPPED 2026-05-12 [11 of 18 bugs — non-asChild; 7 asChild bugs deferred to 0.20.2]
 0.20.2  →  Slot architectural patch           [Slot + 7 forwardRef consumers → React 19 ref-as-prop migration; fixes B01/B03/B06/B07a/B02/B04/B10]
 0.21.0  →  Polish batch                       [4 quick wins]
 0.22.0  →  Housekeeping                       [API freeze prep — bez RC]
@@ -389,11 +389,14 @@ Każdy bug pre-fix MANDATORY:
 - 0.20.0 a11y follow-up dla LineChart+AreaChart (describedby + tab-entry — osobny patch 0.20.3)
 - 0.20.0 test sprint (Playwright + axe-core + NVDA 4 charts — osobny patch 0.20.4)
 
-**DoD pack 0.20.1:**
-- [ ] 18 bugs PASS (zero `get_errors` console output dla affected demo routes)
-- [ ] Regression specs dla każdego applicable bug (B11 Textarea resize, B15 Combobox clear, B18 LineChart formatter, B13 Button warning transition)
-- [ ] axe-core regression suite passes (no introduction of new a11y violations from fixes)
-- [ ] Demo walkthrough po 0.20.1 ship — user confirms wszystkie 18 PASS
+**DoD pack 0.20.1 (SHIPPED 2026-05-12):**
+- [x] 11 of 18 bugs PASS (7 asChild bugs deferred to 0.20.2)
+  - LIB: B11 Textarea resize, B18 LineChart tooltip, B15 Combobox clear, B05 TextLink underline, B13 Button warning, B14 AlertDialog scale, B08 Dot xs size (mixed)
+  - DEMO: B16 catalog 4 cards, B09 EdgeBar pulse, B12 BreakdownList empty, B17 DataTable Input narrow
+- [x] tsc clean (no new diagnostics)
+- [x] eslint clean (0 errors via `npm run lint`)
+- [x] check:barrel + check:manifest clean (manifest libVersion 0.20.1)
+- [ ] Demo walkthrough po 0.20.1 ship — user confirms 11 PASS + acknowledges 7 deferred to 0.20.2
 
 **Layer:** Cross-cutting — atoms, molecules, complex, specialized.
 

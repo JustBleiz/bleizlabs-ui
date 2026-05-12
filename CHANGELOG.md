@@ -7,7 +7,138 @@ and this project adheres to [Semantic Versioning 2.0](https://semver.org/spec/v2
 
 ## [Unreleased]
 
-_No unreleased changes — 0.20.0 ships the full Charts pack below._
+_No unreleased changes — 0.20.1 ships the demo bug sweep below._
+
+## [0.20.1] — 2026-05-12
+
+**Patch release — Demo bug sweep.** Eleven bug fixes discovered by user
+during demo walkthrough po 0.20.0 ship. Patch covers non-asChild bugs
+across atoms / molecules / complex / specialized layers — 7 lib fixes,
+3 demo fixes, 1 mixed (Dot enum widening + Badge demo). No API breaks.
+
+### Lib fixes
+
+- **Textarea — `resize="horizontal"` had no visible effect** (B11).
+  `.textarea` was `flex: 1; min-width: 0;` inside a `display: flex`
+  wrap, so flex-grow re-filled the wrap's width immediately after the
+  user-agent resize handle dragged a new width. Switched to
+  `width: 100%; min-width: 0;` — default sizing unchanged but the
+  user-agent inline `width` now sticks.
+
+- **LineChart — tooltip leaked raw timestamps for Date series** (B18).
+  `tooltipContext.datum` exposed the internal `NormalizedDatum` shape
+  where `x: number` (timestamp), violating the public
+  `LineChartDatum.x: number | Date | string` contract. Without a custom
+  `xAxis.tickFormat`, the default `formatX` fell through to
+  `String(timestamp)` and surfaced raw `17119296000000` in the title.
+  Tooltip context now restores `datum.x` from internal `origX` —
+  consumers and the default tooltip see the original Date.
+
+- **Combobox — controlled `value` change did not sync input display**
+  (B15). The only existing search-sync path was a one-shot initial
+  effect that fires once after registry fills and never again. External
+  setters (`setControlledValue('jp')` / `setControlledValue(null)`)
+  changed React state but the input text stayed frozen on whatever
+  label was committed last. Added a controlled-value transition
+  effect with narrow guards (single mode + controlled value +
+  uncontrolled search + value-changed identity guard) that pushes the
+  new label (or '' for null) into uncontrolled search.
+
+- **TextLink — hover underline stretched to parent width** (B05).
+  `display: inline-flex` fits content in block/inline parents but
+  becomes a flex item in `flex-direction: column` parents where
+  default `align-items: stretch` rules. The bottom-border underline
+  spanned the full row instead of the text + arrow. Added
+  `width: fit-content` to re-assert content sizing across all parent
+  layout modes.
+
+- **Button — warning variant snapped instead of fading on hover/active**
+  (B13). The base `.root` transition listed background-color /
+  border-color / color / box-shadow / transform but NOT `filter`.
+  `.variantWarning` animated brightness via `filter` (no
+  `--hover-warning` / `--active-warning` token), so its hover/active
+  changes snapped while every other variant smoothly faded. Added
+  `filter` to the transition property list.
+
+- **Dot — added `xs` size (4px)** (B08). Extended `DotSize` from
+  `'sm' | 'md' | 'lg'` to `'xs' | 'sm' | 'md' | 'lg'`. `xs` maps to
+  `--space-1` per R7 token-reuse-first. Additive enum widening,
+  non-breaking. Companion Badge §7 demo update lands in the same
+  commit.
+
+- **AlertDialog — description text shifted 1-2px after open animation**
+  (B14). Open keyframes animated
+  `transform: translateY(8px) scale(0.98)` → `translateY(0) scale(1)`.
+  Once `scale(1)` settled, the browser re-rasterized text at native
+  resolution and subpixel hinting landed differently than during the
+  scaled state — visible as a 1-2px drift on body copy. Dropped the
+  scale component; `translateY` + `opacity` alone keep the entrance
+  feel without the post-animation re-render artifact.
+
+### Demo fixes
+
+- **Home catalog — added Date/Time pack cards** (B16). User flagged
+  TimePicker + DateTimePicker missing from `app/page.tsx`. Audit
+  revealed all four 0.18.0 components were absent: DateRangePicker,
+  TimeInput, TimePicker, DateTimePicker. All four demo routes already
+  existed under `app/components/{date-range-picker,time-input,
+  time-picker,date-time-picker}` — only the home catalog was stale.
+  Catalog 76 → 80 entries.
+
+- **EdgeBar §5 — pulse demo forgot `pulse` prop** (B09). Section
+  rendered three `<EdgeBar color="success|warning|error">` without
+  `pulse`, so the section silently demonstrated the static state.
+  Lib `pulse` wiring + `@keyframes edgeBarPulse` + reduced-motion
+  guard all verified working when class is applied. Demo now passes
+  `pulse` on all three bars.
+
+- **BreakdownList §6 — empty state read as blank** (B12). Per
+  Klocek discipline the molecule never auto-wraps empty data
+  (consumer-owned), but the demo demonstrated this with a single
+  muted `<Text>` and no visual container — section read as blank
+  during walkthrough. Enriched with a styled placeholder
+  (`.empty` class: dashed border + raised surface + two-line copy)
+  so the consumer-owned pattern is visibly distinct. Lib unchanged.
+
+- **DataTable toolbar Input — narrowed via demo SCSS** (B17). User
+  flagged the search Input as too large for a list-view toolbar.
+  `<Input>` has no `size` prop yet (lib-API expansion, deferred to
+  a future minor — same consideration extends to Textarea / Combobox
+  / DatePicker trigger inputs). Patch fix: demo SCSS constrains the
+  search input to `max-width: 240px; flex: 0 1 240px` via
+  `.searchInput` className passthrough.
+
+### Mixed fix
+
+- **Badge §7 — live status dot oversized vs badge frame** (B08). Same
+  commit as the lib Dot enum widening above. Demo `<Badge icon={<Dot
+  pulse />}>` used the default `md` (12px) which felt heavy for status
+  pip context. All four §7 examples now use `<Dot size="xs" pulse />`;
+  section description updated to explain rationale.
+
+### Deferred to 0.20.2 Slot architectural patch
+
+Seven bugs share a single root cause class — Slot's `'use client'` +
+forwardRef + 7+ consumer forwardRefs combine into hydration mismatch in
+Next.js 16.2+ + React 19 dev mode for the asChild pattern. Two fix
+attempts during this sweep both failed (removing `'use client'` from
+Slot triggers "Refs cannot be used in Server Components" because
+Card/Stack/Section/Badge wrap with forwardRef; converting Slot to React
+19 ref-as-prop alone insufficient). Proper fix requires lib-wide
+coordinated migration (Slot + 7+ asChild consumers from `forwardRef` →
+React 19 ref-as-prop). High risk, dedicated cycle. Affected: B01 Stack
+asChild, B02 Inline asChild, B03 Section asChild, B04 Eyebrow asChild,
+B06 Card asChild, B07a Badge asChild, B10 Label asChild. Production
+unaffected — dev-only warning per Slot.tsx existing comment.
+
+### Follow-up candidates (NOT in 0.20.1)
+
+- `Input size="xs" | "s" | "md"` variant (would also extend to
+  Textarea / Combobox trigger / DatePicker trigger). Repeats the
+  B17 pattern across the form family.
+- `--hover-warning` / `--active-warning` semantic tokens so Button's
+  warning variant matches the brand-token pattern instead of relying
+  on `filter` arithmetic. Token-architecture change, not a patch.
 
 ## [0.20.0] — 2026-05-12
 
