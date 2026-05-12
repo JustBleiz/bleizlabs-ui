@@ -2,7 +2,7 @@
 
 **Status:** DRAFT
 **Last updated:** 2026-05-12
-**Current version:** 0.19.0 (96 components)
+**Current version:** 0.20.0 (100 components)
 
 > Funkcjonalne luki biblioteki + kolejność domykania. Bez estymat czasowych — pracujemy etapami.
 
@@ -29,7 +29,7 @@ Każda pozycja ma:
 0.18.0  ✓  Date/Time pack                     SHIPPED 2026-05-12 (89 → 93 families)
 0.18.1  ✓  Field re-register loop fix         SHIPPED 2026-05-12 (single-file patch)
 0.19.0  ✓  Forms expansion                    SHIPPED 2026-05-12 (93 → 96 — FileUpload, TagsInput, Stepper)
-0.20.0  →  Charts pack                        [SVG-based, dashboard layer]
+0.20.0  ✓  Charts pack                        SHIPPED 2026-05-12 (96 → 100 — LineChart, AreaChart, Sparkline, PieChart + _shared/chart-math extraction)
 0.21.0  →  Polish batch                       [4 quick wins]
 0.22.0  →  Housekeeping                       [API freeze prep — bez RC]
 0.23.0+ →  Open-ended minor releases          [post-housekeeping nowe potrzeby gdy się ujawnią]
@@ -268,41 +268,50 @@ Cycle: E01.1 FileUpload → E01.2 TagsInput → E01.3 Stepper sequentially.
 
 ---
 
-## 0.20.0 — Charts pack
+## 0.20.0 — Charts pack ✓ SHIPPED 2026-05-12
+
+**Status:** SHIPPED 2026-05-12 (96 → 100 families, +4 charts + `_shared/chart-math.ts` extraction)
 
 **Why:** Aktualnie tylko `BarChart` + 3 specialized bars. Brakuje line/area dla time series + pie dla compositions. Konsumenci dziś sięgają po Recharts/Chart.js (100KB+ external deps).
 
-**Scope:**
-- **AreaChart** — wypełniony obszar pod linią, multi-series support
-- **LineChart** — multi-series, smooth + linear interpolation, crosshair tooltip
-- **PieChart** — donut variant, segment hover, labels
-- **Sparkline** — inline tiny LineChart bez axes/tooltips
+**Delivered (all on `specialized/` layer):**
+- **E01.1 LineChart** (lib commit `147e238`) — multi-series, smooth/linear interpolation, crosshair tooltip + voronoi hit-testing, full interactive a11y (roving tabindex per data point, Arrow/Home/End/Space/Enter/Escape model, sr-only `<table>`, live region)
+- **E01.2 AreaChart** (lib commit `d081c33`) — filled region under line, `fillOpacity` + `gradient` visual axes, mirrors LineChart API + a11y
+- **E01.3 Sparkline** (lib commit `920d8af`) — tiny inline single-series for KPI tiles / table cells / dense dashboards; deliberate non-interactive (glanceable signal, Tufte/Mantine/Tremor precedent); sr-only table still mandatory
+- **E01.4 PieChart** (lib commit `cb3978f`) — categorical composition (full 360°), `variant: 'pie' | 'donut'`, `centerLabel` slot, `showLabels` w/ auto-hide <10%; full interactive a11y per segment
+
+**Refactor (commit `50b996c`):** Extracted `components/specialized/_shared/chart-math.ts` after 2 charts (LineChart + AreaChart) carried inline clones. Rule of Three intra-lib at Sparkline = 3rd consumer. Shared helpers: scaleLinear, getDomain, niceTicks, generateLinearPath, generateSmoothPath, generateAreaPath, normalizeX, formatX, defaultYFormat, clamp01, DEFAULT_COLORS, ChartInterpolation type. Lib-internal (NOT in barrel). Polar helpers stay inline in PieChart per same Rule-of-Three discipline — extract when 2nd polar chart joins.
 
 **Wszystkie:**
 - SVG-based (spójne z istniejącym BarChart)
-- Responsive (resize observer)
-- Dark mode (seed tokens)
-- Animation on enter (Reveal pattern)
-- Tooltip on hover/focus
-- Zero-data state
-- **A11y mandatory:** visually-hidden `<table>` fallback dla screen readers (WCAG AA dla wykresów)
-- Keyboard navigation dla data points
+- Responsive via `aspect-ratio` (CSS-only; no ResizeObserver runtime needed for chart sizing — only consumers using `height` prop)
+- Dark mode (seed tokens — `--color-{brand,success,warning,info,error}` DEFAULT_COLORS cycle)
+- Animation on enter (path-draw + fill-fade; `prefers-reduced-motion: reduce` always wins)
+- Tooltip on hover/focus (LineChart/AreaChart/PieChart; Sparkline non-interactive)
+- Zero-data state (custom `renderEmpty` slot; sr-only table caption + headers always render)
+- **A11y mandatory:** visually-hidden `<table>` fallback dla screen readers (WCAG H51, AA dla wykresów) ✓
+- Keyboard navigation dla data points (LineChart/AreaChart/PieChart — full APG-style model; Sparkline opt-out per design)
+- `forced-colors: active` fallbacks for Windows High Contrast
 
-**NIE w pierwszym podejściu:**
+**NIE w pierwszym podejściu (deferred):**
 - ScatterPlot, HeatMap, Treemap, Gauge (niche)
 - Combo chart (consumer composes AreaChart + BarChart)
 - Brush / zoom interaction
+- Stacked AreaChart variant (overlapping shipped, stacking deferred to 0.20.x)
+- Leader-line labels for small pie slices (auto-hide shipped; leader lines deferred to 0.20.x)
 
-**Klocek check (per chart):** PASS — każdy single concept (jeden typ wizualizacji), data-shape neutral (`data: ChartDatum[]`).
+**Klocek check (per chart):** PASS — każdy single concept (jeden typ wizualizacji), data-shape neutral (`data: ChartDatum[]` lub `number[]` dla Sparkline).
 
-**Layer:** `display/` (rozszerzenie istniejącej kategorii) lub nowa `charts/` jeśli kategoria rośnie
+**Layer:** `specialized/` (existing category — joined BarChart, UsageDonut, AvailabilityBar, MetricBar peers)
 
-**Zero external deps:** SVG + native math (Path, scale calculations, Date dla time axes)
+**Zero external deps:** SVG + native math (Path, scale calculations, Date dla time axes) ✓
 
 **DoD:**
-- [ ] 4 nowe chart primitives shipped
-- [ ] A11y table fallback verified axe-core
-- [ ] Co najmniej 1 internal projekt używa minimum 1 chart w prod
+- [x] 4 nowe chart primitives shipped (LineChart + AreaChart + Sparkline + PieChart)
+- [x] `_shared/chart-math.ts` extracted at Rule-of-Three (3rd chart) trigger
+- [x] tsc + eslint + check:barrel + check:manifest clean across all 4 charts (100 families total)
+- [ ] A11y table fallback verified axe-core — DEFERRED to 0.20.x test-execution sprint per E15 Tabs / E05.4 Form / E06.x Header precedent (specs ship alongside; LC-R01..R26 partially executed, AC-R01..R20 / SP-R01..R15 / PC-R01..R20 planned)
+- [ ] Co najmniej 1 internal projekt używa minimum 1 chart w prod — pending consumer adoption (bleizlabs-website filar specs already reference sparklines + donuts in dashboard mockups)
 
 ---
 

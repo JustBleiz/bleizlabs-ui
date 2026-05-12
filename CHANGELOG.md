@@ -7,7 +7,20 @@ and this project adheres to [Semantic Versioning 2.0](https://semver.org/spec/v2
 
 ## [Unreleased]
 
-### 0.20.0 cycle progress (on `work/0.20-charts-pack` branch)
+_No unreleased changes — 0.20.0 ships the full Charts pack below._
+
+## [0.20.0] — 2026-05-12
+
+**Feature release — Charts pack.** Closes the dashboard chart layer with
+4 new SVG-based chart primitives: `<LineChart>`, `<AreaChart>`,
+`<Sparkline>`, `<PieChart>`. Library grows from 96 to 100 families
+(+4 specialized charts; manifest specialized category 11 → 14). Zero
+external runtime dependencies maintained (no Recharts / Chart.js / D3 /
+Mantine Charts). Zero new design tokens added across the cycle. Built
+entirely on native SVG + math helpers + DEFAULT_COLORS cycle shared with
+the existing `UsageDonut` family.
+
+### Added — Charts pack (4 new components)
 
 **E01.1 LineChart v1 — multi-series SVG line chart**
 
@@ -77,6 +90,177 @@ Tests: 53 PASS / 0 fail across 6 spec files: aria (8) + interpolation (4)
 LC-R01..R26). axe-core zero violations on demo route.
 
 Manifest: 96 → 97 families. Zero new lib tokens. Zero new external deps.
+
+**E01.2 AreaChart v1 — multi-series SVG area chart**
+
+Mirrors LineChart API surface (Datum / Series / AxisConfig / TooltipContext /
+Interpolation) with 2 additional visual axes: `fillOpacity?: number`
+(default `0.3`, clamped 0..1) and `gradient?: boolean` (default `false`,
+renders vertical linearGradient per series fading from peak to baseline).
+Render order per series: filled `<path class="area">` (low z) →
+stroke `<path class="line">` (top) → focusable `<circle>` data points.
+
+Baseline strategy matches Recharts default (`dataMin >= 0 ? 0 : dataMin`):
+- spans zero (min < 0 < max) → baseline = 0 (zero-crossing — areas above
+  zero fill upward, below zero fill downward toward data)
+- all positive / all negative → baseline = `yDomain[0]` (plot floor in
+  SVG y-inverted space). All-negative case: data point at top = full-
+  column area; consumer can override via `yAxis.domain` if a different
+  baseline is needed.
+
+Inherits LineChart's keyboard navigation (roving tabindex Arrow Left/
+Right within series + Up/Down switch series + Home/End jump + Space/
+Enter click + Escape dismiss), crosshair tooltip, voronoi hit-testing,
+sr-only `<table>` a11y fallback, live region with re-announce marker,
+`prefers-reduced-motion` + `forced-colors` fallbacks.
+
+Phase 4 Evaluator findings + Phase 5 fixes:
+- IMPORTANT — `fillOpacity` + `gradient` coupling JSDoc fixed (was
+  documented as "ignored when gradient" but code actually scales the
+  gradient top stop opacity by 2.5× clamped to 1; doc now describes
+  the actual coupling)
+- IMPORTANT — all-negative baseline behavior documented explicitly in
+  `generateAreaPath` JSDoc with Recharts convention reference +
+  consumer override hint via `yAxis.domain`
+- IMPORTANT — forced-colors `.area` opacity 0.2 → 0.4 so area-vs-line
+  layering remains perceivable in Windows High Contrast
+
+Manifest: 97 → 98 families. Zero new lib tokens.
+
+**Refactor — `_shared/chart-math.ts` extraction (Rule of Three intra-lib)**
+
+Before Sparkline (3rd chart consumer), pure math + formatting helpers
+consolidated into `components/specialized/_shared/chart-math.ts`. Removes
+~150 LOC clone between LineChart and AreaChart. Module is `_shared/`-
+prefixed lib-internal (NOT re-exported from `components/index.ts`
+barrel — consumers compose at component level).
+
+Helpers moved: `scaleLinear`, `getDomain`, `niceTicks`,
+`generateLinearPath`, `generateSmoothPath`, `generateAreaPath`,
+`normalizeX`, `formatX`, `defaultYFormat`, `clamp01`, `DEFAULT_COLORS`
++ `defaultColorForIndex`, plus shared type `ChartInterpolation`.
+
+BC preserved: `LineChartInterpolation` and `AreaChartInterpolation` now
+re-export `ChartInterpolation` — all named exports continue to resolve
+for existing consumers. No API surface change. Net LOC +2 (shared module
+overhead offsets dup removal).
+
+**E01.3 Sparkline v1 — tiny inline single-series chart**
+
+Single-series line chart (+ optional filled area) for embedding in
+`<Card>`, table cells, KPI tiles, dense dashboards. `data: number[]`
+(Y values only; X inferred as ordinal index 0..N-1). 10 props on root
+(LineChart=13, AreaChart=15 sibling baselines).
+
+Deliberate non-interactivity per Tufte / Mantine / Tremor precedent: no
+keyboard navigation, no focus, no tooltip, no crosshair, no live region.
+Sparkline is a "glanceable direction signal" — consumer renders own
+numeric badge next to the sparkline for the actual value (canonical
+KPI tile lockup demonstrated in demo §3). Sr-only `<table>` (Index +
+Value columns) still mandatory for AT users.
+
+API: `data` + `title` + `description?` + `interpolation?` + `color?` +
+`strokeWidth?` + `area?` + `fillOpacity?` (default 0.2) + `gradient?` +
+`animate?` + `aspectRatio?` (default 4 — wide-and-short typical strip) +
+`renderEmpty?` + `valueFormat?`. First consumer of `_shared/chart-math`
+— imports exactly the 8 helpers it needs, correctly skips axis / mixed-X
+/ multi-series helpers.
+
+Phase 4 Evaluator findings + Phase 5 fixes:
+- IMPORTANT — single-point degenerate case (`data.length === 1`)
+  violated JSDoc contract: `scaleLinear` over span-0 x-domain collapsed
+  the lone point to plot midpoint, leaving no segment to stroke
+  (would render empty against demo §6 "Single value" label). Fix:
+  when `data.length === 1`, synthesize 2 endpoints at PLOT_LEFT +
+  PLOT_RIGHT sharing y, so path generators emit a horizontal segment
+  spanning full width.
+
+Manifest: 98 → 99 families. Zero new lib tokens.
+
+**E01.4 PieChart v1 — SVG pie + donut chart**
+
+Categorical composition chart (full 360°) — complements existing
+`<UsageDonut>` (partial progress with visible remainder; different
+semantics, NOT redundant). `variant: 'pie' | 'donut'` (donut inner radius
+= 0.6× outer, hardcoded for v1). `data: PieChartDatum[]` =
+`{name, value, color?}[]`. 12 props on root.
+
+Interactive a11y matching LineChart/AreaChart precedent: per-segment
+`<path>` / `<circle>` w/ roving tabindex + aria-label. Keyboard model:
+Arrow Left/Right/Up/Down cycle, Home/End jump, Space/Enter click + pin
+tooltip, Escape dismiss + blur. Live region announces focused segment
+via name + value + percent (drops zero-width re-announce marker — pie
+segment identities are stable+distinct per render; polite live region
+naturally re-announces on content change).
+
+Polar geometry inline (NOT in `_shared/`): `polarToCartesian(cx, cy, r,
+deg)` (0° = 12 o'clock, clockwise growth) and `describeArc(cx, cy,
+outerR, innerR, startDeg, endDeg)` (sweepFlag=1 outer CW + sweepFlag=0
+inner CCW for donut annulus winding). Mirrors how Cartesian helpers
+were inlined for 2 charts before extraction at 3rd — polar will extract
+to `_shared/polar-math.ts` when a 2nd polar consumer joins (RadarChart /
+GaugeChart / future).
+
+Edge cases:
+- Empty data → empty state + empty sr-only table (caption + headers
+  still render)
+- Single 100% segment → renders as `<circle>` to avoid degenerate 360°
+  SVG arc (start = end is a degenerate path). Donut variant: annulus
+  via `<circle fill="none" stroke=color strokeWidth=outerR-innerR
+  r=(outerR+innerR)/2>` — math verified exact (52.8 to 88 for
+  outerR=88 / innerR=52.8)
+- Negative values → silently filtered + dev-mode `console.warn`
+- Zero-sum (all zeros) → empty state
+
+Slots: `centerLabel?: ReactNode` (donut hole content; ignored in pie
+variant — JSDoc documented), `showLabels?: boolean` (on-segment
+percentage labels; auto-hide slices <10% to avoid collision —
+leader-line labels deferred to 0.20.x), `renderTooltip?` slot,
+`renderEmpty?` slot. Callbacks: `onSegmentClick` + `onSegmentFocus`.
+
+Phase 4 Evaluator findings + Phase 5 fixes:
+- IMPORTANT — `aria-describedby` chain order: consumer-supplied id was
+  `unshift`ed (placed FIRST) contradicting JSDoc contract "consumer
+  LAST". Fix: `ids.push(consumerDescribedBy)` so AT announces chart's
+  own context (description + sr-only table + live region) before
+  supplemental consumer description.
+- IMPORTANT — initial tab-entry trap: with `focusedIdx === null`
+  initial state, all segments rendered `tabIndex=-1` → Tab from outside
+  could not enter the segment group. Keyboard-nav promise silently
+  broken on first focus. Fix: `isTabStop = (focusedIdx ?? 0) === idx`,
+  so segment[0] is the default tab stop. Roving tabindex still tracks
+  user's actual focus after first interaction.
+
+Manifest: 99 → 100 families (0.20.0 cycle target hit). Zero new lib
+tokens. Note: `.segmentLabel` uses `rgba(0,0,0,0.35)` paint-order
+text-outline for readability against arbitrary segment colors — flagged
+NITPICK as token candidate for follow-up.
+
+### Tests deferred (0.20.x sprint)
+
+Playwright + axe-core runtime + manual NVDA sweep for all 4 charts
+batched to a dedicated 0.20.x test-execution sprint, matching the
+E15 Tabs / E05.4 Form / E06.x Header precedent established in earlier
+cycles. Regression specs planned:
+- LC-R01..LC-R26 (LineChart — 26 cases, partially executed in E01.1)
+- AC-R01..AC-R20 (AreaChart)
+- SP-R01..SP-R15 (Sparkline)
+- PC-R01..PC-R20 (PieChart)
+
+`tsc --noEmit` clean, eslint clean (jsx-a11y + react-hooks), `check:barrel`
+OK, `check:manifest` OK across all 4 charts. Visual regression via
+demo routes deferred to test sprint.
+
+### Notes
+
+- Same a11y "shared bug" identified in PieChart Phase 4 evaluator
+  (consumer describedby placement + initial tab-entry trap) likely
+  exists in LineChart and AreaChart too — logged as follow-up for
+  0.20.x patch (not in 0.20.0 scope; fixed only in PieChart this cycle).
+- `_shared/chart-math.ts` is lib-internal (NOT in barrel). Consumers
+  must import the chart components directly.
+- Polar helpers will extract to `_shared/polar-math.ts` when a 2nd
+  polar consumer joins (RadarChart / GaugeChart in future minors).
 
 ## [0.19.0] — 2026-05-12
 
