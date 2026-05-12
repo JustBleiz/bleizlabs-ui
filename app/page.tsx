@@ -228,6 +228,13 @@ const components: ComponentLink[] = [
     phase: 'Phase 4 — Interactive',
     status: 'available',
   },
+  {
+    href: '/components/tags-input',
+    name: 'TagsInput',
+    description: 'Freeform tag input — inline chips with Backspace-to-remove, validate fn, delimiter/paste split, addOnBlur, maxTags, allowDuplicates. Hidden delimited input for FormData participation. IME composition safe.',
+    phase: 'Phase 4 — Interactive',
+    status: 'available',
+  },
 
   // ── Phase 5 — Feedback ─────────────────────────────────────────────────
   {
@@ -508,6 +515,13 @@ const components: ComponentLink[] = [
     href: '/components/data-table',
     name: 'DataTable',
     description: 'Generic-data grid primitive z declarative columns + data API, single/multiple selection, expansion, frozen columns, mobile card fallback. Full APG /grid/ (lub /treegrid/ z expansion) keyboard model + aria-live announcements.',
+    phase: 'Phase 10 — Complex Interactive',
+    status: 'available',
+  },
+  {
+    href: '/components/file-upload',
+    name: 'FileUpload',
+    description: 'Drop zone + native file input wrapper with render-props children. Validation matrix (accept / multiple / maxSize / minSize / maxFiles), FormData participation via hidden input, drag/drop ARIA, axe-safe (no nested-interactive). Zero external deps — native File API + HTML5 drag/drop.',
     phase: 'Phase 10 — Complex Interactive',
     status: 'available',
   },
