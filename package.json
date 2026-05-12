@@ -1,6 +1,6 @@
 {
   "name": "@bleizlabs/ui",
-  "version": "0.18.0",
+  "version": "0.18.1",
   "description": "Zero-dependency, fully-styled React component library with seed-based design tokens. 93 focused components, WAI-ARIA compliant, SCSS Modules, React 19 + Next.js 16. Ships with `bleizlabs-ui` CLI for project scaffold.",
   "license": "MIT",
   "author": "BleizLabs <hello@bleizlabs.eu>",

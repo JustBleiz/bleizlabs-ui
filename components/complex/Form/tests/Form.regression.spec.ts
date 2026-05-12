@@ -304,4 +304,34 @@ test.describe('Form — regression cases (Radix issues + CV API edges)', () => {
     const nv = await form.evaluate((el) => (el as HTMLFormElement).noValidate);
     expect(nv).toBe(true);
   });
+
+  // ────────────────────────────────────────────────────────────────────
+  // Re-render hygiene — Field registration must not re-fire across renders
+  // ────────────────────────────────────────────────────────────────────
+
+  test('FM-R23: <Field> inside <Form> does not trigger infinite re-register loop', async ({
+    page,
+  }) => {
+    // Forensic regression — Field's `registerField` useEffect depended on the
+    // wrapping `formCtx` context object. Form re-memoes `ctxValue` whenever
+    // `validityVersion` bumps (which `registerField` itself triggers on
+    // mount), so depending on the whole object caused:
+    //   mount → registerField → setValidityVersion → ctxValue re-memo
+    //   → effect cleanup (unregister + bump) → re-register (bump) → ...
+    // React surfaced this as "Maximum update depth exceeded". Fix: depend on
+    // the stable `useCallback([])` reference (`registerField`), not the
+    // wrapping context object. See Field.tsx — `Register with Form` block.
+    const errors: string[] = [];
+    page.on('pageerror', (e) => errors.push(e.message));
+    page.on('console', (msg) => {
+      if (msg.type() === 'error') errors.push(msg.text());
+    });
+    await page.goto('/components/field');
+    await page.waitForLoadState('networkidle');
+    // Allow a couple of frames for any deferred effects to settle.
+    await page.waitForTimeout(200);
+    expect(
+      errors.filter((e) => /Maximum update depth exceeded/i.test(e)),
+    ).toHaveLength(0);
+  });
 });
