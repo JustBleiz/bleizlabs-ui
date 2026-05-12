@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1",
   "libVersion": "0.20.1",
-  "generatedAt": "2026-05-12T20:06:16.612Z",
+  "generatedAt": "2026-05-12T20:39:47.995Z",
   "categories": {
     "layout": [
       "Container",
@@ -74,6 +74,7 @@
     ],
     "molecules": [
       "AccordionGroup",
+      "AvatarGroup",
       "BackLink",
       "BreakdownList",
       "Chip",
@@ -914,6 +915,18 @@
       "types": [
         "AccordionGroupMode",
         "AccordionGroupProps"
+      ],
+      "hooks": []
+    },
+    {
+      "family": "AvatarGroup",
+      "category": "molecules",
+      "path": "molecules/AvatarGroup",
+      "exports": [
+        "AvatarGroup"
+      ],
+      "types": [
+        "AvatarGroupProps"
       ],
       "hooks": []
     },

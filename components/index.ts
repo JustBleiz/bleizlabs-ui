@@ -98,6 +98,7 @@ export * from './specialized/UsageDonut';
 // Molecules (11)
 // ----------------------------------------------------------------------------
 export * from './molecules/AccordionGroup';
+export * from './molecules/AvatarGroup';
 export * from './molecules/BackLink';
 export * from './molecules/BreakdownList';
 export * from './molecules/Chip';
