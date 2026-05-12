@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1",
   "libVersion": "0.18.1",
-  "generatedAt": "2026-05-12T13:52:05.457Z",
+  "generatedAt": "2026-05-12T14:44:28.277Z",
   "categories": {
     "layout": [
       "Container",
@@ -44,6 +44,7 @@
       "PhoneInput",
       "RadioGroup",
       "Switch",
+      "TagsInput",
       "TextLink",
       "Textarea",
       "TimeInput",
@@ -584,6 +585,22 @@
       "types": [
         "SwitchProps",
         "SwitchSize"
+      ],
+      "hooks": []
+    },
+    {
+      "family": "TagsInput",
+      "category": "interactive",
+      "path": "interactive/TagsInput",
+      "exports": [
+        "TagsInput"
+      ],
+      "types": [
+        "TagRejection",
+        "TagRejectionReason",
+        "TagValidateResult",
+        "TagsInputProps",
+        "TagsInputSize"
       ],
       "hooks": []
     },

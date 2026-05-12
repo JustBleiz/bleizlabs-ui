@@ -54,6 +54,57 @@ axe-core zero violations on demo route (`/components/file-upload`).
 
 Manifest: 93 → 94 families. Zero new lib tokens. Zero new external deps.
 
+**E01.2 TagsInput v1 — freeform tag input**
+
+Phase 10 interactive component (NOT in `complex/` because it has no popover —
+inline chip list + native textbox only). Distinct from Combobox multi-mode:
+Combobox = select-from-list with popup listbox + registered items;
+TagsInput = freeform creation (no popup, type and commit).
+
+API highlights:
+- Controlled + uncontrolled value (`string[]`) via `value`/`defaultValue` +
+  `onChange`. Per-attempt rejections via `onReject(rejections)`.
+- Validation matrix: `validate(tag) => boolean | string` (string = error
+  message), `maxTags`, `allowDuplicates`, `caseSensitive`, `trim`. Each
+  axis maps to a `TagRejectionReason` code (`empty` / `duplicate` /
+  `too-many` / `validate-failed`).
+- Composition: `delimiter` array (default `[',', ';']`), `addOnBlur` for
+  Gmail-style auto-commit on blur. Paste-split on configured delimiters +
+  newline.
+- Form participation: `name` + `required` mirror to a hidden
+  `<input type="hidden">` carrying delimited-string value (Q1 (α)).
+  Constraint Validation via `setCustomValidity` keyed on
+  `required && value.length === 0`.
+- A11y: native `<input type="text">` typing surface, `role="list"` chip
+  group, `role="listitem"` per chip, real `<button aria-label="Remove {tag}">`
+  per chip (in Tab order per Q3 (α) — TagsInput has no listbox →
+  aria-activedescendant pattern doesn't apply). IME composition guard
+  (`isComposingRef` + `nativeEvent.isComposing`). Live region announces
+  "Added: {tag}" / "Removed: {tag}" / "Tag rejected: {message}" with
+  zero-width-marker counter for AT re-announcement.
+- Forensic patterns: Backspace-on-empty removes last chip
+  (Combobox precedent), case-insensitive duplicate check, paste-split with
+  trim + empty-skip, intra-wrapper blur detection via pointerdown flag
+  (relatedTarget is null when clicking inner SVG glyph — Phase 5 fix #1).
+
+Phase 4 Evaluator findings (verdict PASS, but 4 IMPORTANT applied in Phase 5):
+- Live region announces consumer-supplied `validate` message instead of
+  internal enum code (was: "Tag rejected: validate-failed" → now: "Tag
+  rejected: Must be lowercase").
+- `useImperativeHandle` deps array added (was missing — would flag
+  exhaustive-deps in stricter ESLint configs).
+- Removed dead "Keep pending in sync" comment block declaring a
+  non-existent effect.
+- `addOnBlur` race fixed via `pointerdown`-marker flag on the wrapper
+  for intra-wrapper blur detection (relatedTarget is null when click
+  origin is the SVG glyph inside a `<button>`).
+
+Tests: 63 PASS / 0 fail across 6 spec files: aria (10), keyboard (9),
+validate (8), paste (6), form (5), regression (25 — TI-R01..TI-R25 incl.
+the new TI-R25 covering Phase 5 fix #4). axe-core zero violations.
+
+Manifest: 94 → 95 families. Zero new lib tokens. Zero new external deps.
+
 ## [0.18.1] — 2026-05-12
 
 **Patch release — Form/Field re-render hygiene.**

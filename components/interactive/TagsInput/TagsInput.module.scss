@@ -1,0 +1,183 @@
+@use '../../../styles/mixins' as mx;
+
+// ============================================================================
+// TagsInput — freeform tag input.
+//
+// Wrapper holds chip list + typing input + hidden form value + live region.
+// Mirrors Combobox multi-mode chip render markup (Combobox.module.scss:`chip*`
+// classes) but lives independently — TagsInput is interactive/, Combobox is
+// complex/, and they ship at different prop-budget waivers.
+// ============================================================================
+
+.root {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-1);
+  min-height: 2.5rem; // 40px md size baseline (matches Input)
+  padding: var(--space-1) var(--space-2);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-input);
+  background-color: var(--color-surface);
+  color: var(--color-text-primary);
+  cursor: text;
+  transition:
+    border-color var(--duration-fast) var(--easing-default),
+    box-shadow var(--duration-fast) var(--easing-default);
+}
+
+.root:hover:not([data-state='disabled']) {
+  border-color: var(--color-border-strong);
+}
+
+.root:focus-within {
+  border-color: var(--color-brand);
+  @include mx.focus-ring;
+}
+
+// Size variants — match Input atom scale (sm 32 / md 40 / lg 48).
+.root[data-size='sm'] {
+  min-height: 2rem;
+  font-size: var(--font-size-sm);
+}
+.root[data-size='md'] {
+  min-height: 2.5rem;
+}
+.root[data-size='lg'] {
+  min-height: 3rem;
+  font-size: var(--font-size-lg);
+}
+
+// ────────────────────────────────────────────────────────────────────────
+// States
+// ────────────────────────────────────────────────────────────────────────
+.root[data-state='invalid'] {
+  border-color: var(--color-error);
+
+  &:focus-within {
+    @include mx.focus-ring-error;
+  }
+}
+
+.root[data-state='disabled'] {
+  cursor: not-allowed;
+  background-color: var(--color-surface-muted);
+  color: var(--color-text-muted);
+  border-color: var(--color-border-subtle);
+}
+
+.root[data-state='max-reached'] {
+  // Subtle visual hint — typing still allowed (lets validation surface the
+  // rejection via live region), but the wrapper hints at the cap.
+  border-color: var(--color-border-strong);
+}
+
+// ────────────────────────────────────────────────────────────────────────
+// Chip list
+// ────────────────────────────────────────────────────────────────────────
+.chipList {
+  display: contents; // chips participate in wrapper's flex-wrap directly
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  height: 1.5rem; // 24px — fits 32/40/48 wrapper heights with vertical centering
+  padding: 0 var(--space-1) 0 var(--space-2);
+  background-color: var(--color-brand-subtle);
+  color: var(--color-text-primary);
+  border-radius: var(--radius-full);
+  font-size: var(--font-size-sm);
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.chipLabel {
+  display: inline-block;
+  max-width: 16rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.chipRemove {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1rem;
+  height: 1rem;
+  padding: 0;
+  margin: 0;
+  background: transparent;
+  border: 0;
+  border-radius: var(--radius-sm);
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  transition: background-color var(--duration-fast) var(--easing-default);
+
+  &:hover:not(:disabled) {
+    background-color: var(--color-surface-muted);
+    color: var(--color-text-primary);
+  }
+
+  &:focus-visible {
+    @include mx.focus-ring;
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    color: var(--color-text-muted);
+  }
+}
+
+// ────────────────────────────────────────────────────────────────────────
+// Typing input — visually transparent, inherits wrapper styling
+// ────────────────────────────────────────────────────────────────────────
+.input {
+  flex: 1;
+  min-width: 6rem;
+  height: 1.5rem; // matches chip height for visual baseline alignment
+  padding: 0;
+  margin: 0;
+  background: transparent;
+  border: 0;
+  outline: none;
+  color: inherit;
+  font: inherit;
+
+  &::placeholder {
+    color: var(--color-text-muted);
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+  }
+}
+
+// ────────────────────────────────────────────────────────────────────────
+// Live region — visually hidden
+// ────────────────────────────────────────────────────────────────────────
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+// ────────────────────────────────────────────────────────────────────────
+// Reduced motion
+// ────────────────────────────────────────────────────────────────────────
+@media (prefers-reduced-motion: reduce) {
+  .root,
+  .chipRemove {
+    transition: none;
+  }
+}
