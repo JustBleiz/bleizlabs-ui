@@ -109,7 +109,7 @@ export * from './molecules/Timeline';
 export * from './presets/FormSurface';
 
 // ----------------------------------------------------------------------------
-// Complex interactive (25) — v0.14.0 adds Field (E06.12)
+// Complex interactive (26) — 0.17.0 adds DataTable (E01)
 // ----------------------------------------------------------------------------
 export * from './complex/AlertDialog';
 export * from './complex/Calendar';
@@ -117,6 +117,7 @@ export * from './complex/Carousel';
 export * from './complex/Combobox';
 export * from './complex/Command';
 export * from './complex/ContextMenu';
+export * from './complex/DataTable';
 export * from './complex/DatePicker';
 export * from './complex/Dialog';
 export * from './complex/Drawer';

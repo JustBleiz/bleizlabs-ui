@@ -1,0 +1,630 @@
+@use '../../../styles/mixins' as mx;
+
+// ============================================================================
+// DataTable v1 — foundation styles (sort + pagination + states + density)
+// Selection / expansion / frozen / mobile fallback / RTL polish → next sessions
+// ============================================================================
+
+.root {
+  // 1. Root structure
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  position: relative;
+  width: 100%;
+
+  // 2. Tokens
+  font-family: var(--font-secondary);
+  font-size: var(--font-size-base);
+  color: var(--color-text-primary);
+
+  // 3. Density variables (default = cozy)
+  --data-table-row-height: 44px;
+  --data-table-cell-padding-y: var(--space-2);
+  --data-table-cell-padding-x: var(--space-3);
+  --data-table-header-padding-y: var(--space-3);
+
+  &.density-compact {
+    --data-table-row-height: 36px;
+    --data-table-cell-padding-y: var(--space-1);
+    --data-table-cell-padding-x: var(--space-2);
+    --data-table-header-padding-y: var(--space-2);
+  }
+
+  &.density-comfortable {
+    --data-table-row-height: 56px;
+    --data-table-cell-padding-y: var(--space-3);
+    --data-table-cell-padding-x: var(--space-4);
+    --data-table-header-padding-y: var(--space-4);
+  }
+}
+
+// ============================================================================
+// Table wrapper + scroll handling
+// ============================================================================
+
+.tableWrapper {
+  position: relative;
+  overflow-x: auto;
+  border-radius: var(--radius-md);
+}
+
+// Sticky header
+.stickyHeader {
+  .tableWrapper {
+    max-height: 100%;
+  }
+
+  table thead {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    background: var(--color-surface);
+    box-shadow: 0 1px 0 0 var(--color-border-subtle);
+  }
+}
+
+// ============================================================================
+// Header cells
+// ============================================================================
+
+.headerCell {
+  padding-block: var(--data-table-header-padding-y);
+  padding-inline: var(--data-table-cell-padding-x);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-secondary);
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+  white-space: nowrap;
+  text-align: start;
+}
+
+.sortableHeader {
+  cursor: pointer;
+  user-select: none;
+}
+
+.sortedHeader {
+  color: var(--color-text-primary);
+}
+
+.sortButton {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  background: transparent;
+  border: 0;
+  padding: 0;
+  margin: 0;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+  text-align: inherit;
+  transition: color var(--duration-fast) var(--easing-default);
+
+  &:hover {
+    color: var(--color-text-primary);
+  }
+
+  &:focus-visible {
+    @include mx.focus-ring;
+    outline: none;
+    border-radius: var(--radius-sm);
+  }
+}
+
+.headerLabel {
+  display: inline-block;
+}
+
+.sortIndicator {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 10px;
+  height: 14px;
+  flex-shrink: 0;
+}
+
+.sortArrow {
+  fill: var(--color-text-muted);
+  transition: fill var(--duration-fast) var(--easing-default);
+}
+
+.sortArrowActive {
+  fill: var(--color-brand);
+}
+
+// ============================================================================
+// Data rows + cells
+// ============================================================================
+
+.row {
+  height: var(--data-table-row-height);
+  transition: background-color var(--duration-fast) var(--easing-default);
+}
+
+.cell {
+  padding-block: var(--data-table-cell-padding-y);
+  padding-inline: var(--data-table-cell-padding-x);
+  vertical-align: middle;
+  color: var(--color-text-primary);
+}
+
+// Row variants (visual tonacja) — `.row-default` is intentional no-op
+// reserved as a symmetric class hook for consumer override.
+.row-success {
+  background-color: color-mix(in srgb, var(--color-success) 6%, transparent);
+}
+
+.row-warning {
+  background-color: color-mix(in srgb, var(--color-warning) 6%, transparent);
+}
+
+.row-error {
+  background-color: color-mix(in srgb, var(--color-error) 6%, transparent);
+}
+
+// Hover state
+.hoverable {
+  .row:not(.rowDisabled):hover {
+    background-color: var(--color-surface-hover);
+  }
+}
+
+// Striped (every other row in body)
+.striped {
+  tbody .row:nth-child(even):not(.rowDisabled) {
+    background-color: var(--color-surface-raised);
+  }
+}
+
+// Clickable row
+.rowClickable {
+  cursor: pointer;
+}
+
+// Disabled row
+.rowDisabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+
+  .cell {
+    color: var(--color-text-muted);
+  }
+}
+
+// Cell focus (roving tabindex visual cue — APG grid)
+.cellFocused {
+  outline: none;
+  box-shadow: inset 0 0 0 2px var(--color-brand);
+  position: relative;
+}
+
+// Selected row
+.rowSelected {
+  background-color: color-mix(in srgb, var(--color-brand) 8%, transparent);
+
+  &:hover {
+    background-color: color-mix(in srgb, var(--color-brand) 12%, transparent);
+  }
+}
+
+// Selection column (checkbox cell)
+.selectionCell {
+  width: 44px;
+  min-width: 44px;
+  padding-block: var(--data-table-cell-padding-y);
+  padding-inline: var(--data-table-cell-padding-x);
+  text-align: center;
+}
+
+// Filter row (drugi `<tr>` w `<thead>`)
+.filterRow {
+  background: var(--color-surface);
+}
+
+.filterCell {
+  padding-block: var(--space-2);
+  padding-inline: var(--data-table-cell-padding-x);
+  border-bottom: 1px solid var(--color-border-subtle);
+  vertical-align: middle;
+}
+
+// Expansion column (chevron toggle cell)
+.expansionCell {
+  width: 44px;
+  min-width: 44px;
+  padding-block: var(--data-table-cell-padding-y);
+  padding-inline: var(--data-table-cell-padding-x);
+  text-align: center;
+}
+
+.expansionButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  margin: 0;
+  background: transparent;
+  border: 0;
+  border-radius: var(--radius-sm);
+  color: var(--color-text-muted);
+  cursor: pointer;
+  transition:
+    color var(--duration-fast) var(--easing-default),
+    background-color var(--duration-fast) var(--easing-default),
+    transform var(--duration-fast) var(--easing-default);
+
+  &:hover:not(:disabled) {
+    color: var(--color-text-primary);
+    background-color: var(--color-surface-hover);
+  }
+
+  &:focus-visible {
+    @include mx.focus-ring;
+    outline: none;
+  }
+
+  &:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+
+  svg {
+    transition: transform var(--duration-fast) var(--easing-default);
+  }
+}
+
+.expansionButtonExpanded {
+  color: var(--color-text-primary);
+
+  svg {
+    transform: rotate(90deg);
+  }
+}
+
+// Expansion panel row + cell
+.rowExpanded {
+  // base row when its panel is open — visual cue (subtle bg)
+  background-color: var(--color-surface-raised);
+}
+
+.expansionPanel {
+  // The second `<tr>` containing renderExpanded content
+}
+
+.expansionPanelCell {
+  padding: 0;
+  background-color: var(--color-surface-raised);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.expansionPanelContent {
+  padding-block: var(--space-3);
+  padding-inline: var(--space-4);
+  animation: dataTableExpansionReveal var(--duration-fast) var(--easing-default);
+}
+
+@keyframes dataTableExpansionReveal {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .expansionButton svg {
+    transition: none;
+  }
+  .expansionPanelContent {
+    animation: none;
+  }
+}
+
+.selectionCheckbox {
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  margin: 0;
+  cursor: pointer;
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+  transition:
+    background-color var(--duration-fast) var(--easing-default),
+    border-color var(--duration-fast) var(--easing-default);
+  display: inline-block;
+  position: relative;
+  vertical-align: middle;
+
+  &:hover:not(:disabled) {
+    border-color: var(--color-brand);
+  }
+
+  &:focus-visible {
+    @include mx.focus-ring;
+    outline: none;
+  }
+
+  &:checked {
+    background-color: var(--color-brand);
+    border-color: var(--color-brand);
+
+    &::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='white' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'><polyline points='3 8 6.5 11.5 13 5'/></svg>");
+      background-repeat: no-repeat;
+      background-position: center;
+      background-size: 14px 14px;
+    }
+  }
+
+  &:indeterminate {
+    background-color: var(--color-brand);
+    border-color: var(--color-brand);
+
+    &::after {
+      content: '';
+      position: absolute;
+      inset-inline: 2px;
+      top: 50%;
+      height: 2px;
+      transform: translateY(-50%);
+      background: var(--color-surface);
+      border-radius: 1px;
+    }
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+// Skeleton row
+.skeletonRow {
+  .cell {
+    padding-block: var(--data-table-cell-padding-y);
+  }
+}
+
+// ============================================================================
+// State rows (error / empty)
+// ============================================================================
+
+.stateRow {
+  padding: var(--space-4);
+  display: flex;
+  justify-content: center;
+}
+
+.errorContent {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+// ============================================================================
+// Pagination footer
+// ============================================================================
+
+.paginationFooter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+  padding-block: var(--space-2);
+}
+
+.rowCount {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+}
+
+// ============================================================================
+// Live region (sr-only)
+// ============================================================================
+
+.liveRegion {
+  @include mx.sr-only;
+}
+
+// ============================================================================
+// Frozen / sticky columns
+// ============================================================================
+
+// Sticky cells use logical properties — automatic RTL handling via dir attr.
+// API `sticky: 'left' | 'right'` = "start" / "end" of reading direction.
+//   LTR: stickyLeft → physically left (inline-start), stickyRight → right (end)
+//   RTL: stickyLeft → physically right (inline-start), stickyRight → left (end)
+.stickyLeft {
+  position: sticky;
+  inset-inline-start: 0;
+  z-index: 1;
+  background-color: var(--color-surface);
+  box-shadow:
+    1px 0 0 0 var(--color-border-subtle),
+    4px 0 6px -2px color-mix(in srgb, var(--color-border) 35%, transparent);
+}
+
+.stickyRight {
+  position: sticky;
+  inset-inline-end: 0;
+  z-index: 1;
+  background-color: var(--color-surface);
+  box-shadow:
+    -1px 0 0 0 var(--color-border-subtle),
+    -4px 0 6px -2px color-mix(in srgb, var(--color-border) 35%, transparent);
+}
+
+// In RTL, mirror box-shadow direction
+[dir='rtl'] .stickyLeft {
+  box-shadow:
+    -1px 0 0 0 var(--color-border-subtle),
+    -4px 0 6px -2px color-mix(in srgb, var(--color-border) 35%, transparent);
+}
+
+[dir='rtl'] .stickyRight {
+  box-shadow:
+    1px 0 0 0 var(--color-border-subtle),
+    4px 0 6px -2px color-mix(in srgb, var(--color-border) 35%, transparent);
+}
+
+// Header sticky cells inherit background z headerCell
+.stickyHeader thead .stickyLeft,
+.stickyHeader thead .stickyRight {
+  z-index: 3; // above sticky header (z-index: 2) + sticky cells (z-index: 1)
+}
+
+// Striped + sticky combination: sticky cells need solid bg
+.striped tbody .row:nth-child(even) {
+  .stickyLeft,
+  .stickyRight {
+    background-color: var(--color-surface-raised);
+  }
+}
+
+// Hover + sticky
+.hoverable .row:not(.rowDisabled):hover {
+  .stickyLeft,
+  .stickyRight {
+    background-color: var(--color-surface-hover);
+  }
+}
+
+// Selected + sticky
+.rowSelected {
+  .stickyLeft,
+  .stickyRight {
+    background-color: color-mix(in srgb, var(--color-brand) 10%, var(--color-surface));
+  }
+}
+
+// ============================================================================
+// Mobile fallback (card list)
+// ============================================================================
+
+.mobileWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.mobileCard {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--space-3);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-md);
+  transition: background-color var(--duration-fast) var(--easing-default);
+
+  &.rowClickable {
+    cursor: pointer;
+  }
+
+  &.rowSelected {
+    border-color: var(--color-brand);
+    background-color: color-mix(in srgb, var(--color-brand) 6%, var(--color-surface));
+  }
+
+  &.rowDisabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+  }
+}
+
+.mobileCardHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+}
+
+.mobileCardActions {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+.mobileCardField {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-2);
+  font-size: var(--font-size-sm);
+}
+
+.mobileCardLabel {
+  color: var(--color-text-muted);
+  font-weight: var(--font-weight-medium);
+}
+
+.mobileCardValue {
+  color: var(--color-text-primary);
+  text-align: end;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mobileExpansionPanel {
+  padding-top: var(--space-2);
+  border-top: 1px solid var(--color-border-subtle);
+  animation: dataTableExpansionReveal var(--duration-fast) var(--easing-default);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mobileExpansionPanel {
+    animation: none;
+  }
+}
+
+// ============================================================================
+// Reduced motion
+// ============================================================================
+
+@media (prefers-reduced-motion: reduce) {
+  .row,
+  .sortButton,
+  .sortArrow {
+    transition: none;
+  }
+}
+
+// ============================================================================
+// Print
+// ============================================================================
+
+@media print {
+  .paginationFooter,
+  .liveRegion {
+    display: none;
+  }
+
+  .stickyHeader table thead {
+    position: static;
+    box-shadow: none;
+  }
+
+  .row {
+    page-break-inside: avoid;
+  }
+
+  .hoverable .row:hover {
+    background: transparent;
+  }
+}

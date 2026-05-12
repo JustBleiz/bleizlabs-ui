@@ -66,9 +66,12 @@ export default function TablePlayground() {
         </Heading>
         <p className={styles.intro}>
           Semantic table primitives — six atoms (Table, Header, Body, Footer,
-          Row, Cell) plus striped, bordered, and compact variants. Sorting,
-          filtering, and pagination deliberately live in consumer projects,
-          typically via a headless engine like TanStack Table.
+          Row, Cell) plus striped, bordered, and compact variants. For grid
+          features (sorting, filtering, pagination, selection, expansion,
+          frozen columns, APG <code>/grid/</code> keyboard model), use the
+          0.17.0 <a href="/components/data-table">DataTable</a> primitive —
+          it composes this Table compound internally. Zero external runtime
+          dependencies.
         </p>
       </header>
 
@@ -339,53 +342,41 @@ export default function TablePlayground() {
       {/* ─────────────────────────────────────────── */}
       <section className={styles.demo}>
         <Heading level={2} size="2xl">
-          7. DataTable pattern — per-project composition
+          7. Need grid features? Use <code>&lt;DataTable&gt;</code>
         </Heading>
         <Text variant="small" color="muted">
-          Complex features (sorting, filtering, pagination) belong in consumer
-          projects. Compose SimpleTable primitives with{' '}
-          <code>@tanstack/react-table</code> state engine:
+          Sorting, filtering, pagination, selection, expansion, frozen
+          columns, mobile card fallback, RTL, APG <code>/grid/</code>{' '}
+          keyboard model, and aria-live announcements ship in the 0.17.0{' '}
+          <a href="/components/data-table">
+            <code>&lt;DataTable&gt;</code>
+          </a>{' '}
+          primitive. It composes these Table atoms internally, so you keep
+          the same semantic markup and styling without pulling in an
+          external headless engine.
         </Text>
         <code className={styles.codeBlock}>
-{`// In consumer project — pnpm add @tanstack/react-table
-import { useReactTable, getCoreRowModel, getSortedRowModel, flexRender } from '@tanstack/react-table';
-import { Table, TableHeader, TableBody, TableRow, TableCell } from '@bleizlabs/ui';
+{`// In your app — zero external runtime deps
+import { DataTable, type ColumnDef } from '@bleizlabs/ui';
 
-const table = useReactTable({
-  data,
-  columns,
-  getCoreRowModel: getCoreRowModel(),
-  getSortedRowModel: getSortedRowModel(),
-});
+const columns: ColumnDef<Project>[] = [
+  { id: 'name', header: 'Name', accessorKey: 'name', sortable: true, filterable: 'text' },
+  { id: 'status', header: 'Status', accessorKey: 'status', sortable: true, filterable: 'enum' },
+  { id: 'owner', header: 'Owner', accessorKey: 'owner' },
+];
 
-<Table striped>
-  <TableHeader>
-    {table.getHeaderGroups().map(group => (
-      <TableRow key={group.id}>
-        {group.headers.map(h => (
-          <TableCell
-            key={h.id}
-            as="th"
-            onClick={h.column.getToggleSortingHandler()}
-          >
-            {flexRender(h.column.columnDef.header, h.getContext())}
-          </TableCell>
-        ))}
-      </TableRow>
-    ))}
-  </TableHeader>
-  <TableBody>
-    {table.getRowModel().rows.map(row => (
-      <TableRow key={row.id} hoverable>
-        {row.getVisibleCells().map(cell => (
-          <TableCell key={cell.id}>
-            {flexRender(cell.column.columnDef.cell, cell.getContext())}
-          </TableCell>
-        ))}
-      </TableRow>
-    ))}
-  </TableBody>
-</Table>`}
+<DataTable
+  data={projects}
+  columns={columns}
+  selection="multiple"
+  selectedRows={selected}
+  onSelectionChange={setSelected}
+  getRowId={(row) => row.id}
+  pagination={{ pageSize: 25 }}
+  density="cozy"
+  stickyHeader
+  aria-label="Project list"
+/>`}
         </code>
       </section>
     </main>

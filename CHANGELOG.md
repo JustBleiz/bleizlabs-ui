@@ -7,6 +7,85 @@ and this project adheres to [Semantic Versioning 2.0](https://semver.org/spec/v2
 
 ## [Unreleased]
 
+## [0.17.0] — 2026-05
+
+**Feature release.** Ships `<DataTable>` as a flagship generic-data grid
+primitive — the first item from the post-0.16 functional roadmap (see
+`ROADMAP.md`). Library grows from 88 to 89 families. Zero external runtime
+dependencies maintained.
+
+### Added
+
+**Complex interactive:**
+- `DataTable<T>` — declarative grid primitive z `columns` + `data` API +
+  discriminated-union selection mode (`'none' | 'single' | 'multiple'`).
+  Klocek-compliant: single concept, data-shape neutral via generic `T`,
+  no opinionated visual lockups (consumer drives density/dir/striped/sticky
+  via independent opt-in props). Ships full APG `/grid/` (or `/treegrid/`
+  when `expandable` is provided per WAI-ARIA 1.2 + axe
+  `aria-conditional-attr`) pattern: `role="grid"` by default, `role="treegrid"`
+  gdy `expandable` enabled, plus explicit `role="row"`/`"gridcell"`/
+  `"columnheader"` on every descendant,
+  `aria-rowcount`/`aria-rowindex`/`aria-colcount`/`aria-colindex`,
+  `aria-sort` synced to column sort state, `aria-selected`/`aria-expanded`
+  on selectable + expandable rows, `aria-multiselectable` on multi-select
+  grids, `aria-live="polite"` debounced announcements for sort/filter/page/
+  selection changes.
+
+  Keyboard model (cell-mode roving tabindex): Arrow keys (with RTL mirror
+  via logical CSS properties), Home/End (row boundaries), Ctrl+Home/End
+  (table boundaries), PageUp/PageDown (~viewport rows), Enter (activate
+  header sort / row click), Space (toggle row selection). Modifier-arrow
+  combos pass through to browser hotkeys. Widget-mode entry (F2/Escape)
+  deferred to v1.x — cells with interactive children currently rely on
+  standard Tab order escaping the grid.
+
+  Features: sortable + filterable columns (text/enum/number defaults +
+  custom `renderFilter` slot), single + multiple selection with stable
+  `getRowId` for cross-page persistence, row expansion with
+  `renderExpanded` slot, frozen left/right columns via `inset-inline-*`
+  logical properties (auto-mirrored in RTL), mobile card layout fallback
+  below configurable breakpoint (default 768px), 3 density modes
+  (compact/cozy/comfortable), striped/hoverable/sticky-header toggles,
+  loading skeleton + error Alert + Empty state machine, imperative
+  `DataTableHandle<T>` ref API (`getSelectedRows` / `clearSelection` /
+  `toggleRowExpanded` / `toggleColumnVisibility` / `scrollToRow`), Polish
+  i18n `labels` slot, dev-mode warning when selection enabled without
+  stable `getRowId`.
+
+  Hook: `useDataTableState<T>(options)` exposed for power users wiring
+  external state controls.
+
+  Tests: 11 Playwright spec suites covering keyboard + focus management +
+  ARIA + sort + filter + pagination + selection + expansion + responsive +
+  12 edge cases + 20 regression cases (89 cases total). Demo route at
+  `/components/data-table` ships 6 use cases against 47 mock projects.
+
+  See `ROADMAP.md` and `work/2026-05_0.17-datatable/docs/datatable-v1-plan.md`
+  for full design rationale.
+
+### Fixed
+
+Hardening from post-implementation adversarial audit (caught issues that
+9 prior audit iterations missed by reading specs statically instead of
+running them):
+
+- `aria-rowindex` math on data rows now includes `pageIndex * pageSize`
+  offset so screen readers announce "row 12 of 47" on page 2 instead of
+  the page-relative position.
+- Filter row promoted to `role="row"` with `aria-rowindex={2}` (was
+  `role="presentation"`). Resolves axe-core `aria-required-children`
+  violation on `treegrid` (filter `<input>` children are now valid
+  descendants of `<th role="columnheader">`).
+- Keyboard handler now reads cell coordinates from `target.dataset.row`
+  / `target.dataset.col` instead of stale React state. Fixes ArrowDown
+  + Space activation when interaction follows immediately after
+  programmatic focus (synthetic dispatch races React's render commit).
+- `<Switch>` track no longer intercepts pointer events. The decorative
+  `<span class="track">` previously sat on top of the sr-only `<input>`
+  with default `pointer-events: auto`, blocking programmatic clicks on
+  the input. Native UX preserved — `<label>` still toggles on click.
+
 ## [0.16.0] — 2026-05
 
 **BREAKING release.** This version closes the deprecation cycle that began

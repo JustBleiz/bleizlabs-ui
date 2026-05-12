@@ -166,7 +166,7 @@ const components: ComponentLink[] = [
   {
     href: '/components/table',
     name: 'Table',
-    description: 'Semantic <table> primitives — Table + Header + Body + Footer + Row + Cell. Striped, bordered, and compact variants. Pairs with TanStack Table for sortable / filterable data tables in consumer projects.',
+    description: 'Semantic <table> primitives — Table + Header + Body + Footer + Row + Cell. Striped, bordered, and compact variants. For grid features (sort, filter, pagination, selection, expansion, frozen columns, APG /grid/ keyboard) use the 0.17.0 <DataTable> primitive — it composes Table internally.',
     phase: 'Phase 3 — Display',
     status: 'available',
   },
@@ -501,6 +501,13 @@ const components: ComponentLink[] = [
     href: '/components/toolbar',
     name: 'Toolbar',
     description: 'Accessible toolbar per APG /toolbar/. Roving tabindex, separators, optional orientation, RTL-aware arrow keys.',
+    phase: 'Phase 10 — Complex Interactive',
+    status: 'available',
+  },
+  {
+    href: '/components/data-table',
+    name: 'DataTable',
+    description: 'Generic-data grid primitive z declarative columns + data API, single/multiple selection, expansion, frozen columns, mobile card fallback. Full APG /grid/ (lub /treegrid/ z expansion) keyboard model + aria-live announcements.',
     phase: 'Phase 10 — Complex Interactive',
     status: 'available',
   },

@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1",
-  "libVersion": "0.16.0",
-  "generatedAt": "2026-05-10T16:50:29.243Z",
+  "libVersion": "0.17.0",
+  "generatedAt": "2026-05-12T07:30:46.842Z",
   "categories": {
     "layout": [
       "Container",
@@ -89,6 +89,7 @@
       "Combobox",
       "Command",
       "ContextMenu",
+      "DataTable",
       "DatePicker",
       "Dialog",
       "Drawer",
@@ -1109,6 +1110,33 @@
         "ContextMenuTriggerProps"
       ],
       "hooks": []
+    },
+    {
+      "family": "DataTable",
+      "category": "complex",
+      "path": "complex/DataTable",
+      "exports": [
+        "DEFAULT_DATA_TABLE_LABELS",
+        "DataTable"
+      ],
+      "types": [
+        "CellContext",
+        "ColumnDef",
+        "ColumnFiltersState",
+        "DataTableDensity",
+        "DataTableHandle",
+        "DataTableLabels",
+        "DataTablePaginationConfig",
+        "DataTableProps",
+        "ExpansionConfig",
+        "FilterType",
+        "RowVariant",
+        "SortDirection",
+        "SortState"
+      ],
+      "hooks": [
+        "useDataTableState"
+      ]
     },
     {
       "family": "DatePicker",
