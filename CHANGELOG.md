@@ -7,6 +7,77 @@ and this project adheres to [Semantic Versioning 2.0](https://semver.org/spec/v2
 
 ## [Unreleased]
 
+### 0.20.0 cycle progress (on `work/0.20-charts-pack` branch)
+
+**E01.1 LineChart v1 — multi-series SVG line chart**
+
+Phase 10 complex interactive component. Renders 1-N series as smooth
+(Catmull-Rom tension 0.5) or linear paths over a numeric / time / categorical
+X axis. Built on native SVG + math helpers (scaleLinear, niceTicks, generate-
+Path, normalizeX) — zero external chart deps (no Recharts / Chart.js / D3).
+
+API highlights:
+- `series: LineChartSeries[]` — each series has `{ id?, name?, color?,
+  data: LineChartDatum[] }` where each datum is `{ x: number | Date | string,
+  y: number, label? }`. Generic data-shape abstraction; consumer's actual
+  business data stays unconstrained.
+- `interpolation`: `'linear' | 'smooth'` (default smooth — Catmull-Rom).
+- `animate`: path-draw stroke-dashoffset animation on mount;
+  `prefers-reduced-motion` always wins.
+- `aspectRatio` (default 16/9) + `height` (explicit pin override). Responsive
+  via CSS aspect-ratio + ResizeObserver (SSR-safe — no layout shift).
+- `xAxis` / `yAxis` config: `tickFormat`, `hide`, `domain`, `ticks` overrides.
+  Auto-derived y domain includes zero when data spans positive+negative.
+- `tooltipFormat` (value formatter) + `renderTooltip` (full slot override).
+- `renderEmpty` slot for custom zero-data state. Sr-only `<table>` ALWAYS
+  renders (LC-R20) so AT users get full data alternative even when consumer
+  shows custom empty UI.
+- `onPointClick` + `onPointFocus` callbacks (no separate hover event —
+  focus follows mouse).
+
+A11y model (synthesized from W3C `role="img"` + WCAG H51 — no canonical
+APG pattern for charts):
+- Root `<div role="img" aria-labelledby="{titleId}" aria-describedby=
+  "{consumer} {descId} {tableId} {liveId}">` (Pattern 3 forensic — chains
+  consumer ids with internal ids).
+- Internal `<svg aria-hidden="true">` — visual layer.
+- Sr-only `<table>` with `<caption>`, header row [X column, ...series.name],
+  unified-X rows sorted ascending, missing values rendered as `'—'`.
+- Per-point `<circle tabIndex={-1} aria-label>` — roving tabindex flips
+  active circle to `0`. Keyboard model: Arrow Right/Left (within series),
+  Arrow Up/Down (switch series), Home/End (first/last), Space/Enter
+  (activate → `onPointClick` + pin tooltip), Escape (unpin + clear focus).
+  Voronoi `<rect>` overlay per unified X — transparent, full plot height,
+  satisfies WCAG 2.5.5 touch target ≥44×44 for the 4-8px visible circles.
+- Live region (`role="status" aria-live="polite"`) announces focused point:
+  `"<series>, <x label>: <y value>"`. Counter ref bumped via `useEffect`
+  (NOT inside `useMemo` — React purity guard) so AT re-announces on same-
+  point re-focus (Pattern 2 forensic).
+- Focus-ring inside `:focus-visible` (Pattern 1 forensic).
+- `prefers-reduced-motion: reduce` suppresses path-draw animation +
+  crosshair/tooltip fades. `forced-colors: active` maps to CanvasText /
+  GrayText / Canvas (Windows High Contrast preserved).
+
+Phase 4 Evaluator findings + Phase 5 fixes:
+- CRITICAL #1 — voronoi `<rect>` overlay implemented per spec (was
+  documented but not rendered); WCAG 2.5.5 touch-target claim now valid.
+- CRITICAL #2 — announce counter moved from `useMemo` to `useEffect`-driven
+  state (no more React purity violation; StrictMode double-invocation safe).
+- IMPORTANT — `handleKeyDown` deps array corrected (`focusPointAt` added,
+  `pinned` / `setFocusAt` removed — unused inside).
+- IMPORTANT — `role="presentation"` removed from tooltip `<div>` (redundant
+  on neutral element).
+- Hydration fix: lib `formatX` fallback uses ISO `YYYY-MM-DD` instead of
+  `toLocaleDateString()` (Node.js server / Chromium client ICU drift caused
+  SSR mismatch in `Static report` demo). Consumer can override via
+  `xAxis.tickFormat` with explicit locale + timeZone.
+
+Tests: 53 PASS / 0 fail across 6 spec files: aria (8) + interpolation (4)
++ tooltip (6) + keyboard (6) + responsive (3) + regression (26 —
+LC-R01..R26). axe-core zero violations on demo route.
+
+Manifest: 96 → 97 families. Zero new lib tokens. Zero new external deps.
+
 ## [0.19.0] — 2026-05-12
 
 **Feature release — Forms expansion.** Ships 3 new Phase 10 complex

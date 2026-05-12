@@ -254,6 +254,13 @@ const components: ComponentLink[] = [
     status: 'available',
   },
   {
+    href: '/components/line-chart',
+    name: 'LineChart',
+    description: 'Multi-series SVG line chart with crosshair tooltip, keyboard data-point navigation, and sr-only <table> a11y fallback. Smooth (Catmull-Rom) or linear interpolation, responsive via aspect-ratio + ResizeObserver, dark mode via seed tokens. Zero external deps.',
+    phase: 'Phase 6 — Specialized',
+    status: 'available',
+  },
+  {
     href: '/components/availability-bar',
     name: 'AvailabilityBar',
     description: 'Day-by-day status strip — ok / warning / down cells in a CSS grid. Summary aria-label with per-day native title tooltips. Server-safe.',

@@ -85,6 +85,7 @@ export * from './specialized/BarChart';
 export * from './specialized/Breadcrumb';
 export * from './specialized/Dot';
 export * from './specialized/Kbd';
+export * from './specialized/LineChart';
 export * from './specialized/MetricBar';
 export * from './specialized/Pagination';
 export * from './specialized/ThemeToggle';
