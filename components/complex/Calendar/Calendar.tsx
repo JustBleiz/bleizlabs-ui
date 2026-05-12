@@ -166,6 +166,14 @@ interface CalendarContextValue {
   baseId: string;
   gridRef: RefObject<HTMLTableElement | null>;
   requestCellFocus: (date: Date) => void;
+  cellExtras:
+    | ((
+        date: Date,
+        ctx: { isInMonth: boolean; isSelected: boolean },
+      ) => HTMLAttributes<HTMLTableCellElement>)
+    | undefined;
+  onCellHover: ((date: Date) => void) | undefined;
+  onGridMouseLeave: (() => void) | undefined;
 }
 
 const CalendarContext = createContext<CalendarContextValue | null>(null);
@@ -249,6 +257,36 @@ export interface CalendarProps
    */
   children?: ReactNode;
   className?: string;
+  /**
+   * Opt-in cell-attribute customization slot. Called per cell render with the
+   * cell's date + context (`isInMonth`, `isSelected`). Return value is spread
+   * onto the `<td role="gridcell">` element BEFORE the component's own fixed
+   * attributes (`role`, `aria-selected`, `className`, `aria-hidden`) — so
+   * consumer cannot override grid semantics. Primary use: `data-*` attributes
+   * for CSS-driven overlays (range preview, today highlight, badge dots).
+   *
+   * @example
+   *   <Calendar
+   *     cellExtras={(date, ctx) => ({
+   *       'data-in-range': isInRange(date, from, to) ? 'true' : undefined,
+   *     })}
+   *   />
+   */
+  cellExtras?: (
+    date: Date,
+    ctx: { isInMonth: boolean; isSelected: boolean },
+  ) => HTMLAttributes<HTMLTableCellElement>;
+  /**
+   * Opt-in mouseenter callback per cell. Fires when pointer enters a date
+   * cell. Used by range pickers to track hover tail for preview highlighting.
+   * Does NOT fire for hidden outside-month cells (`showOutsideDays=false`).
+   */
+  onCellHover?: (date: Date) => void;
+  /**
+   * Opt-in mouseleave callback on grid `<table>`. Pairs with `onCellHover`
+   * for clearing the hover tail when pointer leaves the grid entirely.
+   */
+  onGridMouseLeave?: () => void;
 }
 
 export const Calendar = forwardRef<HTMLDivElement, CalendarProps>(function Calendar(props, ref) {
@@ -267,6 +305,9 @@ export const Calendar = forwardRef<HTMLDivElement, CalendarProps>(function Calen
     dir = 'ltr',
     children,
     className,
+    cellExtras,
+    onCellHover,
+    onGridMouseLeave,
     ...rest
   } = props;
 
@@ -377,6 +418,9 @@ export const Calendar = forwardRef<HTMLDivElement, CalendarProps>(function Calen
       baseId,
       gridRef,
       requestCellFocus,
+      cellExtras,
+      onCellHover,
+      onGridMouseLeave,
     }),
     [
       selectedDate,
@@ -394,6 +438,9 @@ export const Calendar = forwardRef<HTMLDivElement, CalendarProps>(function Calen
       today,
       baseId,
       requestCellFocus,
+      cellExtras,
+      onCellHover,
+      onGridMouseLeave,
     ],
   );
 
@@ -567,7 +614,7 @@ export const CalendarGrid = forwardRef<HTMLTableElement, CalendarGridProps>(func
   props,
   forwardedRef,
 ) {
-  const { children, className, ...rest } = props;
+  const { children, className, onMouseLeave: consumerOnMouseLeave, ...rest } = props;
   const {
     focusedDate,
     setFocusedDate,
@@ -580,7 +627,16 @@ export const CalendarGrid = forwardRef<HTMLTableElement, CalendarGridProps>(func
     baseId,
     gridRef,
     requestCellFocus,
+    onGridMouseLeave,
   } = useCalendarContext('CalendarGrid');
+
+  const handleMouseLeave = useCallback(
+    (event: MouseEvent<HTMLTableElement>) => {
+      onGridMouseLeave?.();
+      consumerOnMouseLeave?.(event);
+    },
+    [onGridMouseLeave, consumerOnMouseLeave],
+  );
 
   const mergedRef = useMemo(() => mergeRefs<HTMLTableElement>(gridRef, forwardedRef), [
     gridRef,
@@ -685,6 +741,7 @@ export const CalendarGrid = forwardRef<HTMLTableElement, CalendarGridProps>(func
       aria-labelledby={labelId}
       className={cn(styles.grid, className)}
       onKeyDown={handleKeyDown}
+      onMouseLeave={handleMouseLeave}
       {...rest}
     >
       {children}
@@ -811,14 +868,26 @@ export const CalendarCell = forwardRef<HTMLTableCellElement, CalendarCellProps>(
       showOutsideDays,
       isDisabled,
       locale,
+      cellExtras,
+      onCellHover,
     } = useCalendarContext('CalendarCell');
 
     const iso = toIsoDateString(date);
     const isOutside = !isSameMonth(date, displayMonth);
+    const isInMonth = !isOutside;
     const isSelected = selectedDate != null && isSameDay(date, selectedDate);
     const isFocused = isSameDay(date, focusedDate);
     const isToday = isSameDay(date, today);
     const disabled = isDisabled(date);
+
+    // Per-cell consumer slot — spread BEFORE fixed attrs so component owns
+    // role/aria-selected/className/aria-hidden. Common use: `data-*` for CSS
+    // overlays (range preview, badges).
+    const extras = cellExtras?.(date, { isInMonth, isSelected });
+
+    const handleMouseEnter = useCallback(() => {
+      onCellHover?.(date);
+    }, [onCellHover, date]);
 
     const handleClick = useCallback(
       (event: MouseEvent<HTMLButtonElement>) => {
@@ -833,7 +902,9 @@ export const CalendarCell = forwardRef<HTMLTableCellElement, CalendarCellProps>(
     );
 
     // Hidden outside day — cell still in DOM for layout stability but empty
-    // content + aria-hidden so SR skips it.
+    // content + aria-hidden so SR skips it. `extras` and `onCellHover` are
+    // intentionally NOT applied to hidden cells — they have no semantic content
+    // and no meaningful hover target.
     if (isOutside && !showOutsideDays) {
       return (
         <td
@@ -848,9 +919,11 @@ export const CalendarCell = forwardRef<HTMLTableCellElement, CalendarCellProps>(
     return (
       <td
         ref={ref}
+        {...extras}
         role="gridcell"
         aria-selected={isSelected ? true : undefined}
-        className={cn(styles.cell, className)}
+        className={cn(styles.cell, extras?.className, className)}
+        onMouseEnter={handleMouseEnter}
       >
         <button
           type="button"
