@@ -126,6 +126,7 @@ export * from './complex/Dialog';
 export * from './complex/Drawer';
 export * from './complex/DropdownMenu';
 export * from './complex/Field';
+export * from './complex/FileUpload';
 export * from './complex/Form';
 export * from './complex/HoverCard';
 export * from './complex/InputOTP';

@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1",
   "libVersion": "0.18.1",
-  "generatedAt": "2026-05-12T12:31:51.568Z",
+  "generatedAt": "2026-05-12T13:52:05.457Z",
   "categories": {
     "layout": [
       "Container",
@@ -98,6 +98,7 @@
       "Drawer",
       "DropdownMenu",
       "Field",
+      "FileUpload",
       "Form",
       "HoverCard",
       "InputOTP",
@@ -1276,6 +1277,21 @@
         "FieldMessageProps",
         "FieldProps",
         "FieldValidityMatch"
+      ],
+      "hooks": []
+    },
+    {
+      "family": "FileUpload",
+      "category": "complex",
+      "path": "complex/FileUpload",
+      "exports": [
+        "FileUpload"
+      ],
+      "types": [
+        "FileRejection",
+        "FileRejectionReason",
+        "FileUploadProps",
+        "FileUploadRenderProps"
       ],
       "hooks": []
     },

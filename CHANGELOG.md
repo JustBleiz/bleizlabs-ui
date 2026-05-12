@@ -7,6 +7,53 @@ and this project adheres to [Semantic Versioning 2.0](https://semver.org/spec/v2
 
 ## [Unreleased]
 
+### 0.19.0 cycle progress (on `work/0.19-forms-expansion` branch)
+
+**E01.1 FileUpload v1 — drop zone + native file input wrapper**
+
+Phase 10 complex interactive component. Drag-and-drop strefa + click-to-browse
+that wraps a visually-hidden native `<input type="file">` for FormData
+participation. Render-props children for full content control. Zero external
+runtime deps — native File API + HTML5 drag/drop events only.
+
+API highlights:
+- Validation: `accept` (MIME / wildcard / extension), `multiple`, `maxSize`,
+  `minSize`, `maxFiles` — each axis emits a `FileRejectionReason` code on
+  failure (`file-too-large` / `file-too-small` / `file-invalid-type` /
+  `too-many-files`).
+- Form participation: `name` + `required` mirror to the hidden input;
+  FormData multipart capture works natively. `inputRef` prop exposes the
+  hidden input for programmatic `.value = ''` reset between uploads.
+- A11y: drop zone is `<div tabIndex={0}>` (NOT `role="button"` — would
+  trigger axe `nested-interactive` with the consumer-rendered Browse
+  button inside). Keyboard activation flows via the inner Browse button
+  (real `<button>`). Click on the zone opens picker for mouse/touch;
+  click-from-inner-button is auto-detected and skipped (no
+  `stopPropagation` needed in consumer code). Live region announces
+  accept/reject counts with a varying zero-width marker so AT
+  re-announces identical consecutive operations.
+- Forensic patterns from spec (Phase 1 Explore): drag counter (FU-R03),
+  user-gesture preservation (FU-R02), empty-MIME extension fallback
+  (FU-R07), `dataTransfer.items` Safari fallback (FU-R19), size-reject
+  preview at dragOver is best-effort (FU-R08 documents the limit).
+
+Phase 4 Evaluator findings + fixes:
+- CRITICAL: focus-ring was applied unconditionally instead of inside
+  `:focus-visible` — fixed.
+- IMPORTANT: live-region repeat-content AT silence — fixed via
+  zero-width marker counter.
+- IMPORTANT: aria-describedby now CHAINS consumer-supplied + internal
+  live region id (both descriptions land in the same set).
+- Auto-skip click handler when origin is inner `<button>` / `<a>` /
+  `role="button"` — removes consumer footgun.
+
+Tests: 56 PASS / 1 documented skip (FU-R12 native picker dismiss focus
+restore — unreachable by Playwright, manual NVDA verified) across 5 spec
+files: aria (11), dragdrop (9), validate (10), form (5), regression (22).
+axe-core zero violations on demo route (`/components/file-upload`).
+
+Manifest: 93 → 94 families. Zero new lib tokens. Zero new external deps.
+
 ## [0.18.1] — 2026-05-12
 
 **Patch release — Form/Field re-render hygiene.**

@@ -1,8 +1,8 @@
 # `@bleizlabs/ui` — Roadmap 0.16 → 1.0
 
 **Status:** DRAFT
-**Last updated:** 2026-05-11
-**Current version:** 0.17.0 (89 components)
+**Last updated:** 2026-05-12
+**Current version:** 0.18.1 (93 components)
 
 > Funkcjonalne luki biblioteki + kolejność domykania. Bez estymat czasowych — pracujemy etapami.
 
@@ -25,9 +25,10 @@ Każda pozycja ma:
 ## Phasing — co kiedy
 
 ```
-0.17.0  →  DataTable v1                       [flagship single-lift]
-0.18.0  →  Date/Time pack                     [4 komponenty, shared Calendar logic]
-0.19.0  →  Forms expansion                    [3 form primitives]
+0.17.0  ✓  DataTable v1                       SHIPPED 2026-05-11 (89 → 89, baseline +1 family)
+0.18.0  ✓  Date/Time pack                     SHIPPED 2026-05-12 (89 → 93 families)
+0.18.1  ✓  Field re-register loop fix         SHIPPED 2026-05-12 (single-file patch)
+0.19.0  ◐  Forms expansion                    IN PROGRESS [3 form primitives — FileUpload, TagsInput, Stepper]
 0.20.0  →  Charts pack                        [SVG-based, dashboard layer]
 0.21.0  →  Polish batch                       [4 quick wins]
 0.22.0  →  Housekeeping                       [API freeze prep — bez RC]
@@ -92,29 +93,38 @@ Każdy minor możemy przemieszać gdy realny priority się zmieni z internal con
 
 ## 0.18.0 — Date/Time pack
 
-**Status:** IN PROGRESS on `work/0.18-datetime-pack` branch (lib repo). Plan
-revision v2 (post-adversarial-audit) at
-`internal/bleizlabs-ui/work/2026-05_0.18-datetime-pack/docs/implementation-plan-2026-05-12.md`.
+**Status:** SHIPPED 2026-05-12 (commit `5906bda`, tag `v0.18.0`, PR #42).
+93 families on npm. Plan + cycle docs:
+`internal/bleizlabs-ui/work/2026-05_0.18-datetime-pack/`.
 
-Cycle progress:
+Cycle outcome:
 - [x] E01.0 Calendar AMEND (commit `57b29a3`) — opt-in `cellExtras` +
-      `onCellHover` + `onGridMouseLeave` props (Phase 1 prerequisite for
-      DateRangePicker range overlay).
-- [x] E01.1 DateRangePicker v1 (commit `62db846`) — multi-month range picker
-      with 1/2/3-month layout + form integration + 58/60 Playwright tests
-      PASS (2 documented skips for Playwright synthetic-event limitations).
-- [x] E01.2 TimeInput v1 — inline HH:MM(:SS) `role="spinbutton"` trio + AM/PM
-      `role="switch"` toggle, own implementation per audit C1; 48/48 Playwright
-      tests PASS; 5 new time helpers in `utils/date.ts` (parseTime, formatTime,
-      clampTime, combineDateTime, resolveHourCycle).
-- [x] E01.3 TimePicker v1 — combobox input + popover with scrollable
-      hour/minute/seconds/AM-PM listbox columns; step filter; 40/40
-      Playwright tests PASS.
-- [x] E01.4 DateTimePicker v1 — Calendar + TimeInput inline compound in
-      single popover, 3 tab stops, ISO 8601 local datetime form output,
-      29/30 Playwright tests PASS (1 documented skip — shared dismiss
-      primitive covered by TP-R08).
-- [ ] Phase 7.1 audit + release pipeline (PR → tag v0.18.0 → npm publish).
+      `onCellHover` + `onGridMouseLeave` props.
+- [x] E01.1 DateRangePicker v1 (commits `62db846` + `78d4969`) — multi-month
+      range picker, 58 PASS / 2 skip.
+- [x] E01.2 TimeInput v1 (commit `cde15b8`) — bespoke `role="spinbutton"`
+      trio per audit C1, 48/48 PASS + 5 time helpers in `utils/date.ts`.
+- [x] E01.3 TimePicker v1 (commit `1402632`) — combobox + popover listbox
+      columns, step filter, 40/40 PASS.
+- [x] E01.4 DateTimePicker v1 (commit `1b63c50`) — Calendar + TimeInput
+      compound, 29/30 PASS (1 documented skip).
+- [x] Phase 7.1 audit PASS + 2 user-reported runtime bugfixes pre-publish:
+      Calendar 1M-px layout explosion (commit `de90497`, CAL-LB01-07
+      regression suite) + popover position flicker (commit `a59cde6`,
+      FLICK-01-04 regression suite). Forensic patterns persisted to memory
+      `bleizlabs/reference_lib_018_forensic_patterns.md`.
+
+## 0.18.1 — Patch: Field re-register loop fix
+
+**Status:** SHIPPED 2026-05-12 (commit `9dbb463`, tag `v0.18.1`, PR #43).
+Single-file bugfix — `<Field>` inside `<Form>` no longer triggers
+"Maximum update depth exceeded" infinite loop. Root cause: useEffect
+dependency on memoized context object instead of stable `useCallback([])`
+reference. Regression: `Form.regression.spec.ts` FM-R23. Discovered via
+runtime check on `/components/field` after 0.18.0 publish — static gates
+(tsc + ESLint + 437 unit specs) all green. Codified post-push verification
+rule: `mcp__next-devtools__nextjs_call get_errors` clean state required
+before EVERY push on Next.js projects.
 
 **Why:** Aktualnie `<DatePicker>` = single date only. Brak zakresu dat (analytics, booking, reporty), brak czasu (scheduling, deadlines), brak combined date+time. 4 powiązane komponenty naturalnie batchują się w jeden release bo współdzielą Calendar + Intl + Date utils.
 
@@ -180,6 +190,10 @@ Cycle progress:
 ---
 
 ## 0.19.0 — Forms expansion
+
+**Status:** IN PROGRESS on `work/0.19-forms-expansion` branch (lib repo).
+Work-unit: `internal/bleizlabs-ui/work/2026-05_0.19-forms-expansion/`.
+Cycle: E01.1 FileUpload → E01.2 TagsInput → E01.3 Stepper sequentially.
 
 **Why:** Domykamy form story trzema brakującymi primitives. Każdy z nich = częsta luka w real apps.
 
