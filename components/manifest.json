@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1",
   "libVersion": "0.19.0",
-  "generatedAt": "2026-05-12T18:17:49.645Z",
+  "generatedAt": "2026-05-12T18:48:13.956Z",
   "categories": {
     "layout": [
       "Container",
@@ -67,6 +67,7 @@
       "LineChart",
       "MetricBar",
       "Pagination",
+      "PieChart",
       "Sparkline",
       "ThemeToggle",
       "UsageDonut"
@@ -845,6 +846,21 @@
       "types": [
         "PaginationProps",
         "PaginationVariant"
+      ],
+      "hooks": []
+    },
+    {
+      "family": "PieChart",
+      "category": "specialized",
+      "path": "specialized/PieChart",
+      "exports": [
+        "PieChart"
+      ],
+      "types": [
+        "PieChartDatum",
+        "PieChartProps",
+        "PieChartTooltipContext",
+        "PieChartVariant"
       ],
       "hooks": []
     },
