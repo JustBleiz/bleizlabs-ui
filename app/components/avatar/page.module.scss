@@ -52,3 +52,16 @@
   gap: var(--space-1);
   align-items: center;
 }
+
+.statusWrapper {
+  position: relative;
+  display: inline-flex;
+}
+
+.statusDot {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  // Outline ring punches the dot off the avatar surface visually.
+  box-shadow: 0 0 0 2px var(--color-surface);
+}
