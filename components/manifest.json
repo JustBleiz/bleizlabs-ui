@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1",
   "libVersion": "0.17.0",
-  "generatedAt": "2026-05-12T07:30:46.842Z",
+  "generatedAt": "2026-05-12T09:26:53.233Z",
   "categories": {
     "layout": [
       "Container",
@@ -91,6 +91,7 @@
       "ContextMenu",
       "DataTable",
       "DatePicker",
+      "DateRangePicker",
       "Dialog",
       "Drawer",
       "DropdownMenu",
@@ -1151,6 +1152,23 @@
         "DatePickerContentProps",
         "DatePickerInputProps",
         "DatePickerProps"
+      ],
+      "hooks": []
+    },
+    {
+      "family": "DateRangePicker",
+      "category": "complex",
+      "path": "complex/DateRangePicker",
+      "exports": [
+        "DateRangePicker",
+        "DateRangePickerContent",
+        "DateRangePickerInput"
+      ],
+      "types": [
+        "DateRange",
+        "DateRangePickerContentProps",
+        "DateRangePickerInputProps",
+        "DateRangePickerProps"
       ],
       "hooks": []
     },

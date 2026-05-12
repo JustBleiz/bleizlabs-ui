@@ -1,0 +1,316 @@
+@use '../../../styles/mixins' as mx;
+
+// DateRangePicker — date range input + multi-month Calendar popup (0.18.0).
+// Mirrors DatePicker.module.scss base; adds .header sync'd chevron row,
+// .monthsRow flex container, range-overlay rules via :global() data-* targeting
+// on Calendar cells.
+
+// ──────────────────────────────────────────────────────────────────────────
+// .root — DateRangePicker wrapper
+// ──────────────────────────────────────────────────────────────────────────
+
+.root {
+  display: inline-block;
+  position: relative;
+  font-family: var(--font-sans);
+}
+
+// ──────────────────────────────────────────────────────────────────────────
+// .triggerWrap — input + calendar icon button
+// ──────────────────────────────────────────────────────────────────────────
+
+.triggerWrap {
+  display: inline-flex;
+  align-items: center;
+  gap: 0;
+  width: 100%;
+  background: var(--input-bg, var(--color-surface-raised));
+  border: 1px solid var(--input-border, var(--color-border-subtle));
+  border-radius: var(--radius-input, var(--radius-sm));
+  overflow: hidden;
+  transition:
+    border-color var(--duration-fast) var(--easing-default),
+    box-shadow var(--duration-fast) var(--easing-default);
+
+  &:focus-within {
+    border-color: var(--input-border-focus, var(--color-brand));
+    box-shadow: var(--focus-ring);
+  }
+}
+
+// ──────────────────────────────────────────────────────────────────────────
+// .input — text input
+// ──────────────────────────────────────────────────────────────────────────
+
+.input {
+  flex: 1 1 auto;
+  min-width: 0;
+  padding: var(--space-2) var(--space-3);
+  background: transparent;
+  border: 0;
+  outline: 0;
+  color: var(--color-text-primary);
+  font-family: inherit;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.4;
+
+  &::placeholder {
+    color: var(--color-text-muted);
+    opacity: 0.7;
+  }
+
+  &[aria-disabled='true'] {
+    color: var(--color-text-muted);
+    cursor: not-allowed;
+  }
+}
+
+// ──────────────────────────────────────────────────────────────────────────
+// .iconButton — calendar icon trigger inside input
+// ──────────────────────────────────────────────────────────────────────────
+
+.iconButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--space-8);
+  height: var(--space-8);
+  padding: 0;
+  margin-right: var(--space-1);
+  background: transparent;
+  border: 0;
+  border-radius: var(--radius-sm);
+  color: var(--color-text-muted);
+  cursor: pointer;
+  flex-shrink: 0;
+  transition:
+    background-color var(--duration-fast) var(--easing-default),
+    color var(--duration-fast) var(--easing-default);
+
+  @media (pointer: coarse) {
+    min-width: var(--size-touch-min);
+    min-height: var(--size-touch-min);
+  }
+
+  &:hover:not([aria-disabled='true']) {
+    background: var(--color-surface-hover);
+    color: var(--color-text-primary);
+  }
+
+  &[aria-disabled='true'] {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+
+  &[data-state='open'] {
+    color: var(--color-brand);
+  }
+}
+
+// ──────────────────────────────────────────────────────────────────────────
+// .contentRoot — portal outer wrapper
+// ──────────────────────────────────────────────────────────────────────────
+
+.contentRoot {
+  position: relative;
+  z-index: var(--z-popover);
+}
+
+// ──────────────────────────────────────────────────────────────────────────
+// .content — popup dialog surface
+// ──────────────────────────────────────────────────────────────────────────
+
+.content {
+  background: var(--color-surface-raised);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+  padding: var(--space-3);
+  animation: dateRangePickerContentIn var(--duration-fast) var(--easing-default);
+
+  &:focus-visible {
+    outline: none;
+  }
+
+  // Range overlay — target Calendar cells via :global() data-* attrs.
+  // Scoped to .content so global leak is contained to inside-portal.
+  // Selector targets <td role="gridcell"> whose data-* attrs are spread
+  // by Calendar.tsx L922 via the cellExtras prop (E01.0 AMEND).
+  :global(td[data-in-range='true']) {
+    background: color-mix(in srgb, var(--color-brand) 10%, transparent);
+  }
+
+  :global(td[data-range-start='true']),
+  :global(td[data-range-end='true']) {
+    background: color-mix(in srgb, var(--color-brand) 14%, transparent);
+  }
+
+  :global(td[data-range-start='true']) {
+    border-top-left-radius: var(--radius-sm);
+    border-bottom-left-radius: var(--radius-sm);
+  }
+
+  :global(td[data-range-end='true']) {
+    border-top-right-radius: var(--radius-sm);
+    border-bottom-right-radius: var(--radius-sm);
+  }
+
+  :global(td[data-range-hover-tail='true']) {
+    background: color-mix(in srgb, var(--color-brand) 5%, transparent);
+  }
+}
+
+// ──────────────────────────────────────────────────────────────────────────
+// .header — single sync'd month-nav header
+// ──────────────────────────────────────────────────────────────────────────
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  padding-block: var(--space-1);
+  margin-bottom: var(--space-2);
+}
+
+.headerChevron {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--space-7);
+  height: var(--space-7);
+  padding: 0;
+  background: transparent;
+  border: 0;
+  border-radius: var(--radius-sm);
+  color: var(--color-text-primary);
+  cursor: pointer;
+  transition: background-color var(--duration-fast) var(--easing-default);
+
+  &:hover:not(:disabled) {
+    background: var(--color-surface-hover);
+  }
+
+  &:focus-visible {
+    @include mx.focus-ring;
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    color: var(--color-text-muted);
+    opacity: 0.5;
+  }
+}
+
+.headerLabel {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+  text-align: center;
+  flex: 1 1 auto;
+}
+
+// ──────────────────────────────────────────────────────────────────────────
+// .monthsRow — N Calendars side-by-side
+// ──────────────────────────────────────────────────────────────────────────
+
+.monthsRow {
+  display: flex;
+  gap: var(--space-4);
+  align-items: flex-start;
+
+  // RTL: writing-direction handles month order flip naturally
+}
+
+.month {
+  flex: 0 0 auto;
+}
+
+// ──────────────────────────────────────────────────────────────────────────
+// Animations
+// ──────────────────────────────────────────────────────────────────────────
+
+@keyframes dateRangePickerContentIn {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// ──────────────────────────────────────────────────────────────────────────
+// Reduced motion
+// ──────────────────────────────────────────────────────────────────────────
+
+@media (prefers-reduced-motion: reduce) {
+  .triggerWrap,
+  .iconButton,
+  .headerChevron,
+  .content {
+    transition: none;
+    animation: none;
+  }
+}
+
+// ──────────────────────────────────────────────────────────────────────────
+// Forced colors (Windows High Contrast Mode)
+// ──────────────────────────────────────────────────────────────────────────
+
+@media (forced-colors: active) {
+  .triggerWrap {
+    border-color: ButtonBorder;
+
+    &:focus-within {
+      border-color: Highlight;
+      box-shadow: none;
+      outline: 2px solid Highlight;
+      outline-offset: 1px;
+    }
+  }
+
+  .input {
+    color: CanvasText;
+
+    &[aria-disabled='true'] {
+      color: GrayText;
+    }
+  }
+
+  .iconButton {
+    color: CanvasText;
+
+    &[aria-disabled='true'] {
+      color: GrayText;
+    }
+
+    &[data-state='open'] {
+      color: Highlight;
+    }
+  }
+
+  .headerChevron {
+    color: CanvasText;
+
+    &:disabled {
+      color: GrayText;
+    }
+  }
+
+  .content {
+    border-color: CanvasText;
+    box-shadow: none;
+
+    :global(td[data-in-range='true']),
+    :global(td[data-range-start='true']),
+    :global(td[data-range-end='true']),
+    :global(td[data-range-hover-tail='true']) {
+      background: Highlight;
+      color: HighlightText;
+      forced-color-adjust: none;
+    }
+  }
+}
