@@ -441,11 +441,6 @@ export const DateTimePicker = forwardRef<HTMLDivElement, DateTimePickerProps>(fu
     name,
   };
 
-  void calendarValue;
-  void handleCalendarSelect;
-  void handleTimeChange;
-  void isDisabledDate;
-
   const internalValue: InternalStateProps = {
     calendarValue,
     handleCalendarSelect,

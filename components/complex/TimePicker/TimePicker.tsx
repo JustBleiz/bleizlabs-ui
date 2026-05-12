@@ -110,7 +110,6 @@ import {
   useEffect,
   useId,
   useLayoutEffect,
-  useMemo,
   useRef,
   useState,
   type HTMLAttributes,
@@ -841,5 +840,3 @@ function Listbox<T extends number | Period>({
   );
 }
 
-// silence unused import (useMemo) — reserved for future option memoization
-void useMemo;
