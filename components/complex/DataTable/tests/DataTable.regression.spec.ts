@@ -86,7 +86,7 @@ test.describe('DataTable — regressions', () => {
     await page.goto('/components/data-table');
     const grids = allGrids(page);
     const grid = grids.nth(3);
-    const cb = grid.locator('[role="row"][aria-rowindex="2"]').getByRole('checkbox').first();
+    const cb = grid.locator('[role="row"][aria-rowindex="3"]').getByRole('checkbox').first();
     await cb.scrollIntoViewIfNeeded();
     await cb.check();
     await page.waitForTimeout(50);
@@ -102,7 +102,7 @@ test.describe('DataTable — regressions', () => {
     await page.goto('/components/data-table');
     const grids = allGrids(page);
     const grid = grids.nth(3);
-    const cb = grid.locator('[role="row"][aria-rowindex="2"]').getByRole('checkbox').first();
+    const cb = grid.locator('[role="row"][aria-rowindex="3"]').getByRole('checkbox').first();
     await cb.scrollIntoViewIfNeeded();
     await cb.check();
     await page.waitForTimeout(50);
@@ -189,7 +189,7 @@ test.describe('DataTable — regressions', () => {
     await page.goto('/components/data-table');
     const grids = allGrids(page);
     const grid = grids.nth(3);
-    const row = grid.locator('[role="row"][aria-rowindex="2"]');
+    const row = grid.locator('[role="row"][aria-rowindex="3"]');
     const expandBtn = row.getByRole('button', { name: /Expand row/ }).first();
     await expandBtn.click();
     await page.waitForTimeout(100);
@@ -292,7 +292,7 @@ test.describe('DataTable — regressions', () => {
     await page.waitForTimeout(100);
     const grids = allGrids(page);
     const grid = grids.nth(3);
-    const cb = grid.locator('[role="row"][aria-rowindex="2"]').getByRole('checkbox').first();
+    const cb = grid.locator('[role="row"][aria-rowindex="3"]').getByRole('checkbox').first();
     await cb.scrollIntoViewIfNeeded();
     await cb.check();
     await page.waitForTimeout(50);

@@ -46,8 +46,8 @@ test.describe('DataTable — sort behavior', () => {
     // Section 2: defaultSort name asc — rows should be alphabetical
     const grids = allGrids(page);
     const grid = grids.nth(1);
-    const firstCell = grid.locator('[role="row"][aria-rowindex="2"] [role="gridcell"]').first();
-    const secondCell = grid.locator('[role="row"][aria-rowindex="3"] [role="gridcell"]').first();
+    const firstCell = grid.locator('[role="row"][aria-rowindex="3"] [role="gridcell"]').first();
+    const secondCell = grid.locator('[role="row"][aria-rowindex="4"] [role="gridcell"]').first();
     const t1 = (await firstCell.textContent())?.trim() ?? '';
     const t2 = (await secondCell.textContent())?.trim() ?? '';
     expect(t1.localeCompare(t2)).toBeLessThanOrEqual(0);
@@ -86,8 +86,8 @@ test.describe('DataTable — sort behavior', () => {
       .locator('[role="columnheader"][aria-sort="descending"]')
       .first();
     await expect(header).toBeVisible();
-    const firstCell = grid.locator('[role="row"][aria-rowindex="2"] [role="gridcell"]').first();
-    const secondCell = grid.locator('[role="row"][aria-rowindex="3"] [role="gridcell"]').first();
+    const firstCell = grid.locator('[role="row"][aria-rowindex="3"] [role="gridcell"]').first();
+    const secondCell = grid.locator('[role="row"][aria-rowindex="4"] [role="gridcell"]').first();
     const t1 = (await firstCell.textContent())?.trim() ?? '';
     const t2 = (await secondCell.textContent())?.trim() ?? '';
     expect(t1.localeCompare(t2)).toBeGreaterThanOrEqual(0);

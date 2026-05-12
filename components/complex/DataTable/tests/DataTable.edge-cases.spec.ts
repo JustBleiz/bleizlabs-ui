@@ -127,7 +127,7 @@ test.describe('DataTable — edge cases', () => {
     // Body has zero data rows but grid still present
     await expect(grid).toBeVisible();
     const rowsBesidesHeader = await grid
-      .locator('[role="row"]:not([aria-rowindex="1"])')
+      .locator('tbody [role="row"]')
       .count();
     expect(rowsBesidesHeader).toBe(0);
   });
@@ -135,7 +135,7 @@ test.describe('DataTable — edge cases', () => {
   test('DT-EC09 — single-row data set renders correctly', async ({ page }) => {
     // Basic section is 5 rows — assert it renders without errors
     const grid = allGrids(page).first();
-    const rows = grid.locator('[role="row"]:not([aria-rowindex="1"])');
+    const rows = grid.locator('tbody [role="row"]');
     const count = await rows.count();
     expect(count).toBe(5);
   });

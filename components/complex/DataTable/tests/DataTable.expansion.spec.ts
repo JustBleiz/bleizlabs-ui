@@ -23,7 +23,7 @@ test.describe('DataTable — expansion behavior', () => {
   }) => {
     const grids = allGrids(page);
     const grid = grids.nth(3); // full-featured has expandable
-    const firstRow = grid.locator('[role="row"][aria-rowindex="2"]');
+    const firstRow = grid.locator('[role="row"][aria-rowindex="3"]');
     const before = await firstRow.getAttribute('aria-expanded');
     expect(before).toBe('false');
     const expandBtn = firstRow.getByRole('button', { name: /Expand row/ }).first();
@@ -37,7 +37,7 @@ test.describe('DataTable — expansion behavior', () => {
   }) => {
     const grids = allGrids(page);
     const grid = grids.nth(3);
-    const firstRow = grid.locator('[role="row"][aria-rowindex="2"]');
+    const firstRow = grid.locator('[role="row"][aria-rowindex="3"]');
     const expandBtn = firstRow.getByRole('button', { name: /Expand row/ }).first();
     await expandBtn.click();
     await page.waitForTimeout(100);
@@ -49,7 +49,7 @@ test.describe('DataTable — expansion behavior', () => {
   test('DT-EX03 — collapse hides expanded content', async ({ page }) => {
     const grids = allGrids(page);
     const grid = grids.nth(3);
-    const firstRow = grid.locator('[role="row"][aria-rowindex="2"]');
+    const firstRow = grid.locator('[role="row"][aria-rowindex="3"]');
     const expandBtn = firstRow.getByRole('button', { name: /Expand row/ }).first();
     await expandBtn.click();
     await page.waitForTimeout(100);
@@ -62,8 +62,8 @@ test.describe('DataTable — expansion behavior', () => {
   test('DT-EX04 — multiple rows can be expanded simultaneously', async ({ page }) => {
     const grids = allGrids(page);
     const grid = grids.nth(3);
-    const row1 = grid.locator('[role="row"][aria-rowindex="2"]');
-    const row2 = grid.locator('[role="row"][aria-rowindex="3"]');
+    const row1 = grid.locator('[role="row"][aria-rowindex="3"]');
+    const row2 = grid.locator('[role="row"][aria-rowindex="4"]');
     await row1.getByRole('button', { name: /Expand row/ }).first().click();
     await page.waitForTimeout(50);
     await row2.getByRole('button', { name: /Expand row/ }).first().click();
@@ -77,7 +77,7 @@ test.describe('DataTable — expansion behavior', () => {
   }) => {
     const grids = allGrids(page);
     const grid = grids.nth(3);
-    const firstRow = grid.locator('[role="row"][aria-rowindex="2"]');
+    const firstRow = grid.locator('[role="row"][aria-rowindex="3"]');
     const btn = firstRow
       .getByRole('button', { name: /Expand row|Collapse row/ })
       .first();

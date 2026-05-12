@@ -1145,7 +1145,10 @@ export const DataTable = forwardRef(function DataTable<T>(
         <TableRow
           role="row"
           aria-rowindex={
-            tableState.pageIndex * tableState.pageSize + rowIndex + 2
+            tableState.pageIndex * tableState.pageSize +
+            rowIndex +
+            2 +
+            (hasFilterRow ? 1 : 0)
           }
           className={cn(
             styles.row,
@@ -1792,7 +1795,7 @@ export const DataTable = forwardRef(function DataTable<T>(
         role={expansionEnabled ? 'treegrid' : 'grid'}
         aria-label={ariaLabel}
         aria-labelledby={ariaLabelledBy}
-        aria-rowcount={tableState.totalRows + 1}
+        aria-rowcount={tableState.totalRows + 1 + (hasFilterRow ? 1 : 0)}
         aria-multiselectable={
           selectionMode === 'multiple' ? true : undefined
         }
@@ -1838,7 +1841,7 @@ export const DataTable = forwardRef(function DataTable<T>(
           role={expansionEnabled ? 'treegrid' : 'grid'}
           aria-label={ariaLabel}
           aria-labelledby={ariaLabelledBy}
-          aria-rowcount={tableState.totalRows + 1}
+          aria-rowcount={tableState.totalRows + 1 + (hasFilterRow ? 1 : 0)}
           aria-colcount={totalGridCols}
           aria-multiselectable={
             selectionMode === 'multiple' ? true : undefined
@@ -1904,7 +1907,11 @@ export const DataTable = forwardRef(function DataTable<T>(
               )}
             </TableRow>
             {hasFilterRow && (
-              <TableRow className={styles.filterRow} role="presentation">
+              <TableRow
+                className={styles.filterRow}
+                role="row"
+                aria-rowindex={2}
+              >
                 {selectionEnabled && (
                   <TableCell as="th" className={styles.filterCell} />
                 )}

@@ -85,13 +85,13 @@ test.describe('DataTable — pagination behavior', () => {
     const sizeControl = section.getByRole('combobox', { name: /rows per page/i }).first();
     const hasCombobox = await sizeControl.isVisible().catch(() => false);
     if (hasCombobox) {
-      const before = await grid.locator('[role="row"]:not([aria-rowindex="1"])').count();
+      const before = await grid.locator('tbody [role="row"]').count();
       await sizeControl.click();
       await page.waitForTimeout(100);
       // Select 20 from listbox
       await page.getByRole('option', { name: '20' }).first().click();
       await page.waitForTimeout(100);
-      const after = await grid.locator('[role="row"]:not([aria-rowindex="1"])').count();
+      const after = await grid.locator('tbody [role="row"]').count();
       expect(after).toBeGreaterThan(before);
     }
   });

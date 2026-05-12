@@ -25,10 +25,10 @@ test.describe('DataTable — filter behavior', () => {
     const filterInputs = grid.getByRole('textbox');
     const inputCount = await filterInputs.count();
     expect(inputCount).toBeGreaterThan(0);
-    const before = await grid.locator('[role="row"]:not([aria-rowindex="1"])').count();
+    const before = await grid.locator('tbody [role="row"]').count();
     await filterInputs.first().fill('Atelier');
     await page.waitForTimeout(400);
-    const after = await grid.locator('[role="row"]:not([aria-rowindex="1"])').count();
+    const after = await grid.locator('tbody [role="row"]').count();
     expect(after).toBeLessThanOrEqual(before);
   });
 
@@ -36,10 +36,10 @@ test.describe('DataTable — filter behavior', () => {
     const search = page.getByRole('textbox', { name: /Global search/i });
     const grids = allGrids(page);
     const grid = grids.nth(3);
-    const before = await grid.locator('[role="row"]:not([aria-rowindex="1"])').count();
+    const before = await grid.locator('tbody [role="row"]').count();
     await search.fill('Mobile');
     await page.waitForTimeout(400);
-    const after = await grid.locator('[role="row"]:not([aria-rowindex="1"])').count();
+    const after = await grid.locator('tbody [role="row"]').count();
     expect(after).toBeLessThanOrEqual(before);
   });
 
@@ -47,12 +47,12 @@ test.describe('DataTable — filter behavior', () => {
     const grids = allGrids(page);
     const grid = grids.nth(1);
     const filterInputs = grid.getByRole('textbox');
-    const initial = await grid.locator('[role="row"]:not([aria-rowindex="1"])').count();
+    const initial = await grid.locator('tbody [role="row"]').count();
     await filterInputs.first().fill('ZZZNeverMatchXYZ');
     await page.waitForTimeout(400);
     await filterInputs.first().fill('');
     await page.waitForTimeout(400);
-    const restored = await grid.locator('[role="row"]:not([aria-rowindex="1"])').count();
+    const restored = await grid.locator('tbody [role="row"]').count();
     expect(restored).toBe(initial);
   });
 
@@ -62,10 +62,10 @@ test.describe('DataTable — filter behavior', () => {
     const filterInputs = grid.getByRole('textbox');
     await filterInputs.first().fill('ATELIER');
     await page.waitForTimeout(400);
-    const matchingRows = await grid.locator('[role="row"]:not([aria-rowindex="1"])').count();
+    const matchingRows = await grid.locator('tbody [role="row"]').count();
     await filterInputs.first().fill('atelier');
     await page.waitForTimeout(400);
-    const lowerCaseMatches = await grid.locator('[role="row"]:not([aria-rowindex="1"])').count();
+    const lowerCaseMatches = await grid.locator('tbody [role="row"]').count();
     expect(lowerCaseMatches).toBe(matchingRows);
   });
 
@@ -75,7 +75,7 @@ test.describe('DataTable — filter behavior', () => {
     const filterInputs = grid.getByRole('textbox');
     await filterInputs.first().fill('ZZZNeverMatchXYZ');
     await page.waitForTimeout(400);
-    const dataRows = await grid.locator('[role="row"]:not([aria-rowindex="1"])').count();
+    const dataRows = await grid.locator('tbody [role="row"]').count();
     expect(dataRows).toBe(0);
   });
 
