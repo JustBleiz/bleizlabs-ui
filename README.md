@@ -1,132 +1,168 @@
-# @bleizlabs/ui
+<div align="center">
+
+# `@bleizlabs/ui`
+
+**A zero-dependency, fully-styled React component library built for projects that want structure + accessibility + behaviour from the library and own visual identity in their own SCSS.**
+
+[![npm](https://img.shields.io/npm/v/@bleizlabs/ui?color=cb3837&logo=npm&label=npm)](https://www.npmjs.com/package/@bleizlabs/ui)
+[![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
+[![React](https://img.shields.io/badge/React-19-61dafb?logo=react)](https://react.dev)
+[![Next.js](https://img.shields.io/badge/Next.js-16.2-black?logo=nextdotjs)](https://nextjs.org)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.6-3178c6?logo=typescript)](https://www.typescriptlang.org)
+[![WAI-ARIA APG](https://img.shields.io/badge/WAI--ARIA-APG-blue)](https://www.w3.org/WAI/ARIA/apg/)
+[![Zero deps](https://img.shields.io/badge/runtime%20deps-0-success)](#whats-inside)
+
+[**Install**](#install) · [**Quick start**](#quick-start) · [**What's inside**](#whats-inside) · [**Theming**](#theming) · [**For AI agents**](#for-ai-agents)
+
+</div>
 
 > **Radix without the styling sweat. shadcn without the fork-forever tax.**
 > _Radix daje a11y. shadcn daje style. Tylko my dajemy oba — i propagujemy fixy przez `npm update`._
 
-> A zero-dependency, fully-styled React component library with seed-based design tokens.
-> 100+ focused components incl. 4-chart pack + Polish batch (AvatarGroup, Rating, Collapsible, Banner) + 0.23.0 mini-batch (CodeBlock, Mark, VisuallyHidden), 100% JSDoc coverage, WAI-ARIA compliant, SCSS Modules, React 19 + Next.js 16. Live count and full inventory: `node_modules/@bleizlabs/ui/components/manifest.json` (`components.length`).
+---
 
-[![npm](https://img.shields.io/npm/v/@bleizlabs/ui?color=cb3837&logo=npm)](https://www.npmjs.com/package/@bleizlabs/ui)
-[![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
-[![React](https://img.shields.io/badge/React-19-61dafb)](https://react.dev)
-[![Next.js](https://img.shields.io/badge/Next.js-16.2-black)](https://nextjs.org)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.6-3178c6)](https://www.typescriptlang.org)
+## Why `@bleizlabs/ui`?
 
-> 📦 **Public on npm.** `npm install @bleizlabs/ui` — no auth, no `.npmrc`. Current version shown in the `npm` badge above. [All releases →](https://github.com/BleizLabs/bleizlabs-ui/releases)
+Three walls hit every product team:
+
+| Approach | What you get | What hurts |
+|---|---|---|
+| **Headless** (Radix, Headless UI) | Accessible primitives | Every project re-invents the design system from scratch |
+| **Styled** (MUI, Chakra, Ant Design) | Pre-built look | Locked into their design language + runtime dependency |
+| **Copy-paste** (shadcn/ui) | Great starting point | Every project forks forever — fixes don't propagate |
+
+`@bleizlabs/ui` sits between them: **fully styled** out of the box, **zero runtime UI dependencies**, **seed-token driven**. Override 5–10 seed values and the entire library reskins consistently — without forking source code.
 
 ---
 
-## Why
-
-Three walls hit by every product team:
-
-- **Headless libraries** (Radix, Headless UI) leave styling to every consumer — every project re-invents the design system.
-- **Styled libraries** (MUI, Chakra) lock you into their design language and runtime dependency.
-- **Copy-paste systems** (shadcn/ui) are great starting points, but every project forks forever — fixes don't propagate.
-
-`@bleizlabs/ui` sits between them: **fully styled**, **zero runtime UI dependencies**, **seed-token driven**. Override 5–10 seed values and the entire library reskins consistently.
-
-## Highlights
-
-- **100+ focused components** across 9 categories (live count + per-component metadata in [`components/manifest.json`](components/manifest.json)) — layout, typography, display, interactive, feedback, specialized, molecules, form presets (FormSurface), complex interactive, and utilities. The 0.16.0 release pruned 19 deprecated multi-concept presets in favor of consumer-side composition; 0.17.0 shipped `<DataTable>` as the flagship generic-data grid primitive; 0.18.0 added the Date/Time pack (`<DatePicker>`, `<DateRangePicker>`, `<TimeInput>`, `<TimePicker>`, `<DateTimePicker>` — five components built on in-house `Calendar` + native `Intl`); 0.19.0 added the Forms expansion (`<FileUpload>`, `<TagsInput>`, `<Stepper>` — three primitives closing the core form story); 0.20.0 closed the dashboard chart layer with the Charts pack (`<LineChart>`, `<AreaChart>`, `<Sparkline>`, `<PieChart>` — four SVG-based primitives sharing a `_shared/chart-math` math module, zero external chart deps); 0.21.0 shipped the Polish batch (`<AvatarGroup>`, `<Rating>`, `<Collapsible>`, `<Banner>` + opt-in `showSteppers` for `<TimeInput>` / `<DateTimePicker>`); 0.22.0 brought 100% JSDoc coverage; 0.22.1 fixed the Next.js 16.2+ `asChild` hydration mismatch via Mantine `Children.toArray` pattern in `<Slot>`; **0.23.0 ships the mini-batch — `<CodeBlock>` (structural `<pre><code>` shell with optional language badge, copy button, and line-number gutter; zero highlighting — consumer pre-tokenizes via own Shiki/Prism), `<Mark>` (inline `<mark>` highlight atom with five token-driven color tones), and `<VisuallyHidden>` (utility atom promoting the `sr-only` SCSS mixin to a React primitive), plus a Phase 4.5 demo-coverage audit script (`npm run audit:demos`) that verifies every shipped component has a matching demo route**.
-- **Zero runtime UI dependencies** — every floating primitive, focus trap, drag gesture, date utility, and keyboard model is built in-house
-- **Seed-based design tokens** — change 5–10 seeds, the whole library follows
-- **SCSS Modules** — no Tailwind, no CSS-in-JS, no runtime style computation
-- **APG-first accessibility** — every interactive component maps to a documented WAI-ARIA Authoring Practices pattern
-- **Runtime-test-verified** — Playwright keyboard / focus / aria / regression suites + `@axe-core/playwright` WCAG 2.1 AA sweep across all playground routes
-- **React 19 + Next.js 16** — built with Server Components, Turbopack, and App Router in mind
-- **Form-friendly** — `<Form>` + `<Field>` compound for native HTML5 validation, `<Combobox>` with single- and multi-select modes, FormData multi-value serialization out of the box
-
-## Quick start
-
-### Prerequisites
-
-- Node.js 24 or newer
-- React 19 + Next.js 16 host project (or any React 19 bundler with SCSS Modules)
-
-### Installation
+## Install
 
 ```bash
 npm install @bleizlabs/ui
 ```
 
-Published to the public npm registry — no auth, no `.npmrc` setup required.
+Public on npm — no auth, no `.npmrc` setup.
 
-### Configure Next.js
+> Migrating from an older internal release? If your `.npmrc` contains `@bleizlabs:registry=https://npm.pkg.github.com`, remove that line — the package moved to public npm registry in `0.22.x`.
+
+---
+
+## Quick start
+
+### Path A — Recommended: CLI scaffold (60 seconds)
+
+For a fresh Next.js 16 + React 19 project, run one command:
+
+```bash
+npx @bleizlabs/ui init
+```
+
+This generates:
+
+- **A wrapper layer** at `app/_components/ui/` — thin re-exports per family that you import from instead of `@bleizlabs/ui` directly. Lets you add project-specific variants without forking the library.
+- **`app/globals.scss`** with seed-token override scaffolding
+- **`tsconfig.json` path aliases** (`@/components/ui`, `@/components/shared`)
+- **`AGENTS.md` + `CLAUDE.md`** with project discipline rules for AI coding agents
+- **`docs/component-inventory.md`** for tracking project-local components
+
+Re-runs are idempotent. After upgrading the lib: `npx @bleizlabs/ui add --new` to scaffold wrappers for new components.
+
+### Path B — Manual setup (existing project)
+
+If you're integrating into an existing project or skipping the wrapper layer, three steps:
+
+**1. Configure Next.js** (`next.config.mjs`):
 
 ```js
-// next.config.mjs
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 /** @type {import('next').NextConfig} */
-const nextConfig = {
+export default {
   transpilePackages: ['@bleizlabs/ui'],
   sassOptions: {
     loadPaths: [path.resolve(__dirname, 'node_modules/@bleizlabs/ui/styles')],
   },
 };
-
-export default nextConfig;
 ```
 
-### Import styles + components
+**2. Bootstrap styles** (`app/globals.scss`):
 
 ```scss
-// app/globals.scss
 @use '@bleizlabs/ui/styles';
+
+// Optional: prettier global scrollbars
+@use '@bleizlabs/ui/styles/scrollbar';
 ```
+
+**3. Import + use:**
 
 ```tsx
 // app/page.tsx
-import { Button, Card, CardHeader, CardBody, Heading } from '@bleizlabs/ui';
+import { Card, CardHeader, CardBody, Heading, Text, Button, Stack } from '@bleizlabs/ui';
 
 export default function Page() {
   return (
-    <Card>
-      <CardHeader><Heading level={1} size="2xl">Hello</Heading></CardHeader>
-      <CardBody><Button variant="primary">Click me</Button></CardBody>
+    <Card padding={6} radius="lg">
+      <CardHeader>
+        <Heading level={1} size="2xl">Hello from @bleizlabs/ui</Heading>
+      </CardHeader>
+      <CardBody>
+        <Stack gap={4}>
+          <Text variant="body" color="secondary">
+            Fully styled, zero deps, seed-token driven.
+          </Text>
+          <Button variant="primary">Get started</Button>
+        </Stack>
+      </CardBody>
     </Card>
   );
 }
 ```
 
-### Optional — CLI scaffold
+That's it. No provider wrapping, no theme context, no runtime style computation.
 
-The bundled CLI scaffolds a project wrapper layer (re-exports + theme files + Next.js config):
+---
 
-```bash
-npx @bleizlabs/ui init
-```
+## What's inside
 
-Re-runs are idempotent. After lib upgrades, use `npx @bleizlabs/ui add --new` to scaffold wrappers for newly-added components.
+100+ focused components across 9 categories (live count in [`components/manifest.json`](components/manifest.json) — read for the canonical list at any version).
 
-## For AI agents
+| Category | Highlights |
+|---|---|
+| **Layout** | `Stack` · `Inline` · `Container` · `Section` · `GridLayout` |
+| **Typography** | `Heading` (decoupled level/size) · `Text` · `Anchor` · `Eyebrow` · `Mark` |
+| **Display** | `Card` (compound) · `Badge` · `Avatar` + `AvatarGroup` · `KpiValue` · `Reveal` · `Skeleton` · `Spinner` · `Table` · `CodeBlock` |
+| **Interactive (forms)** | `Button` · `Input` · `Select` · `Checkbox` · `RadioGroup` · `Switch` · `Toggle` · `Slider` · `Rating` |
+| **Feedback** | `Alert` · `Banner` · `Empty` · `Progress` · `Toaster` (imperative `toast()` API) |
+| **Specialized + Navigation** | `Breadcrumb` · `Pagination` · `ThemeToggle` · `Timeline` · `Kbd` + 5 small data-viz primitives |
+| **Molecules** | `Header` · `Field` · `Chip` · `DataRow` · `FileChip` · `BackLink` · `IconButton` and more |
+| **Charts** | `LineChart` · `AreaChart` · `BarChart` · `PieChart` · `Sparkline` (SVG, ≤500 points/series) |
+| **Complex / Data** | `Dialog` · `Sheet` · `Drawer` · `Popover` · `Tooltip` · `DropdownMenu` · `Combobox` · `DataTable` · `Form` + `Field` · `DatePicker` · `DateRangePicker` · `TimePicker` · `DateTimePicker` · `Sidebar` · `Tabs` · `Accordion` · `Stepper` · `NavigationMenu` · `Toolbar` |
 
-The library ships an agent-friendly cheat-sheet inside the npm tarball:
+**Highlights:**
 
-- [`AGENTS.md`](AGENTS.md) — thin entry point (~80 LOC): mission + Q1-Q5 decision tree + top-10 anti-patterns + pointers
-- [`docs/AGENT-USAGE.md`](docs/AGENT-USAGE.md) — deep reference (~750 LOC): per-domain quick-start (9 domains), SSR/RSC mapping, troubleshooting, full component inventory
+- **Zero runtime UI dependencies** — every floating primitive, focus trap, drag gesture, date utility, and keyboard model is built in-house. No Floating UI, no date-fns, no Recharts, no Radix at runtime.
+- **APG-first accessibility** — every interactive component maps to a documented [WAI-ARIA Authoring Practices](https://www.w3.org/WAI/ARIA/apg/) pattern with full keyboard model + ARIA contract.
+- **Runtime-test-verified** — Playwright keyboard / focus / aria / regression suites per component + `@axe-core/playwright` WCAG 2.1 AA sweep across all playground routes.
+- **100% JSDoc coverage** — every component carries `@layer` / `@tokens` / `@deps` / `@a11y` / `@example` tags. Read [`node_modules/@bleizlabs/ui/components/<category>/<Name>/<Name>.tsx`](components/) for per-component API truth.
+- **React 19 + Next.js 16** — Server Components by default, `'use client'` only at interactive leaves, FloatingPortal hydration mount-gated, React Compiler compatible.
+- **Form-native** — `<Form>` + `<Field>` compound reads FormData natively via the Constraint Validation API. No `useState` per field.
 
-After `npm install @bleizlabs/ui`, both files live under `node_modules/@bleizlabs/ui/`. Agents like Claude Code / Codex / Cursor do NOT auto-scan `node_modules/` — you point them explicitly. Add this snippet to your project's own `AGENTS.md`:
+---
 
-```md
-When working with @bleizlabs/ui, explicitly Read `node_modules/@bleizlabs/ui/AGENTS.md`
-at the start of any UI task. Drill into `node_modules/@bleizlabs/ui/docs/AGENT-USAGE.md`
-for per-domain detail. Both files ship inside the npm tarball.
-```
+## Theming
 
-Each doc carries a `**Valid for:** @bleizlabs/ui <version>` header injected at publish time — agents can compare against `npm view @bleizlabs/ui version` to detect cached-stale state.
-
-## Customisation
-
-Two tiers of customisation cover most cases.
+Two cascade layers cover most cases.
 
 ### Quick reskin — CSS custom properties
 
+Override semantic tokens at `:root`. Cascades to every component automatically.
+
 ```scss
+// app/globals.scss
 :root {
   --color-brand:        #00E0B8;
   --color-accent:       #7C3AED;
@@ -140,11 +176,11 @@ Two tiers of customisation cover most cases.
 }
 ```
 
-All components pick up the change automatically. The full token reference lives in [`styles/_semantics.scss`](styles/_semantics.scss).
+Full token reference: [`styles/_semantics.scss`](styles/_semantics.scss).
 
 ### Deep reskin — seed values
 
-Override seed values and every color scale, shadow, hover state, and semantic alias cascades:
+Override seed Sass variables when you want the entire color scale + derived shadows + hover states to follow a new brand colour consistently.
 
 ```scss
 @use '@bleizlabs/ui/styles' with (
@@ -156,7 +192,7 @@ Override seed values and every color scale, shadow, hover state, and semantic al
 
 Every seed in [`styles/_project-settings.scss`](styles/_project-settings.scss) carries `!default` — pass only what you care about.
 
-### Per-project variants
+### Project-specific variants
 
 For one-off visual treatments, compose locally via `className` rather than fork the library:
 
@@ -164,12 +200,37 @@ For one-off visual treatments, compose locally via `className` rather than fork 
 import { Button } from '@bleizlabs/ui';
 import styles from './GradientButton.module.scss';
 
-<Button className={styles.gradient}>Launch</Button>
+<Button className={styles.gradient}>Launch</Button>;
 ```
+
+If the same styled pattern repeats across 2+ pages, extract a shared molecule wrapping the lib component — see [`docs/AGENT-USAGE.md`](docs/AGENT-USAGE.md) §C for the full decision rules.
+
+---
+
+## For AI agents
+
+The library ships an agent-friendly cheat-sheet inside the npm tarball:
+
+- **Entry point** ([`AGENTS.md`](AGENTS.md), ~80 LOC) — mission paragraph, Q1-Q5 reuse-first decision tree, top-10 anti-patterns table, pointers to deeper docs
+- **Deep reference** ([`docs/AGENT-USAGE.md`](docs/AGENT-USAGE.md), ~750 LOC) — installation walkthrough, three-layer token cascade, SSR / RSC / Next.js 16 mapping, 9 per-domain quick-starts, troubleshooting table, full component inventory auto-generated from `manifest.json`
+
+After `npm install @bleizlabs/ui`, both files live under `node_modules/@bleizlabs/ui/`. Agents like Claude Code, Codex, and Cursor do NOT auto-scan `node_modules/` — you point them explicitly. Add this snippet to your project's own `AGENTS.md`:
+
+```md
+When working with @bleizlabs/ui, explicitly Read `node_modules/@bleizlabs/ui/AGENTS.md`
+at the start of any UI task. Drill into `node_modules/@bleizlabs/ui/docs/AGENT-USAGE.md`
+for per-domain detail. Both files ship inside the npm tarball.
+```
+
+If you ran `npx @bleizlabs/ui init`, the generated consumer-side `AGENTS.md` already includes a Lib Reference section pointing at these paths.
+
+Each doc carries a `**Valid for:** @bleizlabs/ui <version>` header injected at publish time — agents can compare against `npm view @bleizlabs/ui version` to detect cached-stale state after lib upgrades.
+
+---
 
 ## Playground
 
-The repository includes a Next.js playground with one route per component:
+Every component has a dedicated demo route. To run locally:
 
 ```bash
 git clone https://github.com/BleizLabs/bleizlabs-ui.git
@@ -178,76 +239,91 @@ npm install
 npm run dev
 ```
 
-Open `http://localhost:3000` for the component index, `/demo` for the combined showcase, or `/components/<name>` for per-component deep dives. Every component is dual-theme from day one.
+Open `http://localhost:3000` for the component index, `/demo` for a combined showcase, or `/components/<name>` for per-component deep dives. Every component is dual-theme from day one.
 
-## Architecture
+---
 
-- **SCSS Modules only** — scoped class names, zero runtime style computation
+## Architecture at a glance
+
+- **SCSS Modules only** — scoped class names, zero runtime style computation, no CSS-in-JS, no Tailwind
 - **Zero runtime UI dependencies** — positioning, focus trap, dismiss, drag, match-media, date math all in-house
 - **Semantic tokens** — components reference `var(--color-brand)`, never primitive scale values
 - **Compound flat API** — `<Card>` + `<CardHeader>` + `<CardBody>` as siblings (shadcn-aligned, IDE-friendly, tree-shakeable)
-- **Polymorphism via `asChild`** — pass-through rendering for Next.js `<Link>`, custom elements, etc., using an in-house `Slot` primitive
-- **APG-first accessibility** — every interactive component has a documented keyboard model, ARIA contract, and regression catalogue
-
-## Testing
-
-Every release passes a multi-stage quality gate:
-
-- **Smoke sweep** — full library-wide `@axe-core/playwright` WCAG 2.1 AA scan against every playground route, run against a production build
-- **Per-component runtime suites** — keyboard / focus / aria / regression tests covering every APG-mandated key, focus trap, ARIA state attributes, and known cross-library edge cases
-- **NVDA sweep protocols** — manual screen-reader checklists per interactive component for NVDA + Firefox
-
-```bash
-npm run test              # full Playwright suite
-npm run test:smoke        # axe-core sweep only
-npm run typecheck         # tsc --noEmit
-npm run lint              # ESLint
-```
-
-## Tech stack
+- **Polymorphism via `asChild`** — pass-through rendering for `<Link>`, custom elements, etc., powered by an in-house `Slot` primitive
+- **APG-first accessibility** — every interactive component has a documented keyboard model, ARIA contract, and regression test catalogue
 
 | Layer | Choice |
 |---|---|
 | Framework | React 19 + Next.js 16.2 (App Router, Turbopack) |
 | Language | TypeScript 5.6 (strict, `noUncheckedIndexedAccess`) |
-| Styling | SCSS Modules + CSS custom properties |
-| Tokens | Seed-based generator (Sass `@use`/`@forward`) |
+| Styling | SCSS Modules + CSS custom properties (seed → semantic cascade) |
 | Polymorphism | In-house `Slot` primitive (Radix-style `asChild`) |
 | Positioning | In-house `useFloating` + `computePosition` |
 | Date math | In-house `utils/date.ts` (native `Date` + `Intl`) |
 | Focus management | In-house `useFocusTrap` + `findFirstTabbable` |
 | Drag gestures | In-house `usePointerDrag` with pointer-capture |
-| Match media | In-house `useMatchMedia` via `useSyncExternalStore` |
 | Testing | Playwright + `@axe-core/playwright` |
 
 No external UI library is imported at runtime.
+
+---
+
+## Quality gates
+
+Every release passes:
+
+- **Smoke sweep** — `@axe-core/playwright` WCAG 2.1 AA scan across every playground route, run against a production build
+- **Per-component suites** — keyboard / focus / ARIA state / regression tests for every interactive primitive
+- **NVDA sweep protocols** — manual screen-reader checklists for NVDA + Firefox per interactive component
+
+```bash
+npm run test         # full Playwright suite
+npm run test:smoke   # axe-core sweep only
+npm run typecheck    # tsc --noEmit
+npm run lint         # ESLint
+```
+
+---
 
 ## Browser support
 
 | Browser | Minimum version |
 |---|---|
-| Chrome / Edge (Chromium) | 111+ (`interpolate-size: allow-keywords` in Accordion requires 129+; falls back to `max-height`) |
+| Chrome / Edge (Chromium) | 111+ &nbsp;<sub>(Accordion `interpolate-size: allow-keywords` requires 129+; falls back to `max-height`)</sub> |
 | Firefox | 110+ |
 | Safari (desktop + iOS) | 16.4+ |
 
 Every component ships with `prefers-reduced-motion: reduce` fallbacks and `forced-colors: active` (Windows High Contrast) mappings where relevant.
 
+---
+
 ## Versioning
 
-This project follows [Semantic Versioning 2.0](https://semver.org). See [CHANGELOG.md](CHANGELOG.md).
+Pre-1.0. Minor bumps (`0.X.0`) may include breaking changes — read [CHANGELOG.md](CHANGELOG.md) before upgrading. Patch bumps (`0.X.Y`) are safe.
+
+The library will hit `1.0.0` on an explicit stabilization trigger from maintainers, not auto-follow from minor count.
+
+---
+
+## Links
+
+- 📦 [npm package](https://www.npmjs.com/package/@bleizlabs/ui)
+- 📓 [CHANGELOG](CHANGELOG.md)
+- 🗺️ [ROADMAP](ROADMAP.md)
+- 🤖 [Agent docs (`AGENTS.md`)](AGENTS.md) · [Deep reference (`docs/AGENT-USAGE.md`)](docs/AGENT-USAGE.md)
+- 🐛 [Issues](https://github.com/BleizLabs/bleizlabs-ui/issues)
+- 🔒 [Security policy](SECURITY.md)
+
+---
 
 ## Contributing
 
 This library is open-source for visibility but not currently accepting external contributions. See [CONTRIBUTING.md](CONTRIBUTING.md) for details.
 
-## Security
-
-If you discover a security issue, please follow the disclosure process in [SECURITY.md](SECURITY.md).
-
 ## License
 
-MIT — see [LICENSE](LICENSE).
+MIT — see [LICENSE](LICENSE). © BleizLabs.
 
 ---
 
-<sub>Built by [BleizLabs](https://bleizlabs.eu).</sub>
+<div align="center"><sub>Built by <a href="https://bleizlabs.eu">BleizLabs</a>.</sub></div>
