@@ -1,0 +1,9 @@
+// VisuallyHidden — mirrors `@include mx.sr-only` from styles/_mixins.scss
+// (single recipe, React parity). Clipped to 1×1px so the node stays in the
+// accessibility tree but never paints visibly. No tokens — pure geometry.
+
+@use '../../../styles/mixins' as mx;
+
+.root {
+  @include mx.sr-only;
+}

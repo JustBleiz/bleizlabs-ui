@@ -23,20 +23,22 @@ export * from './layout/Section';
 export * from './layout/Stack';
 
 // ----------------------------------------------------------------------------
-// Typography (4)
+// Typography (5)
 // ----------------------------------------------------------------------------
 export * from './typography/Anchor';
 export * from './typography/Eyebrow';
 export * from './typography/Heading';
+export * from './typography/Mark';
 export * from './typography/Text';
 
 // ----------------------------------------------------------------------------
-// Display (12)
+// Display (13)
 // ----------------------------------------------------------------------------
 export * from './display/AspectRatio';
 export * from './display/Avatar';
 export * from './display/Badge';
 export * from './display/Card';
+export * from './display/CodeBlock';
 export * from './display/EdgeBar';
 export * from './display/IconBox';
 export * from './display/KpiValue';
@@ -158,9 +160,14 @@ export * from './complex/Tooltip';
 // ----------------------------------------------------------------------------
 // Slot enables your own components to support the same `asChild` polymorphism
 // the library uses internally. cn / mergeRefs are commonly needed helpers.
+// VisuallyHidden mirrors the `sr-only` SCSS mixin as a React atom.
 export { Slot, type SlotProps } from './utils/Slot';
 export { cn, type ClassValue } from './utils/cn';
 export { mergeRefs } from './utils/mergeRefs';
+export {
+  VisuallyHidden,
+  type VisuallyHiddenProps,
+} from './utils/VisuallyHidden';
 
 // ----------------------------------------------------------------------------
 // Shared types

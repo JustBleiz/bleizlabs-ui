@@ -1,0 +1,106 @@
+// CodeBlock — structural shell for preformatted code. Owns surface +
+// chrome (language badge + copy button) + optional line-number gutter.
+// Highlighting comes from consumer-supplied pre-tokenized children
+// (Shiki / Prism / Highlight.js).
+
+.root {
+  position: relative;
+  margin: 0;
+  padding: 0;
+  background: var(--color-surface-raised);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  font-family: var(--font-mono);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-relaxed);
+  color: var(--color-text-primary);
+}
+
+// ----------------------------------------------------------------------------
+// Chrome — language badge + copy button (top-right corner)
+// ----------------------------------------------------------------------------
+
+.chrome {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--space-3);
+  padding: var(--space-2) var(--space-3);
+  border-bottom: 1px solid var(--color-border);
+  background: color-mix(in srgb, var(--color-surface-raised) 92%, transparent);
+  font-family: var(--font-secondary);
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+}
+
+.language {
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-weight: var(--font-weight-medium);
+}
+
+.copy {
+  appearance: none;
+  background: transparent;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  padding: var(--space-1) var(--space-2);
+  color: var(--color-text-secondary);
+  font: inherit;
+  cursor: pointer;
+  transition:
+    color var(--duration-fast) var(--easing-default),
+    border-color var(--duration-fast) var(--easing-default),
+    background var(--duration-fast) var(--easing-default);
+
+  &:hover {
+    color: var(--color-text-primary);
+    border-color: var(--color-text-secondary);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--color-brand);
+    outline-offset: 2px;
+  }
+}
+
+// ----------------------------------------------------------------------------
+// Code body
+// ----------------------------------------------------------------------------
+
+.code {
+  display: block;
+  padding: var(--space-4) var(--space-6);
+  overflow-x: auto;
+  white-space: pre;
+  font-family: inherit;
+  color: inherit;
+}
+
+.code.withLines {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0 var(--space-4);
+  padding-left: var(--space-3);
+}
+
+.lines {
+  display: flex;
+  flex-direction: column;
+  text-align: right;
+  color: var(--color-text-muted);
+  user-select: none;
+  // Independent tabular alignment so multi-digit numbers don't shift.
+  font-variant-numeric: tabular-nums;
+}
+
+.line {
+  display: block;
+}
+
+.content {
+  display: block;
+  // Preserve native pre/code text fidelity.
+  white-space: pre;
+}

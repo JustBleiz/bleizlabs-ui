@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1",
-  "libVersion": "0.22.1",
-  "generatedAt": "2026-05-13T09:08:15.138Z",
+  "libVersion": "0.23.0",
+  "generatedAt": "2026-05-13T09:29:08.188Z",
   "categories": {
     "layout": [
       "Container",
@@ -14,6 +14,7 @@
       "Anchor",
       "Eyebrow",
       "Heading",
+      "Mark",
       "Text"
     ],
     "display": [
@@ -21,6 +22,7 @@
       "Avatar",
       "Badge",
       "Card",
+      "CodeBlock",
       "EdgeBar",
       "IconBox",
       "KpiValue",
@@ -228,6 +230,19 @@
       "hooks": []
     },
     {
+      "family": "Mark",
+      "category": "typography",
+      "path": "typography/Mark",
+      "exports": [
+        "Mark"
+      ],
+      "types": [
+        "MarkColor",
+        "MarkProps"
+      ],
+      "hooks": []
+    },
+    {
       "family": "Text",
       "category": "typography",
       "path": "typography/Text",
@@ -299,6 +314,18 @@
         "CardRadius",
         "CardSectionProps",
         "CardVariant"
+      ],
+      "hooks": []
+    },
+    {
+      "family": "CodeBlock",
+      "category": "display",
+      "path": "display/CodeBlock",
+      "exports": [
+        "CodeBlock"
+      ],
+      "types": [
+        "CodeBlockProps"
       ],
       "hooks": []
     },
@@ -1795,6 +1822,18 @@
       ],
       "types": [
         "SlotProps"
+      ],
+      "hooks": []
+    },
+    {
+      "family": "VisuallyHidden",
+      "category": "utils",
+      "path": "utils/VisuallyHidden",
+      "exports": [
+        "VisuallyHidden"
+      ],
+      "types": [
+        "VisuallyHiddenProps"
       ],
       "hooks": []
     }

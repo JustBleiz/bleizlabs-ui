@@ -84,6 +84,13 @@ const components: ComponentLink[] = [
     phase: 'Phase 2 — Typography',
     status: 'available',
   },
+  {
+    href: '/components/mark',
+    name: 'Mark',
+    description: 'Inline <mark> highlight atom for search-result matches and editorial accents. Five color tones (default / brand / success / warning / error), asChild polymorphism.',
+    phase: 'Phase 2 — Typography',
+    status: 'available',
+  },
 
   // ── Phase 3 — Display ──────────────────────────────────────────────────
   {
@@ -167,6 +174,13 @@ const components: ComponentLink[] = [
     href: '/components/table',
     name: 'Table',
     description: 'Semantic <table> primitives — Table + Header + Body + Footer + Row + Cell. Striped, bordered, and compact variants. For grid features (sort, filter, pagination, selection, expansion, frozen columns, APG /grid/ keyboard) use the 0.17.0 <DataTable> primitive — it composes Table internally.',
+    phase: 'Phase 3 — Display',
+    status: 'available',
+  },
+  {
+    href: '/components/code-block',
+    name: 'CodeBlock',
+    description: 'Preformatted code surface — structural shell (zero highlighting). Optional language badge, copy-to-clipboard button, 1-indexed line-number gutter. Feed pre-tokenized children from your own Shiki / Prism pipeline.',
     phase: 'Phase 3 — Display',
     status: 'available',
   },
@@ -586,6 +600,13 @@ const components: ComponentLink[] = [
     name: 'Stepper',
     description: 'Multi-step visual progress indicator with optional keyboard navigation when clickable. Compound Stepper + Step parts. Auto-derives status from currentStep (complete / active / pending); explicit status="error" overrides. Visual mode = list landmark; interactive mode = navigation landmark with roving tabindex + ARG-key activation. Six demo use cases. Zero external deps.',
     phase: 'Phase 10 — Complex Interactive',
+    status: 'available',
+  },
+  {
+    href: '/components/visually-hidden',
+    name: 'VisuallyHidden',
+    description: 'Utility atom mirroring the sr-only SCSS mixin as a React primitive. Renders content visible only to assistive tech (clipped 1×1px, kept in the accessibility tree). asChild polymorphism for projecting onto semantic elements.',
+    phase: 'Utilities',
     status: 'available',
   },
 ];
