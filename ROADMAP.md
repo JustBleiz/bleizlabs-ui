@@ -1,8 +1,8 @@
 # `@bleizlabs/ui` — Roadmap 0.16 → 1.0
 
 **Status:** DRAFT
-**Last updated:** 2026-05-12
-**Current version:** 0.20.1 (100 components — patch release, 11 demo bug fixes)
+**Last updated:** 2026-05-13
+**Current version:** 0.21.0 (104 components — polish batch: AvatarGroup + Rating + Collapsible + Banner + TimeInput steppers)
 
 > Funkcjonalne luki biblioteki + kolejność domykania. Bez estymat czasowych — pracujemy etapami.
 
@@ -32,7 +32,7 @@ Każda pozycja ma:
 0.20.0  ✓  Charts pack                        SHIPPED 2026-05-12 (96 → 100 — LineChart, AreaChart, Sparkline, PieChart + _shared/chart-math extraction)
 0.20.1  ✓  Demo bug sweep (partial)            SHIPPED 2026-05-12 [11 of 18 bugs — non-asChild; 7 asChild bugs deferred to 0.20.2]
 0.20.2  →  Slot architectural patch           [Slot + 7 forwardRef consumers → React 19 ref-as-prop migration; fixes B01/B03/B06/B07a/B02/B04/B10]
-0.21.0  →  Polish batch                       [4 quick wins]
+0.21.0  ✓  Polish batch                       SHIPPED 2026-05-13 (100 → 104 — AvatarGroup + Rating + Collapsible + Banner + TimeInput showSteppers + DateTimePicker showTimeSteppers)
 0.22.0  →  Housekeeping                       [API freeze prep — bez RC]
 0.23.0+ →  Open-ended minor releases          [post-housekeeping nowe potrzeby gdy się ujawnią]
                                               ...
@@ -461,7 +461,9 @@ Każdy bug pre-fix MANDATORY:
 
 ---
 
-## 0.21.0 — Polish batch
+## 0.21.0 — Polish batch ✓ SHIPPED 2026-05-13
+
+**Status:** SHIPPED 2026-05-13 (100 → 104 families — AvatarGroup molecule + Rating interactive + Collapsible compound + Banner feedback + opt-in TimeInput showSteppers amendment + DateTimePicker showTimeSteppers propagation).
 
 **Why:** 4 małe komponenty domykające standardowe display + feedback gaps. Szybki release, każdy low-effort, każdy realnie potrzebny.
 
@@ -505,6 +507,43 @@ Każdy bug pre-fix MANDATORY:
 - Collapsible = generic "show more / hide" toggle (no question semantic)
 
 **Layer:** `complex/Collapsible`
+
+### 0.21.5 TimeInput showSteppers amendment (added 2026-05-12 per user directive)
+
+**Status:** PLANNED. User-requested 2026-05-12: "małe przyciski up/down do wybierania godziny/minuty itd." Research surveyed 6 libs + APG spinbutton pattern — recommendation: opt-in `showSteppers` prop, single global stacked ↑↓ pair on right edge of input acting on focused segment (NOT per-segment, which no lib does).
+
+**Klocek check:** PASS — pure opt-in extension per Charter R3 (opt-in flexibility); boolean prop, default `false` = zero change dla existing consumers. R2 prop budget unaffected (+1 boolean).
+
+**Scope:**
+- `<TimeInput showSteppers={false}>` prop default false (backward compatible)
+- When true: render `<button aria-label="Increment {segment}">` + `<button aria-label="Decrement {segment}">` stacked vertically on right
+- Always-visible when prop on (hover-only = discoverability anti-pattern per research)
+- Hold-to-repeat: 400ms delay → 80ms interval (Mantine convention)
+- Acts on currently-focused segment (hour / minute / second)
+- Real `<button type="button">` z proper button semantics — NOT aria-hidden (steppers ARE additional affordances, not redundant)
+- Icon ~10-12px chevrons, button ~16-20px tall × ~14-18px wide
+- `prefers-reduced-motion: reduce` → disable any focus ring transition (steppers themselves don't animate)
+- `forced-colors: active` → use system button colors
+
+**Propagation:**
+- `TimePicker` (composes TimeInput internally) → prop pass-through
+- `DateTimePicker` (composes TimeInput + Calendar) → prop pass-through
+- `DateRangePicker` (uses Calendar only, no TimeInput in current scope) → N/A
+
+**Layer:** Amendment to existing `interactive/TimeInput` + `complex/TimePicker` + `complex/DateTimePicker`. NIE new component. Uses `/component-build` simplified flow (Phase 0-7 lighter, focused on delta).
+
+**Zero external deps:** Native SVG chevron icons, native HTML5 button. No dnd-kit, no Radix.
+
+**DoD:**
+- [ ] TimeInput.tsx adds `showSteppers` prop + stepper button JSX (conditional)
+- [ ] TimeInput.module.scss adds `.stepperGroup` + `.stepperButton` (up/down) styling
+- [ ] TimePicker + DateTimePicker pass through `showSteppers` (verify with grep — likely already `...rest` spread)
+- [ ] Demo §showSteppers added na demo route TimeInput showing on/off comparison
+- [ ] Hold-to-repeat verified via Playwright (mousedown + setTimeout chain — 400ms initial, then 80ms interval until mouseup)
+- [ ] axe-core zero violations
+- [ ] tsc + eslint + check:barrel + check:manifest clean
+
+---
 
 ### 0.21.4 Banner
 

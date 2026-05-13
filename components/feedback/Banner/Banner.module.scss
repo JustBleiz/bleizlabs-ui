@@ -1,0 +1,115 @@
+@use '../../../styles/mixins' as mx;
+
+// Banner — full-width page-level notification surface. Tone enum drives
+// background + border + foreground color via the seeded semantic palette;
+// content (message + actions + dismiss) lays out in a single flex row.
+
+.root {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  width: 100%;
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-md);
+  // Subtle border underscores the tone color without overwhelming the
+  // foreground content. `--banner-border` is the per-tone override.
+  border: 1px solid var(--banner-border, var(--color-border-subtle));
+  background: var(--banner-bg, var(--color-surface-raised));
+  color: var(--banner-fg, var(--color-text-primary));
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-snug);
+}
+
+.sticky {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+.message {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.actions {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex: 0 0 auto;
+}
+
+.dismiss {
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--space-7);
+  height: var(--space-7);
+  padding: 0;
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-sm);
+  color: inherit;
+  cursor: pointer;
+  opacity: 0.72;
+  transition:
+    opacity var(--duration-fast) var(--easing-default),
+    background-color var(--duration-fast) var(--easing-default);
+
+  &:hover {
+    opacity: 1;
+    background: rgb(0 0 0 / 0.06);
+  }
+
+  &:focus-visible {
+    @include mx.focus-ring;
+    opacity: 1;
+  }
+}
+
+// TONES — drive --banner-{bg,border,fg} channel. Background uses the
+// `-subtle` semantic so the banner reads as a tinted surface rather
+// than a solid color block; border uses the `-strong` tone for clear
+// boundary; foreground stays primary text color (consumer-overridable
+// via globals.scss tone palette).
+
+.toneInfo {
+  --banner-bg: var(--color-info-subtle);
+  --banner-border: var(--color-info);
+  --banner-fg: var(--color-text-primary);
+}
+
+.toneWarning {
+  --banner-bg: var(--color-warning-subtle);
+  --banner-border: var(--color-warning);
+  --banner-fg: var(--color-text-primary);
+}
+
+.toneError {
+  --banner-bg: var(--color-error-subtle);
+  --banner-border: var(--color-error);
+  --banner-fg: var(--color-text-primary);
+}
+
+.toneSuccess {
+  --banner-bg: var(--color-success-subtle);
+  --banner-border: var(--color-success);
+  --banner-fg: var(--color-text-primary);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dismiss {
+    transition: none;
+  }
+}
+
+@media (forced-colors: active) {
+  .root {
+    border-width: 2px;
+    border-style: solid;
+  }
+
+  .dismiss:focus-visible {
+    outline: 2px solid CanvasText;
+  }
+}

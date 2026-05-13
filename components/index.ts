@@ -61,6 +61,7 @@ export * from './interactive/NumberInput';
 export * from './interactive/PasswordInput';
 export * from './interactive/PhoneInput';
 export * from './interactive/RadioGroup';
+export * from './interactive/Rating';
 export * from './interactive/Switch';
 export * from './interactive/TagsInput';
 export * from './interactive/Textarea';
@@ -73,6 +74,7 @@ export * from './interactive/ToggleGroup';
 // Feedback (3)
 // ----------------------------------------------------------------------------
 export * from './feedback/Alert';
+export * from './feedback/Banner';
 export * from './feedback/Empty';
 export * from './feedback/Progress';
 
@@ -98,6 +100,7 @@ export * from './specialized/UsageDonut';
 // Molecules (11)
 // ----------------------------------------------------------------------------
 export * from './molecules/AccordionGroup';
+export * from './molecules/AvatarGroup';
 export * from './molecules/BackLink';
 export * from './molecules/BreakdownList';
 export * from './molecules/Chip';
@@ -120,6 +123,7 @@ export * from './presets/FormSurface';
 export * from './complex/AlertDialog';
 export * from './complex/Calendar';
 export * from './complex/Carousel';
+export * from './complex/Collapsible';
 export * from './complex/Combobox';
 export * from './complex/Command';
 export * from './complex/ContextMenu';

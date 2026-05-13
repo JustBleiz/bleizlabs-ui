@@ -1,0 +1,64 @@
+@use '../../../styles/mixins' as mx;
+
+// Collapsible — APG disclosure compound. State exposed via
+// `data-state="open|closed"` on root + trigger + content so consumers
+// can hook custom transitions/rotations via CSS attribute selectors.
+//
+// Height animation uses CSS Grid `grid-template-rows: 0fr → 1fr` —
+// no JS measurement needed, content-aware height, smooth easing. The
+// outer .content cell is the grid; the inner .contentInner overflow-
+// hides during animation.
+
+.root {
+  display: block;
+}
+
+.trigger {
+  display: inline-flex;
+  align-items: center;
+  // Trigger is unstyled by default — consumer composes via `asChild`
+  // (typically wrapping `<Button variant="ghost">`) or passes
+  // className. We strip the native button chrome so the default still
+  // reads as a primitive surface.
+  appearance: none;
+  background: transparent;
+  border: none;
+  padding: 0;
+  margin: 0;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+  text-align: inherit;
+
+  &:focus-visible {
+    @include mx.focus-ring;
+    border-radius: var(--radius-sm);
+  }
+
+  &:disabled,
+  &[data-disabled='true'] {
+    cursor: not-allowed;
+    opacity: 0.55;
+  }
+}
+
+.content {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows var(--duration-normal) var(--easing-default);
+
+  &[data-state='open'] {
+    grid-template-rows: 1fr;
+  }
+}
+
+.contentInner {
+  overflow: hidden;
+  min-height: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .content {
+    transition: none;
+  }
+}

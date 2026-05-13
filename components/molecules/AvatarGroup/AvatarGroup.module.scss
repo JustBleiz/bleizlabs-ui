@@ -1,0 +1,62 @@
+// AvatarGroup — stacked-avatar layout with overflow chip.
+//
+// Negative margin between siblings creates the overlap effect. `isolation`
+// scopes the z-index stack to this group so nested z-index'd siblings
+// elsewhere on the page don't compete. First child renders on top via
+// descending z-index — matches Material/Ant Design/Chakra convention.
+
+.root {
+  display: inline-flex;
+  align-items: center;
+  isolation: isolate;
+  // Default overlap if consumer doesn't override the channel via inline
+  // style. Component sets the channel from the `overlap` prop, but the
+  // fallback keeps the SCSS rule self-contained for tests / Storybook.
+  --avatar-group-overlap: var(--space-2);
+}
+
+.item {
+  display: inline-flex;
+  // Negative margin pulls each subsequent item over its predecessor by
+  // `--avatar-group-overlap`. Using `margin-inline-start` (not -end) so
+  // the chain reads naturally in both LTR + RTL contexts — the FIRST
+  // item has no offset, every following item slides toward the start.
+  margin-inline-start: calc(-1 * var(--avatar-group-overlap));
+  // First item has no negative margin (nothing precedes it) — sits flush
+  // against the group start edge.
+  &:first-child {
+    margin-inline-start: 0;
+  }
+}
+
+// Z-index stack: first child on top (highest z-index), each subsequent
+// child one layer lower. Counts down so the leftmost avatar visually
+// occludes the next. `--items` is implicit via nth-of-type negation —
+// CSS doesn't know item count, so use a deep enough descending range
+// to cover typical group sizes (up to 20 avatars). Beyond that the
+// stacking is fine but identical between very-deep siblings.
+.item:nth-child(1) { z-index: 20; }
+.item:nth-child(2) { z-index: 19; }
+.item:nth-child(3) { z-index: 18; }
+.item:nth-child(4) { z-index: 17; }
+.item:nth-child(5) { z-index: 16; }
+.item:nth-child(6) { z-index: 15; }
+.item:nth-child(7) { z-index: 14; }
+.item:nth-child(8) { z-index: 13; }
+.item:nth-child(9) { z-index: 12; }
+.item:nth-child(10) { z-index: 11; }
+.item:nth-child(n + 11) { z-index: 1; }
+
+// Overflow chip — composed via `<Avatar fallback="+N">` so it inherits
+// the group's `size`. Visual treatment differs from a regular avatar:
+// no portrait, no name initials — a neutral surface tagged with the
+// excess count. Override Avatar's default fallback background/border
+// to read as a "rest of the group" affordance instead of a person.
+.overflowChip {
+  background: var(--color-surface-raised);
+  color: var(--color-text-secondary);
+  // Subtle border anchors the chip visually as a distinct element from
+  // a portrait avatar — useful in dense lists where the chip sits next
+  // to other initials-fallback avatars and would otherwise blend in.
+  box-shadow: inset 0 0 0 1px var(--color-border-subtle);
+}

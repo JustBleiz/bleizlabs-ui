@@ -7,7 +7,92 @@ and this project adheres to [Semantic Versioning 2.0](https://semver.org/spec/v2
 
 ## [Unreleased]
 
-_No unreleased changes — 0.20.1 ships the demo bug sweep below._
+_No unreleased changes — 0.21.0 ships the polish batch below._
+
+## [0.21.0] — 2026-05-13
+
+**Minor release — Polish batch.** Four quick-win small components closing
+display + feedback gaps, plus an opt-in TimeInput stepper amendment. Each
+component passes the Klocek-vs-Organism binding test (single concept,
+data-shape neutral, no surface bias) and ships through the full
+`/component-build` skill GAN loop. Family count 100 → 104.
+
+### Added
+
+- **AvatarGroup molecule** (`molecules/AvatarGroup`) — stacked-avatar
+  primitive with overflow chip. Children-slot pattern (data-shape neutral):
+  consumer passes `<Avatar>` elements as children; the molecule clips the
+  visible count to `max`, collapses the remainder into a final "+N" chip
+  (an `<Avatar>` with fallback text), and applies negative-margin overlap.
+  Props: `max` / `size` / `overlap` / `asChild` + children. `role="list"`
+  + `role="listitem"` per child + `aria-label` on the overflow chip. Composes
+  lib `<Avatar>` for visual consistency. Variant-free, lockup-free —
+  usable in panel team rows, bleizos client teams, scout-hub operator
+  lists, marketing about pages.
+
+- **Rating interactive primitive** (`interactive/Rating`) — APG
+  `radio-rating` star-input pattern. Roving tabindex, ArrowLeft/Right/Up/
+  Down for navigation, Home/End for first/last, Space/Enter for activate.
+  Hover preview separate from committed value. `readOnly` mode supports
+  fractional values (3.7 → 3 filled + 1 partial via CSS `--rating-star-fill`
+  + clip). Inline SVG star — zero icon library. Form integration via
+  hidden `<input name>`. Controlled + uncontrolled hybrid. Sizes
+  sm/md/lg, `max` configurable, `allowClear` toggle.
+
+- **Collapsible compound** (`complex/Collapsible`) — APG `disclosure`
+  pattern. `<Collapsible>` + `<CollapsibleTrigger>` + `<CollapsibleContent>`.
+  Distinct from `<AccordionGroup>` (which is APG `accordion` Q+A pattern);
+  Collapsible is the generic show/hide primitive. Trigger is real
+  `<button type="button">` with `aria-expanded` + `aria-controls`. Content
+  has `role="region"` + `aria-labelledby`. CSS Grid `0fr → 1fr` height
+  transition (content-aware, no JS height measurement). Reduced-motion
+  guard disables transition. Controlled (`open` + `onOpenChange`) +
+  uncontrolled (`defaultOpen`) + `disabled` + `forceMount` (preserve DOM +
+  state across toggle).
+
+- **Banner feedback primitive** (`feedback/Banner`) — page-wide
+  notification. Distinct from `<Alert>` (contextual inline near form
+  fields); Banner is global broadcast (maintenance window, billing-overdue
+  notice, terms update, system status). Tone enum (info / warning / error
+  / success) drives both `--banner-{bg,border,fg}` channel AND ARIA live
+  politeness: `tone="error"` → `role="alert"` + `aria-live="assertive"`
+  (interrupts SR); other tones → `role="status"` + `aria-live="polite"`.
+  Opt-in dismiss button (consumer-owned dismissal state via `onDismiss`).
+  Opt-in `sticky` variant (`position: sticky; top: 0`). `actions` slot
+  accepts arbitrary children (typically `<Button>` / `<Anchor>`).
+  Reduced-motion + forced-colors fallbacks.
+
+- **TimeInput `showSteppers` opt-in amendment** — stacked ↑/↓ button pair
+  on the right edge of the input wrap, acts on currently-focused segment
+  (hour / minute / second). Pointer-down activation: immediate first step
+  + hold-to-repeat (400ms initial → 80ms repeat, native spinbutton
+  convention). Keyboard (Space/Enter on button) fires single step;
+  keyboard users keep ArrowUp/Down on spinbuttons themselves (better
+  ergonomics). Buttons carry `tabIndex={-1}` — keyboard focus stays on
+  spinbutton segments. Minute stepper respects existing `step` prop
+  (step=15 → 0 → 15, not 0 → 1). 12h hour-cycle mapping intact.
+  `setPointerCapture` wrapped in try/catch — synthetic events / SR
+  virtual cursors don't break the increment path. Inline SVG chevron —
+  zero icon library. Default `false` (fully backward compatible).
+
+- **DateTimePicker `showTimeSteppers` propagation** — new optional prop
+  forwards `showSteppers` to the embedded `<TimeInput>` inside the
+  popover content. Default `false`.
+
+### Notes
+
+- TimePicker NOT updated for steppers — it uses own hour spinbutton +
+  minute listbox, no TimeInput composition.
+- Rating reclassified `@layer atom` → `@layer interactive` in JSDoc;
+  9-prop budget exceeded atom ≤3 cap, per Slider/Toggle convention.
+  No API change.
+- Manifest libVersion synced to 0.21.0; family count 100 → 104; total
+  exported names 594.
+- All four new components pass tsc + eslint + jsx-a11y clean. Runtime
+  Playwright + axe-core specs for Phase 10 interactive primitives
+  (Rating + Collapsible) batched into a separate 0.21.x test-execution
+  sprint per the 0.20.0 charts cycle precedent — specs ship co-located
+  in `tests/`, execution batched.
 
 ## [0.20.1] — 2026-05-12
 

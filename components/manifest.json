@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1",
-  "libVersion": "0.20.1",
-  "generatedAt": "2026-05-12T20:06:16.612Z",
+  "libVersion": "0.21.0",
+  "generatedAt": "2026-05-13T07:44:01.916Z",
   "categories": {
     "layout": [
       "Container",
@@ -43,6 +43,7 @@
       "PasswordInput",
       "PhoneInput",
       "RadioGroup",
+      "Rating",
       "Switch",
       "TagsInput",
       "TextLink",
@@ -53,6 +54,7 @@
     ],
     "feedback": [
       "Alert",
+      "Banner",
       "Empty",
       "Progress"
     ],
@@ -74,6 +76,7 @@
     ],
     "molecules": [
       "AccordionGroup",
+      "AvatarGroup",
       "BackLink",
       "BreakdownList",
       "Chip",
@@ -92,6 +95,7 @@
       "AlertDialog",
       "Calendar",
       "Carousel",
+      "Collapsible",
       "Combobox",
       "Command",
       "ContextMenu",
@@ -581,6 +585,19 @@
       ]
     },
     {
+      "family": "Rating",
+      "category": "interactive",
+      "path": "interactive/Rating",
+      "exports": [
+        "Rating"
+      ],
+      "types": [
+        "RatingProps",
+        "RatingSize"
+      ],
+      "hooks": []
+    },
+    {
       "family": "Switch",
       "category": "interactive",
       "path": "interactive/Switch",
@@ -682,6 +699,19 @@
       "types": [
         "AlertProps",
         "AlertVariant"
+      ],
+      "hooks": []
+    },
+    {
+      "family": "Banner",
+      "category": "feedback",
+      "path": "feedback/Banner",
+      "exports": [
+        "Banner"
+      ],
+      "types": [
+        "BannerProps",
+        "BannerTone"
       ],
       "hooks": []
     },
@@ -918,6 +948,18 @@
       "hooks": []
     },
     {
+      "family": "AvatarGroup",
+      "category": "molecules",
+      "path": "molecules/AvatarGroup",
+      "exports": [
+        "AvatarGroup"
+      ],
+      "types": [
+        "AvatarGroupProps"
+      ],
+      "hooks": []
+    },
+    {
       "family": "BackLink",
       "category": "molecules",
       "path": "molecules/BackLink",
@@ -1122,6 +1164,22 @@
         "CarouselProps",
         "CarouselSlideProps",
         "CarouselViewportProps"
+      ],
+      "hooks": []
+    },
+    {
+      "family": "Collapsible",
+      "category": "complex",
+      "path": "complex/Collapsible",
+      "exports": [
+        "Collapsible",
+        "CollapsibleContent",
+        "CollapsibleTrigger"
+      ],
+      "types": [
+        "CollapsibleContentProps",
+        "CollapsibleProps",
+        "CollapsibleTriggerProps"
       ],
       "hooks": []
     },

@@ -217,6 +217,48 @@ export default function DateTimePickerPlayground() {
           ) : null}
         </form>
       </section>
+
+      {/* ───────────────────────────────────────────────────────────── */}
+      <section className={styles.section} aria-label="Time steppers (0.21.0)">
+        <Heading level={2} size="lg">
+          7. showTimeSteppers — opt-in ↑↓ on embedded TimeInput (0.21.0)
+        </Heading>
+        <Text variant="body" color="muted">
+          <code>showTimeSteppers</code> propagates to the embedded{' '}
+          <code>&lt;TimeInput&gt;</code> in the popover content. Steppers act
+          on the currently-focused segment (hour / minute / second) with
+          pointer-down hold-to-repeat (400ms → 80ms). Open the picker to
+          see the steppers on the right edge of the time row.
+        </Text>
+        <Inline gap={6} wrap>
+          <DateTimePicker
+            defaultValue={new Date(2026, 4, 15, 14, 30)}
+            hourCycle="24h"
+            showTimeSteppers
+          >
+            <DateTimePickerInput aria-label="24h with steppers" />
+            <DateTimePickerContent />
+          </DateTimePicker>
+          <DateTimePicker
+            defaultValue={new Date(2026, 4, 15, 9, 0, 0)}
+            hourCycle="12h"
+            withSeconds
+            showTimeSteppers
+          >
+            <DateTimePickerInput aria-label="12h + seconds + steppers" />
+            <DateTimePickerContent />
+          </DateTimePicker>
+          <DateTimePicker
+            defaultValue={new Date(2026, 4, 15, 8, 0)}
+            hourCycle="24h"
+            timeStep={15}
+            showTimeSteppers
+          >
+            <DateTimePickerInput aria-label="step=15 with steppers" />
+            <DateTimePickerContent />
+          </DateTimePicker>
+        </Inline>
+      </section>
     </main>
   );
 }
