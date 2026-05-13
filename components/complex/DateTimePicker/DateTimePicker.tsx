@@ -581,7 +581,7 @@ export const DateTimePickerInput = forwardRef<HTMLInputElement, DateTimePickerIn
         spellCheck={false}
         className={cn(styles.input, ctx.isDisabled && styles.inputDisabled, rest.className)}
         placeholder={
-          placeholder ?? (ctx.withSeconds ? 'YYYY-MM-DDTHH:MM:SS' : 'YYYY-MM-DDTHH:MM')
+          placeholder ?? (ctx.withSeconds ? 'YYYY-MM-DD HH:MM:SS' : 'YYYY-MM-DD HH:MM')
         }
         value={ctx.search}
         onChange={(event) => ctx.setSearch(event.target.value)}
