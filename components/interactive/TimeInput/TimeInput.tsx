@@ -703,6 +703,7 @@ export const TimeInput = forwardRef<HTMLDivElement, TimeInputProps>(function Tim
     styles.inputWrap,
     error && styles.inputWrapError,
     disabled && styles.inputWrapDisabled,
+    showSteppers && styles.inputWrapStretched,
   );
 
   const hourBounds = fieldBounds('h');

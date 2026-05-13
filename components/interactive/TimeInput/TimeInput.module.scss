@@ -35,6 +35,16 @@
   }
 }
 
+// When steppers are shown, the wrap stretches to full column width so the
+// stepper column can `margin-inline-start: auto` push to the right edge —
+// matching the convention of Input/NumberInput/Textarea/PasswordInput
+// (always 100% width). Without steppers TimeInput stays compact
+// (`inline-flex`) per its spinbutton-trio nature.
+.inputWrapStretched {
+  display: flex;
+  width: 100%;
+}
+
 .inputWrapError {
   border-color: var(--color-error);
 
@@ -137,10 +147,18 @@
 .steppers {
   display: inline-flex;
   flex-direction: column;
-  margin-inline-start: var(--space-2);
+  // `auto` pushes steppers to the trailing edge of the stretched wrap
+  // (digit fields + AM/PM cluster left, steppers float right). When the
+  // wrap is NOT stretched (no showSteppers consumer would never see this
+  // class), `auto` falls back to a content-width margin between AM/PM
+  // and steppers — visually identical to a fixed gap.
+  margin-inline-start: auto;
   align-self: stretch;
   // Compact pair — each button is half the input wrap height.
   gap: 1px;
+  // Subtle left padding for breathing room between AM/PM (or the last
+  // digit field in 24h mode) and the stepper column.
+  padding-inline-start: var(--space-2);
 }
 
 .stepperUp,
