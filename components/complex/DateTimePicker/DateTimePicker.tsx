@@ -140,6 +140,7 @@ interface DateTimePickerContextValue {
   withSeconds: boolean;
   hourCycle: '12h' | '24h' | undefined;
   timeStep: number;
+  showTimeSteppers: boolean;
   placement: Placement;
   sideOffset: number;
   baseId: string;
@@ -228,6 +229,13 @@ export interface DateTimePickerProps
   hourCycle?: '12h' | '24h';
   /** Minute increment step for TimeInput. Default `1`. */
   timeStep?: number;
+  /**
+   * Render opt-in ↑/↓ stepper pair on the embedded TimeInput acting on
+   * the currently-focused segment (hour / minute / second). Default
+   * `false`. See `<TimeInput showSteppers>` for full semantics. Added
+   * 0.21.0 (E01.5).
+   */
+  showTimeSteppers?: boolean;
   /** Placement of popup. Default `'bottom-start'`. */
   placement?: Placement;
   /** Pixel gap between input and popup. Default `4`. */
@@ -259,6 +267,7 @@ export const DateTimePicker = forwardRef<HTMLDivElement, DateTimePickerProps>(fu
     withSeconds = false,
     hourCycle,
     timeStep = 1,
+    showTimeSteppers = false,
     placement = 'bottom-start',
     sideOffset = 4,
     children,
@@ -433,6 +442,7 @@ export const DateTimePicker = forwardRef<HTMLDivElement, DateTimePickerProps>(fu
     withSeconds,
     hourCycle,
     timeStep,
+    showTimeSteppers,
     placement,
     sideOffset,
     baseId,
@@ -649,6 +659,7 @@ export const DateTimePickerContent = forwardRef<HTMLDivElement, DateTimePickerCo
               hourCycle={ctx.hourCycle}
               locale={ctx.locale}
               step={ctx.timeStep}
+              showSteppers={ctx.showTimeSteppers}
               ariaLabel="Time"
               dir={ctx.dir}
             />

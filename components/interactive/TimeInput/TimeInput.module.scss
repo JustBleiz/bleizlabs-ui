@@ -134,6 +134,65 @@
   }
 }
 
+.steppers {
+  display: inline-flex;
+  flex-direction: column;
+  margin-inline-start: var(--space-2);
+  align-self: stretch;
+  // Compact pair — each button is half the input wrap height.
+  gap: 1px;
+}
+
+.stepperUp,
+.stepperDown {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--space-6);
+  flex: 1 1 auto;
+  padding: 0;
+  background: var(--input-addon-bg);
+  border: 1px solid var(--input-addon-border);
+  color: var(--input-addon-text);
+  cursor: pointer;
+  transition:
+    background var(--duration-fast) var(--easing-default),
+    color var(--duration-fast) var(--easing-default);
+
+  svg {
+    width: 10px;
+    height: 6px;
+  }
+
+  &:hover:not(:disabled) {
+    background: color-mix(in srgb, var(--color-brand) 15%, var(--input-addon-bg));
+    color: var(--color-text-primary);
+  }
+
+  &:active:not(:disabled) {
+    background: color-mix(in srgb, var(--color-brand) 25%, var(--input-addon-bg));
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+
+  // No focus-visible ring — buttons carry tabIndex={-1}; focus stays on
+  // the targeted spinbutton segment so SR + keyboard ergonomics live
+  // there. Pointer interaction is the canonical activation path.
+}
+
+.stepperUp {
+  border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+  border-bottom: none;
+}
+
+.stepperDown {
+  border-radius: 0 0 var(--radius-sm) var(--radius-sm);
+  border-top: none;
+}
+
 .helper {
   margin: 0;
   font-family: var(--font-secondary);
@@ -158,7 +217,9 @@
 
 @media (prefers-reduced-motion: reduce) {
   .inputWrap,
-  .period {
+  .period,
+  .stepperUp,
+  .stepperDown {
     transition: none;
   }
 }

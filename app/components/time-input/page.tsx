@@ -208,6 +208,42 @@ export default function TimeInputPlayground() {
           ) : null}
         </form>
       </section>
+
+      <section className={styles.section}>
+        <Heading level={2} size="2xl">
+          showSteppers — opt-in ↑↓ buttons (0.21.0)
+        </Heading>
+        <Text variant="small" color="secondary">
+          <code>showSteppers</code> renders a stacked ↑/↓ pair on the right
+          edge of the input wrap. They act on the currently-focused segment
+          (hour / minute / second). Pointer-down hold-to-repeat (400ms initial
+          → 80ms repeat) matches native spinbutton browser convention. Buttons
+          carry <code>tabIndex=-1</code> — keyboard users keep ArrowUp/Down on
+          the spinbuttons themselves with better ergonomics.
+        </Text>
+        <Inline gap={6} wrap>
+          <TimeInput
+            label="24h with steppers"
+            defaultValue="14:30"
+            hourCycle="24h"
+            showSteppers
+          />
+          <TimeInput
+            label="12h + seconds + steppers"
+            defaultValue="09:45:00"
+            hourCycle="12h"
+            withSeconds
+            showSteppers
+          />
+          <TimeInput
+            label="Step=15 minutes (steppers respect step)"
+            defaultValue="08:00"
+            hourCycle="24h"
+            step={15}
+            showSteppers
+          />
+        </Inline>
+      </section>
     </main>
   );
 }

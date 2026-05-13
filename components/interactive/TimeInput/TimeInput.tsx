@@ -2,12 +2,14 @@
 
 import {
   forwardRef,
+  useEffect,
   useId,
   useRef,
   useState,
   type FocusEvent,
   type KeyboardEvent,
   type MouseEvent,
+  type PointerEvent,
 } from 'react';
 import { cn } from '../../utils/cn';
 import {
@@ -114,6 +116,12 @@ import styles from './TimeInput.module.scss';
  *     min="06:00"
  *     max="22:00"
  *   />
+ *
+ *   // With opt-in steppers (E01.5 — 0.21.0). Stacked ↑↓ pair on the right
+ *   // acts on the currently-focused segment with pointer-down hold-to-
+ *   // repeat (400ms → 80ms). Keyboard users keep ArrowUp/Down on the
+ *   // spinbuttons themselves; the stepper buttons carry tabIndex=-1.
+ *   <TimeInput label="Pickup" defaultValue="09:00" showSteppers />
  */
 export interface TimeInputProps {
   /** Visible label. When provided, renders a coupled `<Label htmlFor>` above the group. */
@@ -164,6 +172,18 @@ export interface TimeInputProps {
   className?: string;
   /** Text direction. Default `ltr`. */
   dir?: 'ltr' | 'rtl';
+  /**
+   * Render an opt-in stacked ↑/↓ stepper pair on the right edge of the
+   * input wrap. Acts on the currently-focused segment (hour / minute /
+   * second). Pointer-down activation increments once then hold-to-repeats
+   * (400ms initial delay → 80ms repeat interval, matching native
+   * spinbutton browser convention). Keyboard activation increments once
+   * per Space/Enter (no hold-to-repeat — keyboard users have ArrowUp/Down
+   * available with better ergonomics). Buttons carry static aria-label
+   * "Increment/Decrement time" — the currently-targeted segment is
+   * announced via its own spinbutton's aria-valuetext. Default `false`.
+   */
+  showSteppers?: boolean;
 }
 
 interface TimeState {
@@ -237,6 +257,7 @@ export const TimeInput = forwardRef<HTMLDivElement, TimeInputProps>(function Tim
     id,
     className,
     dir = 'ltr',
+    showSteppers = false,
   },
   ref,
 ) {
@@ -284,6 +305,26 @@ export const TimeInput = forwardRef<HTMLDivElement, TimeInputProps>(function Tim
   const hourRef = useRef<HTMLInputElement | null>(null);
   const minuteRef = useRef<HTMLInputElement | null>(null);
   const secondRef = useRef<HTMLInputElement | null>(null);
+
+  // Tracks which segment a stepper button should target. Updated on every
+  // field focus + initialised to 'h' so the steppers work even before the
+  // user has tabbed into any field. Persisted across blurs so clicking a
+  // stepper after focus has briefly left to the button itself still acts
+  // on the previously-focused segment (pointer events don't blur).
+  const focusedFieldRef = useRef<FieldKey>('h');
+  // Hold-to-repeat timer chain. Cleared on pointerup / pointercancel /
+  // pointerleave. Stored as a ref (not state) so the timer chain doesn't
+  // trigger a re-render — only the field commit does.
+  const repeatTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (repeatTimerRef.current !== null) {
+        clearTimeout(repeatTimerRef.current);
+        repeatTimerRef.current = null;
+      }
+    };
+  }, []);
 
   const fieldRef = (field: FieldKey) =>
     field === 'h' ? hourRef : field === 'm' ? minuteRef : secondRef;
@@ -545,9 +586,9 @@ export const TimeInput = forwardRef<HTMLDivElement, TimeInputProps>(function Tim
   };
 
   const handleFocus = (
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    _field: FieldKey,
+    field: FieldKey,
   ) => (event: FocusEvent<HTMLInputElement>) => {
+    focusedFieldRef.current = field;
     // Select-all on focus per APG spinbutton precedent. We intentionally do
     // NOT flush a buffer left behind in another field here — that would race
     // with the just-completed commit when handleKeyDown auto-advances focus
@@ -572,6 +613,78 @@ export const TimeInput = forwardRef<HTMLDivElement, TimeInputProps>(function Tim
     const display = state ? to12hDisplay(state.h) : 12;
     const h24 = from12hCommit(display, nextPeriod);
     commit({ ...base, h: h24 });
+  };
+
+  // Stepper handlers — pointerdown-driven hold-to-repeat acting on the
+  // currently-focused field. Matches native spinbutton behavior: 400ms
+  // initial delay before the repeat chain kicks in, then 80ms per repeat.
+  // Keyboard activation (Space/Enter on the button) fires a single step
+  // via the synthetic click handler — keyboard users have ArrowUp/Down on
+  // the spinbuttons themselves with better ergonomics.
+  const stepperFieldDelta = (field: FieldKey, direction: 1 | -1): number => {
+    if (field === 'm') return direction * step;
+    return direction;
+  };
+
+  const stopStepperRepeat = () => {
+    if (repeatTimerRef.current !== null) {
+      clearTimeout(repeatTimerRef.current);
+      repeatTimerRef.current = null;
+    }
+  };
+
+  const startStepperRepeat = (direction: 1 | -1) => {
+    if (disabled) return;
+    const field = focusedFieldRef.current;
+    adjustField(field, stepperFieldDelta(field, direction));
+    // Focus the targeted field so subsequent keyboard input lands there
+    // and the spinbutton's :focus-visible styling reflects activity.
+    focusField(field);
+    stopStepperRepeat();
+    const tick = (delay: number) => {
+      repeatTimerRef.current = setTimeout(() => {
+        const f = focusedFieldRef.current;
+        adjustField(f, stepperFieldDelta(f, direction));
+        tick(80);
+      }, delay);
+    };
+    tick(400);
+  };
+
+  const handleStepperPointerDown =
+    (direction: 1 | -1) => (event: PointerEvent<HTMLButtonElement>) => {
+      // Left button only — ignore right/middle/touch-multitouch artefacts.
+      if (event.button !== 0) return;
+      event.preventDefault();
+      // setPointerCapture can throw NotFoundError when the dispatched event
+      // has no active pointer track (synthetic test events, screen-reader
+      // virtual cursors). Capture is a UX nicety, not a correctness
+      // requirement — swallow the throw so the increment still fires.
+      try {
+        event.currentTarget.setPointerCapture?.(event.pointerId);
+      } catch {
+        // ignore — see comment above
+      }
+      startStepperRepeat(direction);
+    };
+
+  const handleStepperPointerEnd = () => {
+    stopStepperRepeat();
+  };
+
+  // Synthetic click — fires for keyboard activation (Space/Enter on a
+  // focused button) AND as the click that follows a pointerup. Guard
+  // against double-fire after pointerdown by checking the timer state: if
+  // startStepperRepeat already ran, the pointer path handled the step.
+  const handleStepperKeyboardStep = (
+    direction: 1 | -1,
+  ) => (event: KeyboardEvent<HTMLButtonElement>) => {
+    if (disabled) return;
+    if (event.key !== ' ' && event.key !== 'Enter') return;
+    event.preventDefault();
+    const field = focusedFieldRef.current;
+    adjustField(field, stepperFieldDelta(field, direction));
+    focusField(field);
   };
 
   // ARIA value-text for AM/PM
@@ -725,6 +838,58 @@ export const TimeInput = forwardRef<HTMLDivElement, TimeInputProps>(function Tim
           >
             {periodLabel}
           </button>
+        ) : null}
+        {showSteppers ? (
+          <div className={styles.steppers} aria-hidden={disabled || undefined}>
+            <button
+              type="button"
+              tabIndex={-1}
+              disabled={disabled}
+              className={styles.stepperUp}
+              aria-label="Increment time"
+              data-stepper="up"
+              onPointerDown={handleStepperPointerDown(1)}
+              onPointerUp={handleStepperPointerEnd}
+              onPointerCancel={handleStepperPointerEnd}
+              onPointerLeave={handleStepperPointerEnd}
+              onKeyDown={handleStepperKeyboardStep(1)}
+            >
+              <svg viewBox="0 0 10 6" aria-hidden="true" focusable="false">
+                <path
+                  d="M1 5 L5 1 L9 5"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </button>
+            <button
+              type="button"
+              tabIndex={-1}
+              disabled={disabled}
+              className={styles.stepperDown}
+              aria-label="Decrement time"
+              data-stepper="down"
+              onPointerDown={handleStepperPointerDown(-1)}
+              onPointerUp={handleStepperPointerEnd}
+              onPointerCancel={handleStepperPointerEnd}
+              onPointerLeave={handleStepperPointerEnd}
+              onKeyDown={handleStepperKeyboardStep(-1)}
+            >
+              <svg viewBox="0 0 10 6" aria-hidden="true" focusable="false">
+                <path
+                  d="M1 1 L5 5 L9 1"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </button>
+          </div>
         ) : null}
       </div>
       {name ? (
