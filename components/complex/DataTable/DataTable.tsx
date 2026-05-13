@@ -1929,9 +1929,12 @@ export const DataTable = forwardRef(function DataTable<T>(
                       handleColumnFilterChange(col.id, next),
                     );
                   } else if (col.filterable) {
-                    // Default text filter Input
+                    // Default text filter Input — compact size so the
+                    // inline filter row blends into the toolbar instead
+                    // of dwarfing the header (0.24.0).
                     content = (
                       <Input
+                        size="sm"
                         value={String(filterValue)}
                         onChange={(e) =>
                           handleColumnFilterChange(col.id, e.target.value)

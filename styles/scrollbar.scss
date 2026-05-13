@@ -1,0 +1,25 @@
+// scrollbar.scss — opt-in global entry for the scrollbar prettifier.
+//
+// Consumer pattern:
+//
+//   // app/globals.scss
+//   @use '@bleizlabs/ui/styles';            // base seeds + semantics + mixins
+//   @use '@bleizlabs/ui/styles/scrollbar';   // global scrollbar prettifier
+//
+// Applies the prettify recipe to `html, body, *` so every scrollable region
+// in the consumer app picks up the lib's scrollbar aesthetic — the same look
+// the JS-driven `<ScrollArea>` provides, but without mounting a React
+// component for every scroll container.
+//
+// Per-element opt-in (instead of the global blanket) is also supported:
+//
+//   @use '@bleizlabs/ui/styles/scrollbar' as scrollbar;
+//   .myScrollable { @include scrollbar.scrollbar-prettify; }
+
+@use './scrollbar' as scrollbar;
+
+html,
+body,
+* {
+  @include scrollbar.scrollbar-prettify;
+}

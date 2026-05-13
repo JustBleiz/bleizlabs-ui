@@ -170,14 +170,24 @@ function dateOnly(value: Date | null): Date | null {
 
 function formatDisplay(value: Date | null, withSeconds: boolean): string {
   if (!value) return '';
-  return toIsoDateTimeString(withSeconds ? value : new Date(
-    value.getFullYear(),
-    value.getMonth(),
-    value.getDate(),
-    value.getHours(),
-    value.getMinutes(),
-    0,
-  )).slice(0, withSeconds ? 19 : 16);
+  // Human-friendly display — space separator instead of the ISO `T`. The
+  // ISO `T` is correct for transport (e.g. `<input type="datetime-local">`
+  // value attribute, JSON payloads), but reads as a glitch in a free-text
+  // field. `parseDisplay` below accepts BOTH `YYYY-MM-DDTHH:MM[:SS]` and
+  // `YYYY-MM-DD HH:MM[:SS]` so consumers pasting an ISO string still work.
+  const iso = toIsoDateTimeString(
+    withSeconds
+      ? value
+      : new Date(
+          value.getFullYear(),
+          value.getMonth(),
+          value.getDate(),
+          value.getHours(),
+          value.getMinutes(),
+          0,
+        ),
+  ).slice(0, withSeconds ? 19 : 16);
+  return iso.replace('T', ' ');
 }
 
 function parseDisplay(input: string): Date | null {
@@ -571,7 +581,7 @@ export const DateTimePickerInput = forwardRef<HTMLInputElement, DateTimePickerIn
         spellCheck={false}
         className={cn(styles.input, ctx.isDisabled && styles.inputDisabled, rest.className)}
         placeholder={
-          placeholder ?? (ctx.withSeconds ? 'YYYY-MM-DDTHH:MM:SS' : 'YYYY-MM-DDTHH:MM')
+          placeholder ?? (ctx.withSeconds ? 'YYYY-MM-DD HH:MM:SS' : 'YYYY-MM-DD HH:MM')
         }
         value={ctx.search}
         onChange={(event) => ctx.setSearch(event.target.value)}

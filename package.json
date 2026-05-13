@@ -1,7 +1,7 @@
 {
   "name": "@bleizlabs/ui",
-  "version": "0.23.0",
-  "description": "Zero-dependency, fully-styled React component library with seed-based design tokens. 104 focused components with 100% JSDoc coverage, WAI-ARIA compliant, SCSS Modules, React 19.2 + Next.js 16.2. Ships with `bleizlabs-ui` CLI for project scaffold.",
+  "version": "0.24.0",
+  "description": "Zero-dependency, fully-styled React component library with seed-based design tokens. 107 focused components with 100% JSDoc coverage, WAI-ARIA compliant, SCSS Modules, React 19.2 + Next.js 16.2. Ships with `bleizlabs-ui` CLI for project scaffold.",
   "license": "MIT",
   "author": "BleizLabs <hello@bleizlabs.eu>",
   "homepage": "https://github.com/BleizLabs/bleizlabs-ui#readme",

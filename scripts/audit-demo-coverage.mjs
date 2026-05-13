@@ -22,7 +22,26 @@ const ROOT = path.resolve(__dirname, '..');
 const COMPONENTS_DIR = path.join(ROOT, 'components');
 const APP_COMPONENTS_DIR = path.join(ROOT, 'app', 'components');
 
-const SKIP_CATEGORIES = new Set(['utils', 'types', 'tests']);
+const SKIP_CATEGORIES = new Set(['types', 'tests']);
+
+// utils/ holds both internal helpers (Slot, cn, mergeRefs, floating, gesture,
+// locale, match-media — building blocks consumers don't demo) AND user-facing
+// utility components (VisuallyHidden). Skip the helpers; audit user-facing
+// utility components like any other family.
+const UTILS_SKIP = new Set([
+  'Slot',
+  'cn.ts',
+  'date.ts',
+  'masks.ts',
+  'mergeRefs.ts',
+  'useFloating.ts',
+  'position.ts',
+  'floating',
+  'gesture',
+  'locale',
+  'match-media',
+  'tests',
+]);
 
 // Component → demo-route slug. Use when the route name differs from the
 // PascalCase-to-kebab default (compound parts covered by a single demo,
@@ -93,8 +112,7 @@ function listComponentFolders() {
     const catDir = path.join(COMPONENTS_DIR, cat.name);
     for (const comp of fs.readdirSync(catDir, { withFileTypes: true })) {
       if (!comp.isDirectory()) continue;
-      // Sub-parts (CardHeader, TableBody) live as siblings to the root
-      // component folder — include them so the alias map can resolve them.
+      if (cat.name === 'utils' && UTILS_SKIP.has(comp.name)) continue;
       const compDir = path.join(catDir, comp.name);
       if (!fs.existsSync(path.join(compDir, 'index.ts'))) continue;
       out.push({ category: cat.name, name: comp.name });

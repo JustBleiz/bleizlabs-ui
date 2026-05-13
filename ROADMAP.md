@@ -2,7 +2,7 @@
 
 **Status:** DRAFT
 **Last updated:** 2026-05-13
-**Current version:** 0.23.0 (107 components — adds CodeBlock + Mark + VisuallyHidden + Phase 4.5 demo coverage audit)
+**Current version:** 0.24.0 (107 components — first real-world testing batch: DateTimePicker format, Toast SSR hydration, Input sizes, global scrollbar prettifier)
 
 > Funkcjonalne luki biblioteki + kolejność domykania. Bez estymat czasowych — pracujemy etapami.
 
@@ -36,7 +36,8 @@ Każda pozycja ma:
 0.22.0  ✓  Housekeeping (JSDoc audit)          SHIPPED 2026-05-13 (104 — 100% JSDoc coverage; headless-reset deferred do real demand)
 0.22.1  ✓  Slot hydration fix + deps bump      SHIPPED 2026-05-13 (Mantine Children.toArray patch; Next 16.2.6 + React 19.2.6)
 0.23.0  ✓  Mini-batch + Phase 4.5 audit        SHIPPED 2026-05-13 (104 → 107 — CodeBlock, Mark, VisuallyHidden; scripts/audit-demo-coverage.mjs)
-0.24.0+ →  STOP for real-world testing         [user uses lib in concrete project, collects bugs/feedback]
+0.24.0  ✓  Real-world testing batch 1          SHIPPED 2026-05-13 (107 — DateTimePicker format, Toaster SSR hydration, Input size prop, global scrollbar prettifier; bundles 0.23.1 doc patch)
+0.25.0+ →  STOP for real-world testing v2      [user verifies 0.24.0, collects next round of bugs/feedback]
                                               ...
 1.0.0   →  ON USER TRIGGER ONLY               [API freeze + stabilization na sygnał użytkownika, nie auto-follow]
 ```

@@ -7,7 +7,110 @@ and this project adheres to [Semantic Versioning 2.0](https://semver.org/spec/v2
 
 ## [Unreleased]
 
-_No unreleased changes — 0.23.0 ships the mini-batch additions below._
+_No unreleased changes — 0.24.0 ships the first real-world testing batch._
+
+## [0.24.0] — 2026-05-13
+
+**Minor release — first real-world testing batch (4 fixes).** User-reported
+issues surfaced during initial real-world verification post-0.23.0 ship.
+Bundles 2 bugfixes + 2 small features. Family count unchanged (107).
+
+### Fixed
+
+- **`DateTimePicker` — readable date/time display** — the input field
+  now shows `2026-05-13 14:30` (space separator) instead of
+  `2026-05-13T14:30` (ISO `T`). The `T` was correct for transport
+  semantics but read as a glitch in a free-text field. Parser remains
+  permissive — both `YYYY-MM-DDTHH:MM[:SS]` (ISO) and
+  `YYYY-MM-DD HH:MM[:SS]` (human) round-trip cleanly, so consumers
+  pasting an ISO string still parse.
+- **`<Toaster>` — SSR hydration mismatch eliminated** — Toaster
+  rendered its `FloatingPortal` unconditionally (unlike Dialog/Tooltip/
+  Popover which short-circuit on `!open`). On the server the portal
+  returned `null`, on the client it mounted `<ol>` into
+  `document.body` — React 19 dev mode flagged the server↔client first-
+  paint difference as a hydration mismatch. Added the canonical Radix-
+  style one-shot mount gate (`useState` + `useEffect` empty-deps) so
+  both trees render `null` on first paint; the portal materialises on
+  the second client commit. ARIA live region is unaffected because
+  `toast()` is an imperative API consumers call after first paint.
+
+### Added
+
+- **`Input` — `size` prop (`'sm' | 'md' | 'lg'`)** — visual size preset.
+  `'md'` (default) matches the original 0.x layout exactly so existing
+  consumers see zero change. `'sm'` shrinks padding (space-2 / space-3),
+  font (`--font-size-sm`), wrap radius (`--radius-sm`), and addon /
+  icon dimensions for toolbars and inline-filter rows. `'lg'` enlarges
+  for emphasised hero forms. Variants remap three CSS custom properties
+  (`--input-py` / `--input-px` / `--input-font-size`) instead of
+  duplicating layout rules. Charter atom-budget compliant (now 3 variant
+  props: `type` + `size` + `invalid`).
+- **`<DataTable>` default filter Input → `size="sm"`** — the in-cell
+  text filter no longer dwarfs the toolbar; the entire filter row reads
+  as a single compact widget. Consumer-supplied `renderFilter` is
+  untouched.
+- **`@bleizlabs/ui/styles/scrollbar` — opt-in global scrollbar
+  prettifier** — new SCSS partial that styles every native browser
+  scrollbar on the page (window, overflowed divs, textareas, …) to
+  match the lib aesthetic. CSS-only — no React mounting required, no
+  JS overhead, no token forks. Two ways to use:
+
+  ```scss
+  // Global (recommended) — paint every scrollable region in your app
+  @use '@bleizlabs/ui/styles';
+  @use '@bleizlabs/ui/styles/scrollbar';
+  ```
+
+  ```scss
+  // Per-element opt-in
+  @use '@bleizlabs/ui/styles/scrollbar' as scrollbar;
+  .myScrollable { @include scrollbar.scrollbar-prettify; }
+  ```
+
+  Reads existing semantic tokens (`--color-border` / `--color-text-muted`
+  / `--radius-full`) so light/dark theme switching works without extra
+  wiring. WebKit + Firefox (Chromium-style hover state, `scrollbar-color`
+  fallback for Firefox). Complements `<ScrollArea>` — the React
+  component remains for cases needing JS-driven thumb + ARIA orientation;
+  this CSS recipe covers the 90% case of "make my page chrome look like
+  the lib".
+
+### Notes
+
+- Family count: 107 (unchanged — no new components).
+- No breaking changes. `Input.size` defaults to `'md'` (legacy layout);
+  `DateTimePicker` parser accepts the prior ISO format alongside the new
+  display format.
+- 0.23.1 doc patch (104 → 107 description corrections, audit script
+  utility-component coverage) is folded into this release — 0.23.1
+  branch never landed on main.
+
+## [0.23.1] — 2026-05-13
+
+**Patch — README / package description / demo-coverage audit accuracy.**
+0.23.0 ship referenced stale 104-family count in `package.json`
+description + README highlights, and the demo-coverage audit script
+blanket-skipped `utils/` (missing `VisuallyHidden` from the count). No
+runtime change — docs + tooling only.
+
+### Fixed
+
+- **README + `package.json` description** — bumped 104 → 107 component
+  count and added a 0.23.0 entry to the version history paragraph
+  describing CodeBlock + Mark + VisuallyHidden + Phase 4.5 audit.
+- **`scripts/audit-demo-coverage.mjs`** — replaced the blanket `utils/`
+  skip with a fine-grained `UTILS_SKIP` set listing only internal
+  building blocks (Slot, cn, mergeRefs, date / masks / floating /
+  gesture / locale / match-media / tests). User-facing utility
+  components like `VisuallyHidden` are now included in the coverage
+  count. Reports 107 / 107 pass.
+
+### Notes
+
+- No new components. No API change.
+- Tag `v0.23.1` triggers a fresh npm publish so the registry reflects
+  the corrected description string.
 
 ## [0.23.0] — 2026-05-13
 
@@ -46,7 +149,7 @@ within layer cap). Family count 104 → 107.
   `app/components/<kebab-case-name>/page.tsx`. Compound exports and
   aggregator landing pages (feedback / selection / toggles / molecules /
   input-production / specialized) are handled via an explicit alias map.
-  Surfaced as `npm run audit:demos` and runs in <50ms. All 106
+  Surfaced as `npm run audit:demos` and runs in <50ms. All 107
   components currently pass.
 
 ### Notes

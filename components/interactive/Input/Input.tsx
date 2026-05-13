@@ -78,10 +78,20 @@ export type InputType =
   | 'url'
   | 'search';
 
+/**
+ * Visual size preset. `'md'` (default) matches the original 0.x size —
+ * existing consumers see no change. `'sm'` is the compact preset for
+ * toolbars and inline-filter rows (DataTable filter cells, table header
+ * search). `'lg'` is for emphasised hero forms or marketing CTAs.
+ */
+export type InputSize = 'sm' | 'md' | 'lg';
+
 export interface InputProps
   extends Omit<InputHTMLAttributes<HTMLInputElement>, 'type' | 'size'> {
   /** Input type. Default `'text'`. */
   type?: InputType;
+  /** Visual size preset (`'sm' | 'md' | 'lg'`). Default `'md'`. */
+  size?: InputSize;
   /**
    * Visual invalid state — applies red border + sets `aria-invalid="true"`.
    * Pair with `<Field.Message match="...">` for accessible error text. Default
@@ -101,9 +111,16 @@ export interface InputProps
   suffix?: string;
 }
 
+const SIZE_CLASS: Record<InputSize, string> = {
+  sm: styles.sizeSm!,
+  md: styles.sizeMd!,
+  lg: styles.sizeLg!,
+};
+
 export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
   {
     type = 'text',
+    size = 'md',
     invalid = false,
     startIcon,
     endIcon,
@@ -121,6 +138,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
     <div
       className={cn(
         styles.inputWrap,
+        SIZE_CLASS[size],
         invalid && styles.inputWrapError,
         hasStartIconSlot && styles.hasStartIcon,
         hasEndIconSlot && styles.hasEndIcon,
