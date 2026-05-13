@@ -1,0 +1,40 @@
+// Mark — inline highlight atom. Token-driven so color variants share one
+// rule set. Resets browser default `<mark>` (yellow background, black text)
+// in favour of the lib semantic palette.
+
+.root {
+  background: var(--mark-bg, var(--color-warning-subtle));
+  color: var(--mark-fg, var(--color-warning-strong));
+  padding: 0 var(--space-1);
+  border-radius: var(--radius-sm);
+  // Preserve inline flow — no display change, no margin.
+}
+
+// ----------------------------------------------------------------------------
+// Colors — remap CSS custom properties only; structure unchanged.
+// ----------------------------------------------------------------------------
+
+.colorDefault {
+  --mark-bg: var(--color-warning-subtle);
+  --mark-fg: var(--color-warning-strong);
+}
+
+.colorBrand {
+  --mark-bg: var(--color-brand-subtle);
+  --mark-fg: var(--color-brand-strong);
+}
+
+.colorSuccess {
+  --mark-bg: var(--color-success-subtle);
+  --mark-fg: var(--color-success-strong);
+}
+
+.colorWarning {
+  --mark-bg: var(--color-warning-subtle);
+  --mark-fg: var(--color-warning-strong);
+}
+
+.colorError {
+  --mark-bg: var(--color-error-subtle);
+  --mark-fg: var(--color-error-strong);
+}

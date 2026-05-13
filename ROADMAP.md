@@ -2,7 +2,7 @@
 
 **Status:** DRAFT
 **Last updated:** 2026-05-13
-**Current version:** 0.22.0 (104 components — 100% JSDoc coverage, doc-only release; polish batch shipped in 0.21.0)
+**Current version:** 0.23.0 (107 components — adds CodeBlock + Mark + VisuallyHidden + Phase 4.5 demo coverage audit)
 
 > Funkcjonalne luki biblioteki + kolejność domykania. Bez estymat czasowych — pracujemy etapami.
 
@@ -34,7 +34,9 @@ Każda pozycja ma:
 0.20.2  →  Slot architectural patch           [Slot + 7 forwardRef consumers → React 19 ref-as-prop migration; fixes B01/B03/B06/B07a/B02/B04/B10]
 0.21.0  ✓  Polish batch                       SHIPPED 2026-05-13 (100 → 104 — AvatarGroup + Rating + Collapsible + Banner + TimeInput showSteppers + DateTimePicker showTimeSteppers)
 0.22.0  ✓  Housekeeping (JSDoc audit)          SHIPPED 2026-05-13 (104 — 100% JSDoc coverage; headless-reset deferred do real demand)
-0.23.0+ →  Open-ended minor releases          [post-housekeeping nowe potrzeby gdy się ujawnią]
+0.22.1  ✓  Slot hydration fix + deps bump      SHIPPED 2026-05-13 (Mantine Children.toArray patch; Next 16.2.6 + React 19.2.6)
+0.23.0  ✓  Mini-batch + Phase 4.5 audit        SHIPPED 2026-05-13 (104 → 107 — CodeBlock, Mark, VisuallyHidden; scripts/audit-demo-coverage.mjs)
+0.24.0+ →  STOP for real-world testing         [user uses lib in concrete project, collects bugs/feedback]
                                               ...
 1.0.0   →  ON USER TRIGGER ONLY               [API freeze + stabilization na sygnał użytkownika, nie auto-follow]
 ```

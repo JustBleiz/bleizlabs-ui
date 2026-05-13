@@ -7,7 +7,55 @@ and this project adheres to [Semantic Versioning 2.0](https://semver.org/spec/v2
 
 ## [Unreleased]
 
-_No unreleased changes — 0.22.1 ships the Slot hydration fix + deps bump below._
+_No unreleased changes — 0.23.0 ships the mini-batch additions below._
+
+## [0.23.0] — 2026-05-13
+
+**Minor release — 3 new components + Phase 4.5 demo coverage audit.** All
+three additions passed the Charter Klocek-vs-Organism binding test (single
+concept, data-shape neutral, zero auto-wrap, no surface bias, prop budget
+within layer cap). Family count 104 → 107.
+
+### Added
+
+- **`CodeBlock` (display, molecule)** — preformatted code surface with
+  optional language badge, copy-to-clipboard button, and 1-indexed
+  line-number gutter. Structural-only — the lib does NOT tokenize or
+  highlight (zero-deps charter R8). Consumers feed pre-tokenized children
+  from their own Shiki / Prism / Highlight.js pipeline, or pass plain
+  strings for a raw monospace block. Copy button auto-extracts payload
+  from string children; `copyText` prop overrides when `children` is a
+  React tree.
+- **`Mark` (typography, atom)** — inline `<mark>` highlight atom.
+  Token-driven five-color enum (`default` / `brand` / `success` /
+  `warning` / `error`) maps to `--color-{tone}-{subtle,strong}` semantic
+  pairs. Default tone matches native browser `<mark>` (warning-subtle).
+  `asChild` polymorphism projects onto `<span>` for decorative usage
+  without AT announcement.
+- **`VisuallyHidden` (utility, atom)** — promotes the existing `sr-only`
+  SCSS mixin to a React primitive so consumer code can author
+  accessible-name overlays, chart captions, and skip-target labels
+  without owning the screen-reader-only CSS recipe. Geometry-only (no
+  tokens) — mirrors `@include mx.sr-only` exactly so SCSS callers and
+  React callers produce identical output.
+
+### Tooling
+
+- **`scripts/audit-demo-coverage.mjs`** (new) — Phase 4.5 audit script
+  verifying every shipped lib component has a matching demo route under
+  `app/components/<kebab-case-name>/page.tsx`. Compound exports and
+  aggregator landing pages (feedback / selection / toggles / molecules /
+  input-production / specialized) are handled via an explicit alias map.
+  Surfaced as `npm run audit:demos` and runs in <50ms. All 106
+  components currently pass.
+
+### Notes
+
+- Family count: 107 (104 + CodeBlock + Mark + VisuallyHidden). Manifest
+  regenerated.
+- No breaking changes. All previous APIs intact.
+- Phase 4.5 audit now part of the pre-publish discipline alongside
+  `check:barrel`, `check:manifest`, and `audit:jsdoc`.
 
 ## [0.22.1] — 2026-05-13
 
