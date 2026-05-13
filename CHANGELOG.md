@@ -7,7 +7,60 @@ and this project adheres to [Semantic Versioning 2.0](https://semver.org/spec/v2
 
 ## [Unreleased]
 
-_No unreleased changes — 0.22.0 ships the JSDoc completeness audit below._
+_No unreleased changes — 0.22.1 ships the Slot hydration fix + deps bump below._
+
+## [0.22.1] — 2026-05-13
+
+**Patch release — Slot hydration fix (Mantine pattern) + deps bump.** Resolves
+the long-standing dev-mode hydration mismatch on every `<X asChild>` consumer
+in Next.js 16.0.10+ + React 19.1+ (panel, scout-hub, bleizos clients all
+affected). Production was always functional — this clears the dev console
+overlay for clean DX during development. Zero API change.
+
+### Fixed
+
+- **`Slot` — hydration mismatch on `asChild` consumers** — upstream Next.js
+  RSC serializer regression ([vercel/next.js#82527](https://github.com/vercel/next.js/issues/82527),
+  [radix-ui/primitives#3780](https://github.com/radix-ui/primitives/issues/3780))
+  hands `cloneElement` consumers a lazy-reference children value
+  (`$$typeof: Symbol(react.lazy)` with pending Promise) instead of the
+  resolved element. `isValidElement` returns true on the lazy reference, so
+  the prior Slot cloned the wrong type — client first paint rendered the
+  host's default tag (`<div>`), then the lazy payload resolved and React
+  19 dev-mode hydration check surfaced the diff (`+ <div> / - <a>`).
+
+  Fix: wrap `children` in `React.Children.toArray()` BEFORE the
+  `isValidElement` check. React's reconciler resolves lazy children
+  internally during `toArray`, so the subsequent `cloneElement` receives
+  the real element. Validated upstream by
+  [mantinedev/mantine#8522](https://github.com/mantinedev/mantine/pull/8522)
+  against the Radix repro.
+
+  Three lines changed in `components/utils/Slot/Slot.tsx`. No consumer
+  migration required — all 34 forwardRef consumers (Card, Stack, Section,
+  Badge, Inline, Eyebrow, Label, Heading, Text, Anchor, + 24 more) work
+  unchanged. Prior 5 migration attempts (0.20.1 + 0.21.1) chasing
+  `forwardRef → ref-as-prop` targeted the wrong layer and are abandoned.
+
+### Changed
+
+- **Next.js `^16.2.3` → `^16.2.6`** (patch bump — Cache Components,
+  Turbopack stability)
+- **React `^19.0.0` → `^19.2.6`** + **React DOM `^19.0.0` → `^19.2.6`**
+  (19.2 ships the `useId` prefix change, improved Suspense streaming,
+  `<Activity>` primitive)
+- **@types/react `^19.0.0` → `^19.2.14`**, **@types/react-dom `^19.0.0` →
+  `^19.2.3`**, **eslint-config-next `^16.2.3` → `^16.2.6`**
+
+Note: Next.js bump alone does NOT fix the Slot hydration issue (verified
+on 16.2.6 + React 19.2.6 — Mantine patch still required).
+
+### Notes
+
+- Family count: 104 (no change — patch release)
+- All existing demo routes verified clean post-fix (/components/card,
+  /stack, /badge sampled; full smoke run in CI)
+- Zero API change, zero consumer code change
 
 ## [0.22.0] — 2026-05-13
 

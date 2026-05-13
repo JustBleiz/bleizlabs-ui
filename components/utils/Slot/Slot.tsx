@@ -1,31 +1,29 @@
 'use client';
 
-// Why `'use client'`: Slot merges arbitrary props — including event handlers
-// (onClick, onPointerDown, onFocus, etc.) passed by consumers via `asChild`.
-// Functions can't cross the RSC serialization boundary, so Slot must execute
-// on the client side to accept handler props. This creates a client boundary
-// at every `asChild` call site; Next.js 16 + React 19 dev mode can emit a
-// hydration-diff warning for the SSR'd wrapper element, which is benign
-// (SSR output and client re-render are functionally identical) and does not
-// occur in production. Making Slot RSC breaks any component whose playground
-// or consumer passes handlers through asChild.
+// 0.22.1 hydration mismatch fix (Mantine Children.toArray pattern).
 //
-// KNOWN ISSUE (0.20.1 sweep, 2026-05-12): in Next.js 16.2+ + React 19 dev
-// mode, the hydration-diff warning surfaces as an actual error overlay on
-// pages that use asChild on consumers wrapped in forwardRef (Card, Stack,
-// Section, Badge, Inline, Eyebrow, Label). Server pre-renders the projected
-// tag; client first paint renders the host's default tag. Two attempted
-// fixes during 0.20.1 (remove `'use client'` directive; convert to React 19
-// ref-as-prop) BOTH failed — Card.tsx's forwardRef wrapper cascades the
-// "Refs cannot be used in Server Components" error to Slot when Slot is
-// RSC-compatible. A proper fix requires migrating Card + Stack + Section +
-// Badge + Inline + Eyebrow + Label from `forwardRef` to React 19 ref-as-prop
-// AND making Slot RSC-compatible simultaneously. That is a lib-wide
-// architectural sweep deferred to a dedicated 0.20.x patch cycle.
+// Context — upstream regression (vercel/next.js#82527 + radix-ui/primitives
+// #3776/#3780): Next.js 16.0.10+ RSC serializer can hand `cloneElement`
+// consumers a `children` value with `$$typeof: Symbol(react.lazy)` and
+// `_payload: pending Promise` instead of `Symbol(react.transitional.element)`.
+// `isValidElement` returns true on the lazy reference, so the prior Slot
+// implementation cloned the wrong element type — client first paint
+// rendered the host's default tag, the lazy payload resolved later, and
+// React 19 dev-mode hydration check surfaced the diff (e.g. `<Card asChild>
+// <a/>` → server `<a>` vs client `<div>` mismatch on /components/card).
 //
-// Until then: the dev console warnings on /components/{stack,section,card,
-// badge,inline,eyebrow,label} are visible but production is unaffected.
+// Resolution — wrap children in `Children.toArray` BEFORE `isValidElement`
+// check. React's reconciler resolves lazy children internally during
+// `toArray`, so the subsequent `cloneElement` receives the real element.
+// Validated upstream by mantinedev/mantine#8522 against the Radix repro.
+// Two prior bleizlabs migration attempts (0.20.1 + 0.21.1) chasing
+// `forwardRef → ref-as-prop` did NOT help — they targeted the wrong layer.
+// Consumers (Card, Stack, Section, +31 more) retain `forwardRef` unchanged.
+//
+// `'use client'` retained: Slot still merges arbitrary event handlers, so
+// it must execute in client context. No consumer migration required.
 import {
+  Children,
   cloneElement,
   forwardRef,
   isValidElement,
@@ -60,11 +58,16 @@ export const Slot = forwardRef<HTMLElement, SlotProps>(function Slot(
   { children, className, style, ...slotProps },
   forwardedRef,
 ) {
-  if (!isValidElement(children)) {
+  // Unwrap lazy-reference children leaked by Next.js 16 RSC serializer.
+  // React's reconciler resolves any Symbol(react.lazy) payload during
+  // Children.toArray, so the subsequent cloneElement receives the real
+  // element. See header comment for upstream issue refs.
+  const resolved = Children.toArray(children);
+  if (resolved.length !== 1 || !isValidElement(resolved[0])) {
     return null;
   }
 
-  const child = children as ReactElement<{
+  const child = resolved[0] as ReactElement<{
     className?: string;
     style?: CSSProperties;
     ref?: Ref<HTMLElement>;
