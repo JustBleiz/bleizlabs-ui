@@ -1,8 +1,8 @@
 # `@bleizlabs/ui` — Roadmap 0.16 → 1.0
 
 **Status:** DRAFT
-**Last updated:** 2026-05-12
-**Current version:** 0.20.1 (100 components — patch release, 11 demo bug fixes)
+**Last updated:** 2026-05-13
+**Current version:** 0.21.0 (104 components — polish batch: AvatarGroup + Rating + Collapsible + Banner + TimeInput steppers)
 
 > Funkcjonalne luki biblioteki + kolejność domykania. Bez estymat czasowych — pracujemy etapami.
 
@@ -32,7 +32,7 @@ Każda pozycja ma:
 0.20.0  ✓  Charts pack                        SHIPPED 2026-05-12 (96 → 100 — LineChart, AreaChart, Sparkline, PieChart + _shared/chart-math extraction)
 0.20.1  ✓  Demo bug sweep (partial)            SHIPPED 2026-05-12 [11 of 18 bugs — non-asChild; 7 asChild bugs deferred to 0.20.2]
 0.20.2  →  Slot architectural patch           [Slot + 7 forwardRef consumers → React 19 ref-as-prop migration; fixes B01/B03/B06/B07a/B02/B04/B10]
-0.21.0  →  Polish batch                       [4 new components + 1 amendment — AvatarGroup → Rating → Collapsible → Banner + TimeInput showSteppers prop]
+0.21.0  ✓  Polish batch                       SHIPPED 2026-05-13 (100 → 104 — AvatarGroup + Rating + Collapsible + Banner + TimeInput showSteppers + DateTimePicker showTimeSteppers)
 0.22.0  →  Housekeeping                       [API freeze prep — bez RC]
 0.23.0+ →  Open-ended minor releases          [post-housekeeping nowe potrzeby gdy się ujawnią]
                                               ...
@@ -461,7 +461,9 @@ Każdy bug pre-fix MANDATORY:
 
 ---
 
-## 0.21.0 — Polish batch
+## 0.21.0 — Polish batch ✓ SHIPPED 2026-05-13
+
+**Status:** SHIPPED 2026-05-13 (100 → 104 families — AvatarGroup molecule + Rating interactive + Collapsible compound + Banner feedback + opt-in TimeInput showSteppers amendment + DateTimePicker showTimeSteppers propagation).
 
 **Why:** 4 małe komponenty domykające standardowe display + feedback gaps. Szybki release, każdy low-effort, każdy realnie potrzebny.
 
