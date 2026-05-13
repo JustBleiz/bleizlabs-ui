@@ -2,7 +2,7 @@
 
 **Status:** DRAFT
 **Last updated:** 2026-05-13
-**Current version:** 0.24.1 (107 components — patch: DateTimePicker spec alignment after 0.24.0 display change; unblocks 0.24.0 tag + npm publish)
+**Current version:** 0.25.0 (106 components — Agent Cheat-Sheet inside npm tarball: `AGENTS.md` + `docs/AGENT-USAGE.md` + 4 new build scripts; bundles 0.24.0 display change + DateTimePicker spec alignment that unblocks npm publish)
 
 > Funkcjonalne luki biblioteki + kolejność domykania. Bez estymat czasowych — pracujemy etapami.
 
@@ -36,9 +36,10 @@ Każda pozycja ma:
 0.22.0  ✓  Housekeeping (JSDoc audit)          SHIPPED 2026-05-13 (104 — 100% JSDoc coverage; headless-reset deferred do real demand)
 0.22.1  ✓  Slot hydration fix + deps bump      SHIPPED 2026-05-13 (Mantine Children.toArray patch; Next 16.2.6 + React 19.2.6)
 0.23.0  ✓  Mini-batch + Phase 4.5 audit        SHIPPED 2026-05-13 (104 → 107 — CodeBlock, Mark, VisuallyHidden; scripts/audit-demo-coverage.mjs)
-0.24.0  ✓  Real-world testing batch 1          SHIPPED 2026-05-13 (107 — DateTimePicker format, Toaster SSR hydration, Input size prop, global scrollbar prettifier; bundles 0.23.1 doc patch)
-0.24.1  ✓  DateTimePicker spec alignment        SHIPPED 2026-05-13 (107 — patch: 8 Playwright display-value assertions migrated ISO `T` → space; unblocks tag + npm publish for 0.24.x)
-0.25.0+ →  STOP for real-world testing v2      [user verifies 0.24.x, collects next round of bugs/feedback]
+0.24.0  ⚠  Real-world testing batch 1          MERGED but UNTAGGED 2026-05-13 (107 — DateTimePicker display change broke 8 specs; CI failed; rolled into 0.25.0)
+0.24.1  ✗  ABANDONED                          rolled forward — content bundled into 0.25.0 (single npm publish vehicle)
+0.25.0  ✓  Agent Cheat-Sheet + 0.24.x rollup   SHIPPED 2026-05-13 (106 — `AGENTS.md` + `docs/AGENT-USAGE.md` inside npm tarball, 4 build scripts, manifest schema-additive isClient + summary fields, DateTimePicker spec fix, README For-AI-agents section)
+0.26.0+ →  STOP for real-world testing v2      [user verifies 0.25.0 in consumer projects, collects next round of bugs/feedback]
                                               ...
 1.0.0   →  ON USER TRIGGER ONLY               [API freeze + stabilization na sygnał użytkownika, nie auto-follow]
 ```
