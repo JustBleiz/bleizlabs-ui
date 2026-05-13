@@ -166,6 +166,7 @@ function setRovingTabindex(items: HTMLElement[], activeIndex: number): void {
 
 export interface ToolbarProps
   extends Omit<HTMLAttributes<HTMLDivElement>, 'role' | 'aria-orientation' | 'dir'> {
+  /** Toolbar items (Button, ToggleGroup, Separator, etc.) participating in roving tabindex. */
   children: ReactNode;
   /** REQUIRED — accessible name for the toolbar (APG `/toolbar/` mandate). */
   'aria-label': string;
@@ -185,6 +186,7 @@ export interface ToolbarProps
    * reversed in horizontal orientation. Default `'ltr'`.
    */
   dir?: ToolbarDir;
+  /** Extra class for the toolbar root container. */
   className?: string;
 }
 

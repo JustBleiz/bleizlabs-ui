@@ -122,6 +122,7 @@ const [DropdownMenuContextProvider, useDropdownMenuContext] =
 // ──────────────────────────────────────────────────────────────────────────
 
 export interface DropdownMenuProps {
+  /** DropdownMenuTrigger + DropdownMenuContent compound children. */
   children: ReactNode;
   /** Controlled open state. When provided, component is controlled. */
   open?: boolean;

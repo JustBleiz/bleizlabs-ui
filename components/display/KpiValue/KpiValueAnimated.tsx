@@ -8,12 +8,16 @@ import { KpiValue, type KpiValueProps } from './KpiValue';
  * KpiValueAnimated — animated count-up wrapper around {@link KpiValue}.
  *
  * @layer   atom (display) — Client Component, wraps Server-safe `KpiValue`
+ * @tokens  Inherited from KpiValue base atom (no own styling).
  * @deps    KpiValue (lib base atom), AnimatedCounter (lib specialized).
  *          Replaces the `animated` prop pattern that lived on KpiValue
  *          pre-v0.7.0 — splitting the client boundary into this thin
  *          wrapper lets the base atom stay RSC-safe. After the v0.7.0
  *          KpiValue+PercentValue merge it also covers the legacy
  *          `PercentValueAnimated` use cases via `unit="%"`.
+ * @a11y    Inherits KpiValue semantics (rendered as `<div>` by default).
+ *          AnimatedCounter drives the visible number; respects
+ *          `prefers-reduced-motion` (snaps to final value when set).
  *
  * @example
  * <KpiValueAnimated value={12500} unit="PLN" />

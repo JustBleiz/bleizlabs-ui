@@ -10,6 +10,8 @@ import { Button, type ButtonProps } from '../../interactive/Button';
  * the accessible name a TypeScript-required prop so the type-checker
  * rejects any icon-only button without an a11y name at compile time.
  *
+ * @layer   molecule
+ * @deps    Button (lib atom — composes via iconOnly).
  * @tokens  inherited from Button atom (size, shape, variant, focus-ring)
  *
  * @a11y    Renders Button with `iconOnly={true}` — Button generates a

@@ -17,6 +17,8 @@ import styles from './Chip.module.scss';
  * Chip is the filter-row pattern with smaller dimensions, pill-only shape,
  * and brand-on-pressed semantics.
  *
+ * @layer   molecule
+ * @deps    cn.
  * @tokens  --color-brand, --color-brand-subtle, --color-brand-strong,
  *          --color-surface, --color-surface-raised, --color-border-subtle,
  *          --color-text-{primary,secondary,muted}, --color-{success,warning,

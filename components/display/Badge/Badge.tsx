@@ -6,6 +6,8 @@ import styles from './Badge.module.scss';
 /**
  * Badge — small status / category indicator (klocek atom).
  *
+ * @layer   atom (display)
+ * @deps    Slot (asChild boundary), cn.
  * @tokens  --color-{brand,success,warning,error,info}-{subtle,strong},
  *          --color-border-subtle, --color-text-{primary,secondary},
  *          --space-{1,2}, --font-size-{xs,sm}, --font-weight-medium,

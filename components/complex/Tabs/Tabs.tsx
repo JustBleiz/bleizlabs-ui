@@ -155,6 +155,7 @@ function setRovingTabindex(tabs: HTMLElement[], activeIndex: number): void {
 // ──────────────────────────────────────────────────────────────────────────
 
 export interface TabsProps extends Omit<HTMLAttributes<HTMLDivElement>, 'onChange' | 'dir'> {
+  /** TabsList + TabsPanel compound children. */
   children: ReactNode;
   /** Controlled selected value. When provided, component is controlled. */
   value?: string;
@@ -180,6 +181,7 @@ export interface TabsProps extends Omit<HTMLAttributes<HTMLDivElement>, 'onChang
    * reversed in horizontal orientation.
    */
   dir?: TabsDir;
+  /** Extra class for the Tabs root container. */
   className?: string;
 }
 

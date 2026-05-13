@@ -47,6 +47,7 @@ export interface ButtonGroupProps
   attached?: boolean;
   /** Required accessible name for `role="group"`. */
   'aria-label': string;
+  /** Button children participating in the group (typically `<Button>` siblings). */
   children: ReactNode;
 }
 

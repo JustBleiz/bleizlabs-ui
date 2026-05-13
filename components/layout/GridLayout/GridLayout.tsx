@@ -17,6 +17,8 @@ import styles from './GridLayout.module.scss';
  * grid, metric tiles, comparison tables) or arbitrary track templates
  * (sidebar + main + aside).
  *
+ * @layer   layout
+ * @deps    Slot (asChild boundary), cn, SpaceIndex type.
  * @tokens  --space-{0..20} (threaded via `--grid-{column,row}-gap`).
  *          CSS Grid keyword values written into `--grid-cols{,-sm,-md,
  *          -lg,-xl}` / `--grid-rows` are layout primitives, not design

@@ -304,6 +304,7 @@ const [SelectContextProvider, useSelectContext] =
 // ──────────────────────────────────────────────────────────────────────────
 
 export interface SelectProps {
+  /** SelectTrigger + SelectContent compound children. */
   children: ReactNode;
   /** Controlled value. Pass `null` (or empty) for "no selection". When provided, component is controlled. */
   value?: string | null;

@@ -15,6 +15,8 @@ import styles from './Eyebrow.module.scss';
  * digits / optional numbered prefix with hairline connector) which would
  * require 4 new Text props. Factoring as its own component keeps Text lean.
  *
+ * @layer   typography
+ * @deps    Slot (asChild boundary), cn.
  * @tokens  --color-text-muted (default), --color-text-secondary,
  *          --color-text-primary, --color-brand-strong (index-tint on strong tone),
  *          --space-2 (gap between index/hairline/label),

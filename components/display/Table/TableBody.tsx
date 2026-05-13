@@ -6,6 +6,8 @@ import styles from './TableBody.module.scss';
  * TableBody — semantic `<tbody>` slot (Phase 11 CI23 slot).
  *
  * @layer   atom (display, flat slot — D24)
+ * @tokens  None — intentionally empty SCSS module (tbody inherits Table cascades).
+ * @deps    cn.
  * @a11y    Native `<tbody>` — wraps the data rows so TableHeader /
  *          TableFooter stay semantically separated.
  *

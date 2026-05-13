@@ -8,6 +8,7 @@ import styles from './CardHeader.module.scss';
  *
  * @layer   atom (display, flat slot — D24)
  * @tokens  --space-{1,4}, --color-border-subtle
+ * @deps    Slot (asChild boundary), cn.
  * @a11y    Renders `<div>` by default. Use `asChild` to project onto
  *          `<header>` if the parent Card is article/section semantic.
  *

@@ -144,6 +144,7 @@ export interface FieldProps extends HTMLAttributes<HTMLDivElement> {
    * firing an `invalid` event.
    */
   serverInvalid?: boolean;
+  /** Field.Label + Field.Control + Field.Description + Field.Message compound children. */
   children: ReactNode;
 }
 

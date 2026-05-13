@@ -12,6 +12,7 @@ import styles from './MetricTile.module.scss';
  * MetricTile — universal metric tile molecule (label + value + optional icon + optional description).
  *
  * @layer   molecule (display)
+ * @deps    Inline + Stack (lib layout atoms), cn.
  * @tokens  --space-{1,2} (gaps via Inline/Stack composition),
  *          --color-text-{primary,secondary,muted} (slot typography defaults),
  *          --color-{success,warning,error,brand-strong} (tone variants —

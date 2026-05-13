@@ -237,6 +237,7 @@ export function snapshotValidity(validity: ValidityState): FieldValidity {
 
 export interface FormProps
   extends Omit<FormHTMLAttributes<HTMLFormElement>, 'onSubmit'> {
+  /** Field + Form.Submit compound children rendered inside the form element. */
   children: ReactNode;
   /**
    * Submit handler. Called only AFTER the browser's native
@@ -263,6 +264,7 @@ export interface FormProps
    * consumers to read pending state.
    */
   action?: FormHTMLAttributes<HTMLFormElement>['action'];
+  /** Extra class for the form root element. */
   className?: string;
 }
 

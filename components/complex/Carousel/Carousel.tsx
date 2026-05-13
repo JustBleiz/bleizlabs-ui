@@ -97,7 +97,9 @@ export interface CarouselProps
   dragSnapThreshold?: number;
   /** Accessible name — REQUIRED per APG. */
   'aria-label': string;
+  /** Optional id reference for accessible name (alternative to `aria-label`). */
   'aria-labelledby'?: string;
+  /** Compound carousel children (CarouselViewport + CarouselSlide + controls). */
   children: ReactNode;
 }
 

@@ -228,12 +228,16 @@ export interface DateRangePickerProps
   value?: DateRange;
   /** Uncontrolled initial range. `undefined` ≡ `{from:null,to:null}`. */
   defaultValue?: DateRange;
-  /** Fires on FULL-RANGE commit or clear-to-null. Half-range intermediate
-   * (pendingFrom set, awaiting click 2) does NOT emit. */
+  /**
+   * Fires on FULL-RANGE commit or clear-to-null. Half-range intermediate
+   * (pendingFrom set, awaiting click 2) does NOT emit.
+   */
   onValueChange?: (range: DateRange) => void;
   /** Controlled popup open state. */
   open?: boolean;
+  /** Uncontrolled initial open state. Default `false`. */
   defaultOpen?: boolean;
+  /** Fires whenever the popup open state changes (controlled + uncontrolled). */
   onOpenChange?: (open: boolean) => void;
   /** Minimum selectable date (inclusive, day granularity). */
   min?: Date;

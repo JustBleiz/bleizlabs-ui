@@ -107,6 +107,7 @@ const [PopoverContextProvider, usePopoverContext] =
 // ──────────────────────────────────────────────────────────────────────────
 
 export interface PopoverProps {
+  /** PopoverTrigger + PopoverContent compound children. */
   children: ReactNode;
   /** Controlled open state. When provided, component is controlled and consumer owns state. */
   open?: boolean;

@@ -256,6 +256,7 @@ export interface CalendarProps
    * by default. Pass children to replace the layout.
    */
   children?: ReactNode;
+  /** Extra class for the Calendar root container. */
   className?: string;
   /**
    * Opt-in cell-attribute customization slot. Called per cell render with the
@@ -273,7 +274,9 @@ export interface CalendarProps
    *   />
    */
   cellExtras?: (
+    /** The cell's calendar date. */
     date: Date,
+    /** Render context flags for the cell. */
     ctx: { isInMonth: boolean; isSelected: boolean },
   ) => HTMLAttributes<HTMLTableCellElement>;
   /**

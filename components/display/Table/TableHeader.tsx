@@ -8,6 +8,7 @@ import styles from './TableHeader.module.scss';
  * @layer   atom (display, flat slot — D24)
  * @tokens  --color-surface-raised, --color-text-secondary,
  *          --font-weight-semibold, --letter-spacing-wider, --space-{2,3,4}
+ * @deps    cn.
  * @a11y    Native `<thead>` — scopes header cells to column headers when
  *          cells use `<th scope="col">` (set via TableCell `as="th"`).
  *

@@ -7,6 +7,7 @@ import styles from './TableFooter.module.scss';
  *
  * @layer   atom (display, flat slot — D24)
  * @tokens  --color-surface-raised, --color-text-secondary, --font-weight-medium
+ * @deps    cn.
  * @a11y    Native `<tfoot>`. Screen readers announce footer cells after
  *          body rows — keep summary/total lines here for semantic clarity.
  *
