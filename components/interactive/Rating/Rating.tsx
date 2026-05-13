@@ -29,7 +29,7 @@ import styles from './Rating.module.scss';
  * caller can quantize externally if half-star input is required (rare
  * for product reviews, common for system-computed averages).
  *
- * @layer   atom (interactive)
+ * @layer   interactive (molecule budget — 9 props within ≤7 ideal hard cap stretched by APG roving tabindex + form integration; per Slider/Toggle convention)
  * @tokens  --color-warning (filled), --color-border (empty outline),
  *          --color-text-muted (readOnly emphasis fallback), --space-4|5|6
  *          (sm|md|lg star sizing), --duration-fast + --easing-default

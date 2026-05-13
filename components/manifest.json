@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1",
   "libVersion": "0.20.1",
-  "generatedAt": "2026-05-12T21:02:20.571Z",
+  "generatedAt": "2026-05-12T21:06:25.075Z",
   "categories": {
     "layout": [
       "Container",
@@ -54,6 +54,7 @@
     ],
     "feedback": [
       "Alert",
+      "Banner",
       "Empty",
       "Progress"
     ],
@@ -698,6 +699,19 @@
       "types": [
         "AlertProps",
         "AlertVariant"
+      ],
+      "hooks": []
+    },
+    {
+      "family": "Banner",
+      "category": "feedback",
+      "path": "feedback/Banner",
+      "exports": [
+        "Banner"
+      ],
+      "types": [
+        "BannerProps",
+        "BannerTone"
       ],
       "hooks": []
     },

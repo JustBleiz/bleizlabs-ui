@@ -74,6 +74,7 @@ export * from './interactive/ToggleGroup';
 // Feedback (3)
 // ----------------------------------------------------------------------------
 export * from './feedback/Alert';
+export * from './feedback/Banner';
 export * from './feedback/Empty';
 export * from './feedback/Progress';
 
