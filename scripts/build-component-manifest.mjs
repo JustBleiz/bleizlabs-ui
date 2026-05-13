@@ -243,6 +243,160 @@ function readFamilyIndex(familyDir, familyName) {
 }
 
 /**
+ * Resolve a relative import path (from a family index) to the actual file on
+ * disk. Returns absolute file path if found, null otherwise. Used by both
+ * export-extraction (`readSubFileExports`) and primary-file-resolution
+ * (`resolvePrimaryFile`).
+ */
+function resolveModulePath(basePathNoExt) {
+  const candidates = [
+    `${basePathNoExt}.tsx`,
+    `${basePathNoExt}.ts`,
+    `${basePathNoExt}/index.tsx`,
+    `${basePathNoExt}/index.ts`,
+  ];
+  for (const candidate of candidates) {
+    if (fs.existsSync(candidate)) return candidate;
+  }
+  return null;
+}
+
+/**
+ * Resolve a family's "primary file" — the .tsx/.ts file that hosts the family's
+ * defining component (the source of the top JSDoc block + `'use client'`
+ * directive). Resolution order:
+ *
+ *   1. Read family `index.ts`/`index.tsx`. Find FIRST `export ... from './X'`
+ *      statement. Resolve `./X` to an actual file.
+ *   2. Fallback: `<familyDir>/<familyName>.tsx` or `.ts`.
+ *   3. Fallback²: any single `.tsx` file in the folder.
+ *
+ * Returns absolute path or null.
+ */
+function resolvePrimaryFile(familyDir, familyName) {
+  // 1. Try via family index re-export
+  for (const indexName of ['index.ts', 'index.tsx']) {
+    const indexPath = path.join(familyDir, indexName);
+    if (!fs.existsSync(indexPath)) continue;
+    const src = fs.readFileSync(indexPath, 'utf8');
+    const lines = collapseExportLines(src);
+    for (const line of lines) {
+      const parsed = parseExportStatement(line);
+      if (parsed && parsed.sourcePath && parsed.sourcePath.startsWith('./')) {
+        // Resolve relative to family dir
+        const resolved = resolveModulePath(path.resolve(familyDir, parsed.sourcePath));
+        if (resolved) return resolved;
+      }
+    }
+  }
+  // 2. Fallback: <familyDir>/<familyName>.tsx or .ts
+  for (const ext of ['.tsx', '.ts']) {
+    const fallback = path.join(familyDir, `${familyName}${ext}`);
+    if (fs.existsSync(fallback)) return fallback;
+  }
+  // 3. Fallback²: first .tsx file in folder
+  if (fs.existsSync(familyDir)) {
+    const tsxFiles = fs
+      .readdirSync(familyDir)
+      .filter((f) => f.endsWith('.tsx'))
+      .sort();
+    if (tsxFiles.length > 0) return path.join(familyDir, tsxFiles[0]);
+  }
+  return null;
+}
+
+/**
+ * Detect whether a primary file is a Client Component. True IFF the file's
+ * FIRST non-empty, non-comment line is a `'use client'` or `"use client"`
+ * directive (per React 19 / Next.js 16 convention — directive MUST be at top
+ * of file before any imports). Robust against:
+ *   - single vs double quotes
+ *   - leading whitespace
+ *   - leading shebang `#!...` (rare in lib but possible)
+ *   - leading block comment (we strip comments before checking)
+ *
+ * Returns false if file unreadable or directive absent.
+ */
+function detectUseClient(filePath) {
+  if (!filePath || !fs.existsSync(filePath)) return false;
+  const src = fs.readFileSync(filePath, 'utf8');
+  // Strip block/line comments (per existing `stripComments`) before line walk.
+  // We do NOT strip strings — directive is the first string literal at top.
+  const stripped = stripComments(src);
+  const lines = stripped.split('\n');
+  for (const rawLine of lines) {
+    const line = rawLine.trim();
+    if (!line) continue;
+    // Match: 'use client' or "use client" with optional trailing ;
+    if (/^['"]use client['"]\s*;?\s*$/.test(line)) return true;
+    // Hit non-empty non-directive line → directive absent (per React rule).
+    return false;
+  }
+  return false;
+}
+
+/**
+ * Extract the family's first JSDoc summary line (≤120 chars target, hard cap
+ * 240). Looks for the FIRST `/** ... *\/` block in the primary file that
+ * appears BEFORE the first `export` keyword (i.e., the file-level / primary-
+ * component description, not a per-prop JSDoc on an interface).
+ *
+ * Summary = first line of the block content (after stripping leading ` * `),
+ * truncated at first period at end of line OR at the natural sentence boundary
+ * (period followed by space or newline). If truncation needed (>120 chars),
+ * truncate at last word boundary before 120 and append ellipsis "…"; logs a
+ * WARNING to stderr so the author can hand-edit JSDoc to shorten.
+ *
+ * Returns string or empty string if no JSDoc found.
+ */
+function extractJsdocSummary(filePath, familyName) {
+  if (!filePath || !fs.existsSync(filePath)) return '';
+  const src = fs.readFileSync(filePath, 'utf8');
+  // Slice at first RUNTIME export (function/const/let/class) rather than ANY
+  // export — files sometimes lead with `export type Foo = ...` aliases BEFORE
+  // the documented primary component (e.g., Reveal.tsx). Forcing slice at
+  // first type-export discards the legitimate primary JSDoc that follows.
+  const firstRuntimeExport = src.match(
+    /^export\s+(?:async\s+)?(?:default\s+)?(?:function|const|let|var|class)\s/m,
+  );
+  const sliceEnd = firstRuntimeExport ? firstRuntimeExport.index : src.length;
+  const head = src.slice(0, sliceEnd);
+  // Match FIRST /** ... */ block in head.
+  const blockMatch = head.match(/\/\*\*\s*\n([\s\S]*?)\*\//);
+  if (!blockMatch) return '';
+  const block = blockMatch[1];
+  // Collect content lines (strip leading `* `, drop empty), stop at first JSDoc
+  // `@tag` line — those mark structured metadata, NOT prose summary.
+  const blockLines = block.split('\n');
+  const contentLines = [];
+  for (const rawLine of blockLines) {
+    const cleaned = rawLine.replace(/^\s*\*\s?/, '').trim();
+    if (cleaned.startsWith('@')) break;
+    if (cleaned.length === 0) {
+      // Blank line ends summary paragraph if we already have content
+      if (contentLines.length > 0) break;
+      continue;
+    }
+    contentLines.push(cleaned);
+  }
+  if (contentLines.length === 0) return '';
+  // Join multi-line summary with single space; first sentence may span lines.
+  const joined = contentLines.join(' ');
+  // Extract first sentence (up to period followed by space/end-of-string)
+  const sentenceMatch = joined.match(/^(.+?\.)(?:\s|$)/);
+  const sentence = sentenceMatch ? sentenceMatch[1] : joined;
+  // Truncate if >120 chars at last word boundary before 120 + ellipsis
+  if (sentence.length > 120) {
+    const truncated = sentence.slice(0, 120).replace(/\s+\S*$/, '') + '…';
+    console.warn(
+      `[build-manifest] WARN: ${familyName} summary truncated (${sentence.length}→${truncated.length} chars). Consider shortening primary JSDoc first sentence.`,
+    );
+    return truncated;
+  }
+  return sentence;
+}
+
+/**
  * Read exports from a single sub-file (e.g., `./Card.tsx` referenced from
  * family `index.ts`). Captures top-level export declarations.
  */
@@ -324,10 +478,19 @@ for (const line of barrelLines) {
     if (exports.length === 0 && types.length === 0 && hooks.length === 0) {
       console.warn(`[build-manifest] WARN: family ${familyPath} has zero exports`);
     }
+    // 0.25.0 schema-additive fields per `agent-cheatsheet` work-unit plan v3.
+    // `isClient` + `summary` derived from family's primary file (first .tsx
+    // referenced from family index, or fallback). Used by `build-agent-
+    // inventory.mjs` to populate `docs/AGENT-USAGE.md` Section J table.
+    const primaryFile = resolvePrimaryFile(familyDir, family);
+    const isClient = detectUseClient(primaryFile);
+    const summary = extractJsdocSummary(primaryFile, family);
     components.push({
       family,
       category,
       path: familyPath,
+      isClient,
+      summary,
       exports,
       types,
       hooks,

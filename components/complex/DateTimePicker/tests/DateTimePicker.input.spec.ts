@@ -63,7 +63,8 @@ test.describe('DateTimePicker — input keyboard model', () => {
     await input.focus();
     await input.fill('2026-06-01T14:30');
     await input.press('Enter');
-    await expect(input).toHaveValue('2026-06-01T14:30');
+    // Parser accepts ISO T input; display normalizes to space separator (0.24.0)
+    await expect(input).toHaveValue('2026-06-01 14:30');
     await expect(dialogOf(page)).not.toBeVisible();
   });
 

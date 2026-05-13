@@ -78,6 +78,15 @@
           "pattern": "^[a-z]+/[A-Za-z][A-Za-z0-9]*$",
           "description": "Family path relative to components/ (e.g., 'display/Card')."
         },
+        "isClient": {
+          "type": "boolean",
+          "description": "True IFF the family's primary file (first .tsx referenced from family index) contains a top-of-file 'use client' (or \"use client\") directive. Optional — populated for `components` only (utilities + typesOnly omit). Schema-additive."
+        },
+        "summary": {
+          "type": "string",
+          "maxLength": 240,
+          "description": "First JSDoc sentence (≤120 chars target, hard cap 240 for safety) of the family's primary file. Used by 0.25.0+ agent docs inventory table. Optional — populated for `components` only."
+        },
         "exports": {
           "type": "array",
           "description": "Component / value exports (functions, classes, primitives — anything runtime).",

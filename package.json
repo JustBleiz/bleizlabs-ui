@@ -1,7 +1,7 @@
 {
   "name": "@bleizlabs/ui",
-  "version": "0.24.0",
-  "description": "Zero-dependency, fully-styled React component library with seed-based design tokens. 107 focused components with 100% JSDoc coverage, WAI-ARIA compliant, SCSS Modules, React 19.2 + Next.js 16.2. Ships with `bleizlabs-ui` CLI for project scaffold.",
+  "version": "0.25.0",
+  "description": "Zero-dependency, fully-styled React component library with seed-based design tokens. 100+ focused components with 100% JSDoc coverage, WAI-ARIA compliant, SCSS Modules, React 19.2 + Next.js 16.2. Ships with `bleizlabs-ui` CLI for project scaffold + agent-friendly docs (`AGENTS.md` + `docs/AGENT-USAGE.md`).",
   "license": "MIT",
   "author": "BleizLabs <hello@bleizlabs.eu>",
   "homepage": "https://github.com/BleizLabs/bleizlabs-ui#readme",
@@ -19,7 +19,9 @@
     "design-system",
     "zero-dependency",
     "wai-aria",
-    "a11y"
+    "a11y",
+    "agent-docs",
+    "claude-code"
   ],
   "type": "module",
   "main": "./components/index.ts",
@@ -43,6 +45,8 @@
     "components",
     "styles",
     "cli-dist",
+    "docs/AGENT-USAGE.md",
+    "AGENTS.md",
     "README.md",
     "LICENSE"
   ],
@@ -71,7 +75,8 @@
     "test:smoke": "playwright test tests/smoke.spec.ts tests/baseline-reset.spec.ts",
     "test:e2e": "playwright test components/",
     "test:headed": "playwright test --headed",
-    "prepublishOnly": "npm run typecheck && npm run lint && npm run check:barrel && npm run build:manifest && npm run check:manifest && npm run build:cli && npm run test:cli && npm run build"
+    "prepublishOnly": "npm run typecheck && npm run lint && npm run check:barrel && npm run build:manifest && npm run check:manifest && node scripts/build-agent-inventory.mjs && node scripts/check-agents-doc.mjs && npm run build:cli && npm run test:cli && npm run build && node scripts/inject-doc-version.mjs",
+    "postpublish": "node scripts/inject-doc-version.mjs --revert"
   },
   "peerDependencies": {
     "react": ">=19.0.0",

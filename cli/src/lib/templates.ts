@@ -268,6 +268,19 @@ export function renderAgentsManagedBlock(libVersion: string): string {
 - **NEVER** override lib styles via \`:global()\` in page SCSS
 - **NEVER** hand-roll components that lib already provides
 
+## Lib reference (read on demand)
+
+The lib ships its own agent docs inside the npm tarball — useful when this consumer-level guide doesn't cover the decision (per-domain quick-starts, SSR/RSC mapping, troubleshooting, full component inventory):
+
+- **Entry point** (~80 LOC: mission + Q1-Q5 decision tree + top-10 anti-patterns + pointers):
+  - \`node_modules/@bleizlabs/ui/AGENTS.md\`
+- **Deep reference** (~750 LOC: 9 per-domain quick-starts, SSR/RSC mapping, troubleshooting, full inventory):
+  - \`node_modules/@bleizlabs/ui/docs/AGENT-USAGE.md\`
+- **Per-component API + ARIA contract + tokens**:
+  - \`node_modules/@bleizlabs/ui/components/<category>/<Name>/<Name>.tsx\` JSDoc
+
+Both lib docs carry a \`**Valid for:** @bleizlabs/ui <version>\` header — compare against \`npm view @bleizlabs/ui version\` if anything looks stale after upgrades. \`node_modules/\` is NOT auto-scanned by your agent; you Read explicitly via the full paths above.
+
 ## Workflow before adding ANY UI element
 
 1. **Check \`_components/ui/\`** — does wrapper exist? If yes → import + use.

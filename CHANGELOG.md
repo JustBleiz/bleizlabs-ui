@@ -7,7 +7,108 @@ and this project adheres to [Semantic Versioning 2.0](https://semver.org/spec/v2
 
 ## [Unreleased]
 
-_No unreleased changes — 0.24.0 ships the first real-world testing batch._
+_No unreleased changes._
+
+## [0.25.0] — 2026-05-13
+
+**Minor release — Agent Cheat-Sheet inside the npm package + DateTimePicker
+spec alignment (rolls up the abandoned 0.24.1 patch path).** Two threads
+bundled into one release:
+
+1. **Agent Cheat-Sheet for AI coding agents working in consumer projects** —
+   ships `AGENTS.md` (thin entry point, ~80 LOC: mission + Q1-Q5 decision
+   tree + top-10 anti-patterns + pointers) and `docs/AGENT-USAGE.md` (deep
+   reference, ~750 LOC: 9 per-domain quick-starts, SSR/RSC mapping,
+   troubleshooting, full 106-component inventory) inside the published npm
+   tarball. Both docs carry a `**Valid for:** @bleizlabs/ui 0.25.0` header
+   injected at publish time.
+2. **DateTimePicker regression test alignment** — the 0.24.0 display change
+   (`T` → space separator) shipped without updating the per-component
+   Playwright specs, blocking the CI `test` workflow on `main` and
+   therefore the `v0.24.0` auto-tag + npm publish. 0.25.0 bundles the
+   8-assertion fix; v0.24.0 will remain untagged forever (consumers
+   installing via npm see 0.25.0 directly).
+
+### Added
+
+- **`AGENTS.md` (npm tarball, lib root)** — agent-friendly entry point with
+  mission paragraph, Q1-Q5 reuse-first decision tree, top-10 anti-patterns
+  table with one-line fix recipes, and pointers to `docs/AGENT-USAGE.md` +
+  per-component JSDoc. Carries `**Valid for:** @bleizlabs/ui <version>`
+  staleness header. Authored to live below the existing 7-line Next.js
+  managed stub (markers preserved).
+- **`docs/AGENT-USAGE.md`** — deep reference covering installation, Next.js
+  config, SCSS bootstrap, three-layer token override cascade, CLI scaffold,
+  expanded Q1-Q5 decision rules, `asChild` polymorphism, SSR/RSC/Next.js 16
+  patterns (Server Component default, `'use client'` placement, server-data
+  prop-drilling, FloatingPortal hydration, React Compiler interop), 9
+  per-domain quick-starts (Layout, Typography, Forms, Display, Feedback,
+  Overlays, Complex/Data, Specialized+Navigation, Charts), anti-patterns
+  with situational appendix, deliberate omissions + external lib pairings
+  (dnd-kit, lexical, fullcalendar, etc.), 20-row quick-reference card,
+  troubleshooting table, and full component inventory auto-generated from
+  `manifest.json`.
+- **README `## For AI agents` section** — human-facing pointer to the npm-
+  shipped agent docs + copy-paste snippet for consumer-project `AGENTS.md`.
+- **`scripts/build-agent-inventory.mjs`** — generates the inventory table
+  in `docs/AGENT-USAGE.md` Section J from `manifest.json`, injected between
+  `<!-- INVENTORY:START -->` / `<!-- INVENTORY:END -->` markers. Prose
+  around the markers is preserved.
+- **`scripts/check-agents-doc.mjs`** — CI gate. Verifies inventory row
+  count matches `manifest.json` `components.length`, and that every
+  identifier imported from `'@bleizlabs/ui'` in TS/TSX-tagged code fences
+  resolves to a real export (`bash` / `scss` / `text` fences skipped;
+  `js` / `jsx` fences containing lib imports get a soft warn). Added to
+  `prepublishOnly`.
+- **`scripts/inject-doc-version.mjs`** — injects current `package.json`
+  `version` into `__VERSION__` tokens in the agent docs at publish time,
+  reverts via `git checkout` after publish (`postpublish` hook).
+- **`agent-docs` + `claude-code` keywords** added to `package.json`.
+
+### Fixed
+
+- **`DateTimePicker` Playwright specs** — 8 display-value assertions
+  migrated from ISO `T` to space separator to match the 0.24.0 display
+  contract. Updated tests:
+  `DateTimePicker.regression.spec.ts` (DT-R02, DT-R04, DT-R05, DT-R06,
+  DT-R08), `DateTimePicker.compose.spec.ts` (DT-CMP01, DT-CMP02),
+  `DateTimePicker.input.spec.ts` (DT-IN05). Hidden-input ISO assertions
+  (DT-R10, DT-CMP03/04/05, form spec) unchanged — transport semantics
+  intentionally separate from display per 0.24.0 contract.
+
+### Changed
+
+- **`scripts/build-component-manifest.mjs`** — schema-additive extension
+  emitting two new fields on each `components[]` entry: `isClient`
+  (boolean — `true` IFF the family's primary file carries a top-of-file
+  `'use client'` directive) and `summary` (first JSDoc sentence,
+  ≤120-char target with truncation + WARN log if exceeded).
+  `manifest-schema.json` updated additively (schemaVersion unchanged —
+  readers that ignore unknown fields stay compatible).
+- **`package.json` `files` array** — added `docs` (folder-level for forward
+  compat) and `AGENTS.md` so both agent doc artifacts ship in the
+  published tarball.
+- **`prepublishOnly`** — chain now runs `build-agent-inventory.mjs` →
+  `check-agents-doc.mjs` → `inject-doc-version.mjs` after the existing
+  manifest + barrel + CLI build gates. `postpublish` hook auto-reverts
+  the version injection.
+- **README + package.json description** — replaced stale literal "107
+  focused components" with "100+ focused components" + pointer to
+  `manifest.json` for live count.
+
+### Consumer action recommended
+
+Consumer projects with `@bleizlabs:registry=https://npm.pkg.github.com`
+in their `.npmrc` should **remove that line** — the lib publishes to the
+public npm registry (`registry.npmjs.org`) since 0.22.x. A stale GitHub
+Packages registry pointer will either fail to install or fetch an outdated
+version. Confirmed seen in at least one BleizLabs internal consumer; please
+audit your own consumer projects.
+
+After upgrade, add the agent-discovery snippet to your consumer project's
+own `AGENTS.md` per the README `## For AI agents` section so AI coding
+agents in your workspace pick up `node_modules/@bleizlabs/ui/AGENTS.md` at
+the start of any UI task.
 
 ## [0.24.0] — 2026-05-13
 
