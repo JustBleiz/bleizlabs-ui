@@ -19,6 +19,8 @@ import styles from './Progress.module.scss';
  *     Renders a linear bar (`role="progressbar"` + `aria-valuenow/min/max`).
  *     Use for file upload, task completion, quota meters.
  *
+ * @layer   feedback
+ * @deps    cn.
  * @tokens  --color-brand, --color-brand-subtle, --color-brand-strong,
  *          --color-info, --color-success-strong, --color-warning-strong,
  *          --color-error-strong,

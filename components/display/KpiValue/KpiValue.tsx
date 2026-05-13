@@ -214,8 +214,10 @@ function formatStaticValue(
 
 export interface KpiValueProps
   extends Omit<HTMLAttributes<HTMLDivElement>, 'children'> {
-  /** Main display value. Number or string — both render as-is. For
-   * animated count-up use {@link KpiValueAnimated}. */
+  /**
+   * Main display value. Number or string — both render as-is. For
+   * animated count-up use {@link KpiValueAnimated}.
+   */
   value: number | string;
   /**
    * Unit label (e.g. `"PLN"`, `"%"`, `"konwersji"`). Default rendering:

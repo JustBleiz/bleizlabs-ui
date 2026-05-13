@@ -13,6 +13,7 @@ import styles from './TableCell.module.scss';
  * @layer   atom (display, flat slot — D24)
  * @tokens  --space-{2,3,4}, --color-text-primary, --font-size-sm,
  *          --line-height-normal
+ * @deps    cn.
  * @a11y    `as="th"` (default scope `col`) inside TableHeader produces
  *          semantic column headers that AT announce for each body cell.
  *          For row-header layouts, pass `as="th" scope="row"` on the

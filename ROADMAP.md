@@ -2,7 +2,7 @@
 
 **Status:** DRAFT
 **Last updated:** 2026-05-13
-**Current version:** 0.21.0 (104 components — polish batch: AvatarGroup + Rating + Collapsible + Banner + TimeInput steppers)
+**Current version:** 0.22.0 (104 components — 100% JSDoc coverage, doc-only release; polish batch shipped in 0.21.0)
 
 > Funkcjonalne luki biblioteki + kolejność domykania. Bez estymat czasowych — pracujemy etapami.
 
@@ -33,7 +33,7 @@ Każda pozycja ma:
 0.20.1  ✓  Demo bug sweep (partial)            SHIPPED 2026-05-12 [11 of 18 bugs — non-asChild; 7 asChild bugs deferred to 0.20.2]
 0.20.2  →  Slot architectural patch           [Slot + 7 forwardRef consumers → React 19 ref-as-prop migration; fixes B01/B03/B06/B07a/B02/B04/B10]
 0.21.0  ✓  Polish batch                       SHIPPED 2026-05-13 (100 → 104 — AvatarGroup + Rating + Collapsible + Banner + TimeInput showSteppers + DateTimePicker showTimeSteppers)
-0.22.0  →  Housekeeping                       [API freeze prep — bez RC]
+0.22.0  ✓  Housekeeping (JSDoc audit)          SHIPPED 2026-05-13 (104 — 100% JSDoc coverage; headless-reset deferred do real demand)
 0.23.0+ →  Open-ended minor releases          [post-housekeeping nowe potrzeby gdy się ujawnią]
                                               ...
 1.0.0   →  ON USER TRIGGER ONLY               [API freeze + stabilization na sygnał użytkownika, nie auto-follow]
@@ -571,7 +571,9 @@ Każdy bug pre-fix MANDATORY:
 
 ---
 
-## 0.22.0 — Housekeeping
+## 0.22.0 — Housekeeping ✓ SHIPPED 2026-05-13
+
+**Status:** SHIPPED 2026-05-13 (104 → 104 families, doc-only release). 100% JSDoc coverage osiągnięty via `scripts/audit-jsdoc.mjs` + batch fill 41 component files. Audit baseline 4/117 pass → 117/117 post-fill. `headless-reset.scss` świadomie deferred do real-world demand per user directive 2026-05-13.
 
 **Why:** Przed API freeze potrzebny finalny sweep DX (JSDoc) + opt-in escape hatch (headless reset). 100% JSDoc coverage = degraded DX bez docs site nawet.
 

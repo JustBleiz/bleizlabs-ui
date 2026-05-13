@@ -119,6 +119,7 @@ export interface SidebarProviderProps extends HTMLAttributes<HTMLDivElement> {
   breakpoint?: number;
   /** Provider renders a wrapper div for layout purposes. Pass `false` to render children only. */
   asChild?: boolean;
+  /** Sidebar + page content rendered inside the provider context. */
   children: ReactNode;
 }
 

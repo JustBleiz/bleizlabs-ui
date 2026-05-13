@@ -7,7 +7,53 @@ and this project adheres to [Semantic Versioning 2.0](https://semver.org/spec/v2
 
 ## [Unreleased]
 
-_No unreleased changes — 0.21.0 ships the polish batch below._
+_No unreleased changes — 0.22.0 ships the JSDoc completeness audit below._
+
+## [0.22.0] — 2026-05-13
+
+**Minor release — JSDoc completeness audit (doc-only, zero code changes).**
+Closes the developer-experience gap before the real-world test phase: every
+public export now ships with a complete header block (description / `@layer` /
+`@tokens` / `@deps` / `@a11y` / `@example`) and a per-prop JSDoc on every prop
+in every component interface. IDE inline docs (autocomplete tooltips, hover
+inspection) render full context for every component without consumers
+needing to open documentation pages.
+
+### Added
+
+- **`audit:jsdoc` npm script** (`scripts/audit-jsdoc.mjs`) — AST-aware JSDoc
+  coverage auditor. Scans every `components/<category>/<Name>/*.tsx`
+  primary export, verifies the header block contains all required tags +
+  description, and checks every prop in the `XxxProps` interface has its
+  own JSDoc comment. Run via `npm run audit:jsdoc` (human-readable) or
+  `--summary` / `--json` flags. Exit code 0 when 100% coverage, 1 otherwise
+  — drop-in for CI enforcement.
+
+### Changed
+
+- **41 component files reached 100% JSDoc coverage** — `complex/`
+  (AlertDialog, Calendar, Carousel, Combobox, ContextMenu, DateRangePicker,
+  Dialog, Drawer, DropdownMenu, Field, Form, HoverCard, NavigationMenu,
+  Popover, ScrollArea, Select, Sheet, Sidebar, Tabs, Toolbar, Tooltip);
+  `display/` (Badge, CardBody, CardFooter, CardHeader, CardSection,
+  KpiValue, KpiValueAnimated, Reveal, Table parts); `feedback/Progress`;
+  `interactive/` (ButtonGroup, Label, RadioGroup, Toggle); `layout/GridLayout`;
+  `molecules/` (Chip, IconButton, MetricTile, Timeline);
+  `typography/Eyebrow`. Common gap patterns filled: missing `@deps`,
+  `@layer`, `@tokens`, `@a11y` tags + undocumented `children` /
+  `className` / `aria-labelledby` / state-management props.
+
+### Notes
+
+- Zero code logic touched — exclusively JSDoc additions on existing
+  interfaces and headers. No API change, no behavior change.
+- **Świadomie defer:** `headless-reset.scss` opt-in escape hatch (planned
+  in 0.22.0 roadmap, deferred to demand-driven per user directive
+  2026-05-13). Will ship when a concrete consumer requests the
+  structure-only stylesheet.
+- Audit baseline: 4/117 pass on first run → 117/117 after batch fill.
+- All edits verified via `npx tsc --noEmit` clean + `npm run lint` 0 errors.
+- Family count: 104 (no change — doc-only release).
 
 ## [0.21.0] — 2026-05-13
 

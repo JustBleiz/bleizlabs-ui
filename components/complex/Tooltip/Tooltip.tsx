@@ -92,6 +92,7 @@ interface TooltipGroupContextValue {
 const TooltipGroupContext = createContext<TooltipGroupContextValue | null>(null);
 
 export interface TooltipProviderProps {
+  /** Tooltip subtree sharing the open-delay group state. */
   children: ReactNode;
   /**
    * Initial open delay in ms before the first tooltip in the group shows on

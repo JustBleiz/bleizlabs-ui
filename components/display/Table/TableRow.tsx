@@ -9,6 +9,7 @@ import styles from './TableRow.module.scss';
  * @layer   atom (display, flat slot — D24)
  * @tokens  --color-surface-hover, --color-brand-subtle, --color-brand,
  *          --duration-fast, --easing-default
+ * @deps    cn.
  * @a11y    Native `<tr>`. When `selected`, sets `aria-selected="true"` so
  *          assistive tech announces the selection state. When `disabled`,
  *          sets `aria-disabled="true"` — does NOT block pointer events

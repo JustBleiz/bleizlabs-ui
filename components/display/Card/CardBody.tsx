@@ -8,6 +8,7 @@ import styles from './CardBody.module.scss';
  *
  * @layer   atom (display, flat slot — D24)
  * @tokens  --space-3
+ * @deps    Slot (asChild boundary), cn.
  * @a11y    Renders `<div>` by default. Pure layout slot — no semantic role.
  *
  * @example

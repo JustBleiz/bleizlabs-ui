@@ -489,6 +489,7 @@ const [ComboboxContextProvider, useComboboxContext] =
  * onValueChange shape applies.
  */
 interface ComboboxBaseProps {
+  /** ComboboxOption / ComboboxGroup children rendered inside the listbox. */
   children: ReactNode;
   /** Controlled search text. When provided, search state is controlled. */
   search?: string;

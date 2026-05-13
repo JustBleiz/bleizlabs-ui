@@ -58,6 +58,7 @@ export interface ToggleProps
    * single/multiple selection). Standalone Toggle ignores this prop.
    */
   value?: string;
+  /** Toggle button label content. */
   children?: ReactNode;
 }
 

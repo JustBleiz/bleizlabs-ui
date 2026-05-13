@@ -111,6 +111,7 @@ const [ContextMenuContextProvider, useContextMenuContext] =
 // ──────────────────────────────────────────────────────────────────────────
 
 export interface ContextMenuProps {
+  /** ContextMenuTrigger + ContextMenuContent compound children. */
   children: ReactNode;
   /** Controlled open state. When provided, component is controlled. */
   open?: boolean;

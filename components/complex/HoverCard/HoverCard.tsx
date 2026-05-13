@@ -126,6 +126,7 @@ interface HoverCardGroupContextValue {
 const HoverCardGroupContext = createContext<HoverCardGroupContextValue | null>(null);
 
 export interface HoverCardProviderProps {
+  /** Sibling HoverCard instances sharing the open-delay group state. */
   children: ReactNode;
   /**
    * Initial open delay in ms before the first HoverCard in the group shows on

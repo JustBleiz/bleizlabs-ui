@@ -9,6 +9,7 @@ import styles from './CardFooter.module.scss';
  * @layer   atom (display, flat slot — D24)
  * @tokens  --space-{3,4}, --color-border-subtle, --color-surface-raised,
  *          --padding-card
+ * @deps    Slot (asChild boundary), cn.
  * @a11y    Renders `<div>` by default. Use `asChild` to project onto
  *          `<footer>` if the parent Card is article/section semantic.
  *          When `action=true`, the footer extends to card edges, adopts

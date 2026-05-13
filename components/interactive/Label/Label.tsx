@@ -38,6 +38,7 @@ export interface LabelProps extends LabelHTMLAttributes<HTMLLabelElement> {
   disabled?: boolean;
   /** Render as the single child element via Slot. */
   asChild?: boolean;
+  /** Label text content. */
   children: ReactNode;
 }
 

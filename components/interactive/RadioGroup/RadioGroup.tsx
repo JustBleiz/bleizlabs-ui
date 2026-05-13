@@ -72,6 +72,7 @@ export interface RadioGroupProps
   onValueChange?: (value: string) => void;
   /** Disables all items. */
   disabled?: boolean;
+  /** RadioGroupItem children participating in the group. */
   children: ReactNode;
 }
 

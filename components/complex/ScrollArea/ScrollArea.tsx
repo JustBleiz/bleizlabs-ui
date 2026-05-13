@@ -90,6 +90,7 @@ export interface ScrollAreaProps extends HTMLAttributes<HTMLDivElement> {
   hideDelay?: number;
   /** Writing direction. Default `'ltr'`. */
   dir?: ScrollAreaDir;
+  /** Scrollable content rendered inside the viewport. */
   children: ReactNode;
 }
 

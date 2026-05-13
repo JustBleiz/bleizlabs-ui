@@ -17,6 +17,42 @@ import { cn } from '../../utils/cn';
 import { useFocusTrap, escapeStack } from '../Dialog';
 import styles from './Drawer.module.scss';
 
+/**
+ * Drawer — bottom-positioned modal sheet composing portal + overlay +
+ * focus-trapped content (Phase 10 CI3, E17). Visual modifier of APG
+ * `/dialog-modal/` pattern. Uses `role="dialog"` (not `alertdialog`).
+ *
+ * Reuses `useFocusTrap` from Dialog. Portal + scroll lock + Escape handler +
+ * background `inert` toggle are inline per D5/D25 one-component-owns-behavior.
+ * SCSS bottom-aligned layout, slide-up keyframe, top-only border-radius, and
+ * iOS safe-area padding.
+ *
+ * @layer   complex interactive (Phase 10)
+ * @tokens  --color-surface, --color-surface-raised, --color-border-subtle,
+ *          --color-overlay, --color-text-primary, --color-text-muted,
+ *          --radius-lg, --radius-md, --shadow-2xl, --duration-normal,
+ *          --duration-fast, --easing-default, --space-{3,4,5,8},
+ *          --z-modal, --focus-ring
+ * @deps    Heading, Text, cn, createPortal, useFocusTrap (from ../Dialog)
+ * @a11y    role="dialog" + aria-modal="true" + aria-labelledby (required) +
+ *          aria-describedby (optional, conditional). Tab/Shift+Tab focus
+ *          cycle via useFocusTrap. Escape closes. Initial focus defaults to
+ *          first tabbable. Body scroll-locked while open. Overlay click
+ *          closes by default. Background `inert` toggle blocks AT virtual
+ *          cursor. Content padding-bottom honors `env(safe-area-inset-bottom)`.
+ *
+ * @example
+ * const [open, setOpen] = useState(false);
+ * <Drawer
+ *   open={open}
+ *   onOpenChange={setOpen}
+ *   title="Filter products"
+ *   description="Narrow results by category."
+ *   size="md"
+ * >
+ *   <Text>Filter controls go here…</Text>
+ * </Drawer>
+ */
 export type DrawerSize = 'sm' | 'md' | 'lg';
 
 export interface DrawerProps

@@ -150,6 +150,7 @@ const NavigationMenuGroupContext = createContext<NavigationMenuGroupContextValue
 );
 
 export interface NavigationMenuProviderProps {
+  /** Sibling NavigationMenu instances sharing open-delay group state. */
   children: ReactNode;
   /**
    * Initial open delay in ms before the first submenu in the group shows on

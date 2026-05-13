@@ -9,6 +9,8 @@ import styles from './Timeline.module.scss';
  * Renders a semantic `<ol>` of `<TimelineItem>` children with a connector
  * line spine and tinted markers. Server-safe (no client hooks).
  *
+ * @layer   molecule
+ * @deps    cn.
  * @tokens  --color-{brand,success,warning,error,info,text-{primary,secondary,muted},
  *          surface,border-subtle}, --space-{2,3,4,5,6}, --radius-full,
  *          --duration-fast, --easing-default

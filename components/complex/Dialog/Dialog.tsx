@@ -18,6 +18,42 @@ import { useFocusTrap } from './useFocusTrap';
 import { escapeStack } from './escapeStack';
 import styles from './Dialog.module.scss';
 
+/**
+ * Dialog — modal dialog composing portal + overlay + focus-trapped content
+ * (Phase 10 CI1, E15, first Complex Interactive — foundation of the dialog
+ * family: AlertDialog CI2, Drawer CI3, Sheet CI4 all reuse `useFocusTrap` and
+ * follow the same portal + overlay + inert + scroll-lock pattern).
+ *
+ * Renders via `createPortal` to `document.body` when `open=true`. Owns its own
+ * focus trap, Escape handler, scroll lock, background `inert` toggle, and
+ * focus restore on close. Content element carries `role="dialog"` +
+ * `aria-modal="true"` + `aria-labelledby={titleId}` + optional
+ * `aria-describedby={descId}`. Required `title` prop enforces APG compliance.
+ *
+ * @layer   complex-interactive (Phase 10)
+ * @tokens  --color-surface, --color-surface-raised, --color-border-subtle,
+ *          --color-overlay, --color-brand, --color-text-muted,
+ *          --color-text-primary, --radius-lg, --radius-md, --shadow-2xl,
+ *          --duration-normal, --easing-default, --space-{3,4,6,8}, --z-modal
+ * @deps    Heading, Text, cn, createPortal, useFocusTrap (own hook, shared
+ *          with AlertDialog/Drawer/Sheet via local import)
+ * @a11y    role="dialog" + aria-modal="true" + aria-labelledby (required) +
+ *          aria-describedby (conditional, only when `description` provided).
+ *          Tab/Shift+Tab focus cycle via useFocusTrap. Initial focus via
+ *          `initialFocusRef` or first tabbable. Escape closes. Body scroll
+ *          locked while open. Background `inert` toggled.
+ *
+ * @example
+ * const [open, setOpen] = useState(false);
+ * <Dialog
+ *   open={open}
+ *   onOpenChange={setOpen}
+ *   title="Edit project"
+ *   footer={<Inline gap={2}><Button onClick={() => setOpen(false)}>Cancel</Button><Button variant="primary">Save</Button></Inline>}
+ * >
+ *   <Input label="Project name" />
+ * </Dialog>
+ */
 export type DialogSize = 'sm' | 'md' | 'lg' | 'xl';
 
 export interface DialogProps

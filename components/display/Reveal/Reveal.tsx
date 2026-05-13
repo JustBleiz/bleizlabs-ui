@@ -19,12 +19,10 @@ import { Slot } from '../../utils/Slot';
 import { cn } from '../../utils/cn';
 import { mergeRefs } from '../../utils/mergeRefs';
 
-/**
- * Intrinsic semantic tags accepted by `<Reveal tag>`. Mirrors Section's
- * `tag` precedent — keeps the API small + type-safe for the common case.
- * Use `asChild` (Slot) to project onto a custom component or any tag
- * outside this list.
- */
+// Intrinsic semantic tags accepted by `<Reveal tag>`. Mirrors Section's
+// `tag` precedent — keeps the API small + type-safe for the common case.
+// Use `asChild` (Slot) to project onto a custom component or any tag
+// outside this list.
 export type RevealTag =
   | 'div'
   | 'section'
