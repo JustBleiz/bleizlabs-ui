@@ -47,13 +47,17 @@
 .input {
   flex: 1;
   min-width: 0;
-  padding: var(--space-3) var(--space-4);
+  // Padding + font come from size-variant classes on `.inputWrap` (see
+  // bottom of file). The historical `.md` recipe is preserved as the
+  // default token resolution when no size variant is applied — i.e.
+  // legacy consumers (no `size` prop) read padding from --input-py-x.
+  padding: var(--input-py, var(--space-3)) var(--input-px, var(--space-4));
   background: transparent;
   border: none;
   outline: none;
   color: var(--color-text-primary);
   font-family: var(--font-secondary);
-  font-size: var(--font-size-base);
+  font-size: var(--input-font-size, var(--font-size-base));
   line-height: var(--line-height-normal);
 
   &::placeholder {
@@ -295,5 +299,63 @@
 
   .spinnerRing {
     animation-duration: 0.001ms;
+  }
+}
+
+// ============================================================================
+// SIZE VARIANTS (0.24.0) — sm / md / lg
+// ============================================================================
+// Variants remap three CSS custom properties (`--input-py` / `--input-px` /
+// `--input-font-size`) so the inner `.input` rule above resolves them without
+// duplicating layout. `md` matches the original 0.x recipe so legacy callers
+// (no `size` prop) render identically.
+
+.sizeSm {
+  --input-py: var(--space-2);
+  --input-px: var(--space-3);
+  --input-font-size: var(--font-size-sm);
+
+  // Smaller wrap radius + smaller addon padding so the entire widget
+  // shrinks coherently in toolbars / inline filter cells.
+  --input-wrap-radius: var(--radius-sm);
+
+  .addonText {
+    padding: 0 var(--space-2);
+    font-size: var(--font-size-sm);
+  }
+
+  .startIcon,
+  .endIcon {
+    width: var(--space-4);
+    height: var(--space-4);
+    margin-left: var(--space-2);
+    margin-right: var(--space-2);
+  }
+}
+
+.sizeMd {
+  // Default — matches 0.x. Explicit class lets consumers force `md` in a
+  // context where an ancestor sets `--input-py` (Field nested in toolbar).
+  --input-py: var(--space-3);
+  --input-px: var(--space-4);
+  --input-font-size: var(--font-size-base);
+}
+
+.sizeLg {
+  --input-py: var(--space-4);
+  --input-px: var(--space-5);
+  --input-font-size: var(--font-size-lg);
+
+  .addonText {
+    padding: 0 var(--space-4);
+    font-size: var(--font-size-lg);
+  }
+
+  .startIcon,
+  .endIcon {
+    width: var(--space-6);
+    height: var(--space-6);
+    margin-left: var(--space-4);
+    margin-right: var(--space-4);
   }
 }

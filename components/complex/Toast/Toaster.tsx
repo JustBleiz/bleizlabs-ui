@@ -90,6 +90,7 @@ import {
   forwardRef,
   useCallback,
   useEffect,
+  useState,
   type OlHTMLAttributes,
   type ReactNode,
 } from 'react';
@@ -177,6 +178,33 @@ export const Toaster = forwardRef<HTMLOListElement, ToasterProps>(function Toast
   useEffect(() => {
     if (toasts.length === 0) resumeAllTimers();
   }, [toasts.length]);
+
+  // SSR hydration mismatch guard (0.24.0). Toaster renders its portal
+  // unconditionally — there is no `if (!open)` short-circuit like other
+  // floating primitives. On the server `FloatingPortal` returns `null`
+  // (because `typeof document === 'undefined'`), but on the client it
+  // mounts the `<ol>` into `document.body`. Server tree vs first client
+  // tree differ → React 19 dev-mode flags a hydration mismatch error.
+  //
+  // Standard Radix-style fix: gate the portal behind a mount effect so
+  // the server tree and the first client tree both render `null`. The
+  // portal materialises on the second client commit (after `useEffect`).
+  // Trade-off: the live-region `<ol>` is not in the DOM during the very
+  // first client paint — acceptable because `toast()` is an imperative
+  // API consumers call AFTER user interaction (button click), by which
+  // time the portal is long mounted.
+  // Intentional one-shot mount gate. The setState inside the empty-deps
+  // effect runs ONCE after first commit so the portal materialises on the
+  // second commit and the server↔client first-paint trees match (both
+  // render `null`). Canonical Radix/Mantine mount-gate pattern — the
+  // cascading-render lint rule does not apply because the state flips
+  // once and never again.
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setMounted(true);
+  }, []);
+  if (!mounted) return null;
 
   // Always render the <ol> landmark region — even when empty — so the ARIA
   // live region exists in the DOM BEFORE the first toast mounts. Some SR +
