@@ -7,7 +7,33 @@ and this project adheres to [Semantic Versioning 2.0](https://semver.org/spec/v2
 
 ## [Unreleased]
 
-_No unreleased changes — 0.23.0 ships the mini-batch additions below._
+_No unreleased changes — 0.23.1 ships the doc + audit-script touch-ups below._
+
+## [0.23.1] — 2026-05-13
+
+**Patch — README / package description / demo-coverage audit accuracy.**
+0.23.0 ship referenced stale 104-family count in `package.json`
+description + README highlights, and the demo-coverage audit script
+blanket-skipped `utils/` (missing `VisuallyHidden` from the count). No
+runtime change — docs + tooling only.
+
+### Fixed
+
+- **README + `package.json` description** — bumped 104 → 107 component
+  count and added a 0.23.0 entry to the version history paragraph
+  describing CodeBlock + Mark + VisuallyHidden + Phase 4.5 audit.
+- **`scripts/audit-demo-coverage.mjs`** — replaced the blanket `utils/`
+  skip with a fine-grained `UTILS_SKIP` set listing only internal
+  building blocks (Slot, cn, mergeRefs, date / masks / floating /
+  gesture / locale / match-media / tests). User-facing utility
+  components like `VisuallyHidden` are now included in the coverage
+  count. Reports 107 / 107 pass.
+
+### Notes
+
+- No new components. No API change.
+- Tag `v0.23.1` triggers a fresh npm publish so the registry reflects
+  the corrected description string.
 
 ## [0.23.0] — 2026-05-13
 
@@ -46,7 +72,7 @@ within layer cap). Family count 104 → 107.
   `app/components/<kebab-case-name>/page.tsx`. Compound exports and
   aggregator landing pages (feedback / selection / toggles / molecules /
   input-production / specialized) are handled via an explicit alias map.
-  Surfaced as `npm run audit:demos` and runs in <50ms. All 106
+  Surfaced as `npm run audit:demos` and runs in <50ms. All 107
   components currently pass.
 
 ### Notes
