@@ -7,7 +7,32 @@ and this project adheres to [Semantic Versioning 2.0](https://semver.org/spec/v2
 
 ## [Unreleased]
 
-_No unreleased changes — 0.24.0 ships the first real-world testing batch._
+_No unreleased changes._
+
+## [0.24.1] — 2026-05-13
+
+**Patch release — DateTimePicker regression test alignment.** The 0.24.0
+`DateTimePicker` display change (`T` → space separator) shipped without
+an accompanying update to the per-component Playwright specs, so the CI
+`test` workflow on `main` failed (8 Playwright display-value assertions),
+which blocked `Auto-tag on main + dispatch publish` — therefore the
+`v0.24.0` tag + npm publish never ran. This patch updates those 8
+assertions to the new space-separator display format; hidden input
+(form-transport) assertions remain on ISO `T` as before.
+
+### Fixed
+
+- **`DateTimePicker` regression / compose / input specs — display value
+  assertions migrated from ISO `T` to space separator** to match the
+  0.24.0 user-facing display change. Updated tests:
+  `DateTimePicker.regression.spec.ts` (DT-R02, DT-R04, DT-R05, DT-R06,
+  DT-R08), `DateTimePicker.compose.spec.ts` (DT-CMP01, DT-CMP02),
+  `DateTimePicker.input.spec.ts` (DT-IN05). Hidden input ISO assertions
+  (DT-R10, DT-CMP03/04/05, form spec) unchanged — transport semantics
+  intentionally separate from display per 0.24.0 contract.
+
+No code changes. Component behavior identical to 0.24.0. Family count
+unchanged (107).
 
 ## [0.24.0] — 2026-05-13
 

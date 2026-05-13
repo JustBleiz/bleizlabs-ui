@@ -30,8 +30,8 @@ test.describe('DateTimePicker — Calendar + TimeInput compose', () => {
     const input = inputOf(picker);
     await openPicker(picker);
     await calendarCellByIso(page, '2026-05-20').dispatchEvent('click');
-    // Input now reflects new date with preserved 09:00 time
-    await expect(input).toHaveValue('2026-05-20T09:00');
+    // Input now reflects new date with preserved 09:00 time (space-separator display, 0.24.0)
+    await expect(input).toHaveValue('2026-05-20 09:00');
   });
 
   test('DT-CMP02 — TimeInput hour ArrowUp preserves date', async ({ page }) => {
@@ -41,8 +41,8 @@ test.describe('DateTimePicker — Calendar + TimeInput compose', () => {
     const hourSpin = hourSpinOf(page);
     await hourSpin.focus();
     await hourSpin.press('ArrowUp');
-    // Date preserved (2026-05-15), hour incremented 09 → 10
-    await expect(input).toHaveValue('2026-05-15T10:00');
+    // Date preserved (2026-05-15), hour incremented 09 → 10 (space-separator display, 0.24.0)
+    await expect(input).toHaveValue('2026-05-15 10:00');
   });
 
   test('DT-CMP03 — hidden input reflects current combined ISO', async ({ page }) => {
