@@ -9,6 +9,62 @@ and this project adheres to [Semantic Versioning 2.0](https://semver.org/spec/v2
 
 _No unreleased changes._
 
+## [0.26.0] — 2026-05-19
+
+**Minor release — `Text` brand-color token correction + repository-wide
+code-formatting baseline (Prettier + Stylelint).** Two threads bundled into
+one release:
+
+1. **`Text color="brand"` realigned to the canonical brand token** — reverts
+   the E142 L2 a11y pin that mapped `brand` to the theme-aware
+   `--color-brand-strong` (brand-700 light / brand-300 dark). `Text` now maps
+   to `--color-brand` (= `--color-brand-500`), keeping brand text visually
+   consistent with every other piece of brand chrome (buttons, links,
+   borders, focus rings, icons). Projects needing higher-contrast brand text
+   override `--color-brand` at `:root` or compose explicit
+   `--color-brand-strong` styles — documented inline + in the regression
+   spec. Trade-off: on mid-tone brand seeds `brand-500` can fall below WCAG
+   AA (~3.9:1) against raised/card surfaces; this is now a deliberate,
+   documented consumer-tunable default rather than a hard pin.
+2. **Formatting toolchain + baseline** — the codebase shipped 25 releases
+   without an enforced formatter. 0.26.0 adds Prettier + Stylelint
+   (`stylelint-config-standard-scss`) with `eslint-config-prettier` to
+   disable conflicting ESLint stylistic rules, then applies the one-time
+   format baseline across the repo. No logic changed — pure whitespace /
+   quote / trailing-comma normalization. Future diffs stay
+   formatting-noise-free; `format:check` + `lint:css` become CI-gateable.
+
+### Added
+
+- **Prettier** (`prettier@^3.8.3`, `eslint-config-prettier@^10.1.8`) —
+  `.prettierrc` (single-quote, `printWidth: 100`, `trailingComma: all`,
+  `endOfLine: lf`), `.prettierignore`, and `format` / `format:check` npm
+  scripts.
+- **Stylelint** (`stylelint@^17.11.1`,
+  `stylelint-config-standard-scss@^17.0.0`) — `stylelint.config.mjs`
+  (`declaration-no-important: true`, `at-rule-disallowed-list: [import]`,
+  `scss/load-partial-extension: never`, `_animations.scss` `!important`
+  override), `.stylelintignore`, and `lint:css` / `lint:css:fix` scripts.
+- **`.editorconfig`** — charset/EOL/indent baseline (2-space default,
+  4-space Python, tab Makefile, no md trailing-trim).
+- **`verify` npm script** — `lint && lint:css && typecheck` convenience gate.
+- **`Text.regression.spec.ts`** — asserts `color="brand"` computed color
+  equals the resolved `--color-brand` token.
+
+### Fixed
+
+- **`Text` `color="brand"` token mapping** — `components/typography/Text/Text.tsx`
+  now maps `brand → var(--color-brand)` (was `var(--color-brand-strong)`).
+
+### Changed
+
+- **Repository-wide Prettier format baseline** — 534 files normalized
+  (formatting only, zero behavioral change).
+- **`eslint.config.mjs`** — appends `eslint-config-prettier/flat`; ignores
+  expanded (`cli-dist/`, `cli/test-fixtures/`, `playwright-report/`,
+  `test-results/`). `lint` / `lint:fix` simplified to `eslint .` (ignores
+  now live in flat config, not CLI flags).
+
 ## [0.25.0] — 2026-05-13
 
 **Minor release — Agent Cheat-Sheet inside the npm package + DateTimePicker
@@ -166,7 +222,9 @@ Bundles 2 bugfixes + 2 small features. Family count unchanged (107).
   ```scss
   // Per-element opt-in
   @use '@bleizlabs/ui/styles/scrollbar' as scrollbar;
-  .myScrollable { @include scrollbar.scrollbar-prettify; }
+  .myScrollable {
+    @include scrollbar.scrollbar-prettify;
+  }
   ```
 
   Reads existing semantic tokens (`--color-border` / `--color-text-muted`
@@ -376,19 +434,19 @@ data-shape neutral, no surface bias) and ships through the full
   visible count to `max`, collapses the remainder into a final "+N" chip
   (an `<Avatar>` with fallback text), and applies negative-margin overlap.
   Props: `max` / `size` / `overlap` / `asChild` + children. `role="list"`
-  + `role="listitem"` per child + `aria-label` on the overflow chip. Composes
-  lib `<Avatar>` for visual consistency. Variant-free, lockup-free —
-  usable in panel team rows, bleizos client teams, scout-hub operator
-  lists, marketing about pages.
+  - `role="listitem"` per child + `aria-label` on the overflow chip. Composes
+    lib `<Avatar>` for visual consistency. Variant-free, lockup-free —
+    usable in panel team rows, bleizos client teams, scout-hub operator
+    lists, marketing about pages.
 
 - **Rating interactive primitive** (`interactive/Rating`) — APG
   `radio-rating` star-input pattern. Roving tabindex, ArrowLeft/Right/Up/
   Down for navigation, Home/End for first/last, Space/Enter for activate.
   Hover preview separate from committed value. `readOnly` mode supports
   fractional values (3.7 → 3 filled + 1 partial via CSS `--rating-star-fill`
-  + clip). Inline SVG star — zero icon library. Form integration via
-  hidden `<input name>`. Controlled + uncontrolled hybrid. Sizes
-  sm/md/lg, `max` configurable, `allowClear` toggle.
+  - clip). Inline SVG star — zero icon library. Form integration via
+    hidden `<input name>`. Controlled + uncontrolled hybrid. Sizes
+    sm/md/lg, `max` configurable, `allowClear` toggle.
 
 - **Collapsible compound** (`complex/Collapsible`) — APG `disclosure`
   pattern. `<Collapsible>` + `<CollapsibleTrigger>` + `<CollapsibleContent>`.
@@ -416,15 +474,15 @@ data-shape neutral, no surface bias) and ships through the full
 - **TimeInput `showSteppers` opt-in amendment** — stacked ↑/↓ button pair
   on the right edge of the input wrap, acts on currently-focused segment
   (hour / minute / second). Pointer-down activation: immediate first step
-  + hold-to-repeat (400ms initial → 80ms repeat, native spinbutton
-  convention). Keyboard (Space/Enter on button) fires single step;
-  keyboard users keep ArrowUp/Down on spinbuttons themselves (better
-  ergonomics). Buttons carry `tabIndex={-1}` — keyboard focus stays on
-  spinbutton segments. Minute stepper respects existing `step` prop
-  (step=15 → 0 → 15, not 0 → 1). 12h hour-cycle mapping intact.
-  `setPointerCapture` wrapped in try/catch — synthetic events / SR
-  virtual cursors don't break the increment path. Inline SVG chevron —
-  zero icon library. Default `false` (fully backward compatible).
+  - hold-to-repeat (400ms initial → 80ms repeat, native spinbutton
+    convention). Keyboard (Space/Enter on button) fires single step;
+    keyboard users keep ArrowUp/Down on spinbuttons themselves (better
+    ergonomics). Buttons carry `tabIndex={-1}` — keyboard focus stays on
+    spinbutton segments. Minute stepper respects existing `step` prop
+    (step=15 → 0 → 15, not 0 → 1). 12h hour-cycle mapping intact.
+    `setPointerCapture` wrapped in try/catch — synthetic events / SR
+    virtual cursors don't break the increment path. Inline SVG chevron —
+    zero icon library. Default `false` (fully backward compatible).
 
 - **DateTimePicker `showTimeSteppers` propagation** — new optional prop
   forwards `showSteppers` to the embedded `<TimeInput>` inside the
@@ -518,7 +576,7 @@ across atoms / molecules / complex / specialized layers — 7 lib fixes,
   revealed all four 0.18.0 components were absent: DateRangePicker,
   TimeInput, TimePicker, DateTimePicker. All four demo routes already
   existed under `app/components/{date-range-picker,time-input,
-  time-picker,date-time-picker}` — only the home catalog was stale.
+time-picker,date-time-picker}` — only the home catalog was stale.
   Catalog 76 → 80 entries.
 
 - **EdgeBar §5 — pulse demo forgot `pulse` prop** (B09). Section
@@ -548,7 +606,7 @@ across atoms / molecules / complex / specialized layers — 7 lib fixes,
 
 - **Badge §7 — live status dot oversized vs badge frame** (B08). Same
   commit as the lib Dot enum widening above. Demo `<Badge icon={<Dot
-  pulse />}>` used the default `md` (12px) which felt heavy for status
+pulse />}>` used the default `md` (12px) which felt heavy for status
   pip context. All four §7 examples now use `<Dot size="xs" pulse />`;
   section description updated to explain rationale.
 
@@ -597,9 +655,10 @@ X axis. Built on native SVG + math helpers (scaleLinear, niceTicks, generate-
 Path, normalizeX) — zero external chart deps (no Recharts / Chart.js / D3).
 
 API highlights:
+
 - `series: LineChartSeries[]` — each series has `{ id?, name?, color?,
-  data: LineChartDatum[] }` where each datum is `{ x: number | Date | string,
-  y: number, label? }`. Generic data-shape abstraction; consumer's actual
+data: LineChartDatum[] }` where each datum is `{ x: number | Date | string,
+y: number, label? }`. Generic data-shape abstraction; consumer's actual
   business data stays unconstrained.
 - `interpolation`: `'linear' | 'smooth'` (default smooth — Catmull-Rom).
 - `animate`: path-draw stroke-dashoffset animation on mount;
@@ -617,8 +676,9 @@ API highlights:
 
 A11y model (synthesized from W3C `role="img"` + WCAG H51 — no canonical
 APG pattern for charts):
+
 - Root `<div role="img" aria-labelledby="{titleId}" aria-describedby=
-  "{consumer} {descId} {tableId} {liveId}">` (Pattern 3 forensic — chains
+"{consumer} {descId} {tableId} {liveId}">` (Pattern 3 forensic — chains
   consumer ids with internal ids).
 - Internal `<svg aria-hidden="true">` — visual layer.
 - Sr-only `<table>` with `<caption>`, header row [X column, ...series.name],
@@ -639,6 +699,7 @@ APG pattern for charts):
   GrayText / Canvas (Windows High Contrast preserved).
 
 Phase 4 Evaluator findings + Phase 5 fixes:
+
 - CRITICAL #1 — voronoi `<rect>` overlay implemented per spec (was
   documented but not rendered); WCAG 2.5.5 touch-target claim now valid.
 - CRITICAL #2 — announce counter moved from `useMemo` to `useEffect`-driven
@@ -653,8 +714,9 @@ Phase 4 Evaluator findings + Phase 5 fixes:
   `xAxis.tickFormat` with explicit locale + timeZone.
 
 Tests: 53 PASS / 0 fail across 6 spec files: aria (8) + interpolation (4)
-+ tooltip (6) + keyboard (6) + responsive (3) + regression (26 —
-LC-R01..R26). axe-core zero violations on demo route.
+
+- tooltip (6) + keyboard (6) + responsive (3) + regression (26 —
+  LC-R01..R26). axe-core zero violations on demo route.
 
 Manifest: 96 → 97 families. Zero new lib tokens. Zero new external deps.
 
@@ -668,6 +730,7 @@ Render order per series: filled `<path class="area">` (low z) →
 stroke `<path class="line">` (top) → focusable `<circle>` data points.
 
 Baseline strategy matches Recharts default (`dataMin >= 0 ? 0 : dataMin`):
+
 - spans zero (min < 0 < max) → baseline = 0 (zero-crossing — areas above
   zero fill upward, below zero fill downward toward data)
 - all positive / all negative → baseline = `yDomain[0]` (plot floor in
@@ -682,6 +745,7 @@ sr-only `<table>` a11y fallback, live region with re-announce marker,
 `prefers-reduced-motion` + `forced-colors` fallbacks.
 
 Phase 4 Evaluator findings + Phase 5 fixes:
+
 - IMPORTANT — `fillOpacity` + `gradient` coupling JSDoc fixed (was
   documented as "ignored when gradient" but code actually scales the
   gradient top stop opacity by 2.5× clamped to 1; doc now describes
@@ -705,7 +769,8 @@ barrel — consumers compose at component level).
 Helpers moved: `scaleLinear`, `getDomain`, `niceTicks`,
 `generateLinearPath`, `generateSmoothPath`, `generateAreaPath`,
 `normalizeX`, `formatX`, `defaultYFormat`, `clamp01`, `DEFAULT_COLORS`
-+ `defaultColorForIndex`, plus shared type `ChartInterpolation`.
+
+- `defaultColorForIndex`, plus shared type `ChartInterpolation`.
 
 BC preserved: `LineChartInterpolation` and `AreaChartInterpolation` now
 re-export `ChartInterpolation` — all named exports continue to resolve
@@ -734,6 +799,7 @@ API: `data` + `title` + `description?` + `interpolation?` + `color?` +
 / multi-series helpers.
 
 Phase 4 Evaluator findings + Phase 5 fixes:
+
 - IMPORTANT — single-point degenerate case (`data.length === 1`)
   violated JSDoc contract: `scaleLinear` over span-0 x-domain collapsed
   the lone point to plot midpoint, leaving no segment to stroke
@@ -769,12 +835,13 @@ to `_shared/polar-math.ts` when a 2nd polar consumer joins (RadarChart /
 GaugeChart / future).
 
 Edge cases:
+
 - Empty data → empty state + empty sr-only table (caption + headers
   still render)
 - Single 100% segment → renders as `<circle>` to avoid degenerate 360°
   SVG arc (start = end is a degenerate path). Donut variant: annulus
   via `<circle fill="none" stroke=color strokeWidth=outerR-innerR
-  r=(outerR+innerR)/2>` — math verified exact (52.8 to 88 for
+r=(outerR+innerR)/2>` — math verified exact (52.8 to 88 for
   outerR=88 / innerR=52.8)
 - Negative values → silently filtered + dev-mode `console.warn`
 - Zero-sum (all zeros) → empty state
@@ -786,6 +853,7 @@ leader-line labels deferred to 0.20.x), `renderTooltip?` slot,
 `renderEmpty?` slot. Callbacks: `onSegmentClick` + `onSegmentFocus`.
 
 Phase 4 Evaluator findings + Phase 5 fixes:
+
 - IMPORTANT — `aria-describedby` chain order: consumer-supplied id was
   `unshift`ed (placed FIRST) contradicting JSDoc contract "consumer
   LAST". Fix: `ids.push(consumerDescribedBy)` so AT announces chart's
@@ -809,6 +877,7 @@ Playwright + axe-core runtime + manual NVDA sweep for all 4 charts
 batched to a dedicated 0.20.x test-execution sprint, matching the
 E15 Tabs / E05.4 Form / E06.x Header precedent established in earlier
 cycles. Regression specs planned:
+
 - LC-R01..LC-R26 (LineChart — 26 cases, partially executed in E01.1)
 - AC-R01..AC-R20 (AreaChart)
 - SP-R01..SP-R15 (Sparkline)
@@ -859,6 +928,7 @@ participation. Render-props children for full content control. Zero external
 runtime deps — native File API + HTML5 drag/drop events only.
 
 API highlights:
+
 - Validation: `accept` (MIME / wildcard / extension), `multiple`, `maxSize`,
   `minSize`, `maxFiles` — each axis emits a `FileRejectionReason` code on
   failure (`file-too-large` / `file-too-small` / `file-invalid-type` /
@@ -880,6 +950,7 @@ API highlights:
   preview at dragOver is best-effort (FU-R08 documents the limit).
 
 Phase 4 Evaluator findings + fixes:
+
 - CRITICAL: focus-ring was applied unconditionally instead of inside
   `:focus-visible` — fixed.
 - IMPORTANT: live-region repeat-content AT silence — fixed via
@@ -904,6 +975,7 @@ Combobox = select-from-list with popup listbox + registered items;
 TagsInput = freeform creation (no popup, type and commit).
 
 API highlights:
+
 - Controlled + uncontrolled value (`string[]`) via `value`/`defaultValue` +
   `onChange`. Per-attempt rejections via `onReject(rejections)`.
 - Validation matrix: `validate(tag) => boolean | string` (string = error
@@ -930,6 +1002,7 @@ API highlights:
   (relatedTarget is null when clicking inner SVG glyph — Phase 5 fix #1).
 
 Phase 4 Evaluator findings (verdict PASS, but 4 IMPORTANT applied in Phase 5):
+
 - Live region announces consumer-supplied `validate` message instead of
   internal enum code (was: "Tag rejected: validate-failed" → now: "Tag
   rejected: Must be lowercase").
@@ -956,6 +1029,7 @@ mode = `<nav role="navigation" aria-label>` wrapping `<ol>` with `<button>`
 on clickable steps + `<div aria-disabled>` on non-clickable.
 
 API highlights:
+
 - Status: auto-derived from `currentStep` (index < currentStep → complete;
   === → active; > → pending). Explicit `<Step status="error">` overrides
   derivation — primary use case is marking failed validation while
@@ -965,8 +1039,8 @@ API highlights:
   clickable — free-form wizard). Discriminated TS union forces `onStepClick`
   when interactive.
 - `orientation`: `'horizontal'` | `'vertical'` — connecting-line geometry
-  + keyboard arrows axis. Independent of `dir="rtl"` (RTL flips horizontal
-  arrow semantics, same pattern as Tabs).
+  - keyboard arrows axis. Independent of `dir="rtl"` (RTL flips horizontal
+    arrow semantics, same pattern as Tabs).
 - `size`: `'sm'` (24px circle) | `'md'` (32px) | `'lg'` (40px) — matches
   Button/Chip/Avatar scale.
 - `<Step>` accepts `label: string`, `description?: ReactNode` (lib does NOT
@@ -977,7 +1051,7 @@ API highlights:
 - A11y: each step ships a visually-hidden verbose announcement
   ("Step N of M: label, status") for non-active steps; active step's
   context is delivered via root live region (`role="status"
-  aria-live="polite"`) which re-mounts on `currentStep` change to force
+aria-live="polite"`) which re-mounts on `currentStep` change to force
   AT re-announce (TagsInput precedent). `aria-current="step"` on the
   active step.
 - Keyboard (interactive only): Arrows (h/v + RTL-aware) navigate between
@@ -994,6 +1068,7 @@ API highlights:
   Stepper convention (W3C does NOT define a canonical "stepper" pattern).
 
 Phase 4 Evaluator findings + Phase 5 fixes:
+
 - IMPORTANT: discriminated-union read shape simplified (single destructure;
   removed redundant double-cast).
 - IMPORTANT: `{...rest}` spread placement now BEFORE explicit attrs so
@@ -1024,7 +1099,7 @@ Manifest: 95 → 96 families. Zero new lib tokens. Zero new external deps.
   the stable `useCallback([])` reference instead of the wrapping `formCtx`
   context object. Without the fix:
   `mount → registerField → setValidityVersion → ctxValue re-memo →
-  effect cleanup (unregister + bump) → re-register (bump) → ∞`.
+effect cleanup (unregister + bump) → re-register (bump) → ∞`.
   The Form-side `registerField` was already stable; only the Field-side
   dependency array was wrong. Single-file change in
   `components/complex/Field/Field.tsx`. Regression covered by
@@ -1036,7 +1111,7 @@ Manifest: 95 → 96 families. Zero new lib tokens. Zero new external deps.
   Static checks (tsc + ESLint + 437 Playwright unit specs) all green —
   surfaced only at render time when Field mounts inside Form. Codified
   as a permanent post-push verification rule: `mcp__next-devtools__
-  nextjs_call get_errors` must report clean state before every push.
+nextjs_call get_errors` must report clean state before every push.
 
 ## [0.18.0] — 2026-05-12
 
@@ -1054,6 +1129,7 @@ patterns persisted to memory for future sessions.
 
 3 additive opt-in props on `<Calendar>` (zero BC risk, single-consumer
 Calendars unaffected):
+
 - `cellExtras?: (date, ctx) => HTMLAttributes<HTMLTableCellElement>` — per-cell
   attribute slot, spread BEFORE fixed `role`/`aria-selected`/`className` so
   consumer cannot override grid semantics. Primary use: `data-*` attrs for
@@ -1064,7 +1140,7 @@ Calendars unaffected):
   with `onCellHover` for clearing hover tail.
 
 Spec coverage: `Calendar.cellExtras.spec.ts` (3 cases — defaults unchanged,
-data-* attrs land via DateRangePicker consumer, hover wiring proven).
+data-\* attrs land via DateRangePicker consumer, hover wiring proven).
 Existing 7 Calendar spec files behavior unchanged.
 
 **E01.1 DateRangePicker v1 — multi-month range selection (commit `62db846`)**
@@ -1074,6 +1150,7 @@ Calendar AMEND + 5 floating primitives into a popover range picker per
 WAI-ARIA APG `/datepicker-dialog/` modified for range.
 
 Features:
+
 - Range state machine: idle → pendingFrom → commit (with reorder on click 2 <
   click 1); committed-restart on next click; programmatic clear-to-null
   override clears `pendingFrom` (audit-fix C3 2026-05-12).
@@ -1107,13 +1184,14 @@ NOT compose `<NumberInput>` per audit C1 finding (NumberInput owns its own
 spinbutton ARIA).
 
 Features:
+
 - 2-3 spinbutton fields (hours, minutes, optional seconds) inside
   `<div role="group" aria-label>`. Each field carries `aria-valuenow`,
   `aria-valuemin`/`max`, `aria-valuetext`, per-field `aria-label`
   ("Hours" / "Minutes" / "Seconds").
 - `hourCycle: '12h' | '24h'` opt-in prop (auto-derived from locale via
   `resolveHourCycle` when omitted). 12h mode renders `<button role="switch"
-  aria-checked>` AM/PM toggle at logical-end of group. `onValueChange`
+aria-checked>` AM/PM toggle at logical-end of group. `onValueChange`
   ALWAYS emits 24h ISO regardless of display cycle (per plan AD2).
 - Keyboard model per spinbutton: ArrowUp/Down ±1 (hours/seconds) or ±step
   (minutes); PageUp/Down ±10/±15/±10; Home/End jump to field bounds;
@@ -1153,6 +1231,7 @@ input + popover dialog) with listbox columns inside the popover instead
 of a Calendar grid.
 
 Features:
+
 - Compound: `TimePicker` + `TimePickerInput` (combobox) + `TimePickerContent`
   (popover dialog with 2-3 scrollable listbox columns)
 - `hourCycle: '12h' | '24h'` opt-in (auto-derived from locale via
@@ -1190,6 +1269,7 @@ AM/PM toggle). Form output is ISO 8601 local datetime
 clock per plan AD3).
 
 Features:
+
 - Compound: `DateTimePicker` + `DateTimePickerInput` + `DateTimePickerContent`
 - Value type `Date | null` (not string) — `<DateTimePicker>` works with
   the JS `Date` primitive directly; `toIsoDateTimeString` / `parseIsoDateTimeString`
@@ -1205,11 +1285,13 @@ Features:
   `required` propagates for native `:invalid`
 
 2 new util helpers in `utils/date.ts`:
+
 - `toIsoDateTimeString(date) → "YYYY-MM-DDTHH:MM:SS"` (no tz suffix)
 - `parseIsoDateTimeString(iso) → Date | null` (accepts trailing `:SS`
   optional)
 
 Time-zone semantics — documented:
+
 - Emitted ISO string carries NO tz suffix; represents local wall-clock
   time at user's device
 - Server parsers MUST treat as local-naive datetime, NOT UTC
@@ -1228,8 +1310,9 @@ DateTimePicker's larger dialog footprint blocks Playwright's pointerdown
 synthesis on small viewports). Axe-core zero violations.
 
 Net manifest after full 0.18.0 cycle: 89 → 93 families (DateRangePicker
-+ TimeInput + TimePicker + DateTimePicker). 0.18.0 component scope
-complete.
+
+- TimeInput + TimePicker + DateTimePicker). 0.18.0 component scope
+  complete.
 
 **Polish — Select + Combobox `.itemText` multi-line friendly**
 
@@ -1240,6 +1323,7 @@ multi-line content (name + role, label + description); the previous
 ellipsis policy clipped that content invisibly.
 
 After the change:
+
 - Single-line text renders unchanged (no wrap needed at any width)
 - Long single-line values WRAP to next line instead of clipping (WCAG 1.4.4
   content-loss alignment)
@@ -1261,6 +1345,7 @@ dependencies maintained.
 ### Added
 
 **Complex interactive:**
+
 - `DataTable<T>` — declarative grid primitive z `columns` + `data` API +
   discriminated-union selection mode (`'none' | 'single' | 'multiple'`).
   Klocek-compliant: single concept, data-shape neutral via generic `T`,
@@ -1323,8 +1408,8 @@ running them):
   descendants of `<th role="columnheader">`).
 - Keyboard handler now reads cell coordinates from `target.dataset.row`
   / `target.dataset.col` instead of stale React state. Fixes ArrowDown
-  + Space activation when interaction follows immediately after
-  programmatic focus (synthetic dispatch races React's render commit).
+  - Space activation when interaction follows immediately after
+    programmatic focus (synthetic dispatch races React's render commit).
 - `<Switch>` track no longer intercepts pointer events. The decorative
   `<span class="track">` previously sat on top of the sr-only `<input>`
   with default `pointer-events: auto`, blocking programmatic clicks on
@@ -1343,10 +1428,12 @@ everything that previously bundled multiple concerns.
 ### Removed (BREAKING)
 
 **Display:**
+
 - `PercentValue` / `PercentValueAnimated` — superseded by `KpiValue` with
   `unit="%"` + `color="auto"` + `thresholds` + `inverse` since 0.7.0.
 
 **Molecules:**
+
 - `PageHeader` — superseded by `<Header>` (added in 0.14.0). Migration:
   `<Header>` body slot composes Heading + Text + Eyebrow + Badge.
 - `SectionHeader` — superseded by `<Header>`. Migration: same pattern.
@@ -1358,6 +1445,7 @@ everything that previously bundled multiple concerns.
   with thin wrapping. Use the lib `ToggleGroup` directly.
 
 **Card presets:**
+
 - `EntityCard` — multi-concept lockup (card + badge group + meta strip +
   body slot). Each project composes its own business-domain card
   (`<ProjectCard>`, `<TicketCard>`) from Card + Header + atoms.
@@ -1375,6 +1463,7 @@ everything that previously bundled multiple concerns.
   removed.
 
 **Composition presets:**
+
 - `SiteHeader` — marketing-flavored compound preset. Each project owns
   its own marketing header molecule.
 - `AppShell` — chrome organism. Each project builds its own
@@ -1498,9 +1587,9 @@ for all single-mode shapes.
   typed-array `items` prop is replaced by `<BreakdownList><BreakdownListItem />…</BreakdownList>`.
   Density enum dropped.
 - **`<FormSurface>`** (formerly `FormCard`) trimmed to a klocek-pure form
-  + Card surface wrapper. The `title` / `description` / `footer` /
-  `asForm` / `headerBorder` / `closeIcon` bundle is gone — compose these
-  via the existing Card slots.
+  - Card surface wrapper. The `title` / `description` / `footer` /
+    `asForm` / `headerBorder` / `closeIcon` bundle is gone — compose these
+    via the existing Card slots.
 - **`<Avatar>`** `status` prop removed. Compose `<Avatar />` + `<Dot />`
   in a positioned wrapper for status indication.
 - **`<Skeleton>`** `lines` and `ariaLive` removed. Compose multiple
@@ -1699,11 +1788,19 @@ deprecated and will be removed in 0.16.0:
   `app/globals.scss`. Lib now ships a conservative reset directly:
 
   ```scss
-  html { scroll-behavior: smooth; }
-  @media (prefers-reduced-motion: reduce) {
-    html { scroll-behavior: auto; }
+  html {
+    scroll-behavior: smooth;
   }
-  body { margin: 0; padding: 0; min-height: 100dvh; }
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+  }
+  body {
+    margin: 0;
+    padding: 0;
+    min-height: 100dvh;
+  }
   ```
 
   Conservative on purpose — no `display: flex` or other layout convention
@@ -1746,7 +1843,6 @@ deprecated and will be removed in 0.16.0:
   each into its category subdirectory before regenerating. No consumer
   action required — re-run `npx @bleizlabs/ui add --new` and the layout
   reorganizes itself.
-
   - Folders without the generated marker (user-authored) are left alone.
   - When both flat and nested paths exist for the same family, the
     conflict is surfaced and the operator decides which to keep.
