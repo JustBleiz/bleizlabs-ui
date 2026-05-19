@@ -20,9 +20,7 @@
 // transforms + shadows, so clipping can't come from the parent).
 .action {
   justify-content: space-between;
-  margin:
-    var(--space-4)
-    calc(-1 * var(--card-padding, var(--padding-card)))
+  margin: var(--space-4) calc(-1 * var(--card-padding, var(--padding-card)))
     calc(-1 * var(--card-padding, var(--padding-card)));
   padding: var(--space-3) var(--card-padding, var(--padding-card));
   background: var(--color-surface-raised);

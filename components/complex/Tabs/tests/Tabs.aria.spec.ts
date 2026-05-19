@@ -26,9 +26,7 @@ test.describe('Tabs — ARIA + accessibility tree', () => {
     await expect(tablist).toHaveAttribute('aria-label', 'Project sections');
   });
 
-  test('TB-R06 — vertical orientation reflects in aria-orientation', async ({
-    page,
-  }) => {
+  test('TB-R06 — vertical orientation reflects in aria-orientation', async ({ page }) => {
     const tablist = page.getByRole('tablist', { name: 'Account settings' });
     await expect(tablist).toHaveAttribute('aria-orientation', 'vertical');
   });
@@ -51,9 +49,7 @@ test.describe('Tabs — ARIA + accessibility tree', () => {
     expect(labelledBy).toBe(await overview.getAttribute('id'));
   });
 
-  test('TB-R16 — auto-generated IDs contain trigger-{value} / panel-{value}', async ({
-    page,
-  }) => {
+  test('TB-R16 — auto-generated IDs contain trigger-{value} / panel-{value}', async ({ page }) => {
     const tablist = page.getByRole('tablist', { name: 'Project sections' });
     const overview = tablist.getByRole('tab', { name: 'Overview' });
     const overviewId = await overview.getAttribute('id');

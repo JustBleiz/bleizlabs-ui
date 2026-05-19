@@ -22,9 +22,7 @@
 import { test, expect } from '@playwright/test';
 
 test.describe('Calendar — regression guards', () => {
-  test('CAL-R16 — year boundary: Dec 31 → Jan 1 via keyboard', async ({
-    page,
-  }) => {
+  test('CAL-R16 — year boundary: Dec 31 → Jan 1 via keyboard', async ({ page }) => {
     await page.emulateMedia({ reducedMotion: 'reduce' });
     await page.goto('/components/calendar');
     // Section 2 — controlled. Navigate to Dec 2026 via 8× next-month clicks
@@ -49,9 +47,7 @@ test.describe('Calendar — regression guards', () => {
     await expect(jan1).toBeFocused();
   });
 
-  test('CAL-R17 — leap year: Feb 28 2024 → Feb 29 via ArrowRight', async ({
-    page,
-  }) => {
+  test('CAL-R17 — leap year: Feb 28 2024 → Feb 29 via ArrowRight', async ({ page }) => {
     await page.emulateMedia({ reducedMotion: 'reduce' });
     await page.goto('/components/calendar');
     // Navigate from Apr 2026 back to Feb 2024 (-26 months via Shift+PageUp
@@ -75,9 +71,7 @@ test.describe('Calendar — regression guards', () => {
     await expect(feb29).toBeFocused();
   });
 
-  test('CAL-R18 — Polish locale: week starts Monday (thead first cell)', async ({
-    page,
-  }) => {
+  test('CAL-R18 — Polish locale: week starts Monday (thead first cell)', async ({ page }) => {
     await page.emulateMedia({ reducedMotion: 'reduce' });
     await page.goto('/components/calendar');
     // Section 6 — pl-PL, auto-detects Monday start
@@ -90,9 +84,7 @@ test.describe('Calendar — regression guards', () => {
     await expect(shortLabel).toHaveText(/pon/i);
   });
 
-  test('CAL-R19 — controlled value: external Today button sets selection', async ({
-    page,
-  }) => {
+  test('CAL-R19 — controlled value: external Today button sets selection', async ({ page }) => {
     await page.emulateMedia({ reducedMotion: 'reduce' });
     await page.goto('/components/calendar');
     const sections = page.locator('section');
@@ -143,35 +135,25 @@ test.describe('Calendar — regression guards', () => {
     await expect(selected).toHaveCount(0);
   });
 
-  test('CAL-R20 — Next month chevron updates displayed month', async ({
-    page,
-  }) => {
+  test('CAL-R20 — Next month chevron updates displayed month', async ({ page }) => {
     await page.emulateMedia({ reducedMotion: 'reduce' });
     await page.goto('/components/calendar');
     const sections = page.locator('section');
     const controlled = sections.nth(1);
-    await controlled
-      .getByRole('button', { name: 'Next month' })
-      .click();
+    await controlled.getByRole('button', { name: 'Next month' }).click();
     await expect(controlled.getByText('May 2026')).toBeVisible();
   });
 
-  test('CAL-R21 — prefers-reduced-motion: no long transitions on grid', async ({
-    page,
-  }) => {
+  test('CAL-R21 — prefers-reduced-motion: no long transitions on grid', async ({ page }) => {
     await page.emulateMedia({ reducedMotion: 'reduce' });
     await page.goto('/components/calendar');
     const grid = page.getByRole('grid').first();
-    const transition = await grid.evaluate(
-      (el) => window.getComputedStyle(el).transition,
-    );
+    const transition = await grid.evaluate((el) => window.getComputedStyle(el).transition);
     // Reduced-motion global CSS clamps transitions to 0.001s (per a11y pipeline).
     expect(transition).toMatch(/none|0s|0\.001s/);
   });
 
-  test('CAL-R22 — min boundary: prev chevron native-disabled at min month', async ({
-    page,
-  }) => {
+  test('CAL-R22 — min boundary: prev chevron native-disabled at min month', async ({ page }) => {
     await page.emulateMedia({ reducedMotion: 'reduce' });
     await page.goto('/components/calendar');
     // Section 3 — min Apr 1 2026, max Apr 30 2026, defaultMonth Apr 2026
@@ -195,9 +177,7 @@ test.describe('Calendar — regression guards', () => {
     await page.goto('/components/calendar');
     await page.reload();
     await expect(page.getByRole('grid').first()).toBeVisible();
-    expect(
-      warnings.filter((w) => w.toLowerCase().includes('hydration')),
-    ).toHaveLength(0);
+    expect(warnings.filter((w) => w.toLowerCase().includes('hydration'))).toHaveLength(0);
   });
 
   test.skip('CAL-R24 — date range selection [PLAYGROUND-DEP: single-date only in v1.0]', async () => {

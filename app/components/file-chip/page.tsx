@@ -24,8 +24,7 @@ export default function FileChipPlaygroundPage() {
   const [files, setFiles] = useState<FileItem[]>(INITIAL_FILES);
   const [retryCount, setRetryCount] = useState(0);
 
-  const handleRemove = (id: string) =>
-    setFiles((prev) => prev.filter((f) => f.id !== id));
+  const handleRemove = (id: string) => setFiles((prev) => prev.filter((f) => f.id !== id));
 
   return (
     <main className={styles.main}>
@@ -37,13 +36,11 @@ export default function FileChipPlaygroundPage() {
           FileChip
         </Heading>
         <p className={styles.intro}>
-          File attachment chip with three variants:{' '}
-          <code>uploaded</code> (default — MIME icon + remove),{' '}
-          <code>uploading</code> (Spinner replaces icon, remove hidden),{' '}
-          <code>error</code> (error border + retry button). Auto-detects the
-          MIME category for the leading icon (image, video, audio, text,
-          archive, document). File size renders human-readably (B / KB / MB /
-          GB / TB).
+          File attachment chip with three variants: <code>uploaded</code> (default — MIME icon +
+          remove), <code>uploading</code> (Spinner replaces icon, remove hidden), <code>error</code>{' '}
+          (error border + retry button). Auto-detects the MIME category for the leading icon (image,
+          video, audio, text, archive, document). File size renders human-readably (B / KB / MB / GB
+          / TB).
         </p>
       </header>
 
@@ -70,10 +67,10 @@ export default function FileChipPlaygroundPage() {
             )}
           </div>
           <p className={styles.bodyText}>
-            Default <code>uploaded</code> variant — MIME icon auto-detected
-            from <code>mimeType</code>. Click the X to remove a file. The
-            remove button is a real <code>{'<button>'}</code> (icon-only via
-            Button atom), <code>aria-label</code> per file for SR clarity.
+            Default <code>uploaded</code> variant — MIME icon auto-detected from{' '}
+            <code>mimeType</code>. Click the X to remove a file. The remove button is a real{' '}
+            <code>{'<button>'}</code> (icon-only via Button atom), <code>aria-label</code> per file
+            for SR clarity.
           </p>
         </div>
       </section>
@@ -84,21 +81,13 @@ export default function FileChipPlaygroundPage() {
         </Heading>
         <div className={styles.sectionBody}>
           <div className={styles.stack}>
-            <FileChip
-              name="raport-finansowy-q1.pdf"
-              size={487_424}
-              mimeType="application/pdf"
-            />
-            <FileChip
-              name="logo-firmowe.svg"
-              size={12_288}
-              mimeType="image/svg+xml"
-            />
+            <FileChip name="raport-finansowy-q1.pdf" size={487_424} mimeType="application/pdf" />
+            <FileChip name="logo-firmowe.svg" size={12_288} mimeType="image/svg+xml" />
           </div>
           <p className={styles.bodyText}>
-            When <code>onRemove</code> is omitted, the trailing X disappears —
-            the chip becomes read-only. Useful for &ldquo;already attached,
-            cannot be removed&rdquo; lists or finalised offers.
+            When <code>onRemove</code> is omitted, the trailing X disappears — the chip becomes
+            read-only. Useful for &ldquo;already attached, cannot be removed&rdquo; lists or
+            finalised offers.
           </p>
         </div>
       </section>
@@ -118,10 +107,9 @@ export default function FileChipPlaygroundPage() {
             />
           </div>
           <p className={styles.bodyText}>
-            <code>variant=&quot;uploading&quot;</code> replaces the MIME icon
-            with a Spinner (<code>role=&quot;status&quot;</code> via Spinner
-            atom) and hides the remove button — an in-flight upload is
-            cancelled via its own mechanism, not this chip.
+            <code>variant=&quot;uploading&quot;</code> replaces the MIME icon with a Spinner (
+            <code>role=&quot;status&quot;</code> via Spinner atom) and hides the remove button — an
+            in-flight upload is cancelled via its own mechanism, not this chip.
           </p>
         </div>
       </section>
@@ -144,9 +132,8 @@ export default function FileChipPlaygroundPage() {
             />
           </div>
           <p className={styles.bodyText}>
-            Error border + tinted icon. Retry button shown when{' '}
-            <code>onRetry</code> supplied; remove button still available so
-            user can discard the failed attempt entirely.
+            Error border + tinted icon. Retry button shown when <code>onRetry</code> supplied;
+            remove button still available so user can discard the failed attempt entirely.
           </p>
         </div>
       </section>
@@ -166,10 +153,9 @@ export default function FileChipPlaygroundPage() {
             <FileChip name="unknown.xyz" size={1024} />
           </div>
           <p className={styles.bodyText}>
-            Six MIME categories — <code>image</code> / <code>video</code> /
-            <code>audio</code> / <code>text</code> / <code>archive</code> /
-            <code>document</code>. Unknown or missing <code>mimeType</code>{' '}
-            falls back to the generic document icon.
+            Six MIME categories — <code>image</code> / <code>video</code> /<code>audio</code> /{' '}
+            <code>text</code> / <code>archive</code> /<code>document</code>. Unknown or missing{' '}
+            <code>mimeType</code> falls back to the generic document icon.
           </p>
         </div>
       </section>

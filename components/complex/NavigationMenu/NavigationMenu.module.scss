@@ -80,7 +80,8 @@
   cursor: pointer;
   user-select: none;
 
-  transition: background-color var(--duration-fast) var(--easing-default),
+  transition:
+    background-color var(--duration-fast) var(--easing-default),
     color var(--duration-fast) var(--easing-default);
 
   // Touch target — ensure 44x44 minimum on coarse pointers (D13).
@@ -178,7 +179,8 @@
   cursor: pointer;
   user-select: none;
 
-  transition: background-color var(--duration-fast) var(--easing-default),
+  transition:
+    background-color var(--duration-fast) var(--easing-default),
     color var(--duration-fast) var(--easing-default);
 
   // Touch target — ensure 44x44 minimum on coarse pointers (D13).

@@ -1,12 +1,6 @@
 'use client';
 
-import {
-  forwardRef,
-  useId,
-  useMemo,
-  useState,
-  type InputHTMLAttributes,
-} from 'react';
+import { forwardRef, useId, useMemo, useState, type InputHTMLAttributes } from 'react';
 import { cn } from '../../utils/cn';
 import { Label } from '../Label';
 import {
@@ -111,11 +105,10 @@ import styles from './MaskedInput.module.scss';
  * // Date DD.MM.YYYY
  * <MaskedInput label="Date of birth" name="dob" preset="datePL" />
  */
-export interface MaskedInputProps
-  extends Omit<
-    InputHTMLAttributes<HTMLInputElement>,
-    'type' | 'size' | 'value' | 'defaultValue' | 'onChange' | 'pattern'
-  > {
+export interface MaskedInputProps extends Omit<
+  InputHTMLAttributes<HTMLInputElement>,
+  'type' | 'size' | 'value' | 'defaultValue' | 'onChange' | 'pattern'
+> {
   /** Visible label text. */
   label: string;
   /** Form field name. */
@@ -176,106 +169,104 @@ function inputModeForMask(mask: string): 'numeric' | 'text' {
   return hasNonDigit ? 'text' : 'numeric';
 }
 
-export const MaskedInput = forwardRef<HTMLInputElement, MaskedInputProps>(
-  function MaskedInput(
-    {
-      label,
-      name,
-      mask: rawMask,
-      preset,
-      value: controlledValue,
-      defaultValue,
-      onValueChange,
-      error,
-      helperText,
-      hideLabel = false,
-      required,
-      disabled,
-      id,
-      placeholder,
-      className,
-      ...rest
-    },
-    ref,
-  ) {
-    const generatedId = useId();
-    const inputId = id ?? `${name}-${generatedId}`;
-    const errorId = error ? `${inputId}-error` : undefined;
-    const helperId = helperText && !error ? `${inputId}-helper` : undefined;
-    const describedBy = errorId ?? helperId;
+export const MaskedInput = forwardRef<HTMLInputElement, MaskedInputProps>(function MaskedInput(
+  {
+    label,
+    name,
+    mask: rawMask,
+    preset,
+    value: controlledValue,
+    defaultValue,
+    onValueChange,
+    error,
+    helperText,
+    hideLabel = false,
+    required,
+    disabled,
+    id,
+    placeholder,
+    className,
+    ...rest
+  },
+  ref,
+) {
+  const generatedId = useId();
+  const inputId = id ?? `${name}-${generatedId}`;
+  const errorId = error ? `${inputId}-error` : undefined;
+  const helperId = helperText && !error ? `${inputId}-helper` : undefined;
+  const describedBy = errorId ?? helperId;
 
-    // Resolve the active mask: preset wins over raw mask if both given.
-    const mask = useMemo(() => {
-      if (preset) return MASK_PRESETS[preset];
-      return rawMask ?? '';
-    }, [preset, rawMask]);
+  // Resolve the active mask: preset wins over raw mask if both given.
+  const mask = useMemo(() => {
+    if (preset) return MASK_PRESETS[preset];
+    return rawMask ?? '';
+  }, [preset, rawMask]);
 
-    const isControlled = controlledValue !== undefined;
-    const [uncontrolledValue, setUncontrolledValue] = useState<string>(() => {
-      if (defaultValue == null) return '';
-      return applyMask(defaultValue, mask).formatted;
-    });
-    const currentValue = isControlled ? controlledValue : uncontrolledValue;
+  const isControlled = controlledValue !== undefined;
+  const [uncontrolledValue, setUncontrolledValue] = useState<string>(() => {
+    if (defaultValue == null) return '';
+    return applyMask(defaultValue, mask).formatted;
+  });
+  const currentValue = isControlled ? controlledValue : uncontrolledValue;
 
-    const inputMode = useMemo(() => inputModeForMask(mask), [mask]);
-    const maxLen = useMemo(() => {
-      // max formatted length = mask length with `\X` escape sequences
-      // collapsed to their output char (each `\X` produces 1 output char,
-      // not 2). Calling this helper instead of `mask.length` avoids
-      // over-allowing typed characters for escaped masks.
-      const len = maskMaxLength(mask);
-      return len > 0 ? len : undefined;
-    }, [mask]);
+  const inputMode = useMemo(() => inputModeForMask(mask), [mask]);
+  const maxLen = useMemo(() => {
+    // max formatted length = mask length with `\X` escape sequences
+    // collapsed to their output char (each `\X` produces 1 output char,
+    // not 2). Calling this helper instead of `mask.length` avoids
+    // over-allowing typed characters for escaped masks.
+    const len = maskMaxLength(mask);
+    return len > 0 ? len : undefined;
+  }, [mask]);
 
-    const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-      const raw = event.target.value;
-      const { formatted } = applyMask(raw, mask);
-      if (!isControlled) setUncontrolledValue(formatted);
-      onValueChange?.(formatted);
-    };
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const raw = event.target.value;
+    const { formatted } = applyMask(raw, mask);
+    if (!isControlled) setUncontrolledValue(formatted);
+    onValueChange?.(formatted);
+  };
 
-    return (
-      <div className={cn(styles.field, disabled && styles.fieldDisabled, className)}>
-        <Label
-          htmlFor={inputId}
+  return (
+    <div className={cn(styles.field, disabled && styles.fieldDisabled, className)}>
+      <Label
+        htmlFor={inputId}
+        required={required}
+        disabled={disabled}
+        className={hideLabel ? styles.srOnly : undefined}
+      >
+        {label}
+      </Label>
+      <div className={cn(styles.inputWrap, error && styles.inputWrapError)}>
+        <input
+          ref={ref}
+          id={inputId}
+          name={name}
+          type="text"
+          inputMode={inputMode}
           required={required}
           disabled={disabled}
-          className={hideLabel ? styles.srOnly : undefined}
-        >
-          {label}
-        </Label>
-        <div className={cn(styles.inputWrap, error && styles.inputWrapError)}>
-          <input
-            ref={ref}
-            id={inputId}
-            name={name}
-            type="text"
-            inputMode={inputMode}
-            required={required}
-            disabled={disabled}
-            maxLength={maxLen}
-            placeholder={placeholder}
-            value={currentValue}
-            onChange={handleChange}
-            aria-invalid={error ? true : undefined}
-            aria-describedby={describedBy}
-            className={styles.input}
-            {...rest}
-          />
-        </div>
-        {error ? (
-          <p id={errorId} className={styles.error} role="alert">
-            {error}
-          </p>
-        ) : helperText ? (
-          <p id={helperId} className={styles.helper}>
-            {helperText}
-          </p>
-        ) : null}
+          maxLength={maxLen}
+          placeholder={placeholder}
+          value={currentValue}
+          onChange={handleChange}
+          aria-invalid={error ? true : undefined}
+          aria-describedby={describedBy}
+          className={styles.input}
+          {...rest}
+        />
       </div>
-    );
-  },
-);
+      {error ? (
+        <p id={errorId} className={styles.error} role="alert">
+          {error}
+        </p>
+      ) : helperText ? (
+        <p id={helperId} className={styles.helper}>
+          {helperText}
+        </p>
+      ) : null}
+    </div>
+  );
+});
 
 // Re-export the mask utility helpers so consumers can import them from
 // the same module as the component.

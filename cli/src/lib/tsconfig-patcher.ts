@@ -54,10 +54,8 @@ export function patchTsconfig(opts: TsconfigPatchOptions): TsconfigPatchResult {
     }
   }
 
-  const compilerOptions =
-    (parsed.compilerOptions as Record<string, unknown> | undefined) ?? {};
-  const existingPaths =
-    (compilerOptions.paths as Record<string, string[]> | undefined) ?? {};
+  const compilerOptions = (parsed.compilerOptions as Record<string, unknown> | undefined) ?? {};
+  const existingPaths = (compilerOptions.paths as Record<string, string[]> | undefined) ?? {};
 
   const desired: Record<string, string[]> = {
     '@/components/ui/*': [`./${targetDir}/*`],
@@ -68,7 +66,9 @@ export function patchTsconfig(opts: TsconfigPatchOptions): TsconfigPatchResult {
   const collisions: string[] = [];
   for (const [key, val] of Object.entries(desired)) {
     if (existingPaths[key] && JSON.stringify(existingPaths[key]) !== JSON.stringify(val)) {
-      collisions.push(`${key} → ${JSON.stringify(existingPaths[key])} (want ${JSON.stringify(val)})`);
+      collisions.push(
+        `${key} → ${JSON.stringify(existingPaths[key])} (want ${JSON.stringify(val)})`,
+      );
     }
   }
   if (collisions.length > 0) {
@@ -85,8 +85,7 @@ export function patchTsconfig(opts: TsconfigPatchOptions): TsconfigPatchResult {
   // Check if patch needed at all.
   const allPresent = Object.entries(desired).every(
     ([key, val]) =>
-      existingPaths[key] &&
-      JSON.stringify(existingPaths[key]) === JSON.stringify(val),
+      existingPaths[key] && JSON.stringify(existingPaths[key]) === JSON.stringify(val),
   );
   if (allPresent) {
     return {
@@ -113,8 +112,7 @@ export function patchTsconfig(opts: TsconfigPatchOptions): TsconfigPatchResult {
 
   return {
     status: 'applied',
-    message:
-      `Added ${Object.keys(desired).length} path aliases to tsconfig.json. Backup at tsconfig.json.bak.`,
+    message: `Added ${Object.keys(desired).length} path aliases to tsconfig.json. Backup at tsconfig.json.bak.`,
     fileResult,
   };
 }

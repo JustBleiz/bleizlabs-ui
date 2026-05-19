@@ -23,7 +23,9 @@ test('DP-R06 — selecting Calendar date closes popup, returns focus to input', 
   await expect(input).toBeFocused();
 });
 
-test('DP-R07 — useFloatingFocus SKIPPED: manual focus management preserves input semantics', async ({ page }) => {
+test('DP-R07 — useFloatingFocus SKIPPED: manual focus management preserves input semantics', async ({
+  page,
+}) => {
   await page.goto('/components/date-picker');
   const input = page.getByRole('combobox');
   await input.focus();

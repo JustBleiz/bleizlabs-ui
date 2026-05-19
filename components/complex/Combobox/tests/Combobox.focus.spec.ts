@@ -17,9 +17,7 @@ test.describe('Combobox — focus behavior', () => {
     await page.goto('/components/combobox');
   });
 
-  test('Focus stays on input while navigating listbox (APG editable pattern)', async ({
-    page,
-  }) => {
+  test('Focus stays on input while navigating listbox (APG editable pattern)', async ({ page }) => {
     const input = page.getByRole('combobox').first();
     await input.focus();
     await input.fill('a');
@@ -50,9 +48,7 @@ test.describe('Combobox — focus behavior', () => {
     await expect(input).toHaveValue('');
   });
 
-  test('CB-R06 — Blur commits on exact textValue match (Strategy A)', async ({
-    page,
-  }) => {
+  test('CB-R06 — Blur commits on exact textValue match (Strategy A)', async ({ page }) => {
     const input = page.getByRole('combobox').first();
     await input.focus();
     await input.fill('Japan'); // exact match
@@ -62,9 +58,7 @@ test.describe('Combobox — focus behavior', () => {
     await expect(input).toHaveValue(/Japan/i);
   });
 
-  test('Blur reverts search to committed label when no exact match', async ({
-    page,
-  }) => {
+  test('Blur reverts search to committed label when no exact match', async ({ page }) => {
     const input = page.getByRole('combobox').first();
     // First commit Poland
     await input.focus();
@@ -80,9 +74,7 @@ test.describe('Combobox — focus behavior', () => {
     await expect(input).toHaveValue(/Poland/i);
   });
 
-  test('Chevron toggle button opens listbox (keeps input usable)', async ({
-    page,
-  }) => {
+  test('Chevron toggle button opens listbox (keeps input usable)', async ({ page }) => {
     const chevron = page.getByRole('button', { name: 'Open suggestions' }).first();
     await chevron.click();
     await expect(page.getByRole('listbox').first()).toBeVisible();

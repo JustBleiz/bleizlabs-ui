@@ -74,9 +74,7 @@ test.describe('DateRangePicker — ARIA semantics', () => {
     expect(ariaLabel).toMatch(/in selected range/i);
   });
 
-  test('DR-A06 — aria-required surfaces on input when required prop set', async ({
-    page,
-  }) => {
+  test('DR-A06 — aria-required surfaces on input when required prop set', async ({ page }) => {
     const picker = rangeBy(page, 'Form integration with required');
     const input = inputOf(picker);
     await expect(input).toHaveAttribute('aria-required', 'true');

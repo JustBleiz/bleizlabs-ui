@@ -1,8 +1,4 @@
-import {
-  forwardRef,
-  type CSSProperties,
-  type HTMLAttributes,
-} from 'react';
+import { forwardRef, type CSSProperties, type HTMLAttributes } from 'react';
 import { cn } from '../../utils/cn';
 import styles from './Skeleton.module.scss';
 
@@ -66,66 +62,64 @@ function toCssLength(v: string | number | undefined): string | undefined {
   return typeof v === 'number' ? `${v}px` : v;
 }
 
-export const Skeleton = forwardRef<HTMLDivElement, SkeletonProps>(
-  function Skeleton(
-    {
-      variant = 'text',
-      width,
-      height,
-      animation = 'pulse',
-      label = 'Loading',
-      className,
-      style,
-      ...rest
-    },
-    ref,
-  ) {
-    const animationClass = ANIMATION_CLASS[animation];
+export const Skeleton = forwardRef<HTMLDivElement, SkeletonProps>(function Skeleton(
+  {
+    variant = 'text',
+    width,
+    height,
+    animation = 'pulse',
+    label = 'Loading',
+    className,
+    style,
+    ...rest
+  },
+  ref,
+) {
+  const animationClass = ANIMATION_CLASS[animation];
 
-    if (variant === 'text') {
-      const widthValue = toCssLength(width) ?? '100%';
-
-      return (
-        <div
-          ref={ref}
-          role="status"
-          aria-busy="true"
-          className={cn(styles.textGroup, className)}
-          style={style}
-          {...rest}
-        >
-          <span
-            aria-hidden="true"
-            className={cn(styles.root, styles.text, animationClass)}
-            style={{ width: widthValue }}
-          />
-          <span className={styles.srOnly}>{label}</span>
-        </div>
-      );
-    }
-
-    const sizeStyle: CSSProperties = {
-      width: toCssLength(width) ?? (variant === 'circle' ? '40px' : '100%'),
-      height: toCssLength(height) ?? (variant === 'circle' ? '40px' : '16px'),
-      ...style,
-    };
+  if (variant === 'text') {
+    const widthValue = toCssLength(width) ?? '100%';
 
     return (
       <div
         ref={ref}
         role="status"
         aria-busy="true"
-        className={cn(
-          styles.root,
-          variant === 'circle' ? styles.circle : styles.rect,
-          animationClass,
-          className,
-        )}
-        style={sizeStyle}
+        className={cn(styles.textGroup, className)}
+        style={style}
         {...rest}
       >
+        <span
+          aria-hidden="true"
+          className={cn(styles.root, styles.text, animationClass)}
+          style={{ width: widthValue }}
+        />
         <span className={styles.srOnly}>{label}</span>
       </div>
     );
-  },
-);
+  }
+
+  const sizeStyle: CSSProperties = {
+    width: toCssLength(width) ?? (variant === 'circle' ? '40px' : '100%'),
+    height: toCssLength(height) ?? (variant === 'circle' ? '40px' : '16px'),
+    ...style,
+  };
+
+  return (
+    <div
+      ref={ref}
+      role="status"
+      aria-busy="true"
+      className={cn(
+        styles.root,
+        variant === 'circle' ? styles.circle : styles.rect,
+        animationClass,
+        className,
+      )}
+      style={sizeStyle}
+      {...rest}
+    >
+      <span className={styles.srOnly}>{label}</span>
+    </div>
+  );
+});

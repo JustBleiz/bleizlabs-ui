@@ -13,12 +13,11 @@
 //   $seed-font-primary, $seed-font-secondary
 
 @use '@bleizlabs/ui/styles' with (
-  $seed-mode: dark
-  // Uncomment + customize per project brand:
+  $seed-mode: dark // Uncomment + customize per project brand:
   // ,$seed-brand:   #4eb1a3
   // ,$seed-accent:  #d7bba6
   // ,$seed-neutral: #3a4350
-  // ,$seed-error:   #e63946
+   // ,$seed-error:   #e63946
 );
 
 @use './_styles/theme';

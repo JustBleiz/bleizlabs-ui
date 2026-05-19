@@ -91,10 +91,9 @@ export default function IconButtonPlaygroundPage() {
         </Heading>
         <p className={styles.intro}>
           Accessibility-enforcing wrapper over <code>Button</code> with{' '}
-          <code>iconOnly={'{true}'}</code>. The <code>aria-label</code> prop is
-          TS-required so the type-checker rejects icon-only buttons missing an
-          accessible name. Renders Button under the hood — inherits all
-          variant/size/shape behavior.
+          <code>iconOnly={'{true}'}</code>. The <code>aria-label</code> prop is TS-required so the
+          type-checker rejects icon-only buttons missing an accessible name. Renders Button under
+          the hood — inherits all variant/size/shape behavior.
         </p>
       </header>
 
@@ -111,10 +110,10 @@ export default function IconButtonPlaygroundPage() {
             <IconButton aria-label="More" icon={<DotsIcon />} variant="link" />
           </div>
           <p className={styles.bodyText}>
-            All Button variants are inherited (<code>primary</code> /{' '}
-            <code>secondary</code> / <code>ghost</code> / <code>warning</code> /{' '}
-            <code>link</code>). The icon is automatically <code>aria-hidden</code>{' '}
-            — accessible name comes from <code>aria-label</code>.
+            All Button variants are inherited (<code>primary</code> / <code>secondary</code> /{' '}
+            <code>ghost</code> / <code>warning</code> / <code>link</code>). The icon is
+            automatically <code>aria-hidden</code> — accessible name comes from{' '}
+            <code>aria-label</code>.
           </p>
         </div>
       </section>
@@ -130,10 +129,9 @@ export default function IconButtonPlaygroundPage() {
             <IconButton aria-label="Settings" icon={<GearIcon />} size="lg" />
           </div>
           <p className={styles.bodyText}>
-            Three sizes (<code>sm</code> / <code>md</code> / <code>lg</code>)
-            inherited from Button. Touch-target enforcement (44×44 on coarse
-            pointers) handled by Button via <code>mx.touch-target</code> mixin —
-            see <code>--size-touch-min</code> token.
+            Three sizes (<code>sm</code> / <code>md</code> / <code>lg</code>) inherited from Button.
+            Touch-target enforcement (44×44 on coarse pointers) handled by Button via{' '}
+            <code>mx.touch-target</code> mixin — see <code>--size-touch-min</code> token.
           </p>
         </div>
       </section>
@@ -148,8 +146,7 @@ export default function IconButtonPlaygroundPage() {
             <IconButton aria-label="Edit" icon={<PencilIcon />} shape="pill" />
           </div>
           <p className={styles.bodyText}>
-            <code>shape</code> prop forwards to Button. <code>pill</code> for
-            atelier-style CTAs.
+            <code>shape</code> prop forwards to Button. <code>pill</code> for atelier-style CTAs.
           </p>
         </div>
       </section>
@@ -175,21 +172,15 @@ export default function IconButtonPlaygroundPage() {
         </Heading>
         <div className={styles.sectionBody}>
           <div className={styles.row}>
-            <IconButton
-              aria-label="Go to settings"
-              icon={<GearIcon />}
-              href="/components/button"
-            />
+            <IconButton aria-label="Go to settings" icon={<GearIcon />} href="/components/button" />
           </div>
           <p className={styles.bodyText}>
-            With <code>href</code>, Button renders as <code>{'<a>'}</code>{' '}
-            instead of <code>{'<button>'}</code>. Useful for icon-only
-            navigation links — the <code>aria-label</code> remains the sole
-            accessible name. For client-side routing with Next.js{' '}
-            <code>{'<Link>'}</code>, wrap the IconButton in <code>{'<Link>'}</code>{' '}
-            from the outside (IconButton omits <code>children</code> by API
-            contract because the icon is the only content slot — direct{' '}
-            <code>asChild</code> composition is not supported).
+            With <code>href</code>, Button renders as <code>{'<a>'}</code> instead of{' '}
+            <code>{'<button>'}</code>. Useful for icon-only navigation links — the{' '}
+            <code>aria-label</code> remains the sole accessible name. For client-side routing with
+            Next.js <code>{'<Link>'}</code>, wrap the IconButton in <code>{'<Link>'}</code> from the
+            outside (IconButton omits <code>children</code> by API contract because the icon is the
+            only content slot — direct <code>asChild</code> composition is not supported).
           </p>
         </div>
       </section>

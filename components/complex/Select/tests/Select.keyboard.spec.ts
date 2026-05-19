@@ -44,27 +44,21 @@ test.describe('Select — keyboard interactions', () => {
     await expect(page.getByRole('listbox').first()).toBeVisible();
   });
 
-  test('First-ever ArrowDown on closed trigger opens the listbox (F2)', async ({
-    page,
-  }) => {
+  test('First-ever ArrowDown on closed trigger opens the listbox (F2)', async ({ page }) => {
     const trigger = page.getByRole('combobox').first();
     await trigger.focus();
     await page.keyboard.press('ArrowDown');
     await expect(page.getByRole('listbox').first()).toBeVisible();
   });
 
-  test('First-ever ArrowUp on closed trigger opens the listbox (F2)', async ({
-    page,
-  }) => {
+  test('First-ever ArrowUp on closed trigger opens the listbox (F2)', async ({ page }) => {
     const trigger = page.getByRole('combobox').first();
     await trigger.focus();
     await page.keyboard.press('ArrowUp');
     await expect(page.getByRole('listbox').first()).toBeVisible();
   });
 
-  test('First-ever Home on closed trigger opens the listbox (F2)', async ({
-    page,
-  }) => {
+  test('First-ever Home on closed trigger opens the listbox (F2)', async ({ page }) => {
     const trigger = page.getByRole('combobox').first();
     await trigger.focus();
     await page.keyboard.press('Home');
@@ -84,9 +78,7 @@ test.describe('Select — keyboard interactions', () => {
     await expect(trigger).toHaveAttribute('aria-activedescendant', reactId as string);
   });
 
-  test('ArrowDown/ArrowUp navigate enabled options (aria-activedescendant)', async ({
-    page,
-  }) => {
+  test('ArrowDown/ArrowUp navigate enabled options (aria-activedescendant)', async ({ page }) => {
     const trigger = page.getByRole('combobox').first();
     await trigger.click();
     const listbox = page.getByRole('listbox').first();
@@ -131,9 +123,7 @@ test.describe('Select — keyboard interactions', () => {
     await expect(trigger).toHaveAttribute('aria-activedescendant', zeroId as string);
   });
 
-  test('SL-R05 — Escape closes listbox + restores focus to trigger', async ({
-    page,
-  }) => {
+  test('SL-R05 — Escape closes listbox + restores focus to trigger', async ({ page }) => {
     const trigger = page.getByRole('combobox').first();
     await trigger.click();
     await expect(page.getByRole('listbox').first()).toBeVisible();
@@ -151,9 +141,7 @@ test.describe('Select — keyboard interactions', () => {
     await expect(trigger).toContainText('Vue');
   });
 
-  test('Typeahead — single-char highlights first startsWith match', async ({
-    page,
-  }) => {
+  test('Typeahead — single-char highlights first startsWith match', async ({ page }) => {
     const sections = page.locator('section');
     const long = sections.nth(4);
     const trigger = long.getByRole('combobox');
@@ -189,9 +177,7 @@ test.describe('Select — keyboard interactions', () => {
     await expect(trigger).toHaveAttribute('aria-activedescendant', chileId as string);
   });
 
-  test('SL-R08 — disabled items skipped by End (lands on last ENABLED)', async ({
-    page,
-  }) => {
+  test('SL-R08 — disabled items skipped by End (lands on last ENABLED)', async ({ page }) => {
     // idx 3 — Regions demo. Order: eu-west-1 (enabled, default),
     // eu-central-1, us-east-1, us-west-2, sep, ap-south-1 (disabled),
     // ap-northeast-1 (disabled). End should land on us-west-2 (last enabled).
@@ -206,9 +192,7 @@ test.describe('Select — keyboard interactions', () => {
     await expect(trigger).toHaveAttribute('aria-activedescendant', usWestId as string);
   });
 
-  test('SL-R07 — Tab from open listbox closes + advances to next focusable', async ({
-    page,
-  }) => {
+  test('SL-R07 — Tab from open listbox closes + advances to next focusable', async ({ page }) => {
     // Use form section (idx 5) — has Submit button as next tabstop
     const sections = page.locator('section');
     const form = sections.nth(5);
@@ -219,9 +203,7 @@ test.describe('Select — keyboard interactions', () => {
     await expect(page.getByRole('listbox')).toHaveCount(0);
   });
 
-  test('Modifier-arrow (Control+ArrowDown) passes through (no intercept)', async ({
-    page,
-  }) => {
+  test('Modifier-arrow (Control+ArrowDown) passes through (no intercept)', async ({ page }) => {
     const trigger = page.getByRole('combobox').first();
     await trigger.focus();
     await page.keyboard.press('Control+ArrowDown');

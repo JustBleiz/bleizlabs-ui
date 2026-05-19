@@ -45,12 +45,17 @@ test('aria-disabled button — tooltip shows (events fire)', async ({ page }) =>
   await expect(page.getByRole('tooltip')).toBeVisible();
 });
 
-test.skip('programmatic focus restore from Dialog does not re-show [PLAYGROUND-DEP: Dialog E15 + #617]', async ({ page }) => {
+test.skip('programmatic focus restore from Dialog does not re-show [PLAYGROUND-DEP: Dialog E15 + #617]', async ({
+  page,
+}) => {
   // Dialog closes → focus restored to tooltip trigger → tooltip should NOT
   // immediately re-show (Radix #617). Requires nested Dialog + Tooltip.
 });
 
-test('tooltip hides on document visibilitychange (Radix #705 / #2665)', async ({ page, context }) => {
+test('tooltip hides on document visibilitychange (Radix #705 / #2665)', async ({
+  page,
+  context,
+}) => {
   await page.goto('/components/tooltip');
   await page.keyboard.press('Tab');
   await expect(page.getByRole('tooltip')).toBeVisible();

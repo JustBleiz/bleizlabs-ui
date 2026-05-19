@@ -1,8 +1,4 @@
-import {
-  forwardRef,
-  type CSSProperties,
-  type HTMLAttributes,
-} from 'react';
+import { forwardRef, type CSSProperties, type HTMLAttributes } from 'react';
 import { cn } from '../../utils/cn';
 import styles from './MetricBar.module.scss';
 
@@ -44,8 +40,7 @@ import styles from './MetricBar.module.scss';
  *   formatValue={(n) => n.toLocaleString('pl-PL')}
  * />
  */
-export interface MetricBarProps
-  extends Omit<HTMLAttributes<HTMLDivElement>, 'aria-label'> {
+export interface MetricBarProps extends Omit<HTMLAttributes<HTMLDivElement>, 'aria-label'> {
   /** Current value (numerator). Clamped to `[0, total]` at render time. */
   used: number;
   /** Total capacity (denominator). `total <= 0` falls back to `100`. */
@@ -58,44 +53,42 @@ export interface MetricBarProps
   formatValue?: (value: number) => string;
 }
 
-export const MetricBar = forwardRef<HTMLDivElement, MetricBarProps>(
-  function MetricBar(
-    { used, total, unit, label, formatValue, className, ...rest },
-    ref,
-  ) {
-    const safeTotal = total > 0 ? total : 100;
-    const clampedUsed = Math.max(0, Math.min(safeTotal, used));
-    const percent = (clampedUsed / safeTotal) * 100;
+export const MetricBar = forwardRef<HTMLDivElement, MetricBarProps>(function MetricBar(
+  { used, total, unit, label, formatValue, className, ...rest },
+  ref,
+) {
+  const safeTotal = total > 0 ? total : 100;
+  const clampedUsed = Math.max(0, Math.min(safeTotal, used));
+  const percent = (clampedUsed / safeTotal) * 100;
 
-    const format = formatValue ?? ((n: number) => String(n));
-    const usedText = format(clampedUsed);
-    const totalText = format(safeTotal);
-    const unitSuffix = unit ? ` ${unit}` : '';
-    const valueText = `${usedText} / ${totalText}${unitSuffix}`;
+  const format = formatValue ?? ((n: number) => String(n));
+  const usedText = format(clampedUsed);
+  const totalText = format(safeTotal);
+  const unitSuffix = unit ? ` ${unit}` : '';
+  const valueText = `${usedText} / ${totalText}${unitSuffix}`;
 
-    const cssVars = { '--progress-value': `${percent}%` } as CSSProperties;
+  const cssVars = { '--progress-value': `${percent}%` } as CSSProperties;
 
-    return (
-      <div
-        ref={ref}
-        role="progressbar"
-        aria-label={label}
-        aria-valuenow={clampedUsed}
-        aria-valuemin={0}
-        aria-valuemax={safeTotal}
-        aria-valuetext={valueText}
-        className={cn(styles.root, className)}
-        style={cssVars}
-        {...rest}
-      >
-        <div className={styles.labelRow}>
-          <span className={styles.label}>{label}</span>
-          <span className={styles.value}>{valueText}</span>
-        </div>
-        <div className={styles.track}>
-          <div className={styles.bar} />
-        </div>
+  return (
+    <div
+      ref={ref}
+      role="progressbar"
+      aria-label={label}
+      aria-valuenow={clampedUsed}
+      aria-valuemin={0}
+      aria-valuemax={safeTotal}
+      aria-valuetext={valueText}
+      className={cn(styles.root, className)}
+      style={cssVars}
+      {...rest}
+    >
+      <div className={styles.labelRow}>
+        <span className={styles.label}>{label}</span>
+        <span className={styles.value}>{valueText}</span>
       </div>
-    );
-  },
-);
+      <div className={styles.track}>
+        <div className={styles.bar} />
+      </div>
+    </div>
+  );
+});

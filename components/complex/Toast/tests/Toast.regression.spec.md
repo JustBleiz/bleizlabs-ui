@@ -7,7 +7,9 @@ This file covers core regression cases; keyboard/focus/aria split.
 ## Tests
 
 ```ts
-test('TST-R11 — dedup by id: toast() with same id updates existing (no duplicate)', async ({ page }) => {
+test('TST-R11 — dedup by id: toast() with same id updates existing (no duplicate)', async ({
+  page,
+}) => {
   await page.goto('/components/toast?dedup=1');
   await page.getByRole('button', { name: 'Show toast (id=x)' }).click();
   await expect(page.getByRole('status')).toHaveCount(1);

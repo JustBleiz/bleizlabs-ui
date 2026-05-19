@@ -66,7 +66,9 @@ export interface ToastOptions {
   onAutoClose?: (id: string) => void;
 }
 
-export interface ToastItem extends Required<Pick<ToastOptions, 'id' | 'variant' | 'closable' | 'duration'>> {
+export interface ToastItem extends Required<
+  Pick<ToastOptions, 'id' | 'variant' | 'closable' | 'duration'>
+> {
   title?: React.ReactNode;
   description?: React.ReactNode;
   action?: ToastAction;
@@ -86,7 +88,10 @@ type Listener = (toasts: ReadonlyArray<ToastItem>) => void;
 
 let queue: ReadonlyArray<ToastItem> = [];
 const listeners = new Set<Listener>();
-const timerMap = new Map<string, { handle: ReturnType<typeof setTimeout>; startedAt: number; duration: number }>();
+const timerMap = new Map<
+  string,
+  { handle: ReturnType<typeof setTimeout>; startedAt: number; duration: number }
+>();
 let isPausedGlobally = false;
 let idCounter = 0;
 
@@ -171,9 +176,7 @@ function upsert(partial: ToastOptions): string {
   // Reset timer on update — duration counts from the latest call.
   clearTimerFor(id);
 
-  const nextQueue = existing
-    ? queue.map((t) => (t.id === id ? next : t))
-    : [...queue, next];
+  const nextQueue = existing ? queue.map((t) => (t.id === id ? next : t)) : [...queue, next];
   queue = Object.freeze(nextQueue);
   emit();
 
@@ -214,7 +217,9 @@ export function pauseAllTimers(): void {
   }
   timerMap.clear();
   // Store remaining on the items themselves so future queue updates preserve it.
-  queue = Object.freeze(queue.map((t) => ({ ...t, remainingOnPause: remaining.get(t.id) ?? t.remainingOnPause })));
+  queue = Object.freeze(
+    queue.map((t) => ({ ...t, remainingOnPause: remaining.get(t.id) ?? t.remainingOnPause })),
+  );
   emit();
 }
 
@@ -279,7 +284,7 @@ export const toast: ToastFn = Object.assign(baseToast, {
   error: (input: MessageOrOptions) => upsert(normalize(input, 'error')),
   warning: (input: MessageOrOptions) => upsert(normalize(input, 'warning')),
   info: (input: MessageOrOptions) => upsert(normalize(input, 'info')),
-  promise: <T,>(
+  promise: <T>(
     promise: Promise<T>,
     opts: {
       loading: MessageOrOptions;

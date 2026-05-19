@@ -28,10 +28,9 @@ export default function DrawerPlaygroundPage() {
           Drawer
         </Heading>
         <Text className={styles.intro}>
-          Bottom-anchored modal sheet, optimised for mobile-first flows where a
-          full dialog would feel heavy. Slides up from the edge, respects iOS
-          safe-area insets, and keeps header and footer pinned while the body
-          scrolls.
+          Bottom-anchored modal sheet, optimised for mobile-first flows where a full dialog would
+          feel heavy. Slides up from the edge, respects iOS safe-area insets, and keeps header and
+          footer pinned while the body scrolls.
         </Text>
       </header>
 
@@ -41,8 +40,8 @@ export default function DrawerPlaygroundPage() {
           Basic drawer
         </Heading>
         <Text color="muted">
-          Title + body + footer action row. Escape closes, overlay click
-          closes (<code>closeOnOverlayClick</code> default <code>true</code>).
+          Title + body + footer action row. Escape closes, overlay click closes (
+          <code>closeOnOverlayClick</code> default <code>true</code>).
         </Text>
         <div className={styles.row}>
           <Button onClick={() => setBasicOpen(true)}>Open basic drawer</Button>
@@ -61,8 +60,8 @@ export default function DrawerPlaygroundPage() {
           }
         >
           <Text>
-            A basic drawer with title + body + footer action row. No
-            description provided — aria-describedby is absent by design.
+            A basic drawer with title + body + footer action row. No description provided —
+            aria-describedby is absent by design.
           </Text>
         </Drawer>
       </section>
@@ -73,13 +72,11 @@ export default function DrawerPlaygroundPage() {
           Filters drawer (with description)
         </Heading>
         <Text color="muted">
-          Real-world use: filter panel with form controls. Description present
-          → <code>aria-describedby</code> wired.
+          Real-world use: filter panel with form controls. Description present →{' '}
+          <code>aria-describedby</code> wired.
         </Text>
         <div className={styles.row}>
-          <Button onClick={() => setFiltersOpen(true)}>
-            Open filters drawer
-          </Button>
+          <Button onClick={() => setFiltersOpen(true)}>Open filters drawer</Button>
         </div>
         <Drawer
           open={filtersOpen}
@@ -92,9 +89,7 @@ export default function DrawerPlaygroundPage() {
               <Button variant="ghost" onClick={() => setFiltersOpen(false)}>
                 Reset
               </Button>
-              <Button onClick={() => setFiltersOpen(false)}>
-                Apply filters
-              </Button>
+              <Button onClick={() => setFiltersOpen(false)}>Apply filters</Button>
             </>
           }
         >
@@ -110,24 +105,19 @@ export default function DrawerPlaygroundPage() {
           Text-only drawer
         </Heading>
         <Text color="muted">
-          Minimal drawer — title + body only. No footer, no interactive
-          content. Focus falls back to content container (
-          <code>tabIndex=-1</code>).
+          Minimal drawer — title + body only. No footer, no interactive content. Focus falls back to
+          content container (<code>tabIndex=-1</code>).
         </Text>
         <div className={styles.row}>
           <Button variant="secondary" onClick={() => setTextOnlyOpen(true)}>
             Open text-only drawer
           </Button>
         </div>
-        <Drawer
-          open={textOnlyOpen}
-          onOpenChange={setTextOnlyOpen}
-          title="About this feature"
-        >
+        <Drawer open={textOnlyOpen} onOpenChange={setTextOnlyOpen} title="About this feature">
           <Text>
-            Drawers are flexible bottom-sheet containers. Use them for filter
-            panels, action sheets, and mobile-first detail views. For blocking
-            destructive confirms use AlertDialog instead.
+            Drawers are flexible bottom-sheet containers. Use them for filter panels, action sheets,
+            and mobile-first detail views. For blocking destructive confirms use AlertDialog
+            instead.
           </Text>
         </Drawer>
       </section>
@@ -138,8 +128,8 @@ export default function DrawerPlaygroundPage() {
           Locked drawer
         </Heading>
         <Text color="muted">
-          <code>closeOnEscape=false</code> + <code>closeOnOverlayClick=false</code>{' '}
-          — user must explicitly complete action via footer button.
+          <code>closeOnEscape=false</code> + <code>closeOnOverlayClick=false</code> — user must
+          explicitly complete action via footer button.
         </Text>
         <div className={styles.row}>
           <Button variant="warning" onClick={() => setLockedOpen(true)}>
@@ -153,13 +143,11 @@ export default function DrawerPlaygroundPage() {
           description="Review and accept to continue."
           closeOnEscape={false}
           closeOnOverlayClick={false}
-          footer={
-            <Button onClick={() => setLockedOpen(false)}>Accept & continue</Button>
-          }
+          footer={<Button onClick={() => setLockedOpen(false)}>Accept & continue</Button>}
         >
           <Text>
-            Escape and overlay click are disabled. Use this pattern sparingly —
-            only when keyboard dismissal would be a security or UX footgun.
+            Escape and overlay click are disabled. Use this pattern sparingly — only when keyboard
+            dismissal would be a security or UX footgun.
           </Text>
         </Drawer>
       </section>
@@ -170,14 +158,11 @@ export default function DrawerPlaygroundPage() {
           With close button
         </Heading>
         <Text color="muted">
-          <code>showCloseButton=true</code> renders an X icon at top-right
-          (Dialog parity). Default is <code>false</code> — drawers are
-          typically action-driven.
+          <code>showCloseButton=true</code> renders an X icon at top-right (Dialog parity). Default
+          is <code>false</code> — drawers are typically action-driven.
         </Text>
         <div className={styles.row}>
-          <Button onClick={() => setWithCloseOpen(true)}>
-            Open with close button
-          </Button>
+          <Button onClick={() => setWithCloseOpen(true)}>Open with close button</Button>
         </div>
         <Drawer
           open={withCloseOpen}
@@ -187,8 +172,7 @@ export default function DrawerPlaygroundPage() {
           showCloseButton
         >
           <Text>
-            Close button uses <code>touch-target</code> mixin for 44×44 mobile
-            minimum (WCAG 2.5.5).
+            Close button uses <code>touch-target</code> mixin for 44×44 mobile minimum (WCAG 2.5.5).
           </Text>
         </Drawer>
       </section>
@@ -199,30 +183,26 @@ export default function DrawerPlaygroundPage() {
           Scrollable drawer (sticky footer)
         </Heading>
         <Text color="muted">
-          Long content scrolls inside drawer while footer stays sticky at
-          bottom via <code>flex-shrink: 0</code> on footer and{' '}
-          <code>flex: 1 1 auto; overflow-y: auto</code> on body.
+          Long content scrolls inside drawer while footer stays sticky at bottom via{' '}
+          <code>flex-shrink: 0</code> on footer and <code>flex: 1 1 auto; overflow-y: auto</code> on
+          body.
         </Text>
         <div className={styles.row}>
-          <Button onClick={() => setScrollOpen(true)}>
-            Open scrollable drawer
-          </Button>
+          <Button onClick={() => setScrollOpen(true)}>Open scrollable drawer</Button>
         </div>
         <Drawer
           open={scrollOpen}
           onOpenChange={setScrollOpen}
           title="Long content"
           size="lg"
-          footer={
-            <Button onClick={() => setScrollOpen(false)}>Close</Button>
-          }
+          footer={<Button onClick={() => setScrollOpen(false)}>Close</Button>}
         >
           <div className={styles.scrollContent}>
             {Array.from({ length: 20 }, (_, i) => (
               <div key={i} className={styles.scrollItem}>
                 <Text variant="small">
-                  Item {i + 1} — scrollable content inside drawer body. Footer
-                  stays sticky at the bottom of the drawer.
+                  Item {i + 1} — scrollable content inside drawer body. Footer stays sticky at the
+                  bottom of the drawer.
                 </Text>
               </div>
             ))}
@@ -236,9 +216,8 @@ export default function DrawerPlaygroundPage() {
           Size variants
         </Heading>
         <Text color="muted">
-          Three sizes: <code>sm</code> (360px max-height), <code>md</code> (560px,
-          default), <code>lg</code> (80dvh with 80vh fallback for older iOS
-          Safari).
+          Three sizes: <code>sm</code> (360px max-height), <code>md</code> (560px, default),{' '}
+          <code>lg</code> (80dvh with 80vh fallback for older iOS Safari).
         </Text>
         <div className={styles.row}>
           <Button variant="secondary" onClick={() => setSizeOpen('sm')}>
@@ -257,14 +236,11 @@ export default function DrawerPlaygroundPage() {
           title={`Drawer size — ${sizeOpen ?? 'md'}`}
           description="Height variants use max-height instead of max-width (Drawer is always full-width on mobile)."
           size={sizeOpen ?? 'md'}
-          footer={
-            <Button onClick={() => setSizeOpen(null)}>Close</Button>
-          }
+          footer={<Button onClick={() => setSizeOpen(null)}>Close</Button>}
         >
           <Text>
-            Content fills the drawer up to the configured max-height.
-            Overflowing content scrolls inside the body while the footer stays
-            sticky at the bottom.
+            Content fills the drawer up to the configured max-height. Overflowing content scrolls
+            inside the body while the footer stays sticky at the bottom.
           </Text>
         </Drawer>
       </section>

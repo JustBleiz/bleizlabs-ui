@@ -26,30 +26,28 @@ test.describe('Sheet — keyboard interactions (APG dialog-modal)', () => {
     await page.goto('/components/sheet');
   });
 
-  test.describe.each([
-    { side: 'left' },
-    { side: 'right' },
-    { side: 'top' },
-    { side: 'bottom' },
-  ])('side=$side', ({ side }) => {
-    test(`Escape closes ${side} sheet`, async ({ page }) => {
-      await page.getByRole('button', { name: new RegExp(`open ${side} sheet`, 'i') }).click();
-      await expect(page.getByRole('dialog')).toBeVisible();
-      await page.keyboard.press('Escape');
-      await expect(page.getByRole('dialog')).not.toBeVisible();
-    });
+  test.describe.each([{ side: 'left' }, { side: 'right' }, { side: 'top' }, { side: 'bottom' }])(
+    'side=$side',
+    ({ side }) => {
+      test(`Escape closes ${side} sheet`, async ({ page }) => {
+        await page.getByRole('button', { name: new RegExp(`open ${side} sheet`, 'i') }).click();
+        await expect(page.getByRole('dialog')).toBeVisible();
+        await page.keyboard.press('Escape');
+        await expect(page.getByRole('dialog')).not.toBeVisible();
+      });
 
-    test(`Tab cycles within ${side} sheet (focus trap)`, async ({ page }) => {
-      await page.getByRole('button', { name: new RegExp(`open ${side} sheet`, 'i') }).click();
-      for (let i = 0; i < 6; i++) {
-        await page.keyboard.press('Tab');
-      }
-      // Background trigger never receives focus
-      await expect(
-        page.getByRole('button', { name: new RegExp(`open ${side} sheet`, 'i') }),
-      ).not.toBeFocused();
-    });
-  });
+      test(`Tab cycles within ${side} sheet (focus trap)`, async ({ page }) => {
+        await page.getByRole('button', { name: new RegExp(`open ${side} sheet`, 'i') }).click();
+        for (let i = 0; i < 6; i++) {
+          await page.keyboard.press('Tab');
+        }
+        // Background trigger never receives focus
+        await expect(
+          page.getByRole('button', { name: new RegExp(`open ${side} sheet`, 'i') }),
+        ).not.toBeFocused();
+      });
+    },
+  );
 
   test('closeOnOverlayClick=false prevents overlay dismissal', async ({ page }) => {
     await page.getByRole('button', { name: /open locked sheet/i }).click();

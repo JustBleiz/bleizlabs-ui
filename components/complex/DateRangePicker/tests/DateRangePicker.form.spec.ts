@@ -65,9 +65,7 @@ test.describe('DateRangePicker — form participation', () => {
     await expect(combobox).toHaveAttribute('aria-required', 'true');
   });
 
-  test('DR-FRM02 — hidden _from omitted when from=null AND not required', async ({
-    page,
-  }) => {
+  test('DR-FRM02 — hidden _from omitted when from=null AND not required', async ({ page }) => {
     // Basic picker doesn't have `name` prop — no hidden inputs at all
     const picker = rangeBy(page, 'Basic single-month range');
     const hiddenInputs = picker.locator('input[type="hidden"]');

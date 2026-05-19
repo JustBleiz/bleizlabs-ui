@@ -63,13 +63,19 @@ export function generateWrappers(
   // category ('layout' | 'typography' | ...), utilities carry 'utils',
   // typesOnly carry 'types'. Single path expression for all three groups.
   for (const f of manifest.components) {
-    results.push(...writeFamily(f, path.join(targetDir, f.category, f.family), manifest.libVersion, false));
+    results.push(
+      ...writeFamily(f, path.join(targetDir, f.category, f.family), manifest.libVersion, false),
+    );
   }
   for (const f of manifest.utilities) {
-    results.push(...writeFamily(f, path.join(targetDir, f.category, f.family), manifest.libVersion, false));
+    results.push(
+      ...writeFamily(f, path.join(targetDir, f.category, f.family), manifest.libVersion, false),
+    );
   }
   for (const f of manifest.typesOnly) {
-    results.push(...writeFamily(f, path.join(targetDir, f.category, f.family), manifest.libVersion, true));
+    results.push(
+      ...writeFamily(f, path.join(targetDir, f.category, f.family), manifest.libVersion, true),
+    );
   }
 
   // Root barrel
@@ -79,7 +85,9 @@ export function generateWrappers(
   // README
   const readmePath = path.join(targetDir, 'README.md');
   // README has its own marker via markdown comment? No — README is plain doc, write only on first init.
-  results.push(writeFileIdempotent(readmePath, renderUiReadme(manifest.libVersion), 'skip-if-exists'));
+  results.push(
+    writeFileIdempotent(readmePath, renderUiReadme(manifest.libVersion), 'skip-if-exists'),
+  );
 
   return {
     results,

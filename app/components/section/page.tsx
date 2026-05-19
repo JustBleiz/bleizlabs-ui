@@ -8,7 +8,9 @@ export default function SectionPlaygroundPage() {
     <main className={styles.main}>
       <Section bg="brand-subtle" py={8}>
         <Container>
-          <Link href="/" className={styles.back}>← back</Link>
+          <Link href="/" className={styles.back}>
+            ← back
+          </Link>
           <h1>Section</h1>
           <p>Full-width semantic band. Background variants, py, fullBleed, tag, asChild.</p>
         </Container>
@@ -30,14 +32,18 @@ export default function SectionPlaygroundPage() {
       <Section bg="raised" py={6}>
         <Container>
           <span className={styles.label}>bg=&quot;raised&quot;</span>
-          <p className={styles.copy}>Slightly elevated surface — visual separation between bands.</p>
+          <p className={styles.copy}>
+            Slightly elevated surface — visual separation between bands.
+          </p>
         </Container>
       </Section>
 
       <Section bg="brand-subtle" py={6}>
         <Container>
           <span className={styles.label}>bg=&quot;brand-subtle&quot;</span>
-          <p className={styles.copy}>Brand tint band — call-to-action regions, feature highlights.</p>
+          <p className={styles.copy}>
+            Brand tint band — call-to-action regions, feature highlights.
+          </p>
         </Container>
       </Section>
 
@@ -72,7 +78,8 @@ export default function SectionPlaygroundPage() {
       <Section bg="raised" py={6} fullBleed={false}>
         <span className={styles.label}>fullBleed=&#123;false&#125;</span>
         <p className={styles.copy}>
-          Section auto-applies max-width container-lg + horizontal padding without a wrapping Container.
+          Section auto-applies max-width container-lg + horizontal padding without a wrapping
+          Container.
         </p>
       </Section>
 
@@ -106,7 +113,9 @@ export default function SectionPlaygroundPage() {
         <article>
           <Container>
             <span className={styles.label}>asChild &lt;article&gt;</span>
-            <p className={styles.copy}>asChild wins over tag — Section becomes the &lt;article&gt; passed in.</p>
+            <p className={styles.copy}>
+              asChild wins over tag — Section becomes the &lt;article&gt; passed in.
+            </p>
           </Container>
         </article>
       </Section>

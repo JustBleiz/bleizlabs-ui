@@ -15,8 +15,12 @@ export default function LabelPlaygroundPage() {
   return (
     <main className={styles.main}>
       <header className={styles.header}>
-        <Link href="/" className={styles.back}>← back</Link>
-        <Heading level={1} size="4xl">Label</Heading>
+        <Link href="/" className={styles.back}>
+          ← back
+        </Link>
+        <Heading level={1} size="4xl">
+          Label
+        </Heading>
         <p className={styles.intro}>
           Form-coupled `&lt;label&gt;` element with optional required indicator and visual disabled
           state. The library `Input` renders its own Label automatically; use this atom directly
@@ -25,7 +29,9 @@ export default function LabelPlaygroundPage() {
       </header>
 
       <section className={styles.demo}>
-        <Heading level={2} size="2xl">1. Default — coupled to a native input</Heading>
+        <Heading level={2} size="2xl">
+          1. Default — coupled to a native input
+        </Heading>
         <div className={styles.field}>
           <Label htmlFor="email-default">Email address</Label>
           <input // @library-first-ok: Label playground demonstrating standalone htmlFor coupling
@@ -39,13 +45,17 @@ export default function LabelPlaygroundPage() {
       </section>
 
       <section className={styles.demo}>
-        <Heading level={2} size="2xl">2. Required indicator</Heading>
+        <Heading level={2} size="2xl">
+          2. Required indicator
+        </Heading>
         <Text variant="caption" color="muted">
-          The `*` is decorative (`aria-hidden`). Real semantics live on the input via the
-          native `required` attribute, which screen readers announce as &ldquo;required&rdquo;.
+          The `*` is decorative (`aria-hidden`). Real semantics live on the input via the native
+          `required` attribute, which screen readers announce as &ldquo;required&rdquo;.
         </Text>
         <div className={styles.field}>
-          <Label htmlFor="email-required" required>Email address</Label>
+          <Label htmlFor="email-required" required>
+            Email address
+          </Label>
           <input // @library-first-ok: Label playground
             id="email-required"
             name="email"
@@ -57,12 +67,16 @@ export default function LabelPlaygroundPage() {
       </section>
 
       <section className={styles.demo}>
-        <Heading level={2} size="2xl">3. Visual disabled state</Heading>
+        <Heading level={2} size="2xl">
+          3. Visual disabled state
+        </Heading>
         <Text variant="caption" color="muted">
           The `disabled` prop dims the label only — the input owns real disabled semantics.
         </Text>
         <div className={styles.field}>
-          <Label htmlFor="email-disabled" disabled>Email address</Label>
+          <Label htmlFor="email-disabled" disabled>
+            Email address
+          </Label>
           <input // @library-first-ok: Label playground
             id="email-disabled"
             name="email"
@@ -75,9 +89,13 @@ export default function LabelPlaygroundPage() {
       </section>
 
       <section className={styles.demo}>
-        <Heading level={2} size="2xl">4. Required + disabled together</Heading>
+        <Heading level={2} size="2xl">
+          4. Required + disabled together
+        </Heading>
         <div className={styles.field}>
-          <Label htmlFor="email-both" required disabled>Email address</Label>
+          <Label htmlFor="email-both" required disabled>
+            Email address
+          </Label>
           <input // @library-first-ok: Label playground
             id="email-both"
             name="email"
@@ -90,10 +108,12 @@ export default function LabelPlaygroundPage() {
       </section>
 
       <section className={styles.demo}>
-        <Heading level={2} size="2xl">5. asChild → semantic legend</Heading>
+        <Heading level={2} size="2xl">
+          5. asChild → semantic legend
+        </Heading>
         <Text variant="caption" color="muted">
-          When the consumer needs a `&lt;legend&gt;` inside a `&lt;fieldset&gt;` or another
-          semantic wrapper, render the Label children inside that element via `asChild`.
+          When the consumer needs a `&lt;legend&gt;` inside a `&lt;fieldset&gt;` or another semantic
+          wrapper, render the Label children inside that element via `asChild`.
         </Text>
         <fieldset className={styles.fieldset}>
           <Label asChild required>

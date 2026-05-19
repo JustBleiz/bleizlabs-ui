@@ -1,9 +1,4 @@
-import {
-  forwardRef,
-  type CSSProperties,
-  type HTMLAttributes,
-  type ReactNode,
-} from 'react';
+import { forwardRef, type CSSProperties, type HTMLAttributes, type ReactNode } from 'react';
 import { Slot } from '../../utils/Slot';
 import { cn } from '../../utils/cn';
 import styles from './Text.module.scss';
@@ -77,13 +72,7 @@ import styles from './Text.module.scss';
  *   <span>Inline text via asChild</span>
  * </Text>
  */
-export type TextVariant =
-  | 'lead'
-  | 'body'
-  | 'body-strong'
-  | 'small'
-  | 'caption'
-  | 'eyebrow';
+export type TextVariant = 'lead' | 'body' | 'body-strong' | 'small' | 'caption' | 'eyebrow';
 
 export interface TextProps extends HTMLAttributes<HTMLParagraphElement> {
   /** Typography preset. Default `body`. */
@@ -176,12 +165,7 @@ export const Text = forwardRef<HTMLParagraphElement, TextProps>(function Text(
   return (
     <Comp
       ref={ref}
-      className={cn(
-        styles.root,
-        VARIANT_CLASS[variant],
-        uppercase && styles.uppercase,
-        className,
-      )}
+      className={cn(styles.root, VARIANT_CLASS[variant], uppercase && styles.uppercase, className)}
       style={{ ...style, ...textVars }}
       {...rest}
     >

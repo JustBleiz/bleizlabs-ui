@@ -1,8 +1,4 @@
-import {
-  forwardRef,
-  type CSSProperties,
-  type HTMLAttributes,
-} from 'react';
+import { forwardRef, type CSSProperties, type HTMLAttributes } from 'react';
 import { cn } from '../../utils/cn';
 import styles from './Progress.module.scss';
 
@@ -138,95 +134,71 @@ const PERCENT_COLOR_CLASS: Record<ProgressPercentColor, string> = {
   'error-strong': styles.colorErrorStrong!,
 };
 
-export const Progress = forwardRef<HTMLDivElement, ProgressProps>(
-  function Progress(props, ref) {
-    // Cast discriminated union to a flat shape so TS allows a single
-    // destructure that strips every discriminant from the DOM spread.
-    // Runtime `stages !== undefined` guard re-establishes the mode.
-    const {
-      label,
-      className,
-      stages,
-      currentStage,
-      displayMode,
-      value,
-      max,
-      color,
-      ...domProps
-    } = props as ProgressPropsFlat;
+export const Progress = forwardRef<HTMLDivElement, ProgressProps>(function Progress(props, ref) {
+  // Cast discriminated union to a flat shape so TS allows a single
+  // destructure that strips every discriminant from the DOM spread.
+  // Runtime `stages !== undefined` guard re-establishes the mode.
+  const { label, className, stages, currentStage, displayMode, value, max, color, ...domProps } =
+    props as ProgressPropsFlat;
 
-    // Stages mode
-    if (stages !== undefined) {
-      const resolvedDisplayMode: ProgressStageDisplayMode =
-        displayMode ?? 'pills';
-      const modeClass =
-        resolvedDisplayMode === 'track'
-          ? styles.modeStagesTrack
-          : styles.modeStages;
-
-      return (
-        <div
-          ref={ref}
-          className={cn(styles.root, modeClass, className)}
-          {...domProps}
-        >
-          <ol aria-label={label} className={styles.stageList}>
-            {stages.map((stageLabel, index) => {
-              const isActive = index === currentStage;
-              const isCompleted = index < (currentStage ?? 0);
-              const stateClass = isActive
-                ? styles.stageActive
-                : isCompleted
-                  ? styles.stageCompleted
-                  : styles.stagePending;
-
-              return (
-                <li
-                  key={`${index}-${stageLabel}`}
-                  aria-current={isActive ? 'step' : undefined}
-                  className={cn(styles.stageItem, stateClass)}
-                >
-                  <span className={styles.stageIndex}>{index + 1}</span>
-                  <span className={styles.stageLabel}>{stageLabel}</span>
-                </li>
-              );
-            })}
-          </ol>
-        </div>
-      );
-    }
-
-    // Percent mode — clamp to [0, max], fall back to 100 on invalid max
-    const resolvedMax = max ?? 100;
-    const safeMax = resolvedMax > 0 ? resolvedMax : 100;
-    const rawValue = value ?? 0;
-    const clamped = Math.max(0, Math.min(safeMax, rawValue));
-    const percent = (clamped / safeMax) * 100;
-    const cssVars = { '--progress-value': `${percent}%` } as CSSProperties;
-
-    const resolvedColor: ProgressPercentColor = color ?? 'brand';
+  // Stages mode
+  if (stages !== undefined) {
+    const resolvedDisplayMode: ProgressStageDisplayMode = displayMode ?? 'pills';
+    const modeClass = resolvedDisplayMode === 'track' ? styles.modeStagesTrack : styles.modeStages;
 
     return (
-      <div
-        ref={ref}
-        role="progressbar"
-        aria-label={label}
-        aria-valuenow={clamped}
-        aria-valuemin={0}
-        aria-valuemax={safeMax}
-        className={cn(
-          styles.root,
-          styles.modePercent,
-          PERCENT_COLOR_CLASS[resolvedColor],
-          className,
-        )}
-        style={cssVars}
-        {...domProps}
-      >
-        <div className={styles.track}>
-          <div className={styles.bar} />
-        </div>
+      <div ref={ref} className={cn(styles.root, modeClass, className)} {...domProps}>
+        <ol aria-label={label} className={styles.stageList}>
+          {stages.map((stageLabel, index) => {
+            const isActive = index === currentStage;
+            const isCompleted = index < (currentStage ?? 0);
+            const stateClass = isActive
+              ? styles.stageActive
+              : isCompleted
+                ? styles.stageCompleted
+                : styles.stagePending;
+
+            return (
+              <li
+                key={`${index}-${stageLabel}`}
+                aria-current={isActive ? 'step' : undefined}
+                className={cn(styles.stageItem, stateClass)}
+              >
+                <span className={styles.stageIndex}>{index + 1}</span>
+                <span className={styles.stageLabel}>{stageLabel}</span>
+              </li>
+            );
+          })}
+        </ol>
       </div>
     );
-  },
-);
+  }
+
+  // Percent mode — clamp to [0, max], fall back to 100 on invalid max
+  const resolvedMax = max ?? 100;
+  const safeMax = resolvedMax > 0 ? resolvedMax : 100;
+  const rawValue = value ?? 0;
+  const clamped = Math.max(0, Math.min(safeMax, rawValue));
+  const percent = (clamped / safeMax) * 100;
+  const cssVars = { '--progress-value': `${percent}%` } as CSSProperties;
+
+  const resolvedColor: ProgressPercentColor = color ?? 'brand';
+
+  return (
+    <div
+      ref={ref}
+      role="progressbar"
+      aria-label={label}
+      aria-valuenow={clamped}
+      aria-valuemin={0}
+      aria-valuemax={safeMax}
+      className={cn(styles.root, styles.modePercent, PERCENT_COLOR_CLASS[resolvedColor], className)}
+      style={cssVars}
+      {...domProps}
+    >
+      <div className={styles.track}>
+        <div className={styles.bar} />
+      </div>
+    </div>
+  );
+});

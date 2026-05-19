@@ -34,13 +34,7 @@ import styles from './TimelineMarker.module.scss';
  *   <Avatar src={user.avatar} alt="" size="xs" />
  * </TimelineMarker>
  */
-export type TimelineMarkerTint =
-  | 'default'
-  | 'brand'
-  | 'success'
-  | 'warning'
-  | 'error'
-  | 'info';
+export type TimelineMarkerTint = 'default' | 'brand' | 'success' | 'warning' | 'error' | 'info';
 
 export interface TimelineMarkerProps extends HTMLAttributes<HTMLSpanElement> {
   /** Semantic tint. Default `'default'` (neutral). Matches Dot/Badge 6-color palette. */
@@ -60,10 +54,7 @@ export interface TimelineMarkerProps extends HTMLAttributes<HTMLSpanElement> {
 }
 
 export const TimelineMarker = forwardRef<HTMLSpanElement, TimelineMarkerProps>(
-  function TimelineMarker(
-    { tint = 'default', icon, className, children, ...rest },
-    ref,
-  ) {
+  function TimelineMarker({ tint = 'default', icon, className, children, ...rest }, ref) {
     const inner = children ?? icon;
 
     return (

@@ -1,11 +1,6 @@
 'use client';
 
-import {
-  forwardRef,
-  useId,
-  useState,
-  type InputHTMLAttributes,
-} from 'react';
+import { forwardRef, useId, useState, type InputHTMLAttributes } from 'react';
 import { cn } from '../../utils/cn';
 import styles from './Switch.module.scss';
 
@@ -57,11 +52,10 @@ import styles from './Switch.module.scss';
  */
 export type SwitchSize = 'sm' | 'md';
 
-export interface SwitchProps
-  extends Omit<
-    InputHTMLAttributes<HTMLInputElement>,
-    'type' | 'size' | 'onChange'
-  > {
+export interface SwitchProps extends Omit<
+  InputHTMLAttributes<HTMLInputElement>,
+  'type' | 'size' | 'onChange'
+> {
   /** Accessible label (rendered visually + as the input label). */
   label: string;
   /** Form field name. */
@@ -110,8 +104,7 @@ export const Switch = forwardRef<HTMLInputElement, SwitchProps>(function Switch(
   const generatedId = useId();
   const inputId = id ?? `${name}-${generatedId}`;
   const descId = error || helperText ? `${inputId}-desc` : undefined;
-  const describedBy =
-    [ariaDescribedByProp, descId].filter(Boolean).join(' ') || undefined;
+  const describedBy = [ariaDescribedByProp, descId].filter(Boolean).join(' ') || undefined;
   const [uncontrolledChecked, setUncontrolledChecked] = useState(defaultChecked);
   const isControlled = controlledChecked !== undefined;
   const checked = isControlled ? controlledChecked : uncontrolledChecked;

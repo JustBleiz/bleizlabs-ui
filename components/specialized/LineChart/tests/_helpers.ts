@@ -15,9 +15,7 @@ export function chartByTitle(page: Page, title: string): Locator {
   // accessibility-tree latency for `getByRole({ name })` in headless mode
   // and avoids substring collision (e.g. "Weekly leads" vs "Weekly leads
   // (custom tooltip)").
-  return page
-    .locator(`[role="img"][aria-labelledby]:has(span:text-is("${title}"))`)
-    .first();
+  return page.locator(`[role="img"][aria-labelledby]:has(span:text-is("${title}"))`).first();
 }
 
 export function svgOf(chart: Locator): Locator {
@@ -32,11 +30,7 @@ export function pointsOf(chart: Locator): Locator {
   return chart.locator('svg circle[data-point-series]');
 }
 
-export function pointByIndex(
-  chart: Locator,
-  seriesIdx: number,
-  pointIdx: number,
-): Locator {
+export function pointByIndex(chart: Locator, seriesIdx: number, pointIdx: number): Locator {
   return chart.locator(
     `svg circle[data-point-series="${seriesIdx}"][data-point-index="${pointIdx}"]`,
   );

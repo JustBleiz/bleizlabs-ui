@@ -10,12 +10,7 @@
  */
 
 import { test, expect } from '@playwright/test';
-import {
-  hiddenInputOf,
-  openPicker,
-  optionByValue,
-  pickerBy,
-} from './_helpers';
+import { hiddenInputOf, openPicker, optionByValue, pickerBy } from './_helpers';
 
 test.describe('TimePicker — form integration', () => {
   test.beforeEach(async ({ page }) => {

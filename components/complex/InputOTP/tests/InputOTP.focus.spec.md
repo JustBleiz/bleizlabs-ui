@@ -5,14 +5,16 @@
 ## Tests
 
 ```ts
-test('OTP-R05 — focus always on hidden input (decorative slots never focusable)', async ({ page }) => {
+test('OTP-R05 — focus always on hidden input (decorative slots never focusable)', async ({
+  page,
+}) => {
   await page.goto('/components/input-otp');
   await page.keyboard.press('Tab');
   const input = page.locator('input[type="text"]').first();
   await expect(input).toBeFocused();
   // Decorative slots have no tabindex
   const slots = page.locator('[data-otp-slot]');
-  for (let i = 0; i < await slots.count(); i++) {
+  for (let i = 0; i < (await slots.count()); i++) {
     expect(await slots.nth(i).getAttribute('tabindex')).toBeNull();
   }
 });

@@ -8,9 +8,7 @@
 import type { Page, Locator } from '@playwright/test';
 
 export function pickerBy(page: Page, inputAriaLabel: string): Locator {
-  return page
-    .locator(`input[role="combobox"][aria-label="${inputAriaLabel}"]`)
-    .locator('xpath=..');
+  return page.locator(`input[role="combobox"][aria-label="${inputAriaLabel}"]`).locator('xpath=..');
 }
 
 export function inputOf(picker: Locator): Locator {
@@ -40,13 +38,9 @@ export function timeGroupOf(page: Page): Locator {
 }
 
 export function hourSpinOf(page: Page): Locator {
-  return page.locator(
-    'div[role="dialog"] input[role="spinbutton"][data-time-field="h"]',
-  );
+  return page.locator('div[role="dialog"] input[role="spinbutton"][data-time-field="h"]');
 }
 
 export function minuteSpinOf(page: Page): Locator {
-  return page.locator(
-    'div[role="dialog"] input[role="spinbutton"][data-time-field="m"]',
-  );
+  return page.locator('div[role="dialog"] input[role="spinbutton"][data-time-field="m"]');
 }

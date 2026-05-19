@@ -108,9 +108,7 @@ test.describe('Field — ARIA + validity behavior', () => {
     await expect(emailInput).toHaveAttribute('aria-invalid', 'true');
   });
 
-  test('serverInvalid prop forces aria-invalid even without native validity', async ({
-    page,
-  }) => {
+  test('serverInvalid prop forces aria-invalid even without native validity', async ({ page }) => {
     // Find a field marked with serverInvalid via the demo button toggle.
     // The demo has a "Mark server-invalid" button in section 3.
     const serverInvalidToggle = page.getByRole('button', {
@@ -127,9 +125,7 @@ test.describe('Field — ARIA + validity behavior', () => {
     await expect(taggedInput).toBeVisible();
   });
 
-  test('Standalone Field (no <Form> parent) still wires Label + Description', async ({
-    page,
-  }) => {
+  test('Standalone Field (no <Form> parent) still wires Label + Description', async ({ page }) => {
     // The standalone demo section renders <Field> outside any <form>.
     // The compound must still wire htmlFor + aria-describedby without
     // form context. We assume at least one such field on the page (demo

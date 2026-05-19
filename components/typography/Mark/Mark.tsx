@@ -1,8 +1,4 @@
-import {
-  forwardRef,
-  type HTMLAttributes,
-  type ReactNode,
-} from 'react';
+import { forwardRef, type HTMLAttributes, type ReactNode } from 'react';
 import { Slot } from '../../utils/Slot';
 import { cn } from '../../utils/cn';
 import styles from './Mark.module.scss';
@@ -65,11 +61,7 @@ export const Mark = forwardRef<HTMLElement, MarkProps>(function Mark(
 ) {
   const Comp = asChild ? Slot : 'mark';
   return (
-    <Comp
-      ref={ref as never}
-      className={cn(styles.root, COLOR_CLASS[color], className)}
-      {...rest}
-    >
+    <Comp ref={ref as never} className={cn(styles.root, COLOR_CLASS[color], className)} {...rest}>
       {children}
     </Comp>
   );

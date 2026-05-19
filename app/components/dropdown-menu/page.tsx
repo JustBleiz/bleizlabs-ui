@@ -42,10 +42,9 @@ export default function DropdownMenuPlaygroundPage() {
           DropdownMenu
         </Heading>
         <Text className={styles.intro}>
-          Accessible menu triggered from a button. Full keyboard model out of
-          the box — arrow navigation with wraparound, Home and End jumps,
-          typeahead search, Escape and Tab to close. Items, labels, separators,
-          and groups are standard.
+          Accessible menu triggered from a button. Full keyboard model out of the box — arrow
+          navigation with wraparound, Home and End jumps, typeahead search, Escape and Tab to close.
+          Items, labels, separators, and groups are standard.
         </Text>
         {lastAction && (
           <Text variant="small" color="brand">
@@ -60,8 +59,8 @@ export default function DropdownMenuPlaygroundPage() {
           Basic menu
         </Heading>
         <Text>
-          Default placement <code>bottom-start</code> aligns menu left edge to trigger left
-          edge. Click trigger (or press Enter/Space/ArrowDown) to open.
+          Default placement <code>bottom-start</code> aligns menu left edge to trigger left edge.
+          Click trigger (or press Enter/Space/ArrowDown) to open.
         </Text>
         <div className={styles.row}>
           <DropdownMenu>
@@ -69,18 +68,10 @@ export default function DropdownMenuPlaygroundPage() {
               <Button>Actions</Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent>
-              <DropdownMenuItem onSelect={() => setLastAction('Save')}>
-                Save
-              </DropdownMenuItem>
-              <DropdownMenuItem onSelect={() => setLastAction('Open')}>
-                Open
-              </DropdownMenuItem>
-              <DropdownMenuItem onSelect={() => setLastAction('Rename')}>
-                Rename
-              </DropdownMenuItem>
-              <DropdownMenuItem onSelect={() => setLastAction('Delete')}>
-                Delete
-              </DropdownMenuItem>
+              <DropdownMenuItem onSelect={() => setLastAction('Save')}>Save</DropdownMenuItem>
+              <DropdownMenuItem onSelect={() => setLastAction('Open')}>Open</DropdownMenuItem>
+              <DropdownMenuItem onSelect={() => setLastAction('Rename')}>Rename</DropdownMenuItem>
+              <DropdownMenuItem onSelect={() => setLastAction('Delete')}>Delete</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
@@ -92,8 +83,8 @@ export default function DropdownMenuPlaygroundPage() {
           Disabled items + labels + separators
         </Heading>
         <Text>
-          Disabled items are skipped by arrow-key navigation and typeahead. Separators and
-          labels are visual-only — clicking them does not close the menu.
+          Disabled items are skipped by arrow-key navigation and typeahead. Separators and labels
+          are visual-only — clicking them does not close the menu.
         </Text>
         <div className={styles.row}>
           <DropdownMenu>
@@ -109,9 +100,7 @@ export default function DropdownMenuPlaygroundPage() {
                 <DropdownMenuItem onSelect={() => setLastAction('Open')}>
                   Open&hellip;
                 </DropdownMenuItem>
-                <DropdownMenuItem onSelect={() => setLastAction('Save')}>
-                  Save
-                </DropdownMenuItem>
+                <DropdownMenuItem onSelect={() => setLastAction('Save')}>Save</DropdownMenuItem>
                 <DropdownMenuItem disabled>Save as&hellip; (coming soon)</DropdownMenuItem>
               </DropdownMenuGroup>
               <DropdownMenuSeparator />
@@ -126,9 +115,7 @@ export default function DropdownMenuPlaygroundPage() {
                 <DropdownMenuItem disabled>HTML (coming soon)</DropdownMenuItem>
               </DropdownMenuGroup>
               <DropdownMenuSeparator />
-              <DropdownMenuItem onSelect={() => setLastAction('Close')}>
-                Close
-              </DropdownMenuItem>
+              <DropdownMenuItem onSelect={() => setLastAction('Close')}>Close</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
@@ -140,9 +127,9 @@ export default function DropdownMenuPlaygroundPage() {
           Typeahead (long list)
         </Heading>
         <Text>
-          Type a letter (or several quickly) to jump to matching items. Buffer resets after
-          500ms of no input. Try typing <code>b</code>, then <code>o</code>&rsquo;, then{' '}
-          <code>l</code> to land on &ldquo;Bold&rdquo; vs &ldquo;Bullet list&rdquo;.
+          Type a letter (or several quickly) to jump to matching items. Buffer resets after 500ms of
+          no input. Try typing <code>b</code>, then <code>o</code>&rsquo;, then <code>l</code> to
+          land on &ldquo;Bold&rdquo; vs &ldquo;Bullet list&rdquo;.
         </Text>
         <div className={styles.row}>
           <DropdownMenu>
@@ -174,8 +161,8 @@ export default function DropdownMenuPlaygroundPage() {
           Placement grid
         </Heading>
         <Text>
-          8 placements on display. Flip + shift middleware keeps the menu within viewport
-          bounds regardless of trigger position.
+          8 placements on display. Flip + shift middleware keeps the menu within viewport bounds
+          regardless of trigger position.
         </Text>
         <div className={styles.placementGrid}>
           {PLACEMENTS.map((placement) => (
@@ -199,8 +186,8 @@ export default function DropdownMenuPlaygroundPage() {
           Match trigger width
         </Heading>
         <Text>
-          <code>matchTriggerWidth</code> forces menu min-width to match the trigger&rsquo;s
-          width. Useful when the menu items are short and the trigger is wide (Radix #17 fix).
+          <code>matchTriggerWidth</code> forces menu min-width to match the trigger&rsquo;s width.
+          Useful when the menu items are short and the trigger is wide (Radix #17 fix).
         </Text>
         <div className={styles.row}>
           <DropdownMenu matchTriggerWidth>

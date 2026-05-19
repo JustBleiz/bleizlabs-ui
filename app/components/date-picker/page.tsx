@@ -1,11 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import {
-  DatePicker,
-  DatePickerInput,
-  DatePickerContent,
-} from '@/components/complex/DatePicker';
+import { DatePicker, DatePickerInput, DatePickerContent } from '@/components/complex/DatePicker';
 import { Heading } from '@/components/typography/Heading';
 import { Text } from '@/components/typography/Text';
 import { Inline } from '@/components/layout/Inline';
@@ -65,10 +61,9 @@ export default function DatePickerPlayground() {
           DatePicker
         </Heading>
         <Text variant="lead" color="muted">
-          Type an ISO date directly or pick one from the calendar popover.
-          Combines the text-input ergonomics of Combobox with the grid
-          navigation of Calendar. Parses <code>yyyy-mm-dd</code> input, reverts
-          malformed entries on blur.
+          Type an ISO date directly or pick one from the calendar popover. Combines the text-input
+          ergonomics of Combobox with the grid navigation of Calendar. Parses{' '}
+          <code>yyyy-mm-dd</code> input, reverts malformed entries on blur.
         </Text>
         <Inline gap={2} wrap>
           <Badge color="success">APG composition</Badge>
@@ -86,9 +81,8 @@ export default function DatePickerPlayground() {
           1. Basic uncontrolled
         </Heading>
         <Text variant="body" color="muted">
-          Type <code>YYYY-MM-DD</code> directly or click the calendar icon to open
-          popup. Keyboard: Alt+ArrowDown opens, Escape closes, Enter commits typed
-          value.
+          Type <code>YYYY-MM-DD</code> directly or click the calendar icon to open popup. Keyboard:
+          Alt+ArrowDown opens, Escape closes, Enter commits typed value.
         </Text>
         <div className={styles.demo}>
           <DatePicker>
@@ -129,8 +123,8 @@ export default function DatePickerPlayground() {
           3. <code>min</code> + <code>max</code> boundaries
         </Heading>
         <Text variant="body" color="muted">
-          Clamps selectable range to April 2026. Typed dates outside range revert;
-          Calendar nav skips past boundaries.
+          Clamps selectable range to April 2026. Typed dates outside range revert; Calendar nav
+          skips past boundaries.
         </Text>
         <div className={styles.demo}>
           <DatePicker
@@ -151,15 +145,11 @@ export default function DatePickerPlayground() {
           4. <code>disabledDates</code> predicate — weekdays only
         </Heading>
         <Text variant="body" color="muted">
-          Predicate blocks weekends both in typed input parse AND Calendar arrow nav
-          (skips disabled cells per APG).
+          Predicate blocks weekends both in typed input parse AND Calendar arrow nav (skips disabled
+          cells per APG).
         </Text>
         <div className={styles.demo}>
-          <DatePicker
-            value={weekdayOnly}
-            onValueChange={setWeekdayOnly}
-            disabledDates={isWeekend}
-          >
+          <DatePicker value={weekdayOnly} onValueChange={setWeekdayOnly} disabledDates={isWeekend}>
             <DatePickerInput placeholder="Mon–Fri only" />
             <DatePickerContent />
           </DatePicker>
@@ -172,9 +162,8 @@ export default function DatePickerPlayground() {
           5. Polish locale (<code>pl-PL</code>)
         </Heading>
         <Text variant="body" color="muted">
-          Calendar month/weekday names + Monday-start from <code>Intl.Locale</code>.
-          Input format stays ISO for consistency. Display:{' '}
-          <strong>{formatDisplay(polish, 'pl-PL')}</strong>
+          Calendar month/weekday names + Monday-start from <code>Intl.Locale</code>. Input format
+          stays ISO for consistency. Display: <strong>{formatDisplay(polish, 'pl-PL')}</strong>
         </Text>
         <div className={styles.demo}>
           <DatePicker value={polish} onValueChange={setPolish} locale="pl-PL">
@@ -190,8 +179,8 @@ export default function DatePickerPlayground() {
           6. Controlled popup <code>open</code> state
         </Heading>
         <Text variant="body" color="muted">
-          Consumer controls <code>open</code> + <code>onOpenChange</code> — useful for
-          programmatic open (e.g., validation-driven).
+          Consumer controls <code>open</code> + <code>onOpenChange</code> — useful for programmatic
+          open (e.g., validation-driven).
         </Text>
         <div className={styles.demo}>
           <DatePicker
@@ -220,8 +209,8 @@ export default function DatePickerPlayground() {
           7. <code>disabled</code> widget lockdown
         </Heading>
         <Text variant="body" color="muted">
-          Input non-interactive + popup won&apos;t open. Differs from{' '}
-          <code>disabledDates</code> which only blocks specific dates.
+          Input non-interactive + popup won&apos;t open. Differs from <code>disabledDates</code>{' '}
+          which only blocks specific dates.
         </Text>
         <div className={styles.demo}>
           <DatePicker value={disabledVal} onValueChange={setDisabledVal} disabled>
@@ -292,7 +281,9 @@ export default function DatePickerPlayground() {
           </div>
           <div>
             <dt>Inside Calendar</dt>
-            <dd>APG <code>/grid/</code> — ←→↑↓ / Home/End / PgUp/PgDn / Shift+PgUp/PgDn</dd>
+            <dd>
+              APG <code>/grid/</code> — ←→↑↓ / Home/End / PgUp/PgDn / Shift+PgUp/PgDn
+            </dd>
           </div>
         </dl>
       </footer>

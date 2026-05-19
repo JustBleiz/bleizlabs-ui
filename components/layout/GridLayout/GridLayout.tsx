@@ -1,9 +1,4 @@
-import {
-  forwardRef,
-  type CSSProperties,
-  type HTMLAttributes,
-  type ReactNode,
-} from 'react';
+import { forwardRef, type CSSProperties, type HTMLAttributes, type ReactNode } from 'react';
 import { Slot } from '../../utils/Slot';
 import { cn } from '../../utils/cn';
 import type { SpaceIndex } from '../../types/spacing';
@@ -55,14 +50,7 @@ import styles from './GridLayout.module.scss';
  */
 
 type GridAlign = 'start' | 'center' | 'end' | 'stretch' | 'baseline';
-type GridJustify =
-  | 'start'
-  | 'center'
-  | 'end'
-  | 'stretch'
-  | 'between'
-  | 'around'
-  | 'evenly';
+type GridJustify = 'start' | 'center' | 'end' | 'stretch' | 'between' | 'around' | 'evenly';
 
 export interface GridLayoutResponsive {
   /** Override at min-width 640px (sm). */
@@ -160,57 +148,55 @@ function rowsToCss(value: number | string): string {
   return value;
 }
 
-export const GridLayout = forwardRef<HTMLDivElement, GridLayoutProps>(
-  function GridLayout(
-    {
-      columns,
-      rows,
-      gap = 3,
-      columnGap,
-      rowGap,
-      align = 'stretch',
-      justify = 'start',
-      responsive,
-      asChild = false,
-      className,
-      style,
-      children,
-      ...rest
-    },
-    ref,
-  ) {
-    const Comp = asChild ? Slot : 'div';
-
-    const gridVars: CSSProperties = {
-      '--grid-cols': tracksToCss(columns),
-      '--grid-column-gap': `var(--space-${columnGap ?? gap})`,
-      '--grid-row-gap': `var(--space-${rowGap ?? gap})`,
-      '--grid-align': ALIGN_MAP[align],
-      '--grid-justify': JUSTIFY_MAP[justify],
-      ...(rows !== undefined && { '--grid-rows': rowsToCss(rows) }),
-      ...(responsive?.sm !== undefined && {
-        '--grid-cols-sm': tracksToCss(responsive.sm),
-      }),
-      ...(responsive?.md !== undefined && {
-        '--grid-cols-md': tracksToCss(responsive.md),
-      }),
-      ...(responsive?.lg !== undefined && {
-        '--grid-cols-lg': tracksToCss(responsive.lg),
-      }),
-      ...(responsive?.xl !== undefined && {
-        '--grid-cols-xl': tracksToCss(responsive.xl),
-      }),
-    } as CSSProperties;
-
-    return (
-      <Comp
-        ref={ref}
-        className={cn(styles.root, className)}
-        style={{ ...style, ...gridVars }}
-        {...rest}
-      >
-        {children}
-      </Comp>
-    );
+export const GridLayout = forwardRef<HTMLDivElement, GridLayoutProps>(function GridLayout(
+  {
+    columns,
+    rows,
+    gap = 3,
+    columnGap,
+    rowGap,
+    align = 'stretch',
+    justify = 'start',
+    responsive,
+    asChild = false,
+    className,
+    style,
+    children,
+    ...rest
   },
-);
+  ref,
+) {
+  const Comp = asChild ? Slot : 'div';
+
+  const gridVars: CSSProperties = {
+    '--grid-cols': tracksToCss(columns),
+    '--grid-column-gap': `var(--space-${columnGap ?? gap})`,
+    '--grid-row-gap': `var(--space-${rowGap ?? gap})`,
+    '--grid-align': ALIGN_MAP[align],
+    '--grid-justify': JUSTIFY_MAP[justify],
+    ...(rows !== undefined && { '--grid-rows': rowsToCss(rows) }),
+    ...(responsive?.sm !== undefined && {
+      '--grid-cols-sm': tracksToCss(responsive.sm),
+    }),
+    ...(responsive?.md !== undefined && {
+      '--grid-cols-md': tracksToCss(responsive.md),
+    }),
+    ...(responsive?.lg !== undefined && {
+      '--grid-cols-lg': tracksToCss(responsive.lg),
+    }),
+    ...(responsive?.xl !== undefined && {
+      '--grid-cols-xl': tracksToCss(responsive.xl),
+    }),
+  } as CSSProperties;
+
+  return (
+    <Comp
+      ref={ref}
+      className={cn(styles.root, className)}
+      style={{ ...style, ...gridVars }}
+      {...rest}
+    >
+      {children}
+    </Comp>
+  );
+});

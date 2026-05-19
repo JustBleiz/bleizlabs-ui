@@ -26,9 +26,7 @@ test.describe('Slider — ARIA + accessibility tree', () => {
     await page.goto('/components/slider');
   });
 
-  test('SL-R17 — role="slider" + aria-valuenow/valuemin/valuemax', async ({
-    page,
-  }) => {
+  test('SL-R17 — role="slider" + aria-valuenow/valuemin/valuemax', async ({ page }) => {
     // Section 3 — Price min=0 max=1000, starts at 250
     const sections = page.locator('section');
     const price = sections.nth(2);
@@ -44,18 +42,13 @@ test.describe('Slider — ARIA + accessibility tree', () => {
     const sections = page.locator('section');
     const basic = sections.nth(0);
     const horizontalThumb = basic.getByRole('slider');
-    await expect(horizontalThumb).toHaveAttribute(
-      'aria-orientation',
-      'horizontal',
-    );
+    await expect(horizontalThumb).toHaveAttribute('aria-orientation', 'horizontal');
     const vertical = sections.nth(7);
     const verticalThumb = vertical.getByRole('slider');
     await expect(verticalThumb).toHaveAttribute('aria-orientation', 'vertical');
   });
 
-  test('SL-R19 — aria-valuetext reflects formatValue output', async ({
-    page,
-  }) => {
+  test('SL-R19 — aria-valuetext reflects formatValue output', async ({ page }) => {
     // Section 2 — Volume formatValue=(v) => `${v} percent` (starts 30)
     const sections = page.locator('section');
     const volume = sections.nth(1);
@@ -67,20 +60,14 @@ test.describe('Slider — ARIA + accessibility tree', () => {
     await expect(thumb).toHaveAttribute('aria-valuetext', '31 percent');
   });
 
-  test('SL-R20 — aria-labelledby links thumb to external label', async ({
-    page,
-  }) => {
-    const thumb = page
-      .locator('[role="slider"][aria-labelledby="volume-label"]')
-      .first();
+  test('SL-R20 — aria-labelledby links thumb to external label', async ({ page }) => {
+    const thumb = page.locator('[role="slider"][aria-labelledby="volume-label"]').first();
     await expect(thumb).toBeVisible();
     const label = page.locator('#volume-label');
     await expect(label).toHaveText('Volume');
   });
 
-  test('data-orientation attribute on root matches orientation', async ({
-    page,
-  }) => {
+  test('data-orientation attribute on root matches orientation', async ({ page }) => {
     const sections = page.locator('section');
     const vertical = sections.nth(7);
     // Root span with data-orientation attr
@@ -89,16 +76,12 @@ test.describe('Slider — ARIA + accessibility tree', () => {
   });
 
   test('aria-disabled on disabled thumb', async ({ page }) => {
-    const thumb = page
-      .getByRole('slider', { name: 'Disabled (aria-disabled, focusable)' })
-      .first();
+    const thumb = page.getByRole('slider', { name: 'Disabled (aria-disabled, focusable)' }).first();
     await expect(thumb).toHaveAttribute('aria-disabled', 'true');
   });
 
   test('aria-readonly on read-only thumb', async ({ page }) => {
-    const thumb = page
-      .getByRole('slider', { name: 'Read-only (focusable, no changes)' })
-      .first();
+    const thumb = page.getByRole('slider', { name: 'Read-only (focusable, no changes)' }).first();
     await expect(thumb).toHaveAttribute('aria-readonly', 'true');
   });
 
@@ -115,9 +98,7 @@ test.describe('Slider — ARIA + accessibility tree', () => {
     expect(results.violations).toEqual([]);
   });
 
-  test('axe-core zero violations — after keyboard changes', async ({
-    page,
-  }) => {
+  test('axe-core zero violations — after keyboard changes', async ({ page }) => {
     const sections = page.locator('section');
     const volume = sections.nth(1);
     const thumb = volume.getByRole('slider');

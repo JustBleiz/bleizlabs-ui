@@ -177,10 +177,7 @@ export function ThemeToggle({
     [storageKey],
   );
 
-  const getSnapshot = useCallback(
-    () => readDomTheme(defaultTheme),
-    [defaultTheme],
-  );
+  const getSnapshot = useCallback(() => readDomTheme(defaultTheme), [defaultTheme]);
 
   const getServerSnapshot = useCallback(() => defaultTheme, [defaultTheme]);
 
@@ -205,11 +202,7 @@ export function ThemeToggle({
       variant="ghost"
       size="sm"
       iconOnly
-      icon={
-        <span className={styles.icon}>
-          {theme === 'dark' ? <SunIcon /> : <MoonIcon />}
-        </span>
-      }
+      icon={<span className={styles.icon}>{theme === 'dark' ? <SunIcon /> : <MoonIcon />}</span>}
       onClick={toggle}
       aria-label={label}
       className={className}

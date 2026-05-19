@@ -36,35 +36,26 @@ export interface TableRowProps extends HTMLAttributes<HTMLTableRowElement> {
   disabled?: boolean;
 }
 
-export const TableRow = forwardRef<HTMLTableRowElement, TableRowProps>(
-  function TableRow(
-    {
-      hoverable = false,
-      selected = false,
-      disabled = false,
-      className,
-      children,
-      ...rest
-    },
-    ref,
-  ) {
-    return (
-      <tr
-        ref={ref}
-        className={cn(
-          styles.root,
-          hoverable && styles.hoverable,
-          selected && styles.selected,
-          disabled && styles.disabled,
-          className,
-        )}
-        aria-selected={selected || undefined}
-        aria-disabled={disabled || undefined}
-        data-state={selected ? 'selected' : undefined}
-        {...rest}
-      >
-        {children}
-      </tr>
-    );
-  },
-);
+export const TableRow = forwardRef<HTMLTableRowElement, TableRowProps>(function TableRow(
+  { hoverable = false, selected = false, disabled = false, className, children, ...rest },
+  ref,
+) {
+  return (
+    <tr
+      ref={ref}
+      className={cn(
+        styles.root,
+        hoverable && styles.hoverable,
+        selected && styles.selected,
+        disabled && styles.disabled,
+        className,
+      )}
+      aria-selected={selected || undefined}
+      aria-disabled={disabled || undefined}
+      data-state={selected ? 'selected' : undefined}
+      {...rest}
+    >
+      {children}
+    </tr>
+  );
+});

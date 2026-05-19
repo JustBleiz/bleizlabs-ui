@@ -22,21 +22,15 @@ export interface CardHeaderProps extends HTMLAttributes<HTMLDivElement> {
   asChild?: boolean;
 }
 
-export const CardHeader = forwardRef<HTMLDivElement, CardHeaderProps>(
-  function CardHeader(
-    { border = false, asChild = false, className, children, ...rest },
-    ref,
-  ) {
-    const Comp = asChild ? Slot : 'div';
+export const CardHeader = forwardRef<HTMLDivElement, CardHeaderProps>(function CardHeader(
+  { border = false, asChild = false, className, children, ...rest },
+  ref,
+) {
+  const Comp = asChild ? Slot : 'div';
 
-    return (
-      <Comp
-        ref={ref}
-        className={cn(styles.root, border && styles.border, className)}
-        {...rest}
-      >
-        {children}
-      </Comp>
-    );
-  },
-);
+  return (
+    <Comp ref={ref} className={cn(styles.root, border && styles.border, className)} {...rest}>
+      {children}
+    </Comp>
+  );
+});

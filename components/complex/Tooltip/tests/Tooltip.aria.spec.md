@@ -22,7 +22,9 @@ test('aria-describedby wired to tooltip id', async ({ page }) => {
   expect(describedBy).toBe(tooltipId);
 });
 
-test('id unique per instance — no collision between sibling tooltips [Radix #899]', async ({ page }) => {
+test('id unique per instance — no collision between sibling tooltips [Radix #899]', async ({
+  page,
+}) => {
   await page.goto('/components/tooltip');
   // Playground has at least 2 tooltips visible on screen
   const firstTrigger = page.getByRole('button').nth(0);
@@ -56,7 +58,9 @@ test('aria-describedby removed when tooltip hidden', async ({ page }) => {
   expect(during).toBeTruthy();
 });
 
-test('content NOT wired as aria-labelledby (tooltip is supplemental, not naming)', async ({ page }) => {
+test('content NOT wired as aria-labelledby (tooltip is supplemental, not naming)', async ({
+  page,
+}) => {
   await page.goto('/components/tooltip');
   const trigger = page.getByRole('button', { name: 'Save' });
   await trigger.focus();

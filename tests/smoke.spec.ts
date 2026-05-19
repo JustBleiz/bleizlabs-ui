@@ -131,10 +131,9 @@ test.describe('smoke: library-wide axe-core WCAG 2.1 AA scan', () => {
         `Uncaught page errors on ${route}:\n${consoleErrors.join('\n')}`,
       ).toEqual([]);
 
-      expect(
-        summary,
-        `axe violations on ${route}:\n${JSON.stringify(summary, null, 2)}`,
-      ).toEqual([]);
+      expect(summary, `axe violations on ${route}:\n${JSON.stringify(summary, null, 2)}`).toEqual(
+        [],
+      );
     });
   }
 });

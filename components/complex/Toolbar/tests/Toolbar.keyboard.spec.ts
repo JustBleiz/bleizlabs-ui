@@ -19,9 +19,7 @@ test.describe('Toolbar — keyboard interactions', () => {
     await page.goto('/components/toolbar');
   });
 
-  test('ArrowRight moves focus to next item (horizontal default)', async ({
-    page,
-  }) => {
+  test('ArrowRight moves focus to next item (horizontal default)', async ({ page }) => {
     const toolbar = page.getByRole('toolbar', { name: 'Document actions' });
     const newBtn = toolbar.getByRole('button', { name: 'New' });
     const openBtn = toolbar.getByRole('button', { name: 'Open' });
@@ -30,9 +28,7 @@ test.describe('Toolbar — keyboard interactions', () => {
     await expect(openBtn).toBeFocused();
   });
 
-  test('ArrowLeft wraps from first item to last (loop=true default)', async ({
-    page,
-  }) => {
+  test('ArrowLeft wraps from first item to last (loop=true default)', async ({ page }) => {
     const toolbar = page.getByRole('toolbar', { name: 'Document actions' });
     const newBtn = toolbar.getByRole('button', { name: 'New' });
     const printBtn = toolbar.getByRole('button', { name: 'Print' });
@@ -41,9 +37,7 @@ test.describe('Toolbar — keyboard interactions', () => {
     await expect(printBtn).toBeFocused();
   });
 
-  test('ArrowRight from last item wraps to first (loop=true default)', async ({
-    page,
-  }) => {
+  test('ArrowRight from last item wraps to first (loop=true default)', async ({ page }) => {
     const toolbar = page.getByRole('toolbar', { name: 'Document actions' });
     const newBtn = toolbar.getByRole('button', { name: 'New' });
     const printBtn = toolbar.getByRole('button', { name: 'Print' });
@@ -80,9 +74,7 @@ test.describe('Toolbar — keyboard interactions', () => {
     await expect(exportBtn).toBeFocused();
   });
 
-  test('vertical orientation: ArrowDown moves to next, ArrowRight is a no-op', async ({
-    page,
-  }) => {
+  test('vertical orientation: ArrowDown moves to next, ArrowRight is a no-op', async ({ page }) => {
     const toolbar = page.getByRole('toolbar', { name: 'Tools' });
     const pencil = toolbar.getByRole('button', { name: 'Pencil' });
     const eraser = toolbar.getByRole('button', { name: 'Eraser' });
@@ -103,9 +95,7 @@ test.describe('Toolbar — keyboard interactions', () => {
     await expect(pencil).toBeFocused();
   });
 
-  test('loop=false clamps at last item — ArrowRight from last is a no-op', async ({
-    page,
-  }) => {
+  test('loop=false clamps at last item — ArrowRight from last is a no-op', async ({ page }) => {
     const toolbar = page.getByRole('toolbar', { name: 'Navigation history' });
     const reload = toolbar.getByRole('button', { name: 'Reload' });
     await reload.focus();
@@ -114,9 +104,7 @@ test.describe('Toolbar — keyboard interactions', () => {
     await expect(reload).toBeFocused();
   });
 
-  test('loop=false clamps at first item — ArrowLeft from first is a no-op', async ({
-    page,
-  }) => {
+  test('loop=false clamps at first item — ArrowLeft from first is a no-op', async ({ page }) => {
     const toolbar = page.getByRole('toolbar', { name: 'Navigation history' });
     const back = toolbar.getByRole('button', { name: 'Back' });
     await back.focus();
@@ -124,9 +112,7 @@ test.describe('Toolbar — keyboard interactions', () => {
     await expect(back).toBeFocused();
   });
 
-  test('modifier + arrow does not move focus (browser hotkey pass-through)', async ({
-    page,
-  }) => {
+  test('modifier + arrow does not move focus (browser hotkey pass-through)', async ({ page }) => {
     const toolbar = page.getByRole('toolbar', { name: 'Document actions' });
     const newBtn = toolbar.getByRole('button', { name: 'New' });
     await newBtn.focus();
@@ -137,9 +123,7 @@ test.describe('Toolbar — keyboard interactions', () => {
     await expect(newBtn).toBeFocused();
   });
 
-  test('Enter on Button child activates the button (not intercepted)', async ({
-    page,
-  }) => {
+  test('Enter on Button child activates the button (not intercepted)', async ({ page }) => {
     const toolbar = page.getByRole('toolbar', { name: 'Document actions' });
     const newBtn = toolbar.getByRole('button', { name: 'New' });
     let clicked = false;
@@ -147,9 +131,8 @@ test.describe('Toolbar — keyboard interactions', () => {
       clicked = true;
     });
     await newBtn.evaluate((el) => {
-      el.addEventListener(
-        'click',
-        () => (window as unknown as { toolbarButtonClicked: () => void }).toolbarButtonClicked(),
+      el.addEventListener('click', () =>
+        (window as unknown as { toolbarButtonClicked: () => void }).toolbarButtonClicked(),
       );
     });
     await newBtn.focus();

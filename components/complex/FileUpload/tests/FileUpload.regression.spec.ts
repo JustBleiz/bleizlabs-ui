@@ -74,7 +74,10 @@ test.describe('FileUpload — regression FU-R01..FU-R22', () => {
     });
     await page.goto(URL);
     // Click submit on empty required form.
-    await page.getByRole('button', { name: /^submit$/i }).first().click();
+    await page
+      .getByRole('button', { name: /^submit$/i })
+      .first()
+      .click();
     expect(errors.filter((e) => /not focusable/i.test(e))).toHaveLength(0);
   });
 
@@ -90,9 +93,7 @@ test.describe('FileUpload — regression FU-R01..FU-R22', () => {
   test('FU-R06: MIME mismatch (renamed file) rejection path', async ({ page }) => {
     // Rename .png → .pdf does NOT bypass our matcher when MIME is png.
     const zone = zoneBy(page, 'Upload PDF documents');
-    await dispatchDrop(zone, [
-      { name: 'fake.pdf', mimeType: 'image/png', bytes: 100 },
-    ]);
+    await dispatchDrop(zone, [{ name: 'fake.pdf', mimeType: 'image/png', bytes: 100 }]);
     // No FileChip for fake.pdf rendered as accepted.
     await expect(page.locator('[class*="fileList"]').getByText('fake.pdf')).toHaveCount(0);
   });
@@ -101,9 +102,7 @@ test.describe('FileUpload — regression FU-R01..FU-R22', () => {
     // Browser File constructor sets MIME from name extension by default.
     // Our matcher accepts the extension token regardless of MIME presence.
     const zone = zoneBy(page, 'Upload PDF documents');
-    await dispatchDrop(zone, [
-      { name: 'mystery.pdf', mimeType: '' },
-    ]);
+    await dispatchDrop(zone, [{ name: 'mystery.pdf', mimeType: '' }]);
     // Note: dispatchDrop builds File with explicit type='', extension fallback
     // path covers this; matcher token 'application/pdf' doesn't start with
     // '.', so this specific test verifies our accept='application/pdf' path
@@ -112,7 +111,9 @@ test.describe('FileUpload — regression FU-R01..FU-R22', () => {
     await expect(zone).toHaveAttribute('data-state', 'idle');
   });
 
-  test('FU-R08: size-reject preview state at dragOver is best-effort (size unknown)', async ({ page }) => {
+  test('FU-R08: size-reject preview state at dragOver is best-effort (size unknown)', async ({
+    page,
+  }) => {
     // dataTransfer.items only exposes .type, not .size, so dragOver cannot
     // preview size rejection. Drop-time validation catches it.
     const zone = zoneBy(page, 'Upload file under 1 megabyte');
@@ -130,9 +131,7 @@ test.describe('FileUpload — regression FU-R01..FU-R22', () => {
     // Not directly demonstrable in current demo (no application/* zone).
     // Verify via matcher logic: drop application/zip into PDF-only → rejected.
     const zone = zoneBy(page, 'Upload PDF documents');
-    await dispatchDrop(zone, [
-      { name: 'archive.zip', mimeType: 'application/zip' },
-    ]);
+    await dispatchDrop(zone, [{ name: 'archive.zip', mimeType: 'application/zip' }]);
     // accept='application/pdf' (exact MIME) → rejection.
     await expect(page.locator('[class*="fileList"]').getByText('archive.zip')).toHaveCount(0);
   });
@@ -162,9 +161,7 @@ test.describe('FileUpload — regression FU-R01..FU-R22', () => {
     });
     await page.goto(URL);
     await page.waitForLoadState('networkidle');
-    expect(
-      errors.filter((e) => /window is not defined|hydrat|FileList/i.test(e)),
-    ).toHaveLength(0);
+    expect(errors.filter((e) => /window is not defined|hydrat|FileList/i.test(e))).toHaveLength(0);
   });
 
   test.skip('FU-R12: native picker dismiss returns focus to drop zone', () => {
@@ -177,7 +174,9 @@ test.describe('FileUpload — regression FU-R01..FU-R22', () => {
     // Verify component does not call showOpenFilePicker (FS Access API).
     const hasFsAccessCall = await page.evaluate(() => {
       // Scan inline script content — heuristic, not bulletproof but useful.
-      const scripts = Array.from(document.querySelectorAll('script')).map((s) => s.textContent ?? '');
+      const scripts = Array.from(document.querySelectorAll('script')).map(
+        (s) => s.textContent ?? '',
+      );
       return scripts.some((s) => s.includes('showOpenFilePicker'));
     });
     expect(hasFsAccessCall).toBe(false);
@@ -210,12 +209,12 @@ test.describe('FileUpload — regression FU-R01..FU-R22', () => {
   test('FU-R16: no URL.createObjectURL in component source', async ({ page }) => {
     // Memory leak prevention — v1 scope excludes preview generation.
     const hasObjectUrl = await page.evaluate(() => {
-      const scripts = Array.from(document.querySelectorAll('script')).map((s) => s.textContent ?? '');
+      const scripts = Array.from(document.querySelectorAll('script')).map(
+        (s) => s.textContent ?? '',
+      );
       // Heuristic match — FileUpload component code should not contain createObjectURL.
       // Demo route also doesn't use it.
-      return scripts.some(
-        (s) => /FileUpload[\s\S]{0,500}createObjectURL/i.test(s),
-      );
+      return scripts.some((s) => /FileUpload[\s\S]{0,500}createObjectURL/i.test(s));
     });
     expect(hasObjectUrl).toBe(false);
   });
@@ -262,8 +261,13 @@ test.describe('FileUpload — regression FU-R01..FU-R22', () => {
     await expect(zone.page().getByText('safari.txt')).toBeVisible();
   });
 
-  test('FU-R20: required + empty submit blocks form via Constraint Validation', async ({ page }) => {
-    await page.getByRole('button', { name: /^submit$/i }).first().click();
+  test('FU-R20: required + empty submit blocks form via Constraint Validation', async ({
+    page,
+  }) => {
+    await page
+      .getByRole('button', { name: /^submit$/i })
+      .first()
+      .click();
     await expect(page.getByText(/Submitted:/i)).not.toBeVisible();
   });
 

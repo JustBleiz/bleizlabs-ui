@@ -70,7 +70,9 @@ test('HC-R09 — Provider skip-delay window after first open', async ({ page }) 
   await expect(page.getByRole('dialog').filter({ hasText: 'Beta' })).toBeVisible();
 });
 
-test('HC-R10 — controlled mode single-fire (onOpenChange called once per transition)', async ({ page }) => {
+test('HC-R10 — controlled mode single-fire (onOpenChange called once per transition)', async ({
+  page,
+}) => {
   await page.goto('/components/hover-card?controlled=1');
   const callsHandle = await page.evaluateHandle(() => {
     (window as any).__onOpenChangeCalls = [];

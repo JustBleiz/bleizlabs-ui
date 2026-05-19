@@ -1,9 +1,4 @@
-export {
-  HoverCard,
-  HoverCardProvider,
-  HoverCardTrigger,
-  HoverCardContent,
-} from './HoverCard';
+export { HoverCard, HoverCardProvider, HoverCardTrigger, HoverCardContent } from './HoverCard';
 
 export type {
   HoverCardProps,

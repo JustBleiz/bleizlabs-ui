@@ -12,9 +12,7 @@ test.describe('Tabs — regression (closed-issue coverage)', () => {
     await page.goto('/components/tabs');
   });
 
-  test('TB-R05 — arrow nav activation is synchronous (no setTimeout desync)', async ({
-    page,
-  }) => {
+  test('TB-R05 — arrow nav activation is synchronous (no setTimeout desync)', async ({ page }) => {
     const tablist = page.getByRole('tablist', { name: 'Project sections' });
     const overview = tablist.getByRole('tab', { name: 'Overview' });
     const tasks = tablist.getByRole('tab', { name: 'Tasks' });
@@ -25,9 +23,7 @@ test.describe('Tabs — regression (closed-issue coverage)', () => {
     await expect(overview).toHaveAttribute('aria-selected', 'false');
   });
 
-  test('TB-R07 — SSR mount: no module-level DOM access, no hydration errors', async ({
-    page,
-  }) => {
+  test('TB-R07 — SSR mount: no module-level DOM access, no hydration errors', async ({ page }) => {
     const hydrationWarnings: string[] = [];
     page.on('console', (msg) => {
       const text = msg.text();
@@ -45,9 +41,7 @@ test.describe('Tabs — regression (closed-issue coverage)', () => {
     // TabsContent supports forceMount prop; playground has no demo scenario.
   });
 
-  test('TB-R10 — onValueChange fires per transition (controlled demo)', async ({
-    page,
-  }) => {
+  test('TB-R10 — onValueChange fires per transition (controlled demo)', async ({ page }) => {
     // Section 6 is controlled — clicking a tab flips aria-selected via
     // onValueChange → parent setState. If onValueChange didn't fire, the
     // controlled component would stay on the previous value (stale props).
@@ -67,9 +61,7 @@ test.describe('Tabs — regression (closed-issue coverage)', () => {
     // when selectedIdx < 0, see Tabs.tsx:334). Playground has no demo.
   });
 
-  test('TB-R19 — prefers-reduced-motion disables trigger transitions', async ({
-    page,
-  }) => {
+  test('TB-R19 — prefers-reduced-motion disables trigger transitions', async ({ page }) => {
     await page.emulateMedia({ reducedMotion: 'reduce' });
     await page.goto('/components/tabs');
     const trigger = page

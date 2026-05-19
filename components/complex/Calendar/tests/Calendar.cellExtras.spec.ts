@@ -28,9 +28,7 @@ test.describe('Calendar — cellExtras / onCellHover / onGridMouseLeave AMEND', 
     await page.goto('/components/calendar');
   });
 
-  test('CAL-E01 — defaults: no extras land on <td> when props omitted', async ({
-    page,
-  }) => {
+  test('CAL-E01 — defaults: no extras land on <td> when props omitted', async ({ page }) => {
     // Default demo Calendars do NOT pass cellExtras — verify no data-* leaks
     // on grid cells beyond Calendar's own attrs (role, aria-selected).
     const cells = page.locator('table[role="grid"] td[role="gridcell"]').first();
@@ -58,9 +56,7 @@ test.describe('Calendar — cellExtras / onCellHover / onGridMouseLeave AMEND', 
 
     // The demo seeds from=2026-05-05, to=2026-05-19 → all in-range cells
     // carry data-in-range and bounds carry data-range-start / data-range-end.
-    const startCell = page.locator(
-      'button[data-calendar-cell="2026-05-05"]',
-    );
+    const startCell = page.locator('button[data-calendar-cell="2026-05-05"]');
     const startTd = startCell.locator('xpath=..');
     await expect(startTd).toHaveAttribute('data-range-start', 'true');
     // Fixed attrs MUST be preserved (consumer cannot override via cellExtras

@@ -32,7 +32,9 @@ test('DP-R03 — Enter in input commits typed ISO date', async ({ page }) => {
   expect(await input.inputValue()).toContain('2026-05-15');
 });
 
-test('DP-R04 — Calendar grid keyboard inherits APG /grid/ (Arrow/PageUp/Down/Home/End)', async ({ page }) => {
+test('DP-R04 — Calendar grid keyboard inherits APG /grid/ (Arrow/PageUp/Down/Home/End)', async ({
+  page,
+}) => {
   await page.goto('/components/date-picker?value=2026-04-15');
   await page.getByRole('combobox').click();
   const grid = page.getByRole('grid');

@@ -51,9 +51,7 @@ test.describe('ContextMenu — focus management', () => {
     await expect(page.getByRole('menuitem').first()).toBeFocused();
     await page.keyboard.press('Tab');
     await expect(page.getByRole('menu')).not.toBeVisible();
-    const activeRole = await page.evaluate(() =>
-      document.activeElement?.getAttribute('role'),
-    );
+    const activeRole = await page.evaluate(() => document.activeElement?.getAttribute('role'));
     expect(activeRole).not.toBe('menuitem');
   });
 
@@ -70,9 +68,8 @@ test.describe('ContextMenu — focus management', () => {
     await trigger.click({ button: 'right' });
     await expect(page.getByRole('menuitem').first()).toBeFocused();
     for (let i = 0; i < 20; i++) {
-       
       await page.keyboard.press('ArrowDown');
-       
+
       const ariaDisabled = await page.evaluate(() =>
         document.activeElement?.getAttribute('aria-disabled'),
       );
@@ -80,9 +77,7 @@ test.describe('ContextMenu — focus management', () => {
     }
   });
 
-  test('tabIndex: all items have tabIndex=-1 (menu uses arrow keys)', async ({
-    page,
-  }) => {
+  test('tabIndex: all items have tabIndex=-1 (menu uses arrow keys)', async ({ page }) => {
     await page.getByText('Right-click me', { exact: true }).click({ button: 'right' });
     await expect(page.getByRole('menuitem').first()).toBeFocused();
     const tabIndices = await page.evaluate(() =>

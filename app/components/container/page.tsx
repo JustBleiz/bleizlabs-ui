@@ -6,7 +6,9 @@ export default function ContainerPlaygroundPage() {
   return (
     <main className={styles.main}>
       <header className={styles.header}>
-        <Link href="/" className={styles.back}>← back</Link>
+        <Link href="/" className={styles.back}>
+          ← back
+        </Link>
         <h1>Container</h1>
         <p>Max-width centered wrapper. Five sizes, padding control, asChild.</p>
       </header>
@@ -51,7 +53,9 @@ export default function ContainerPlaygroundPage() {
       <section className={styles.demo}>
         <h2>4. asChild — renders &lt;main&gt;</h2>
         <Container asChild size="lg" className={styles.demoContainer}>
-          <main className={styles.box}>I am a real &lt;main&gt; element with Container layout.</main>
+          <main className={styles.box}>
+            I am a real &lt;main&gt; element with Container layout.
+          </main>
         </Container>
       </section>
     </main>

@@ -76,11 +76,7 @@ import styles from './TagsInput.module.scss';
  * Reason code for a rejected tag. Mirror of FileUpload's FileRejectionReason
  * shape — locale-translatable, no string parsing.
  */
-export type TagRejectionReason =
-  | 'empty'
-  | 'duplicate'
-  | 'too-many'
-  | 'validate-failed';
+export type TagRejectionReason = 'empty' | 'duplicate' | 'too-many' | 'validate-failed';
 
 export interface TagRejection {
   /** The raw string that failed to add. */
@@ -99,18 +95,10 @@ export type TagValidateResult = boolean | string;
 
 export type TagsInputSize = 'sm' | 'md' | 'lg';
 
-export interface TagsInputProps
-  extends Omit<
-    InputHTMLAttributes<HTMLInputElement>,
-    | 'value'
-    | 'defaultValue'
-    | 'onChange'
-    | 'type'
-    | 'size'
-    | 'children'
-    | 'onKeyDown'
-    | 'onPaste'
-  > {
+export interface TagsInputProps extends Omit<
+  InputHTMLAttributes<HTMLInputElement>,
+  'value' | 'defaultValue' | 'onChange' | 'type' | 'size' | 'children' | 'onKeyDown' | 'onPaste'
+> {
   // Value management
   /** Controlled value — array of tag strings. */
   value?: string[];
@@ -177,11 +165,7 @@ export interface TagsInputProps
 
 const DEFAULT_DELIMITERS: readonly string[] = [',', ';'];
 
-function isDuplicate(
-  tag: string,
-  existing: readonly string[],
-  caseSensitive: boolean,
-): boolean {
+function isDuplicate(tag: string, existing: readonly string[], caseSensitive: boolean): boolean {
   if (caseSensitive) return existing.includes(tag);
   const lower = tag.toLowerCase();
   for (const e of existing) {
@@ -271,9 +255,7 @@ export const TagsInput = forwardRef<HTMLDivElement, TagsInputProps>(function Tag
   forwardedRef,
 ) {
   const isControlled = controlledValue !== undefined;
-  const [uncontrolledValue, setUncontrolledValue] = useState<string[]>(
-    () => defaultValue ?? [],
-  );
+  const [uncontrolledValue, setUncontrolledValue] = useState<string[]>(() => defaultValue ?? []);
   const value = isControlled ? (controlledValue ?? []) : uncontrolledValue;
 
   const [pending, setPending] = useState('');
@@ -283,11 +265,7 @@ export const TagsInput = forwardRef<HTMLDivElement, TagsInputProps>(function Tag
   // `useImperativeHandle` factory's nullable cast (`current!`) is safe — React
   // never invokes the factory before the ref is attached; the mounted
   // `<input>` is committed before consumers receive the handle.
-  useImperativeHandle(
-    externalInputRef,
-    () => internalInputRef.current as HTMLInputElement,
-    [],
-  );
+  useImperativeHandle(externalInputRef, () => internalInputRef.current as HTMLInputElement, []);
 
   const isComposingRef = useRef(false);
   const announceCounterRef = useRef(0);
@@ -355,9 +333,7 @@ export const TagsInput = forwardRef<HTMLDivElement, TagsInputProps>(function Tag
       if (accepted.length > 0) {
         commitValue(projected);
         announceWithMarker(
-          accepted.length === 1
-            ? `Added: ${accepted[0]}`
-            : `Added ${accepted.length} tags`,
+          accepted.length === 1 ? `Added: ${accepted[0]}` : `Added ${accepted.length} tags`,
         );
       }
       if (rejected.length > 0) {
@@ -369,9 +345,7 @@ export const TagsInput = forwardRef<HTMLDivElement, TagsInputProps>(function Tag
         const first = rejected[0];
         const detail = first?.message ?? first?.reasons[0] ?? 'invalid';
         announceWithMarker(
-          rejected.length === 1
-            ? `Tag rejected: ${detail}`
-            : `${rejected.length} tags rejected`,
+          rejected.length === 1 ? `Tag rejected: ${detail}` : `${rejected.length} tags rejected`,
         );
       }
     },
@@ -462,19 +436,13 @@ export const TagsInput = forwardRef<HTMLDivElement, TagsInputProps>(function Tag
     [disabled, pending, value, commitPending, removeAt],
   );
 
-  const handleCompositionStart = useCallback(
-    (_event: CompositionEvent<HTMLInputElement>): void => {
-      isComposingRef.current = true;
-    },
-    [],
-  );
+  const handleCompositionStart = useCallback((_event: CompositionEvent<HTMLInputElement>): void => {
+    isComposingRef.current = true;
+  }, []);
 
-  const handleCompositionEnd = useCallback(
-    (_event: CompositionEvent<HTMLInputElement>): void => {
-      isComposingRef.current = false;
-    },
-    [],
-  );
+  const handleCompositionEnd = useCallback((_event: CompositionEvent<HTMLInputElement>): void => {
+    isComposingRef.current = false;
+  }, []);
 
   const handlePaste = useCallback(
     (event: ClipboardEvent<HTMLInputElement>): void => {
@@ -486,7 +454,10 @@ export const TagsInput = forwardRef<HTMLDivElement, TagsInputProps>(function Tag
       // Build a regex from escape-safe chars.
       const escaped = splitChars.map((c) => c.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
       const re = new RegExp(escaped.join('|'));
-      const parts = text.split(re).map((p) => (trim ? p.trim() : p)).filter((p) => p.length > 0);
+      const parts = text
+        .split(re)
+        .map((p) => (trim ? p.trim() : p))
+        .filter((p) => p.length > 0);
       if (parts.length > 1) {
         event.preventDefault();
         // Append pending text as the first paste chunk's prefix, if any.
@@ -545,11 +516,7 @@ export const TagsInput = forwardRef<HTMLDivElement, TagsInputProps>(function Tag
     (event: MouseEvent<HTMLDivElement>): void => {
       if (disabled) return;
       const target = event.target as HTMLElement | null;
-      if (
-        target &&
-        target !== event.currentTarget &&
-        target.closest('button, input')
-      ) {
+      if (target && target !== event.currentTarget && target.closest('button, input')) {
         return;
       }
       internalInputRef.current?.focus();

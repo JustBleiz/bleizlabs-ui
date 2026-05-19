@@ -37,7 +37,7 @@ test.describe('DateRangePicker — hover preview', () => {
     const hoverIso = `${y}-${m}-18`;
     const startCell = cellByIso(page, startIso);
     const hoverCell = cellByIso(page, hoverIso);
-    if (await startCell.count() === 0 || await hoverCell.count() === 0) {
+    if ((await startCell.count()) === 0 || (await hoverCell.count()) === 0) {
       test.skip();
       return;
     }
@@ -55,7 +55,7 @@ test.describe('DateRangePicker — hover preview', () => {
     }
     const middleIso = `${y}-${m}-14`;
     const middleTd = cellByIso(page, middleIso).locator('xpath=..');
-    if (await middleTd.count() === 0) {
+    if ((await middleTd.count()) === 0) {
       test.skip();
       return;
     }
@@ -82,7 +82,7 @@ test.describe('DateRangePicker — hover preview', () => {
     const hoverIso = `${y}-${m}-18`;
     const startCell = cellByIso(page, startIso);
     const hoverCell = cellByIso(page, hoverIso);
-    if (await startCell.count() === 0 || await hoverCell.count() === 0) {
+    if ((await startCell.count()) === 0 || (await hoverCell.count()) === 0) {
       test.skip();
       return;
     }

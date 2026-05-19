@@ -60,9 +60,7 @@ test.describe('TimeInput — format + locale', () => {
     await expect(period).toHaveCount(0);
   });
 
-  test('TI-FMT05 — form submission hidden input emits 24h ISO from 12h field', async ({
-    page,
-  }) => {
+  test('TI-FMT05 — form submission hidden input emits 24h ISO from 12h field', async ({ page }) => {
     // Use Form-integration case which renders hidden inputs
     const startsAt = timeInputBy(page, 'Starts at');
     const hidden = hiddenInputOf(startsAt, 'startsAt');

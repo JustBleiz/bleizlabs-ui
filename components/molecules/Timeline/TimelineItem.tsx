@@ -76,20 +76,18 @@ export interface TimelineItemProps extends HTMLAttributes<HTMLLIElement> {
   children: ReactNode;
 }
 
-export const TimelineItem = forwardRef<HTMLLIElement, TimelineItemProps>(
-  function TimelineItem(
-    { marker, tint = 'default', className, children, ...rest },
-    ref,
-  ) {
-    const resolvedMarker = marker ?? <TimelineMarker tint={tint} />;
+export const TimelineItem = forwardRef<HTMLLIElement, TimelineItemProps>(function TimelineItem(
+  { marker, tint = 'default', className, children, ...rest },
+  ref,
+) {
+  const resolvedMarker = marker ?? <TimelineMarker tint={tint} />;
 
-    return (
-      <li ref={ref} className={cn(styles.root, className)} {...rest}>
-        <span className={styles.markerSlot} aria-hidden="true">
-          {resolvedMarker}
-        </span>
-        <span className={styles.content}>{children}</span>
-      </li>
-    );
-  },
-);
+  return (
+    <li ref={ref} className={cn(styles.root, className)} {...rest}>
+      <span className={styles.markerSlot} aria-hidden="true">
+        {resolvedMarker}
+      </span>
+      <span className={styles.content}>{children}</span>
+    </li>
+  );
+});

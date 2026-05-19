@@ -42,21 +42,14 @@ test.describe('DataTable — selection behavior', () => {
     expect(selected).toBeGreaterThan(0);
   });
 
-  test('DT-SE03 — header checkbox is indeterminate with partial selection', async ({
-    page,
-  }) => {
+  test('DT-SE03 — header checkbox is indeterminate with partial selection', async ({ page }) => {
     const grids = allGrids(page);
     const grid = grids.nth(2);
-    const firstCb = grid
-      .locator('[role="row"][aria-rowindex="2"]')
-      .getByRole('checkbox')
-      .first();
+    const firstCb = grid.locator('[role="row"][aria-rowindex="2"]').getByRole('checkbox').first();
     await firstCb.check();
     await page.waitForTimeout(50);
     const headerCb = grid.getByRole('checkbox', { name: /Select all/i });
-    const indeterminate = await headerCb.evaluate(
-      (el) => (el as HTMLInputElement).indeterminate,
-    );
+    const indeterminate = await headerCb.evaluate((el) => (el as HTMLInputElement).indeterminate);
     expect(indeterminate).toBe(true);
   });
 
@@ -72,9 +65,7 @@ test.describe('DataTable — selection behavior', () => {
     expect(selectedRows).toBe(0);
   });
 
-  test('DT-SE05 — selection persists across pagination (stable getRowId)', async ({
-    page,
-  }) => {
+  test('DT-SE05 — selection persists across pagination (stable getRowId)', async ({ page }) => {
     const grids = allGrids(page);
     const grid = grids.nth(2);
     const section = grid.locator('xpath=ancestor::section[1]');
@@ -102,10 +93,7 @@ test.describe('DataTable — selection behavior', () => {
     const grids = allGrids(page);
     const grid = grids.nth(2);
     const section = grid.locator('xpath=ancestor::section[1]');
-    const cb = grid
-      .locator('[role="row"][aria-rowindex="2"]')
-      .getByRole('checkbox')
-      .first();
+    const cb = grid.locator('[role="row"][aria-rowindex="2"]').getByRole('checkbox').first();
     await cb.check();
     await page.waitForTimeout(50);
     const count = section.getByText(/1 row selected/i).first();
@@ -115,10 +103,7 @@ test.describe('DataTable — selection behavior', () => {
   test('DT-SE07 — selection survives column sort', async ({ page }) => {
     const grids = allGrids(page);
     const grid = grids.nth(2);
-    const firstCb = grid
-      .locator('[role="row"][aria-rowindex="2"]')
-      .getByRole('checkbox')
-      .first();
+    const firstCb = grid.locator('[role="row"][aria-rowindex="2"]').getByRole('checkbox').first();
     await firstCb.check();
     await page.waitForTimeout(50);
     const sortBtn = grid.getByRole('button', { name: /sort/i }).first();
@@ -126,9 +111,7 @@ test.describe('DataTable — selection behavior', () => {
       await sortBtn.click();
       await page.waitForTimeout(100);
       // After sort, total selected should still be >= 1
-      const stillSelected = await grid
-        .locator('[role="row"][aria-selected="true"]')
-        .count();
+      const stillSelected = await grid.locator('[role="row"][aria-selected="true"]').count();
       expect(stillSelected).toBeGreaterThanOrEqual(1);
     }
   });

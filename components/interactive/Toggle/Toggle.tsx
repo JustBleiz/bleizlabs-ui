@@ -1,11 +1,6 @@
 'use client';
 
-import {
-  forwardRef,
-  useState,
-  type ButtonHTMLAttributes,
-  type ReactNode,
-} from 'react';
+import { forwardRef, useState, type ButtonHTMLAttributes, type ReactNode } from 'react';
 import { cn } from '../../utils/cn';
 import styles from './Toggle.module.scss';
 
@@ -38,11 +33,10 @@ import styles from './Toggle.module.scss';
  */
 export type ToggleSize = 'sm' | 'md' | 'lg';
 
-export interface ToggleProps
-  extends Omit<
-    ButtonHTMLAttributes<HTMLButtonElement>,
-    'value' | 'defaultValue' | 'onChange'
-  > {
+export interface ToggleProps extends Omit<
+  ButtonHTMLAttributes<HTMLButtonElement>,
+  'value' | 'defaultValue' | 'onChange'
+> {
   /** Controlled pressed state. */
   pressed?: boolean;
   /** Uncontrolled initial pressed state. */
@@ -98,12 +92,7 @@ export const Toggle = forwardRef<HTMLButtonElement, ToggleProps>(function Toggle
       aria-pressed={pressed}
       data-state={pressed ? 'on' : 'off'}
       disabled={disabled}
-      className={cn(
-        styles.root,
-        SIZE_CLASS[size],
-        pressed && styles.pressed,
-        className,
-      )}
+      className={cn(styles.root, SIZE_CLASS[size], pressed && styles.pressed, className)}
       onClick={(event) => {
         const next = !pressed;
         if (!isControlled) setUncontrolledPressed(next);

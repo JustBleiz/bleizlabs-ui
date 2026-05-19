@@ -56,14 +56,7 @@ export interface TableProps extends TableHTMLAttributes<HTMLTableElement> {
 }
 
 export const Table = forwardRef<HTMLTableElement, TableProps>(function Table(
-  {
-    striped = false,
-    bordered = false,
-    compact = false,
-    className,
-    children,
-    ...rest
-  },
+  { striped = false, bordered = false, compact = false, className, children, ...rest },
   ref,
 ) {
   return (

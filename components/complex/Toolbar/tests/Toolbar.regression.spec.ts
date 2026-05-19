@@ -16,9 +16,7 @@ test.describe('Toolbar — regression coverage', () => {
     await page.goto('/components/toolbar');
   });
 
-  test('TBR-R01 — arrow nav is synchronous (no setTimeout desync)', async ({
-    page,
-  }) => {
+  test('TBR-R01 — arrow nav is synchronous (no setTimeout desync)', async ({ page }) => {
     const toolbar = page.getByRole('toolbar', { name: 'Document actions' });
     const newBtn = toolbar.getByRole('button', { name: 'New' });
     const openBtn = toolbar.getByRole('button', { name: 'Open' });
@@ -40,9 +38,7 @@ test.describe('Toolbar — regression coverage', () => {
     });
     const response = await page.goto('/components/toolbar');
     expect(response?.status()).toBe(200);
-    await expect(
-      page.getByRole('toolbar', { name: 'Formatting' }),
-    ).toBeVisible();
+    await expect(page.getByRole('toolbar', { name: 'Formatting' })).toBeVisible();
     expect(hydrationWarnings).toHaveLength(0);
   });
 
@@ -56,9 +52,7 @@ test.describe('Toolbar — regression coverage', () => {
     await expect(newBtn).toHaveAttribute('tabindex', '0');
   });
 
-  test('TBR-R04 — multiple toolbars on the same page stay isolated', async ({
-    page,
-  }) => {
+  test('TBR-R04 — multiple toolbars on the same page stay isolated', async ({ page }) => {
     // Focusing in one toolbar should not affect roving in another.
     const formatting = page.getByRole('toolbar', { name: 'Formatting' });
     const docActions = page.getByRole('toolbar', { name: 'Document actions' });
@@ -71,9 +65,7 @@ test.describe('Toolbar — regression coverage', () => {
     await expect(docNew).toHaveAttribute('tabindex', '0');
   });
 
-  test('TBR-R05 — Tab on disabled-skip toolbar lands on first ENABLED item', async ({
-    page,
-  }) => {
+  test('TBR-R05 — Tab on disabled-skip toolbar lands on first ENABLED item', async ({ page }) => {
     const toolbar = page.getByRole('toolbar', { name: 'Document actions' });
     const newBtn = toolbar.getByRole('button', { name: 'New' });
     // Click outside first to drop focus
@@ -84,9 +76,7 @@ test.describe('Toolbar — regression coverage', () => {
     await expect(newBtn).toBeFocused();
   });
 
-  test('TBR-R06 — vertical toolbar ignores horizontal arrow keys', async ({
-    page,
-  }) => {
+  test('TBR-R06 — vertical toolbar ignores horizontal arrow keys', async ({ page }) => {
     const toolbar = page.getByRole('toolbar', { name: 'Tools' });
     const pencil = toolbar.getByRole('button', { name: 'Pencil' });
     await pencil.focus();
@@ -95,9 +85,7 @@ test.describe('Toolbar — regression coverage', () => {
     await expect(pencil).toBeFocused();
   });
 
-  test('TBR-R07 — horizontal toolbar ignores vertical arrow keys', async ({
-    page,
-  }) => {
+  test('TBR-R07 — horizontal toolbar ignores vertical arrow keys', async ({ page }) => {
     const toolbar = page.getByRole('toolbar', { name: 'Document actions' });
     const newBtn = toolbar.getByRole('button', { name: 'New' });
     await newBtn.focus();
@@ -105,9 +93,7 @@ test.describe('Toolbar — regression coverage', () => {
     await expect(newBtn).toBeFocused();
   });
 
-  test('TBR-R08 — Toggle inside ToggleGroup is part of toolbar roving', async ({
-    page,
-  }) => {
+  test('TBR-R08 — Toggle inside ToggleGroup is part of toolbar roving', async ({ page }) => {
     const toolbar = page.getByRole('toolbar', { name: 'Formatting' });
     const bold = toolbar.getByRole('button', { name: 'Bold' });
     const italic = toolbar.getByRole('button', { name: 'Italic' });
@@ -117,9 +103,7 @@ test.describe('Toolbar — regression coverage', () => {
     await expect(italic).toBeFocused();
   });
 
-  test('TBR-R09 — Separator is not a toolbar item (skipped by arrows)', async ({
-    page,
-  }) => {
+  test('TBR-R09 — Separator is not a toolbar item (skipped by arrows)', async ({ page }) => {
     const toolbar = page.getByRole('toolbar', { name: 'Formatting' });
     // The 3rd Toggle (Underline) is followed by a Separator and then a
     // 'left' alignment Toggle. Arrow from Underline should skip the
@@ -131,9 +115,7 @@ test.describe('Toolbar — regression coverage', () => {
     await expect(alignLeft).toBeFocused();
   });
 
-  test('TBR-R10 — Tab does NOT advance toolbar roving (browser-native exit)', async ({
-    page,
-  }) => {
+  test('TBR-R10 — Tab does NOT advance toolbar roving (browser-native exit)', async ({ page }) => {
     const toolbar = page.getByRole('toolbar', { name: 'Document actions' });
     const newBtn = toolbar.getByRole('button', { name: 'New' });
     const openBtn = toolbar.getByRole('button', { name: 'Open' });
@@ -144,9 +126,7 @@ test.describe('Toolbar — regression coverage', () => {
     await expect(newBtn).not.toBeFocused();
   });
 
-  test('TBR-R11 — Enter on a Toggle child toggles aria-pressed via lib', async ({
-    page,
-  }) => {
+  test('TBR-R11 — Enter on a Toggle child toggles aria-pressed via lib', async ({ page }) => {
     const toolbar = page.getByRole('toolbar', { name: 'Formatting' });
     const italic = toolbar.getByRole('button', { name: 'Italic' });
     // Initial: italic is NOT in defaultValue (only 'bold')
@@ -199,16 +179,12 @@ test.describe('Toolbar — regression coverage', () => {
     const newBtn = toolbar.getByRole('button', { name: 'New' });
     await newBtn.focus();
     // The toolbar root should NOT have a focus ring — outline:none in CSS.
-    const rootOutline = await toolbar.evaluate(
-      (el) => window.getComputedStyle(el).outlineStyle,
-    );
+    const rootOutline = await toolbar.evaluate((el) => window.getComputedStyle(el).outlineStyle);
     // Outline may be 'none' or empty; what matters is no visible default.
     expect(['none', '', 'auto']).toContain(rootOutline);
   });
 
-  test('TBR-R16 — RTL with loop=true wraps correctly (visual-right edge)', async ({
-    page,
-  }) => {
+  test('TBR-R16 — RTL with loop=true wraps correctly (visual-right edge)', async ({ page }) => {
     const toolbar = page.getByRole('toolbar', { name: 'Editor (RTL)' });
     const all = toolbar.getByRole('button');
     const first = all.nth(0);
@@ -236,9 +212,7 @@ test.describe('Toolbar — regression coverage', () => {
     await expect(italic).toHaveAttribute('tabindex', '0');
   });
 
-  test('TBR-R18 — rapid arrow presses are synchronous (no race condition)', async ({
-    page,
-  }) => {
+  test('TBR-R18 — rapid arrow presses are synchronous (no race condition)', async ({ page }) => {
     const toolbar = page.getByRole('toolbar', { name: 'Formatting' });
     const bold = toolbar.getByRole('button', { name: 'Bold' });
     const italic = toolbar.getByRole('button', { name: 'Italic' });
@@ -254,9 +228,7 @@ test.describe('Toolbar — regression coverage', () => {
     void italic;
   });
 
-  test('TBR-R19 — Home/End with disabled at extremes still work correctly', async ({
-    page,
-  }) => {
+  test('TBR-R19 — Home/End with disabled at extremes still work correctly', async ({ page }) => {
     // Document actions toolbar has Save disabled but it's not at extremes.
     // We verify that End jumps over Save to the last enabled (Print).
     const toolbar = page.getByRole('toolbar', { name: 'Document actions' });

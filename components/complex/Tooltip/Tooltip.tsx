@@ -128,9 +128,7 @@ export function TooltipProvider({
   const openCountRef = useRef(0);
 
   const shouldSkipDelay = useCallback(
-    () =>
-      openCountRef.current > 0 ||
-      Date.now() - lastCloseRef.current < skipDelayDuration,
+    () => openCountRef.current > 0 || Date.now() - lastCloseRef.current < skipDelayDuration,
     [skipDelayDuration],
   );
 

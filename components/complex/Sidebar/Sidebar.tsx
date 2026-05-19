@@ -159,8 +159,7 @@ export interface SidebarGroupProps extends HTMLAttributes<HTMLDivElement> {
   label?: ReactNode;
 }
 
-export interface SidebarItemProps
-  extends Omit<AnchorHTMLAttributes<HTMLAnchorElement>, 'onClick'> {
+export interface SidebarItemProps extends Omit<AnchorHTMLAttributes<HTMLAnchorElement>, 'onClick'> {
   /** Current page indicator — sets aria-current="page" + data-active. */
   isActive?: boolean;
   /** Disable activation; item stays focusable (aria-disabled, not native disabled). */
@@ -270,11 +269,7 @@ export const SidebarProvider = forwardRef<HTMLDivElement, SidebarProviderProps>(
     );
 
     if (asChild) {
-      return (
-        <SidebarContext.Provider value={contextValue}>
-          {children}
-        </SidebarContext.Provider>
-      );
+      return <SidebarContext.Provider value={contextValue}>{children}</SidebarContext.Provider>;
     }
 
     return (
@@ -396,11 +391,7 @@ export const Sidebar = forwardRef<HTMLElement, SidebarProps>(function Sidebar(
     return (
       <FloatingPortal>
         <div data-sidebar-portal className={styles.portalRoot}>
-          <div
-            className={styles.overlay}
-            data-state="open"
-            onClick={handleOverlayClick}
-          />
+          <div className={styles.overlay} data-state="open" onClick={handleOverlayClick} />
           <div
             ref={mobileRef}
             role="dialog"
@@ -457,14 +448,7 @@ export const Sidebar = forwardRef<HTMLElement, SidebarProps>(function Sidebar(
 
 export const SidebarTrigger = forwardRef<HTMLButtonElement, SidebarTriggerProps>(
   function SidebarTrigger(
-    {
-      asChild = false,
-      className,
-      onClick,
-      children,
-      'aria-label': ariaLabel,
-      ...rest
-    },
+    { asChild = false, className, onClick, children, 'aria-label': ariaLabel, ...rest },
     ref,
   ) {
     const ctx = useSidebarContext('SidebarTrigger');
@@ -529,150 +513,149 @@ function DefaultTriggerIcon({ open }: { open: boolean }): ReactNode {
 // SidebarHeader
 // ============================================================================
 
-export const SidebarHeader = forwardRef<HTMLElement, SidebarHeaderProps>(
-  function SidebarHeader({ className, children, ...rest }, ref) {
-    return (
-      <header ref={ref} className={cn(styles.header, className)} {...rest}>
-        {children}
-      </header>
-    );
-  },
-);
+export const SidebarHeader = forwardRef<HTMLElement, SidebarHeaderProps>(function SidebarHeader(
+  { className, children, ...rest },
+  ref,
+) {
+  return (
+    <header ref={ref} className={cn(styles.header, className)} {...rest}>
+      {children}
+    </header>
+  );
+});
 
 // ============================================================================
 // SidebarContent
 // ============================================================================
 
-export const SidebarContent = forwardRef<HTMLElement, SidebarContentProps>(
-  function SidebarContent(
-    {
-      'aria-label': ariaLabel = 'Sidebar navigation',
-      'aria-labelledby': ariaLabelledby,
-      className,
-      children,
-      ...rest
-    },
-    ref,
-  ) {
-    return (
-      <nav
-        ref={ref}
-        aria-label={ariaLabelledby ? undefined : ariaLabel}
-        aria-labelledby={ariaLabelledby}
-        className={cn(styles.content, className)}
-        {...rest}
-      >
-        {children}
-      </nav>
-    );
+export const SidebarContent = forwardRef<HTMLElement, SidebarContentProps>(function SidebarContent(
+  {
+    'aria-label': ariaLabel = 'Sidebar navigation',
+    'aria-labelledby': ariaLabelledby,
+    className,
+    children,
+    ...rest
   },
-);
+  ref,
+) {
+  return (
+    <nav
+      ref={ref}
+      aria-label={ariaLabelledby ? undefined : ariaLabel}
+      aria-labelledby={ariaLabelledby}
+      className={cn(styles.content, className)}
+      {...rest}
+    >
+      {children}
+    </nav>
+  );
+});
 
 // ============================================================================
 // SidebarFooter
 // ============================================================================
 
-export const SidebarFooter = forwardRef<HTMLElement, SidebarFooterProps>(
-  function SidebarFooter({ className, children, ...rest }, ref) {
-    return (
-      <footer ref={ref} className={cn(styles.footer, className)} {...rest}>
-        {children}
-      </footer>
-    );
-  },
-);
+export const SidebarFooter = forwardRef<HTMLElement, SidebarFooterProps>(function SidebarFooter(
+  { className, children, ...rest },
+  ref,
+) {
+  return (
+    <footer ref={ref} className={cn(styles.footer, className)} {...rest}>
+      {children}
+    </footer>
+  );
+});
 
 // ============================================================================
 // SidebarGroup
 // ============================================================================
 
-export const SidebarGroup = forwardRef<HTMLDivElement, SidebarGroupProps>(
-  function SidebarGroup({ label, className, children, ...rest }, ref) {
-    const generatedId = useId();
-    const labelId = `sidebar-group-label-${generatedId}`;
-    const hasLabel = label !== undefined && label !== null && label !== false;
+export const SidebarGroup = forwardRef<HTMLDivElement, SidebarGroupProps>(function SidebarGroup(
+  { label, className, children, ...rest },
+  ref,
+) {
+  const generatedId = useId();
+  const labelId = `sidebar-group-label-${generatedId}`;
+  const hasLabel = label !== undefined && label !== null && label !== false;
 
-    return (
-      <div
-        ref={ref}
-        role="group"
-        aria-labelledby={hasLabel ? labelId : undefined}
-        className={cn(styles.group, className)}
-        {...rest}
-      >
-        {hasLabel ? (
-          <div id={labelId} className={styles.groupLabel}>
-            {label}
-          </div>
-        ) : null}
-        <div className={styles.groupItems}>{children}</div>
-      </div>
-    );
-  },
-);
+  return (
+    <div
+      ref={ref}
+      role="group"
+      aria-labelledby={hasLabel ? labelId : undefined}
+      className={cn(styles.group, className)}
+      {...rest}
+    >
+      {hasLabel ? (
+        <div id={labelId} className={styles.groupLabel}>
+          {label}
+        </div>
+      ) : null}
+      <div className={styles.groupItems}>{children}</div>
+    </div>
+  );
+});
 
 // ============================================================================
 // SidebarItem
 // ============================================================================
 
-export const SidebarItem = forwardRef<HTMLAnchorElement, SidebarItemProps>(
-  function SidebarItem(
-    {
-      isActive = false,
-      disabled = false,
-      asChild = false,
-      className,
-      onClick,
-      onKeyDown,
-      href,
-      children,
-      'aria-current': ariaCurrent,
-      ...rest
-    },
-    ref,
-  ) {
-    const Component = asChild ? Slot : 'a';
-
-    const handleClick = useCallback(
-      (event: ReactMouseEvent<HTMLAnchorElement>) => {
-        if (disabled) {
-          event.preventDefault();
-          return;
-        }
-        onClick?.(event);
-      },
-      [disabled, onClick],
-    );
-
-    const handleKeyDown = useCallback(
-      (event: ReactKeyboardEvent<HTMLAnchorElement>) => {
-        if (disabled && (event.key === 'Enter' || event.key === ' ')) {
-          event.preventDefault();
-          return;
-        }
-        onKeyDown?.(event);
-      },
-      [disabled, onKeyDown],
-    );
-
-    return (
-      <Component
-        ref={ref}
-        href={asChild ? undefined : href}
-        aria-current={isActive ? (ariaCurrent ?? 'page') : ariaCurrent}
-        aria-disabled={disabled ? 'true' : undefined}
-        data-active={isActive ? 'true' : undefined}
-        data-disabled={disabled ? 'true' : undefined}
-        className={cn(styles.item, className)}
-        onClick={handleClick}
-        onKeyDown={handleKeyDown}
-        {...rest}
-      >
-        {children}
-      </Component>
-    );
+export const SidebarItem = forwardRef<HTMLAnchorElement, SidebarItemProps>(function SidebarItem(
+  {
+    isActive = false,
+    disabled = false,
+    asChild = false,
+    className,
+    onClick,
+    onKeyDown,
+    href,
+    children,
+    'aria-current': ariaCurrent,
+    ...rest
   },
-);
+  ref,
+) {
+  const Component = asChild ? Slot : 'a';
+
+  const handleClick = useCallback(
+    (event: ReactMouseEvent<HTMLAnchorElement>) => {
+      if (disabled) {
+        event.preventDefault();
+        return;
+      }
+      onClick?.(event);
+    },
+    [disabled, onClick],
+  );
+
+  const handleKeyDown = useCallback(
+    (event: ReactKeyboardEvent<HTMLAnchorElement>) => {
+      if (disabled && (event.key === 'Enter' || event.key === ' ')) {
+        event.preventDefault();
+        return;
+      }
+      onKeyDown?.(event);
+    },
+    [disabled, onKeyDown],
+  );
+
+  return (
+    <Component
+      ref={ref}
+      href={asChild ? undefined : href}
+      aria-current={isActive ? (ariaCurrent ?? 'page') : ariaCurrent}
+      aria-disabled={disabled ? 'true' : undefined}
+      data-active={isActive ? 'true' : undefined}
+      data-disabled={disabled ? 'true' : undefined}
+      className={cn(styles.item, className)}
+      onClick={handleClick}
+      onKeyDown={handleKeyDown}
+      {...rest}
+    >
+      {children}
+    </Component>
+  );
+});
 
 // ============================================================================
 // SidebarSeparator

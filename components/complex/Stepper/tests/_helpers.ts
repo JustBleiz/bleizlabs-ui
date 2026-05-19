@@ -32,10 +32,7 @@ export function stepByLabel(stepper: Locator, label: string): Locator {
   return stepper.locator(`li[data-status]`).filter({ hasText: label });
 }
 
-export function clickableStepByIndex(
-  stepper: Locator,
-  index: number,
-): Locator {
+export function clickableStepByIndex(stepper: Locator, index: number): Locator {
   return stepper.locator(`button[data-step-clickable="true"][data-step-index="${index}"]`);
 }
 

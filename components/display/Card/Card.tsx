@@ -1,8 +1,4 @@
-import {
-  forwardRef,
-  type CSSProperties,
-  type HTMLAttributes,
-} from 'react';
+import { forwardRef, type CSSProperties, type HTMLAttributes } from 'react';
 import { Slot } from '../../utils/Slot';
 import { cn } from '../../utils/cn';
 import type { SpaceIndex } from '../../types/spacing';
@@ -101,7 +97,7 @@ export const Card = forwardRef<HTMLDivElement, CardProps>(function Card(
     children,
     ...rest
   },
-  ref
+  ref,
 ) {
   const Comp = asChild ? Slot : 'div';
 

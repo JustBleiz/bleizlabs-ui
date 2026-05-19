@@ -22,7 +22,8 @@
   border-radius: var(--radius-full);
   background-color: var(--color-surface-raised);
   color: var(--color-text-primary);
-  transition: border-color var(--duration-hover) var(--easing-default),
+  transition:
+    border-color var(--duration-hover) var(--easing-default),
     color var(--duration-hover) var(--easing-default);
 }
 

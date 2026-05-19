@@ -53,9 +53,7 @@ test.describe('Calendar — keyboard interactions', () => {
     expect(focused && firstDate && focused > firstDate).toBe(true);
   });
 
-  test('CAL-R02 — ArrowDown moves focus 7 days forward (same weekday)', async ({
-    page,
-  }) => {
+  test('CAL-R02 — ArrowDown moves focus 7 days forward (same weekday)', async ({ page }) => {
     // Section 2 — controlled default 2026-04-20
     const sections = page.locator('section');
     const controlled = sections.nth(1);
@@ -67,9 +65,7 @@ test.describe('Calendar — keyboard interactions', () => {
     await expect(apr27).toBeFocused();
   });
 
-  test('CAL-R03 — Home/End: first/last day of week (weekStartsOn=0 Sunday)', async ({
-    page,
-  }) => {
+  test('CAL-R03 — Home/End: first/last day of week (weekStartsOn=0 Sunday)', async ({ page }) => {
     // Section 10 — weekStartsOn=0 (Sunday). Use today's cell via first cell
     const sections = page.locator('section');
     const forceSunday = sections.nth(9);
@@ -93,9 +89,7 @@ test.describe('Calendar — keyboard interactions', () => {
     expect(await grid.count()).toBeGreaterThanOrEqual(1);
   });
 
-  test('CAL-R04 — PageDown advances to next month same day-of-month', async ({
-    page,
-  }) => {
+  test('CAL-R04 — PageDown advances to next month same day-of-month', async ({ page }) => {
     const sections = page.locator('section');
     const controlled = sections.nth(1);
     const grid = controlled.getByRole('grid');
@@ -121,9 +115,7 @@ test.describe('Calendar — keyboard interactions', () => {
     await expect(controlled.getByText('April 2027')).toBeVisible();
   });
 
-  test('CAL-R06 — Disabled dates skipped during arrow nav (weekends)', async ({
-    page,
-  }) => {
+  test('CAL-R06 — Disabled dates skipped during arrow nav (weekends)', async ({ page }) => {
     // Section 5 — disabled array (Apr 10, 11, 12) + defaultMonth Apr 2026
     const sections = page.locator('section');
     const arrayDisabled = sections.nth(4);
@@ -139,9 +131,7 @@ test.describe('Calendar — keyboard interactions', () => {
     await expect(apr13).toBeFocused();
   });
 
-  test('CAL-R07 — Meta+Arrow modifier skipped (browser hotkey passthrough)', async ({
-    page,
-  }) => {
+  test('CAL-R07 — Meta+Arrow modifier skipped (browser hotkey passthrough)', async ({ page }) => {
     const sections = page.locator('section');
     const controlled = sections.nth(1);
     const grid = controlled.getByRole('grid');
@@ -152,9 +142,7 @@ test.describe('Calendar — keyboard interactions', () => {
     await expect(apr20).toBeFocused();
   });
 
-  test('Enter selects the focused date (sets aria-selected)', async ({
-    page,
-  }) => {
+  test('Enter selects the focused date (sets aria-selected)', async ({ page }) => {
     // Section 2 — controlled, Enter on a non-selected cell selects
     const sections = page.locator('section');
     const controlled = sections.nth(1);

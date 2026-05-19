@@ -12,9 +12,7 @@ test.describe('DropdownMenu — regression cases (Radix closed issues)', () => {
     await page.goto('/components/dropdown-menu');
   });
 
-  test('radix-R01 — focus not stolen after close (no exit animation in E21)', async ({
-    page,
-  }) => {
+  test('radix-R01 — focus not stolen after close (no exit animation in E21)', async ({ page }) => {
     const trigger = page.getByRole('button', { name: 'Actions' });
     await trigger.click();
     await page.keyboard.press('Escape');
@@ -69,18 +67,14 @@ test.describe('DropdownMenu — regression cases (Radix closed issues)', () => {
     // No disabled-trigger scenario in playground.
   });
 
-  test('radix-R10 — controlled mode: onOpenChange fires once on item select', async ({
-    page,
-  }) => {
+  test('radix-R10 — controlled mode: onOpenChange fires once on item select', async ({ page }) => {
     const controlledTrigger = page.getByRole('button', { name: 'Controlled menu' });
     await controlledTrigger.click();
     await page.getByRole('menuitem', { name: 'Option 1' }).click();
     await expect(page.getByRole('menu')).not.toBeVisible();
   });
 
-  test('radix-R11 — Enter on hover-focused disabled item does not activate', async ({
-    page,
-  }) => {
+  test('radix-R11 — Enter on hover-focused disabled item does not activate', async ({ page }) => {
     await page.getByRole('button', { name: 'File' }).click();
     const disabled = page.getByRole('menuitem', { name: /Save as/i });
     const disabledAttr = await disabled.getAttribute('disabled');
@@ -101,9 +95,7 @@ test.describe('DropdownMenu — regression cases (Radix closed issues)', () => {
     expect(expanded).not.toBeNull();
   });
 
-  test('radix-R15 — initial focus timing (first item focused after rAF)', async ({
-    page,
-  }) => {
+  test('radix-R15 — initial focus timing (first item focused after rAF)', async ({ page }) => {
     await page.getByRole('button', { name: 'Actions' }).click();
     await expect(page.getByRole('menuitem').first()).toBeFocused();
   });
@@ -133,9 +125,7 @@ test.describe('DropdownMenu — regression cases (Radix closed issues)', () => {
     await expect(page.getByRole('menu')).toBeVisible();
   });
 
-  test('radix-R18 — matchTriggerWidth forces min-width to trigger width', async ({
-    page,
-  }) => {
+  test('radix-R18 — matchTriggerWidth forces min-width to trigger width', async ({ page }) => {
     const trigger = page.getByRole('button', { name: /Select account/i });
     const triggerBox = await trigger.boundingBox();
     await trigger.click();
@@ -146,9 +136,7 @@ test.describe('DropdownMenu — regression cases (Radix closed issues)', () => {
     await expect
       .poll(async () => menu.evaluate((el) => (el as HTMLElement).style.minWidth))
       .not.toBe('');
-    const inlineMinWidth = await menu.evaluate(
-      (el) => (el as HTMLElement).style.minWidth,
-    );
+    const inlineMinWidth = await menu.evaluate((el) => (el as HTMLElement).style.minWidth);
     // Expect e.g. "279px" — parse number and compare to trigger width
     const minWidthPx = parseFloat(inlineMinWidth);
     expect(triggerBox).not.toBeNull();

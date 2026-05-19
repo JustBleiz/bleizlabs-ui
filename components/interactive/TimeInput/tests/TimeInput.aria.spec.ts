@@ -13,13 +13,7 @@
 
 import { test, expect } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
-import {
-  groupOf,
-  hourFieldOf,
-  minuteFieldOf,
-  periodToggleOf,
-  timeInputBy,
-} from './_helpers';
+import { groupOf, hourFieldOf, minuteFieldOf, periodToggleOf, timeInputBy } from './_helpers';
 
 test.describe('TimeInput — ARIA semantics', () => {
   test.beforeEach(async ({ page }) => {
@@ -78,9 +72,7 @@ test.describe('TimeInput — ARIA semantics', () => {
   });
 
   test('TI-A07 — axe-core zero violations on demo route', async ({ page }) => {
-    const results = await new AxeBuilder({ page })
-      .disableRules(['color-contrast'])
-      .analyze();
+    const results = await new AxeBuilder({ page }).disableRules(['color-contrast']).analyze();
     expect(results.violations).toEqual([]);
   });
 });

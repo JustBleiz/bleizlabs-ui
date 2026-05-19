@@ -15,15 +15,12 @@ export default function EyebrowPlaygroundPage() {
           Eyebrow
         </Heading>
         <p className={styles.intro}>
-          Small uppercase atelier label with optional numeric (or alphabetic)
-          prefix and a 14px hairline connector. The eyebrow scale (0.7rem font /
-          0.08em tracking / tabular-nums) is the atelier vocabulary signature —
-          intentionally not tokenised. Pair with{' '}
-          <code>{'<Heading>'}</code> for section markers or as a label tier
-          above body text. Sister atom to{' '}
-          <code>Text variant=&quot;eyebrow&quot;</code> — pick this atom when
-          the numbered prefix + hairline are wanted; pick the variant for
-          inline composition without ornament.
+          Small uppercase atelier label with optional numeric (or alphabetic) prefix and a 14px
+          hairline connector. The eyebrow scale (0.7rem font / 0.08em tracking / tabular-nums) is
+          the atelier vocabulary signature — intentionally not tokenised. Pair with{' '}
+          <code>{'<Heading>'}</code> for section markers or as a label tier above body text. Sister
+          atom to <code>Text variant=&quot;eyebrow&quot;</code> — pick this atom when the numbered
+          prefix + hairline are wanted; pick the variant for inline composition without ornament.
         </p>
       </header>
 
@@ -34,8 +31,7 @@ export default function EyebrowPlaygroundPage() {
         <div className={styles.sectionBody}>
           <Eyebrow>Total cost</Eyebrow>
           <p className={styles.bodyText}>
-            Bare label — no prefix, no hairline. Default tone is{' '}
-            <code>muted</code>.
+            Bare label — no prefix, no hairline. Default tone is <code>muted</code>.
           </p>
         </div>
       </section>
@@ -51,8 +47,8 @@ export default function EyebrowPlaygroundPage() {
             <Eyebrow index={12}>Confirm and ship</Eyebrow>
           </div>
           <p className={styles.bodyText}>
-            Numbers below 10 are zero-padded to 2 digits (1 → &ldquo;01&rdquo;).
-            Hairline connector renders between index and label.
+            Numbers below 10 are zero-padded to 2 digits (1 → &ldquo;01&rdquo;). Hairline connector
+            renders between index and label.
           </p>
         </div>
       </section>
@@ -67,8 +63,8 @@ export default function EyebrowPlaygroundPage() {
             <Eyebrow index="II">Phase two</Eyebrow>
           </div>
           <p className={styles.bodyText}>
-            String indices render verbatim — useful for letter-keyed (A/B/C) or
-            roman-numeral progressions.
+            String indices render verbatim — useful for letter-keyed (A/B/C) or roman-numeral
+            progressions.
           </p>
         </div>
       </section>
@@ -86,8 +82,8 @@ export default function EyebrowPlaygroundPage() {
             </Eyebrow>
           </div>
           <p className={styles.bodyText}>
-            <code>strong</code> tone tints the index with{' '}
-            <code>--color-brand-strong</code> for emphasis on track markers.
+            <code>strong</code> tone tints the index with <code>--color-brand-strong</code> for
+            emphasis on track markers.
           </p>
         </div>
       </section>
@@ -105,8 +101,7 @@ export default function EyebrowPlaygroundPage() {
               Twoje konto
             </Heading>
             <Text variant="body" color="muted">
-              Eyebrow as tier-marker above heading is the canonical atelier
-              section pattern.
+              Eyebrow as tier-marker above heading is the canonical atelier section pattern.
             </Text>
           </div>
         </div>
@@ -133,9 +128,8 @@ export default function EyebrowPlaygroundPage() {
             }}
           />
           <p className={styles.bodyText}>
-            With <code>asChild</code>, Eyebrow projects styling onto the single
-            child element. Use to bind eyebrow vocabulary to{' '}
-            <code>{'<label htmlFor>'}</code> form semantics.
+            With <code>asChild</code>, Eyebrow projects styling onto the single child element. Use
+            to bind eyebrow vocabulary to <code>{'<label htmlFor>'}</code> form semantics.
           </p>
         </div>
       </section>

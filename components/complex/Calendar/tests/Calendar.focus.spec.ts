@@ -21,9 +21,7 @@ test.describe('Calendar — focus behavior', () => {
     await page.goto('/components/calendar');
   });
 
-  test('CAL-R08 — roving tabindex: only focused cell has tabindex=0', async ({
-    page,
-  }) => {
+  test('CAL-R08 — roving tabindex: only focused cell has tabindex=0', async ({ page }) => {
     // Section 2 — controlled default 2026-04-20 → that cell is focused
     const sections = page.locator('section');
     const controlled = sections.nth(1);
@@ -48,9 +46,7 @@ test.describe('Calendar — focus behavior', () => {
     await expect(apr20).toHaveAttribute('tabindex', '-1');
   });
 
-  test('CAL-R09 — Tab moves focus OUT of grid (single tabstop)', async ({
-    page,
-  }) => {
+  test('CAL-R09 — Tab moves focus OUT of grid (single tabstop)', async ({ page }) => {
     const sections = page.locator('section');
     const controlled = sections.nth(1);
     const grid = controlled.getByRole('grid');
@@ -64,9 +60,7 @@ test.describe('Calendar — focus behavior', () => {
     expect(activeDataCell).toBeNull();
   });
 
-  test('CAL-R10 — disabled cells remain focusable (aria-disabled only)', async ({
-    page,
-  }) => {
+  test('CAL-R10 — disabled cells remain focusable (aria-disabled only)', async ({ page }) => {
     // Section 5 — disabled array includes Apr 10, 11, 12
     const sections = page.locator('section');
     const arrayDisabled = sections.nth(4);
@@ -79,9 +73,7 @@ test.describe('Calendar — focus behavior', () => {
     await expect(apr10).toBeFocused();
   });
 
-  test('Chevron click keeps focus on chevron (no steal to grid)', async ({
-    page,
-  }) => {
+  test('Chevron click keeps focus on chevron (no steal to grid)', async ({ page }) => {
     const sections = page.locator('section');
     const controlled = sections.nth(1);
     const nextBtn = controlled.getByRole('button', { name: 'Next month' });

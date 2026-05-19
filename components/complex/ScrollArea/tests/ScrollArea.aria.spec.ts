@@ -23,9 +23,7 @@ test.describe('ScrollArea — ARIA + accessibility tree', () => {
     await page.goto('/components/scroll-area');
   });
 
-  test('SA-R06 — native scrollbars hidden (scrollbar-width: none)', async ({
-    page,
-  }) => {
+  test('SA-R06 — native scrollbars hidden (scrollbar-width: none)', async ({ page }) => {
     const sections = page.locator('section');
     const basic = sections.nth(0);
     const viewport = basic.locator('div[tabindex="0"]').first();
@@ -35,9 +33,7 @@ test.describe('ScrollArea — ARIA + accessibility tree', () => {
     expect(scrollbarWidth).toBe('none');
   });
 
-  test('SA-R07 — custom scrollbars only render when content overflows', async ({
-    page,
-  }) => {
+  test('SA-R07 — custom scrollbars only render when content overflows', async ({ page }) => {
     // Section 7 — Content fits, no scrollbars should be rendered.
     const sections = page.locator('section');
     const fitsSection = sections.nth(6);
@@ -61,9 +57,7 @@ test.describe('ScrollArea — ARIA + accessibility tree', () => {
     // (visibility="auto") behavior is covered indirectly in focus spec.
   });
 
-  test('Viewport is keyboard-focusable via tabIndex=0 (WCAG 2.1.1)', async ({
-    page,
-  }) => {
+  test('Viewport is keyboard-focusable via tabIndex=0 (WCAG 2.1.1)', async ({ page }) => {
     const sections = page.locator('section');
     const basic = sections.nth(0);
     const viewport = basic.locator('div[tabindex="0"]').first();
@@ -84,9 +78,7 @@ test.describe('ScrollArea — ARIA + accessibility tree', () => {
     // corner path is never exercised. Skipped alongside SA-R09.
   });
 
-  test('aria snapshot of basic scroll area contains focusable viewport', async ({
-    page,
-  }) => {
+  test('aria snapshot of basic scroll area contains focusable viewport', async ({ page }) => {
     const sections = page.locator('section');
     const basic = sections.nth(0);
     const viewport = basic.locator('div[tabindex="0"]').first();
@@ -103,15 +95,11 @@ test.describe('ScrollArea — ARIA + accessibility tree', () => {
     expect(results.violations).toEqual([]);
   });
 
-  test('axe-core zero violations — after scrolling the basic viewport', async ({
-    page,
-  }) => {
+  test('axe-core zero violations — after scrolling the basic viewport', async ({ page }) => {
     const sections = page.locator('section');
     const basic = sections.nth(0);
     const viewport = basic.locator('div[tabindex="0"]').first();
-    await viewport.evaluate((el) =>
-      el.scrollTo({ top: 300, behavior: 'instant' }),
-    );
+    await viewport.evaluate((el) => el.scrollTo({ top: 300, behavior: 'instant' }));
     const results = await new AxeBuilder({ page })
       .withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa'])
       .analyze();

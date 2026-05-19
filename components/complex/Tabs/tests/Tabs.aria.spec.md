@@ -11,7 +11,9 @@
 ## Tests
 
 ```ts
-test('TB-R06 — orientation affects keyboard navigation only, not visual layout', async ({ page }) => {
+test('TB-R06 — orientation affects keyboard navigation only, not visual layout', async ({
+  page,
+}) => {
   await page.goto('/components/tabs?orientation=vertical');
   const tablist = page.getByRole('tablist');
   // aria-orientation reflects prop

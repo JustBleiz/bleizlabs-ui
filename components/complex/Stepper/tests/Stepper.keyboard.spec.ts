@@ -12,24 +12,19 @@ import { test, expect } from '@playwright/test';
 import { navBy } from './_helpers';
 
 const URL = '/components/stepper';
-const WIZARD_LABEL =
-  'Onboarding wizard — click visited steps to revisit';
+const WIZARD_LABEL = 'Onboarding wizard — click visited steps to revisit';
 
 test.describe('Stepper — keyboard', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto(URL);
   });
 
-  test('STEP-K01: Tab enters the step list at currently-focused clickable', async ({
-    page,
-  }) => {
+  test('STEP-K01: Tab enters the step list at currently-focused clickable', async ({ page }) => {
     const nav = navBy(page, WIZARD_LABEL);
     // Demo currentStep=2 → step 2 is active (non-clickable in visited mode);
     // first clickable is step 0 ("Account"). Roving tabindex initializes
     // there.
-    const firstBtn = nav.locator(
-      'button[data-step-clickable="true"][data-step-index="0"]',
-    );
+    const firstBtn = nav.locator('button[data-step-clickable="true"][data-step-index="0"]');
     await firstBtn.focus();
     await expect(firstBtn).toBeFocused();
   });
@@ -46,9 +41,7 @@ test.describe('Stepper — keyboard', () => {
     await expect(step1).toBeFocused();
   });
 
-  test('STEP-K03: Right Arrow loops from last clickable to first', async ({
-    page,
-  }) => {
+  test('STEP-K03: Right Arrow loops from last clickable to first', async ({ page }) => {
     const nav = navBy(page, WIZARD_LABEL);
     // Demo: only steps 0+1 are clickable (complete). Last clickable = step 1.
     const step1 = nav.locator('button[data-step-index="1"]');
@@ -58,9 +51,7 @@ test.describe('Stepper — keyboard', () => {
     await expect(step0).toBeFocused();
   });
 
-  test('STEP-K04: Left Arrow moves focus to previous clickable + loops', async ({
-    page,
-  }) => {
+  test('STEP-K04: Left Arrow moves focus to previous clickable + loops', async ({ page }) => {
     const nav = navBy(page, WIZARD_LABEL);
     const step0 = nav.locator('button[data-step-index="0"]');
     await step0.focus();
@@ -88,9 +79,7 @@ test.describe('Stepper — keyboard', () => {
     await expect(step1).toBeFocused();
   });
 
-  test('STEP-K07: Space activates focused step (onStepClick fires)', async ({
-    page,
-  }) => {
+  test('STEP-K07: Space activates focused step (onStepClick fires)', async ({ page }) => {
     const nav = navBy(page, WIZARD_LABEL);
     const step0 = nav.locator('button[data-step-index="0"]');
     await step0.focus();

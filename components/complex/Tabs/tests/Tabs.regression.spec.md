@@ -7,7 +7,9 @@ R18, R19, R22 (keyboard/focus/aria-specific cases in respective spec files).
 ## Tests
 
 ```ts
-test('TB-R01 — controlled-to-uncontrolled runtime switch is anti-pattern (no crash)', async ({ page }) => {
+test('TB-R01 — controlled-to-uncontrolled runtime switch is anti-pattern (no crash)', async ({
+  page,
+}) => {
   await page.goto('/components/tabs?controlled=toggle');
   const toggleButton = page.getByRole('button', { name: 'Toggle controlled' });
   await toggleButton.click();
@@ -27,7 +29,9 @@ test('TB-R05 — arrow nav activation is synchronous (no setTimeout desync)', as
   expect(await overview.getAttribute('aria-selected')).toBe('false');
 });
 
-test('TB-R07 — SSR mount: no module-level DOM access, use client boundary correct', async ({ page }) => {
+test('TB-R07 — SSR mount: no module-level DOM access, use client boundary correct', async ({
+  page,
+}) => {
   const response = await page.goto('/components/tabs');
   expect(response?.status()).toBe(200);
   // Server-rendered page includes tablist without hydration errors
@@ -35,7 +39,9 @@ test('TB-R07 — SSR mount: no module-level DOM access, use client boundary corr
   await expect(tablist).toBeVisible();
   // Check for absence of hydration warnings in console
   const warnings: string[] = [];
-  page.on('console', (msg) => { if (msg.type() === 'warning') warnings.push(msg.text()); });
+  page.on('console', (msg) => {
+    if (msg.type() === 'warning') warnings.push(msg.text());
+  });
   await page.reload();
   expect(warnings.filter((w) => w.includes('hydration'))).toHaveLength(0);
 });
@@ -63,7 +69,9 @@ test('TB-R10 — onValueChange fires once per transition (no double-fire)', asyn
   expect(calls).toEqual(['tasks']);
 });
 
-test('TB-R11 — defaultValue with no matching trigger falls back to first trigger', async ({ page }) => {
+test('TB-R11 — defaultValue with no matching trigger falls back to first trigger', async ({
+  page,
+}) => {
   await page.goto('/components/tabs?defaultValue=nonexistent');
   const first = page.getByRole('tab').first();
   // Fallback behavior: first trigger becomes active

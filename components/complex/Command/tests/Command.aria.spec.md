@@ -25,8 +25,8 @@ test('CMD-R11 — options role="option" + aria-selected synced to highlight', as
   await page.getByRole('button', { name: 'Open palette' }).click();
   await page.keyboard.press('ArrowDown');
   const options = page.getByRole('option');
-  const selectedCount = await options.evaluateAll((els) =>
-    els.filter((el) => el.getAttribute('aria-selected') === 'true').length,
+  const selectedCount = await options.evaluateAll(
+    (els) => els.filter((el) => el.getAttribute('aria-selected') === 'true').length,
   );
   expect(selectedCount).toBe(1);
 });
@@ -40,7 +40,9 @@ test('CMD-R12 — groups role="group" + aria-labelledby to group heading', async
 
 test('CMD-R13 — SC 1.1.1 dev-mode warn if no aria-label and no visible label', async ({ page }) => {
   const warnings: string[] = [];
-  page.on('console', (msg) => { if (msg.type() === 'warning') warnings.push(msg.text()); });
+  page.on('console', (msg) => {
+    if (msg.type() === 'warning') warnings.push(msg.text());
+  });
   await page.goto('/components/command?noLabel=1');
   await page.getByRole('button', { name: 'Open palette' }).click();
   // Dev-mode warning when accessible name missing

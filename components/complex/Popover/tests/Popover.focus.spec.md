@@ -68,7 +68,7 @@ test('modal mode: inert removed after close', async ({ page }) => {
   await trigger.click();
   await page.keyboard.press('Escape');
   const anyInert = await page.evaluate(() =>
-    Array.from(document.body.children).some((el) => el.hasAttribute('inert'))
+    Array.from(document.body.children).some((el) => el.hasAttribute('inert')),
   );
   expect(anyInert).toBe(false);
 });

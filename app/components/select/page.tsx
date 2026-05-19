@@ -35,10 +35,9 @@ export default function SelectPlayground() {
           Select
         </Heading>
         <Text variant="lead" color="muted">
-          Single-value dropdown form field with full keyboard support —
-          typeahead, arrow navigation, Home/End, PageUp/Down. Participates in
-          native forms via a hidden input, so you get validation and submission
-          for free.
+          Single-value dropdown form field with full keyboard support — typeahead, arrow navigation,
+          Home/End, PageUp/Down. Participates in native forms via a hidden input, so you get
+          validation and submission for free.
         </Text>
       </header>
 
@@ -48,9 +47,8 @@ export default function SelectPlayground() {
           1. Basic uncontrolled
         </Heading>
         <Text variant="body" color="muted">
-          Simplest usage. <code>defaultValue</code> sets initial state, Select manages the
-          rest internally. Click the trigger, or focus it and press any arrow/Enter/Space
-          to open.
+          Simplest usage. <code>defaultValue</code> sets initial state, Select manages the rest
+          internally. Click the trigger, or focus it and press any arrow/Enter/Space to open.
         </Text>
         <div className={styles.demo}>
           <div className={styles.fieldGroup}>
@@ -80,8 +78,8 @@ export default function SelectPlayground() {
           2. Grouped options with labels + separators
         </Heading>
         <Text variant="body" color="muted">
-          <code>SelectGroup</code> + <code>SelectLabel</code> create semantic groupings
-          (<code>role=&quot;group&quot;</code> + <code>aria-labelledby</code>).{' '}
+          <code>SelectGroup</code> + <code>SelectLabel</code> create semantic groupings (
+          <code>role=&quot;group&quot;</code> + <code>aria-labelledby</code>).{' '}
           <code>SelectSeparator</code> is a decorative divider between sections.
         </Text>
         <div className={styles.demo}>
@@ -124,10 +122,9 @@ export default function SelectPlayground() {
           3. Controlled mode with external state
         </Heading>
         <Text variant="body" color="muted">
-          Pass <code>value</code> + <code>onValueChange</code> to control the state
-          externally. Currently selected:{' '}
-          <Badge color="brand">{controlledValue}</Badge>. Buttons below also mutate the
-          state to demonstrate external updates.
+          Pass <code>value</code> + <code>onValueChange</code> to control the state externally.
+          Currently selected: <Badge color="brand">{controlledValue}</Badge>. Buttons below also
+          mutate the state to demonstrate external updates.
         </Text>
         <div className={styles.demo}>
           <div className={styles.fieldGroup}>
@@ -147,18 +144,10 @@ export default function SelectPlayground() {
             </Select>
           </div>
           <div className={styles.formRow}>
-            <Button
-              variant="secondary"
-              size="sm"
-              onClick={() => setControlledValue('free')}
-            >
+            <Button variant="secondary" size="sm" onClick={() => setControlledValue('free')}>
               Reset to Free
             </Button>
-            <Button
-              variant="secondary"
-              size="sm"
-              onClick={() => setControlledValue('enterprise')}
-            >
+            <Button variant="secondary" size="sm" onClick={() => setControlledValue('enterprise')}>
               Jump to Enterprise
             </Button>
           </div>
@@ -172,9 +161,9 @@ export default function SelectPlayground() {
         </Heading>
         <Text variant="body" color="muted">
           Items marked <code>disabled</code> are rendered with{' '}
-          <code>aria-disabled=&quot;true&quot;</code> (never native <code>disabled</code>,
-          per APG focusable requirement established in NavigationMenu + Tabs). Arrow
-          nav, Home/End, PageDown/Up, and typeahead all skip them.
+          <code>aria-disabled=&quot;true&quot;</code> (never native <code>disabled</code>, per APG
+          focusable requirement established in NavigationMenu + Tabs). Arrow nav, Home/End,
+          PageDown/Up, and typeahead all skip them.
         </Text>
         <div className={styles.demo}>
           <div className={styles.fieldGroup}>
@@ -209,10 +198,9 @@ export default function SelectPlayground() {
           5. Typeahead — long list
         </Heading>
         <Text variant="body" color="muted">
-          Type a letter to jump to the first option that starts with it. Type a second
-          letter within 500ms to refine the match (e.g. &quot;c&quot; → Canada,
-          &quot;ca&quot; → Canada, &quot;cr&quot; → Croatia). Scroll-into-view keeps the
-          highlighted option visible.
+          Type a letter to jump to the first option that starts with it. Type a second letter within
+          500ms to refine the match (e.g. &quot;c&quot; → Canada, &quot;ca&quot; → Canada,
+          &quot;cr&quot; → Croatia). Scroll-into-view keeps the highlighted option visible.
         </Text>
         <div className={styles.demo}>
           <div className={styles.fieldGroup}>
@@ -275,8 +263,8 @@ export default function SelectPlayground() {
         </Heading>
         <Text variant="body" color="muted">
           When <code>name</code> is provided, Select renders a hidden{' '}
-          <code>&lt;input type=&quot;hidden&quot;&gt;</code> synced with the current value.
-          Submit the form below — the selected country is serialized via standard FormData.
+          <code>&lt;input type=&quot;hidden&quot;&gt;</code> synced with the current value. Submit
+          the form below — the selected country is serialized via standard FormData.
           <code>required</code> propagates to the hidden input for native validation.
         </Text>
         <div className={styles.demo}>
@@ -320,9 +308,8 @@ export default function SelectPlayground() {
           7. Disabled Select (entire field)
         </Heading>
         <Text variant="body" color="muted">
-          Passing <code>disabled</code> on the root blocks trigger interaction and form
-          submission. The trigger still renders with <code>aria-disabled</code> so AT
-          users can discover it.
+          Passing <code>disabled</code> on the root blocks trigger interaction and form submission.
+          The trigger still renders with <code>aria-disabled</code> so AT users can discover it.
         </Text>
         <div className={styles.demo}>
           <div className={styles.fieldGroup}>
@@ -349,46 +336,46 @@ export default function SelectPlayground() {
           8. Keyboard walkthrough
         </Heading>
         <Text variant="body" color="muted">
-          Tab into any Select trigger above, then try every key from the APG{' '}
-          <code>/combobox/</code> collapsed-listbox spec:
+          Tab into any Select trigger above, then try every key from the APG <code>/combobox/</code>{' '}
+          collapsed-listbox spec:
         </Text>
         <ul className={styles.keyList}>
           <li>
-            <kbd>Space</kbd> / <kbd>Enter</kbd> / <kbd>ArrowDown</kbd> / <kbd>ArrowUp</kbd>{' '}
-            — open listbox. If there&apos;s a value, highlight starts there; else first or
-            last enabled option.
+            <kbd>Space</kbd> / <kbd>Enter</kbd> / <kbd>ArrowDown</kbd> / <kbd>ArrowUp</kbd> — open
+            listbox. If there&apos;s a value, highlight starts there; else first or last enabled
+            option.
           </li>
           <li>
             <kbd>Home</kbd> / <kbd>End</kbd> — open listbox, highlight first / last enabled.
           </li>
           <li>
-            <kbd>ArrowDown</kbd> / <kbd>ArrowUp</kbd> (open) — move highlight to next /
-            prev enabled option, with wraparound.
+            <kbd>ArrowDown</kbd> / <kbd>ArrowUp</kbd> (open) — move highlight to next / prev enabled
+            option, with wraparound.
           </li>
           <li>
             <kbd>PageDown</kbd> / <kbd>PageUp</kbd> (open) — ±10 options, clamped to range.
           </li>
           <li>
-            <kbd>Enter</kbd> / <kbd>Space</kbd> (open) — commit the highlighted option,
-            fire <code>onValueChange</code>, close.
+            <kbd>Enter</kbd> / <kbd>Space</kbd> (open) — commit the highlighted option, fire{' '}
+            <code>onValueChange</code>, close.
           </li>
           <li>
             <kbd>Escape</kbd> (open) — close without committing.
           </li>
           <li>
-            <kbd>Tab</kbd> (open) — commit highlighted option, close, and let Tab
-            propagate to the next tabstop (Radix convention).
+            <kbd>Tab</kbd> (open) — commit highlighted option, close, and let Tab propagate to the
+            next tabstop (Radix convention).
           </li>
           <li>
             <kbd>Alt</kbd>+<kbd>ArrowUp</kbd> (open) — close without committing.
           </li>
           <li>
-            Printable char — typeahead match. 500ms reset, case-insensitive{' '}
-            <code>startsWith</code>, enabled-only scope.
+            Printable char — typeahead match. 500ms reset, case-insensitive <code>startsWith</code>,
+            enabled-only scope.
           </li>
           <li>
-            <kbd>Cmd</kbd>+<kbd>Arrow</kbd> / <kbd>Ctrl</kbd>+<kbd>Arrow</kbd> — NOT
-            intercepted (browser hotkeys pass through).
+            <kbd>Cmd</kbd>+<kbd>Arrow</kbd> / <kbd>Ctrl</kbd>+<kbd>Arrow</kbd> — NOT intercepted
+            (browser hotkeys pass through).
           </li>
         </ul>
       </section>

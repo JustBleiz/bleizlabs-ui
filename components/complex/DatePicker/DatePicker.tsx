@@ -140,11 +140,7 @@ import {
   type ReactNode,
 } from 'react';
 import { Calendar as CalendarDefault } from '../Calendar';
-import type {
-  CalendarDir,
-  CalendarDisabled,
-  CalendarWeekStart,
-} from '../Calendar';
+import type { CalendarDir, CalendarDisabled, CalendarWeekStart } from '../Calendar';
 import {
   createFloatingContext,
   FloatingPortal,
@@ -205,8 +201,10 @@ const [DatePickerContextProvider, useDatePickerContext] =
 // ──────────────────────────────────────────────────────────────────────────
 // DatePicker — root + state
 
-export interface DatePickerProps
-  extends Omit<HTMLAttributes<HTMLDivElement>, 'children' | 'defaultValue' | 'onChange' | 'dir'> {
+export interface DatePickerProps extends Omit<
+  HTMLAttributes<HTMLDivElement>,
+  'children' | 'defaultValue' | 'onChange' | 'dir'
+> {
   /** Controlled selected date. */
   value?: Date | null;
   /** Uncontrolled initial selected date. */
@@ -245,276 +243,272 @@ export interface DatePickerProps
   children?: ReactNode;
 }
 
-export const DatePicker = forwardRef<HTMLDivElement, DatePickerProps>(function DatePicker(
-  props,
-  ref,
-) {
-  const {
-    value: controlledValue,
-    defaultValue,
-    onValueChange,
-    open: controlledOpen,
-    defaultOpen,
-    onOpenChange,
-    min,
-    max,
-    disabled = false,
-    disabledDates,
-    locale = 'en-US',
-    weekStartsOn,
-    dir = 'ltr',
-    required = false,
-    name,
-    placement = 'bottom-start',
-    sideOffset = 4,
-    children,
-    className,
-    ...rest
-  } = props;
+export const DatePicker = forwardRef<HTMLDivElement, DatePickerProps>(
+  function DatePicker(props, ref) {
+    const {
+      value: controlledValue,
+      defaultValue,
+      onValueChange,
+      open: controlledOpen,
+      defaultOpen,
+      onOpenChange,
+      min,
+      max,
+      disabled = false,
+      disabledDates,
+      locale = 'en-US',
+      weekStartsOn,
+      dir = 'ltr',
+      required = false,
+      name,
+      placement = 'bottom-start',
+      sideOffset = 4,
+      children,
+      className,
+      ...rest
+    } = props;
 
-  // Value state (6th useFloatingValueState<Date> consumer) — memoized wrapper
-  // per E29 iter 2 pattern so hook's setValue identity stays stable.
-  const handleValueChange = useCallback(
-    (next: Date | null) => {
-      onValueChange?.(next);
-    },
-    [onValueChange],
-  );
-  const { value, setValue } = useFloatingValueState<Date>({
-    controlledValue,
-    defaultValue: defaultValue ?? null,
-    onValueChange: handleValueChange,
-  });
-
-  // Open state via E23 primitive
-  const { open, setOpen } = useFloatingState({
-    controlledOpen,
-    defaultOpen: defaultOpen ?? false,
-    onOpenChange,
-  });
-
-  // Search state — in-progress typed text. Classic React "adjust state
-  // when prop changes" pattern via prevValue state sentinel — allowed
-  // during render (React bails out + re-renders with new state), avoids
-  // the `react-hooks/set-state-in-effect` trap. When parent setValue()
-  // fires externally, search syncs to the new ISO. User typing overwrites
-  // via onChange on the next keystroke — acceptable trade-off for
-  // predictable parent-controls-state semantics (mirrors React controlled
-  // input model). Combobox uses a one-shot effect instead because its
-  // driver is the item registry (external system), not a prop — different
-  // shape.
-  const [search, setSearchState] = useState<string>(() =>
-    value ? toIsoDateString(value) : '',
-  );
-  const [prevValue, setPrevValue] = useState<Date | null>(value);
-  if (value !== prevValue) {
-    setPrevValue(value);
-    setSearchState(value ? toIsoDateString(value) : '');
-  }
-
-  // Refs
-  const inputRef = useRef<HTMLInputElement | null>(null);
-  const contentRef = useRef<HTMLDivElement | null>(null);
-
-  // IDs
-  const baseId = useId();
-  const inputId = `${baseId}-input`;
-  const contentId = `${baseId}-content`;
-
-  // Disabled predicate (array → same-day match, function → call)
-  const isDisabledDate = useCallback(
-    (date: Date) => {
-      if (!isDateInRange(date, min, max)) return true;
-      if (Array.isArray(disabledDates)) {
-        const start = startOfDay(date);
-        return disabledDates.some((d) => isSameDay(startOfDay(d), start));
-      }
-      if (typeof disabledDates === 'function') return disabledDates(date);
-      return false;
-    },
-    [min, max, disabledDates],
-  );
-
-  // Internal validation error state — auto-set when commitSearch encounters
-  // an unparseable or out-of-range typed date, cleared as soon as the user
-  // edits the search. Exposed through context + merged with the explicit
-  // `invalid` prop via OR inside DatePickerInput's ariaProps (E142 L4 F10).
-  const [hasValidationError, setHasValidationError] = useState(false);
-
-  const setSearch = useCallback((next: string) => {
-    setSearchState(next);
-    // Typing clears the validation flag — error only persists until the
-    // user acknowledges the revert by editing.
-    setHasValidationError(false);
-  }, []);
-
-  const commitSearch = useCallback(() => {
-    const trimmed = search.trim();
-    if (trimmed === '') {
-      if (value !== null) setValue(null);
-      setSearchState('');
-      setHasValidationError(false);
-      return;
-    }
-    const parsed = parseIsoDateString(trimmed);
-    if (parsed && !isDisabledDate(parsed)) {
-      const normalized = startOfDay(parsed);
-      if (value === null || !isSameDay(value, normalized)) {
-        setValue(normalized);
-      }
-      setSearchState(toIsoDateString(normalized));
-      setHasValidationError(false);
-    } else {
-      // Revert to current value's ISO (or empty) and flag aria-invalid
-      // for AT users (E142 L4 F10 — DP-R11 expectation).
-      setSearchState(value ? toIsoDateString(value) : '');
-      setHasValidationError(true);
-    }
-  }, [search, value, setValue, isDisabledDate]);
-
-  const revertSearch = useCallback(() => {
-    setSearchState(value ? toIsoDateString(value) : '');
-  }, [value]);
-
-  // Imperative focus on popup open — target the Calendar cell for the
-  // selected date, today, or first-of-month. Runs after React commits the
-  // portal + Calendar mount via queueMicrotask so tabIndex=0 has landed.
-  const focusCalendarInitial = useCallback(() => {
-    queueMicrotask(() => {
-      const content = contentRef.current;
-      if (!content) return;
-      const targetIso = toIsoDateString(value ?? startOfDay(new Date()));
-      const preferred = content.querySelector<HTMLElement>(
-        `button[data-calendar-cell="${targetIso}"]`,
-      );
-      const fallback = content.querySelector<HTMLElement>(
-        'button[data-calendar-cell][tabindex="0"]',
-      );
-      (preferred ?? fallback)?.focus();
+    // Value state (6th useFloatingValueState<Date> consumer) — memoized wrapper
+    // per E29 iter 2 pattern so hook's setValue identity stays stable.
+    const handleValueChange = useCallback(
+      (next: Date | null) => {
+        onValueChange?.(next);
+      },
+      [onValueChange],
+    );
+    const { value, setValue } = useFloatingValueState<Date>({
+      controlledValue,
+      defaultValue: defaultValue ?? null,
+      onValueChange: handleValueChange,
     });
-  }, [value]);
 
-  const openPopup = useCallback(
-    (focusCalendar = false) => {
-      if (disabled) return;
-      setOpen(true);
-      if (focusCalendar) focusCalendarInitial();
-    },
-    [disabled, setOpen, focusCalendarInitial],
-  );
+    // Open state via E23 primitive
+    const { open, setOpen } = useFloatingState({
+      controlledOpen,
+      defaultOpen: defaultOpen ?? false,
+      onOpenChange,
+    });
 
-  const closePopup = useCallback(
-    (returnFocus = false) => {
+    // Search state — in-progress typed text. Classic React "adjust state
+    // when prop changes" pattern via prevValue state sentinel — allowed
+    // during render (React bails out + re-renders with new state), avoids
+    // the `react-hooks/set-state-in-effect` trap. When parent setValue()
+    // fires externally, search syncs to the new ISO. User typing overwrites
+    // via onChange on the next keystroke — acceptable trade-off for
+    // predictable parent-controls-state semantics (mirrors React controlled
+    // input model). Combobox uses a one-shot effect instead because its
+    // driver is the item registry (external system), not a prop — different
+    // shape.
+    const [search, setSearchState] = useState<string>(() => (value ? toIsoDateString(value) : ''));
+    const [prevValue, setPrevValue] = useState<Date | null>(value);
+    if (value !== prevValue) {
+      setPrevValue(value);
+      setSearchState(value ? toIsoDateString(value) : '');
+    }
+
+    // Refs
+    const inputRef = useRef<HTMLInputElement | null>(null);
+    const contentRef = useRef<HTMLDivElement | null>(null);
+
+    // IDs
+    const baseId = useId();
+    const inputId = `${baseId}-input`;
+    const contentId = `${baseId}-content`;
+
+    // Disabled predicate (array → same-day match, function → call)
+    const isDisabledDate = useCallback(
+      (date: Date) => {
+        if (!isDateInRange(date, min, max)) return true;
+        if (Array.isArray(disabledDates)) {
+          const start = startOfDay(date);
+          return disabledDates.some((d) => isSameDay(startOfDay(d), start));
+        }
+        if (typeof disabledDates === 'function') return disabledDates(date);
+        return false;
+      },
+      [min, max, disabledDates],
+    );
+
+    // Internal validation error state — auto-set when commitSearch encounters
+    // an unparseable or out-of-range typed date, cleared as soon as the user
+    // edits the search. Exposed through context + merged with the explicit
+    // `invalid` prop via OR inside DatePickerInput's ariaProps (E142 L4 F10).
+    const [hasValidationError, setHasValidationError] = useState(false);
+
+    const setSearch = useCallback((next: string) => {
+      setSearchState(next);
+      // Typing clears the validation flag — error only persists until the
+      // user acknowledges the revert by editing.
+      setHasValidationError(false);
+    }, []);
+
+    const commitSearch = useCallback(() => {
+      const trimmed = search.trim();
+      if (trimmed === '') {
+        if (value !== null) setValue(null);
+        setSearchState('');
+        setHasValidationError(false);
+        return;
+      }
+      const parsed = parseIsoDateString(trimmed);
+      if (parsed && !isDisabledDate(parsed)) {
+        const normalized = startOfDay(parsed);
+        if (value === null || !isSameDay(value, normalized)) {
+          setValue(normalized);
+        }
+        setSearchState(toIsoDateString(normalized));
+        setHasValidationError(false);
+      } else {
+        // Revert to current value's ISO (or empty) and flag aria-invalid
+        // for AT users (E142 L4 F10 — DP-R11 expectation).
+        setSearchState(value ? toIsoDateString(value) : '');
+        setHasValidationError(true);
+      }
+    }, [search, value, setValue, isDisabledDate]);
+
+    const revertSearch = useCallback(() => {
+      setSearchState(value ? toIsoDateString(value) : '');
+    }, [value]);
+
+    // Imperative focus on popup open — target the Calendar cell for the
+    // selected date, today, or first-of-month. Runs after React commits the
+    // portal + Calendar mount via queueMicrotask so tabIndex=0 has landed.
+    const focusCalendarInitial = useCallback(() => {
+      queueMicrotask(() => {
+        const content = contentRef.current;
+        if (!content) return;
+        const targetIso = toIsoDateString(value ?? startOfDay(new Date()));
+        const preferred = content.querySelector<HTMLElement>(
+          `button[data-calendar-cell="${targetIso}"]`,
+        );
+        const fallback = content.querySelector<HTMLElement>(
+          'button[data-calendar-cell][tabindex="0"]',
+        );
+        (preferred ?? fallback)?.focus();
+      });
+    }, [value]);
+
+    const openPopup = useCallback(
+      (focusCalendar = false) => {
+        if (disabled) return;
+        setOpen(true);
+        if (focusCalendar) focusCalendarInitial();
+      },
+      [disabled, setOpen, focusCalendarInitial],
+    );
+
+    const closePopup = useCallback(
+      (returnFocus = false) => {
+        setOpen(false);
+        if (returnFocus) {
+          queueMicrotask(() => inputRef.current?.focus());
+        }
+      },
+      [setOpen],
+    );
+
+    // Document-level Escape + outside click via E23 primitive
+    const handleDismiss = useCallback(() => {
+      const wasFocusInside = contentRef.current?.contains(document.activeElement);
       setOpen(false);
-      if (returnFocus) {
+      if (wasFocusInside) {
         queueMicrotask(() => inputRef.current?.focus());
       }
-    },
-    [setOpen],
-  );
+    }, [setOpen]);
 
-  // Document-level Escape + outside click via E23 primitive
-  const handleDismiss = useCallback(() => {
-    const wasFocusInside = contentRef.current?.contains(document.activeElement);
-    setOpen(false);
-    if (wasFocusInside) {
-      queueMicrotask(() => inputRef.current?.focus());
-    }
-  }, [setOpen]);
-
-  useFloatingDismiss({
-    open,
-    onDismiss: handleDismiss,
-    contentRef,
-    triggerRef: inputRef,
-    closeOnEscape: true,
-    closeOnOutsideClick: true,
-  });
-
-  const ctx = useMemo<DatePickerContextValue>(
-    () => ({
-      value,
-      setValue,
+    useFloatingDismiss({
       open,
-      setOpen,
-      search,
-      setSearch,
-      commitSearch,
-      revertSearch,
-      hasValidationError,
-      openPopup,
-      closePopup,
-      inputRef,
+      onDismiss: handleDismiss,
       contentRef,
-      isDisabled: disabled,
-      required,
-      min,
-      max,
-      disabledDates,
-      locale,
-      weekStartsOn,
-      dir,
-      placement,
-      sideOffset,
-      baseId,
-      inputId,
-      contentId,
-      name,
-    }),
-    [
-      value,
-      setValue,
-      open,
-      setOpen,
-      search,
-      setSearch,
-      commitSearch,
-      revertSearch,
-      hasValidationError,
-      openPopup,
-      closePopup,
-      disabled,
-      required,
-      min,
-      max,
-      disabledDates,
-      locale,
-      weekStartsOn,
-      dir,
-      placement,
-      sideOffset,
-      baseId,
-      inputId,
-      contentId,
-      name,
-    ],
-  );
+      triggerRef: inputRef,
+      closeOnEscape: true,
+      closeOnOutsideClick: true,
+    });
 
-  return (
-    <DatePickerContextProvider value={ctx}>
-      <div ref={ref} dir={dir} className={cn(styles.root, className)} {...rest}>
-        {children}
-        {name ? (
-          <input
-            type="hidden"
-            name={name}
-            value={value ? toIsoDateString(value) : ''}
-            required={required}
-          />
-        ) : null}
-      </div>
-    </DatePickerContextProvider>
-  );
-});
+    const ctx = useMemo<DatePickerContextValue>(
+      () => ({
+        value,
+        setValue,
+        open,
+        setOpen,
+        search,
+        setSearch,
+        commitSearch,
+        revertSearch,
+        hasValidationError,
+        openPopup,
+        closePopup,
+        inputRef,
+        contentRef,
+        isDisabled: disabled,
+        required,
+        min,
+        max,
+        disabledDates,
+        locale,
+        weekStartsOn,
+        dir,
+        placement,
+        sideOffset,
+        baseId,
+        inputId,
+        contentId,
+        name,
+      }),
+      [
+        value,
+        setValue,
+        open,
+        setOpen,
+        search,
+        setSearch,
+        commitSearch,
+        revertSearch,
+        hasValidationError,
+        openPopup,
+        closePopup,
+        disabled,
+        required,
+        min,
+        max,
+        disabledDates,
+        locale,
+        weekStartsOn,
+        dir,
+        placement,
+        sideOffset,
+        baseId,
+        inputId,
+        contentId,
+        name,
+      ],
+    );
+
+    return (
+      <DatePickerContextProvider value={ctx}>
+        <div ref={ref} dir={dir} className={cn(styles.root, className)} {...rest}>
+          {children}
+          {name ? (
+            <input
+              type="hidden"
+              name={name}
+              value={value ? toIsoDateString(value) : ''}
+              required={required}
+            />
+          ) : null}
+        </div>
+      </DatePickerContextProvider>
+    );
+  },
+);
 
 // ──────────────────────────────────────────────────────────────────────────
 // DatePickerInput — editable text input (ARIA combobox)
 
-export interface DatePickerInputProps
-  extends Omit<
-    InputHTMLAttributes<HTMLInputElement>,
-    'type' | 'value' | 'defaultValue' | 'onChange' | 'role' | 'aria-controls' | 'aria-expanded'
-  > {
+export interface DatePickerInputProps extends Omit<
+  InputHTMLAttributes<HTMLInputElement>,
+  'type' | 'value' | 'defaultValue' | 'onChange' | 'role' | 'aria-controls' | 'aria-expanded'
+> {
   /** Icon button visible inside the input's right side. Default `true`. */
   showCalendarIcon?: boolean;
   /** Accessible label for the calendar icon button. Default `"Open calendar"`. */

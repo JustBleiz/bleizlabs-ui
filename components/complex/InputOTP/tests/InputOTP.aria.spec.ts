@@ -24,18 +24,12 @@ test.describe('InputOTP — ARIA + accessibility tree', () => {
     await page.goto('/components/input-otp');
   });
 
-  test('OTP-R07 — autocomplete="one-time-code" on real input', async ({
-    page,
-  }) => {
-    const input = page
-      .getByRole('textbox', { name: 'Verification code' })
-      .first();
+  test('OTP-R07 — autocomplete="one-time-code" on real input', async ({ page }) => {
+    const input = page.getByRole('textbox', { name: 'Verification code' }).first();
     await expect(input).toHaveAttribute('autocomplete', 'one-time-code');
   });
 
-  test('OTP-R08 — aria-label present on all OTP inputs (WCAG 1.1.1)', async ({
-    page,
-  }) => {
+  test('OTP-R08 — aria-label present on all OTP inputs (WCAG 1.1.1)', async ({ page }) => {
     const inputs = page.locator('input[type="text"]');
     const count = await inputs.count();
     expect(count).toBeGreaterThanOrEqual(1);
@@ -51,16 +45,11 @@ test.describe('InputOTP — ARIA + accessibility tree', () => {
     page,
   }) => {
     // Section 5 — aria-invalid passed explicitly
-    const input = page
-      .getByRole('textbox', { name: 'Code (invalid)' })
-      .first();
+    const input = page.getByRole('textbox', { name: 'Code (invalid)' }).first();
     await expect(input).toHaveAttribute('aria-invalid', 'true');
     // Root wrapper has data-invalid attribute too
     const section = page.locator('section').nth(4);
-    const root = section
-      .locator('div')
-      .filter({ has: input })
-      .first();
+    const root = section.locator('div').filter({ has: input }).first();
     // Walk up to find the data-invalid wrapper
     const invalidWrappers = section.locator('[data-invalid="true"]');
     expect(await invalidWrappers.count()).toBeGreaterThanOrEqual(1);
@@ -69,9 +58,7 @@ test.describe('InputOTP — ARIA + accessibility tree', () => {
   });
 
   test('aria-describedby links input to error message', async ({ page }) => {
-    const input = page
-      .getByRole('textbox', { name: 'Code (invalid)' })
-      .first();
+    const input = page.getByRole('textbox', { name: 'Code (invalid)' }).first();
     await expect(input).toHaveAttribute('aria-describedby', 'otp-error-msg');
     const errMsg = page.locator('#otp-error-msg');
     await expect(errMsg).toBeVisible();
@@ -92,9 +79,7 @@ test.describe('InputOTP — ARIA + accessibility tree', () => {
   });
 
   test('aria snapshot contains textbox role', async ({ page }) => {
-    const input = page
-      .getByRole('textbox', { name: 'Verification code' })
-      .first();
+    const input = page.getByRole('textbox', { name: 'Verification code' }).first();
     const snapshot = await input.ariaSnapshot();
     expect(snapshot).toContain('textbox');
   });
@@ -106,12 +91,8 @@ test.describe('InputOTP — ARIA + accessibility tree', () => {
     expect(results.violations).toEqual([]);
   });
 
-  test('axe-core zero violations — after typing into basic input', async ({
-    page,
-  }) => {
-    const input = page
-      .getByRole('textbox', { name: 'Verification code' })
-      .first();
+  test('axe-core zero violations — after typing into basic input', async ({ page }) => {
+    const input = page.getByRole('textbox', { name: 'Verification code' }).first();
     await input.focus();
     await page.keyboard.type('123');
     const results = await new AxeBuilder({ page })

@@ -15,11 +15,13 @@ export default function EdgeBarPlaygroundPage() {
           EdgeBar
         </Heading>
         <p className={styles.intro}>
-          Absolute-positioned decorative stripe along one edge of a positioned
-          parent. Display atom — server-safe, decorative-by-default
-          (<code>aria-hidden=&quot;true&quot;</code>). Reuses Badge&apos;s
-          6-color palette. <strong>Parent must set <code>position:
-          relative</code></strong> for anchoring to work.
+          Absolute-positioned decorative stripe along one edge of a positioned parent. Display atom
+          — server-safe, decorative-by-default (<code>aria-hidden=&quot;true&quot;</code>). Reuses
+          Badge&apos;s 6-color palette.{' '}
+          <strong>
+            Parent must set <code>position: relative</code>
+          </strong>{' '}
+          for anchoring to work.
         </p>
       </header>
 
@@ -28,17 +30,16 @@ export default function EdgeBarPlaygroundPage() {
           1. Minimal — top edge, default color, default thickness
         </Heading>
         <p className={styles.sectionDescription}>
-          Bare minimum. Just <code>&lt;EdgeBar /&gt;</code> on a positioned
-          parent. Defaults: <code>position=&quot;top&quot;</code>,{' '}
-          <code>color=&quot;default&quot;</code>,{' '}
+          Bare minimum. Just <code>&lt;EdgeBar /&gt;</code> on a positioned parent. Defaults:{' '}
+          <code>position=&quot;top&quot;</code>, <code>color=&quot;default&quot;</code>,{' '}
           <code>thickness=&quot;md&quot;</code>.
         </p>
         <div className={styles.demoCard}>
           <EdgeBar />
           <p className={styles.cardLabel}>&lt;EdgeBar /&gt;</p>
           <Text variant="body" color="secondary" className={styles.bodyText}>
-            Card body content. Notice the thin neutral stripe along the top
-            edge — that&apos;s the EdgeBar.
+            Card body content. Notice the thin neutral stripe along the top edge — that&apos;s the
+            EdgeBar.
           </Text>
         </div>
       </section>
@@ -48,8 +49,8 @@ export default function EdgeBarPlaygroundPage() {
           2. All 4 positions (top / bottom / left / right)
         </Heading>
         <p className={styles.sectionDescription}>
-          Each position anchors to one edge of the positioned parent and
-          spans the perpendicular axis fully.
+          Each position anchors to one edge of the positioned parent and spans the perpendicular
+          axis fully.
         </p>
         <div className={styles.cardRow}>
           <div className={styles.demoCard}>
@@ -76,9 +77,8 @@ export default function EdgeBarPlaygroundPage() {
           3. All 6 colors (top position)
         </Heading>
         <p className={styles.sectionDescription}>
-          Reuses <code>BadgeColor</code> palette: default / brand / success /
-          warning / error / info. Color alone never conveys meaning — pair
-          with adjacent text or icon.
+          Reuses <code>BadgeColor</code> palette: default / brand / success / warning / error /
+          info. Color alone never conveys meaning — pair with adjacent text or icon.
         </p>
         <div className={styles.cardRow}>
           <div className={styles.demoCard}>
@@ -113,8 +113,8 @@ export default function EdgeBarPlaygroundPage() {
           4. Thickness — sm / md / lg (2 / 3 / 4 px)
         </Heading>
         <p className={styles.sectionDescription}>
-          Component-internal decorator dimensions outside the 4px space scale
-          (raw-px exemption for fine decorator strokes).
+          Component-internal decorator dimensions outside the 4px space scale (raw-px exemption for
+          fine decorator strokes).
         </p>
         <div className={styles.cardRow}>
           <div className={styles.demoCard}>
@@ -138,8 +138,7 @@ export default function EdgeBarPlaygroundPage() {
         </Heading>
         <p className={styles.sectionDescription}>
           <code>pulse</code> runs an infinite 2s opacity cycle.{' '}
-          <code>prefers-reduced-motion: reduce</code> disables the animation
-          (instant static state).
+          <code>prefers-reduced-motion: reduce</code> disables the animation (instant static state).
         </p>
         <div className={styles.cardRow}>
           <div className={styles.demoCard}>
@@ -163,8 +162,7 @@ export default function EdgeBarPlaygroundPage() {
         </Heading>
         <p className={styles.sectionDescription}>
           Common card-status pattern. EdgeBar replaces ad-hoc raw{' '}
-          <code>&lt;span className=&quot;edge&quot;&gt;</code> markup with a
-          structured atom.
+          <code>&lt;span className=&quot;edge&quot;&gt;</code> markup with a structured atom.
         </p>
         <div className={styles.demoCard}>
           <EdgeBar position="top" color="success" thickness="lg" />
@@ -172,8 +170,8 @@ export default function EdgeBarPlaygroundPage() {
             Sample project — operational
           </Heading>
           <Text variant="body" color="secondary" className={styles.bodyText}>
-            Status indicator: success edge accent at the top of the card.
-            Color reinforces the textual status, never replaces it.
+            Status indicator: success edge accent at the top of the card. Color reinforces the
+            textual status, never replaces it.
           </Text>
         </div>
       </section>
@@ -184,8 +182,7 @@ export default function EdgeBarPlaygroundPage() {
         </Heading>
         <p className={styles.sectionDescription}>
           Selected / status row indicator. Replaces ad-hoc raw{' '}
-          <code>&lt;span className=&quot;rowLeftEdge&quot;&gt;</code> markup
-          across list rows.
+          <code>&lt;span className=&quot;rowLeftEdge&quot;&gt;</code> markup across list rows.
         </p>
         <div className={styles.rowList}>
           <div className={styles.demoRow}>
@@ -206,9 +203,7 @@ export default function EdgeBarPlaygroundPage() {
           <div className={styles.demoRow}>
             <EdgeBar position="left" color="error" />
             <p className={styles.rowTitle}>Outage: Edge CDN</p>
-            <p className={styles.rowMeta}>
-              error left-edge + — active incident
-            </p>
+            <p className={styles.rowMeta}>error left-edge + — active incident</p>
           </div>
         </div>
       </section>

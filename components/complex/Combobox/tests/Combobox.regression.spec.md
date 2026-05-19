@@ -9,9 +9,13 @@ CB-R17 (Escape bubble) in keyboard/focus specs.
 ## Tests
 
 ```ts
-test('CB-R02 — SSR hydration: no mismatch on initial render with preset value', async ({ page }) => {
+test('CB-R02 — SSR hydration: no mismatch on initial render with preset value', async ({
+  page,
+}) => {
   const warnings: string[] = [];
-  page.on('console', (msg) => { if (msg.type() === 'warning') warnings.push(msg.text()); });
+  page.on('console', (msg) => {
+    if (msg.type() === 'warning') warnings.push(msg.text());
+  });
   await page.goto('/components/combobox?value=option-2');
   await page.reload();
   expect(warnings.filter((w) => w.toLowerCase().includes('hydration'))).toHaveLength(0);
@@ -53,7 +57,9 @@ test('Controlled value: external update propagates to input', async ({ page }) =
   await expect(input).toHaveValue(/option-3|Option 3/i);
 });
 
-test('onValueChange does NOT fire for null transitions (only non-null commits)', async ({ page }) => {
+test('onValueChange does NOT fire for null transitions (only non-null commits)', async ({
+  page,
+}) => {
   await page.goto('/components/combobox?trackChanges=1');
   const callsHandle = await page.evaluateHandle(() => {
     (window as any).__valueChangeCalls = [];

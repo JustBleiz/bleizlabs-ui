@@ -99,10 +99,7 @@ import {
   type ReactNode,
 } from 'react';
 import { cn } from '../../utils/cn';
-import {
-  defaultColorForIndex,
-  defaultYFormat,
-} from '../_shared/chart-math';
+import { defaultColorForIndex, defaultYFormat } from '../_shared/chart-math';
 import styles from './PieChart.module.scss';
 
 // ──────────────────────────────────────────────────────────────────────────
@@ -138,8 +135,7 @@ export interface PieChartTooltipContext {
   total: number;
 }
 
-export interface PieChartProps
-  extends Omit<HTMLAttributes<HTMLDivElement>, 'children' | 'title'> {
+export interface PieChartProps extends Omit<HTMLAttributes<HTMLDivElement>, 'children' | 'title'> {
   /** Segments. Non-negative values only; negatives filtered + warned. */
   data: PieChartDatum[];
   /** Required for a11y — used as `<caption>` of sr-only table + chart title. */
@@ -338,10 +334,7 @@ export const PieChart = forwardRef<HTMLDivElement, PieChartProps>(
     // Normalize data: filter negatives + zeros, compute angles.
     // (Negative-detection pass is separate from the keep-pass so the
     // useMemo body stays render-pure — no closure mutation.)
-    const hasNegatives = useMemo(
-      () => data.some((d) => d.value < 0),
-      [data],
-    );
+    const hasNegatives = useMemo(() => data.some((d) => d.value < 0), [data]);
 
     const { segments, total } = useMemo(() => {
       const filtered = data.filter((d) => d.value > 0);
@@ -395,14 +388,7 @@ export const PieChart = forwardRef<HTMLDivElement, PieChartProps>(
       return segments.map((s) => ({
         seg: s,
         fullCircle: false,
-        path: describeArc(
-          CENTER,
-          CENTER,
-          OUTER_RADIUS,
-          innerRadius,
-          s.startDeg,
-          s.endDeg,
-        ),
+        path: describeArc(CENTER, CENTER, OUTER_RADIUS, innerRadius, s.startDeg, s.endDeg),
       }));
     }, [segments, hasData, innerRadius]);
 
@@ -445,9 +431,7 @@ export const PieChart = forwardRef<HTMLDivElement, PieChartProps>(
     const focusSegmentEl = useCallback((idx: number) => {
       const root = rootRef.current;
       if (!root) return;
-      const el = root.querySelector<SVGElement>(
-        `[data-segment-index="${idx}"]`,
-      );
+      const el = root.querySelector<SVGElement>(`[data-segment-index="${idx}"]`);
       el?.focus();
     }, []);
 
@@ -513,8 +497,7 @@ export const PieChart = forwardRef<HTMLDivElement, PieChartProps>(
     // ────────────────────────────────────────────────────────────────────
 
     const activeIdx = focusedIdx ?? hoveredIdx;
-    const activeSegment =
-      activeIdx != null ? (segments[activeIdx] ?? null) : null;
+    const activeSegment = activeIdx != null ? (segments[activeIdx] ?? null) : null;
 
     const tooltipContext = useMemo<PieChartTooltipContext | null>(() => {
       if (!activeSegment || activeIdx == null) return null;
@@ -741,9 +724,7 @@ export const PieChart = forwardRef<HTMLDivElement, PieChartProps>(
                   if (s.percent < LABEL_MIN_PERCENT) return null;
                   const midDeg = (s.startDeg + s.endDeg) / 2;
                   const labelRadius =
-                    innerRadius > 0
-                      ? (OUTER_RADIUS + innerRadius) / 2
-                      : OUTER_RADIUS * 0.65;
+                    innerRadius > 0 ? (OUTER_RADIUS + innerRadius) / 2 : OUTER_RADIUS * 0.65;
                   const pos = polarToCartesian(CENTER, CENTER, labelRadius, midDeg);
                   return (
                     <text
@@ -790,9 +771,7 @@ export const PieChart = forwardRef<HTMLDivElement, PieChartProps>(
                       style={{ backgroundColor: tooltipContext.color }}
                       aria-hidden="true"
                     />
-                    <span className={styles.tooltipName}>
-                      {tooltipContext.datum.name}
-                    </span>
+                    <span className={styles.tooltipName}>{tooltipContext.datum.name}</span>
                   </div>
                   <div className={styles.tooltipValueRow}>
                     <span className={styles.tooltipValue}>

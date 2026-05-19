@@ -25,9 +25,7 @@ test.describe('InputOTP — regression guards', () => {
   }) => {
     await page.emulateMedia({ reducedMotion: 'reduce' });
     await page.goto('/components/input-otp');
-    const input = page
-      .getByRole('textbox', { name: 'Verification code' })
-      .first();
+    const input = page.getByRole('textbox', { name: 'Verification code' }).first();
     await input.focus();
     // Start composition — handler sets isComposingRef=true and short-circuits
     // handleChange. Then dispatch input event that would normally accept a char.
@@ -45,15 +43,12 @@ test.describe('InputOTP — regression guards', () => {
     await expect(input).toHaveValue('');
   });
 
-  test('OTP-R11 — onComplete fires when user fills to maxLength', async ({
-    page,
-  }) => {
+  test('OTP-R11 — onComplete fires when user fills to maxLength', async ({ page }) => {
     await page.emulateMedia({ reducedMotion: 'reduce' });
     await page.goto('/components/input-otp');
     // Section 3 — controlled maxLength=4 with onComplete → logs into completions
     const section = page.locator('section').nth(2);
-    const pinInput = section
-      .getByRole('textbox', { name: 'PIN' });
+    const pinInput = section.getByRole('textbox', { name: 'PIN' });
     await pinInput.focus();
     await page.keyboard.type('1234');
     // Completions log appears
@@ -63,9 +58,7 @@ test.describe('InputOTP — regression guards', () => {
     await expect(item).toBeVisible();
   });
 
-  test('OTP-R12 — controlled mode: "Set 1234" button fills the input', async ({
-    page,
-  }) => {
+  test('OTP-R12 — controlled mode: "Set 1234" button fills the input', async ({ page }) => {
     await page.emulateMedia({ reducedMotion: 'reduce' });
     await page.goto('/components/input-otp');
     const section = page.locator('section').nth(2);
@@ -104,14 +97,10 @@ test.describe('InputOTP — regression guards', () => {
     await expect(pinInput).toHaveValue('1234');
   });
 
-  test('OTP-R14 — Alphanumeric pattern accepts mixed-case + digits', async ({
-    page,
-  }) => {
+  test('OTP-R14 — Alphanumeric pattern accepts mixed-case + digits', async ({ page }) => {
     await page.emulateMedia({ reducedMotion: 'reduce' });
     await page.goto('/components/input-otp');
-    const input = page
-      .getByRole('textbox', { name: 'License key' })
-      .first();
+    const input = page.getByRole('textbox', { name: 'License key' }).first();
     await input.focus();
     await page.keyboard.type('aB3xY7');
     await expect(input).toHaveValue('aB3xY7');
@@ -129,38 +118,26 @@ test.describe('InputOTP — regression guards', () => {
     });
     await page.goto('/components/input-otp');
     await page.reload();
-    await expect(
-      page.getByRole('textbox', { name: 'Verification code' }).first(),
-    ).toBeVisible();
-    expect(
-      warnings.filter((w) => w.toLowerCase().includes('hydration')),
-    ).toHaveLength(0);
+    await expect(page.getByRole('textbox', { name: 'Verification code' }).first()).toBeVisible();
+    expect(warnings.filter((w) => w.toLowerCase().includes('hydration'))).toHaveLength(0);
   });
 
   test.skip('OTP-R16 — autoFocus on mount [PLAYGROUND-DEP: no autoFocus demo]', async () => {
     // autoFocus prop is wired via useEffect but no playground section sets it.
   });
 
-  test('OTP-R17 — disabled value stays rendered, input disabled', async ({
-    page,
-  }) => {
+  test('OTP-R17 — disabled value stays rendered, input disabled', async ({ page }) => {
     await page.emulateMedia({ reducedMotion: 'reduce' });
     await page.goto('/components/input-otp');
-    const disabled = page
-      .getByRole('textbox', { name: 'Disabled code' })
-      .first();
+    const disabled = page.getByRole('textbox', { name: 'Disabled code' }).first();
     await expect(disabled).toBeDisabled();
     await expect(disabled).toHaveValue('123456');
   });
 
-  test('OTP-R18 — read-only value stays rendered, keystrokes no-op', async ({
-    page,
-  }) => {
+  test('OTP-R18 — read-only value stays rendered, keystrokes no-op', async ({ page }) => {
     await page.emulateMedia({ reducedMotion: 'reduce' });
     await page.goto('/components/input-otp');
-    const readOnly = page
-      .getByRole('textbox', { name: 'Read-only code' })
-      .first();
+    const readOnly = page.getByRole('textbox', { name: 'Read-only code' }).first();
     await readOnly.focus();
     await expect(readOnly).toHaveValue('000000');
     await page.keyboard.type('9');

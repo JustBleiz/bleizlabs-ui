@@ -71,8 +71,7 @@ import styles from './PhoneInput.module.scss';
  */
 export type PhonePreset = Extract<MaskPreset, 'phonePL' | 'phoneUS' | 'phoneE164'>;
 
-export interface PhoneInputProps
-  extends Omit<MaskedInputProps, 'preset' | 'mask' | 'label'> {
+export interface PhoneInputProps extends Omit<MaskedInputProps, 'preset' | 'mask' | 'label'> {
   /** Visible label text. Default used by consumers: `"Telefon"` / `"Phone"`. */
   label: string;
   /**
@@ -98,22 +97,23 @@ function presetFromLocale(locale: string): PhonePreset {
   return 'phoneE164';
 }
 
-export const PhoneInput = forwardRef<HTMLInputElement, PhoneInputProps>(
-  function PhoneInput({ preset, mask, className, ...rest }, ref) {
-    const locale = useResolvedLocale();
-    // Resolve mask: raw `mask` prop wins over preset (escape hatch).
-    // When neither passed, derive preset from runtime locale.
-    const resolvedPreset = preset ?? presetFromLocale(locale);
-    const resolvedMask = mask ?? MASK_PRESETS[resolvedPreset];
-    return (
-      <MaskedInput
-        ref={ref}
-        mask={resolvedMask}
-        inputMode="tel"
-        autoComplete="tel"
-        className={cn(styles.root, className)}
-        {...rest}
-      />
-    );
-  },
-);
+export const PhoneInput = forwardRef<HTMLInputElement, PhoneInputProps>(function PhoneInput(
+  { preset, mask, className, ...rest },
+  ref,
+) {
+  const locale = useResolvedLocale();
+  // Resolve mask: raw `mask` prop wins over preset (escape hatch).
+  // When neither passed, derive preset from runtime locale.
+  const resolvedPreset = preset ?? presetFromLocale(locale);
+  const resolvedMask = mask ?? MASK_PRESETS[resolvedPreset];
+  return (
+    <MaskedInput
+      ref={ref}
+      mask={resolvedMask}
+      inputMode="tel"
+      autoComplete="tel"
+      className={cn(styles.root, className)}
+      {...rest}
+    />
+  );
+});

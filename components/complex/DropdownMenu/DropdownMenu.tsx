@@ -207,20 +207,17 @@ export function DropdownMenu({
     ],
   );
 
-  return (
-    <DropdownMenuContextProvider value={value}>{children}</DropdownMenuContextProvider>
-  );
+  return <DropdownMenuContextProvider value={value}>{children}</DropdownMenuContextProvider>;
 }
 
 // ──────────────────────────────────────────────────────────────────────────
 // DropdownMenuTrigger
 // ──────────────────────────────────────────────────────────────────────────
 
-export interface DropdownMenuTriggerProps
-  extends Omit<
-    ButtonHTMLAttributes<HTMLButtonElement>,
-    'aria-expanded' | 'aria-haspopup' | 'aria-controls'
-  > {
+export interface DropdownMenuTriggerProps extends Omit<
+  ButtonHTMLAttributes<HTMLButtonElement>,
+  'aria-expanded' | 'aria-haspopup' | 'aria-controls'
+> {
   children: ReactNode;
   /**
    * When `true`, Slot-wraps the single React element child, merging ARIA and
@@ -274,28 +271,20 @@ function DropdownChevronIcon() {
 function appendChevronToChild(child: ReactElement): ReactElement {
   const childProps = (child.props ?? {}) as { children?: ReactNode };
   const existing = ReactChildren.toArray(childProps.children);
-  return cloneElement(
-    child,
-    undefined,
-    ...existing,
-    <DropdownChevronIcon key="__dd-chevron" />
-  );
+  return cloneElement(child, undefined, ...existing, <DropdownChevronIcon key="__dd-chevron" />);
 }
 
 export const DropdownMenuTrigger = forwardRef<HTMLElement, DropdownMenuTriggerProps>(
   function DropdownMenuTrigger(
     { children, asChild = false, withChevron = false, onClick, onKeyDown, ...rest },
-    forwardedRef
+    forwardedRef,
   ) {
     const ctx = useDropdownMenuContext('<DropdownMenuTrigger>');
     const { open, setOpen, triggerId, contentId, triggerRef } = ctx;
 
-    const mergedRef = mergeRefs(
-      forwardedRef,
-      (node: HTMLElement | null) => {
-        triggerRef.current = node;
-      },
-    );
+    const mergedRef = mergeRefs(forwardedRef, (node: HTMLElement | null) => {
+      triggerRef.current = node;
+    });
 
     const isDisabled = useCallback((target: HTMLElement) => {
       if (target.getAttribute('aria-disabled') === 'true') return true;
@@ -386,16 +375,18 @@ export const DropdownMenuTrigger = forwardRef<HTMLElement, DropdownMenuTriggerPr
 // DropdownMenuContent — portal + floating + keyboard handler
 // ──────────────────────────────────────────────────────────────────────────
 
-const MENU_ITEM_SELECTOR = [
-  '[role="menuitem"]:not([aria-disabled="true"]):not([disabled])',
-].join(',');
+const MENU_ITEM_SELECTOR = ['[role="menuitem"]:not([aria-disabled="true"]):not([disabled])'].join(
+  ',',
+);
 
 function getMenuItems(container: HTMLElement): HTMLButtonElement[] {
   return Array.from(container.querySelectorAll<HTMLButtonElement>(MENU_ITEM_SELECTOR));
 }
 
-export interface DropdownMenuContentProps
-  extends Omit<HTMLAttributes<HTMLDivElement>, 'role' | 'aria-modal'> {
+export interface DropdownMenuContentProps extends Omit<
+  HTMLAttributes<HTMLDivElement>,
+  'role' | 'aria-modal'
+> {
   children?: ReactNode;
   className?: string;
 }
@@ -419,7 +410,11 @@ export function DropdownMenuContent({ children, className, ...rest }: DropdownMe
   const typeaheadTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [triggerWidth, setTriggerWidth] = useState<number | null>(null);
 
-  const { refs, floatingStyles, placement: actualPlacement } = useFloating({
+  const {
+    refs,
+    floatingStyles,
+    placement: actualPlacement,
+  } = useFloating({
     open,
     placement,
     offset: sideOffset,
@@ -442,8 +437,7 @@ export function DropdownMenuContent({ children, className, ...rest }: DropdownMe
     const trigger = triggerRef.current;
     if (!trigger) return;
     const measure = () => setTriggerWidth(trigger.getBoundingClientRect().width);
-    const observer =
-      typeof ResizeObserver !== 'undefined' ? new ResizeObserver(measure) : null;
+    const observer = typeof ResizeObserver !== 'undefined' ? new ResizeObserver(measure) : null;
     observer?.observe(trigger);
     return () => observer?.disconnect();
   }, [open, matchTriggerWidth, triggerRef]);
@@ -555,13 +549,9 @@ export function DropdownMenuContent({ children, className, ...rest }: DropdownMe
 
         const buffer = typeaheadBufferRef.current;
         const searchFrom = activeIndex >= 0 ? activeIndex + (buffer.length === 1 ? 1 : 0) : 0;
-        const rotated = [
-          ...items.slice(searchFrom),
-          ...items.slice(0, searchFrom),
-        ];
+        const rotated = [...items.slice(searchFrom), ...items.slice(0, searchFrom)];
         const match = rotated.find((item) => {
-          const textValue =
-            item.getAttribute('data-text-value') ?? item.textContent ?? '';
+          const textValue = item.getAttribute('data-text-value') ?? item.textContent ?? '';
           return textValue.toLowerCase().startsWith(buffer);
         });
         if (match) {
@@ -605,8 +595,10 @@ export function DropdownMenuContent({ children, className, ...rest }: DropdownMe
 // DropdownMenuItem
 // ──────────────────────────────────────────────────────────────────────────
 
-export interface DropdownMenuItemProps
-  extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'role' | 'onSelect'> {
+export interface DropdownMenuItemProps extends Omit<
+  ButtonHTMLAttributes<HTMLButtonElement>,
+  'role' | 'onSelect'
+> {
   children: ReactNode;
   /**
    * Callback fired when the item is activated (click, Enter, Space). Receives

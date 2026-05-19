@@ -61,17 +61,23 @@
 
 .severityInfo {
   border-color: var(--color-info);
-  box-shadow: 0 0 0 1px var(--color-info-subtle), var(--shadow-2xl);
+  box-shadow:
+    0 0 0 1px var(--color-info-subtle),
+    var(--shadow-2xl);
 }
 
 .severityWarning {
   border-color: var(--color-warning);
-  box-shadow: 0 0 0 1px var(--color-warning-subtle), var(--shadow-2xl);
+  box-shadow:
+    0 0 0 1px var(--color-warning-subtle),
+    var(--shadow-2xl);
 }
 
 .severityCritical {
   border-color: var(--color-error);
-  box-shadow: 0 0 0 1px var(--color-error-subtle), var(--shadow-2xl);
+  box-shadow:
+    0 0 0 1px var(--color-error-subtle),
+    var(--shadow-2xl);
 }
 
 .header {

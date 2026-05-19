@@ -1,15 +1,7 @@
 import path from 'node:path';
 import pc from 'picocolors';
-import {
-  loadManifest,
-  countTotalNames,
-  type ComponentManifest,
-} from '../lib/registry-loader.js';
-import {
-  detectProject,
-  validateProject,
-  type ProjectInfo,
-} from '../lib/project-detector.js';
+import { loadManifest, countTotalNames, type ComponentManifest } from '../lib/registry-loader.js';
+import { detectProject, validateProject, type ProjectInfo } from '../lib/project-detector.js';
 import { generateWrappers } from '../lib/wrapper-generator.js';
 import { autoMigrate } from '../lib/migrate-categories.js';
 import {
@@ -44,10 +36,7 @@ interface StepLog {
   detail: string;
 }
 
-export async function runInit(
-  importMetaUrl: string,
-  options: InitOptions,
-): Promise<number> {
+export async function runInit(importMetaUrl: string, options: InitOptions): Promise<number> {
   const log = console.log;
   const steps: StepLog[] = [];
 
@@ -66,7 +55,9 @@ export async function runInit(
         `${pc.dim('app dir:')} ${path.relative(project.cwd, project.appDirPath ?? '')}`,
     );
     if (project.nextConfigPath) {
-      log(`  ${pc.dim('next.config:')} ${path.relative(project.cwd, project.nextConfigPath)} (${project.nextConfigFormat})`);
+      log(
+        `  ${pc.dim('next.config:')} ${path.relative(project.cwd, project.nextConfigPath)} (${project.nextConfigFormat})`,
+      );
     }
   } catch (e) {
     log(pc.red('✗ Project validation failed:'));
@@ -102,8 +93,12 @@ export async function runInit(
   if (options.dryRun) {
     log('');
     log(pc.bold(pc.yellow('[dry-run]')) + ' Would generate the following:');
-    log(`  ${pc.dim('wrapper layer:')} ${options.targetDir}/ (${manifest.components.length + manifest.utilities.length + manifest.typesOnly.length} families × 2-3 files each)`);
-    log(`  ${pc.dim('styles:')}        ${options.globalCss}, ${options.stylesDir}/{theme,overrides}.scss`);
+    log(
+      `  ${pc.dim('wrapper layer:')} ${options.targetDir}/ (${manifest.components.length + manifest.utilities.length + manifest.typesOnly.length} families × 2-3 files each)`,
+    );
+    log(
+      `  ${pc.dim('styles:')}        ${options.globalCss}, ${options.stylesDir}/{theme,overrides}.scss`,
+    );
     log(`  ${pc.dim('eslint:')}        patch ${detectEslintConfig(project.cwd).format}`);
     log(`  ${pc.dim('tsconfig:')}      paths @/components/ui/*, @/styles/*`);
     log(`  ${pc.dim('next.config:')}   transpilePackages + sassOptions.loadPaths`);
@@ -179,7 +174,12 @@ export async function runInit(
   const eslintResult = patchEslintConfig(eslintDetected);
   steps.push({
     name: 'eslint',
-    status: eslintResult.status === 'applied' ? 'ok' : eslintResult.status === 'manual-required' ? 'warn' : 'skip',
+    status:
+      eslintResult.status === 'applied'
+        ? 'ok'
+        : eslintResult.status === 'manual-required'
+          ? 'warn'
+          : 'skip',
     detail: eslintResult.message,
   });
 
@@ -204,9 +204,7 @@ export async function runInit(
   steps.push({
     name: 'next.config',
     status:
-      nextResult.status === 'applied' || nextResult.status === 'already-patched'
-        ? 'ok'
-        : 'warn',
+      nextResult.status === 'applied' || nextResult.status === 'already-patched' ? 'ok' : 'warn',
     detail: nextResult.message,
   });
 
@@ -259,12 +257,22 @@ export async function runInit(
   if (eslintResult.status === 'manual-required') {
     log('');
     log(pc.yellow('⚠ ESLint manual merge required:'));
-    log(eslintResult.message.split('\n').map((l) => '  ' + l).join('\n'));
+    log(
+      eslintResult.message
+        .split('\n')
+        .map((l) => '  ' + l)
+        .join('\n'),
+    );
   }
   if (nextResult.status === 'manual-required' && nextResult.manualSnippet) {
     log('');
     log(pc.yellow('⚠ next.config manual merge required:'));
-    log(nextResult.manualSnippet.split('\n').map((l) => '  ' + l).join('\n'));
+    log(
+      nextResult.manualSnippet
+        .split('\n')
+        .map((l) => '  ' + l)
+        .join('\n'),
+    );
   }
 
   log('');

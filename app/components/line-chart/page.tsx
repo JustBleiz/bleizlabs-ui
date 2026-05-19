@@ -70,10 +70,10 @@ export default function LineChartPlayground() {
           LineChart
         </Heading>
         <Text color="secondary">
-          Multi-series SVG line chart with crosshair tooltip, keyboard
-          data-point navigation, and sr-only <code>&lt;table&gt;</code> a11y
-          fallback. Zero external deps — native SVG + math. Smooth (Catmull-Rom)
-          or linear interpolation. Responsive via aspect-ratio + ResizeObserver.
+          Multi-series SVG line chart with crosshair tooltip, keyboard data-point navigation, and
+          sr-only <code>&lt;table&gt;</code> a11y fallback. Zero external deps — native SVG + math.
+          Smooth (Catmull-Rom) or linear interpolation. Responsive via aspect-ratio +
+          ResizeObserver.
         </Text>
         <Inline gap={2} wrap>
           <Badge color="info">specialized/LineChart</Badge>
@@ -88,8 +88,8 @@ export default function LineChartPlayground() {
           1. Basic single-series (smooth interpolation)
         </Heading>
         <Text color="secondary">
-          12 weekly values, default smooth Catmull-Rom interpolation, default
-          color palette. AT users get the sr-only <code>&lt;table&gt;</code>
+          12 weekly values, default smooth Catmull-Rom interpolation, default color palette. AT
+          users get the sr-only <code>&lt;table&gt;</code>
           listing every datapoint.
         </Text>
         <div className={styles.demo}>
@@ -107,8 +107,8 @@ export default function LineChartPlayground() {
           2. Multi-series (3 series) — linear interpolation
         </Heading>
         <Text color="secondary">
-          Three lead sources over 12 weeks with linear interpolation. Crosshair
-          tooltip shows all three values at the hovered/focused X.
+          Three lead sources over 12 weeks with linear interpolation. Crosshair tooltip shows all
+          three values at the hovered/focused X.
         </Text>
         <div className={styles.demo}>
           <LineChart
@@ -117,8 +117,18 @@ export default function LineChartPlayground() {
             interpolation="linear"
             series={[
               { id: 'linkedin', name: 'LinkedIn', data: linkedinWeekly },
-              { id: 'cold-email', name: 'Cold email', data: coldEmailWeekly, color: 'var(--color-success)' },
-              { id: 'partner', name: 'Partner', data: partnerWeekly, color: 'var(--color-warning)' },
+              {
+                id: 'cold-email',
+                name: 'Cold email',
+                data: coldEmailWeekly,
+                color: 'var(--color-success)',
+              },
+              {
+                id: 'partner',
+                name: 'Partner',
+                data: partnerWeekly,
+                color: 'var(--color-warning)',
+              },
             ]}
           />
         </div>
@@ -130,9 +140,8 @@ export default function LineChartPlayground() {
           3. Time axis — Date values + locale-aware tick format
         </Heading>
         <Text color="secondary">
-          24 monthly MWh values over 2024-2025. X values are JS{' '}
-          <code>Date</code> objects; consumer formats ticks via{' '}
-          <code>xAxis.tickFormat</code> using <code>toLocaleDateString</code>{' '}
+          24 monthly MWh values over 2024-2025. X values are JS <code>Date</code> objects; consumer
+          formats ticks via <code>xAxis.tickFormat</code> using <code>toLocaleDateString</code>{' '}
           (Polish locale).
         </Text>
         <div className={styles.demo}>
@@ -146,7 +155,20 @@ export default function LineChartPlayground() {
                 // (server) vs Chromium (client) Intl.DateTimeFormat ICU
                 // variance that can produce hydration mismatches in dev
                 // mode. Format: "sty 24" / "lut 24" / "mar 24" / ...
-                const months = ['sty','lut','mar','kwi','maj','cze','lip','sie','wrz','paź','lis','gru'];
+                const months = [
+                  'sty',
+                  'lut',
+                  'mar',
+                  'kwi',
+                  'maj',
+                  'cze',
+                  'lip',
+                  'sie',
+                  'wrz',
+                  'paź',
+                  'lis',
+                  'gru',
+                ];
                 const d = v instanceof Date ? v : typeof v === 'number' ? new Date(v) : null;
                 if (!d) return String(v);
                 return `${months[d.getUTCMonth()]} ${String(d.getUTCFullYear() % 100).padStart(2, '0')}`;
@@ -162,9 +184,8 @@ export default function LineChartPlayground() {
           4. Negative values + zero crossing
         </Heading>
         <Text color="secondary">
-          Revenue growth with values from -60 to +280. Y-axis auto-includes
-          zero baseline; chart renders both above and below zero with the
-          zero gridline visible.
+          Revenue growth with values from -60 to +280. Y-axis auto-includes zero baseline; chart
+          renders both above and below zero with the zero gridline visible.
         </Text>
         <div className={styles.demo}>
           <LineChart
@@ -181,10 +202,9 @@ export default function LineChartPlayground() {
           5. Empty state (default render)
         </Heading>
         <Text color="secondary">
-          When series is <code>[]</code> the lib renders a default &quot;No
-          data&quot; message in the chart area. The sr-only{' '}
-          <code>&lt;table&gt;</code> still renders with caption + headers
-          (empty tbody) so AT users get the explicit zero-data signal.
+          When series is <code>[]</code> the lib renders a default &quot;No data&quot; message in
+          the chart area. The sr-only <code>&lt;table&gt;</code> still renders with caption +
+          headers (empty tbody) so AT users get the explicit zero-data signal.
         </Text>
         <div className={styles.demo}>
           <LineChart title="No data available" series={[]} />
@@ -197,9 +217,9 @@ export default function LineChartPlayground() {
           6. Custom tooltip via <code>renderTooltip</code> slot
         </Heading>
         <Text color="secondary">
-          Override the default tooltip body. The slot receives a full context
-          with focused point + all-series-at-X for &quot;crosshair&quot; style
-          comparisons. Default fallback is preserved — slot is opt-in.
+          Override the default tooltip body. The slot receives a full context with focused point +
+          all-series-at-X for &quot;crosshair&quot; style comparisons. Default fallback is preserved
+          — slot is opt-in.
         </Text>
         <div className={styles.demo}>
           <LineChart
@@ -207,7 +227,14 @@ export default function LineChartPlayground() {
             series={[{ name: 'Leads', data: weeklyLeads }]}
             renderTooltip={(ctx) => (
               <div style={{ textAlign: 'center' }}>
-                <div style={{ fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--color-text-muted)' }}>
+                <div
+                  style={{
+                    fontSize: '0.7rem',
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.05em',
+                    color: 'var(--color-text-muted)',
+                  }}
+                >
                   {ctx.datum.label ?? String(ctx.datum.x)}
                 </div>
                 <div style={{ fontSize: '1.5rem', fontWeight: 600, color: ctx.color }}>
@@ -228,16 +255,20 @@ export default function LineChartPlayground() {
           7. Interactive — <code>onPointClick</code> callback
         </Heading>
         <Text color="secondary">
-          Click a data point (or press Space/Enter on focused point) to fire
-          the callback. Use case: drill-down navigation, lock tooltip, set
-          external state filter.
+          Click a data point (or press Space/Enter on focused point) to fire the callback. Use case:
+          drill-down navigation, lock tooltip, set external state filter.
         </Text>
         <div className={styles.demo}>
           <LineChart
             title="Click points to filter"
             series={[
               { id: 'linkedin', name: 'LinkedIn', data: linkedinWeekly },
-              { id: 'cold-email', name: 'Cold email', data: coldEmailWeekly, color: 'var(--color-success)' },
+              {
+                id: 'cold-email',
+                name: 'Cold email',
+                data: coldEmailWeekly,
+                color: 'var(--color-success)',
+              },
             ]}
             onPointClick={(seriesId, idx) => setSelected({ seriesId, idx })}
           />
@@ -262,9 +293,9 @@ export default function LineChartPlayground() {
           8. Animation off (<code>animate=false</code> for static reports)
         </Heading>
         <Text color="secondary">
-          Disable the path-draw enter animation for static report contexts
-          (PDF export, print preview). <code>prefers-reduced-motion: reduce</code>{' '}
-          ALSO suppresses animation regardless of this prop.
+          Disable the path-draw enter animation for static report contexts (PDF export, print
+          preview). <code>prefers-reduced-motion: reduce</code> ALSO suppresses animation regardless
+          of this prop.
         </Text>
         <div className={styles.demo}>
           <LineChart

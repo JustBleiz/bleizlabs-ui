@@ -28,10 +28,9 @@ export default function ButtonPlaygroundPage() {
           Button + ButtonGroup
         </Heading>
         <Text className={styles.intro}>
-          Server-safe Button with five variants, three sizes, optional icon,
-          and polymorphic rendering via <code>asChild</code> (use as a Next.js
-          Link, anchor, or any custom element). ButtonGroup wraps siblings
-          into a single joined control with collapsed inner radii.
+          Server-safe Button with five variants, three sizes, optional icon, and polymorphic
+          rendering via <code>asChild</code> (use as a Next.js Link, anchor, or any custom element).
+          ButtonGroup wraps siblings into a single joined control with collapsed inner radii.
         </Text>
       </header>
 
@@ -53,10 +52,10 @@ export default function ButtonPlaygroundPage() {
           Shapes
         </Heading>
         <Text className={styles.intro}>
-          The <code>shape</code> prop is orthogonal to <code>variant</code> and{' '}
-          <code>size</code>. Default <code>&quot;rounded&quot;</code> uses the
-          standard radius scale; <code>&quot;pill&quot;</code> resolves to{' '}
-          <code>--radius-full</code> for fully-rounded edges.
+          The <code>shape</code> prop is orthogonal to <code>variant</code> and <code>size</code>.
+          Default <code>&quot;rounded&quot;</code> uses the standard radius scale;{' '}
+          <code>&quot;pill&quot;</code> resolves to <code>--radius-full</code> for fully-rounded
+          edges.
         </Text>
         <div className={styles.row}>
           {SHAPES.map((shape) => (
@@ -95,12 +94,7 @@ export default function ButtonPlaygroundPage() {
           <Button variant="secondary" icon={<ArrowIcon />} iconPosition="right">
             Next step
           </Button>
-          <Button
-            variant="ghost"
-            iconOnly
-            icon={<ArrowIcon />}
-            aria-label="Next page"
-          />
+          <Button variant="ghost" iconOnly icon={<ArrowIcon />} aria-label="Next page" />
         </div>
       </section>
 

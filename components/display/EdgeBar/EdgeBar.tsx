@@ -102,14 +102,7 @@ const THICKNESS_CLASS: Record<EdgeBarThickness, string> = {
 };
 
 export const EdgeBar = forwardRef<HTMLSpanElement, EdgeBarProps>(function EdgeBar(
-  {
-    position = 'top',
-    color = 'default',
-    thickness = 'md',
-    pulse = false,
-    className,
-    ...rest
-  },
+  { position = 'top', color = 'default', thickness = 'md', pulse = false, className, ...rest },
   ref,
 ) {
   return (

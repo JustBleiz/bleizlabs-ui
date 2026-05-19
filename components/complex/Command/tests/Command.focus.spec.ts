@@ -16,27 +16,19 @@ test.describe('Command — focus behavior', () => {
     await page.goto('/components/command');
   });
 
-  test('CMD-R07 — initial focus lands on input (not first option)', async ({
-    page,
-  }) => {
+  test('CMD-R07 — initial focus lands on input (not first option)', async ({ page }) => {
     await page.getByRole('button', { name: 'Open palette' }).click();
     const input = page.getByRole('combobox');
     await expect(input).toBeFocused();
   });
 
-  test('CMD-R08 — sibling body children get aria-hidden while palette open', async ({
-    page,
-  }) => {
+  test('CMD-R08 — sibling body children get aria-hidden while palette open', async ({ page }) => {
     await page.getByRole('button', { name: 'Open palette' }).click();
     // All direct body children except the portal root should have aria-hidden
     const allSiblingsHidden = await page.evaluate(() => {
       const portalRoot = document.querySelector('[data-cmd-portal]');
-      const children = Array.from(document.body.children).filter(
-        (c) => c !== portalRoot,
-      );
-      return children.every(
-        (c) => c.getAttribute('aria-hidden') === 'true',
-      );
+      const children = Array.from(document.body.children).filter((c) => c !== portalRoot);
+      return children.every((c) => c.getAttribute('aria-hidden') === 'true');
     });
     expect(allSiblingsHidden).toBe(true);
   });
@@ -49,9 +41,7 @@ test.describe('Command — focus behavior', () => {
     await expect(opener).toBeFocused();
   });
 
-  test('CMD-R06 — Tab inside palette stays on focusable controls (no escape)', async ({
-    page,
-  }) => {
+  test('CMD-R06 — Tab inside palette stays on focusable controls (no escape)', async ({ page }) => {
     // Palette has input + option buttons. Tab should cycle focus inside the
     // dialog (useFocusTrap from Dialog E15).
     await page.getByRole('button', { name: 'Open palette' }).click();

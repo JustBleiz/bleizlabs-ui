@@ -17,9 +17,7 @@ test.describe('LineChart — keyboard', () => {
     await page.goto(URL, { waitUntil: 'networkidle' });
   });
 
-  test('LC-K01: ArrowRight moves focus to next point in series', async ({
-    page,
-  }) => {
+  test('LC-K01: ArrowRight moves focus to next point in series', async ({ page }) => {
     const chart = chartByTitle(page, 'Weekly leads');
     const point0 = pointByIndex(chart, 0, 0);
     await focusPoint(point0);
@@ -56,9 +54,7 @@ test.describe('LineChart — keyboard', () => {
     await expect(last).toBeFocused();
   });
 
-  test('LC-K05: ArrowDown switches to next series at same x index', async ({
-    page,
-  }) => {
+  test('LC-K05: ArrowDown switches to next series at same x index', async ({ page }) => {
     const chart = chartByTitle(page, 'Lead source comparison');
     const s0p3 = pointByIndex(chart, 0, 3);
     await focusPoint(s0p3);
@@ -67,9 +63,7 @@ test.describe('LineChart — keyboard', () => {
     await expect(s1p3).toBeFocused();
   });
 
-  test('LC-K06: Space activates focused point (onPointClick fires)', async ({
-    page,
-  }) => {
+  test('LC-K06: Space activates focused point (onPointClick fires)', async ({ page }) => {
     const chart = chartByTitle(page, 'Click points to filter');
     const point = pointByIndex(chart, 0, 2);
     await focusPoint(point);

@@ -39,10 +39,9 @@ export default function PopoverPlaygroundPage() {
           Popover
         </Heading>
         <Text className={styles.intro}>
-          Floating panel anchored to a trigger, for contextual content that
-          needs more room than a tooltip. Non-modal by default; set{' '}
-          <code>modal</code> to trap focus for richer interactions like forms.
-          Includes flip and shift placement, optional arrow, and pointer /
+          Floating panel anchored to a trigger, for contextual content that needs more room than a
+          tooltip. Non-modal by default; set <code>modal</code> to trap focus for richer
+          interactions like forms. Includes flip and shift placement, optional arrow, and pointer /
           keyboard dismiss.
         </Text>
       </header>
@@ -53,9 +52,8 @@ export default function PopoverPlaygroundPage() {
           Basic click + focus
         </Heading>
         <Text>
-          Default placement <code>bottom</code>. Click opens, click again toggles, Escape or
-          outside click closes. Focus moves into popover content on open and restores to
-          trigger on close.
+          Default placement <code>bottom</code>. Click opens, click again toggles, Escape or outside
+          click closes. Focus moves into popover content on open and restores to trigger on close.
         </Text>
         <div className={styles.row}>
           <Popover>
@@ -64,8 +62,8 @@ export default function PopoverPlaygroundPage() {
             </PopoverTrigger>
             <PopoverContent title="Account" description="Signed in as user@example.com">
               <Text>
-                Your session is active. Manage profile, billing, and preferences from your
-                account dashboard.
+                Your session is active. Manage profile, billing, and preferences from your account
+                dashboard.
               </Text>
             </PopoverContent>
           </Popover>
@@ -101,9 +99,9 @@ export default function PopoverPlaygroundPage() {
           With arrow decoration
         </Heading>
         <Text>
-          Opt-in <code>showArrow</code> prop renders a rotated-square arrow pointing at the
-          trigger. Arrow position is computed via <code>computeArrowPosition</code> and stays
-          aligned with the trigger center even after shift middleware runs.
+          Opt-in <code>showArrow</code> prop renders a rotated-square arrow pointing at the trigger.
+          Arrow position is computed via <code>computeArrowPosition</code> and stays aligned with
+          the trigger center even after shift middleware runs.
         </Text>
         <div className={styles.row}>
           <Popover showArrow placement="bottom">
@@ -131,9 +129,9 @@ export default function PopoverPlaygroundPage() {
           Interactive form content
         </Heading>
         <Text>
-          Popover content can hold any interactive elements. Focus moves to the first tabbable
-          on open; the grace area and outside-click handling let users interact freely until
-          they click outside or press Escape.
+          Popover content can hold any interactive elements. Focus moves to the first tabbable on
+          open; the grace area and outside-click handling let users interact freely until they click
+          outside or press Escape.
         </Text>
         <div className={styles.row}>
           <Popover>
@@ -153,11 +151,7 @@ export default function PopoverPlaygroundPage() {
               }
             >
               <Input name="name" placeholder="Search by name" />
-              <Input
-                name="email"
-                type="email"
-                placeholder="user@example.com"
-              />
+              <Input name="email" type="email" placeholder="user@example.com" />
             </PopoverContent>
           </Popover>
         </div>
@@ -170,8 +164,8 @@ export default function PopoverPlaygroundPage() {
         </Heading>
         <Text>
           Opt-in <code>modal=true</code> adds full focus trap (reusing Dialog&rsquo;s{' '}
-          <code>useFocusTrap</code>), background <code>inert</code> toggle, and body scroll
-          lock. Use for destructive confirms or forms that cannot be abandoned mid-entry.
+          <code>useFocusTrap</code>), background <code>inert</code> toggle, and body scroll lock.
+          Use for destructive confirms or forms that cannot be abandoned mid-entry.
         </Text>
         <div className={styles.row}>
           <Popover modal>
@@ -199,8 +193,8 @@ export default function PopoverPlaygroundPage() {
         </Heading>
         <Text>
           <code>dismissable=false</code> disables Escape and outside-click close. Consumer must
-          provide an explicit close action (e.g., a button calling{' '}
-          <code>onOpenChange(false)</code>).
+          provide an explicit close action (e.g., a button calling <code>onOpenChange(false)</code>
+          ).
         </Text>
         <div className={styles.row}>
           <Popover dismissable={false}>
@@ -252,8 +246,8 @@ export default function PopoverPlaygroundPage() {
           Dynamic content — auto-reposition
         </Heading>
         <Text>
-          Adding content re-measures the popover via <code>ResizeObserver</code>. Positioning
-          engine re-runs flip + shift on every size change.
+          Adding content re-measures the popover via <code>ResizeObserver</code>. Positioning engine
+          re-runs flip + shift on every size change.
         </Text>
         <div className={styles.row}>
           <Popover>

@@ -95,13 +95,34 @@ describe('templates', () => {
         generatedAt: '2026-05-06T00:00:00.000Z',
         categories: {},
         components: [
-          { family: 'Zebra', category: 'display', path: 'display/Zebra', exports: ['Zebra'], types: [], hooks: [] },
+          {
+            family: 'Zebra',
+            category: 'display',
+            path: 'display/Zebra',
+            exports: ['Zebra'],
+            types: [],
+            hooks: [],
+          },
           sampleFamily, // Card / display
-          { family: 'Stack', category: 'layout', path: 'layout/Stack', exports: ['Stack'], types: [], hooks: [] },
+          {
+            family: 'Stack',
+            category: 'layout',
+            path: 'layout/Stack',
+            exports: ['Stack'],
+            types: [],
+            hooks: [],
+          },
           sampleHookFamily, // Sidebar / complex
         ],
         utilities: [
-          { family: 'cn', category: 'utils', path: 'utils/cn', exports: ['cn'], types: [], hooks: [] },
+          {
+            family: 'cn',
+            category: 'utils',
+            path: 'utils/cn',
+            exports: ['cn'],
+            types: [],
+            hooks: [],
+          },
         ],
         typesOnly: [sampleTypeOnlyFamily],
       };

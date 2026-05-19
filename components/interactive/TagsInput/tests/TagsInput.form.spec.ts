@@ -34,7 +34,10 @@ test.describe('TagsInput — form integration', () => {
     await input.press('Enter');
     await input.pressSequentially('beta');
     await input.press('Enter');
-    await page.getByRole('button', { name: /^submit$/i }).first().click();
+    await page
+      .getByRole('button', { name: /^submit$/i })
+      .first()
+      .click();
     // Submitted line shows delimited string "alpha,beta".
     await expect(page.getByText('alpha,beta')).toBeVisible();
   });

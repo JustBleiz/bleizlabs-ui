@@ -8,8 +8,7 @@ import { test, expect } from '@playwright/test';
 import { stepperBy, navBy, stepsOf } from './_helpers';
 
 const URL = '/components/stepper';
-const WIZARD_LABEL =
-  'Onboarding wizard — click visited steps to revisit';
+const WIZARD_LABEL = 'Onboarding wizard — click visited steps to revisit';
 
 test.describe('Stepper — regression', () => {
   test.beforeEach(async ({ page }) => {
@@ -27,9 +26,7 @@ test.describe('Stepper — regression', () => {
     expect(errors).toHaveLength(0);
   });
 
-  test('STEP-R02: currentStep < 0 treats all as pending (no crash)', async ({
-    page,
-  }) => {
+  test('STEP-R02: currentStep < 0 treats all as pending (no crash)', async ({ page }) => {
     const errors: Error[] = [];
     page.on('pageerror', (err) => errors.push(err));
     await page.reload();
@@ -49,9 +46,7 @@ test.describe('Stepper — regression', () => {
     expect(warnings).toEqual([]);
   });
 
-  test('STEP-R04: single-step Stepper renders no connecting line', async ({
-    page,
-  }) => {
+  test('STEP-R04: single-step Stepper renders no connecting line', async ({ page }) => {
     // The demo uses ≥3 steps. We verify via DOM that the LAST step never
     // has an ::after pseudo with visible background (line) — via the
     // :not(:last-child) selector.
@@ -64,9 +59,7 @@ test.describe('Stepper — regression', () => {
     expect(hasAfter).toBe(false);
   });
 
-  test('STEP-R05: explicit status="error" overrides currentStep derivation', async ({
-    page,
-  }) => {
+  test('STEP-R05: explicit status="error" overrides currentStep derivation', async ({ page }) => {
     const stepper = stepperBy(page, 'Import wizard');
     const steps = stepsOf(stepper);
     // Demo: currentStep=3, Step 2 has explicit error
@@ -86,9 +79,7 @@ test.describe('Stepper — regression', () => {
     await expect(completeStep).toBeVisible();
   });
 
-  test('STEP-R07: aria-current="step" set only on active step', async ({
-    page,
-  }) => {
+  test('STEP-R07: aria-current="step" set only on active step', async ({ page }) => {
     const stepper = stepperBy(page, 'Order progress');
     const current = stepper.locator('[aria-current="step"]');
     await expect(current).toHaveCount(1);
@@ -132,9 +123,7 @@ test.describe('Stepper — regression', () => {
     expect(tabbable).toBe(1);
   });
 
-  test('STEP-R10: long step labels wrap (do not truncate) — Q3 (β)', async ({
-    page,
-  }) => {
+  test('STEP-R10: long step labels wrap (do not truncate) — Q3 (β)', async ({ page }) => {
     // Q3 (β) chosen — labels wrap, do not truncate. Verify by checking
     // text-overflow CSS on the label.
     const stepper = stepperBy(page, 'Order progress');
@@ -151,9 +140,7 @@ test.describe('Stepper — regression', () => {
     expect(textOverflow).not.toBe('ellipsis');
   });
 
-  test('STEP-R11: custom icon override does not break aria-hidden discipline', async ({
-    page,
-  }) => {
+  test('STEP-R11: custom icon override does not break aria-hidden discipline', async ({ page }) => {
     const stepper = stepperBy(page, 'Hydrogen contract phases');
     // The step circles all carry aria-hidden="true" wrapper regardless of
     // icon override.
@@ -177,9 +164,7 @@ test.describe('Stepper — regression', () => {
     }
   });
 
-  test('STEP-R13: reduced-motion respected on transitions', async ({
-    page,
-  }) => {
+  test('STEP-R13: reduced-motion respected on transitions', async ({ page }) => {
     await page.emulateMedia({ reducedMotion: 'reduce' });
     await page.reload();
     const stepper = stepperBy(page, 'Order progress');
@@ -197,10 +182,7 @@ test.describe('Stepper — regression', () => {
     const transitionDuration = await circle.evaluate(
       (el) => window.getComputedStyle(el).transitionDuration,
     );
-    const isReduced =
-      transition === 'none' ||
-      transition === 'all' ||
-      transitionDuration === '0s';
+    const isReduced = transition === 'none' || transition === 'all' || transitionDuration === '0s';
     expect(isReduced).toBe(true);
   });
 
@@ -212,9 +194,7 @@ test.describe('Stepper — regression', () => {
       if (msg.type() === 'error') errors.push(msg.text());
     });
     await page.goto(URL, { waitUntil: 'networkidle' });
-    const hydrationErr = errors.find((e) =>
-      /hydrat|did not match|server html/i.test(e),
-    );
+    const hydrationErr = errors.find((e) => /hydrat|did not match|server html/i.test(e));
     expect(hydrationErr).toBeUndefined();
   });
 
@@ -223,9 +203,7 @@ test.describe('Stepper — regression', () => {
   }) => {
     const nav = navBy(page, WIZARD_LABEL);
     // Programmatically focus the first clickable step
-    const firstBtn = nav.locator(
-      'button[data-step-clickable="true"][data-step-index="0"]',
-    );
+    const firstBtn = nav.locator('button[data-step-clickable="true"][data-step-index="0"]');
     await firstBtn.focus();
     await expect(firstBtn).toBeFocused();
   });

@@ -33,8 +33,10 @@ import { Button, type ButtonProps } from '../../interactive/Button';
  *
  * <IconButton aria-label="Go to settings" href="/settings" icon={<GearIcon />} />
  */
-export interface IconButtonProps
-  extends Omit<ButtonProps, 'iconOnly' | 'icon' | 'children' | 'aria-label'> {
+export interface IconButtonProps extends Omit<
+  ButtonProps,
+  'iconOnly' | 'icon' | 'children' | 'aria-label'
+> {
   /** Visible icon node — Button renders it inside the icon-only button. Required. */
   icon: ReactNode;
   /** Accessible name for screen readers. Required (TS-enforced). */
@@ -43,8 +45,9 @@ export interface IconButtonProps
 
 type IconButtonRef = ComponentRef<typeof Button>;
 
-export const IconButton = forwardRef<IconButtonRef, IconButtonProps>(
-  function IconButton({ icon, ...rest }, ref) {
-    return <Button ref={ref} iconOnly icon={icon} {...rest} />;
-  },
-);
+export const IconButton = forwardRef<IconButtonRef, IconButtonProps>(function IconButton(
+  { icon, ...rest },
+  ref,
+) {
+  return <Button ref={ref} iconOnly icon={icon} {...rest} />;
+});

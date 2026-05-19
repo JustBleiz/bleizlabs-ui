@@ -1,9 +1,4 @@
-import {
-  forwardRef,
-  useMemo,
-  type HTMLAttributes,
-  type ReactNode,
-} from 'react';
+import { forwardRef, useMemo, type HTMLAttributes, type ReactNode } from 'react';
 import { cn } from '../../utils/cn';
 import styles from './UsageDonut.module.scss';
 
@@ -66,8 +61,7 @@ export interface UsageDonutSegment {
 
 export type UsageDonutSize = 'sm' | 'md' | 'lg';
 
-export interface UsageDonutProps
-  extends Omit<HTMLAttributes<HTMLDivElement>, 'aria-label'> {
+export interface UsageDonutProps extends Omit<HTMLAttributes<HTMLDivElement>, 'aria-label'> {
   /** Segments rendered clockwise starting at 12 o'clock. */
   segments: UsageDonutSegment[];
   /** Explicit total. When omitted, auto-sums `segments`. */
@@ -106,114 +100,90 @@ interface ComputedSegment {
   color: string;
 }
 
-export const UsageDonut = forwardRef<HTMLDivElement, UsageDonutProps>(
-  function UsageDonut(
-    {
-      segments,
-      total,
-      size = 'md',
-      label,
-      centerLabel,
-      className,
-      ...rest
-    },
-    ref,
-  ) {
-    // strokeWidth derived from canonical default (14) — sweet spot between
-    // "ring" (too thin) and "pie" (too thick). Per E07.x SIMPLIFY 0.15.0.
-    const strokeWidth = 14;
-    const radius = 50 - strokeWidth / 2;
-    const circumference = 2 * Math.PI * radius;
+export const UsageDonut = forwardRef<HTMLDivElement, UsageDonutProps>(function UsageDonut(
+  { segments, total, size = 'md', label, centerLabel, className, ...rest },
+  ref,
+) {
+  // strokeWidth derived from canonical default (14) — sweet spot between
+  // "ring" (too thin) and "pie" (too thick). Per E07.x SIMPLIFY 0.15.0.
+  const strokeWidth = 14;
+  const radius = 50 - strokeWidth / 2;
+  const circumference = 2 * Math.PI * radius;
 
-    const computed = useMemo<ComputedSegment[]>(() => {
-      const rawSum = segments.reduce(
-        (sum, segment) => sum + Math.max(0, segment.value),
-        0,
-      );
-      const effectiveTotal = total !== undefined && total > 0 ? total : rawSum;
-      if (effectiveTotal <= 0) {
-        return [];
-      }
+  const computed = useMemo<ComputedSegment[]>(() => {
+    const rawSum = segments.reduce((sum, segment) => sum + Math.max(0, segment.value), 0);
+    const effectiveTotal = total !== undefined && total > 0 ? total : rawSum;
+    if (effectiveTotal <= 0) {
+      return [];
+    }
 
-      let accumulated = 0;
-      return segments
-        .filter((segment) => segment.value > 0)
-        .map((segment, index): ComputedSegment => {
-          const ratio = Math.min(1, segment.value / effectiveTotal);
-          const dash = ratio * circumference;
-          const offset = -accumulated;
-          accumulated += dash;
-          return {
-            key: `${index}-${segment.label}`,
-            label: segment.label,
-            value: segment.value,
-            dash,
-            offset,
-            color:
-              segment.color ??
-              DEFAULT_COLORS[index % DEFAULT_COLORS.length]!,
-          };
-        });
-    }, [segments, total, circumference]);
+    let accumulated = 0;
+    return segments
+      .filter((segment) => segment.value > 0)
+      .map((segment, index): ComputedSegment => {
+        const ratio = Math.min(1, segment.value / effectiveTotal);
+        const dash = ratio * circumference;
+        const offset = -accumulated;
+        accumulated += dash;
+        return {
+          key: `${index}-${segment.label}`,
+          label: segment.label,
+          value: segment.value,
+          dash,
+          offset,
+          color: segment.color ?? DEFAULT_COLORS[index % DEFAULT_COLORS.length]!,
+        };
+      });
+  }, [segments, total, circumference]);
 
-    const summary = useMemo(() => {
-      const rawSum = segments.reduce(
-        (sum, segment) => sum + Math.max(0, segment.value),
-        0,
-      );
-      const effectiveTotal =
-        total !== undefined && total > 0 ? total : rawSum;
-      return `${label}. ${segments.length} segment${segments.length === 1 ? '' : 's'}, total ${effectiveTotal}.`;
-    }, [label, segments, total]);
+  const summary = useMemo(() => {
+    const rawSum = segments.reduce((sum, segment) => sum + Math.max(0, segment.value), 0);
+    const effectiveTotal = total !== undefined && total > 0 ? total : rawSum;
+    return `${label}. ${segments.length} segment${segments.length === 1 ? '' : 's'}, total ${effectiveTotal}.`;
+  }, [label, segments, total]);
 
-    return (
-      <div
-        ref={ref}
-        role="img"
-        aria-label={label}
-        className={cn(styles.root, SIZE_CLASS[size], className)}
-        {...rest}
-      >
-        <svg
-          className={styles.svg}
-          viewBox="0 0 100 100"
-          focusable="false"
-          aria-hidden="true"
-        >
-          <title>{summary}</title>
-          <circle
-            cx={50}
-            cy={50}
-            r={radius}
-            fill="none"
-            stroke="var(--color-surface-raised)"
-            strokeWidth={strokeWidth}
-          />
-          <g transform="rotate(-90 50 50)">
-            {computed.map((segment) => (
-              <circle
-                key={segment.key}
-                cx={50}
-                cy={50}
-                r={radius}
-                fill="none"
-                stroke={segment.color}
-                strokeWidth={strokeWidth}
-                strokeDasharray={`${segment.dash} ${circumference - segment.dash}`}
-                strokeDashoffset={segment.offset}
-                strokeLinecap="butt"
-              >
-                <title>{`${segment.label}: ${segment.value}`}</title>
-              </circle>
-            ))}
-          </g>
-        </svg>
-        {centerLabel ? (
-          <div aria-hidden="true" className={styles.center}>
-            {centerLabel}
-          </div>
-        ) : null}
-      </div>
-    );
-  },
-);
+  return (
+    <div
+      ref={ref}
+      role="img"
+      aria-label={label}
+      className={cn(styles.root, SIZE_CLASS[size], className)}
+      {...rest}
+    >
+      <svg className={styles.svg} viewBox="0 0 100 100" focusable="false" aria-hidden="true">
+        <title>{summary}</title>
+        <circle
+          cx={50}
+          cy={50}
+          r={radius}
+          fill="none"
+          stroke="var(--color-surface-raised)"
+          strokeWidth={strokeWidth}
+        />
+        <g transform="rotate(-90 50 50)">
+          {computed.map((segment) => (
+            <circle
+              key={segment.key}
+              cx={50}
+              cy={50}
+              r={radius}
+              fill="none"
+              stroke={segment.color}
+              strokeWidth={strokeWidth}
+              strokeDasharray={`${segment.dash} ${circumference - segment.dash}`}
+              strokeDashoffset={segment.offset}
+              strokeLinecap="butt"
+            >
+              <title>{`${segment.label}: ${segment.value}`}</title>
+            </circle>
+          ))}
+        </g>
+      </svg>
+      {centerLabel ? (
+        <div aria-hidden="true" className={styles.center}>
+          {centerLabel}
+        </div>
+      ) : null}
+    </div>
+  );
+});

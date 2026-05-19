@@ -12,12 +12,7 @@ import {
   type PointerEvent,
 } from 'react';
 import { cn } from '../../utils/cn';
-import {
-  clampTime,
-  formatTime,
-  parseTime,
-  resolveHourCycle,
-} from '../../utils/date';
+import { clampTime, formatTime, parseTime, resolveHourCycle } from '../../utils/date';
 import { useResolvedLocale } from '../../utils/locale';
 import { Label } from '../Label';
 import styles from './TimeInput.module.scss';
@@ -279,9 +274,7 @@ export const TimeInput = forwardRef<HTMLDivElement, TimeInputProps>(function Tim
   const [uncontrolledState, setUncontrolledState] = useState<TimeState | null>(() =>
     stateFromIso(defaultValue),
   );
-  const [prevControlledIso, setPrevControlledIso] = useState<string | undefined>(
-    controlledValue,
-  );
+  const [prevControlledIso, setPrevControlledIso] = useState<string | undefined>(controlledValue);
 
   let state = isControlled ? stateFromIso(controlledValue) : uncontrolledState;
   if (isControlled && controlledValue !== prevControlledIso) {
@@ -359,11 +352,7 @@ export const TimeInput = forwardRef<HTMLDivElement, TimeInputProps>(function Tim
   const secondFieldMax = 59;
 
   const period: 'AM' | 'PM' = state ? periodOf(state.h) : 'AM';
-  const hourValue = state
-    ? is12h
-      ? to12hDisplay(state.h)
-      : state.h
-    : null;
+  const hourValue = state ? (is12h ? to12hDisplay(state.h) : state.h) : null;
 
   const fieldDisplay = (field: FieldKey): string => {
     // Buffer wins only when non-empty — empty buffer (post-Backspace) falls
@@ -585,9 +574,7 @@ export const TimeInput = forwardRef<HTMLDivElement, TimeInputProps>(function Tim
     flushBuffer(field, false);
   };
 
-  const handleFocus = (
-    field: FieldKey,
-  ) => (event: FocusEvent<HTMLInputElement>) => {
+  const handleFocus = (field: FieldKey) => (event: FocusEvent<HTMLInputElement>) => {
     focusedFieldRef.current = field;
     // Select-all on focus per APG spinbutton precedent. We intentionally do
     // NOT flush a buffer left behind in another field here — that would race
@@ -676,16 +663,15 @@ export const TimeInput = forwardRef<HTMLDivElement, TimeInputProps>(function Tim
   // focused button) AND as the click that follows a pointerup. Guard
   // against double-fire after pointerdown by checking the timer state: if
   // startStepperRepeat already ran, the pointer path handled the step.
-  const handleStepperKeyboardStep = (
-    direction: 1 | -1,
-  ) => (event: KeyboardEvent<HTMLButtonElement>) => {
-    if (disabled) return;
-    if (event.key !== ' ' && event.key !== 'Enter') return;
-    event.preventDefault();
-    const field = focusedFieldRef.current;
-    adjustField(field, stepperFieldDelta(field, direction));
-    focusField(field);
-  };
+  const handleStepperKeyboardStep =
+    (direction: 1 | -1) => (event: KeyboardEvent<HTMLButtonElement>) => {
+      if (disabled) return;
+      if (event.key !== ' ' && event.key !== 'Enter') return;
+      event.preventDefault();
+      const field = focusedFieldRef.current;
+      adjustField(field, stepperFieldDelta(field, direction));
+      focusField(field);
+    };
 
   // ARIA value-text for AM/PM
   const periodLabel = period === 'AM' ? 'AM' : 'PM';
@@ -694,11 +680,7 @@ export const TimeInput = forwardRef<HTMLDivElement, TimeInputProps>(function Tim
   const groupAriaLabel = ariaLabel ?? label ?? 'Time';
   const groupInvalid = ariaInvalid ?? (error ? true : undefined);
 
-  const wrapClass = cn(
-    styles.field,
-    disabled && styles.fieldDisabled,
-    className,
-  );
+  const wrapClass = cn(styles.field, disabled && styles.fieldDisabled, className);
   const inputWrapClass = cn(
     styles.inputWrap,
     error && styles.inputWrapError,
@@ -711,12 +693,7 @@ export const TimeInput = forwardRef<HTMLDivElement, TimeInputProps>(function Tim
   const secondBounds = fieldBounds('s');
 
   return (
-    <div
-      ref={ref}
-      className={wrapClass}
-      dir={dir}
-      data-disabled={disabled || undefined}
-    >
+    <div ref={ref} className={wrapClass} dir={dir} data-disabled={disabled || undefined}>
       {label ? (
         <Label
           htmlFor={hourId}
@@ -893,14 +870,7 @@ export const TimeInput = forwardRef<HTMLDivElement, TimeInputProps>(function Tim
           </div>
         ) : null}
       </div>
-      {name ? (
-        <input
-          type="hidden"
-          name={name}
-          value={isoValue}
-          required={required}
-        />
-      ) : null}
+      {name ? <input type="hidden" name={name} value={isoValue} required={required} /> : null}
       {error ? (
         <p id={errorId} className={styles.error} role="alert">
           {error}

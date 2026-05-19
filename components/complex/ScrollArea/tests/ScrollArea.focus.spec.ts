@@ -52,9 +52,7 @@ test.describe('ScrollArea — focus + pointer behavior', () => {
       .toBeGreaterThan(initial);
   });
 
-  test('SA-R05 — focus lands on viewport, not thumb (thumb has no tabindex)', async ({
-    page,
-  }) => {
+  test('SA-R05 — focus lands on viewport, not thumb (thumb has no tabindex)', async ({ page }) => {
     const sections = page.locator('section');
     const basic = sections.nth(0);
     const viewport = basic.locator('div[tabindex="0"]').first();
@@ -66,9 +64,7 @@ test.describe('ScrollArea — focus + pointer behavior', () => {
     expect(tabindex).toBeNull();
   });
 
-  test('Track click (not on thumb) pages scroll by viewport height', async ({
-    page,
-  }) => {
+  test('Track click (not on thumb) pages scroll by viewport height', async ({ page }) => {
     // Section 2 — always-visible scrollbar. Clicking the track above/below
     // the thumb pages by one clientHeight (per ScrollArea.tsx:453).
     const sections = page.locator('section');
@@ -82,10 +78,7 @@ test.describe('ScrollArea — focus + pointer behavior', () => {
     if (!sbBox) throw new Error('No scrollbar box');
     // Click near the bottom of the track to page down (below the thumb).
     const initial = await viewport.evaluate((el) => el.scrollTop);
-    await page.mouse.click(
-      sbBox.x + sbBox.width / 2,
-      sbBox.y + sbBox.height - 10,
-    );
+    await page.mouse.click(sbBox.x + sbBox.width / 2, sbBox.y + sbBox.height - 10);
     await expect
       .poll(async () => viewport.evaluate((el) => el.scrollTop), { timeout: 2000 })
       .toBeGreaterThan(initial);
@@ -94,15 +87,11 @@ test.describe('ScrollArea — focus + pointer behavior', () => {
   test('Hover on root surfaces scrollbar (visibility="hover")', async ({ page }) => {
     const sections = page.locator('section');
     const hoverSection = sections.nth(2);
-    const root = hoverSection
-      .locator('[data-visibility="hover"]')
-      .first();
+    const root = hoverSection.locator('[data-visibility="hover"]').first();
     const thumb = hoverSection.locator('[data-scroll-area-thumb]').first();
     // Pre-hover: scrollbar is hidden (opacity:0 + pointer-events:none).
     await root.hover();
-    const scrollbar = hoverSection
-      .locator('[data-orientation="vertical"]')
-      .first();
+    const scrollbar = hoverSection.locator('[data-orientation="vertical"]').first();
     await expect(scrollbar).toHaveAttribute('data-visible', 'true');
     await expect(thumb).toBeVisible();
   });

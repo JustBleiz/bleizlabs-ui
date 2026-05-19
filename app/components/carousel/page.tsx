@@ -35,10 +35,9 @@ export default function CarouselPlayground() {
           Carousel
         </Heading>
         <Text variant="lead" color="muted">
-          Content slider with optional auto-rotation, pointer drag, and
-          keyboard navigation. Pauses automatically on hover, focus, tab
-          visibility loss, or reduced-motion preference — and exposes an
-          explicit pause button whenever auto-rotation is active.
+          Content slider with optional auto-rotation, pointer drag, and keyboard navigation. Pauses
+          automatically on hover, focus, tab visibility loss, or reduced-motion preference — and
+          exposes an explicit pause button whenever auto-rotation is active.
         </Text>
         <Inline gap={2} wrap>
           <Badge color="success">role=&quot;region&quot;</Badge>
@@ -55,18 +54,14 @@ export default function CarouselPlayground() {
           1. Basic — uncontrolled, manual nav only
         </Heading>
         <Text variant="body" color="muted">
-          Default linear clamp (Prev disabled at first, Next disabled at last).
-          Drag the slide left/right, click nav buttons, or use keyboard arrows
-          when viewport focused.
+          Default linear clamp (Prev disabled at first, Next disabled at last). Drag the slide
+          left/right, click nav buttons, or use keyboard arrows when viewport focused.
         </Text>
         <Carousel aria-label="Basic gallery" defaultIndex={0}>
           <CarouselViewport>
             {GRADIENT_SLIDES.map((slide) => (
               <CarouselSlide key={slide.title}>
-                <div
-                  className={styles.demoSlide}
-                  style={{ background: slide.bg }}
-                >
+                <div className={styles.demoSlide} style={{ background: slide.bg }}>
                   <span>{slide.title}</span>
                 </div>
               </CarouselSlide>
@@ -84,10 +79,9 @@ export default function CarouselPlayground() {
           2. Auto-rotate + pause control (WCAG 2.2.2)
         </Heading>
         <Text variant="body" color="muted">
-          Rotates every 3 seconds. Pauses on hover, on keyboard focus, on tab
-          hidden, on <code>prefers-reduced-motion: reduce</code>. Pause button
-          (first in tab order per APG) offers manual override — once pressed,
-          rotation stays paused until re-pressed.
+          Rotates every 3 seconds. Pauses on hover, on keyboard focus, on tab hidden, on{' '}
+          <code>prefers-reduced-motion: reduce</code>. Pause button (first in tab order per APG)
+          offers manual override — once pressed, rotation stays paused until re-pressed.
         </Text>
         <Carousel
           aria-label="Auto-rotating showcase"
@@ -103,10 +97,7 @@ export default function CarouselPlayground() {
           <CarouselViewport>
             {GRADIENT_SLIDES.map((slide) => (
               <CarouselSlide key={slide.title}>
-                <div
-                  className={styles.demoSlide}
-                  style={{ background: slide.bg }}
-                >
+                <div className={styles.demoSlide} style={{ background: slide.bg }}>
                   <span>{slide.title}</span>
                 </div>
               </CarouselSlide>
@@ -123,17 +114,14 @@ export default function CarouselPlayground() {
           3. Infinite loop
         </Heading>
         <Text variant="body" color="muted">
-          <code>loop</code> enables wrap-around: Prev from first → wraps to
-          last; Next from last → wraps to first. Nav buttons never disable.
+          <code>loop</code> enables wrap-around: Prev from first → wraps to last; Next from last →
+          wraps to first. Nav buttons never disable.
         </Text>
         <Carousel aria-label="Looping testimonials" loop>
           <CarouselViewport>
             {GRADIENT_SLIDES.slice(0, 3).map((slide) => (
               <CarouselSlide key={slide.title}>
-                <div
-                  className={styles.demoSlide}
-                  style={{ background: slide.bg }}
-                >
+                <div className={styles.demoSlide} style={{ background: slide.bg }}>
                   <span>{slide.title}</span>
                 </div>
               </CarouselSlide>
@@ -151,9 +139,8 @@ export default function CarouselPlayground() {
           4. Controlled
         </Heading>
         <Text variant="body" color="muted">
-          Parent owns index. Clicking dots syncs external state; carousel
-          respects prop updates. Compose your own picker UI on top of the
-          controlled API.
+          Parent owns index. Clicking dots syncs external state; carousel respects prop updates.
+          Compose your own picker UI on top of the controlled API.
         </Text>
         <Carousel
           aria-label="Controlled gallery"
@@ -163,10 +150,7 @@ export default function CarouselPlayground() {
           <CarouselViewport>
             {GRADIENT_SLIDES.map((slide) => (
               <CarouselSlide key={slide.title}>
-                <div
-                  className={styles.demoSlide}
-                  style={{ background: slide.bg }}
-                >
+                <div className={styles.demoSlide} style={{ background: slide.bg }}>
                   <span>{slide.title}</span>
                 </div>
               </CarouselSlide>
@@ -196,17 +180,14 @@ export default function CarouselPlayground() {
           5. RTL direction
         </Heading>
         <Text variant="body" color="muted">
-          With <code>dir=&quot;rtl&quot;</code>, ArrowLeft = Next, ArrowRight =
-          Previous (mirror APG convention). Drag direction visually mirrors too.
+          With <code>dir=&quot;rtl&quot;</code>, ArrowLeft = Next, ArrowRight = Previous (mirror APG
+          convention). Drag direction visually mirrors too.
         </Text>
         <Carousel aria-label="RTL demo" dir="rtl">
           <CarouselViewport>
             {GRADIENT_SLIDES.slice(0, 3).map((slide) => (
               <CarouselSlide key={slide.title}>
-                <div
-                  className={styles.demoSlide}
-                  style={{ background: slide.bg }}
-                >
+                <div className={styles.demoSlide} style={{ background: slide.bg }}>
                   <span>{slide.title}</span>
                 </div>
               </CarouselSlide>
@@ -224,8 +205,8 @@ export default function CarouselPlayground() {
           6. Singleton carousel (edge case)
         </Heading>
         <Text variant="body" color="muted">
-          Single slide: nav buttons both disabled, pause hidden, drag disabled.
-          Valid structural state during content loading.
+          Single slide: nav buttons both disabled, pause hidden, drag disabled. Valid structural
+          state during content loading.
         </Text>
         <Carousel aria-label="Single slide">
           <CarouselViewport>
@@ -250,9 +231,8 @@ export default function CarouselPlayground() {
           7. Drag disabled
         </Heading>
         <Text variant="body" color="muted">
-          <code>dragEnabled={'{false}'}</code> disables pointer drag. Keyboard
-          arrow + button nav still works. Useful for slides with clickable
-          content where drag would interfere.
+          <code>dragEnabled={'{false}'}</code> disables pointer drag. Keyboard arrow + button nav
+          still works. Useful for slides with clickable content where drag would interfere.
         </Text>
         <Carousel aria-label="Button-only nav" dragEnabled={false}>
           <CarouselViewport>
@@ -263,9 +243,8 @@ export default function CarouselPlayground() {
                     {slide.title}
                   </Heading>
                   <Text variant="body">
-                    Rich content with clickable links: visit{' '}
-                    <a href="#nowhere">this link</a> without accidentally
-                    triggering slide nav.
+                    Rich content with clickable links: visit <a href="#nowhere">this link</a>{' '}
+                    without accidentally triggering slide nav.
                   </Text>
                 </Stack>
               </CarouselSlide>
@@ -283,10 +262,9 @@ export default function CarouselPlayground() {
           8. Announce auto-rotation (opt-in live region)
         </Heading>
         <Text variant="body" color="muted">
-          By default, the live region is silent during auto-rotation to avoid
-          SR chatter. Set <code>announceAutoRotate</code> to announce each
-          auto-advance as &quot;Slide N of M&quot; — useful when the carousel is the
-          primary content and rotation itself is meaningful.
+          By default, the live region is silent during auto-rotation to avoid SR chatter. Set{' '}
+          <code>announceAutoRotate</code> to announce each auto-advance as &quot;Slide N of M&quot;
+          — useful when the carousel is the primary content and rotation itself is meaningful.
         </Text>
         <Carousel
           aria-label="Announced auto-rotation"
@@ -303,10 +281,7 @@ export default function CarouselPlayground() {
           <CarouselViewport>
             {GRADIENT_SLIDES.map((slide) => (
               <CarouselSlide key={slide.title}>
-                <div
-                  className={styles.demoSlide}
-                  style={{ background: slide.bg }}
-                >
+                <div className={styles.demoSlide} style={{ background: slide.bg }}>
                   <span>{slide.title}</span>
                 </div>
               </CarouselSlide>

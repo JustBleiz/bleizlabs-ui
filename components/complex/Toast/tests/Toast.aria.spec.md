@@ -27,7 +27,9 @@ test('TST-R08 — non-error variants get role="status" + aria-live="polite"', as
   expect(await toast.getAttribute('aria-live')).toBe('polite');
 });
 
-test('TST-R09 — aria-atomic="true" ensures SRs read title+description as unit', async ({ page }) => {
+test('TST-R09 — aria-atomic="true" ensures SRs read title+description as unit', async ({
+  page,
+}) => {
   await page.goto('/components/toast');
   await page.getByRole('button', { name: 'Show toast' }).click();
   const toast = page.getByRole('status');

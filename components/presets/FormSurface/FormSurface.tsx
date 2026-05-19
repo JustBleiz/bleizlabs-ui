@@ -1,8 +1,4 @@
-import {
-  forwardRef,
-  type FormHTMLAttributes,
-  type ReactNode,
-} from 'react';
+import { forwardRef, type FormHTMLAttributes, type ReactNode } from 'react';
 import { Card, type CardProps } from '../../display/Card';
 import { cn } from '../../utils/cn';
 import styles from './FormSurface.module.scss';
@@ -50,8 +46,7 @@ import styles from './FormSurface.module.scss';
  * // Surface customization via independent padding + radius axes
  * <FormSurface padding={6} radius="xl" onSubmit={handle}>…</FormSurface>
  */
-export interface FormSurfaceProps
-  extends Omit<FormHTMLAttributes<HTMLFormElement>, 'children'> {
+export interface FormSurfaceProps extends Omit<FormHTMLAttributes<HTMLFormElement>, 'children'> {
   /** Form body — typically `<CardHeader>` + `<CardBody>` + `<CardFooter>` slots. */
   children: ReactNode;
   /** Card surface padding token. Default `5`. */
@@ -60,17 +55,15 @@ export interface FormSurfaceProps
   radius?: CardProps['radius'];
 }
 
-export const FormSurface = forwardRef<HTMLFormElement, FormSurfaceProps>(
-  function FormSurface(
-    { children, padding = 5, radius = 'lg', className, ...formProps },
-    ref
-  ) {
-    return (
-      <form ref={ref} className={cn(styles.root, className)} {...formProps}>
-        <Card padding={padding} radius={radius}>
-          {children}
-        </Card>
-      </form>
-    );
-  }
-);
+export const FormSurface = forwardRef<HTMLFormElement, FormSurfaceProps>(function FormSurface(
+  { children, padding = 5, radius = 'lg', className, ...formProps },
+  ref,
+) {
+  return (
+    <form ref={ref} className={cn(styles.root, className)} {...formProps}>
+      <Card padding={padding} radius={radius}>
+        {children}
+      </Card>
+    </form>
+  );
+});

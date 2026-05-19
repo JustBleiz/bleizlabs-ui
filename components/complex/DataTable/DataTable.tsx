@@ -18,13 +18,7 @@ import {
 } from 'react';
 import { cn } from '../../utils/cn';
 import { useMatchMedia } from '../../utils/match-media';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHeader,
-  TableRow,
-} from '../../display/Table';
+import { Table, TableBody, TableCell, TableHeader, TableRow } from '../../display/Table';
 import { Empty } from '../../feedback/Empty';
 import { Alert } from '../../feedback/Alert';
 import { Skeleton } from '../../display/Skeleton';
@@ -357,19 +351,13 @@ export const DEFAULT_DATA_TABLE_LABELS: DataTableLabels = {
  * Używa column's custom comparator gdy `sortable` jest funkcją, w przeciwnym
  * razie automatic: string (locale-aware), number, Date, boolean, null-safe.
  */
-function sortRows<T>(
-  rows: T[],
-  sort: SortState | null,
-  columns: ColumnDef<T>[],
-): T[] {
+function sortRows<T>(rows: T[], sort: SortState | null, columns: ColumnDef<T>[]): T[] {
   if (!sort) return rows;
   const column = columns.find((c) => c.id === sort.columnId);
   if (!column || !column.sortable) return rows;
 
   const comparator =
-    typeof column.sortable === 'function'
-      ? column.sortable
-      : defaultComparator(column);
+    typeof column.sortable === 'function' ? column.sortable : defaultComparator(column);
 
   const direction = sort.direction === 'asc' ? 1 : -1;
   return [...rows].sort((a, b) => comparator(a, b) * direction);
@@ -463,8 +451,7 @@ function matchesColumnFilter(
   filterable: ColumnDef<unknown>['filterable'],
 ): boolean {
   if (value == null) return false;
-  const type =
-    typeof filterable === 'string' ? filterable : 'text';
+  const type = typeof filterable === 'string' ? filterable : 'text';
 
   if (type === 'enum') {
     return value === filterValue;
@@ -473,17 +460,11 @@ function matchesColumnFilter(
     return typeof value === 'number' && value === filterValue;
   }
   // default: text contains (case-insensitive)
-  return String(value)
-    .toLowerCase()
-    .includes(String(filterValue).toLowerCase());
+  return String(value).toLowerCase().includes(String(filterValue).toLowerCase());
 }
 
 /** Slice rows dla aktualnej strony (client-side mode). */
-function paginateRows<T>(
-  rows: T[],
-  pageIndex: number,
-  pageSize: number,
-): T[] {
+function paginateRows<T>(rows: T[], pageIndex: number, pageSize: number): T[] {
   const start = pageIndex * pageSize;
   return rows.slice(start, start + pageSize);
 }
@@ -517,9 +498,7 @@ type ExtractedSelectionConfig<T> =
  * Exhaustive on `props.selection` literal — TS narrows each branch automatically,
  * no escape-hatch casts needed.
  */
-function extractSelectionConfig<T>(
-  props: DataTableProps<T>,
-): ExtractedSelectionConfig<T> {
+function extractSelectionConfig<T>(props: DataTableProps<T>): ExtractedSelectionConfig<T> {
   if (props.selection === 'single') {
     return {
       mode: 'single',
@@ -604,9 +583,7 @@ export function useDataTableState<T>(
   } = options;
 
   // Sort state (controlled vs uncontrolled)
-  const [uncontrolledSort, setUncontrolledSort] = useState<SortState | null>(
-    defaultSort ?? null,
-  );
+  const [uncontrolledSort, setUncontrolledSort] = useState<SortState | null>(defaultSort ?? null);
   const sortState = controlledSort !== undefined ? controlledSort : uncontrolledSort;
 
   const toggleSort = useCallback(
@@ -628,13 +605,11 @@ export function useDataTableState<T>(
 
   // Pagination config
   const paginationEnabled = pagination !== false;
-  const pageSize = paginationEnabled ? pagination?.pageSize ?? 25 : data.length;
+  const pageSize = paginationEnabled ? (pagination?.pageSize ?? 25) : data.length;
   const serverSide = paginationEnabled && pagination?.totalRows != null;
 
   const [uncontrolledPageIndex, setUncontrolledPageIndex] = useState(0);
-  const pageIndex = paginationEnabled
-    ? pagination?.pageIndex ?? uncontrolledPageIndex
-    : 0;
+  const pageIndex = paginationEnabled ? (pagination?.pageIndex ?? uncontrolledPageIndex) : 0;
 
   // Filter + sort (client-side mode only; server-side respektuje data as-is)
   const filteredRows = useMemo(() => {
@@ -648,9 +623,7 @@ export function useDataTableState<T>(
   }, [serverSide, filteredRows, sortState, columns]);
 
   const totalRows = serverSide ? pagination!.totalRows! : sortedRows.length;
-  const totalPages = paginationEnabled
-    ? Math.max(1, Math.ceil(totalRows / pageSize))
-    : 1;
+  const totalPages = paginationEnabled ? Math.max(1, Math.ceil(totalRows / pageSize)) : 1;
 
   const visibleRows = useMemo(() => {
     if (!paginationEnabled) return sortedRows;
@@ -796,15 +769,11 @@ export const DataTable = forwardRef(function DataTable<T>(
   const liveRegionId = useId();
 
   // Filter out hidden columns dla rendering
-  const visibleColumns = useMemo(
-    () => columns.filter((c) => !c.hidden),
-    [columns],
-  );
+  const visibleColumns = useMemo(() => columns.filter((c) => !c.hidden), [columns]);
 
   // Column filters (controlled vs uncontrolled)
   const isControlledFilters = columnFilters !== undefined;
-  const [internalColumnFilters, setInternalColumnFilters] =
-    useState<ColumnFiltersState>({});
+  const [internalColumnFilters, setInternalColumnFilters] = useState<ColumnFiltersState>({});
   const effectiveFilters: ColumnFiltersState = isControlledFilters
     ? columnFilters!
     : internalColumnFilters;
@@ -828,7 +797,8 @@ export const DataTable = forwardRef(function DataTable<T>(
     () =>
       columns.some(
         (c) =>
-          !c.hidden && (c.filterable || c.renderFilter) !== undefined &&
+          !c.hidden &&
+          (c.filterable || c.renderFilter) !== undefined &&
           (!!c.filterable || !!c.renderFilter),
       ),
     [columns],
@@ -873,9 +843,7 @@ export const DataTable = forwardRef(function DataTable<T>(
     [data, getRowId],
   );
 
-  const [uncontrolledSelectedIds, setUncontrolledSelectedIds] = useState<
-    Set<string>
-  >(() => {
+  const [uncontrolledSelectedIds, setUncontrolledSelectedIds] = useState<Set<string>>(() => {
     if (selectionMode === 'none') return new Set();
     return computeIdsFromRows(selectionConfig.defaultValue as T | T[] | null);
   });
@@ -896,22 +864,14 @@ export const DataTable = forwardRef(function DataTable<T>(
       if (!selectionConfig.onChange) return;
       if (selectionMode === 'single') {
         const id = nextIds.values().next().value;
-        const row = id
-          ? data.find((r, i) => getRowId(r, i) === id) ?? null
-          : null;
+        const row = id ? (data.find((r, i) => getRowId(r, i) === id) ?? null) : null;
         (selectionConfig.onChange as (r: T | null) => void)(row);
       } else if (selectionMode === 'multiple') {
         const rows = data.filter((r, i) => nextIds.has(getRowId(r, i)));
         (selectionConfig.onChange as (rs: T[]) => void)(rows);
       }
     },
-    [
-      isControlledSelection,
-      selectionMode,
-      selectionConfig.onChange,
-      data,
-      getRowId,
-    ],
+    [isControlledSelection, selectionMode, selectionConfig.onChange, data, getRowId],
   );
 
   const toggleRowSelection = useCallback(
@@ -933,8 +893,7 @@ export const DataTable = forwardRef(function DataTable<T>(
   const toggleAllVisibleSelection = useCallback(() => {
     if (selectionMode !== 'multiple') return;
     const visibleIds = tableState.visibleRows.map((r, i) => getRowId(r, i));
-    const allSelected =
-      visibleIds.length > 0 && visibleIds.every((id) => selectedIds.has(id));
+    const allSelected = visibleIds.length > 0 && visibleIds.every((id) => selectedIds.has(id));
     const next = new Set(selectedIds);
     if (allSelected) {
       visibleIds.forEach((id) => next.delete(id));
@@ -942,13 +901,7 @@ export const DataTable = forwardRef(function DataTable<T>(
       visibleIds.forEach((id) => next.add(id));
     }
     emitSelectionChange(next);
-  }, [
-    selectionMode,
-    tableState.visibleRows,
-    selectedIds,
-    getRowId,
-    emitSelectionChange,
-  ]);
+  }, [selectionMode, tableState.visibleRows, selectedIds, getRowId, emitSelectionChange]);
 
   const headerSelectionState = useMemo<'none' | 'some' | 'all'>(() => {
     if (selectionMode !== 'multiple') return 'none';
@@ -968,18 +921,14 @@ export const DataTable = forwardRef(function DataTable<T>(
   const expansionEnabled = !!expandable;
   const [expandedIds, setExpandedIds] = useState<Set<string>>(new Set());
 
-  const toggleRowExpansion = useCallback(
-    (rowId: string) => {
-      setExpandedIds((prev) => {
-        const next = new Set(prev);
-        if (next.has(rowId)) next.delete(rowId);
-        else next.add(rowId);
-        return next;
-      });
-    },
-    [],
-  );
-
+  const toggleRowExpansion = useCallback((rowId: string) => {
+    setExpandedIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(rowId)) next.delete(rowId);
+      else next.add(rowId);
+      return next;
+    });
+  }, []);
 
   // ─────────────────────────────────────────────────────────────────────────
   // Wrapper props
@@ -999,11 +948,7 @@ export const DataTable = forwardRef(function DataTable<T>(
   // ─────────────────────────────────────────────────────────────────────────
   const renderLoadingRows = () => {
     return Array.from({ length: loadingRowCount }).map((_, rowIdx) => (
-      <TableRow
-        key={`skeleton-${rowIdx}`}
-        role="row"
-        className={styles.skeletonRow}
-      >
+      <TableRow key={`skeleton-${rowIdx}`} role="row" className={styles.skeletonRow}>
         {selectionEnabled && (
           <TableCell role="gridcell" className={styles.selectionCell}>
             <Skeleton width={16} height={16} />
@@ -1136,19 +1081,14 @@ export const DataTable = forwardRef(function DataTable<T>(
     const clickable = rowClickable && !!onRowClick && !disabled;
 
     const totalCols =
-      visibleColumns.length +
-      (selectionEnabled ? 1 : 0) +
-      (expansionEnabled ? 1 : 0);
+      visibleColumns.length + (selectionEnabled ? 1 : 0) + (expansionEnabled ? 1 : 0);
 
     return (
       <Fragment key={rowId}>
         <TableRow
           role="row"
           aria-rowindex={
-            tableState.pageIndex * tableState.pageSize +
-            rowIndex +
-            2 +
-            (hasFilterRow ? 1 : 0)
+            tableState.pageIndex * tableState.pageSize + rowIndex + 2 + (hasFilterRow ? 1 : 0)
           }
           className={cn(
             styles.row,
@@ -1163,11 +1103,7 @@ export const DataTable = forwardRef(function DataTable<T>(
               ? (e) => {
                   // Don't fire onRowClick gdy clik na interactive child
                   const target = e.target as HTMLElement;
-                  if (
-                    target.closest(
-                      'button, a, input, select, textarea, [role="button"]',
-                    )
-                  ) {
+                  if (target.closest('button, a, input, select, textarea, [role="button"]')) {
                     return;
                   }
                   onRowClick!(row);
@@ -1209,8 +1145,7 @@ export const DataTable = forwardRef(function DataTable<T>(
               role="gridcell"
               className={cn(
                 styles.expansionCell,
-                isCellFocused(rowIndex + 1, selectionOffset) &&
-                  styles.cellFocused,
+                isCellFocused(rowIndex + 1, selectionOffset) && styles.cellFocused,
               )}
               id={cellDomId(rowIndex + 1, selectionOffset)}
               tabIndex={isCellFocused(rowIndex + 1, selectionOffset) ? 0 : -1}
@@ -1222,10 +1157,7 @@ export const DataTable = forwardRef(function DataTable<T>(
             >
               <button
                 type="button"
-                className={cn(
-                  styles.expansionButton,
-                  expanded && styles.expansionButtonExpanded,
-                )}
+                className={cn(styles.expansionButton, expanded && styles.expansionButtonExpanded)}
                 onClick={(e) => {
                   e.stopPropagation();
                   if (!disabled) toggleRowExpansion(rowId);
@@ -1281,13 +1213,8 @@ export const DataTable = forwardRef(function DataTable<T>(
         </TableRow>
         {expansionEnabled && expanded && expandable && (
           <TableRow className={styles.expansionPanel} role="presentation">
-            <TableCell
-              colSpan={totalCols}
-              className={styles.expansionPanelCell}
-            >
-              <div className={styles.expansionPanelContent}>
-                {expandable.renderExpanded(row)}
-              </div>
+            <TableCell colSpan={totalCols} className={styles.expansionPanelCell}>
+              <div className={styles.expansionPanelContent}>{expandable.renderExpanded(row)}</div>
             </TableCell>
           </TableRow>
         )}
@@ -1325,11 +1252,7 @@ export const DataTable = forwardRef(function DataTable<T>(
           clickable
             ? (e) => {
                 const target = e.target as HTMLElement;
-                if (
-                  target.closest(
-                    'button, a, input, select, textarea, [role="button"]',
-                  )
-                ) {
+                if (target.closest('button, a, input, select, textarea, [role="button"]')) {
                   return;
                 }
                 onRowClick!(row);
@@ -1359,10 +1282,7 @@ export const DataTable = forwardRef(function DataTable<T>(
             {expansionEnabled && (
               <button
                 type="button"
-                className={cn(
-                  styles.expansionButton,
-                  expanded && styles.expansionButtonExpanded,
-                )}
+                className={cn(styles.expansionButton, expanded && styles.expansionButtonExpanded)}
                 onClick={(e) => {
                   e.stopPropagation();
                   if (!disabled) toggleRowExpansion(rowId);
@@ -1398,9 +1318,7 @@ export const DataTable = forwardRef(function DataTable<T>(
           );
         })}
         {expansionEnabled && expanded && expandable && (
-          <div className={styles.mobileExpansionPanel}>
-            {expandable.renderExpanded(row)}
-          </div>
+          <div className={styles.mobileExpansionPanel}>{expandable.renderExpanded(row)}</div>
         )}
       </div>
     );
@@ -1434,27 +1352,21 @@ export const DataTable = forwardRef(function DataTable<T>(
   );
 
   const isCellFocused = useCallback(
-    (row: number, col: number) =>
-      focusedCell.row === row && focusedCell.col === col,
+    (row: number, col: number) => focusedCell.row === row && focusedCell.col === col,
     [focusedCell],
   );
 
   // Move DOM focus when focusedCell changes (skip initial mount)
   useEffect(() => {
     if (lastFocusActionRef.current !== 'user') return;
-    const el = document.getElementById(
-      cellDomId(focusedCell.row, focusedCell.col),
-    );
+    const el = document.getElementById(cellDomId(focusedCell.row, focusedCell.col));
     el?.focus();
   }, [focusedCell, cellDomId]);
 
   // Sync focus state when user clicks/tabs into a cell
-  const handleCellFocus = useCallback(
-    (row: number, col: number) => {
-      setFocusedCell({ row, col });
-    },
-    [],
-  );
+  const handleCellFocus = useCallback((row: number, col: number) => {
+    setFocusedCell({ row, col });
+  }, []);
 
   // Main grid keyboard handler — APG `/grid/` pattern (cell-mode)
   // Widget-mode (F2/Tab inside cell) deferred — interactive children
@@ -1475,14 +1387,8 @@ export const DataTable = forwardRef(function DataTable<T>(
       // setState commits — happens with Playwright programmatic .focus()
       // + immediate .keyboard.press(). DOM attrs are the source of truth.
       const focused = {
-        row: parseInt(
-          target.dataset.row ?? String(focusedCell.row),
-          10,
-        ),
-        col: parseInt(
-          target.dataset.col ?? String(focusedCell.col),
-          10,
-        ),
+        row: parseInt(target.dataset.row ?? String(focusedCell.row), 10),
+        col: parseInt(target.dataset.col ?? String(focusedCell.col), 10),
       };
 
       const ctrl = e.ctrlKey || e.metaKey;
@@ -1572,16 +1478,10 @@ export const DataTable = forwardRef(function DataTable<T>(
               const disabled = rowDisabled?.(row) ?? false;
               if (disabled) break;
               // Enter on expansion column → toggle expansion
-              if (
-                expansionEnabled &&
-                focused.col === selectionOffset
-              ) {
+              if (expansionEnabled && focused.col === selectionOffset) {
                 toggleRowExpansion(getRowId(row, dataRowIdx));
                 e.preventDefault();
-              } else if (
-                selectionEnabled &&
-                focused.col === 0
-              ) {
+              } else if (selectionEnabled && focused.col === 0) {
                 toggleRowSelection(getRowId(row, dataRowIdx));
                 e.preventDefault();
               } else if (onRowClick && rowClickable) {
@@ -1627,65 +1527,36 @@ export const DataTable = forwardRef(function DataTable<T>(
   // ─────────────────────────────────────────────────────────────────────────
   useEffect(() => {
     if (!tableState.sortState) return;
-    const col = visibleColumns.find(
-      (c) => c.id === tableState.sortState!.columnId,
-    );
+    const col = visibleColumns.find((c) => c.id === tableState.sortState!.columnId);
     if (!col) return;
     const colName = typeof col.header === 'string' ? col.header : col.id;
     const dirLabel =
-      tableState.sortState.direction === 'asc'
-        ? labels.sortAscending
-        : labels.sortDescending;
-    const t = setTimeout(
-      () => setLiveMessage(`${dirLabel}: ${colName}`),
-      300,
-    );
+      tableState.sortState.direction === 'asc' ? labels.sortAscending : labels.sortDescending;
+    const t = setTimeout(() => setLiveMessage(`${dirLabel}: ${colName}`), 300);
     return () => clearTimeout(t);
   }, [tableState.sortState, visibleColumns, labels]);
 
   useEffect(() => {
     const t = setTimeout(
-      () =>
-        setLiveMessage(
-          labels.showingRows(tableState.visibleRows.length, tableState.totalRows),
-        ),
+      () => setLiveMessage(labels.showingRows(tableState.visibleRows.length, tableState.totalRows)),
       300,
     );
     return () => clearTimeout(t);
-  }, [
-    tableState.visibleRows.length,
-    tableState.totalRows,
-    effectiveFilters,
-    globalFilter,
-    labels,
-  ]);
+  }, [tableState.visibleRows.length, tableState.totalRows, effectiveFilters, globalFilter, labels]);
 
   useEffect(() => {
     if (pagination === false) return;
     const t = setTimeout(
-      () =>
-        setLiveMessage(
-          labels.pageOf(tableState.pageIndex + 1, tableState.totalPages),
-        ),
+      () => setLiveMessage(labels.pageOf(tableState.pageIndex + 1, tableState.totalPages)),
       300,
     );
     return () => clearTimeout(t);
-  }, [
-    tableState.pageIndex,
-    tableState.totalPages,
-    pagination,
-    labels,
-  ]);
+  }, [tableState.pageIndex, tableState.totalPages, pagination, labels]);
 
   useEffect(() => {
     if (!selectionEnabled) return;
     const t = setTimeout(
-      () =>
-        setLiveMessage(
-          selectedIds.size === 0
-            ? ''
-            : labels.selectedRows(selectedIds.size),
-        ),
+      () => setLiveMessage(selectedIds.size === 0 ? '' : labels.selectedRows(selectedIds.size)),
       300,
     );
     return () => clearTimeout(t);
@@ -1697,14 +1568,11 @@ export const DataTable = forwardRef(function DataTable<T>(
   useImperativeHandle(
     ref,
     () => ({
-      getSelectedRows: (): T[] =>
-        data.filter((r, i) => selectedIds.has(getRowId(r, i))),
+      getSelectedRows: (): T[] => data.filter((r, i) => selectedIds.has(getRowId(r, i))),
       clearSelection: () => {
         if (!isControlledSelection) setUncontrolledSelectedIds(new Set());
         if (selectionMode === 'single') {
-          (selectionConfig.onChange as ((r: T | null) => void) | undefined)?.(
-            null,
-          );
+          (selectionConfig.onChange as ((r: T | null) => void) | undefined)?.(null);
         } else if (selectionMode === 'multiple') {
           (selectionConfig.onChange as ((rs: T[]) => void) | undefined)?.([]);
         }
@@ -1780,8 +1648,7 @@ export const DataTable = forwardRef(function DataTable<T>(
   // ─────────────────────────────────────────────────────────────────────────
   const showLoading = stateMode === 'loading';
   const showError = stateMode === 'error';
-  const showEmpty =
-    !showLoading && !showError && tableState.visibleRows.length === 0;
+  const showEmpty = !showLoading && !showError && tableState.visibleRows.length === 0;
 
   // Mobile render branch — replaces table z card list
   if (isMobile) {
@@ -1796,9 +1663,7 @@ export const DataTable = forwardRef(function DataTable<T>(
         aria-label={ariaLabel}
         aria-labelledby={ariaLabelledBy}
         aria-rowcount={tableState.totalRows + 1 + (hasFilterRow ? 1 : 0)}
-        aria-multiselectable={
-          selectionMode === 'multiple' ? true : undefined
-        }
+        aria-multiselectable={selectionMode === 'multiple' ? true : undefined}
         aria-describedby={liveRegionId}
         {...rest}
       >
@@ -1843,9 +1708,7 @@ export const DataTable = forwardRef(function DataTable<T>(
           aria-labelledby={ariaLabelledBy}
           aria-rowcount={tableState.totalRows + 1 + (hasFilterRow ? 1 : 0)}
           aria-colcount={totalGridCols}
-          aria-multiselectable={
-            selectionMode === 'multiple' ? true : undefined
-          }
+          aria-multiselectable={selectionMode === 'multiple' ? true : undefined}
           aria-describedby={liveRegionId}
           id={gridId}
           onKeyDown={handleGridKeyDown}
@@ -1902,25 +1765,14 @@ export const DataTable = forwardRef(function DataTable<T>(
                   aria-label="Expand"
                 />
               )}
-              {visibleColumns.map((col, i) =>
-                renderHeaderCell(col, totalLeadingCols + i),
-              )}
+              {visibleColumns.map((col, i) => renderHeaderCell(col, totalLeadingCols + i))}
             </TableRow>
             {hasFilterRow && (
-              <TableRow
-                className={styles.filterRow}
-                role="row"
-                aria-rowindex={2}
-              >
-                {selectionEnabled && (
-                  <TableCell as="th" className={styles.filterCell} />
-                )}
-                {expansionEnabled && (
-                  <TableCell as="th" className={styles.filterCell} />
-                )}
+              <TableRow className={styles.filterRow} role="row" aria-rowindex={2}>
+                {selectionEnabled && <TableCell as="th" className={styles.filterCell} />}
+                {expansionEnabled && <TableCell as="th" className={styles.filterCell} />}
                 {visibleColumns.map((col) => {
-                  const columnName =
-                    typeof col.header === 'string' ? col.header : col.id;
+                  const columnName = typeof col.header === 'string' ? col.header : col.id;
                   const filterValue = effectiveFilters[col.id] ?? '';
 
                   let content: ReactNode = null;
@@ -1936,9 +1788,7 @@ export const DataTable = forwardRef(function DataTable<T>(
                       <Input
                         size="sm"
                         value={String(filterValue)}
-                        onChange={(e) =>
-                          handleColumnFilterChange(col.id, e.target.value)
-                        }
+                        onChange={(e) => handleColumnFilterChange(col.id, e.target.value)}
                         placeholder={labels.filterPlaceholder(columnName)}
                         aria-label={labels.filterPlaceholder(columnName)}
                       />
@@ -1949,11 +1799,7 @@ export const DataTable = forwardRef(function DataTable<T>(
                     <TableCell
                       key={col.id}
                       as="th"
-                      className={cn(
-                        styles.filterCell,
-                        stickyClass(col),
-                        col.headerClassName,
-                      )}
+                      className={cn(styles.filterCell, stickyClass(col), col.headerClassName)}
                       style={col.width ? { width: col.width } : undefined}
                     >
                       {content}
@@ -1987,9 +1833,7 @@ export const DataTable = forwardRef(function DataTable<T>(
       </div>
     </div>
   );
-}) as <T>(
-  props: DataTableProps<T> & { ref?: ForwardedRef<DataTableHandle<T>> },
-) => ReactElement;
+}) as <T>(props: DataTableProps<T> & { ref?: ForwardedRef<DataTableHandle<T>> }) => ReactElement;
 
 // ============================================================================
 // HELPERS
@@ -2038,17 +1882,11 @@ function SortIndicator({ direction }: { direction: SortDirection }) {
       >
         <path
           d="M5 0 L9 5 L1 5 Z"
-          className={cn(
-            styles.sortArrow,
-            direction === 'asc' && styles.sortArrowActive,
-          )}
+          className={cn(styles.sortArrow, direction === 'asc' && styles.sortArrowActive)}
         />
         <path
           d="M5 14 L1 9 L9 9 Z"
-          className={cn(
-            styles.sortArrow,
-            direction === 'desc' && styles.sortArrowActive,
-          )}
+          className={cn(styles.sortArrow, direction === 'desc' && styles.sortArrowActive)}
         />
       </svg>
     </span>

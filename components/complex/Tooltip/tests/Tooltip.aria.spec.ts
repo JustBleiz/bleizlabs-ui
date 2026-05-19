@@ -27,7 +27,9 @@ test.describe('Tooltip — ARIA + accessibility tree', () => {
     await expect(tooltip).toHaveAttribute('id', describedBy!);
   });
 
-  test('id unique per instance — no collision between sibling tooltips [Radix #899]', async ({ page }) => {
+  test('id unique per instance — no collision between sibling tooltips [Radix #899]', async ({
+    page,
+  }) => {
     const save = page.getByRole('button', { name: 'Save' });
     const undo = page.getByRole('button', { name: 'Undo' });
     await save.focus();
@@ -59,7 +61,9 @@ test.describe('Tooltip — ARIA + accessibility tree', () => {
     await expect(trigger).toHaveAttribute('aria-describedby', /.+/);
   });
 
-  test('content NOT wired as aria-labelledby (tooltip is supplemental, not naming)', async ({ page }) => {
+  test('content NOT wired as aria-labelledby (tooltip is supplemental, not naming)', async ({
+    page,
+  }) => {
     const trigger = page.getByRole('button', { name: 'Save' });
     await trigger.focus();
     const labelledBy = await trigger.getAttribute('aria-labelledby');

@@ -16,9 +16,7 @@ test.describe('Select — focus behavior', () => {
     await page.goto('/components/select');
   });
 
-  test('Focus stays on trigger while navigating listbox (APG select-only)', async ({
-    page,
-  }) => {
+  test('Focus stays on trigger while navigating listbox (APG select-only)', async ({ page }) => {
     const trigger = page.getByRole('combobox').first();
     await trigger.click();
     await expect(page.getByRole('listbox').first()).toBeVisible();
@@ -36,21 +34,20 @@ test.describe('Select — focus behavior', () => {
     await expect(trigger).toBeFocused();
   });
 
-  test('Item click commits + closes + returns focus to trigger', async ({
-    page,
-  }) => {
+  test('Item click commits + closes + returns focus to trigger', async ({ page }) => {
     const trigger = page.getByRole('combobox').first();
     await trigger.click();
-    const vueOpt = page.getByRole('listbox').first().getByRole('option', { name: 'Vue', exact: true });
+    const vueOpt = page
+      .getByRole('listbox')
+      .first()
+      .getByRole('option', { name: 'Vue', exact: true });
     await vueOpt.click();
     await expect(page.getByRole('listbox')).toHaveCount(0);
     await expect(trigger).toBeFocused();
     await expect(trigger).toContainText('Vue');
   });
 
-  test('SL-R14 — long list: highlighted last option scrolled into view', async ({
-    page,
-  }) => {
+  test('SL-R14 — long list: highlighted last option scrolled into view', async ({ page }) => {
     const sections = page.locator('section');
     const long = sections.nth(4);
     const trigger = long.getByRole('combobox');

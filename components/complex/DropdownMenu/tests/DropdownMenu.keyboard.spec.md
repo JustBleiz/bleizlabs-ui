@@ -103,7 +103,7 @@ test('ArrowDown skips disabled items', async ({ page }) => {
   for (let i = 0; i < 10; i++) {
     await page.keyboard.press('ArrowDown');
     const focused = await page.evaluate(() =>
-      document.activeElement?.getAttribute('aria-disabled')
+      document.activeElement?.getAttribute('aria-disabled'),
     );
     expect(focused).not.toBe('true');
   }

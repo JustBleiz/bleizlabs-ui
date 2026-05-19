@@ -29,7 +29,9 @@ test('SL-R04 — keyboard arrow past min/max clamps (no NaN)', async ({ page }) 
   expect(await thumb.getAttribute('aria-valuenow')).toBe('100');
 });
 
-test('SL-R07 — Arrow key fires onValueChange exactly once (dedup via equality)', async ({ page }) => {
+test('SL-R07 — Arrow key fires onValueChange exactly once (dedup via equality)', async ({
+  page,
+}) => {
   await page.goto('/components/slider?trackChanges=1&value=50');
   const calls = await page.evaluateHandle(() => {
     (window as any).__calls = [];

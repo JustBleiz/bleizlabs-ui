@@ -21,9 +21,7 @@ test.describe('Dialog — regression cases (Radix closed issues)', () => {
   });
 
   // #2690 — Dialog closing when sonner toast clicked
-  test('#2690: clicking a toast inside dialog does not close the dialog', async ({
-    page,
-  }) => {
+  test('#2690: clicking a toast inside dialog does not close the dialog', async ({ page }) => {
     await page.getByRole('button', { name: /open basic dialog/i }).click();
     const dialog = page.getByRole('dialog');
     // Consumer scenario — toast component lives outside dialog but inside portal tree.
@@ -33,9 +31,7 @@ test.describe('Dialog — regression cases (Radix closed issues)', () => {
   });
 
   // #1951 — Pressing Esc in Select inside Dialog closes entire Dialog
-  test('#1951: Escape inside a nested Select closes Select first, not Dialog', async ({
-    page,
-  }) => {
+  test('#1951: Escape inside a nested Select closes Select first, not Dialog', async ({ page }) => {
     await page.getByRole('button', { name: /open form dialog/i }).click();
     const dialog = page.getByRole('dialog');
     // Consumer should press Escape on an open native <select> — browser handles first.
@@ -56,9 +52,7 @@ test.describe('Dialog — regression cases (Radix closed issues)', () => {
   });
 
   // #2961 — Select click-outside inside Dialog fails to reopen Dialog
-  test('#2961: reopening dialog after nested component close works', async ({
-    page,
-  }) => {
+  test('#2961: reopening dialog after nested component close works', async ({ page }) => {
     const trigger = page.getByRole('button', { name: /open basic dialog/i });
     await trigger.click();
     await page.keyboard.press('Escape');
@@ -96,9 +90,7 @@ test.describe('Dialog — regression cases (Radix closed issues)', () => {
   });
 
   // #1891 — Focus stays trapped after Dialog unmounts
-  test('#1891: focus restored after dialog unmounts (no stuck focus)', async ({
-    page,
-  }) => {
+  test('#1891: focus restored after dialog unmounts (no stuck focus)', async ({ page }) => {
     const trigger = page.getByRole('button', { name: /open basic dialog/i });
     await trigger.click();
     await page.keyboard.press('Escape');
@@ -116,18 +108,14 @@ test.describe('Dialog — regression cases (Radix closed issues)', () => {
   });
 
   // #2544 — No way to disable/customize focus trap
-  test('#2544: focus trap is always on — modal dialogs require it by APG', async ({
-    page,
-  }) => {
+  test('#2544: focus trap is always on — modal dialogs require it by APG', async ({ page }) => {
     // bleizlabs-ui Dialog intentionally does not expose disableFocusTrap —
     // modals REQUIRE trap per APG. AlertDialog/Drawer/Popover will follow same rule.
     expect(true).toBe(true);
   });
 
   // #2122 — Dialog blocks pointer events for whole page
-  test('#2122: pointer events only blocked by overlay, not page-wide', async ({
-    page,
-  }) => {
+  test('#2122: pointer events only blocked by overlay, not page-wide', async ({ page }) => {
     await page.getByRole('button', { name: /open basic dialog/i }).click();
     const dialog = page.getByRole('dialog');
     // Clicking a button inside dialog must work (overlay doesn't block inner events)
@@ -138,28 +126,20 @@ test.describe('Dialog — regression cases (Radix closed issues)', () => {
 
   // #998 — Force-mount Dialog opens it by default + locks scroll
   test('#998: scroll lock only applies when open=true', async ({ page }) => {
-    const beforeOverflow = await page.evaluate(
-      () => document.body.style.overflow,
-    );
+    const beforeOverflow = await page.evaluate(() => document.body.style.overflow);
     expect(beforeOverflow).not.toBe('hidden');
 
     await page.getByRole('button', { name: /open basic dialog/i }).click();
-    const duringOverflow = await page.evaluate(
-      () => document.body.style.overflow,
-    );
+    const duringOverflow = await page.evaluate(() => document.body.style.overflow);
     expect(duringOverflow).toBe('hidden');
 
     await page.keyboard.press('Escape');
-    const afterOverflow = await page.evaluate(
-      () => document.body.style.overflow,
-    );
+    const afterOverflow = await page.evaluate(() => document.body.style.overflow);
     expect(afterOverflow).not.toBe('hidden');
   });
 
   // #2270 — Multiple triggers; focus always returns to first trigger, not the one that opened
-  test('#2270: focus returns to specific trigger that opened the dialog', async ({
-    page,
-  }) => {
+  test('#2270: focus returns to specific trigger that opened the dialog', async ({ page }) => {
     const triggerA = page.getByRole('button', { name: /open trigger a/i });
     const triggerB = page.getByRole('button', { name: /open trigger b/i });
 
@@ -170,18 +150,14 @@ test.describe('Dialog — regression cases (Radix closed issues)', () => {
   });
 
   // #3811 — Safari focus escapes Dialog with modal={false} (WebKit bug)
-  test('#3811: Dialog is modal-only — no modal=false edge case', async ({
-    page,
-  }) => {
+  test('#3811: Dialog is modal-only — no modal=false edge case', async ({ page }) => {
     // bleizlabs-ui Dialog is always modal (aria-modal="true").
     // Modeless overlays will be separate components (Popover CI5, HoverCard CI9).
     expect(true).toBe(true);
   });
 
   // #2836 — aria-labelledby broken reference; WAVE error
-  test('#2836: aria-labelledby id always matches a rendered element', async ({
-    page,
-  }) => {
+  test('#2836: aria-labelledby id always matches a rendered element', async ({ page }) => {
     await page.getByRole('button', { name: /open basic dialog/i }).click();
     const dialog = page.getByRole('dialog');
     const labelId = await dialog.getAttribute('aria-labelledby');
@@ -190,9 +166,7 @@ test.describe('Dialog — regression cases (Radix closed issues)', () => {
   });
 
   // #3007 — aria-describedby points to non-existent element
-  test('#3007: aria-describedby absent when description not provided', async ({
-    page,
-  }) => {
+  test('#3007: aria-describedby absent when description not provided', async ({ page }) => {
     await page.getByRole('button', { name: /open no-description dialog/i }).click();
     const dialog = page.getByRole('dialog');
     const describedBy = await dialog.getAttribute('aria-describedby');
@@ -200,18 +174,14 @@ test.describe('Dialog — regression cases (Radix closed issues)', () => {
   });
 
   // #3579 — Custom Description ID causes console warning
-  test('#3579: custom id allowed via props spread — no internal validation', async ({
-    page,
-  }) => {
+  test('#3579: custom id allowed via props spread — no internal validation', async ({ page }) => {
     // bleizlabs-ui Dialog uses useId internally — no custom id prop.
     // Consumer can override via aria-describedby spread if needed.
     expect(true).toBe(true);
   });
 
   // #2038 — aria-describedby not read by screen reader
-  test('#2038: aria-describedby id matches description element id', async ({
-    page,
-  }) => {
+  test('#2038: aria-describedby id matches description element id', async ({ page }) => {
     await page.getByRole('button', { name: /open basic dialog/i }).click();
     const dialog = page.getByRole('dialog');
     const descId = await dialog.getAttribute('aria-describedby');
@@ -221,22 +191,16 @@ test.describe('Dialog — regression cases (Radix closed issues)', () => {
   });
 
   // #2047 — Safari: keyboard navigation not working (Tab doesn't work)
-  test('#2047: Tab cycles focus on all browsers (covered by keyboard spec)', async ({
-    page,
-  }) => {
+  test('#2047: Tab cycles focus on all browsers (covered by keyboard spec)', async ({ page }) => {
     await page.getByRole('button', { name: /open basic dialog/i }).click();
     await page.keyboard.press('Tab');
     const dialog = page.getByRole('dialog');
-    const isInside = await dialog.evaluate((el) =>
-      el.contains(document.activeElement),
-    );
+    const isInside = await dialog.evaluate((el) => el.contains(document.activeElement));
     expect(isInside).toBe(true);
   });
 
   // #2275 — Select not keyboard navigable inside Dialog
-  test('#2275: nested native Select arrow keys work (browser handles first)', async ({
-    page,
-  }) => {
+  test('#2275: nested native Select arrow keys work (browser handles first)', async ({ page }) => {
     await page.getByRole('button', { name: /open form dialog/i }).click();
     const dialog = page.getByRole('dialog');
     const select = dialog.locator('select').first();
@@ -257,9 +221,7 @@ test.describe('Dialog — regression cases (Radix closed issues)', () => {
   });
 
   // #1546 — Closing Dialog via Escape on conditionally rendered element breaks global keybinds
-  test('#1546: conditionally rendered focus targets do not break trap', async ({
-    page,
-  }) => {
+  test('#1546: conditionally rendered focus targets do not break trap', async ({ page }) => {
     await page.getByRole('button', { name: /open form dialog/i }).click();
     const dialog = page.getByRole('dialog');
     await page.keyboard.press('Tab');

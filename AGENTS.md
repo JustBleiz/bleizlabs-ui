@@ -45,18 +45,18 @@ Q5. Borderline? → ask the user.
 
 ## Top-10 anti-patterns
 
-| You wrote | Fix |
-|---|---|
-| `<button onClick=...>` in `.tsx` | `<Button onClick=...>` — never raw `<button>` in lib-consumer code |
-| Local `Card` / `Stack` / `Heading` shadowing | Import from `@bleizlabs/ui` — local atoms drift from library updates |
-| `!important` in `.module.scss` | Component variant or `className` passthrough — `!important` blocks consumer overrides |
-| `<DateTimePicker>` value rendered as `"2026-05-13T14:30"` text | Use `value` for ISO transport; the field displays space-separated for humans automatically |
-| `'use client'` at page level when only one leaf is interactive | Push the directive to the interactive leaf component only |
-| Local `BackLink` / `Chip` / `DataRow` / `Timeline` molecule | Lib already ships these — check `Section J` inventory below |
-| Mirror SCSS rules across 2+ consumer files | Extract a shared molecule per Q3, single styling source |
-| `useState` + `onChange` for every form field | `<Form>` + `<Field>` use the native Constraint Validation API; FormData reads automatically |
-| Per-component scrollbar styling | `@use '@bleizlabs/ui/styles/scrollbar';` in `app/globals.scss` once |
-| External chart libs (Recharts, Chart.js, D3) | Lib ships 5 charts (LineChart / AreaChart / BarChart / PieChart / Sparkline) — ≤500 points; >500 then yes, bring D3 directly |
+| You wrote                                                      | Fix                                                                                                                          |
+| -------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| `<button onClick=...>` in `.tsx`                               | `<Button onClick=...>` — never raw `<button>` in lib-consumer code                                                           |
+| Local `Card` / `Stack` / `Heading` shadowing                   | Import from `@bleizlabs/ui` — local atoms drift from library updates                                                         |
+| `!important` in `.module.scss`                                 | Component variant or `className` passthrough — `!important` blocks consumer overrides                                        |
+| `<DateTimePicker>` value rendered as `"2026-05-13T14:30"` text | Use `value` for ISO transport; the field displays space-separated for humans automatically                                   |
+| `'use client'` at page level when only one leaf is interactive | Push the directive to the interactive leaf component only                                                                    |
+| Local `BackLink` / `Chip` / `DataRow` / `Timeline` molecule    | Lib already ships these — check `Section J` inventory below                                                                  |
+| Mirror SCSS rules across 2+ consumer files                     | Extract a shared molecule per Q3, single styling source                                                                      |
+| `useState` + `onChange` for every form field                   | `<Form>` + `<Field>` use the native Constraint Validation API; FormData reads automatically                                  |
+| Per-component scrollbar styling                                | `@use '@bleizlabs/ui/styles/scrollbar';` in `app/globals.scss` once                                                          |
+| External chart libs (Recharts, Chart.js, D3)                   | Lib ships 5 charts (LineChart / AreaChart / BarChart / PieChart / Sparkline) — ≤500 points; >500 then yes, bring D3 directly |
 
 ## Where to read deeper
 

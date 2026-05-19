@@ -12,14 +12,7 @@
 
 import { test, expect } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
-import {
-  dialogOf,
-  hiddenInputOf,
-  inputOf,
-  openPicker,
-  pickerBy,
-  timeGroupOf,
-} from './_helpers';
+import { dialogOf, hiddenInputOf, inputOf, openPicker, pickerBy, timeGroupOf } from './_helpers';
 
 test.describe('DateTimePicker — ARIA semantics', () => {
   test.beforeEach(async ({ page }) => {
@@ -66,9 +59,7 @@ test.describe('DateTimePicker — ARIA semantics', () => {
   test('DT-A06 — axe-core zero violations', async ({ page }) => {
     const picker = pickerBy(page, 'Start datetime');
     await openPicker(picker);
-    const results = await new AxeBuilder({ page })
-      .disableRules(['color-contrast'])
-      .analyze();
+    const results = await new AxeBuilder({ page }).disableRules(['color-contrast']).analyze();
     expect(results.violations).toEqual([]);
   });
 });

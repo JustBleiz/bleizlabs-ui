@@ -36,11 +36,7 @@ const PLACEHOLDER_ALNUM = '*';
 const ESCAPE_CHAR = '\\';
 
 function isPlaceholder(ch: string): boolean {
-  return (
-    ch === PLACEHOLDER_DIGIT ||
-    ch === PLACEHOLDER_LETTER ||
-    ch === PLACEHOLDER_ALNUM
-  );
+  return ch === PLACEHOLDER_DIGIT || ch === PLACEHOLDER_LETTER || ch === PLACEHOLDER_ALNUM;
 }
 
 function matchesPlaceholder(input: string, placeholder: string): boolean {

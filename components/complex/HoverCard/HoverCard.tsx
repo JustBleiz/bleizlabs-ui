@@ -92,11 +92,7 @@ import { cn } from '../../utils/cn';
 import { mergeRefs } from '../../utils/mergeRefs';
 import { useFloating } from '../../utils/useFloating';
 import { type Placement } from '../../utils/position';
-import {
-  createFloatingContext,
-  useFloatingState,
-  FloatingPortal,
-} from '../../utils/floating';
+import { createFloatingContext, useFloatingState, FloatingPortal } from '../../utils/floating';
 import { escapeStack } from '../Dialog/escapeStack';
 import { Heading } from '../../typography/Heading';
 import { Text } from '../../typography/Text';
@@ -161,9 +157,7 @@ export function HoverCardProvider({
   const openCountRef = useRef(0);
 
   const shouldSkipDelay = useCallback(
-    () =>
-      openCountRef.current > 0 ||
-      Date.now() - lastCloseRef.current < skipDelayDuration,
+    () => openCountRef.current > 0 || Date.now() - lastCloseRef.current < skipDelayDuration,
     [skipDelayDuration],
   );
 
@@ -181,9 +175,7 @@ export function HoverCardProvider({
     [openDelay, shouldSkipDelay, onOpen, onClose],
   );
 
-  return (
-    <HoverCardGroupContext.Provider value={value}>{children}</HoverCardGroupContext.Provider>
-  );
+  return <HoverCardGroupContext.Provider value={value}>{children}</HoverCardGroupContext.Provider>;
 }
 
 // ──────────────────────────────────────────────────────────────────────────
@@ -471,11 +463,10 @@ export function HoverCard({
 // HoverCardTrigger — Slot-or-span wrapper, wires hover/focus handlers + ARIA
 // ──────────────────────────────────────────────────────────────────────────
 
-export interface HoverCardTriggerProps
-  extends Omit<
-    ButtonHTMLAttributes<HTMLElement>,
-    'aria-expanded' | 'aria-haspopup' | 'aria-controls'
-  > {
+export interface HoverCardTriggerProps extends Omit<
+  ButtonHTMLAttributes<HTMLElement>,
+  'aria-expanded' | 'aria-haspopup' | 'aria-controls'
+> {
   children: ReactNode;
   /**
    * When `true`, Slot-wraps the single React element child, merging hover/
@@ -490,7 +481,16 @@ export interface HoverCardTriggerProps
 
 export const HoverCardTrigger = forwardRef<HTMLElement, HoverCardTriggerProps>(
   function HoverCardTrigger(
-    { children, asChild = false, onPointerEnter, onPointerLeave, onPointerDown, onFocus, onBlur, ...rest },
+    {
+      children,
+      asChild = false,
+      onPointerEnter,
+      onPointerLeave,
+      onPointerDown,
+      onFocus,
+      onBlur,
+      ...rest
+    },
     forwardedRef,
   ) {
     const ctx = useHoverCardContext('<HoverCardTrigger>');
@@ -508,12 +508,9 @@ export const HoverCardTrigger = forwardRef<HTMLElement, HoverCardTriggerProps>(
       isCoarsePointer,
     } = ctx;
 
-    const mergedRef = mergeRefs(
-      forwardedRef,
-      (node: HTMLElement | null) => {
-        triggerRef.current = node;
-      },
-    );
+    const mergedRef = mergeRefs(forwardedRef, (node: HTMLElement | null) => {
+      triggerRef.current = node;
+    });
 
     // Hover — only wire on fine-pointer devices. Touch users get the focus
     // path instead (tap-to-focus opens HoverCard if trigger is focusable).
@@ -602,11 +599,10 @@ export const HoverCardTrigger = forwardRef<HTMLElement, HoverCardTriggerProps>(
 // HoverCardContent — portal + positioning + grace area handlers
 // ──────────────────────────────────────────────────────────────────────────
 
-export interface HoverCardContentProps
-  extends Omit<
-    HTMLAttributes<HTMLDivElement>,
-    'role' | 'aria-modal' | 'aria-labelledby' | 'title'
-  > {
+export interface HoverCardContentProps extends Omit<
+  HTMLAttributes<HTMLDivElement>,
+  'role' | 'aria-modal' | 'aria-labelledby' | 'title'
+> {
   /** Optional title — renders as `<Heading level={3}>` and wires `aria-labelledby`. */
   title?: string;
   /** Optional muted description rendered below the title. */
@@ -642,7 +638,11 @@ export function HoverCardContent({
 
   const titleId = `${contentId}-title`;
 
-  const { refs, floatingStyles, placement: actualPlacement } = useFloating({
+  const {
+    refs,
+    floatingStyles,
+    placement: actualPlacement,
+  } = useFloating({
     open,
     placement,
     offset: sideOffset,
@@ -685,10 +685,7 @@ export function HoverCardContent({
   const handleContentBlur = useCallback(
     (event: React.FocusEvent<HTMLDivElement>) => {
       const next = event.relatedTarget as Node | null;
-      if (
-        next &&
-        (popperRef.current?.contains(next) || triggerRef.current?.contains(next))
-      ) {
+      if (next && (popperRef.current?.contains(next) || triggerRef.current?.contains(next))) {
         return;
       }
       closeImmediate();

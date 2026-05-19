@@ -13,13 +13,7 @@
  */
 
 import { test, expect } from '@playwright/test';
-import {
-  dialogOf,
-  hiddenInputOf,
-  inputOf,
-  openPicker,
-  pickerBy,
-} from './_helpers';
+import { dialogOf, hiddenInputOf, inputOf, openPicker, pickerBy } from './_helpers';
 
 test.describe('DateTimePicker — regression cases', () => {
   test.beforeEach(async ({ page }) => {

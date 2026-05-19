@@ -1,10 +1,4 @@
-import {
-  forwardRef,
-  useId,
-  useMemo,
-  type CSSProperties,
-  type HTMLAttributes,
-} from 'react';
+import { forwardRef, useId, useMemo, type CSSProperties, type HTMLAttributes } from 'react';
 import { cn } from '../../utils/cn';
 import styles from './BarChart.module.scss';
 
@@ -102,18 +96,12 @@ export interface BarChartDatum {
   color?: string;
 }
 
-export type BarChartTone =
-  | 'brand'
-  | 'success'
-  | 'warning'
-  | 'info'
-  | 'error';
+export type BarChartTone = 'brand' | 'success' | 'warning' | 'info' | 'error';
 
-export interface BarChartProps
-  extends Omit<
-    HTMLAttributes<HTMLDivElement>,
-    'role' | 'aria-label' | 'aria-describedby'
-  > {
+export interface BarChartProps extends Omit<
+  HTMLAttributes<HTMLDivElement>,
+  'role' | 'aria-label' | 'aria-describedby'
+> {
   /** Data points rendered left-to-right as a single series. */
   data: BarChartDatum[];
   /**
@@ -173,112 +161,104 @@ interface ComputedBar {
   isHighlight: boolean;
 }
 
-export const BarChart = forwardRef<HTMLDivElement, BarChartProps>(
-  function BarChart(
-    {
-      data,
-      caption,
-      max,
-      tone = 'brand',
-      highlightIndex,
-      formatValue,
-      height = 200,
-      periodLabel = 'Period',
-      valueLabel = 'Value',
-      className,
-      style,
-      ...rest
-    },
-    ref,
-  ) {
-    const tableId = useId();
-    const format = formatValue ?? defaultFormat;
-
-    const ceiling = useMemo(() => {
-      if (max !== undefined && max > 0) return max;
-      const computed = data.reduce(
-        (m, d) => (d.value > m ? d.value : m),
-        0,
-      );
-      return computed > 0 ? computed : 1;
-    }, [data, max]);
-
-    const bars = useMemo<ComputedBar[]>(() => {
-      const toneFill = TONE_COLOR[tone];
-      return data.map((d, i): ComputedBar => {
-        const clampedValue = Math.max(0, Math.min(ceiling, d.value));
-        const heightPct = (clampedValue / ceiling) * 100;
-        const isHighlight = highlightIndex === i;
-        return {
-          key: `${i}-${d.period ?? d.label}`,
-          label: d.label,
-          clampedValue,
-          heightPct,
-          fill: d.color ?? toneFill,
-          isHighlight,
-        };
-      });
-    }, [data, ceiling, tone, highlightIndex]);
-
-    const rootStyle = {
-      ...style,
-      '--bars-count': data.length,
-      '--bar-chart-height': `${height}px`,
-    } as CSSProperties;
-
-    return (
-      <div
-        ref={ref}
-        role="img"
-        aria-label={caption}
-        aria-describedby={tableId}
-        className={cn(styles.root, className)}
-        style={rootStyle}
-        {...rest}
-      >
-        <div className={styles.grid} aria-hidden="true">
-          {bars.map((bar) => {
-            const barStyle = {
-              '--bar-height': `${bar.heightPct}%`,
-              '--bar-fill': bar.fill,
-            } as CSSProperties;
-            return (
-              <div key={bar.key} className={styles.column}>
-                <button
-                  type="button"
-                  className={cn(
-                    styles.bar,
-                    bar.isHighlight && styles.barHighlight,
-                  )}
-                  style={barStyle}
-                  aria-label={`${bar.label}: ${format(bar.clampedValue)}`}
-                >
-                  <span className={styles.barFill} />
-                </button>
-                <span className={styles.label}>{bar.label}</span>
-              </div>
-            );
-          })}
-        </div>
-
-        <table id={tableId} className={styles.srOnly}>
-          <caption>{caption}</caption>
-          <thead>
-            <tr>
-              <th scope="col">{periodLabel}</th>
-              <th scope="col">{valueLabel}</th>
-            </tr>
-          </thead>
-          <tbody>
-            {data.map((d, i) => (
-              <tr key={`${i}-${d.period ?? d.label}`}>
-                <th scope="row">{d.period ?? d.label}</th>
-                <td>{format(d.value)}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    );
+export const BarChart = forwardRef<HTMLDivElement, BarChartProps>(function BarChart(
+  {
+    data,
+    caption,
+    max,
+    tone = 'brand',
+    highlightIndex,
+    formatValue,
+    height = 200,
+    periodLabel = 'Period',
+    valueLabel = 'Value',
+    className,
+    style,
+    ...rest
   },
-);
+  ref,
+) {
+  const tableId = useId();
+  const format = formatValue ?? defaultFormat;
+
+  const ceiling = useMemo(() => {
+    if (max !== undefined && max > 0) return max;
+    const computed = data.reduce((m, d) => (d.value > m ? d.value : m), 0);
+    return computed > 0 ? computed : 1;
+  }, [data, max]);
+
+  const bars = useMemo<ComputedBar[]>(() => {
+    const toneFill = TONE_COLOR[tone];
+    return data.map((d, i): ComputedBar => {
+      const clampedValue = Math.max(0, Math.min(ceiling, d.value));
+      const heightPct = (clampedValue / ceiling) * 100;
+      const isHighlight = highlightIndex === i;
+      return {
+        key: `${i}-${d.period ?? d.label}`,
+        label: d.label,
+        clampedValue,
+        heightPct,
+        fill: d.color ?? toneFill,
+        isHighlight,
+      };
+    });
+  }, [data, ceiling, tone, highlightIndex]);
+
+  const rootStyle = {
+    ...style,
+    '--bars-count': data.length,
+    '--bar-chart-height': `${height}px`,
+  } as CSSProperties;
+
+  return (
+    <div
+      ref={ref}
+      role="img"
+      aria-label={caption}
+      aria-describedby={tableId}
+      className={cn(styles.root, className)}
+      style={rootStyle}
+      {...rest}
+    >
+      <div className={styles.grid} aria-hidden="true">
+        {bars.map((bar) => {
+          const barStyle = {
+            '--bar-height': `${bar.heightPct}%`,
+            '--bar-fill': bar.fill,
+          } as CSSProperties;
+          return (
+            <div key={bar.key} className={styles.column}>
+              <button
+                type="button"
+                className={cn(styles.bar, bar.isHighlight && styles.barHighlight)}
+                style={barStyle}
+                aria-label={`${bar.label}: ${format(bar.clampedValue)}`}
+              >
+                <span className={styles.barFill} />
+              </button>
+              <span className={styles.label}>{bar.label}</span>
+            </div>
+          );
+        })}
+      </div>
+
+      <table id={tableId} className={styles.srOnly}>
+        <caption>{caption}</caption>
+        <thead>
+          <tr>
+            <th scope="col">{periodLabel}</th>
+            <th scope="col">{valueLabel}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {data.map((d, i) => (
+            <tr key={`${i}-${d.period ?? d.label}`}>
+              <th scope="row">{d.period ?? d.label}</th>
+              <td>{format(d.value)}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+});

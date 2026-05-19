@@ -37,7 +37,9 @@ test('Escape hides without losing focus (SC 1.4.13 dismissable)', async ({ page 
   await expect(trigger).toBeFocused();
 });
 
-test.skip('Escape scoped to tooltip, not parent modal [PLAYGROUND-DEP: Dialog E15]', async ({ page }) => {
+test.skip('Escape scoped to tooltip, not parent modal [PLAYGROUND-DEP: Dialog E15]', async ({
+  page,
+}) => {
   // Requires Dialog + Tooltip nested playground — Escape inside tooltip should
   // hide tooltip only, NOT close the enclosing Dialog. Unskip when scenario lands.
 });
@@ -53,12 +55,16 @@ test('hover shows after delayDuration', async ({ page }) => {
   await expect(page.getByRole('tooltip')).toBeVisible();
 });
 
-test.skip('hover group instant after first open [PLAYGROUND-DEP: TooltipProvider multi-instance demo]', async ({ page }) => {
+test.skip('hover group instant after first open [PLAYGROUND-DEP: TooltipProvider multi-instance demo]', async ({
+  page,
+}) => {
   // Open tooltip A → move directly to trigger B → B opens without delay
   // Requires TooltipProvider demo with ≥2 tooltips.
 });
 
-test('hover persists when pointer enters tooltip content (SC 1.4.13 hoverable)', async ({ page }) => {
+test('hover persists when pointer enters tooltip content (SC 1.4.13 hoverable)', async ({
+  page,
+}) => {
   await page.goto('/components/tooltip');
   const trigger = page.getByRole('button', { name: 'Save' });
   await trigger.hover();

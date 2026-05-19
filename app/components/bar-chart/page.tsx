@@ -43,8 +43,7 @@ const TWELVE_MONTHS = [
   { label: 'Gru', value: 10500, period: '2026-12' },
 ];
 
-const formatPLN = (n: number): string =>
-  n.toLocaleString('pl-PL') + ' PLN';
+const formatPLN = (n: number): string => n.toLocaleString('pl-PL') + ' PLN';
 
 export default function BarChartPlaygroundPage() {
   return (
@@ -58,13 +57,11 @@ export default function BarChartPlaygroundPage() {
         </Heading>
         <p className={styles.intro}>
           Single-series pure-CSS bar chart. CSS Grid + per-bar
-          <code> --bar-height</code> custom property; no SVG, no chart library.
-          Tone-driven default fill, optional per-datum color override, and an
-          optional <code>highlightIndex</code> accent (gradient + ring +
-          shadow) for marking the current period in time-series. WCAG H51
+          <code> --bar-height</code> custom property; no SVG, no chart library. Tone-driven default
+          fill, optional per-datum color override, and an optional <code>highlightIndex</code>{' '}
+          accent (gradient + ring + shadow) for marking the current period in time-series. WCAG H51
           fallback via visually-hidden <code>&lt;table&gt;</code>; per-bar
-          <code> aria-label</code> announces the clamped value, the table
-          mirrors the raw values.
+          <code> aria-label</code> announces the clamped value, the table mirrors the raw values.
         </p>
       </header>
 
@@ -77,10 +74,7 @@ export default function BarChartPlaygroundPage() {
           and 200px height.
         </Text>
         <div className={styles.frame}>
-          <BarChart
-            data={REVENUE_6M}
-            caption="Przychód brutto, ostatnie 6 miesięcy"
-          />
+          <BarChart data={REVENUE_6M} caption="Przychód brutto, ostatnie 6 miesięcy" />
         </div>
       </section>
 
@@ -89,8 +83,11 @@ export default function BarChartPlaygroundPage() {
           2. Highlight current period (RevenueBarChart promotion case)
         </Heading>
         <Text variant="small" color="secondary">
-          <code>highlightIndex={'{'}5{'}'}</code> marks April with the gradient
-          + ring accent — replaces RevenueBarChart&apos;s last-bar pattern.
+          <code>
+            highlightIndex={'{'}5{'}'}
+          </code>{' '}
+          marks April with the gradient + ring accent — replaces RevenueBarChart&apos;s last-bar
+          pattern.
         </Text>
         <div className={styles.frame}>
           <BarChart
@@ -107,9 +104,8 @@ export default function BarChartPlaygroundPage() {
           3. Tone variants
         </Heading>
         <Text variant="small" color="secondary">
-          5 tones mirror the UsageDonut DEFAULT_COLORS palette. Highlight is
-          rendered identically across tones (gradient + ring + shadow);
-          chromatic identity stays per-tone.
+          5 tones mirror the UsageDonut DEFAULT_COLORS palette. Highlight is rendered identically
+          across tones (gradient + ring + shadow); chromatic identity stays per-tone.
         </Text>
         <div className={styles.toneGrid}>
           <div className={styles.frame}>
@@ -175,14 +171,11 @@ export default function BarChartPlaygroundPage() {
           4. Per-datum color override (mixed tone)
         </Heading>
         <Text variant="small" color="secondary">
-          <code>datum.color</code> wins over <code>tone</code>. Useful for
-          good/bad coloring without splitting the chart.
+          <code>datum.color</code> wins over <code>tone</code>. Useful for good/bad coloring without
+          splitting the chart.
         </Text>
         <div className={styles.frame}>
-          <BarChart
-            data={MIXED_TONE}
-            caption="Quarterly NPS shift — green=up, red=down"
-          />
+          <BarChart data={MIXED_TONE} caption="Quarterly NPS shift — green=up, red=down" />
         </div>
       </section>
 
@@ -191,8 +184,8 @@ export default function BarChartPlaygroundPage() {
           5. Explicit max (clamps values above ceiling)
         </Heading>
         <Text variant="small" color="secondary">
-          <code>max=20000</code> caps visual height; the AT table still
-          announces raw values (28 600 for April).
+          <code>max=20000</code> caps visual height; the AT table still announces raw values (28 600
+          for April).
         </Text>
         <div className={styles.frame}>
           <BarChart
@@ -209,11 +202,7 @@ export default function BarChartPlaygroundPage() {
           6. Compact height (sparkline-ish, 120px)
         </Heading>
         <div className={styles.frame}>
-          <BarChart
-            data={TICKETS_5W}
-            caption="Tickets per week, compact height"
-            height={120}
-          />
+          <BarChart data={TICKETS_5W} caption="Tickets per week, compact height" height={120} />
         </div>
       </section>
 
@@ -252,8 +241,8 @@ export default function BarChartPlaygroundPage() {
           9. Localized AT table headers
         </Heading>
         <Text variant="small" color="secondary">
-          <code>periodLabel</code> + <code>valueLabel</code> drive the
-          screen-reader table headers (default <code>&apos;Period&apos; / &apos;Value&apos;</code>
+          <code>periodLabel</code> + <code>valueLabel</code> drive the screen-reader table headers
+          (default <code>&apos;Period&apos; / &apos;Value&apos;</code>
           ).
         </Text>
         <div className={styles.frame}>

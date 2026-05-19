@@ -1,5 +1,1 @@
-export {
-  Pagination,
-  type PaginationProps,
-  type PaginationVariant,
-} from './Pagination';
+export { Pagination, type PaginationProps, type PaginationVariant } from './Pagination';

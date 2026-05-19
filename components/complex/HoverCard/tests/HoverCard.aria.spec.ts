@@ -16,9 +16,7 @@ test.describe('HoverCard — ARIA + accessibility tree', () => {
     await page.goto('/components/hover-card');
   });
 
-  test('HC-R08 — coarse pointer (touch) skips hover handlers entirely', async ({
-    browser,
-  }) => {
+  test('HC-R08 — coarse pointer (touch) skips hover handlers entirely', async ({ browser }) => {
     const ctx = await browser.newContext({
       hasTouch: true,
       isMobile: true,

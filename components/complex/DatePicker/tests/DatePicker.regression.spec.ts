@@ -28,9 +28,7 @@ test.describe('DatePicker — regressions', () => {
     await expect(input).toHaveValue('2026-04-15');
   });
 
-  test('DP-R13 — invalid date (29 Feb 2025 non-leap) reverts', async ({
-    page,
-  }) => {
+  test('DP-R13 — invalid date (29 Feb 2025 non-leap) reverts', async ({ page }) => {
     await page.goto('/components/date-picker');
     const sections = page.locator('section');
     const controlled = sections.nth(1); // defaultValue 2026-04-20
@@ -54,9 +52,7 @@ test.describe('DatePicker — regressions', () => {
     await expect(input).toHaveValue('2026-04-15'); // reverts
   });
 
-  test('DP-R14b — min/max: out-of-range Calendar cells disabled', async ({
-    page,
-  }) => {
+  test('DP-R14b — min/max: out-of-range Calendar cells disabled', async ({ page }) => {
     await page.goto('/components/date-picker');
     const sections = page.locator('section');
     const ranged = sections.nth(2);
@@ -81,9 +77,7 @@ test.describe('DatePicker — regressions', () => {
     }
   });
 
-  test('DP-R15 — disabledDates predicate: weekend cells aria-disabled', async ({
-    page,
-  }) => {
+  test('DP-R15 — disabledDates predicate: weekend cells aria-disabled', async ({ page }) => {
     await page.goto('/components/date-picker');
     // idx 3 — weekdays-only (weekends disabled)
     const sections = page.locator('section');
@@ -104,16 +98,11 @@ test.describe('DatePicker — regressions', () => {
     expect(cnt).toBeGreaterThan(0);
     // All weekend cells should be aria-disabled
     for (let i = 0; i < Math.min(cnt, 4); i += 1) {
-      await expect(satSunButtons.nth(i)).toHaveAttribute(
-        'aria-disabled',
-        'true',
-      );
+      await expect(satSunButtons.nth(i)).toHaveAttribute('aria-disabled', 'true');
     }
   });
 
-  test('DP-R16 — controlled: Today button updates input value', async ({
-    page,
-  }) => {
+  test('DP-R16 — controlled: Today button updates input value', async ({ page }) => {
     await page.goto('/components/date-picker');
     const sections = page.locator('section');
     const controlled = sections.nth(1);
@@ -141,15 +130,11 @@ test.describe('DatePicker — regressions', () => {
     await page.waitForLoadState('networkidle');
     await page.reload();
     await page.waitForLoadState('networkidle');
-    const hydrationWarnings = warnings.filter((w) =>
-      w.toLowerCase().includes('hydration'),
-    );
+    const hydrationWarnings = warnings.filter((w) => w.toLowerCase().includes('hydration'));
     expect(hydrationWarnings).toHaveLength(0);
   });
 
-  test('Form submission: hidden input serializes ISO date', async ({
-    page,
-  }) => {
+  test('Form submission: hidden input serializes ISO date', async ({ page }) => {
     await page.goto('/components/date-picker');
     const sections = page.locator('section');
     // idx 7 — form with name="deadline" default 2026-05-01
@@ -158,30 +143,18 @@ test.describe('DatePicker — regressions', () => {
     await expect(form.getByText(/2026-05-01/)).toBeVisible();
   });
 
-  test('Controlled open state: programmatic Open button shows popup', async ({
-    page,
-  }) => {
+  test('Controlled open state: programmatic Open button shows popup', async ({ page }) => {
     await page.goto('/components/date-picker');
     const sections = page.locator('section');
     const openCtrl = sections.nth(5);
-    await openCtrl
-      .getByRole('button', { name: 'Open programmatically' })
-      .click();
+    await openCtrl.getByRole('button', { name: 'Open programmatically' }).click();
     const grid = page.getByRole('grid');
     await expect(grid).toBeVisible();
-    await openCtrl
-      .getByRole('button', { name: 'Close programmatically' })
-      .click();
+    await openCtrl.getByRole('button', { name: 'Close programmatically' }).click();
     await expect(page.getByRole('grid')).toHaveCount(0);
   });
 
-  test.skip(
-    'DP-R20 — date range mode [PLAYGROUND-DEP: single-date only in v1]',
-    async () => {},
-  );
+  test.skip('DP-R20 — date range mode [PLAYGROUND-DEP: single-date only in v1]', async () => {});
 
-  test.skip(
-    'DP-R21 — time picker composition [PLAYGROUND-DEP: date-only in v1]',
-    async () => {},
-  );
+  test.skip('DP-R21 — time picker composition [PLAYGROUND-DEP: date-only in v1]', async () => {});
 });

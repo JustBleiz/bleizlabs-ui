@@ -38,10 +38,11 @@ test.describe('FileUpload — form integration', () => {
 
   test('FU-F04: filled required field allows submit; FormData captures file', async ({ page }) => {
     const zone = zoneBy(page, 'Attachment file');
-    await selectFiles(zone, [
-      { name: 'contract.pdf', mimeType: 'application/pdf', bytes: 2048 },
-    ]);
-    await page.getByRole('button', { name: /^submit$/i }).first().click();
+    await selectFiles(zone, [{ name: 'contract.pdf', mimeType: 'application/pdf', bytes: 2048 }]);
+    await page
+      .getByRole('button', { name: /^submit$/i })
+      .first()
+      .click();
     // Submitted line shows file name.
     await expect(page.getByText('contract.pdf').first()).toBeVisible();
   });

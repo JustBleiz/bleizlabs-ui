@@ -100,7 +100,6 @@ test.describe('Popover — keyboard interactions', () => {
     expect(modal).toBe('true');
     // Cycle through all tabbables — after enough Tabs, active element stays inside dialog
     for (let i = 0; i < 10; i++) {
-       
       await page.keyboard.press('Tab');
     }
     const activeInsideDialog = await page.evaluate(() => {

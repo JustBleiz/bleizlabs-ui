@@ -151,7 +151,7 @@ test.describe('DateRangePicker — regression cases', () => {
     const m = String(now.getMonth() + 1).padStart(2, '0');
     const later = cellByIso(page, `${y}-${m}-20`);
     const earlier = cellByIso(page, `${y}-${m}-10`);
-    if (await later.count() === 0 || await earlier.count() === 0) {
+    if ((await later.count()) === 0 || (await earlier.count()) === 0) {
       test.skip();
       return;
     }

@@ -33,9 +33,8 @@ export default function DialogPlaygroundPage() {
           Dialog
         </Heading>
         <Text className={styles.intro}>
-          Accessible modal dialog for focused tasks and confirmations. Traps
-          focus, locks background scroll, closes on Escape or overlay click,
-          and restores focus to the trigger on dismiss.
+          Accessible modal dialog for focused tasks and confirmations. Traps focus, locks background
+          scroll, closes on Escape or overlay click, and restores focus to the trigger on dismiss.
         </Text>
       </header>
 
@@ -47,8 +46,8 @@ export default function DialogPlaygroundPage() {
           Basic dialog
         </Heading>
         <Text color="muted">
-          Title + description + body + footer slots. Escape closes, overlay
-          click closes, focus trap via <code>useFocusTrap</code>.
+          Title + description + body + footer slots. Escape closes, overlay click closes, focus trap
+          via <code>useFocusTrap</code>.
         </Text>
 
         <div className={styles.row}>
@@ -72,8 +71,8 @@ export default function DialogPlaygroundPage() {
           }
         >
           <Text>
-            The selected item and all its metadata will be permanently removed
-            from your workspace. Collaborators will lose access immediately.
+            The selected item and all its metadata will be permanently removed from your workspace.
+            Collaborators will lose access immediately.
           </Text>
         </Dialog>
       </section>
@@ -86,23 +85,19 @@ export default function DialogPlaygroundPage() {
           Without description
         </Heading>
         <Text color="muted">
-          When <code>description</code> is omitted, <code>aria-describedby</code>{' '}
-          is NOT set (Radix #3007 regression guard — no orphan aria reference).
+          When <code>description</code> is omitted, <code>aria-describedby</code> is NOT set (Radix
+          #3007 regression guard — no orphan aria reference).
         </Text>
 
         <div className={styles.row}>
-          <Button onClick={() => setNoDescOpen(true)}>
-            Open no-description dialog
-          </Button>
+          <Button onClick={() => setNoDescOpen(true)}>Open no-description dialog</Button>
         </div>
 
         <Dialog
           open={noDescOpen}
           onOpenChange={setNoDescOpen}
           title="Quick action"
-          footer={
-            <Button onClick={() => setNoDescOpen(false)}>Got it</Button>
-          }
+          footer={<Button onClick={() => setNoDescOpen(false)}>Got it</Button>}
         >
           <Text>Short body content, no description slot used.</Text>
         </Dialog>
@@ -116,14 +111,12 @@ export default function DialogPlaygroundPage() {
           closeOnEscape=false
         </Heading>
         <Text color="muted">
-          Disables the Escape handler — user must click an explicit button to
-          close. Use sparingly (APG allows it for destructive confirmations).
+          Disables the Escape handler — user must click an explicit button to close. Use sparingly
+          (APG allows it for destructive confirmations).
         </Text>
 
         <div className={styles.row}>
-          <Button onClick={() => setNoEscapeOpen(true)}>
-            Open no-escape dialog
-          </Button>
+          <Button onClick={() => setNoEscapeOpen(true)}>Open no-escape dialog</Button>
         </div>
 
         <Dialog
@@ -133,15 +126,11 @@ export default function DialogPlaygroundPage() {
           description="Escape is disabled. Use the button to close."
           closeOnEscape={false}
           closeOnOverlayClick={false}
-          footer={
-            <Button onClick={() => setNoEscapeOpen(false)}>
-              Acknowledge
-            </Button>
-          }
+          footer={<Button onClick={() => setNoEscapeOpen(false)}>Acknowledge</Button>}
         >
           <Text>
-            This variant is useful when a user must explicitly confirm before
-            dismissing — e.g., a payment or deletion confirmation.
+            This variant is useful when a user must explicitly confirm before dismissing — e.g., a
+            payment or deletion confirmation.
           </Text>
         </Dialog>
       </section>
@@ -154,15 +143,13 @@ export default function DialogPlaygroundPage() {
           Custom initial focus
         </Heading>
         <Text color="muted">
-          <code>initialFocusRef</code> overrides the default (first tabbable) —
-          APG allows designation for destructive actions (least-destructive
-          button) or info dialogs (OK button).
+          <code>initialFocusRef</code> overrides the default (first tabbable) — APG allows
+          designation for destructive actions (least-destructive button) or info dialogs (OK
+          button).
         </Text>
 
         <div className={styles.row}>
-          <Button onClick={() => setCustomFocusOpen(true)}>
-            Open custom focus dialog
-          </Button>
+          <Button onClick={() => setCustomFocusOpen(true)}>Open custom focus dialog</Button>
         </div>
 
         <Dialog
@@ -198,8 +185,8 @@ export default function DialogPlaygroundPage() {
           Dialog with form
         </Heading>
         <Text color="muted">
-          Body contains form inputs. Focus trap cycles through inputs; browser
-          handles native input keyboard; Escape closes (Radix #1951 fix).
+          Body contains form inputs. Focus trap cycles through inputs; browser handles native input
+          keyboard; Escape closes (Radix #1951 fix).
         </Text>
 
         <div className={styles.row}>
@@ -223,10 +210,7 @@ export default function DialogPlaygroundPage() {
           }
         >
           <Input name="projectName" placeholder="My project" />
-          <Input
-            name="projectSlug"
-            placeholder="my-project"
-          />
+          <Input name="projectSlug" placeholder="my-project" />
         </Dialog>
       </section>
 
@@ -238,8 +222,8 @@ export default function DialogPlaygroundPage() {
           Size variants
         </Heading>
         <Text color="muted">
-          <code>sm</code> (420px), <code>md</code> (560px, default),{' '}
-          <code>lg</code> (720px), <code>xl</code> (960px).
+          <code>sm</code> (420px), <code>md</code> (560px, default), <code>lg</code> (720px),{' '}
+          <code>xl</code> (960px).
         </Text>
 
         <div className={styles.row}>
@@ -264,13 +248,11 @@ export default function DialogPlaygroundPage() {
             title={`Size: ${sizeOpen}`}
             description={`This is a ${sizeOpen} dialog demonstrating max-width.`}
             size={sizeOpen}
-            footer={
-              <Button onClick={() => setSizeOpen(null)}>Close</Button>
-            }
+            footer={<Button onClick={() => setSizeOpen(null)}>Close</Button>}
           >
             <Text>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
-              eiusmod tempor incididunt ut labore et dolore magna aliqua.
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor
+              incididunt ut labore et dolore magna aliqua.
             </Text>
           </Dialog>
         ) : null}
@@ -285,8 +267,7 @@ export default function DialogPlaygroundPage() {
         </Heading>
         <Text color="muted">
           Focus returns to the specific trigger that opened the dialog —
-          <code>document.activeElement</code> saved at open time, restored at
-          close time.
+          <code>document.activeElement</code> saved at open time, restored at close time.
         </Text>
 
         <div className={styles.row}>
@@ -323,16 +304,13 @@ export default function DialogPlaygroundPage() {
           Nested dialogs (Radix #1249 regression guard)
         </Heading>
         <Text color="muted">
-          Opening a second dialog inside the first. Escape closes only the
-          topmost dialog (each has its own <code>document.keydown</code>{' '}
-          listener added on open, removed on close — topmost listener fires
-          last).
+          Opening a second dialog inside the first. Escape closes only the topmost dialog (each has
+          its own <code>document.keydown</code> listener added on open, removed on close — topmost
+          listener fires last).
         </Text>
 
         <div className={styles.row}>
-          <Button onClick={() => setNestedOuterOpen(true)}>
-            Open nested outer
-          </Button>
+          <Button onClick={() => setNestedOuterOpen(true)}>Open nested outer</Button>
         </div>
 
         <Dialog
@@ -340,17 +318,10 @@ export default function DialogPlaygroundPage() {
           onOpenChange={setNestedOuterOpen}
           title="Outer dialog"
           description="Open the inner dialog below."
-          footer={
-            <Button onClick={() => setNestedOuterOpen(false)}>Close</Button>
-          }
+          footer={<Button onClick={() => setNestedOuterOpen(false)}>Close</Button>}
         >
-          <Text>
-            This is the outer modal. Click below to open an inner modal on top.
-          </Text>
-          <Button
-            variant="secondary"
-            onClick={() => setNestedInnerOpen(true)}
-          >
+          <Text>This is the outer modal. Click below to open an inner modal on top.</Text>
+          <Button variant="secondary" onClick={() => setNestedInnerOpen(true)}>
             Open nested inner
           </Button>
         </Dialog>
@@ -360,13 +331,10 @@ export default function DialogPlaygroundPage() {
           onOpenChange={setNestedInnerOpen}
           title="Inner dialog"
           description="Escape closes this one; outer stays open."
-          footer={
-            <Button onClick={() => setNestedInnerOpen(false)}>Close</Button>
-          }
+          footer={<Button onClick={() => setNestedInnerOpen(false)}>Close</Button>}
         >
           <Text>
-            Inner modal. Pressing Escape here closes only this dialog — the
-            outer remains visible.
+            Inner modal. Pressing Escape here closes only this dialog — the outer remains visible.
           </Text>
         </Dialog>
       </section>

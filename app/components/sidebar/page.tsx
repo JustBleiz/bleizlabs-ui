@@ -28,10 +28,10 @@ export default function SidebarPlayground() {
           Sidebar
         </Heading>
         <Text variant="lead" color="muted">
-          Responsive application sidebar — a fixed aside on desktop, a modal
-          drawer on mobile. Groups, items, separators, and an optional hamburger
-          trigger compose however the product needs. Opt-in cookie persistence
-          keeps the open state across reloads without hydration flash.
+          Responsive application sidebar — a fixed aside on desktop, a modal drawer on mobile.
+          Groups, items, separators, and an optional hamburger trigger compose however the product
+          needs. Opt-in cookie persistence keeps the open state across reloads without hydration
+          flash.
         </Text>
       </header>
 
@@ -59,8 +59,8 @@ function BasicDemo() {
           1. Basic
         </Heading>
         <Text variant="small" color="muted">
-          Default uncontrolled sidebar with header, grouped items, and footer.
-          Resize viewport below 768px to see mobile drawer mode.
+          Default uncontrolled sidebar with header, grouped items, and footer. Resize viewport below
+          768px to see mobile drawer mode.
         </Text>
         <Inline gap={2} align="center">
           <Badge label="active" color="brand" />
@@ -142,8 +142,8 @@ function GroupsDemo() {
           2. Groups + separator + disabled
         </Heading>
         <Text variant="small" color="muted">
-          Multiple groups with inline labels, SidebarSeparator between them,
-          and a disabled item (aria-disabled + tabIndex=-1).
+          Multiple groups with inline labels, SidebarSeparator between them, and a disabled item
+          (aria-disabled + tabIndex=-1).
         </Text>
       </header>
       <div className={styles.previewShell}>
@@ -205,8 +205,7 @@ function GroupsDemo() {
           </Sidebar>
           <div className={styles.previewMain}>
             <Text variant="small" color="muted">
-              Tab through the items. The &quot;Permission denied&quot; item is
-              disabled.
+              Tab through the items. The &quot;Permission denied&quot; item is disabled.
             </Text>
           </div>
         </SidebarProvider>
@@ -229,8 +228,8 @@ function ControlledDemo() {
           3. Controlled state
         </Heading>
         <Text variant="small" color="muted">
-          Controlled via <code>open</code> + <code>onOpenChange</code>. External
-          buttons drive state. Start closed; open manually.
+          Controlled via <code>open</code> + <code>onOpenChange</code>. External buttons drive
+          state. Start closed; open manually.
         </Text>
       </header>
       <Inline gap={2}>
@@ -311,9 +310,8 @@ function ShortcutDemo() {
           4. useSidebar hook + Cmd+B shortcut
         </Heading>
         <Text variant="small" color="muted">
-          Consumers bind keyboard shortcuts via the <code>useSidebar()</code>{' '}
-          hook. The library never binds keys automatically — keyboard policy
-          stays the consumer&apos;s responsibility.
+          Consumers bind keyboard shortcuts via the <code>useSidebar()</code> hook. The library
+          never binds keys automatically — keyboard policy stays the consumer&apos;s responsibility.
         </Text>
       </header>
       <div className={styles.previewShell}>
@@ -366,8 +364,8 @@ function SideRightDemo() {
           5. side=&quot;right&quot;
         </Heading>
         <Text variant="small" color="muted">
-          Explicit side prop (no auto-mirror on dir=&quot;rtl&quot;). Layout
-          flips to row-reverse; drawer animation slides from right.
+          Explicit side prop (no auto-mirror on dir=&quot;rtl&quot;). Layout flips to row-reverse;
+          drawer animation slides from right.
         </Text>
       </header>
       <div className={styles.previewShell}>
@@ -413,35 +411,31 @@ function KeyboardWalkthrough() {
           Keyboard + A11y reference
         </Heading>
         <Text variant="small" color="muted">
-          Plain <code>&lt;nav&gt;</code> + <code>&lt;a&gt;</code> semantics —
-          not menubar APG. Browser default Tab navigation covers the entire
-          keyboard UX.
+          Plain <code>&lt;nav&gt;</code> + <code>&lt;a&gt;</code> semantics — not menubar APG.
+          Browser default Tab navigation covers the entire keyboard UX.
         </Text>
       </header>
       <ul className={styles.keyboardList}>
         <li>
-          <code>Tab</code> / <code>Shift+Tab</code> — walk through items in DOM
-          order (browser default)
-        </li>
-        <li>
-          <code>Enter</code> on SidebarItem — activates link href (browser
+          <code>Tab</code> / <code>Shift+Tab</code> — walk through items in DOM order (browser
           default)
         </li>
         <li>
-          <code>Enter</code> / <code>Space</code> on SidebarTrigger — toggles
-          sidebar open/closed
+          <code>Enter</code> on SidebarItem — activates link href (browser default)
         </li>
         <li>
-          <code>Escape</code> (mobile drawer only) — closes drawer, restores
-          focus to trigger
+          <code>Enter</code> / <code>Space</code> on SidebarTrigger — toggles sidebar open/closed
         </li>
         <li>
-          <code>Tab</code> (mobile drawer only) — cycles focus within drawer
-          via <code>useFocusTrap</code>
+          <code>Escape</code> (mobile drawer only) — closes drawer, restores focus to trigger
         </li>
         <li>
-          <code>Cmd+B</code> / <code>Ctrl+B</code> — consumer-bound via{' '}
-          <code>useSidebar()</code>, not built-in
+          <code>Tab</code> (mobile drawer only) — cycles focus within drawer via{' '}
+          <code>useFocusTrap</code>
+        </li>
+        <li>
+          <code>Cmd+B</code> / <code>Ctrl+B</code> — consumer-bound via <code>useSidebar()</code>,
+          not built-in
         </li>
       </ul>
     </section>

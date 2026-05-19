@@ -71,11 +71,17 @@ test.describe('DateRangePicker — focus management', () => {
     await inputOf(picker).press('Alt+ArrowDown');
     await expect(dialogOf(page)).toBeVisible();
     const firstTable = await page.evaluate(
-      () => (document.activeElement as HTMLElement | null)?.closest('table')?.getAttribute('aria-labelledby') ?? null,
+      () =>
+        (document.activeElement as HTMLElement | null)
+          ?.closest('table')
+          ?.getAttribute('aria-labelledby') ?? null,
     );
     await page.keyboard.press('Tab');
     const secondTable = await page.evaluate(
-      () => (document.activeElement as HTMLElement | null)?.closest('table')?.getAttribute('aria-labelledby') ?? null,
+      () =>
+        (document.activeElement as HTMLElement | null)
+          ?.closest('table')
+          ?.getAttribute('aria-labelledby') ?? null,
     );
     // Tab may also leave to other focusable; if it landed in a table it should be a DIFFERENT one
     if (secondTable && firstTable) {

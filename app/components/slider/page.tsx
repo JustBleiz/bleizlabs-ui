@@ -28,10 +28,9 @@ export default function SliderPlayground() {
           Slider
         </Heading>
         <Text variant="lead" color="muted">
-          Accessible single-thumb value selector. Drag with pointer, or
-          navigate with Arrow (±step), Shift+Arrow (±large step), PageUp/Down,
-          Home/End. Supports RTL, vertical orientation, inverted layout, and
-          form submission via a hidden input.
+          Accessible single-thumb value selector. Drag with pointer, or navigate with Arrow (±step),
+          Shift+Arrow (±large step), PageUp/Down, Home/End. Supports RTL, vertical orientation,
+          inverted layout, and form submission via a hidden input.
         </Text>
         <Inline gap={2} wrap>
           <Badge color="success">role=&quot;slider&quot;</Badge>
@@ -49,8 +48,7 @@ export default function SliderPlayground() {
           1. Basic — uncontrolled
         </Heading>
         <Text variant="body" color="muted">
-          Default range 0-100, step 1. Click track to jump, drag thumb, or use
-          keyboard.
+          Default range 0-100, step 1. Click track to jump, drag thumb, or use keyboard.
         </Text>
         <Slider defaultValue={25} aria-label="Basic slider" />
       </section>
@@ -158,9 +156,8 @@ export default function SliderPlayground() {
           6. RTL direction (horizontal)
         </Heading>
         <Text variant="body" color="muted">
-          With <code>dir=&quot;rtl&quot;</code>, Arrow Left = increase, Arrow
-          Right = decrease. Drag + track-click visually mirror. Vertical
-          unaffected.
+          With <code>dir=&quot;rtl&quot;</code>, Arrow Left = increase, Arrow Right = decrease. Drag
+          + track-click visually mirror. Vertical unaffected.
         </Text>
         <div className={styles.fieldRow}>
           <Inline gap={3} align="center">
@@ -183,8 +180,8 @@ export default function SliderPlayground() {
           7. Inverted rendering
         </Heading>
         <Text variant="body" color="muted">
-          <code>inverted</code> flips visual so max renders at start edge. Value
-          semantics unchanged.
+          <code>inverted</code> flips visual so max renders at start edge. Value semantics
+          unchanged.
         </Text>
         <div className={styles.fieldRow}>
           <Inline gap={3} align="center">
@@ -207,8 +204,8 @@ export default function SliderPlayground() {
           8. Vertical orientation
         </Heading>
         <Text variant="body" color="muted">
-          Up = increase, Down = decrease regardless of RTL. Useful for
-          volume/brightness sliders in media UIs.
+          Up = increase, Down = decrease regardless of RTL. Useful for volume/brightness sliders in
+          media UIs.
         </Text>
         <div className={styles.verticalRow}>
           <Slider
@@ -230,21 +227,13 @@ export default function SliderPlayground() {
             <span id="disabled-label" className={styles.fieldLabel}>
               Disabled (aria-disabled, focusable)
             </span>
-            <Slider
-              value={disabledValue}
-              disabled
-              aria-labelledby="disabled-label"
-            />
+            <Slider value={disabledValue} disabled aria-labelledby="disabled-label" />
           </div>
           <div className={styles.fieldRow}>
             <span id="readonly-label" className={styles.fieldLabel}>
               Read-only (focusable, no changes)
             </span>
-            <Slider
-              value={readOnlyValue}
-              readOnly
-              aria-labelledby="readonly-label"
-            />
+            <Slider value={readOnlyValue} readOnly aria-labelledby="readonly-label" />
           </div>
         </Stack>
       </section>
@@ -255,14 +244,12 @@ export default function SliderPlayground() {
         </Heading>
         <Text variant="body" color="muted">
           <code>onValueChange</code> fires on every change (drag + keyboard).
-          <code>onValueCommit</code> fires on pointerup + keyboard keyup. Useful
-          for debounced API calls.
+          <code>onValueCommit</code> fires on pointerup + keyboard keyup. Useful for debounced API
+          calls.
         </Text>
         <Slider
           defaultValue={50}
-          onValueCommit={(v) =>
-            setCommits((prev) => [...prev.slice(-4), v])
-          }
+          onValueCommit={(v) => setCommits((prev) => [...prev.slice(-4), v])}
           aria-label="Commit demo"
         />
         <Text variant="small" color="muted">
@@ -276,8 +263,8 @@ export default function SliderPlayground() {
         </Heading>
         <Text variant="body" color="muted">
           When <code>name</code> prop set, renders hidden{' '}
-          <code>&lt;input type=&quot;range&quot;&gt;</code> for native form
-          submission. Disabled + required propagate.
+          <code>&lt;input type=&quot;range&quot;&gt;</code> for native form submission. Disabled +
+          required propagate.
         </Text>
         <form
           onSubmit={(e) => {

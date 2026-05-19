@@ -49,7 +49,9 @@ test.describe('TagsInput — keyboard', () => {
     await expect(chipsOf(wrap)).toHaveCount(1); // initial 2 - 1
   });
 
-  test('TI-K05: Backspace on non-empty input edits text, does NOT remove chip', async ({ page }) => {
+  test('TI-K05: Backspace on non-empty input edits text, does NOT remove chip', async ({
+    page,
+  }) => {
     const input = inputBy(page, 'Basic tags');
     await input.click();
     await input.pressSequentially('abc');
@@ -67,7 +69,9 @@ test.describe('TagsInput — keyboard', () => {
     await expect(chipsOf(wrap)).toHaveCount(2);
   });
 
-  test('TI-K07: Tab moves focus out of input to next focusable (chip × buttons in tab order)', async ({ page }) => {
+  test('TI-K07: Tab moves focus out of input to next focusable (chip × buttons in tab order)', async ({
+    page,
+  }) => {
     const input = inputBy(page, 'Basic tags');
     await input.focus();
     await input.press('Tab');
@@ -88,7 +92,9 @@ test.describe('TagsInput — keyboard', () => {
     ).toBeVisible();
   });
 
-  test('TI-K09: IME composition guard — Enter during composition does NOT commit', async ({ page }) => {
+  test('TI-K09: IME composition guard — Enter during composition does NOT commit', async ({
+    page,
+  }) => {
     const input = inputBy(page, 'Basic tags');
     // Simulate composition events programmatically (Playwright keyboard
     // doesn't synthesize true IME by default).

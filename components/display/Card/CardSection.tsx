@@ -1,8 +1,4 @@
-import {
-  forwardRef,
-  type CSSProperties,
-  type HTMLAttributes,
-} from 'react';
+import { forwardRef, type CSSProperties, type HTMLAttributes } from 'react';
 import { Slot } from '../../utils/Slot';
 import { cn } from '../../utils/cn';
 import styles from './CardSection.module.scss';
@@ -35,34 +31,24 @@ export interface CardSectionProps extends HTMLAttributes<HTMLDivElement> {
   asChild?: boolean;
 }
 
-export const CardSection = forwardRef<HTMLDivElement, CardSectionProps>(
-  function CardSection(
-    {
-      direction = 'column',
-      separator = false,
-      asChild = false,
-      className,
-      style,
-      children,
-      ...rest
-    },
-    ref,
-  ) {
-    const Comp = asChild ? Slot : 'div';
+export const CardSection = forwardRef<HTMLDivElement, CardSectionProps>(function CardSection(
+  { direction = 'column', separator = false, asChild = false, className, style, children, ...rest },
+  ref,
+) {
+  const Comp = asChild ? Slot : 'div';
 
-    const sectionVars: CSSProperties = {
-      '--card-section-direction': direction,
-    } as CSSProperties;
+  const sectionVars: CSSProperties = {
+    '--card-section-direction': direction,
+  } as CSSProperties;
 
-    return (
-      <Comp
-        ref={ref}
-        className={cn(styles.root, separator && styles.separator, className)}
-        style={{ ...style, ...sectionVars }}
-        {...rest}
-      >
-        {children}
-      </Comp>
-    );
-  },
-);
+  return (
+    <Comp
+      ref={ref}
+      className={cn(styles.root, separator && styles.separator, className)}
+      style={{ ...style, ...sectionVars }}
+      {...rest}
+    >
+      {children}
+    </Comp>
+  );
+});

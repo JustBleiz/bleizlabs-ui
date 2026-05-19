@@ -115,15 +115,10 @@ test.describe('useFloating — popover position flicker regression', () => {
     // and the bug would not reproduce.
   });
 
-  test('FLICK-01 — DatePicker popover stable position across animation', async ({
-    page,
-  }) => {
+  test('FLICK-01 — DatePicker popover stable position across animation', async ({ page }) => {
     await page.goto('/components/date-picker');
     // First "Open calendar" trigger on the page (basic uncontrolled use case)
-    const samples = await sampleDialogPosition(
-      page,
-      'button[aria-label="Open calendar"]',
-    );
+    const samples = await sampleDialogPosition(page, 'button[aria-label="Open calendar"]');
     assertStablePosition(samples);
   });
 

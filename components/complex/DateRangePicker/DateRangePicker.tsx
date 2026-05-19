@@ -137,12 +137,7 @@ import {
   type ReactNode,
   type RefObject,
 } from 'react';
-import {
-  Calendar,
-  CalendarGrid,
-  CalendarGridBody,
-  CalendarGridHead,
-} from '../Calendar';
+import { Calendar, CalendarGrid, CalendarGridBody, CalendarGridHead } from '../Calendar';
 import type { CalendarDir, CalendarDisabled, CalendarWeekStart } from '../Calendar';
 import {
   createFloatingContext,
@@ -222,8 +217,10 @@ const [DateRangePickerContextProvider, useDateRangePickerContext] =
 // ──────────────────────────────────────────────────────────────────────────
 // DateRangePicker — root + state
 
-export interface DateRangePickerProps
-  extends Omit<HTMLAttributes<HTMLDivElement>, 'children' | 'defaultValue' | 'onChange' | 'dir'> {
+export interface DateRangePickerProps extends Omit<
+  HTMLAttributes<HTMLDivElement>,
+  'children' | 'defaultValue' | 'onChange' | 'dir'
+> {
   /** Controlled range. */
   value?: DateRange;
   /** Uncontrolled initial range. `undefined` ≡ `{from:null,to:null}`. */
@@ -474,9 +471,7 @@ export const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
         if (!content) return;
         // Per audit-fix I4: prefer pendingFrom when half-range in progress so
         // the user lands at click-1's anchor rather than today.
-        const targetIso = toIsoDateString(
-          range.from ?? pendingFrom ?? startOfDay(new Date()),
-        );
+        const targetIso = toIsoDateString(range.from ?? pendingFrom ?? startOfDay(new Date()));
         const preferred = content.querySelector<HTMLElement>(
           `button[data-calendar-cell="${targetIso}"]`,
         );
@@ -657,9 +652,7 @@ function formatRangeForInput(range: DateRange): string {
   return '';
 }
 
-type ParsedRange =
-  | { kind: 'full'; from: Date; to: Date }
-  | { kind: 'half'; from: Date };
+type ParsedRange = { kind: 'full'; from: Date; to: Date } | { kind: 'half'; from: Date };
 
 function parseRangeFromInput(text: string): ParsedRange | null {
   const parts = text.split(RANGE_SEP_RE).filter(Boolean);
@@ -680,11 +673,10 @@ function parseRangeFromInput(text: string): ParsedRange | null {
 // ──────────────────────────────────────────────────────────────────────────
 // DateRangePickerInput — editable text input (ARIA combobox)
 
-export interface DateRangePickerInputProps
-  extends Omit<
-    InputHTMLAttributes<HTMLInputElement>,
-    'type' | 'value' | 'defaultValue' | 'onChange' | 'role' | 'aria-controls' | 'aria-expanded'
-  > {
+export interface DateRangePickerInputProps extends Omit<
+  InputHTMLAttributes<HTMLInputElement>,
+  'type' | 'value' | 'defaultValue' | 'onChange' | 'role' | 'aria-controls' | 'aria-expanded'
+> {
   /** Icon button visible inside the input's right side. Default `true`. */
   showCalendarIcon?: boolean;
   /** Accessible label for the calendar icon button. Default `"Open calendar"`. */
@@ -950,8 +942,7 @@ export const DateRangePickerContent = forwardRef<HTMLDivElement, DateRangePicker
 
     // Month anchors (derived from displayMonth root state)
     const monthAnchors = useMemo<Date[]>(
-      () =>
-        Array.from({ length: numberOfMonths }, (_, i) => addMonths(displayMonth, i)),
+      () => Array.from({ length: numberOfMonths }, (_, i) => addMonths(displayMonth, i)),
       [displayMonth, numberOfMonths],
     );
 
@@ -990,8 +981,8 @@ export const DateRangePickerContent = forwardRef<HTMLDivElement, DateRangePicker
     // (passed to each embedded Calendar)
     const buildCellExtras = useCallback(
       (cellDate: Date): React.HTMLAttributes<HTMLTableCellElement> => {
-        const attrs: React.HTMLAttributes<HTMLTableCellElement> & Record<string, string | undefined> =
-          {};
+        const attrs: React.HTMLAttributes<HTMLTableCellElement> &
+          Record<string, string | undefined> = {};
         // Out-of-range cells get no overlay
         if (!isDateInRange(cellDate, min, max)) return attrs;
 

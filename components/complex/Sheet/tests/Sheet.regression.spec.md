@@ -166,31 +166,29 @@ test.describe('Sheet — regression cases', () => {
     await expect(page.locator('[role="alertdialog"]')).toHaveCount(0);
   });
 
-  test.describe.each([
-    { side: 'left' },
-    { side: 'right' },
-    { side: 'top' },
-    { side: 'bottom' },
-  ])('SH-2..5: side=$side anchor + animation', ({ side }) => {
-    test(`side=${side} renders with correct alignment`, async ({ page }) => {
-      await page.getByRole('button', { name: new RegExp(`open ${side} sheet`, 'i') }).click();
-      const sheet = page.getByRole('dialog');
-      await expect(sheet).toBeVisible();
-      const box = await sheet.boundingBox();
-      const viewport = page.viewportSize();
-      if (box && viewport) {
-        if (side === 'left') {
-          expect(box.x).toBeLessThan(10);
-        } else if (side === 'right') {
-          expect(box.x + box.width).toBeGreaterThan(viewport.width - 10);
-        } else if (side === 'top') {
-          expect(box.y).toBeLessThan(10);
-        } else if (side === 'bottom') {
-          expect(box.y + box.height).toBeGreaterThan(viewport.height - 10);
+  test.describe.each([{ side: 'left' }, { side: 'right' }, { side: 'top' }, { side: 'bottom' }])(
+    'SH-2..5: side=$side anchor + animation',
+    ({ side }) => {
+      test(`side=${side} renders with correct alignment`, async ({ page }) => {
+        await page.getByRole('button', { name: new RegExp(`open ${side} sheet`, 'i') }).click();
+        const sheet = page.getByRole('dialog');
+        await expect(sheet).toBeVisible();
+        const box = await sheet.boundingBox();
+        const viewport = page.viewportSize();
+        if (box && viewport) {
+          if (side === 'left') {
+            expect(box.x).toBeLessThan(10);
+          } else if (side === 'right') {
+            expect(box.x + box.width).toBeGreaterThan(viewport.width - 10);
+          } else if (side === 'top') {
+            expect(box.y).toBeLessThan(10);
+          } else if (side === 'bottom') {
+            expect(box.y + box.height).toBeGreaterThan(viewport.height - 10);
+          }
         }
-      }
-    });
-  });
+      });
+    },
+  );
 
   test('SH-6: horizontal size sm = 320px width', async ({ page }) => {
     await page.getByRole('button', { name: /open sm right sheet/i }).click();

@@ -56,9 +56,7 @@ if (!libVersion) fail('package.json has no "version" field.');
  * (we don't have multi-line strings inside our barrels).
  */
 function stripComments(src) {
-  return src
-    .replace(/\/\*[\s\S]*?\*\//g, '')
-    .replace(/^\s*\/\/.*$/gm, '');
+  return src.replace(/\/\*[\s\S]*?\*\//g, '').replace(/^\s*\/\/.*$/gm, '');
 }
 
 /**
@@ -82,9 +80,7 @@ function parseExportStatement(line) {
   }
 
   // export type { A, B } from './path'
-  const typeOnlyMatch = cleaned.match(
-    /^export\s+type\s+\{([^}]*)\}\s+from\s+['"]([^'"]+)['"]$/,
-  );
+  const typeOnlyMatch = cleaned.match(/^export\s+type\s+\{([^}]*)\}\s+from\s+['"]([^'"]+)['"]$/);
   if (typeOnlyMatch) {
     const inner = typeOnlyMatch[1];
     const names = inner
@@ -96,9 +92,7 @@ function parseExportStatement(line) {
   }
 
   // export { A, type B, C } from './path'
-  const namedMatch = cleaned.match(
-    /^export\s+\{([^}]*)\}\s+from\s+['"]([^'"]+)['"]$/,
-  );
+  const namedMatch = cleaned.match(/^export\s+\{([^}]*)\}\s+from\s+['"]([^'"]+)['"]$/);
   if (namedMatch) {
     const inner = namedMatch[1];
     const names = inner

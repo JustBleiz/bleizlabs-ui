@@ -8,18 +8,14 @@
 import { test, expect } from '@playwright/test';
 
 test.describe('Sidebar — regression (responsive + behavior)', () => {
-  test('SB-R11 — desktop viewport shows <aside>, drawer dialog not mounted', async ({
-    page,
-  }) => {
+  test('SB-R11 — desktop viewport shows <aside>, drawer dialog not mounted', async ({ page }) => {
     await page.setViewportSize({ width: 1280, height: 900 });
     await page.goto('/components/sidebar');
     await expect(page.locator('aside[aria-label="Basic sidebar"]')).toBeVisible();
     await expect(page.getByRole('dialog')).toHaveCount(0);
   });
 
-  test('SB-R13 — responsive: desktop → mobile switches to drawer mode', async ({
-    page,
-  }) => {
+  test('SB-R13 — responsive: desktop → mobile switches to drawer mode', async ({ page }) => {
     await page.setViewportSize({ width: 1280, height: 900 });
     await page.goto('/components/sidebar');
     await expect(page.locator('aside[aria-label="Basic sidebar"]')).toBeVisible();
@@ -78,9 +74,7 @@ test.describe('Sidebar — regression (responsive + behavior)', () => {
     await expect(controlled).toHaveAttribute('data-state', 'closed');
   });
 
-  test('side=right sidebar renders with data-side=right (desktop mode)', async ({
-    page,
-  }) => {
+  test('side=right sidebar renders with data-side=right (desktop mode)', async ({ page }) => {
     // Verify side=right prop forwards through to DOM attr on desktop aside.
     // (Mobile drawer transition blocked by matchMedia limitation.)
     await page.setViewportSize({ width: 1280, height: 900 });

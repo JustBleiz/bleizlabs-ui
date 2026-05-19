@@ -14,9 +14,7 @@ test.describe('HoverCard — focus management', () => {
     await page.goto('/components/hover-card');
   });
 
-  test('HC-R04 — focus into content via direct focus keeps card open', async ({
-    page,
-  }) => {
+  test('HC-R04 — focus into content via direct focus keeps card open', async ({ page }) => {
     // Spec intent: blur with relatedTarget inside popper does not close the
     // card. Tab traversal between trigger and inner link goes through other
     // page content first (portal mounts popper at end of body, so DOM tab

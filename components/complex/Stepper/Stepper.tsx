@@ -128,8 +128,7 @@ export type StepperOrientation = 'horizontal' | 'vertical';
 export type StepperSize = 'sm' | 'md' | 'lg';
 export type StepperClickableSteps = 'none' | 'visited' | 'all';
 
-interface StepperPropsBase
-  extends Omit<HTMLAttributes<HTMLElement>, 'children' | 'role'> {
+interface StepperPropsBase extends Omit<HTMLAttributes<HTMLElement>, 'children' | 'role'> {
   /**
    * Index of the currently active step (0-indexed). Used to derive default
    * status for each `<Step>` (index < currentStep → complete; === → active;
@@ -270,10 +269,7 @@ function deriveStatus(index: number, currentStep: number): StepStatus {
   return 'pending';
 }
 
-function isClickableForMode(
-  mode: StepperClickableSteps,
-  derivedStatus: StepStatus,
-): boolean {
+function isClickableForMode(mode: StepperClickableSteps, derivedStatus: StepStatus): boolean {
   if (mode === 'none') return false;
   if (mode === 'all') return true;
   // 'visited' — only complete steps are clickable
@@ -301,9 +297,7 @@ function statusToText(status: StepStatus): string {
 const CLICKABLE_STEP_SELECTOR = '[data-step-clickable="true"]';
 
 function getClickableSteps(root: HTMLElement): HTMLButtonElement[] {
-  return Array.from(
-    root.querySelectorAll<HTMLButtonElement>(CLICKABLE_STEP_SELECTOR),
-  );
+  return Array.from(root.querySelectorAll<HTMLButtonElement>(CLICKABLE_STEP_SELECTOR));
 }
 
 function setRovingTabindex(steps: HTMLElement[], activeIndex: number): void {
@@ -316,10 +310,7 @@ function setRovingTabindex(steps: HTMLElement[], activeIndex: number): void {
 // Stepper root
 // ──────────────────────────────────────────────────────────────────────────
 
-export const Stepper = forwardRef<HTMLElement, StepperProps>(function Stepper(
-  props,
-  forwardedRef,
-) {
+export const Stepper = forwardRef<HTMLElement, StepperProps>(function Stepper(props, forwardedRef) {
   // Destructure ONCE via a unified read-shape — TypeScript's discriminated
   // union is preserved at the call site (consumers can't supply `onStepClick`
   // with `clickableSteps='none'` because of `StepperProps` union typing).
@@ -348,10 +339,7 @@ export const Stepper = forwardRef<HTMLElement, StepperProps>(function Stepper(
   const stepElements = useMemo(() => {
     const list: React.ReactElement<StepProps>[] = [];
     Children.forEach(children, (child) => {
-      if (
-        isValidElement<StepProps>(child) &&
-        (child.type as unknown) === Step
-      ) {
+      if (isValidElement<StepProps>(child) && (child.type as unknown) === Step) {
         list.push(child);
       }
     });
@@ -418,12 +406,8 @@ export const Stepper = forwardRef<HTMLElement, StepperProps>(function Stepper(
       return;
     }
     // Find currentStep among clickables (it may be filtered out in 'visited' mode)
-    const currentStepEl = clickables.find(
-      (el) => Number(el.dataset.stepIndex) === currentStep,
-    );
-    const activeIdx = currentStepEl
-      ? clickables.indexOf(currentStepEl)
-      : 0;
+    const currentStepEl = clickables.find((el) => Number(el.dataset.stepIndex) === currentStep);
+    const activeIdx = currentStepEl ? clickables.indexOf(currentStepEl) : 0;
     setRovingTabindex(clickables, activeIdx);
   }, [interactive, currentStep, clickableSteps, totalSteps]);
 
@@ -440,25 +424,13 @@ export const Stepper = forwardRef<HTMLElement, StepperProps>(function Stepper(
       const clickables = getClickableSteps(root);
       if (clickables.length === 0) return;
 
-      const activeIndex = clickables.findIndex(
-        (el) => el === document.activeElement,
-      );
+      const activeIndex = clickables.findIndex((el) => el === document.activeElement);
       if (activeIndex === -1) return;
 
       const isHorizontal = orientation === 'horizontal';
-      const isRtl =
-        (root.getAttribute('dir') || document.dir || '').toLowerCase() ===
-        'rtl';
-      const nextKey = isHorizontal
-        ? isRtl
-          ? 'ArrowLeft'
-          : 'ArrowRight'
-        : 'ArrowDown';
-      const prevKey = isHorizontal
-        ? isRtl
-          ? 'ArrowRight'
-          : 'ArrowLeft'
-        : 'ArrowUp';
+      const isRtl = (root.getAttribute('dir') || document.dir || '').toLowerCase() === 'rtl';
+      const nextKey = isHorizontal ? (isRtl ? 'ArrowLeft' : 'ArrowRight') : 'ArrowDown';
+      const prevKey = isHorizontal ? (isRtl ? 'ArrowRight' : 'ArrowLeft') : 'ArrowUp';
 
       const focusAt = (idx: number) => {
         const target = clickables[idx];
@@ -470,15 +442,13 @@ export const Stepper = forwardRef<HTMLElement, StepperProps>(function Stepper(
       switch (event.key) {
         case nextKey: {
           event.preventDefault();
-          const nextIdx =
-            activeIndex < clickables.length - 1 ? activeIndex + 1 : 0;
+          const nextIdx = activeIndex < clickables.length - 1 ? activeIndex + 1 : 0;
           focusAt(nextIdx);
           return;
         }
         case prevKey: {
           event.preventDefault();
-          const prevIdx =
-            activeIndex > 0 ? activeIndex - 1 : clickables.length - 1;
+          const prevIdx = activeIndex > 0 ? activeIndex - 1 : clickables.length - 1;
           focusAt(prevIdx);
           return;
         }
@@ -509,12 +479,7 @@ export const Stepper = forwardRef<HTMLElement, StepperProps>(function Stepper(
 
   const liveRegion =
     activeLabel && currentStep >= 0 && currentStep < totalSteps ? (
-      <div
-        key={`live-${currentStep}`}
-        role="status"
-        aria-live="polite"
-        className={styles.srOnly}
-      >
+      <div key={`live-${currentStep}`} role="status" aria-live="polite" className={styles.srOnly}>
         {`Step ${currentStep + 1} of ${totalSteps}: ${activeLabel}`}
       </div>
     ) : null;
@@ -537,12 +502,7 @@ export const Stepper = forwardRef<HTMLElement, StepperProps>(function Stepper(
           data-size={size}
           onKeyDown={handleKeyDown}
         >
-          <ol
-            role="list"
-            className={styles.list}
-            data-orientation={orientation}
-            data-size={size}
-          >
+          <ol role="list" className={styles.list} data-orientation={orientation} data-size={size}>
             {stepItems}
           </ol>
           {liveRegion}
@@ -568,12 +528,7 @@ export const Stepper = forwardRef<HTMLElement, StepperProps>(function Stepper(
         aria-label={ariaLabel}
         aria-labelledby={ariaLabelledBy}
       >
-        <ol
-          role="list"
-          className={styles.list}
-          data-orientation={orientation}
-          data-size={size}
-        >
+        <ol role="list" className={styles.list} data-orientation={orientation} data-size={size}>
           {stepItems}
         </ol>
         {liveRegion}
@@ -602,8 +557,7 @@ export function Step(props: StepProps): React.JSX.Element {
   const clickable = isClickableForMode(ctx.clickableSteps, status);
   const iconSize = STEP_CIRCLE_ICON_SIZE[ctx.size];
 
-  const ariaCurrent: 'step' | undefined =
-    status === 'active' ? 'step' : undefined;
+  const ariaCurrent: 'step' | undefined = status === 'active' ? 'step' : undefined;
 
   // Render badge content per status. Error icon mandatory (D4).
   // Otherwise: complete → CheckIcon (or icon override), pending/active → icon
@@ -612,9 +566,9 @@ export function Step(props: StepProps): React.JSX.Element {
     status === 'error' ? (
       <WarningIcon size={iconSize} />
     ) : status === 'complete' ? (
-      icon ?? <CheckIcon size={iconSize} />
+      (icon ?? <CheckIcon size={iconSize} />)
     ) : (
-      icon ?? <span aria-hidden="true">{index + 1}</span>
+      (icon ?? <span aria-hidden="true">{index + 1}</span>)
     );
 
   // Per-step verbose announcement gives AT context when the user navigates
@@ -633,9 +587,7 @@ export function Step(props: StepProps): React.JSX.Element {
       </span>
       <span className={styles.stepContent}>
         <span className={styles.stepLabel}>{label}</span>
-        {description != null ? (
-          <span className={styles.stepDescription}>{description}</span>
-        ) : null}
+        {description != null ? <span className={styles.stepDescription}>{description}</span> : null}
       </span>
       {verboseAnnouncement != null ? (
         <span className={styles.srOnly}>{verboseAnnouncement}</span>
@@ -646,11 +598,7 @@ export function Step(props: StepProps): React.JSX.Element {
   if (clickable && ctx.onStepClick) {
     const onStepClick = ctx.onStepClick;
     return (
-      <li
-        className={styles.step}
-        data-status={status}
-        aria-current={ariaCurrent}
-      >
+      <li className={styles.step} data-status={status} aria-current={ariaCurrent}>
         <button
           type="button"
           className={styles.stepButton}
@@ -673,16 +621,8 @@ export function Step(props: StepProps): React.JSX.Element {
   // Visual-only mode → plain <li>
   if (ctx.clickableSteps !== 'none') {
     return (
-      <li
-        className={styles.step}
-        data-status={status}
-        aria-current={ariaCurrent}
-      >
-        <div
-          className={styles.stepInner}
-          aria-disabled="true"
-          data-step-index={index}
-        >
+      <li className={styles.step} data-status={status} aria-current={ariaCurrent}>
+        <div className={styles.stepInner} aria-disabled="true" data-step-index={index}>
           {content}
         </div>
       </li>
@@ -690,11 +630,7 @@ export function Step(props: StepProps): React.JSX.Element {
   }
 
   return (
-    <li
-      className={styles.step}
-      data-status={status}
-      aria-current={ariaCurrent}
-    >
+    <li className={styles.step} data-status={status} aria-current={ariaCurrent}>
       {content}
     </li>
   );

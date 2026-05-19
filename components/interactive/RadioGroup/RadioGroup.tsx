@@ -60,8 +60,10 @@ export function useRadioGroupContext(): RadioGroupContextValue {
   return ctx;
 }
 
-export interface RadioGroupProps
-  extends Omit<HTMLAttributes<HTMLDivElement>, 'onChange' | 'defaultValue'> {
+export interface RadioGroupProps extends Omit<
+  HTMLAttributes<HTMLDivElement>,
+  'onChange' | 'defaultValue'
+> {
   /** Form field name shared across items. */
   name: string;
   /** Controlled value. */
@@ -76,48 +78,39 @@ export interface RadioGroupProps
   children: ReactNode;
 }
 
-export const RadioGroup = forwardRef<HTMLDivElement, RadioGroupProps>(
-  function RadioGroup(
-    {
-      name,
-      value: controlledValue,
-      defaultValue,
-      onValueChange,
-      disabled = false,
-      className,
-      children,
-      ...rest
-    },
-    ref,
-  ) {
-    const [uncontrolledValue, setUncontrolledValue] = useState<
-      string | undefined
-    >(defaultValue);
-    const isControlled = controlledValue !== undefined;
-    const value = isControlled ? controlledValue : uncontrolledValue;
-
-    const setValue = useCallback(
-      (next: string) => {
-        if (!isControlled) setUncontrolledValue(next);
-        onValueChange?.(next);
-      },
-      [isControlled, onValueChange],
-    );
-
-    return (
-      <RadioGroupContext.Provider value={{ name, value, setValue, disabled }}>
-        <div
-          ref={ref}
-          role="radiogroup"
-          className={cn(styles.root, className)}
-          {...rest}
-        >
-          {children}
-        </div>
-      </RadioGroupContext.Provider>
-    );
+export const RadioGroup = forwardRef<HTMLDivElement, RadioGroupProps>(function RadioGroup(
+  {
+    name,
+    value: controlledValue,
+    defaultValue,
+    onValueChange,
+    disabled = false,
+    className,
+    children,
+    ...rest
   },
-);
+  ref,
+) {
+  const [uncontrolledValue, setUncontrolledValue] = useState<string | undefined>(defaultValue);
+  const isControlled = controlledValue !== undefined;
+  const value = isControlled ? controlledValue : uncontrolledValue;
+
+  const setValue = useCallback(
+    (next: string) => {
+      if (!isControlled) setUncontrolledValue(next);
+      onValueChange?.(next);
+    },
+    [isControlled, onValueChange],
+  );
+
+  return (
+    <RadioGroupContext.Provider value={{ name, value, setValue, disabled }}>
+      <div ref={ref} role="radiogroup" className={cn(styles.root, className)} {...rest}>
+        {children}
+      </div>
+    </RadioGroupContext.Provider>
+  );
+});
 
 /**
  * RadioGroupItem — individual radio option (renders inside RadioGroup).
@@ -149,8 +142,7 @@ export const RadioGroup = forwardRef<HTMLDivElement, RadioGroupProps>(
  *   <RadioGroupItem value="pro" title="Pro" description="$10/mo" />
  * </RadioGroup>
  */
-export interface RadioGroupItemProps
-  extends Omit<HTMLAttributes<HTMLLabelElement>, 'title'> {
+export interface RadioGroupItemProps extends Omit<HTMLAttributes<HTMLLabelElement>, 'title'> {
   /** Item value (matches RadioGroup `value` / `defaultValue`). */
   value: string;
   /** Visible title. */
@@ -168,8 +160,7 @@ export const RadioGroupItem = forwardRef<HTMLInputElement, RadioGroupItemProps>(
     { value, title, description, icon, disabled: itemDisabled = false, className, ...rest },
     ref,
   ) {
-    const { name, value: groupValue, setValue, disabled: groupDisabled } =
-      useRadioGroupContext();
+    const { name, value: groupValue, setValue, disabled: groupDisabled } = useRadioGroupContext();
     const generatedId = useId();
     const inputId = `${name}-${value}-${generatedId}`;
     const checked = groupValue === value;
@@ -209,9 +200,7 @@ export const RadioGroupItem = forwardRef<HTMLInputElement, RadioGroupItemProps>(
         ) : null}
         <span className={styles.itemText}>
           <span className={styles.itemTitle}>{title}</span>
-          {description ? (
-            <span className={styles.itemDescription}>{description}</span>
-          ) : null}
+          {description ? <span className={styles.itemDescription}>{description}</span> : null}
         </span>
       </label>
     );

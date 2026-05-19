@@ -22,10 +22,9 @@ export default function SelectionPlaygroundPage() {
           Checkbox + RadioGroup
         </Heading>
         <Text className={styles.intro}>
-          Custom-styled selection controls backed by native inputs — so
-          keyboard, form submission, and assistive tech all work as expected.
-          Controlled or uncontrolled, with smooth check and dot animations
-          that respect <code>prefers-reduced-motion</code>.
+          Custom-styled selection controls backed by native inputs — so keyboard, form submission,
+          and assistive tech all work as expected. Controlled or uncontrolled, with smooth check and
+          dot animations that respect <code>prefers-reduced-motion</code>.
         </Text>
       </header>
 
@@ -36,9 +35,7 @@ export default function SelectionPlaygroundPage() {
         <Checkbox name="newsletter" defaultChecked>
           Send me product updates
         </Checkbox>
-        <Checkbox name="marketing">
-          Send me marketing emails
-        </Checkbox>
+        <Checkbox name="marketing">Send me marketing emails</Checkbox>
       </section>
 
       <section className={styles.section}>
@@ -72,16 +69,8 @@ export default function SelectionPlaygroundPage() {
           RadioGroup &mdash; controlled
         </Heading>
         <RadioGroup name="plan" value={plan} onValueChange={setPlan}>
-          <RadioGroupItem
-            value="free"
-            title="Free"
-            description="Basic features, 1 user"
-          />
-          <RadioGroupItem
-            value="pro"
-            title="Pro"
-            description="$10/mo — all features, 5 users"
-          />
+          <RadioGroupItem value="free" title="Free" description="Basic features, 1 user" />
+          <RadioGroupItem value="pro" title="Pro" description="$10/mo — all features, 5 users" />
           <RadioGroupItem
             value="team"
             title="Team"

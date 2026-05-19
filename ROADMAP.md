@@ -15,6 +15,7 @@ Tylko to, co **zmienia funkcjonalność biblioteki**. Adoption layer (docs site,
 **Zero external runtime dependencies utrzymane przez cały roadmap.** Każdy nowy komponent budowany na native APIs (File API, HTML5 drag/drop, Date + Intl, SVG, IntersectionObserver). Bez Prism/Shiki, bez dnd-kit, bez date-fns, bez Recharts.
 
 Każda pozycja ma:
+
 - **Why** — co się dziś nie da zrobić bez tego
 - **Klocek check** — czy przechodzi charter (R1-R12 + Klocek vs Organism test)
 - **Scope** — co wchodzi w v1, co świadomie nie
@@ -47,6 +48,7 @@ Każda pozycja ma:
 **Wersjonowanie:** zawsze +1 minor (0.17 → 0.18 → 0.19 → ...). **1.0 NIE jest auto-follow po 0.22** — czekamy na explicit user trigger żeby zrobić cięcie stabilizacyjne. Do tego czasu lecimy 0.x minor by minor, bez deadline'u na 1.0.
 
 **Logika kolejności:**
+
 1. **DataTable pierwszy** — największa funkcjonalna luka, największy lift, fundament list-view apps
 2. **Date/Time drugi** — 4 powiązane komponenty współdzielą Calendar + Date utils, naturalny batch
 3. **Forms trzeci** — FileUpload, TagsInput, Stepper domykają core form story
@@ -67,6 +69,7 @@ Każdy minor możemy przemieszać gdy realny priority się zmieni z internal con
 **Klocek check:** PASS — generic-data organism. Column defs są **uniwersalną abstrakcją** (parameterized data shape via TypeScript generic `T`), nie biznes-domain. APG `grid` pattern = single behavior contract.
 
 **Scope v1:**
+
 - Deklaratywne column defs (`columns: ColumnDef<T>[]`)
 - Sortowanie per-column (header click, `aria-sort`)
 - Filtrowanie per-column + global search slot
@@ -80,6 +83,7 @@ Każdy minor możemy przemieszać gdy realny priority się zmieni z internal con
 - APG `grid` keyboard model (Arrow keys, Home/End, PageUp/Down, Ctrl+Home/End, type-ahead)
 
 **NIE w v1 (defer):**
+
 - Wirtualizacja
 - Drag-to-resize / drag-to-reorder columns
 - Server-side data fetching helpers
@@ -93,6 +97,7 @@ Każdy minor możemy przemieszać gdy realny priority się zmieni z internal con
 **Status:** SHIPPED 2026-05-11 (lib code + tests + demo + docs; consumer migrations follow-up).
 
 **DoD:**
+
 - [x] `<DataTable>` ships w `complex/` z pełnym TS API — single + multiple selection (discriminated union), expansion, frozen columns, mobile fallback, RTL via logical CSS properties, density modes, imperative handle, `useDataTableState` power-user hook
 - [x] APG grid compliance — axe-core zero violations (DT-A08 + DT-RG20), 11 Playwright suites (keyboard / focus / aria / sort / filter / pagination / selection / expansion / responsive / 12 edge-cases / 20 regression), explicit `role="row"`/`"gridcell"`/`"columnheader"` on every grid descendant
 - [x] Demo route — 6 use cases (basic, sortable+filterable, selection+pagination, full-featured z frozen+density+RTL+striped, real-world panel z onRowClick, states empty/loading/error) — exceeded planned 4
@@ -107,6 +112,7 @@ Każdy minor możemy przemieszać gdy realny priority się zmieni z internal con
 `internal/bleizlabs-ui/work/2026-05_0.18-datetime-pack/`.
 
 Cycle outcome:
+
 - [x] E01.0 Calendar AMEND (commit `57b29a3`) — opt-in `cellExtras` +
       `onCellHover` + `onGridMouseLeave` props.
 - [x] E01.1 DateRangePicker v1 (commits `62db846` + `78d4969`) — multi-month
@@ -142,6 +148,7 @@ before EVERY push on Next.js projects.
 **Klocek check:** PASS — single concept (date range), data-shape neutral (`{from: Date | null, to: Date | null}` — universal abstraction).
 
 **Scope:**
+
 - Range selection w popover (reuses internal Calendar)
 - Hover preview (range highlight on hover)
 - Range validation (`from ≤ to`, optional `min`/`max`/`disabledDates`)
@@ -156,6 +163,7 @@ before EVERY push on Next.js projects.
 **Klocek check:** PASS — inline structure (HH:MM(:SS) spinner trio), no popup overhead.
 
 **Scope:**
+
 - Hour + Minute spinner inputs (composes NumberInput internally)
 - Optional seconds (`withSeconds` prop)
 - 12h/24h format variant (`hourCycle: '12h' | '24h'`)
@@ -169,6 +177,7 @@ before EVERY push on Next.js projects.
 **Klocek check:** PASS — popover variant (komplementarny do TimeInput).
 
 **Scope:**
+
 - Popover z hour/minute scrollable lists (macOS-style)
 - Reuses Popover + floating logic from existing components
 - Format consistency z TimeInput
@@ -180,6 +189,7 @@ before EVERY push on Next.js projects.
 **Klocek check:** PASS — composes Calendar + TimeInput w jeden popover.
 
 **Scope:**
+
 - Single popover łączący datę + czas
 - Reuses Calendar from DatePicker + TimeInput inline
 - Output type: `Date` z time component
@@ -190,6 +200,7 @@ before EVERY push on Next.js projects.
 **Zero external deps:** Native Date + Intl.DateTimeFormat (jak istniejący DatePicker)
 
 **DoD pack 0.18.0:**
+
 - [ ] 4 nowe komponenty shipped
 - [ ] APG `/dialog/` + `/listbox/` compliance dla popoverów
 - [ ] axe-core zero violations
@@ -211,6 +222,7 @@ Cycle: E01.1 FileUpload → E01.2 TagsInput → E01.3 Stepper sequentially.
 **Klocek check:** PASS — single concept (drop zone + native file input wrapper), data-shape neutral (`File[]` standard browser type), no auto-wrap (consumer renderuje swoje chipy).
 
 **Scope:**
+
 - Drag-and-drop strefa + click-to-browse
 - `accept` (MIME types), `multiple`, `maxSize`, `maxFiles` validation
 - `onFiles(files: File[])` + `onReject(rejections: FileRejection[])`
@@ -219,6 +231,7 @@ Cycle: E01.1 FileUpload → E01.2 TagsInput → E01.3 Stepper sequentially.
 - Zero state, drag-over state, error state
 
 **NIE w v1 (consumer responsibility):**
+
 - Upload progress tracking (zależne od backendu konsumenta)
 - Resumable uploads
 - Chunked uploads
@@ -233,6 +246,7 @@ Cycle: E01.1 FileUpload → E01.2 TagsInput → E01.3 Stepper sequentially.
 **Klocek check:** PASS — single concept (freeform tag input), data-shape neutral (`string[]`), no popup overhead (różny od Combobox creatable który byłby tym samym co istniejący Combobox multiple).
 
 **Scope:**
+
 - Type → Enter/comma tworzy chip
 - Backspace na pustym usuwa ostatni chip
 - Paste support (split po `,` / `;` / `\n`)
@@ -252,6 +266,7 @@ Cycle: E01.1 FileUpload → E01.2 TagsInput → E01.3 Stepper sequentially.
 **Klocek check:** PASS — compound (`<Stepper><Step/></Stepper>`), single visual concept. Lib daje **visual indicator only**, state machine (validation, navigation) = rola konsumenta.
 
 **Scope:**
+
 - `<Stepper currentStep={N} orientation="horizontal|vertical">`
 - `<Step label icon? description? status?>` compound parts
 - Status: `pending | active | complete | error`
@@ -261,6 +276,7 @@ Cycle: E01.1 FileUpload → E01.2 TagsInput → E01.3 Stepper sequentially.
 - ARIA `role="progressbar"` lub `nav` per W3C guidance
 
 **NIE w lib (consumer responsibility):**
+
 - `useStepper()` hook z state machine — to convenience composition, niech konsument buduje
 - Form validation integration — composes z Form context
 
@@ -269,6 +285,7 @@ Cycle: E01.1 FileUpload → E01.2 TagsInput → E01.3 Stepper sequentially.
 **Zero external deps:** Native
 
 **DoD pack 0.19.0:**
+
 - [ ] 3 nowe form primitives shipped
 - [ ] axe-core zero violations
 - [ ] FormData serialization works dla FileUpload + TagsInput natively
@@ -284,6 +301,7 @@ Cycle: E01.1 FileUpload → E01.2 TagsInput → E01.3 Stepper sequentially.
 **Why:** Aktualnie tylko `BarChart` + 3 specialized bars. Brakuje line/area dla time series + pie dla compositions. Konsumenci dziś sięgają po Recharts/Chart.js (100KB+ external deps).
 
 **Delivered (all on `specialized/` layer):**
+
 - **E01.1 LineChart** (lib commit `147e238`) — multi-series, smooth/linear interpolation, crosshair tooltip + voronoi hit-testing, full interactive a11y (roving tabindex per data point, Arrow/Home/End/Space/Enter/Escape model, sr-only `<table>`, live region)
 - **E01.2 AreaChart** (lib commit `d081c33`) — filled region under line, `fillOpacity` + `gradient` visual axes, mirrors LineChart API + a11y
 - **E01.3 Sparkline** (lib commit `920d8af`) — tiny inline single-series for KPI tiles / table cells / dense dashboards; deliberate non-interactive (glanceable signal, Tufte/Mantine/Tremor precedent); sr-only table still mandatory
@@ -292,6 +310,7 @@ Cycle: E01.1 FileUpload → E01.2 TagsInput → E01.3 Stepper sequentially.
 **Refactor (commit `50b996c`):** Extracted `components/specialized/_shared/chart-math.ts` after 2 charts (LineChart + AreaChart) carried inline clones. Rule of Three intra-lib at Sparkline = 3rd consumer. Shared helpers: scaleLinear, getDomain, niceTicks, generateLinearPath, generateSmoothPath, generateAreaPath, normalizeX, formatX, defaultYFormat, clamp01, DEFAULT_COLORS, ChartInterpolation type. Lib-internal (NOT in barrel). Polar helpers stay inline in PieChart per same Rule-of-Three discipline — extract when 2nd polar chart joins.
 
 **Wszystkie:**
+
 - SVG-based (spójne z istniejącym BarChart)
 - Responsive via `aspect-ratio` (CSS-only; no ResizeObserver runtime needed for chart sizing — only consumers using `height` prop)
 - Dark mode (seed tokens — `--color-{brand,success,warning,info,error}` DEFAULT_COLORS cycle)
@@ -303,6 +322,7 @@ Cycle: E01.1 FileUpload → E01.2 TagsInput → E01.3 Stepper sequentially.
 - `forced-colors: active` fallbacks for Windows High Contrast
 
 **NIE w pierwszym podejściu (deferred):**
+
 - ScatterPlot, HeatMap, Treemap, Gauge (niche)
 - Combo chart (consumer composes AreaChart + BarChart)
 - Brush / zoom interaction
@@ -316,6 +336,7 @@ Cycle: E01.1 FileUpload → E01.2 TagsInput → E01.3 Stepper sequentially.
 **Zero external deps:** SVG + native math (Path, scale calculations, Date dla time axes) ✓
 
 **DoD:**
+
 - [x] 4 nowe chart primitives shipped (LineChart + AreaChart + Sparkline + PieChart)
 - [x] `_shared/chart-math.ts` extracted at Rule-of-Three (3rd chart) trigger
 - [x] tsc + eslint + check:barrel + check:manifest clean across all 4 charts (100 families total)
@@ -330,9 +351,10 @@ Cycle: E01.1 FileUpload → E01.2 TagsInput → E01.3 Stepper sequentially.
 
 **Why:** Demo dev app jest jedynym continuous-integration surface dla wszystkich 100 komponentów. Bugi tutaj = bugi w consumer projects. Sweep przed 0.21.0 polish batch żeby fresh-built Polish components nie inheritowały tych samych pułapek.
 
-**Methodology (canonical per user 2026-05-12):** *"pewnie niektóre na siebie nachodzą albo oddziałowują ze sobą, więc dobrze jest przed każdym fixem zweryfikować czy nadal występuje."* + *"nie tylko trzeba to sprawdzić w demo ale sprawdzić gdzie powstaje źródło, czy źródłem problemu jest nasza implementacja w demo, czy może źródłem problemu jest jednak kod źródłowy."*
+**Methodology (canonical per user 2026-05-12):** _"pewnie niektóre na siebie nachodzą albo oddziałowują ze sobą, więc dobrze jest przed każdym fixem zweryfikować czy nadal występuje."_ + _"nie tylko trzeba to sprawdzić w demo ale sprawdzić gdzie powstaje źródło, czy źródłem problemu jest nasza implementacja w demo, czy może źródłem problemu jest jednak kod źródłowy."_
 
 Każdy bug pre-fix MANDATORY:
+
 1. **Reproduce** — `mcp__next-devtools__nextjs_call get_errors` + visual check na current main HEAD; verify że bug nadal występuje (NIE auto-assume z listy)
 2. **Root-cause triage** — bug może mieć 1 z 3 źródeł:
    - **(a) DEMO PAGE** — `app/components/<name>/page.tsx` lub `.module.scss` — wrong prop usage, wrong import path, demo-only typo
@@ -384,17 +406,20 @@ Każdy bug pre-fix MANDATORY:
 - [ ] **B16 [D]** Demo home catalog brakuje TimePicker + DateTimePicker (shipped w 0.18.0). Demo-only fix: add cards do `app/page.tsx` + verify `components/date-time-picker/page.tsx` + `components/time-picker/page.tsx` istnieją (lib code shipped, demo catalog out of sync)
 
 **Scope:**
+
 - Wyłącznie bugfixy na shipped surface (zero new components, zero API breaks)
 - Każdy fix = own commit z regression spec gdy applicable
 - Single PR po wszystkich 18 fixach (lub split P0+P1 vs P2+P3 jeśli pierwsza partia trwa >dzień)
 
 **NIE w v0.20.1:**
+
 - Nowe komponenty (Banner/AvatarGroup/Rating/Collapsible → 0.21.0)
 - 7 asChild bugs (B01/B03/B06/B07a/B02/B04/B10) — Slot architectural sweep → osobny patch 0.20.2
 - 0.20.0 a11y follow-up dla LineChart+AreaChart (describedby + tab-entry — osobny patch 0.20.3)
 - 0.20.0 test sprint (Playwright + axe-core + NVDA 4 charts — osobny patch 0.20.4)
 
 **DoD pack 0.20.1 (SHIPPED 2026-05-12):**
+
 - [x] 11 of 18 bugs PASS (7 asChild bugs deferred to 0.20.2)
   - LIB: B11 Textarea resize, B18 LineChart tooltip, B15 Combobox clear, B05 TextLink underline, B13 Button warning, B14 AlertDialog scale, B08 Dot xs size (mixed)
   - DEMO: B16 catalog 4 cards, B09 EdgeBar pulse, B12 BreakdownList empty, B17 DataTable Input narrow
@@ -416,10 +441,12 @@ Każdy bug pre-fix MANDATORY:
 **Why:** 7 z 18 demo bugs (B01 Stack, B02 Inline, B03 Section, B04 Eyebrow, B06 Card, B07a Badge, B10 Label) wszystkie wynikają z hydration mismatch w `<X asChild>` pattern w Next.js 16.2+ + React 19 dev mode. Slot.tsx ma `'use client'` + `forwardRef`; consumers (Card/Stack/Section/etc.) ALSO wrap z `forwardRef`. Połączenie powoduje że server renderuje projected child tag (np. `<a>`), ale client first paint renderuje host's default tag (np. `<div>`).
 
 **Two 0.20.1 fix attempts FAILED:**
+
 1. Remove `'use client'` from Slot → "Refs cannot be used in Server Components" — Card's outer forwardRef cascades the error
 2. Convert Slot to React 19 ref-as-prop (no forwardRef) alone → same cascade error from Card
 
 **Required scope (coordinated migration):**
+
 - `Slot` — convert from `forwardRef<HTMLElement, SlotProps>` to function component z `ref` as regular prop (React 19 native pattern). Drop `'use client'` directive.
 - `Card`, `Stack`, `Section`, `Badge`, `Inline`, `Eyebrow`, `Label` — wszystkie 7 consumers asChild: migrate from `forwardRef<HTMLElement, Props>` do function component z `ref: Ref<HTMLElement>` as regular prop.
 - Audit every other consumer of `<X asChild>` pattern (potentially more components: Heading? Text? Anchor? Container? Section? Reveal?) — check each for hydration warning on dev console, migrate if affected.
@@ -429,6 +456,7 @@ Każdy bug pre-fix MANDATORY:
 **Klocek check:** N/A — architectural fix, not component addition. Zero API change for consumers (asChild prop behavior identical, just no dev warning).
 
 **Methodology:**
+
 1. Audit `forwardRef` usage across lib: `grep -r "forwardRef" components/`. Estimate scope.
 2. Create migration spec: each forwardRef → ref-as-prop pattern, with side-by-side example.
 3. Migrate Slot first (foundation).
@@ -440,15 +468,18 @@ Każdy bug pre-fix MANDATORY:
 9. Update docs/lint rules if any forbid raw `forwardRef` import going forward.
 
 **Scope:**
+
 - Wyłącznie architectural migration (zero new components, zero API breaks dla asChild consumers)
 - Lib-wide forwardRef → ref-as-prop sweep
 - 7 demo bugs (B01/B02/B03/B04/B06/B07a/B10) fixed jako side-effect
 
 **NIE w v0.20.2:**
+
 - Nowe komponenty (Banner/AvatarGroup/Rating/Collapsible → 0.21.0)
 - 11 non-asChild bugs (B05/B08/B09/B11/B12/B13/B14/B15/B16/B17/B18) — ship w 0.20.1
 
 **DoD pack 0.20.2:**
+
 - [ ] Slot migrated do ref-as-prop, no `'use client'` directive
 - [ ] 7 asChild consumers migrated (Card/Stack/Section/Badge/Inline/Eyebrow/Label)
 - [ ] Audit identified + migrated all other asChild consumers w lib
@@ -477,6 +508,7 @@ Każdy bug pre-fix MANDATORY:
 **Klocek check:** PASS — molecule, children-slot pattern (data-shape neutral, no forced typed array), single concept (stacked avatars).
 
 **Scope:**
+
 - `<AvatarGroup max={N} size?>` przyjmuje `<Avatar>` children
 - Overflow chip (+N more) z opcjonalnym tooltip
 - Configurable overlap (CSS variable)
@@ -488,6 +520,7 @@ Każdy bug pre-fix MANDATORY:
 **Klocek check:** PASS — input primitive, single concept (star rating), data-shape neutral (`value: number`).
 
 **Scope:**
+
 - `<Rating value max? readOnly? size?>` input
 - Half-star support (fractional values w readOnly)
 - Keyboard nav (Arrow keys, Home/End)
@@ -502,12 +535,14 @@ Każdy bug pre-fix MANDATORY:
 **Klocek check:** PASS — APG `/disclosure/` pattern (generic show/hide), różny od Accordion (APG `/accordion/` Q+A pattern).
 
 **Scope:**
+
 - `<Collapsible><CollapsibleTrigger/><CollapsibleContent/></Collapsible>` compound
 - Controlled + uncontrolled
 - Animation (height transition, prefers-reduced-motion)
 - ARIA `aria-expanded` + `aria-controls`
 
 **Różnica vs Accordion:**
+
 - Accordion = FAQ-style Q+A panels (specific semantic)
 - Collapsible = generic "show more / hide" toggle (no question semantic)
 
@@ -520,6 +555,7 @@ Każdy bug pre-fix MANDATORY:
 **Klocek check:** PASS — pure opt-in extension per Charter R3 (opt-in flexibility); boolean prop, default `false` = zero change dla existing consumers. R2 prop budget unaffected (+1 boolean).
 
 **Scope:**
+
 - `<TimeInput showSteppers={false}>` prop default false (backward compatible)
 - When true: render `<button aria-label="Increment {segment}">` + `<button aria-label="Decrement {segment}">` stacked vertically on right
 - Always-visible when prop on (hover-only = discoverability anti-pattern per research)
@@ -531,6 +567,7 @@ Każdy bug pre-fix MANDATORY:
 - `forced-colors: active` → use system button colors
 
 **Propagation:**
+
 - `TimePicker` (composes TimeInput internally) → prop pass-through
 - `DateTimePicker` (composes TimeInput + Calendar) → prop pass-through
 - `DateRangePicker` (uses Calendar only, no TimeInput in current scope) → N/A
@@ -540,6 +577,7 @@ Każdy bug pre-fix MANDATORY:
 **Zero external deps:** Native SVG chevron icons, native HTML5 button. No dnd-kit, no Radix.
 
 **DoD:**
+
 - [ ] TimeInput.tsx adds `showSteppers` prop + stepper button JSX (conditional)
 - [ ] TimeInput.module.scss adds `.stepperGroup` + `.stepperButton` (up/down) styling
 - [ ] TimePicker + DateTimePicker pass through `showSteppers` (verify with grep — likely already `...rest` spread)
@@ -555,6 +593,7 @@ Każdy bug pre-fix MANDATORY:
 **Klocek check:** PASS — feedback primitive, single concept (page-wide notification), data-shape neutral (children slot).
 
 **Scope:**
+
 - `<Banner tone="info|warning|error|success" dismissible? onDismiss?>`
 - Sticky top-of-page variant
 - Action slot (Button compositions)
@@ -562,6 +601,7 @@ Każdy bug pre-fix MANDATORY:
 - ARIA `role="status"` lub `"alert"` per tone
 
 **Różnica vs Alert:**
+
 - Alert = contextual inline w-content
 - Banner = global top-of-page persistent
 
@@ -570,6 +610,7 @@ Każdy bug pre-fix MANDATORY:
 **Zero external deps:** None potrzeba.
 
 **DoD pack 0.21.0:**
+
 - [ ] 4 nowe komponenty shipped
 - [ ] axe-core zero violations
 - [ ] Demo routes per komponent
@@ -585,6 +626,7 @@ Każdy bug pre-fix MANDATORY:
 ### 0.22.1 JSDoc completeness audit
 
 **Scope:**
+
 - Audyt wszystkich komponentów (89 + ~13 nowych = ~102): pełny header block (description, @layer, @tokens, @deps, @a11y, @example)
 - Każdy prop ma description w JSDoc
 - Każdy deprecated prop ma `@deprecated` z migration hint
@@ -596,6 +638,7 @@ Każdy bug pre-fix MANDATORY:
 **Why:** Opt-in escape hatch dla consumerów chcących structure-only. Lekki dodatek (1 plik SCSS), zero impact na core.
 
 **Scope:**
+
 - `styles/_headless-reset.scss` — nadpisuje seed tokens do neutral
 - Konsument importuje **po** głównych stylach: `@use '@bleizlabs/ui/styles'; @use '@bleizlabs/ui/styles/headless-reset';`
 - Efekt: struktura + a11y + behavior bez visual identity
@@ -603,6 +646,7 @@ Każdy bug pre-fix MANDATORY:
 **Świadomie defer:** Real `@bleizlabs/ui/headless` subexport (osobny build pipeline bez SCSS imports) — robimy gdy realny demand z konkretnym use case.
 
 **DoD pack 0.22.0:**
+
 - [ ] 100% JSDoc coverage dla public exports
 - [ ] Lint rule operational
 - [ ] `headless-reset.scss` ships + exported w package.json
@@ -613,6 +657,7 @@ Każdy bug pre-fix MANDATORY:
 ## 1.0-rc.1 → 1.0 — Stabilization + freeze
 
 **Scope:**
+
 - Breaking change moratorium od 0.22.0 freeze date
 - Bug fix sweep (GitHub issues + internal consumer reports)
 - axe-core full lib regression
@@ -623,6 +668,7 @@ Każdy bug pre-fix MANDATORY:
 - Self-audit a11y (jeśli external audit defer'ed do 1.x)
 
 **DoD 1.0.0:**
+
 - [ ] Zero open critical bugs na GitHub
 - [ ] Wszystkie 4-5 internal projekty na 1.0.0 w prod
 - [ ] axe-core zero violations całej lib
@@ -635,20 +681,20 @@ Każdy bug pre-fix MANDATORY:
 
 **Zewnętrzne deps NIE używamy** — utrzymane przez cały roadmap:
 
-| Item | Powód odrzucenia |
-|---|---|
-| **DnD** | Defer do realnego external demand. Jeśli/gdy ktoś poprosi → osobny package `@bleizlabs/ui-dnd` wrapper. Sami na zapas nie robimy. |
+| Item                                | Powód odrzucenia                                                                                                                   |
+| ----------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+| **DnD**                             | Defer do realnego external demand. Jeśli/gdy ktoś poprosi → osobny package `@bleizlabs/ui-dnd` wrapper. Sami na zapas nie robimy.  |
 | **CodeBlock z syntax highlighting** | Prism/Shiki = external dep. Własny tokenizer per język = rabbit hole. Konsument owinie `<pre><code>` z własnym Shiki gdy potrzeba. |
-| **ColorPicker** | Niche, design-tool oriented. Defer do realnego demand. |
-| **Tree / TreeView** | Defer do realnego demand (file trees, org charts). |
-| **VirtualList general-purpose** | Defer. DataTable virt też defer. Większość use cases <500 wierszy. |
-| **Resizable / SplitPane** | Defer. Niche (IDE-style layouts). |
-| **MentionInput** | Defer. Niche (collaboration apps). |
-| **Gauge** | Defer. Niche specialized viz. |
-| **FAB (Floating Action Button)** | Skip. Anty-Material aesthetic. Konsument może złożyć Button + position:fixed. |
-| **MasonryGrid** | Skip. GridLayout pokrywa 95% przypadków. |
-| **Tailwind interop** | Skip. Anty-Tailwind to filozoficzny statement. |
-| **Real `/headless` subexport** | Defer post-1.0. Stripped seeds (0.22.2) pokrywają 80% za 5% kosztu. |
+| **ColorPicker**                     | Niche, design-tool oriented. Defer do realnego demand.                                                                             |
+| **Tree / TreeView**                 | Defer do realnego demand (file trees, org charts).                                                                                 |
+| **VirtualList general-purpose**     | Defer. DataTable virt też defer. Większość use cases <500 wierszy.                                                                 |
+| **Resizable / SplitPane**           | Defer. Niche (IDE-style layouts).                                                                                                  |
+| **MentionInput**                    | Defer. Niche (collaboration apps).                                                                                                 |
+| **Gauge**                           | Defer. Niche specialized viz.                                                                                                      |
+| **FAB (Floating Action Button)**    | Skip. Anty-Material aesthetic. Konsument może złożyć Button + position:fixed.                                                      |
+| **MasonryGrid**                     | Skip. GridLayout pokrywa 95% przypadków.                                                                                           |
+| **Tailwind interop**                | Skip. Anty-Tailwind to filozoficzny statement.                                                                                     |
+| **Real `/headless` subexport**      | Defer post-1.0. Stripped seeds (0.22.2) pokrywają 80% za 5% kosztu.                                                                |
 
 **Zasada:** Komponenty wymagające external runtime UI deps **nie wchodzą do core lib**. Mogą być osobnymi packagami (`@bleizlabs/ui-<name>`) jeśli kiedyś będzie demand. Core `@bleizlabs/ui` pozostaje zero-runtime-deps.
 

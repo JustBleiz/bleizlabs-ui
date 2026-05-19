@@ -12,23 +12,18 @@ import { test, expect } from '@playwright/test';
 import { navBy } from './_helpers';
 
 const URL = '/components/stepper';
-const WIZARD_LABEL =
-  'Onboarding wizard — click visited steps to revisit';
+const WIZARD_LABEL = 'Onboarding wizard — click visited steps to revisit';
 
 test.describe('Stepper — focus', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto(URL);
   });
 
-  test('STEP-F01: exactly one clickable step has tabindex=0 (roving)', async ({
-    page,
-  }) => {
+  test('STEP-F01: exactly one clickable step has tabindex=0 (roving)', async ({ page }) => {
     const nav = navBy(page, WIZARD_LABEL);
     // Wait for hydration to settle — useLayoutEffect promotes the active
     // step's tabindex from -1 (initial JSX) to 0 after React commits.
-    const firstBtn = nav.locator(
-      'button[data-step-clickable="true"][data-step-index="0"]',
-    );
+    const firstBtn = nav.locator('button[data-step-clickable="true"][data-step-index="0"]');
     await expect(firstBtn).toHaveAttribute('tabindex', '0');
     // Now count — at most one should have tabindex=0.
     const buttons = nav.locator('button[data-step-clickable="true"]');
@@ -41,9 +36,7 @@ test.describe('Stepper — focus', () => {
     expect(tabbable).toBe(1);
   });
 
-  test('STEP-F02: non-clickable steps are NOT focusable (no <button>)', async ({
-    page,
-  }) => {
+  test('STEP-F02: non-clickable steps are NOT focusable (no <button>)', async ({ page }) => {
     const nav = navBy(page, WIZARD_LABEL);
     // In visited mode + currentStep=2, steps 2+3 are non-clickable → render
     // as <div aria-disabled> not <button>.
@@ -52,9 +45,7 @@ test.describe('Stepper — focus', () => {
     expect(count).toBeGreaterThanOrEqual(2);
     // None should be focusable buttons
     for (let i = 0; i < count; i++) {
-      const tag = await nonClickable.nth(i).evaluate((el) =>
-        el.tagName.toLowerCase(),
-      );
+      const tag = await nonClickable.nth(i).evaluate((el) => el.tagName.toLowerCase());
       expect(tag).not.toBe('button');
     }
   });
@@ -86,9 +77,7 @@ test.describe('Stepper — focus', () => {
     expect(typeof ti).toBe('string');
   });
 
-  test('STEP-F04: button :focus-visible state applies focus ring', async ({
-    page,
-  }) => {
+  test('STEP-F04: button :focus-visible state applies focus ring', async ({ page }) => {
     const nav = navBy(page, WIZARD_LABEL);
     const step0 = nav.locator('button[data-step-index="0"]');
     await step0.focus();
@@ -107,9 +96,7 @@ test.describe('Stepper — focus', () => {
     // Either focus lands on the current-step control label or moves out;
     // either way, focus should NOT be on document.body if there are still
     // tabbable elements after Next. We just verify focus moved.
-    const movedToSomething = await page.evaluate(
-      () => document.activeElement !== document.body,
-    );
+    const movedToSomething = await page.evaluate(() => document.activeElement !== document.body);
     expect(movedToSomething).toBe(true);
     // Quick scope check: the roving tabindex must still hold exactly one
     // tabbable step after the Tab move (no regression to all-tabbable).

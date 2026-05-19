@@ -79,9 +79,7 @@ test.describe('DataTable — filter behavior', () => {
     expect(dataRows).toBe(0);
   });
 
-  test('DT-FL06 — filter input has aria-label including column name', async ({
-    page,
-  }) => {
+  test('DT-FL06 — filter input has aria-label including column name', async ({ page }) => {
     const grids = allGrids(page);
     const grid = grids.nth(1);
     const firstInput = grid.getByRole('textbox').first();

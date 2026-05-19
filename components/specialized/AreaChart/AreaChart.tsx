@@ -201,8 +201,7 @@ export interface AreaChartTooltipContext {
   }>;
 }
 
-export interface AreaChartProps
-  extends Omit<HTMLAttributes<HTMLDivElement>, 'children' | 'title'> {
+export interface AreaChartProps extends Omit<HTMLAttributes<HTMLDivElement>, 'children' | 'title'> {
   /** Multi-series data. */
   series: AreaChartSeries[];
   /** Required for a11y — used as `<caption>` of sr-only table + chart title. */
@@ -425,9 +424,7 @@ export const AreaChart = forwardRef<HTMLDivElement, AreaChartProps>(
       };
     }, [series, xAxis?.tickFormat]);
 
-    const hasData =
-      normalizedSeries.length > 0 &&
-      normalizedSeries.some((s) => s.data.length > 0);
+    const hasData = normalizedSeries.length > 0 && normalizedSeries.some((s) => s.data.length > 0);
 
     // Domain derivation
     const { xDomain, yDomain } = useMemo(() => {
@@ -479,8 +476,7 @@ export const AreaChart = forwardRef<HTMLDivElement, AreaChartProps>(
 
     // Generate paths per series (line stroke + filled area)
     const paths = useMemo(() => {
-      const interpFn =
-        interpolation === 'linear' ? generateLinearPath : generateSmoothPath;
+      const interpFn = interpolation === 'linear' ? generateLinearPath : generateSmoothPath;
       return normalizedSeries.map((s) => {
         const plotted = s.data.map((d) => ({
           x: xScale(d.x),
@@ -494,10 +490,7 @@ export const AreaChart = forwardRef<HTMLDivElement, AreaChartProps>(
     }, [normalizedSeries, xScale, yScale, interpolation, baselineY]);
 
     // Ticks
-    const yTicks = useMemo(
-      () => yAxis?.ticks ?? niceTicks(yDomain, 5),
-      [yAxis?.ticks, yDomain],
-    );
+    const yTicks = useMemo(() => yAxis?.ticks ?? niceTicks(yDomain, 5), [yAxis?.ticks, yDomain]);
     const xTicks = useMemo(() => {
       if (xAxis?.ticks) return xAxis.ticks;
       if (unifiedX.length <= 8) return unifiedX;
@@ -579,38 +572,28 @@ export const AreaChart = forwardRef<HTMLDivElement, AreaChartProps>(
 
         switch (event.key) {
           case 'ArrowRight': {
-            const nextPt =
-              pointIdx < currentSeries.data.length - 1 ? pointIdx + 1 : 0;
+            const nextPt = pointIdx < currentSeries.data.length - 1 ? pointIdx + 1 : 0;
             move({ seriesIdx, pointIdx: nextPt });
             return;
           }
           case 'ArrowLeft': {
-            const nextPt =
-              pointIdx > 0 ? pointIdx - 1 : currentSeries.data.length - 1;
+            const nextPt = pointIdx > 0 ? pointIdx - 1 : currentSeries.data.length - 1;
             move({ seriesIdx, pointIdx: nextPt });
             return;
           }
           case 'ArrowDown': {
-            const nextSeries =
-              seriesIdx < normalizedSeries.length - 1 ? seriesIdx + 1 : 0;
+            const nextSeries = seriesIdx < normalizedSeries.length - 1 ? seriesIdx + 1 : 0;
             const targetSeries = normalizedSeries[nextSeries];
             if (!targetSeries) return;
-            const clampedPt = Math.min(
-              pointIdx,
-              Math.max(0, targetSeries.data.length - 1),
-            );
+            const clampedPt = Math.min(pointIdx, Math.max(0, targetSeries.data.length - 1));
             move({ seriesIdx: nextSeries, pointIdx: clampedPt });
             return;
           }
           case 'ArrowUp': {
-            const nextSeries =
-              seriesIdx > 0 ? seriesIdx - 1 : normalizedSeries.length - 1;
+            const nextSeries = seriesIdx > 0 ? seriesIdx - 1 : normalizedSeries.length - 1;
             const targetSeries = normalizedSeries[nextSeries];
             if (!targetSeries) return;
-            const clampedPt = Math.min(
-              pointIdx,
-              Math.max(0, targetSeries.data.length - 1),
-            );
+            const clampedPt = Math.min(pointIdx, Math.max(0, targetSeries.data.length - 1));
             move({ seriesIdx: nextSeries, pointIdx: clampedPt });
             return;
           }
@@ -831,18 +814,13 @@ export const AreaChart = forwardRef<HTMLDivElement, AreaChartProps>(
           </thead>
           <tbody>
             {unifiedX.map((xVal) => {
-              const xLabel =
-                unifiedXLabels.labelByX.get(xVal) ?? String(xVal);
+              const xLabel = unifiedXLabels.labelByX.get(xVal) ?? String(xVal);
               return (
                 <tr key={xVal}>
                   <th scope="row">{xLabel}</th>
                   {normalizedSeries.map((s) => {
                     const datumAt = s.data.find((d) => d.x === xVal);
-                    return (
-                      <td key={s.id}>
-                        {datumAt ? tooltipFormat(datumAt.y) : '—'}
-                      </td>
-                    );
+                    return <td key={s.id}>{datumAt ? tooltipFormat(datumAt.y) : '—'}</td>;
                   })}
                 </tr>
               );
@@ -972,9 +950,7 @@ export const AreaChart = forwardRef<HTMLDivElement, AreaChartProps>(
                 />
                 {xTicks.map((t) => {
                   const x = xScale(t);
-                  const tickLabel =
-                    unifiedXLabels.labelByX.get(t) ??
-                    formatX(t, xAxis?.tickFormat);
+                  const tickLabel = unifiedXLabels.labelByX.get(t) ?? formatX(t, xAxis?.tickFormat);
                   return (
                     <text
                       key={`xt-${t}`}
@@ -1005,9 +981,7 @@ export const AreaChart = forwardRef<HTMLDivElement, AreaChartProps>(
             {normalizedSeries.map((s, sIdx) => {
               const seriesPaths = paths[sIdx];
               if (!seriesPaths) return null;
-              const fillRef = gradient
-                ? `url(#${gradientId}-${sIdx})`
-                : s.color;
+              const fillRef = gradient ? `url(#${gradientId}-${sIdx})` : s.color;
               return (
                 <path
                   key={`area-${s.id}`}
@@ -1037,11 +1011,8 @@ export const AreaChart = forwardRef<HTMLDivElement, AreaChartProps>(
                     const cx = xScale(d.x);
                     const cy = yScale(d.y);
                     const isActive =
-                      activeTarget?.seriesIdx === sIdx &&
-                      activeTarget.pointIdx === pIdx;
-                    const isRoving =
-                      focused?.seriesIdx === sIdx &&
-                      focused.pointIdx === pIdx;
+                      activeTarget?.seriesIdx === sIdx && activeTarget.pointIdx === pIdx;
+                    const isRoving = focused?.seriesIdx === sIdx && focused.pointIdx === pIdx;
                     return (
                       <g key={`${s.id}-${pIdx}`}>
                         <circle
@@ -1074,17 +1045,12 @@ export const AreaChart = forwardRef<HTMLDivElement, AreaChartProps>(
                 {unifiedX.map((xVal, idx) => {
                   const cx = xScale(xVal);
                   const prevX = idx > 0 ? xScale(unifiedX[idx - 1]!) : cx;
-                  const nextX =
-                    idx < unifiedX.length - 1
-                      ? xScale(unifiedX[idx + 1]!)
-                      : cx;
+                  const nextX = idx < unifiedX.length - 1 ? xScale(unifiedX[idx + 1]!) : cx;
                   const left = (prevX + cx) / 2;
                   const right = (cx + nextX) / 2;
                   const clampedLeft = idx === 0 ? PADDING_LEFT : left;
                   const clampedRight =
-                    idx === unifiedX.length - 1
-                      ? PADDING_LEFT + PLOT_WIDTH
-                      : right;
+                    idx === unifiedX.length - 1 ? PADDING_LEFT + PLOT_WIDTH : right;
                   const width = Math.max(0, clampedRight - clampedLeft);
                   return (
                     <rect
@@ -1119,11 +1085,7 @@ export const AreaChart = forwardRef<HTMLDivElement, AreaChartProps>(
               ) : (
                 <>
                   <div className={styles.tooltipTitle}>
-                    {formatX(
-                      tooltipContext.datum.x,
-                      xAxis?.tickFormat,
-                      tooltipContext.datum.label,
-                    )}
+                    {formatX(tooltipContext.datum.x, xAxis?.tickFormat, tooltipContext.datum.label)}
                   </div>
                   {tooltipContext.allSeriesAtX.map((row) => (
                     <div key={row.seriesId} className={styles.tooltipRow}>

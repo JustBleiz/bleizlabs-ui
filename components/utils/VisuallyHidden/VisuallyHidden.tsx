@@ -1,8 +1,4 @@
-import {
-  forwardRef,
-  type HTMLAttributes,
-  type ReactNode,
-} from 'react';
+import { forwardRef, type HTMLAttributes, type ReactNode } from 'react';
 import { Slot } from '../Slot';
 import { cn } from '../cn';
 import styles from './VisuallyHidden.module.scss';

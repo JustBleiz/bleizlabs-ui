@@ -55,9 +55,7 @@ test.describe('NavigationMenu — focus management', () => {
     await expect(first).toHaveAttribute('tabindex', '0');
   });
 
-  test('roving tabindex: focusing another menubar item updates tabindex', async ({
-    page,
-  }) => {
+  test('roving tabindex: focusing another menubar item updates tabindex', async ({ page }) => {
     const menubar = page.getByRole('menubar', { name: 'Main' });
     const first = menubar.getByRole('menuitem', { name: 'Products' });
     const second = menubar.getByRole('menuitem', { name: 'Solutions' });
@@ -67,9 +65,7 @@ test.describe('NavigationMenu — focus management', () => {
     await expect(first).toHaveAttribute('tabindex', '-1');
   });
 
-  test('standalone menubar link is focusable and navigable via arrow keys', async ({
-    page,
-  }) => {
+  test('standalone menubar link is focusable and navigable via arrow keys', async ({ page }) => {
     const menubar = page.getByRole('menubar', { name: 'Main' });
     const pricing = menubar.getByRole('menuitem', { name: 'Pricing', exact: true });
     await pricing.focus();

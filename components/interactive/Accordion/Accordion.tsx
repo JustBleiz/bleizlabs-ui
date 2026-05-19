@@ -1,12 +1,6 @@
 'use client';
 
-import {
-  forwardRef,
-  useId,
-  useState,
-  type HTMLAttributes,
-  type ReactNode,
-} from 'react';
+import { forwardRef, useId, useState, type HTMLAttributes, type ReactNode } from 'react';
 import { cn } from '../../utils/cn';
 import styles from './Accordion.module.scss';
 
@@ -54,8 +48,7 @@ import styles from './Accordion.module.scss';
  *   <Text>Plans start at $10/month.</Text>
  * </Accordion>
  */
-export interface AccordionProps
-  extends Omit<HTMLAttributes<HTMLDivElement>, 'onChange'> {
+export interface AccordionProps extends Omit<HTMLAttributes<HTMLDivElement>, 'onChange'> {
   /** Visible header / trigger text. */
   question: string;
   /** Controlled open state. */
@@ -72,72 +65,65 @@ export interface AccordionProps
   children: ReactNode;
 }
 
-export const Accordion = forwardRef<HTMLDivElement, AccordionProps>(
-  function Accordion(
-    {
-      question,
-      open: controlledOpen,
-      defaultOpen = false,
-      onOpenChange,
-      compact = false,
-      disabled = false,
-      className,
-      children,
-      ...rest
-    },
-    ref,
-  ) {
-    const generatedId = useId();
-    const triggerId = `${generatedId}-trigger`;
-    const panelId = `${generatedId}-panel`;
-    const [uncontrolledOpen, setUncontrolledOpen] = useState(defaultOpen);
-    const isControlled = controlledOpen !== undefined;
-    const open = isControlled ? controlledOpen : uncontrolledOpen;
-
-    const handleToggle = () => {
-      const next = !open;
-      if (!isControlled) setUncontrolledOpen(next);
-      onOpenChange?.(next);
-    };
-
-    return (
-      <div
-        ref={ref}
-        className={cn(
-          styles.root,
-          compact && styles.compact,
-          open && styles.open,
-          className,
-        )}
-        data-state={open ? 'open' : 'closed'}
-        {...rest}
-      >
-        <button
-          type="button"
-          id={triggerId}
-          aria-expanded={open}
-          aria-controls={panelId}
-          disabled={disabled}
-          className={styles.trigger}
-          onClick={handleToggle}
-        >
-          <span className={styles.question}>{question}</span>
-          <span aria-hidden="true" className={styles.chevron}>
-            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2">
-              <path d="M4 6L8 10L12 6" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
-          </span>
-        </button>
-        <div
-          id={panelId}
-          role="region"
-          aria-labelledby={triggerId}
-          aria-hidden={!open}
-          className={cn(styles.panel, !open && styles.panelClosed)}
-        >
-          <div className={styles.panelInner}>{children}</div>
-        </div>
-      </div>
-    );
+export const Accordion = forwardRef<HTMLDivElement, AccordionProps>(function Accordion(
+  {
+    question,
+    open: controlledOpen,
+    defaultOpen = false,
+    onOpenChange,
+    compact = false,
+    disabled = false,
+    className,
+    children,
+    ...rest
   },
-);
+  ref,
+) {
+  const generatedId = useId();
+  const triggerId = `${generatedId}-trigger`;
+  const panelId = `${generatedId}-panel`;
+  const [uncontrolledOpen, setUncontrolledOpen] = useState(defaultOpen);
+  const isControlled = controlledOpen !== undefined;
+  const open = isControlled ? controlledOpen : uncontrolledOpen;
+
+  const handleToggle = () => {
+    const next = !open;
+    if (!isControlled) setUncontrolledOpen(next);
+    onOpenChange?.(next);
+  };
+
+  return (
+    <div
+      ref={ref}
+      className={cn(styles.root, compact && styles.compact, open && styles.open, className)}
+      data-state={open ? 'open' : 'closed'}
+      {...rest}
+    >
+      <button
+        type="button"
+        id={triggerId}
+        aria-expanded={open}
+        aria-controls={panelId}
+        disabled={disabled}
+        className={styles.trigger}
+        onClick={handleToggle}
+      >
+        <span className={styles.question}>{question}</span>
+        <span aria-hidden="true" className={styles.chevron}>
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2">
+            <path d="M4 6L8 10L12 6" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+        </span>
+      </button>
+      <div
+        id={panelId}
+        role="region"
+        aria-labelledby={triggerId}
+        aria-hidden={!open}
+        className={cn(styles.panel, !open && styles.panelClosed)}
+      >
+        <div className={styles.panelInner}>{children}</div>
+      </div>
+    </div>
+  );
+});

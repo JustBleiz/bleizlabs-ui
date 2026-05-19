@@ -16,30 +16,40 @@ export default function AspectRatioPlaygroundPage() {
   return (
     <main className={styles.main}>
       <header className={styles.header}>
-        <Link href="/" className={styles.back}>← back</Link>
-        <Heading level={1} size="4xl">AspectRatio</Heading>
+        <Link href="/" className={styles.back}>
+          ← back
+        </Link>
+        <Heading level={1} size="4xl">
+          AspectRatio
+        </Heading>
         <p className={styles.intro}>
-          Media container with fixed aspect ratio. Uses native CSS aspect-ratio property.
-          Children are positioned absolutely to fill the box (object-fit: cover).
+          Media container with fixed aspect ratio. Uses native CSS aspect-ratio property. Children
+          are positioned absolutely to fill the box (object-fit: cover).
         </p>
       </header>
 
       <section className={styles.demo}>
-        <Heading level={2} size="2xl">1. Common ratios with placeholder</Heading>
+        <Heading level={2} size="2xl">
+          1. Common ratios with placeholder
+        </Heading>
         <div className={styles.grid}>
           {RATIOS.map(({ label, value }) => (
             <div key={label} className={styles.cell}>
               <AspectRatio ratio={value}>
                 <div className={styles.placeholder}>{label}</div>
               </AspectRatio>
-              <Text variant="caption" color="muted">{label}</Text>
+              <Text variant="caption" color="muted">
+                {label}
+              </Text>
             </div>
           ))}
         </div>
       </section>
 
       <section className={styles.demo}>
-        <Heading level={2} size="2xl">2. With image</Heading>
+        <Heading level={2} size="2xl">
+          2. With image
+        </Heading>
         <div className={styles.singleColumn}>
           <AspectRatio ratio={16 / 9}>
             {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -55,7 +65,9 @@ export default function AspectRatioPlaygroundPage() {
       </section>
 
       <section className={styles.demo}>
-        <Heading level={2} size="2xl">3. With iframe</Heading>
+        <Heading level={2} size="2xl">
+          3. With iframe
+        </Heading>
         <div className={styles.singleColumn}>
           <AspectRatio ratio={16 / 9}>
             <iframe

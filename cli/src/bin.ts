@@ -38,16 +38,24 @@ program
   .option('--global-css <path>', 'global CSS entrypoint', 'app/globals.scss')
   .option('--no-prompts', 'CI mode — fail on conflicts instead of prompting')
   .option('--dry-run', 'preview changes without writing files')
-  .action(async (opts: { targetDir: string; stylesDir: string; globalCss: string; prompts: boolean; dryRun: boolean }) => {
-    const code = await runInit(import.meta.url, {
-      targetDir: opts.targetDir,
-      stylesDir: opts.stylesDir,
-      globalCss: opts.globalCss,
-      prompts: opts.prompts !== false,
-      dryRun: opts.dryRun === true,
-    });
-    process.exitCode = code;
-  });
+  .action(
+    async (opts: {
+      targetDir: string;
+      stylesDir: string;
+      globalCss: string;
+      prompts: boolean;
+      dryRun: boolean;
+    }) => {
+      const code = await runInit(import.meta.url, {
+        targetDir: opts.targetDir,
+        stylesDir: opts.stylesDir,
+        globalCss: opts.globalCss,
+        prompts: opts.prompts !== false,
+        dryRun: opts.dryRun === true,
+      });
+      process.exitCode = code;
+    },
+  );
 
 program
   .command('add [names...]')
@@ -56,19 +64,21 @@ program
   .option('--new', 'scaffold only missing wrappers (default when no names given)')
   .option('--target-dir <path>', 'wrapper layer target directory', 'app/_components/ui')
   .option('--dry-run', 'preview changes without writing files')
-  .action(async (
-    names: string[] | undefined,
-    opts: { all?: boolean; new?: boolean; targetDir: string; dryRun?: boolean },
-  ) => {
-    const code = await runAdd(import.meta.url, {
-      names: names ?? [],
-      all: opts.all === true,
-      newOnly: opts.new === true || (!opts.all && (names === undefined || names.length === 0)),
-      targetDir: opts.targetDir,
-      dryRun: opts.dryRun === true,
-    });
-    process.exitCode = code;
-  });
+  .action(
+    async (
+      names: string[] | undefined,
+      opts: { all?: boolean; new?: boolean; targetDir: string; dryRun?: boolean },
+    ) => {
+      const code = await runAdd(import.meta.url, {
+        names: names ?? [],
+        all: opts.all === true,
+        newOnly: opts.new === true || (!opts.all && (names === undefined || names.length === 0)),
+        targetDir: opts.targetDir,
+        dryRun: opts.dryRun === true,
+      });
+      process.exitCode = code;
+    },
+  );
 
 program
   .command('status')
@@ -80,9 +90,7 @@ program
       console.log(`  ${pc.dim('lib version:')}     ${manifest.libVersion}`);
       console.log(`  ${pc.dim('manifest schema:')} v${manifest.schemaVersion}`);
       console.log(`  ${pc.dim('generated at:')}    ${manifest.generatedAt}`);
-      console.log(
-        `  ${pc.dim('component families:')} ${manifest.components.length}`,
-      );
+      console.log(`  ${pc.dim('component families:')} ${manifest.components.length}`);
       console.log(`  ${pc.dim('utilities:')}      ${manifest.utilities.length}`);
       console.log(`  ${pc.dim('types-only:')}     ${manifest.typesOnly.length}`);
       console.log(`  ${pc.dim('total names:')}    ${countTotalNames(manifest)}`);
@@ -103,8 +111,7 @@ program.configureHelp({
 });
 
 const argv = process.argv;
-const wantsVersion =
-  argv.includes('-v') || argv.includes('--version') || argv[2] === 'version';
+const wantsVersion = argv.includes('-v') || argv.includes('--version') || argv[2] === 'version';
 
 if (wantsVersion) {
   printVersion(import.meta.url);

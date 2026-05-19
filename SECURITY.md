@@ -6,10 +6,10 @@ Only the latest published `0.x` minor receives security updates while the librar
 is in pre-1.0 status. After the `1.0.0` stabilisation release, the policy will
 extend to the latest minor of each supported major.
 
-| Version | Supported |
-|---|---|
-| 0.10.x | ✅ |
-| < 0.10.0 | ❌ |
+| Version  | Supported |
+| -------- | --------- |
+| 0.10.x   | ✅        |
+| < 0.10.0 | ❌        |
 
 ## Reporting a vulnerability
 

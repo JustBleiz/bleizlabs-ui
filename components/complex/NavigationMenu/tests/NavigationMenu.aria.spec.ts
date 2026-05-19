@@ -45,9 +45,7 @@ test.describe('NavigationMenu — ARIA + accessibility tree', () => {
     await expect(menu).toHaveAttribute('id', controls!);
   });
 
-  test('submenu has role=menu + aria-labelledby pointing to trigger id', async ({
-    page,
-  }) => {
+  test('submenu has role=menu + aria-labelledby pointing to trigger id', async ({ page }) => {
     const menubar = page.getByRole('menubar', { name: 'Main' });
     const trigger = menubar.getByRole('menuitem', { name: 'Products' });
     await trigger.click();
@@ -58,9 +56,7 @@ test.describe('NavigationMenu — ARIA + accessibility tree', () => {
     expect(labelledBy).toBe(triggerId);
   });
 
-  test('NM-R03 — data-state reflects open/closed on trigger + content', async ({
-    page,
-  }) => {
+  test('NM-R03 — data-state reflects open/closed on trigger + content', async ({ page }) => {
     const menubar = page.getByRole('menubar', { name: 'Main' });
     const trigger = menubar.getByRole('menuitem', { name: 'Products' });
     await expect(trigger).toHaveAttribute('data-state', 'closed');

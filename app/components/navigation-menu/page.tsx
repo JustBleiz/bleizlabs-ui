@@ -26,10 +26,9 @@ export default function NavigationMenuPlayground() {
           NavigationMenu
         </Heading>
         <Text variant="lead" color="muted">
-          Horizontal menubar with dropdown submenus — the pattern used by most
-          product navigation headers. Hover, click, and full keyboard nav are
-          wired. An optional Provider coordinates open/close delays across
-          sibling menus so the whole bar feels responsive.
+          Horizontal menubar with dropdown submenus — the pattern used by most product navigation
+          headers. Hover, click, and full keyboard nav are wired. An optional Provider coordinates
+          open/close delays across sibling menus so the whole bar feels responsive.
         </Text>
       </header>
 
@@ -39,8 +38,8 @@ export default function NavigationMenuPlayground() {
           1. Basic horizontal menubar
         </Heading>
         <Text variant="body" color="muted">
-          Hover or focus any trigger to open its submenu. Right/Left arrow keys cycle menubar
-          items. Down/Enter/Space opens the submenu with focus on the first item.
+          Hover or focus any trigger to open its submenu. Right/Left arrow keys cycle menubar items.
+          Down/Enter/Space opens the submenu with focus on the first item.
         </Text>
         <div className={styles.demo}>
           <NavigationMenu>
@@ -48,49 +47,31 @@ export default function NavigationMenuPlayground() {
               <NavigationMenuItem value="products">
                 <NavigationMenuTrigger>Products</NavigationMenuTrigger>
                 <NavigationMenuContent>
-                  <NavigationMenuLink href="#products-web">
-                    Web Apps
-                  </NavigationMenuLink>
-                  <NavigationMenuLink href="#products-mobile">
-                    Mobile Apps
-                  </NavigationMenuLink>
-                  <NavigationMenuLink href="#products-desktop">
-                    Desktop Apps
-                  </NavigationMenuLink>
-                  <NavigationMenuLink href="#products-cli">
-                    CLI Tools
-                  </NavigationMenuLink>
+                  <NavigationMenuLink href="#products-web">Web Apps</NavigationMenuLink>
+                  <NavigationMenuLink href="#products-mobile">Mobile Apps</NavigationMenuLink>
+                  <NavigationMenuLink href="#products-desktop">Desktop Apps</NavigationMenuLink>
+                  <NavigationMenuLink href="#products-cli">CLI Tools</NavigationMenuLink>
                 </NavigationMenuContent>
               </NavigationMenuItem>
 
               <NavigationMenuItem value="solutions">
                 <NavigationMenuTrigger>Solutions</NavigationMenuTrigger>
                 <NavigationMenuContent>
-                  <NavigationMenuLink href="#solutions-startups">
-                    For Startups
-                  </NavigationMenuLink>
+                  <NavigationMenuLink href="#solutions-startups">For Startups</NavigationMenuLink>
                   <NavigationMenuLink href="#solutions-enterprise">
                     For Enterprise
                   </NavigationMenuLink>
-                  <NavigationMenuLink href="#solutions-agencies">
-                    For Agencies
-                  </NavigationMenuLink>
+                  <NavigationMenuLink href="#solutions-agencies">For Agencies</NavigationMenuLink>
                 </NavigationMenuContent>
               </NavigationMenuItem>
 
               <NavigationMenuItem value="resources">
                 <NavigationMenuTrigger>Resources</NavigationMenuTrigger>
                 <NavigationMenuContent>
-                  <NavigationMenuLink href="#resources-docs">
-                    Documentation
-                  </NavigationMenuLink>
+                  <NavigationMenuLink href="#resources-docs">Documentation</NavigationMenuLink>
                   <NavigationMenuLink href="#resources-blog">Blog</NavigationMenuLink>
-                  <NavigationMenuLink href="#resources-changelog">
-                    Changelog
-                  </NavigationMenuLink>
-                  <NavigationMenuLink href="#resources-community">
-                    Community
-                  </NavigationMenuLink>
+                  <NavigationMenuLink href="#resources-changelog">Changelog</NavigationMenuLink>
+                  <NavigationMenuLink href="#resources-community">Community</NavigationMenuLink>
                 </NavigationMenuContent>
               </NavigationMenuItem>
 
@@ -108,9 +89,9 @@ export default function NavigationMenuPlayground() {
           2. Standalone menubar links (no submenu)
         </Heading>
         <Text variant="body" color="muted">
-          NavigationMenuItem can contain just a NavigationMenuLink (no Trigger/Content) — the
-          link renders as a menubar item without <code>aria-haspopup</code>. Use{' '}
-          <code>active</code> prop to wire <code>aria-current=&quot;page&quot;</code>.
+          NavigationMenuItem can contain just a NavigationMenuLink (no Trigger/Content) — the link
+          renders as a menubar item without <code>aria-haspopup</code>. Use <code>active</code> prop
+          to wire <code>aria-current=&quot;page&quot;</code>.
         </Text>
         <div className={styles.demo}>
           <NavigationMenu>
@@ -140,9 +121,9 @@ export default function NavigationMenuPlayground() {
           3. Mixed: submenu + standalone links
         </Heading>
         <Text variant="body" color="muted">
-          Real-world top nav usually mixes dropdown sections (Products, Solutions) with direct
-          page links (Pricing, Docs). Right/Left arrows still cycle through both kinds — the
-          standalone links are still keyboard-navigable menubar items.
+          Real-world top nav usually mixes dropdown sections (Products, Solutions) with direct page
+          links (Pricing, Docs). Right/Left arrows still cycle through both kinds — the standalone
+          links are still keyboard-navigable menubar items.
         </Text>
         <div className={styles.demo}>
           <NavigationMenu>
@@ -150,12 +131,8 @@ export default function NavigationMenuPlayground() {
               <NavigationMenuItem value="features">
                 <NavigationMenuTrigger>Features</NavigationMenuTrigger>
                 <NavigationMenuContent>
-                  <NavigationMenuLink href="#features-tokens">
-                    Design Tokens
-                  </NavigationMenuLink>
-                  <NavigationMenuLink href="#features-components">
-                    Components
-                  </NavigationMenuLink>
+                  <NavigationMenuLink href="#features-tokens">Design Tokens</NavigationMenuLink>
+                  <NavigationMenuLink href="#features-components">Components</NavigationMenuLink>
                   <NavigationMenuLink href="#features-theming">Theming</NavigationMenuLink>
                 </NavigationMenuContent>
               </NavigationMenuItem>
@@ -168,9 +145,7 @@ export default function NavigationMenuPlayground() {
                 <NavigationMenuTrigger>Enterprise</NavigationMenuTrigger>
                 <NavigationMenuContent>
                   <NavigationMenuLink href="#enterprise-sso">SSO &amp; SCIM</NavigationMenuLink>
-                  <NavigationMenuLink href="#enterprise-audit">
-                    Audit Logging
-                  </NavigationMenuLink>
+                  <NavigationMenuLink href="#enterprise-audit">Audit Logging</NavigationMenuLink>
                   <NavigationMenuLink href="#enterprise-sla">SLA</NavigationMenuLink>
                 </NavigationMenuContent>
               </NavigationMenuItem>
@@ -189,10 +164,10 @@ export default function NavigationMenuPlayground() {
           4. Provider — coordinated skip-delay across menubars
         </Heading>
         <Text variant="body" color="muted">
-          Wrap multiple NavigationMenu instances in <code>NavigationMenuProvider</code> to
-          share a skip-delay window. Once any submenu opens, hovering another within{' '}
-          <code>skipDelayDuration</code> (default 300ms) opens it instantly. Try hovering the
-          first menu, then immediately moving to the second.
+          Wrap multiple NavigationMenu instances in <code>NavigationMenuProvider</code> to share a
+          skip-delay window. Once any submenu opens, hovering another within{' '}
+          <code>skipDelayDuration</code> (default 300ms) opens it instantly. Try hovering the first
+          menu, then immediately moving to the second.
         </Text>
         <div className={styles.demo}>
           <NavigationMenuProvider openDelay={200} skipDelayDuration={300}>
@@ -202,9 +177,7 @@ export default function NavigationMenuPlayground() {
                   <NavigationMenuItem value="dashboard">
                     <NavigationMenuTrigger>Dashboard</NavigationMenuTrigger>
                     <NavigationMenuContent>
-                      <NavigationMenuLink href="#dash-overview">
-                        Overview
-                      </NavigationMenuLink>
+                      <NavigationMenuLink href="#dash-overview">Overview</NavigationMenuLink>
                       <NavigationMenuLink href="#dash-metrics">Metrics</NavigationMenuLink>
                       <NavigationMenuLink href="#dash-alerts">Alerts</NavigationMenuLink>
                     </NavigationMenuContent>
@@ -212,12 +185,8 @@ export default function NavigationMenuPlayground() {
                   <NavigationMenuItem value="projects">
                     <NavigationMenuTrigger>Projects</NavigationMenuTrigger>
                     <NavigationMenuContent>
-                      <NavigationMenuLink href="#proj-active">
-                        Active
-                      </NavigationMenuLink>
-                      <NavigationMenuLink href="#proj-archive">
-                        Archive
-                      </NavigationMenuLink>
+                      <NavigationMenuLink href="#proj-active">Active</NavigationMenuLink>
+                      <NavigationMenuLink href="#proj-archive">Archive</NavigationMenuLink>
                     </NavigationMenuContent>
                   </NavigationMenuItem>
                 </NavigationMenuList>
@@ -228,24 +197,16 @@ export default function NavigationMenuPlayground() {
                   <NavigationMenuItem value="account">
                     <NavigationMenuTrigger>Account</NavigationMenuTrigger>
                     <NavigationMenuContent>
-                      <NavigationMenuLink href="#account-profile">
-                        Profile
-                      </NavigationMenuLink>
-                      <NavigationMenuLink href="#account-billing">
-                        Billing
-                      </NavigationMenuLink>
+                      <NavigationMenuLink href="#account-profile">Profile</NavigationMenuLink>
+                      <NavigationMenuLink href="#account-billing">Billing</NavigationMenuLink>
                       <NavigationMenuLink href="#account-team">Team</NavigationMenuLink>
                     </NavigationMenuContent>
                   </NavigationMenuItem>
                   <NavigationMenuItem value="settings">
                     <NavigationMenuTrigger>Settings</NavigationMenuTrigger>
                     <NavigationMenuContent>
-                      <NavigationMenuLink href="#settings-general">
-                        General
-                      </NavigationMenuLink>
-                      <NavigationMenuLink href="#settings-security">
-                        Security
-                      </NavigationMenuLink>
+                      <NavigationMenuLink href="#settings-general">General</NavigationMenuLink>
+                      <NavigationMenuLink href="#settings-security">Security</NavigationMenuLink>
                     </NavigationMenuContent>
                   </NavigationMenuItem>
                 </NavigationMenuList>
@@ -261,8 +222,8 @@ export default function NavigationMenuPlayground() {
           5. Custom timings (snappy 100ms / lingering 600ms)
         </Heading>
         <Text variant="body" color="muted">
-          Override <code>delayDuration</code> for snappier (or slower) hover reveal. Focus
-          path always opens instantly regardless of timing.
+          Override <code>delayDuration</code> for snappier (or slower) hover reveal. Focus path
+          always opens instantly regardless of timing.
         </Text>
         <Stack gap={4}>
           <div>
@@ -324,8 +285,8 @@ export default function NavigationMenuPlayground() {
           6. Controlled mode
         </Heading>
         <Text variant="body" color="muted">
-          Pass <code>value</code> + <code>onValueChange</code> for controlled state.
-          Currently open: <Badge color="brand">{controlledValue ?? 'none'}</Badge>
+          Pass <code>value</code> + <code>onValueChange</code> for controlled state. Currently open:{' '}
+          <Badge color="brand">{controlledValue ?? 'none'}</Badge>
         </Text>
         <div className={styles.demo}>
           <NavigationMenu value={controlledValue} onValueChange={setControlledValue}>
@@ -362,20 +323,18 @@ export default function NavigationMenuPlayground() {
           7. Keyboard parity walkthrough
         </Heading>
         <Text variant="body" color="muted">
-          Tab into the menubar below, then try every key from the APG <code>/menubar/</code>{' '}
-          spec:
+          Tab into the menubar below, then try every key from the APG <code>/menubar/</code> spec:
         </Text>
         <ul className={styles.keyList}>
           <li>
             <kbd>Tab</kbd> — enter the menubar (focuses first item)
           </li>
           <li>
-            <kbd>Right Arrow</kbd> / <kbd>Left Arrow</kbd> — cycle menubar items (with
-            wraparound)
+            <kbd>Right Arrow</kbd> / <kbd>Left Arrow</kbd> — cycle menubar items (with wraparound)
           </li>
           <li>
-            <kbd>Enter</kbd> / <kbd>Space</kbd> / <kbd>Down Arrow</kbd> — open submenu, focus
-            first item
+            <kbd>Enter</kbd> / <kbd>Space</kbd> / <kbd>Down Arrow</kbd> — open submenu, focus first
+            item
           </li>
           <li>
             <kbd>Up Arrow</kbd> on trigger — open submenu, focus LAST item

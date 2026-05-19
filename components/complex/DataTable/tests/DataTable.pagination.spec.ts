@@ -48,17 +48,13 @@ test.describe('DataTable — pagination behavior', () => {
     await expect(pageLabel).toBeVisible();
   });
 
-  test('DT-P03 — Last/First page navigation jumps to boundaries', async ({
-    page,
-  }) => {
+  test('DT-P03 — Last/First page navigation jumps to boundaries', async ({ page }) => {
     // Section 4 — 47 rows, pageSize 10 → 5 pages
     const grids = allGrids(page);
     const grid = grids.nth(3);
     const section = grid.locator('xpath=ancestor::section[1]');
     // Try to find Last button by accessible name (if exposed)
-    const lastBtn = section
-      .getByRole('button', { name: /last|ostatnia|⟫|>>/i })
-      .first();
+    const lastBtn = section.getByRole('button', { name: /last|ostatnia|⟫|>>/i }).first();
     const lastVisible = await lastBtn.isVisible().catch(() => false);
     if (lastVisible) {
       await lastBtn.click();
@@ -104,9 +100,7 @@ test.describe('DataTable — pagination behavior', () => {
     await expect(label).toBeVisible();
   });
 
-  test('DT-P06 — Basic section (pagination=false) has no pagination footer', async ({
-    page,
-  }) => {
+  test('DT-P06 — Basic section (pagination=false) has no pagination footer', async ({ page }) => {
     const grids = allGrids(page);
     const grid = grids.first();
     const section = grid.locator('xpath=ancestor::section[1]');
@@ -114,9 +108,7 @@ test.describe('DataTable — pagination behavior', () => {
     expect(await pageLabel.count()).toBe(0);
   });
 
-  test('DT-P07 — Showing N of M reflects current visible vs total', async ({
-    page,
-  }) => {
+  test('DT-P07 — Showing N of M reflects current visible vs total', async ({ page }) => {
     const grids = allGrids(page);
     const grid = grids.nth(1);
     const section = grid.locator('xpath=ancestor::section[1]');

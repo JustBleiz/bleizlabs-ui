@@ -74,18 +74,14 @@ test.describe('DropdownMenu — ARIA + accessibility tree', () => {
     expect(ariaDisabled).toBeNull();
   });
 
-  test('separator has role="separator" and aria-orientation="horizontal"', async ({
-    page,
-  }) => {
+  test('separator has role="separator" and aria-orientation="horizontal"', async ({ page }) => {
     await page.getByRole('button', { name: 'File' }).click();
     const separator = page.getByRole('separator').first();
     await expect(separator).toBeVisible();
     expect(await separator.getAttribute('aria-orientation')).toBe('horizontal');
   });
 
-  test('group has role="group" with aria-labelledby pointing to label', async ({
-    page,
-  }) => {
+  test('group has role="group" with aria-labelledby pointing to label', async ({ page }) => {
     await page.getByRole('button', { name: 'File' }).click();
     const group = page.getByRole('group').first();
     const labelledBy = await group.getAttribute('aria-labelledby');

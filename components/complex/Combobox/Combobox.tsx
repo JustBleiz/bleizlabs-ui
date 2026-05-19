@@ -627,14 +627,11 @@ export function Combobox(props: ComboboxProps) {
 
   const isValueControlled = props.value !== undefined;
 
-  const externalToArray = useCallback(
-    (next: string | string[] | null | undefined): string[] => {
-      if (next == null) return [];
-      if (Array.isArray(next)) return Array.from(new Set(next));
-      return [next];
-    },
-    [],
-  );
+  const externalToArray = useCallback((next: string | string[] | null | undefined): string[] => {
+    if (next == null) return [];
+    if (Array.isArray(next)) return Array.from(new Set(next));
+    return [next];
+  }, []);
 
   // Initial uncontrolled state — derive from defaultValue depending on mode.
   const initialUncontrolled = useMemo<string[]>(() => {
@@ -692,10 +689,7 @@ export function Combobox(props: ComboboxProps) {
       const nextArray = Array.from(new Set(nextArrayRaw));
       const prev = valuesRef.current;
       // Identity guard — same length + same values in same order.
-      if (
-        prev.length === nextArray.length &&
-        prev.every((v, i) => v === nextArray[i])
-      ) {
+      if (prev.length === nextArray.length && prev.every((v, i) => v === nextArray[i])) {
         return;
       }
       if (!isValueControlled) setUncontrolledValues(nextArray);
@@ -735,7 +729,7 @@ export function Combobox(props: ComboboxProps) {
   // Backward-compat single-mode shape — context exposes `value: string | null`
   // for code paths that haven't been migrated to `selectedValues`. In multi
   // mode `value` is always null (multi consumers MUST read `selectedValues`).
-  const value: string | null = multiple ? null : selectedValues[0] ?? null;
+  const value: string | null = multiple ? null : (selectedValues[0] ?? null);
   const valueRef = useRef<string | null>(value);
   useLayoutEffect(() => {
     valueRef.current = value;
@@ -803,31 +797,25 @@ export function Combobox(props: ComboboxProps) {
     return items;
   }, []);
 
-  const getItemByValue = useCallback(
-    (target: string | null): ComboboxItemRecord | undefined => {
-      if (target === null) return undefined;
-      for (const record of itemsRef.current.values()) {
-        if (record.value === target) return record;
-      }
-      return undefined;
-    },
-    [],
-  );
+  const getItemByValue = useCallback((target: string | null): ComboboxItemRecord | undefined => {
+    if (target === null) return undefined;
+    for (const record of itemsRef.current.values()) {
+      if (record.value === target) return record;
+    }
+    return undefined;
+  }, []);
 
   // Cache-aware label lookup — prefer live registry, fall back to
   // labelCacheRef when items have unmounted (closed listbox). Every
   // ComboboxInput display-value branch reads via this helper instead of
   // inlining `getItemByValue(x)?.textContent ?? ''`.
-  const getLabelByValue = useCallback(
-    (target: string | null): string | undefined => {
-      if (target === null) return undefined;
-      for (const record of itemsRef.current.values()) {
-        if (record.value === target) return record.textContent;
-      }
-      return labelCacheRef.current.get(target);
-    },
-    [],
-  );
+  const getLabelByValue = useCallback((target: string | null): string | undefined => {
+    if (target === null) return undefined;
+    for (const record of itemsRef.current.values()) {
+      if (record.value === target) return record.textContent;
+    }
+    return labelCacheRef.current.get(target);
+  }, []);
 
   // Filter computation — synced into state via a layout effect rather than
   // computed in render. Reading the registry ref (`itemsRef.current`) inside
@@ -862,9 +850,7 @@ export function Combobox(props: ComboboxProps) {
         visible = items;
       } else {
         const needle = search.toLowerCase();
-        visible = items.filter((it) =>
-          it.textContent.toLowerCase().includes(needle),
-        );
+        visible = items.filter((it) => it.textContent.toLowerCase().includes(needle));
       }
     } else {
       visible = filter(items, search);
@@ -889,27 +875,24 @@ export function Combobox(props: ComboboxProps) {
   // `aria-activedescendant` was silently undefined (WCAG SC 4.1.3 fail).
   const [highlightedId, setHighlightedId] = useState<string | null>(null);
 
-  const setHighlight = useCallback(
-    (nextId: string | null, source: 'mouse' | 'keyboard') => {
-      setHighlightedId((prev) => {
-        if (prev === nextId) return prev;
-        if (nextId && source === 'keyboard') {
-          const items = itemsRef.current;
-          // Look up the record via the Map directly — getOrderedItems
-          // recomputes DOM order on every call; for highlight-scroll we
-          // only need the element reference, so walk the Map values.
-          for (const record of items.values()) {
-            if (record.id === nextId) {
-              record.element.scrollIntoView({ block: 'nearest' });
-              break;
-            }
+  const setHighlight = useCallback((nextId: string | null, source: 'mouse' | 'keyboard') => {
+    setHighlightedId((prev) => {
+      if (prev === nextId) return prev;
+      if (nextId && source === 'keyboard') {
+        const items = itemsRef.current;
+        // Look up the record via the Map directly — getOrderedItems
+        // recomputes DOM order on every call; for highlight-scroll we
+        // only need the element reference, so walk the Map values.
+        for (const record of items.values()) {
+          if (record.id === nextId) {
+            record.element.scrollIntoView({ block: 'nearest' });
+            break;
           }
         }
-        return nextId;
-      });
-    },
-    [],
-  );
+      }
+      return nextId;
+    });
+  }, []);
 
   // Controlled-value → uncontrolled-search sync (0.20.1 B15 fix). When the
   // consumer owns `value` (single mode) and lets search stay uncontrolled,
@@ -1106,24 +1089,10 @@ function renderHiddenInputs(
       // selected nothing. The disabled flag still propagates so a disabled
       // multi-combobox bypasses validation entirely (consistent with
       // single mode).
-      return (
-        <input
-          type="hidden"
-          name={name}
-          value=""
-          disabled={disabled || undefined}
-          required
-        />
-      );
+      return <input type="hidden" name={name} value="" disabled={disabled || undefined} required />;
     }
     return selectedValues.map((v) => (
-      <input
-        key={v}
-        type="hidden"
-        name={name}
-        value={v}
-        disabled={disabled || undefined}
-      />
+      <input key={v} type="hidden" name={name} value={v} disabled={disabled || undefined} />
     ));
   }
   return (
@@ -1146,19 +1115,18 @@ function renderHiddenInputs(
 // — keeping the API at 8 named exports matches Select. Phase 2 also rejected
 // the spec's separate ComboboxList export: ComboboxContent IS the listbox.
 
-export interface ComboboxInputProps
-  extends Omit<
-    InputHTMLAttributes<HTMLInputElement>,
-    | 'aria-expanded'
-    | 'aria-haspopup'
-    | 'aria-controls'
-    | 'aria-activedescendant'
-    | 'aria-autocomplete'
-    | 'role'
-    | 'value'
-    | 'defaultValue'
-    | 'disabled'
-  > {
+export interface ComboboxInputProps extends Omit<
+  InputHTMLAttributes<HTMLInputElement>,
+  | 'aria-expanded'
+  | 'aria-haspopup'
+  | 'aria-controls'
+  | 'aria-activedescendant'
+  | 'aria-autocomplete'
+  | 'role'
+  | 'value'
+  | 'defaultValue'
+  | 'disabled'
+> {
   className?: string;
   /**
    * Optional explicit `aria-labelledby` — wires an external label element
@@ -1395,7 +1363,7 @@ export const ComboboxInput = forwardRef<HTMLInputElement, ComboboxInputProps>(
             // Strict mode: revert search to the current committed value's
             // label (or empty when nothing is selected). This keeps the
             // input visually consistent with `value` at rest.
-            const committed = currentValue ? getLabelByValue(currentValue) ?? '' : '';
+            const committed = currentValue ? (getLabelByValue(currentValue) ?? '') : '';
             updateSearch(committed);
           }
           if (openRef.current) setOpen(false);
@@ -1569,21 +1537,17 @@ export const ComboboxInput = forwardRef<HTMLInputElement, ComboboxInputProps>(
       [disabled, selectValue, inputRef],
     );
 
-    const handleChipMouseDown = useCallback(
-      (event: React.MouseEvent<HTMLButtonElement>) => {
-        // Same focus protection as the trigger's other secondary buttons.
-        event.preventDefault();
-      },
-      [],
-    );
+    const handleChipMouseDown = useCallback((event: React.MouseEvent<HTMLButtonElement>) => {
+      // Same focus protection as the trigger's other secondary buttons.
+      event.preventDefault();
+    }, []);
 
     // Clear button visibility:
     // Single mode: shown when search is non-empty OR a value is committed.
     // Multi mode:  shown when search is non-empty OR at least one selection
     //              exists (clears ALL chips on click).
     const showClearButton =
-      !hideClear &&
-      (search !== '' || (multiple ? selectedValues.length > 0 : value !== null));
+      !hideClear && (search !== '' || (multiple ? selectedValues.length > 0 : value !== null));
 
     const ariaProps = {
       id: inputId,
@@ -1736,11 +1700,10 @@ export const ComboboxInput = forwardRef<HTMLInputElement, ComboboxInputProps>(
 // ComboboxContent — floating listbox surface
 // ──────────────────────────────────────────────────────────────────────────
 
-export interface ComboboxContentProps
-  extends Omit<
-    HTMLAttributes<HTMLDivElement>,
-    'role' | 'aria-labelledby' | 'aria-activedescendant' | 'tabIndex'
-  > {
+export interface ComboboxContentProps extends Omit<
+  HTMLAttributes<HTMLDivElement>,
+  'role' | 'aria-labelledby' | 'aria-activedescendant' | 'tabIndex'
+> {
   children?: ReactNode;
   className?: string;
 }
@@ -1774,7 +1737,11 @@ export function ComboboxContent({ children, className, ...rest }: ComboboxConten
   const listboxRef = useRef<HTMLDivElement | null>(null);
 
   // Floating positioning.
-  const { refs, floatingStyles, placement: actualPlacement } = useFloating({
+  const {
+    refs,
+    floatingStyles,
+    placement: actualPlacement,
+  } = useFloating({
     open,
     placement,
     offset: sideOffset,
@@ -1855,9 +1822,7 @@ export function ComboboxContent({ children, className, ...rest }: ComboboxConten
       } else if (acceptFreeText && trimmed !== '') {
         selectValue(trimmed);
       } else {
-        const committed = valueRef.current
-          ? getLabelByValue(valueRef.current) ?? ''
-          : '';
+        const committed = valueRef.current ? (getLabelByValue(valueRef.current) ?? '') : '';
         updateSearch(committed);
       }
       // Do NOT refocus the input on outside-click — the user explicitly
@@ -1906,8 +1871,7 @@ export function ComboboxContent({ children, className, ...rest }: ComboboxConten
       }
     } else {
       const current = valueRef.current;
-      currentRecord =
-        current !== null ? visible.find((it) => it.value === current) : undefined;
+      currentRecord = current !== null ? visible.find((it) => it.value === current) : undefined;
     }
     const initial = currentRecord ?? visible[0];
     if (!initial) return;
@@ -1924,7 +1888,16 @@ export function ComboboxContent({ children, className, ...rest }: ComboboxConten
     return () => {
       setHighlight(null, 'mouse');
     };
-  }, [open, search, multiple, valueRef, ctx.valuesRef, visibleItemIds, getOrderedItems, setHighlight]);
+  }, [
+    open,
+    search,
+    multiple,
+    valueRef,
+    ctx.valuesRef,
+    visibleItemIds,
+    getOrderedItems,
+    setHighlight,
+  ]);
 
   // Commit the currently highlighted option. Behavior branches on mode:
   //   Single — replace value, sync search to label, CLOSE listbox.
@@ -1996,9 +1969,7 @@ export function ComboboxContent({ children, className, ...rest }: ComboboxConten
       const isAltArrowUp = event.altKey && event.key === 'ArrowUp';
 
       const currentId = highlightedId;
-      const highlightedIndex = currentId
-        ? visible.findIndex((it) => it.id === currentId)
-        : -1;
+      const highlightedIndex = currentId ? visible.findIndex((it) => it.id === currentId) : -1;
 
       switch (event.key) {
         case 'ArrowDown': {
@@ -2029,9 +2000,7 @@ export function ComboboxContent({ children, className, ...rest }: ComboboxConten
             // outcome, no branch needed.
             event.preventDefault();
             setOpen(false);
-            const committed = valueRef.current
-              ? getLabelByValue(valueRef.current) ?? ''
-              : '';
+            const committed = valueRef.current ? (getLabelByValue(valueRef.current) ?? '') : '';
             updateSearch(committed);
             inputRef.current?.focus();
             return;
@@ -2079,10 +2048,7 @@ export function ComboboxContent({ children, className, ...rest }: ComboboxConten
           if (hasModifier || event.altKey) return;
           if (visible.length === 0) return;
           event.preventDefault();
-          const prev = Math.max(
-            0,
-            (highlightedIndex < 0 ? 0 : highlightedIndex) - 10,
-          );
+          const prev = Math.max(0, (highlightedIndex < 0 ? 0 : highlightedIndex) - 10);
           const target = visible[prev];
           if (target) setHighlight(target.id, 'keyboard');
           return;
@@ -2123,9 +2089,7 @@ export function ComboboxContent({ children, className, ...rest }: ComboboxConten
             inputRef.current?.focus();
             return;
           }
-          const committed = valueRef.current
-            ? getLabelByValue(valueRef.current) ?? ''
-            : '';
+          const committed = valueRef.current ? (getLabelByValue(valueRef.current) ?? '') : '';
           updateSearch(committed);
           setOpen(false);
           inputRef.current?.focus();
@@ -2238,11 +2202,7 @@ export function ComboboxContent({ children, className, ...rest }: ComboboxConten
 
   return (
     <FloatingPortal>
-      <div
-        ref={mergedPopperRef}
-        className={styles.contentRoot}
-        style={floatingStyles}
-      >
+      <div ref={mergedPopperRef} className={styles.contentRoot} style={floatingStyles}>
         <div
           ref={listboxRef}
           id={contentId}
@@ -2285,12 +2245,7 @@ export function ComboboxGroup({ children, className, ...rest }: ComboboxGroupPro
 
   return (
     <ComboboxGroupContextProvider value={value}>
-      <div
-        role="group"
-        aria-labelledby={labelId}
-        className={cn(styles.group, className)}
-        {...rest}
-      >
+      <div role="group" aria-labelledby={labelId} className={cn(styles.group, className)} {...rest}>
         {children}
       </div>
     </ComboboxGroupContextProvider>
@@ -2313,11 +2268,7 @@ export function ComboboxLabel({ children, className, id, ...rest }: ComboboxLabe
   // a separate listbox child would confuse virtual cursor traversal.
   // Inherited from Select Phase 5 IMP-4.
   return (
-    <div
-      id={id ?? ctx.labelId}
-      className={cn(styles.label, className)}
-      {...rest}
-    >
+    <div id={id ?? ctx.labelId} className={cn(styles.label, className)} {...rest}>
       {children}
     </div>
   );
@@ -2356,8 +2307,10 @@ function deriveTextFromChildren(children: ReactNode): string {
   return '';
 }
 
-export interface ComboboxItemProps
-  extends Omit<HTMLAttributes<HTMLDivElement>, 'role' | 'aria-selected' | 'aria-disabled'> {
+export interface ComboboxItemProps extends Omit<
+  HTMLAttributes<HTMLDivElement>,
+  'role' | 'aria-selected' | 'aria-disabled'
+> {
   /** Stable option value — written to form state + onValueChange on commit. */
   value: string;
   /** Disabled — skipped by arrow nav + click. */

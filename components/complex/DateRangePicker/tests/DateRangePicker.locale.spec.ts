@@ -34,7 +34,9 @@ test.describe('DateRangePicker — locale propagation', () => {
     const text = await headerLabel.textContent();
     // pl-PL month names contain "ń" or "ó" or end with "ja"/"iec"/"sień" etc.
     // Generic test: not English month
-    expect(text).not.toMatch(/January|February|March|April|May|June|July|August|September|October|November|December/);
+    expect(text).not.toMatch(
+      /January|February|March|April|May|June|July|August|September|October|November|December/,
+    );
   });
 
   test('DR-LOC03 — en-US: weekday header starts with Sun', async ({ page }) => {
@@ -46,9 +48,7 @@ test.describe('DateRangePicker — locale propagation', () => {
     expect(text?.toLowerCase()).toContain('sun');
   });
 
-  test('DR-LOC04 — locale propagates to both Calendars in 2-month layout', async ({
-    page,
-  }) => {
+  test('DR-LOC04 — locale propagates to both Calendars in 2-month layout', async ({ page }) => {
     const picker = rangeBy(page, 'Polish locale range picker');
     await openPicker(picker);
     const grids = dialogOf(page).locator('table[role="grid"]');

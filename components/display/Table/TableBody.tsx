@@ -16,12 +16,13 @@ import styles from './TableBody.module.scss';
  */
 export type TableBodyProps = HTMLAttributes<HTMLTableSectionElement>;
 
-export const TableBody = forwardRef<HTMLTableSectionElement, TableBodyProps>(
-  function TableBody({ className, children, ...rest }, ref) {
-    return (
-      <tbody ref={ref} className={cn(styles.root, className)} {...rest}>
-        {children}
-      </tbody>
-    );
-  },
-);
+export const TableBody = forwardRef<HTMLTableSectionElement, TableBodyProps>(function TableBody(
+  { className, children, ...rest },
+  ref,
+) {
+  return (
+    <tbody ref={ref} className={cn(styles.root, className)} {...rest}>
+      {children}
+    </tbody>
+  );
+});

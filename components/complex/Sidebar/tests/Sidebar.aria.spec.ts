@@ -21,9 +21,7 @@ test.describe('Sidebar — ARIA (desktop)', () => {
     expect(navLabel).toBe('Primary navigation');
   });
 
-  test('SB-R09 — SidebarTrigger aria-expanded + aria-controls wiring', async ({
-    page,
-  }) => {
+  test('SB-R09 — SidebarTrigger aria-expanded + aria-controls wiring', async ({ page }) => {
     const basicSidebar = page.locator('aside[aria-label="Basic sidebar"]');
     const sidebarId = await basicSidebar.getAttribute('id');
     const trigger = page.getByRole('button', { name: /toggle sidebar/i }).first();
@@ -40,9 +38,7 @@ test.describe('Sidebar — ARIA (desktop)', () => {
     await expect(separator).toHaveAttribute('aria-orientation', 'horizontal');
   });
 
-  test('SidebarGroup has role=group + aria-labelledby when labeled', async ({
-    page,
-  }) => {
+  test('SidebarGroup has role=group + aria-labelledby when labeled', async ({ page }) => {
     const groupedSidebar = page.locator('aside[aria-label="Grouped sidebar"]');
     const groups = groupedSidebar.locator('[role="group"]');
     const first = groups.first();

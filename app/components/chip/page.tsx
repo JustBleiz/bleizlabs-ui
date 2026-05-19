@@ -33,11 +33,10 @@ export default function ChipPlaygroundPage() {
           Chip
         </Heading>
         <p className={styles.intro}>
-          Pill-shaped molecule with two render modes: <code>interactive</code>{' '}
-          (default — <code>{'<button aria-pressed>'}</code>) and{' '}
-          <code>interactive={'{false}'}</code> (display — <code>{'<span>'}</code>).
-          Use interactive for filter rows where users toggle multiple states;
-          use display for read-only status indicators inside summary surfaces.
+          Pill-shaped molecule with two render modes: <code>interactive</code> (default —{' '}
+          <code>{'<button aria-pressed>'}</code>) and <code>interactive={'{false}'}</code> (display
+          — <code>{'<span>'}</code>). Use interactive for filter rows where users toggle multiple
+          states; use display for read-only status indicators inside summary surfaces.
         </p>
       </header>
 
@@ -59,9 +58,8 @@ export default function ChipPlaygroundPage() {
           </div>
           <p className={styles.bodyText}>
             Multi-select filter pattern. Each Chip is a native{' '}
-            <code>{'<button aria-pressed>'}</code> — keyboard{' '}
-            (Space / Enter) toggles. Default tone <code>brand</code> — pressed
-            chip lifts to brand-subtle background + brand-strong text.
+            <code>{'<button aria-pressed>'}</code> — keyboard (Space / Enter) toggles. Default tone{' '}
+            <code>brand</code> — pressed chip lifts to brand-subtle background + brand-strong text.
           </p>
         </div>
       </section>
@@ -86,9 +84,9 @@ export default function ChipPlaygroundPage() {
             </Chip>
           </div>
           <p className={styles.bodyText}>
-            Two sizes — <code>sm</code> (0.7rem font, dense filter rows) and{' '}
-            <code>md</code> (default, denser content rows). Both grow to 44×44
-            minimum on coarse pointers per <code>--size-touch-min</code> token.
+            Two sizes — <code>sm</code> (0.7rem font, dense filter rows) and <code>md</code>{' '}
+            (default, denser content rows). Both grow to 44×44 minimum on coarse pointers per{' '}
+            <code>--size-touch-min</code> token.
           </p>
         </div>
       </section>
@@ -107,9 +105,9 @@ export default function ChipPlaygroundPage() {
             </Chip>
           </div>
           <p className={styles.bodyText}>
-            <code>tone=&quot;default&quot;</code> swaps the pressed state to a
-            neutral fill — useful for filter rows where the active state should
-            not compete with brand CTAs elsewhere on the page.
+            <code>tone=&quot;default&quot;</code> swaps the pressed state to a neutral fill — useful
+            for filter rows where the active state should not compete with brand CTAs elsewhere on
+            the page.
           </p>
         </div>
       </section>
@@ -140,9 +138,8 @@ export default function ChipPlaygroundPage() {
             </Chip>
           </div>
           <p className={styles.bodyText}>
-            Decorative leading dot (<code>aria-hidden=&quot;true&quot;</code>).
-            Six color tiers — meaning lives in the chip text, dot adds visual
-            categorisation only.
+            Decorative leading dot (<code>aria-hidden=&quot;true&quot;</code>). Six color tiers —
+            meaning lives in the chip text, dot adds visual categorisation only.
           </p>
         </div>
       </section>
@@ -164,11 +161,10 @@ export default function ChipPlaygroundPage() {
             </Chip>
           </div>
           <p className={styles.bodyText}>
-            <code>interactive={'{false}'}</code> renders a <code>{'<span>'}</code>{' '}
-            with no toggle semantics — used for read-only status indicators
-            inside summary surfaces (e.g. scope chips, profile bands).
-            Touch-target expansion is suppressed (display chips are decorative,
-            not tap targets).
+            <code>interactive={'{false}'}</code> renders a <code>{'<span>'}</code> with no toggle
+            semantics — used for read-only status indicators inside summary surfaces (e.g. scope
+            chips, profile bands). Touch-target expansion is suppressed (display chips are
+            decorative, not tap targets).
           </p>
         </div>
       </section>
@@ -187,10 +183,9 @@ export default function ChipPlaygroundPage() {
             </Chip>
           </div>
           <p className={styles.bodyText}>
-            Native <code>disabled</code> — opacity reduced, cursor{' '}
-            <code>not-allowed</code>, removed from Tab order. Pressed state
-            remains visible (so users see what state the disabled filter would
-            apply if unlocked).
+            Native <code>disabled</code> — opacity reduced, cursor <code>not-allowed</code>, removed
+            from Tab order. Pressed state remains visible (so users see what state the disabled
+            filter would apply if unlocked).
           </p>
         </div>
       </section>

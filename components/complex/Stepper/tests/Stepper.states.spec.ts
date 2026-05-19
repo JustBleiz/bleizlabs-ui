@@ -29,18 +29,14 @@ test.describe('Stepper — visual states', () => {
     await expect(steps.nth(2)).toHaveAttribute('data-status', 'pending');
   });
 
-  test('STEP-S02: horizontal orientation propagated via data-orientation', async ({
-    page,
-  }) => {
+  test('STEP-S02: horizontal orientation propagated via data-orientation', async ({ page }) => {
     const stepper = stepperBy(page, 'Order progress');
     await expect(stepper).toHaveAttribute('data-orientation', 'horizontal');
     const list = stepper.locator('ol[role="list"]');
     await expect(list).toHaveAttribute('data-orientation', 'horizontal');
   });
 
-  test('STEP-S03: vertical orientation flips data-orientation', async ({
-    page,
-  }) => {
+  test('STEP-S03: vertical orientation flips data-orientation', async ({ page }) => {
     const stepper = stepperBy(page, 'Contract negotiation phases');
     await expect(stepper).toHaveAttribute('data-orientation', 'vertical');
   });
@@ -62,9 +58,7 @@ test.describe('Stepper — visual states', () => {
     await expect(svg).toBeVisible();
   });
 
-  test('STEP-S06: complete status renders checkmark when no custom icon', async ({
-    page,
-  }) => {
+  test('STEP-S06: complete status renders checkmark when no custom icon', async ({ page }) => {
     const stepper = stepperBy(page, 'Order progress');
     const steps = stepsOf(stepper);
     const completeStep = steps.nth(0);
@@ -73,9 +67,7 @@ test.describe('Stepper — visual states', () => {
     await expect(svg).toBeVisible();
   });
 
-  test('STEP-S07: pending/active without custom icon render numeric badge', async ({
-    page,
-  }) => {
+  test('STEP-S07: pending/active without custom icon render numeric badge', async ({ page }) => {
     const stepper = stepperBy(page, 'Order progress');
     const steps = stepsOf(stepper);
     // Step 1 is active (Shipping). No custom icon → "2" digit visible.

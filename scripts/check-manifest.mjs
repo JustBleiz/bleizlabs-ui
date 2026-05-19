@@ -33,9 +33,7 @@ function err(msg) {
 }
 
 if (!fs.existsSync(MANIFEST)) {
-  console.error(
-    `[check-manifest] FAIL: manifest.json missing. Run: npm run build:manifest`,
-  );
+  console.error(`[check-manifest] FAIL: manifest.json missing. Run: npm run build:manifest`);
   process.exit(1);
 }
 
@@ -113,9 +111,7 @@ if (manifest.libVersion !== pkg.version) {
 
 // --- 4. Barrel coverage -----------------------------------------------------
 const barrelSrc = fs.readFileSync(BARREL, 'utf8');
-const stripped = barrelSrc
-  .replace(/\/\*[\s\S]*?\*\//g, '')
-  .replace(/^\s*\/\/.*$/gm, '');
+const stripped = barrelSrc.replace(/\/\*[\s\S]*?\*\//g, '').replace(/^\s*\/\/.*$/gm, '');
 
 const barrelStarPaths = [];
 const starRegex = /export\s+\*\s+from\s+['"]\.\/(\S+?)['"];/g;
@@ -152,9 +148,7 @@ const utilOrTypePaths = [
 ];
 const namedMissing = barrelNamedPaths.filter((p) => !utilOrTypePaths.includes(p));
 if (namedMissing.length) {
-  err(
-    `Barrel named exports not in manifest utilities/typesOnly: ${namedMissing.join(', ')}.`,
-  );
+  err(`Barrel named exports not in manifest utilities/typesOnly: ${namedMissing.join(', ')}.`);
 }
 
 // --- Output -----------------------------------------------------------------

@@ -115,9 +115,7 @@ test.describe('Combobox — multi-select mode', () => {
     await expect(page.getByRole('listbox').first()).toBeVisible();
   });
 
-  test('Enter on highlighted toggles in multi mode (does NOT close listbox)', async ({
-    page,
-  }) => {
+  test('Enter on highlighted toggles in multi mode (does NOT close listbox)', async ({ page }) => {
     const input = page.getByRole('combobox').nth(6); // 7.1
     await input.focus();
     await input.fill('cz'); // filter to Czech Republic

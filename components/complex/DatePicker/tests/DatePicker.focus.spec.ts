@@ -15,9 +15,7 @@ test.describe('DatePicker — focus behavior', () => {
     await page.goto('/components/date-picker');
   });
 
-  test('DP-R05 — input → Calendar cell focus transition on open', async ({
-    page,
-  }) => {
+  test('DP-R05 — input → Calendar cell focus transition on open', async ({ page }) => {
     const sections = page.locator('section');
     const controlled = sections.nth(1); // defaultValue 2026-04-20
     const ctrlInput = controlled.getByRole('combobox');
@@ -50,9 +48,7 @@ test.describe('DatePicker — focus behavior', () => {
     await expect(input).toHaveValue('2026-04-20');
   });
 
-  test('DP-R07 — typing without Alt+ArrowDown keeps focus on input', async ({
-    page,
-  }) => {
+  test('DP-R07 — typing without Alt+ArrowDown keeps focus on input', async ({ page }) => {
     const input = page.getByRole('combobox').first();
     await input.focus();
     await page.keyboard.type('2026');

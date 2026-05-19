@@ -29,9 +29,7 @@ test.describe('Drawer — focus management (APG dialog-modal)', () => {
     for (let i = 0; i < 10; i += 1) {
       await page.keyboard.press('Tab');
     }
-    await expect(
-      page.getByRole('button', { name: /open basic drawer/i }),
-    ).not.toBeFocused();
+    await expect(page.getByRole('button', { name: /open basic drawer/i })).not.toBeFocused();
   });
 
   test('Focus restores to trigger on close (Radix #1891)', async ({ page }) => {

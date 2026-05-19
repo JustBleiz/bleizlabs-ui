@@ -26,9 +26,7 @@ test.describe('Calendar — ARIA + accessibility tree', () => {
     await page.goto('/components/calendar');
   });
 
-  test('CAL-R11 — root role="grid" + aria-labelledby to month header', async ({
-    page,
-  }) => {
+  test('CAL-R11 — root role="grid" + aria-labelledby to month header', async ({ page }) => {
     const grids = page.getByRole('grid');
     expect(await grids.count()).toBeGreaterThanOrEqual(1);
     const firstGrid = grids.first();
@@ -40,9 +38,7 @@ test.describe('Calendar — ARIA + accessibility tree', () => {
     await expect(label).toHaveText(/\d{4}/);
   });
 
-  test('CAL-R12 — cells role="gridcell" + aria-selected synced to value', async ({
-    page,
-  }) => {
+  test('CAL-R12 — cells role="gridcell" + aria-selected synced to value', async ({ page }) => {
     // Section 2 — controlled default 2026-04-20 (April 20 is selected)
     const sections = page.locator('section');
     const controlled = sections.nth(1);
@@ -84,9 +80,7 @@ test.describe('Calendar — ARIA + accessibility tree', () => {
     expect(disabledAttr).toBeNull();
   });
 
-  test('Month header has aria-live="polite" + aria-atomic="true"', async ({
-    page,
-  }) => {
+  test('Month header has aria-live="polite" + aria-atomic="true"', async ({ page }) => {
     const sections = page.locator('section');
     const controlled = sections.nth(1);
     const grid = controlled.getByRole('grid');
@@ -96,9 +90,7 @@ test.describe('Calendar — ARIA + accessibility tree', () => {
     await expect(label).toHaveAttribute('aria-atomic', 'true');
   });
 
-  test('Cell button aria-label is locale-formatted full date', async ({
-    page,
-  }) => {
+  test('Cell button aria-label is locale-formatted full date', async ({ page }) => {
     const sections = page.locator('section');
     const controlled = sections.nth(1);
     const grid = controlled.getByRole('grid');
@@ -108,9 +100,7 @@ test.describe('Calendar — ARIA + accessibility tree', () => {
     expect(ariaLabel).toMatch(/April 20, 2026/);
   });
 
-  test('Polish locale cells render localized weekday names', async ({
-    page,
-  }) => {
+  test('Polish locale cells render localized weekday names', async ({ page }) => {
     // Section 6 — pl-PL
     const sections = page.locator('section');
     const polish = sections.nth(5);
@@ -127,9 +117,7 @@ test.describe('Calendar — ARIA + accessibility tree', () => {
     expect(results.violations).toEqual([]);
   });
 
-  test('axe-core zero violations — after keyboard navigation', async ({
-    page,
-  }) => {
+  test('axe-core zero violations — after keyboard navigation', async ({ page }) => {
     const sections = page.locator('section');
     const controlled = sections.nth(1);
     const grid = controlled.getByRole('grid');

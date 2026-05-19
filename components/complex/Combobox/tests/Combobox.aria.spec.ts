@@ -32,9 +32,7 @@ test.describe('Combobox — ARIA + accessibility tree', () => {
     await page.goto('/components/combobox');
   });
 
-  test('role="combobox" + aria-autocomplete="list" + aria-expanded on input', async ({
-    page,
-  }) => {
+  test('role="combobox" + aria-autocomplete="list" + aria-expanded on input', async ({ page }) => {
     const input = page.getByRole('combobox').first();
     await expect(input).toHaveAttribute('aria-autocomplete', 'list');
     await expect(input).toHaveAttribute('aria-expanded', 'false');
@@ -60,9 +58,7 @@ test.describe('Combobox — ARIA + accessibility tree', () => {
     await expect(listbox).toHaveAttribute('aria-multiselectable', 'false');
   });
 
-  test('Items have role="option" + aria-selected synced to value', async ({
-    page,
-  }) => {
+  test('Items have role="option" + aria-selected synced to value', async ({ page }) => {
     // Section 3 — controlled Combobox with defaultValue="pl" (Poland)
     const sections = page.locator('section');
     const controlledSection = sections.nth(2);
@@ -77,9 +73,7 @@ test.describe('Combobox — ARIA + accessibility tree', () => {
     await expect(portugal).toHaveAttribute('aria-selected', 'false');
   });
 
-  test('Groups have role="group" + aria-labelledby pointing at label', async ({
-    page,
-  }) => {
+  test('Groups have role="group" + aria-labelledby pointing at label', async ({ page }) => {
     // Section 2 — grouped demo (Production / Preview / Local)
     const sections = page.locator('section');
     const grouped = sections.nth(1);
@@ -98,9 +92,7 @@ test.describe('Combobox — ARIA + accessibility tree', () => {
     await expect(label).toBeVisible();
   });
 
-  test('Disabled items render aria-disabled (not native disabled)', async ({
-    page,
-  }) => {
+  test('Disabled items render aria-disabled (not native disabled)', async ({ page }) => {
     // Section 4 — AWS region demo has AP South disabled
     const sections = page.locator('section');
     const disabledSection = sections.nth(3);
@@ -115,9 +107,7 @@ test.describe('Combobox — ARIA + accessibility tree', () => {
     await expect(apSouth).toHaveAttribute('aria-disabled', 'true');
   });
 
-  test('Empty state uses role="presentation" (not listbox child)', async ({
-    page,
-  }) => {
+  test('Empty state uses role="presentation" (not listbox child)', async ({ page }) => {
     const input = page.getByRole('combobox').first();
     await input.focus();
     await input.fill('xyzzy_no_match_123');
@@ -153,9 +143,7 @@ test.describe('Combobox — ARIA + accessibility tree', () => {
     expect(results.violations).toEqual([]);
   });
 
-  test('axe-core zero violations — filtered listbox with matches', async ({
-    page,
-  }) => {
+  test('axe-core zero violations — filtered listbox with matches', async ({ page }) => {
     const input = page.getByRole('combobox').first();
     await input.focus();
     await input.fill('an'); // matches Canada, Iceland, etc.

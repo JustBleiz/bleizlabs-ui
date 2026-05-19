@@ -61,3 +61,6 @@ work/
 
 # CLI bundle (built at publish time via prepublishOnly; regenerable from cli/src/)
 cli-dist/
+
+# Scratch component specs (working notes — not for repo)
+docs/_tmp/

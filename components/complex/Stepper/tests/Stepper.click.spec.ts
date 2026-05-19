@@ -12,17 +12,14 @@ import { test, expect } from '@playwright/test';
 import { stepperBy, navBy } from './_helpers';
 
 const URL = '/components/stepper';
-const WIZARD_LABEL =
-  'Onboarding wizard — click visited steps to revisit';
+const WIZARD_LABEL = 'Onboarding wizard — click visited steps to revisit';
 
 test.describe('Stepper — click', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto(URL);
   });
 
-  test('STEP-C01: click on complete step in visited mode fires onStepClick', async ({
-    page,
-  }) => {
+  test('STEP-C01: click on complete step in visited mode fires onStepClick', async ({ page }) => {
     const nav = navBy(page, WIZARD_LABEL);
     const step0 = nav.locator('button[data-step-index="0"]');
     await step0.click();
@@ -44,21 +41,15 @@ test.describe('Stepper — click', () => {
     expect(tag).toBe('div');
   });
 
-  test('STEP-C03: visual-only mode steps are <li> elements with no button', async ({
-    page,
-  }) => {
+  test('STEP-C03: visual-only mode steps are <li> elements with no button', async ({ page }) => {
     const stepper = stepperBy(page, 'Order progress');
     const buttons = stepper.locator('button[data-step-clickable="true"]');
     await expect(buttons).toHaveCount(0);
   });
 
-  test('STEP-C04: Next/Back buttons update currentStep + roving tabindex', async ({
-    page,
-  }) => {
+  test('STEP-C04: Next/Back buttons update currentStep + roving tabindex', async ({ page }) => {
     const nav = navBy(page, WIZARD_LABEL);
-    const initialLive = await nav
-      .locator('[role="status"]')
-      .textContent();
+    const initialLive = await nav.locator('[role="status"]').textContent();
     expect(initialLive).toContain('Step 3 of 4');
 
     await page.getByRole('button', { name: 'Next', exact: true }).click();

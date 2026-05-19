@@ -445,29 +445,23 @@ export function Select({
     return items;
   }, []);
 
-  const getItemByValue = useCallback(
-    (target: string | null): SelectItemRecord | undefined => {
-      if (target === null) return undefined;
-      for (const record of itemsRef.current.values()) {
-        if (record.value === target) return record;
-      }
-      return undefined;
-    },
-    [],
-  );
+  const getItemByValue = useCallback((target: string | null): SelectItemRecord | undefined => {
+    if (target === null) return undefined;
+    for (const record of itemsRef.current.values()) {
+      if (record.value === target) return record;
+    }
+    return undefined;
+  }, []);
 
-  const getLabelByValue = useCallback(
-    (target: string | null): string | undefined => {
-      if (target === null) return undefined;
-      // Prefer the live registry — picks up any in-flight children change.
-      for (const record of itemsRef.current.values()) {
-        if (record.value === target) return record.textContent;
-      }
-      // Fallback to cache — items unmount with SelectContent when closed.
-      return labelCacheRef.current.get(target);
-    },
-    [],
-  );
+  const getLabelByValue = useCallback((target: string | null): string | undefined => {
+    if (target === null) return undefined;
+    // Prefer the live registry — picks up any in-flight children change.
+    for (const record of itemsRef.current.values()) {
+      if (record.value === target) return record.textContent;
+    }
+    // Fallback to cache — items unmount with SelectContent when closed.
+    return labelCacheRef.current.get(target);
+  }, []);
 
   // Shared typeahead state — single source of truth used by both Trigger
   // (closed-state instant-select) and Content (open-state highlight).
@@ -625,16 +619,15 @@ function findTypeaheadMatch(
 // SelectTrigger — role=combobox button, closed-state keyboard handler
 // ──────────────────────────────────────────────────────────────────────────
 
-export interface SelectTriggerProps
-  extends Omit<
-    ButtonHTMLAttributes<HTMLButtonElement>,
-    | 'aria-expanded'
-    | 'aria-haspopup'
-    | 'aria-controls'
-    | 'aria-activedescendant'
-    | 'role'
-    | 'disabled'
-  > {
+export interface SelectTriggerProps extends Omit<
+  ButtonHTMLAttributes<HTMLButtonElement>,
+  | 'aria-expanded'
+  | 'aria-haspopup'
+  | 'aria-controls'
+  | 'aria-activedescendant'
+  | 'role'
+  | 'disabled'
+> {
   children: ReactNode;
   /**
    * When `true`, Slot-wraps the single React element child, merging ARIA +
@@ -657,238 +650,237 @@ export interface SelectTriggerProps
   invalid?: boolean;
 }
 
-export const SelectTrigger = forwardRef<HTMLElement, SelectTriggerProps>(
-  function SelectTrigger(
-    {
-      children,
-      asChild = false,
-      onClick,
-      onKeyDown,
-      className,
-      invalid = false,
-      'aria-labelledby': ariaLabelledBy,
-      'aria-label': ariaLabel,
-      ...rest
+export const SelectTrigger = forwardRef<HTMLElement, SelectTriggerProps>(function SelectTrigger(
+  {
+    children,
+    asChild = false,
+    onClick,
+    onKeyDown,
+    className,
+    invalid = false,
+    'aria-labelledby': ariaLabelledBy,
+    'aria-label': ariaLabel,
+    ...rest
+  },
+  forwardedRef,
+) {
+  const ctx = useSelectContext('<SelectTrigger>');
+  const {
+    open,
+    setOpen,
+    value,
+    selectValue,
+    triggerId,
+    contentId,
+    triggerRef,
+    disabled,
+    required,
+    getOrderedItems,
+    typeaheadRef,
+    listboxKeyHandlerRef,
+    highlightedId,
+  } = ctx;
+
+  const setTriggerNode = useCallback(
+    (node: HTMLElement | null) => {
+      triggerRef.current = node;
     },
-    forwardedRef,
-  ) {
-    const ctx = useSelectContext('<SelectTrigger>');
-    const {
-      open,
-      setOpen,
-      value,
-      selectValue,
-      triggerId,
-      contentId,
-      triggerRef,
-      disabled,
-      required,
-      getOrderedItems,
-      typeaheadRef,
-      listboxKeyHandlerRef,
-      highlightedId,
-    } = ctx;
+    [triggerRef],
+  );
+  const mergedRef = mergeRefs(forwardedRef, setTriggerNode);
 
-    const setTriggerNode = useCallback(
-      (node: HTMLElement | null) => {
-        triggerRef.current = node;
-      },
-      [triggerRef],
-    );
-    const mergedRef = mergeRefs(forwardedRef, setTriggerNode);
+  // Initial-highlight plumbing: closed-state open-with-highlight just
+  // sets `open = true` and SelectContent's mount-time useLayoutEffect
+  // seeds the highlight from the current `value` (falling back to the
+  // first enabled item). No extra cross-component refs needed.
 
-    // Initial-highlight plumbing: closed-state open-with-highlight just
-    // sets `open = true` and SelectContent's mount-time useLayoutEffect
-    // seeds the highlight from the current `value` (falling back to the
-    // first enabled item). No extra cross-component refs needed.
+  const handleClick = useCallback(
+    (event: React.MouseEvent<HTMLElement>) => {
+      if (disabled) {
+        event.preventDefault();
+        return;
+      }
+      setOpen(!open);
+    },
+    [disabled, open, setOpen],
+  );
 
-    const handleClick = useCallback(
-      (event: React.MouseEvent<HTMLElement>) => {
-        if (disabled) {
+  const handleKeyDown = useCallback(
+    (event: React.KeyboardEvent<HTMLElement>) => {
+      if (disabled) return;
+
+      // OPEN STATE — route to Content's listbox handler via the shared
+      // ref slot. Single-path handler (Phase 5 CRIT-1): the old native
+      // addEventListener bridge was removed so there is exactly one
+      // event path and consumer `onKeyDown` observes `defaultPrevented`
+      // correctly.
+      if (open) {
+        const listboxHandler = listboxKeyHandlerRef.current;
+        if (listboxHandler) {
+          listboxHandler(event.nativeEvent);
+          // React's synthetic event tracks defaultPrevented from the
+          // underlying native event — if the listbox handler called
+          // preventDefault, React already sees it.
+        }
+        return;
+      }
+
+      // Pass through modifier-keyed arrows (APG allows browser-level
+      // shortcuts like Cmd+ArrowDown to navigate history or jump focus).
+      const hasModifier = event.ctrlKey || event.metaKey || event.altKey || event.shiftKey;
+
+      // Open-intent keys (ArrowDown/Up/Enter/Space/Home/End) must always
+      // open the listbox regardless of whether items have registered yet
+      // — SelectItems only mount inside SelectContent (open-gated), so
+      // on the very first keydown the registry is empty (E142 L4 F2).
+      // APG /combobox/ collapsed-listbox requires these keys to open.
+      // Only AFTER this switch do we read the registry for typeahead,
+      // which requires enabled items to exist (closed typeahead = instant
+      // select, no-op when registry is empty).
+      switch (event.key) {
+        case 'ArrowDown':
+        case 'ArrowUp': {
+          if (hasModifier) return; // pass-through
           event.preventDefault();
+          setOpen(true);
           return;
         }
-        setOpen(!open);
-      },
-      [disabled, open, setOpen],
-    );
-
-    const handleKeyDown = useCallback(
-      (event: React.KeyboardEvent<HTMLElement>) => {
-        if (disabled) return;
-
-        // OPEN STATE — route to Content's listbox handler via the shared
-        // ref slot. Single-path handler (Phase 5 CRIT-1): the old native
-        // addEventListener bridge was removed so there is exactly one
-        // event path and consumer `onKeyDown` observes `defaultPrevented`
-        // correctly.
-        if (open) {
-          const listboxHandler = listboxKeyHandlerRef.current;
-          if (listboxHandler) {
-            listboxHandler(event.nativeEvent);
-            // React's synthetic event tracks defaultPrevented from the
-            // underlying native event — if the listbox handler called
-            // preventDefault, React already sees it.
-          }
+        case 'Enter':
+        case ' ': {
+          if (hasModifier) return;
+          event.preventDefault();
+          setOpen(true);
           return;
         }
-
-        // Pass through modifier-keyed arrows (APG allows browser-level
-        // shortcuts like Cmd+ArrowDown to navigate history or jump focus).
-        const hasModifier =
-          event.ctrlKey || event.metaKey || event.altKey || event.shiftKey;
-
-        // Open-intent keys (ArrowDown/Up/Enter/Space/Home/End) must always
-        // open the listbox regardless of whether items have registered yet
-        // — SelectItems only mount inside SelectContent (open-gated), so
-        // on the very first keydown the registry is empty (E142 L4 F2).
-        // APG /combobox/ collapsed-listbox requires these keys to open.
-        // Only AFTER this switch do we read the registry for typeahead,
-        // which requires enabled items to exist (closed typeahead = instant
-        // select, no-op when registry is empty).
-        switch (event.key) {
-          case 'ArrowDown':
-          case 'ArrowUp': {
-            if (hasModifier) return; // pass-through
-            event.preventDefault();
-            setOpen(true);
-            return;
-          }
-          case 'Enter':
-          case ' ': {
-            if (hasModifier) return;
-            event.preventDefault();
-            setOpen(true);
-            return;
-          }
-          case 'Home':
-          case 'End': {
-            if (hasModifier) return;
-            event.preventDefault();
-            setOpen(true);
-            return;
-          }
-          default:
-            break;
+        case 'Home':
+        case 'End': {
+          if (hasModifier) return;
+          event.preventDefault();
+          setOpen(true);
+          return;
         }
+        default:
+          break;
+      }
 
-        const orderedItems = getOrderedItems();
-        const enabled = orderedItems.filter((it) => !it.disabled);
-        if (enabled.length === 0) return;
+      const orderedItems = getOrderedItems();
+      const enabled = orderedItems.filter((it) => !it.disabled);
+      if (enabled.length === 0) return;
 
-        // Printable character typeahead (CLOSED state) — instant-select,
-        // matches Radix + shadcn + native <select>. Shares the root
-        // `typeaheadRef` with the open-state handler so repeats cycle
-        // across the whole list and the buffer survives an open/close
-        // transition mid-word (Phase 5 CRIT-5).
-        if (
-          event.key.length === 1 &&
-          !event.ctrlKey &&
-          !event.metaKey &&
-          !event.altKey
-        ) {
-          const tState = typeaheadRef.current;
-          const char = event.key.toLowerCase();
-          tState.buffer += char;
-          if (tState.timer) clearTimeout(tState.timer);
-          tState.timer = setTimeout(() => {
-            tState.buffer = '';
-            tState.timer = null;
-            tState.lastIndex = -1;
-          }, 500);
+      // Printable character typeahead (CLOSED state) — instant-select,
+      // matches Radix + shadcn + native <select>. Shares the root
+      // `typeaheadRef` with the open-state handler so repeats cycle
+      // across the whole list and the buffer survives an open/close
+      // transition mid-word (Phase 5 CRIT-5).
+      if (event.key.length === 1 && !event.ctrlKey && !event.metaKey && !event.altKey) {
+        const tState = typeaheadRef.current;
+        const char = event.key.toLowerCase();
+        tState.buffer += char;
+        if (tState.timer) clearTimeout(tState.timer);
+        tState.timer = setTimeout(() => {
+          tState.buffer = '';
+          tState.timer = null;
+          tState.lastIndex = -1;
+        }, 500);
 
-          // Single-char repeat → advance PAST lastIndex so repeats cycle.
-          // Multi-char extend → re-match from lastIndex so re-matching the
-          // same buffer can still land on the same item.
-          const fromIndex =
-            tState.buffer.length === 1
-              ? tState.lastIndex >= 0
-                ? (tState.lastIndex + 1) % enabled.length
-                : 0
-              : Math.max(0, tState.lastIndex);
-          const match = findTypeaheadMatch(enabled, tState.buffer, fromIndex);
-          if (match) {
-            event.preventDefault();
-            tState.lastIndex = match.index;
-            selectValue(match.record.value);
-          }
+        // Single-char repeat → advance PAST lastIndex so repeats cycle.
+        // Multi-char extend → re-match from lastIndex so re-matching the
+        // same buffer can still land on the same item.
+        const fromIndex =
+          tState.buffer.length === 1
+            ? tState.lastIndex >= 0
+              ? (tState.lastIndex + 1) % enabled.length
+              : 0
+            : Math.max(0, tState.lastIndex);
+        const match = findTypeaheadMatch(enabled, tState.buffer, fromIndex);
+        if (match) {
+          event.preventDefault();
+          tState.lastIndex = match.index;
+          selectValue(match.record.value);
         }
-      },
-      [disabled, open, setOpen, getOrderedItems, selectValue, typeaheadRef, listboxKeyHandlerRef],
-    );
+      }
+    },
+    [disabled, open, setOpen, getOrderedItems, selectValue, typeaheadRef, listboxKeyHandlerRef],
+  );
 
-    const ariaProps = {
-      id: triggerId,
-      role: 'combobox' as const,
-      'aria-haspopup': 'listbox' as const,
-      'aria-expanded': open,
-      'aria-controls': open ? contentId : undefined,
-      'aria-labelledby': ariaLabelledBy,
-      'aria-label': ariaLabel,
-      'aria-required': required || undefined,
-      'aria-disabled': disabled || undefined,
-      'aria-invalid': invalid || undefined,
-      // `aria-activedescendant` is declarative React state now (Phase 5
-      // IMP-3). SelectContent owns `highlightedId` as React state and
-      // publishes it via SelectContentContext; Trigger reads it here and
-      // React reconciles it onto the DOM on every render. This fixes the
-      // prior bug where a re-render of Trigger (e.g. from controlled
-      // `value` change) would write the full ariaProps back to DOM and
-      // silently strip the attribute written by an earlier DOM mutation.
-      'aria-activedescendant': open && highlightedId ? highlightedId : undefined,
-      'data-state': open ? ('open' as const) : ('closed' as const),
-      'data-disabled': disabled ? '' : undefined,
-      'data-placeholder': value === null ? '' : undefined,
-    };
+  const ariaProps = {
+    id: triggerId,
+    role: 'combobox' as const,
+    'aria-haspopup': 'listbox' as const,
+    'aria-expanded': open,
+    'aria-controls': open ? contentId : undefined,
+    'aria-labelledby': ariaLabelledBy,
+    'aria-label': ariaLabel,
+    'aria-required': required || undefined,
+    'aria-disabled': disabled || undefined,
+    'aria-invalid': invalid || undefined,
+    // `aria-activedescendant` is declarative React state now (Phase 5
+    // IMP-3). SelectContent owns `highlightedId` as React state and
+    // publishes it via SelectContentContext; Trigger reads it here and
+    // React reconciles it onto the DOM on every render. This fixes the
+    // prior bug where a re-render of Trigger (e.g. from controlled
+    // `value` change) would write the full ariaProps back to DOM and
+    // silently strip the attribute written by an earlier DOM mutation.
+    'aria-activedescendant': open && highlightedId ? highlightedId : undefined,
+    'data-state': open ? ('open' as const) : ('closed' as const),
+    'data-disabled': disabled ? '' : undefined,
+    'data-placeholder': value === null ? '' : undefined,
+  };
 
-    const mergedClassName = cn(styles.trigger, className);
+  const mergedClassName = cn(styles.trigger, className);
 
-    if (asChild) {
-      return (
-        <Slot
-          ref={mergedRef}
-          {...ariaProps}
-          className={mergedClassName}
-          onClick={(event) => {
-            handleClick(event);
-            onClick?.(event as unknown as React.MouseEvent<HTMLButtonElement>);
-          }}
-          onKeyDown={(event) => {
-            handleKeyDown(event);
-            onKeyDown?.(event as unknown as React.KeyboardEvent<HTMLButtonElement>);
-          }}
-        >
-          {children}
-        </Slot>
-      );
-    }
-
+  if (asChild) {
     return (
-      <button
-        ref={mergedRef as React.Ref<HTMLButtonElement>}
-        type="button"
+      <Slot
+        ref={mergedRef}
         {...ariaProps}
         className={mergedClassName}
         onClick={(event) => {
           handleClick(event);
-          onClick?.(event);
+          onClick?.(event as unknown as React.MouseEvent<HTMLButtonElement>);
         }}
         onKeyDown={(event) => {
           handleKeyDown(event);
-          onKeyDown?.(event);
+          onKeyDown?.(event as unknown as React.KeyboardEvent<HTMLButtonElement>);
         }}
-        {...rest}
       >
         {children}
-        <span aria-hidden="true" className={styles.icon}>
-          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M4 6l4 4 4-4" />
-          </svg>
-        </span>
-      </button>
+      </Slot>
     );
-  },
-);
+  }
+
+  return (
+    <button
+      ref={mergedRef as React.Ref<HTMLButtonElement>}
+      type="button"
+      {...ariaProps}
+      className={mergedClassName}
+      onClick={(event) => {
+        handleClick(event);
+        onClick?.(event);
+      }}
+      onKeyDown={(event) => {
+        handleKeyDown(event);
+        onKeyDown?.(event);
+      }}
+      {...rest}
+    >
+      {children}
+      <span aria-hidden="true" className={styles.icon}>
+        <svg
+          viewBox="0 0 16 16"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
+          <path d="M4 6l4 4 4-4" />
+        </svg>
+      </span>
+    </button>
+  );
+});
 
 // ──────────────────────────────────────────────────────────────────────────
 // SelectValue — renders the selected option's label (or placeholder)
@@ -900,12 +892,7 @@ export interface SelectValueProps extends HTMLAttributes<HTMLSpanElement> {
   className?: string;
 }
 
-export function SelectValue({
-  placeholder,
-  className,
-  children,
-  ...rest
-}: SelectValueProps) {
+export function SelectValue({ placeholder, className, children, ...rest }: SelectValueProps) {
   const ctx = useSelectContext('<SelectValue>');
   // `registryVersion` is destructured purely for subscription: the value
   // itself is not used in render, but reading it from context forces
@@ -918,13 +905,10 @@ export function SelectValue({
 
   const hasValue = value !== null;
   const label = getLabelByValue(value);
-  const display = children ?? (hasValue ? label ?? value : placeholder);
+  const display = children ?? (hasValue ? (label ?? value) : placeholder);
 
   return (
-    <span
-      className={cn(styles.value, !hasValue && styles.valuePlaceholder, className)}
-      {...rest}
-    >
+    <span className={cn(styles.value, !hasValue && styles.valuePlaceholder, className)} {...rest}>
       {display}
     </span>
   );
@@ -934,20 +918,15 @@ export function SelectValue({
 // SelectContent — floating listbox, typeahead, keyboard handler
 // ──────────────────────────────────────────────────────────────────────────
 
-export interface SelectContentProps
-  extends Omit<
-    HTMLAttributes<HTMLDivElement>,
-    'role' | 'aria-labelledby' | 'aria-activedescendant' | 'tabIndex'
-  > {
+export interface SelectContentProps extends Omit<
+  HTMLAttributes<HTMLDivElement>,
+  'role' | 'aria-labelledby' | 'aria-activedescendant' | 'tabIndex'
+> {
   children?: ReactNode;
   className?: string;
 }
 
-export function SelectContent({
-  children,
-  className,
-  ...rest
-}: SelectContentProps) {
+export function SelectContent({ children, className, ...rest }: SelectContentProps) {
   const ctx = useSelectContext('<SelectContent>');
   const {
     open,
@@ -971,7 +950,11 @@ export function SelectContent({
   const listboxRef = useRef<HTMLDivElement | null>(null);
 
   // Floating positioning.
-  const { refs, floatingStyles, placement: actualPlacement } = useFloating({
+  const {
+    refs,
+    floatingStyles,
+    placement: actualPlacement,
+  } = useFloating({
     open,
     placement,
     offset: sideOffset,
@@ -1108,8 +1091,7 @@ export function SelectContent({
       const enabled = items.filter((it) => !it.disabled);
       if (enabled.length === 0) return;
 
-      const hasModifier =
-        event.ctrlKey || event.metaKey || event.shiftKey;
+      const hasModifier = event.ctrlKey || event.metaKey || event.shiftKey;
       // Alt+ArrowUp is a dedicated APG shortcut ("close without commit"),
       // so we do not lump it with `hasModifier`.
       const isAltArrowUp = event.altKey && event.key === 'ArrowUp';
@@ -1117,9 +1099,7 @@ export function SelectContent({
       // Find current highlighted index within the ENABLED subset (keyboard
       // nav skips disabled). If nothing is highlighted yet, treat it as -1.
       const currentId = highlightedId;
-      const highlightedIndex = currentId
-        ? enabled.findIndex((it) => it.id === currentId)
-        : -1;
+      const highlightedIndex = currentId ? enabled.findIndex((it) => it.id === currentId) : -1;
 
       switch (event.key) {
         case 'ArrowDown': {
@@ -1173,10 +1153,7 @@ export function SelectContent({
         case 'PageUp': {
           if (hasModifier || event.altKey) return;
           event.preventDefault();
-          const prev = Math.max(
-            0,
-            (highlightedIndex < 0 ? 0 : highlightedIndex) - 10,
-          );
+          const prev = Math.max(0, (highlightedIndex < 0 ? 0 : highlightedIndex) - 10);
           const target = enabled[prev];
           if (target) setHighlight(target.id, 'keyboard');
           return;
@@ -1215,12 +1192,7 @@ export function SelectContent({
       // Single-char repeat advances past `lastIndex` to cycle through
       // siblings; multi-char extend stays on the current index so
       // re-matching the buffer can still land on the same item.
-      if (
-        event.key.length === 1 &&
-        !event.ctrlKey &&
-        !event.metaKey &&
-        !event.altKey
-      ) {
+      if (event.key.length === 1 && !event.ctrlKey && !event.metaKey && !event.altKey) {
         const tState = typeaheadRef.current;
         const char = event.key.toLowerCase();
         tState.buffer += char;
@@ -1232,14 +1204,9 @@ export function SelectContent({
         }, 500);
 
         const buffer = tState.buffer;
-        const baseIndex =
-          tState.lastIndex >= 0 ? tState.lastIndex : highlightedIndex;
+        const baseIndex = tState.lastIndex >= 0 ? tState.lastIndex : highlightedIndex;
         const fromIndex =
-          baseIndex >= 0
-            ? buffer.length === 1
-              ? (baseIndex + 1) % enabled.length
-              : baseIndex
-            : 0;
+          baseIndex >= 0 ? (buffer.length === 1 ? (baseIndex + 1) % enabled.length : baseIndex) : 0;
         const match = findTypeaheadMatch(enabled, buffer, fromIndex);
         if (match) {
           event.preventDefault();
@@ -1274,11 +1241,7 @@ export function SelectContent({
 
   return (
     <FloatingPortal>
-      <div
-        ref={mergedPopperRef}
-        className={styles.contentRoot}
-        style={floatingStyles}
-      >
+      <div ref={mergedPopperRef} className={styles.contentRoot} style={floatingStyles}>
         <div
           ref={listboxRef}
           id={contentId}
@@ -1321,12 +1284,7 @@ export function SelectGroup({ children, className, ...rest }: SelectGroupProps) 
 
   return (
     <SelectGroupContextProvider value={value}>
-      <div
-        role="group"
-        aria-labelledby={labelId}
-        className={cn(styles.group, className)}
-        {...rest}
-      >
+      <div role="group" aria-labelledby={labelId} className={cn(styles.group, className)} {...rest}>
         {children}
       </div>
     </SelectGroupContextProvider>
@@ -1345,11 +1303,7 @@ export interface SelectLabelProps extends HTMLAttributes<HTMLDivElement> {
 export function SelectLabel({ children, className, id, ...rest }: SelectLabelProps) {
   const ctx = useSelectGroupContext('<SelectLabel>');
   return (
-    <div
-      id={id ?? ctx.labelId}
-      className={cn(styles.label, className)}
-      {...rest}
-    >
+    <div id={id ?? ctx.labelId} className={cn(styles.label, className)} {...rest}>
       {children}
     </div>
   );
@@ -1359,8 +1313,10 @@ export function SelectLabel({ children, className, id, ...rest }: SelectLabelPro
 // SelectItem — role="option" with registry hookup + mouse + click handlers
 // ──────────────────────────────────────────────────────────────────────────
 
-export interface SelectItemProps
-  extends Omit<HTMLAttributes<HTMLDivElement>, 'role' | 'aria-selected' | 'aria-disabled'> {
+export interface SelectItemProps extends Omit<
+  HTMLAttributes<HTMLDivElement>,
+  'role' | 'aria-selected' | 'aria-disabled'
+> {
   /** Stable option value — written to form state + onValueChange on commit. */
   value: string;
   /** Disabled — skipped by arrow nav, typeahead, and click. */
@@ -1476,7 +1432,14 @@ function SelectItemImpl({
       {...rest}
     >
       <span aria-hidden="true" className={styles.itemIndicator}>
-        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+        <svg
+          viewBox="0 0 16 16"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2.5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
           <path d="M3 8l3.5 3.5L13 5" />
         </svg>
       </span>
@@ -1511,11 +1474,5 @@ export function SelectSeparator({ className, ...rest }: SelectSeparatorProps) {
   // listbox children to `option` and `group` — a real separator role is
   // invalid inside a listbox and will fail axe-core (Phase 5 IMP-5). The
   // visual divider is still rendered; AT users simply traverse past it.
-  return (
-    <div
-      role="none"
-      className={cn(styles.separator, className)}
-      {...rest}
-    />
-  );
+  return <div role="none" className={cn(styles.separator, className)} {...rest} />;
 }

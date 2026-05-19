@@ -42,9 +42,7 @@ test.describe('TextLink — asChild + hideArrow regression', () => {
     await expect(link.locator('span[aria-hidden="true"]')).toHaveCount(0);
   });
 
-  test('asChild + next/link — renders anchor with text + arrow (regression)', async ({
-    page,
-  }) => {
+  test('asChild + next/link — renders anchor with text + arrow (regression)', async ({ page }) => {
     const link = page.getByTestId('tl-aschild');
     // Pre-fix: Slot received children array → returned null → DOM empty.
     // Post-fix (v0.4.2): cloneElement injects arrow into Link's child list.
@@ -56,9 +54,7 @@ test.describe('TextLink — asChild + hideArrow regression', () => {
     await expect(link.locator('span[aria-hidden="true"]')).toContainText('→');
   });
 
-  test('asChild + hideArrow + next/link — renders anchor with text only', async ({
-    page,
-  }) => {
+  test('asChild + hideArrow + next/link — renders anchor with text only', async ({ page }) => {
     const link = page.getByTestId('tl-aschild-hidearrow');
     await expect(link).toBeVisible();
     await expect(link).toHaveAttribute('href', '/foo');

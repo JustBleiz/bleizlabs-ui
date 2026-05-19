@@ -19,10 +19,9 @@ export default function RevealPlaygroundPage() {
           Reveal + RevealStack
         </Heading>
         <p className={styles.intro}>
-          Scroll-triggered IntersectionObserver gate. Pure behavior atom — no
-          own CSS. Consumer styles via <code>[data-revealed=&apos;true&apos;]</code>
-          {' '}attribute selector. Scroll the page to trigger reveals (each
-          section animates only once when it intersects viewport).
+          Scroll-triggered IntersectionObserver gate. Pure behavior atom — no own CSS. Consumer
+          styles via <code>[data-revealed=&apos;true&apos;]</code> attribute selector. Scroll the
+          page to trigger reveals (each section animates only once when it intersects viewport).
         </p>
       </header>
 
@@ -34,9 +33,8 @@ export default function RevealPlaygroundPage() {
           1. <code>immediate</code> — above-the-fold LCP (no observer, no flash)
         </Heading>
         <Text variant="small" color="muted">
-          Renders <code>data-revealed=&apos;true&apos;</code> on mount. Use for
-          first-fold content where IntersectionObserver delay would cause
-          visible flash before reveal.
+          Renders <code>data-revealed=&apos;true&apos;</code> on mount. Use for first-fold content
+          where IntersectionObserver delay would cause visible flash before reveal.
         </Text>
         <Reveal immediate tag="section" className={styles.demoBox}>
           <Stack gap={2}>
@@ -56,9 +54,9 @@ export default function RevealPlaygroundPage() {
           2. Default — scroll-triggered with custom transition
         </Heading>
         <Text variant="small" color="muted">
-          Element starts at <code>opacity: 0</code> + slight translate; consumer
-          SCSS toggles to revealed state via <code>[data-revealed=&apos;true&apos;]</code>
-          {' '}selector. Observer disconnects after first hit.
+          Element starts at <code>opacity: 0</code> + slight translate; consumer SCSS toggles to
+          revealed state via <code>[data-revealed=&apos;true&apos;]</code> selector. Observer
+          disconnects after first hit.
         </Text>
         <Reveal tag="section" className={styles.demoBoxRevealed}>
           <Stack gap={2}>
@@ -66,8 +64,8 @@ export default function RevealPlaygroundPage() {
               Default scroll reveal
             </Heading>
             <Text>
-              Default threshold 0.15 + rootMargin push-up. Consumer-owned
-              transition (opacity 0.55s + transform 0.55s).
+              Default threshold 0.15 + rootMargin push-up. Consumer-owned transition (opacity 0.55s
+              + transform 0.55s).
             </Text>
           </Stack>
         </Reveal>
@@ -81,9 +79,8 @@ export default function RevealPlaygroundPage() {
           3. <code>asChild</code> — project onto any element via Slot
         </Heading>
         <Text variant="small" color="muted">
-          Skip the <code>tag</code> union — wrap any element (custom component,
-          tag outside RevealTag union) and merge ref/className/data-attr onto
-          it via Slot pattern.
+          Skip the <code>tag</code> union — wrap any element (custom component, tag outside
+          RevealTag union) and merge ref/className/data-attr onto it via Slot pattern.
         </Text>
         <Reveal asChild>
           <article className={styles.demoBoxRevealed}>
@@ -105,9 +102,8 @@ export default function RevealPlaygroundPage() {
           4. <code>&lt;Reveal asChild&gt;&lt;Stack&gt;</code> — section pattern
         </Heading>
         <Text variant="small" color="muted">
-          Canonical section header→body pattern: wrap a Stack in Reveal via{' '}
-          <code>asChild</code> so the IntersectionObserver attaches to the
-          Stack itself.
+          Canonical section header→body pattern: wrap a Stack in Reveal via <code>asChild</code> so
+          the IntersectionObserver attaches to the Stack itself.
         </Text>
         <Reveal asChild>
           <Stack gap={3} aria-label="Demo section" className={styles.demoBoxRevealed}>
@@ -135,8 +131,8 @@ export default function RevealPlaygroundPage() {
           5. Reveal + Stack with nested body group (composition)
         </Heading>
         <Text variant="small" color="muted">
-          When body needs tighter rhythm than header→body gap, wrap children
-          in own <code>&lt;Stack gap=2&gt;</code>.
+          When body needs tighter rhythm than header→body gap, wrap children in own{' '}
+          <code>&lt;Stack gap=2&gt;</code>.
         </Text>
         <Reveal asChild>
           <Stack gap={3} className={styles.demoBoxRevealed}>
@@ -166,9 +162,9 @@ export default function RevealPlaygroundPage() {
           6. <code>disabled</code> — observer off (test fixtures)
         </Heading>
         <Text variant="small" color="muted">
-          Observer never created. <code>data-revealed</code> never set.
-          Element stays in pre-reveal state forever (or whatever consumer
-          CSS defaults provide). Useful for deterministic test snapshots.
+          Observer never created. <code>data-revealed</code> never set. Element stays in pre-reveal
+          state forever (or whatever consumer CSS defaults provide). Useful for deterministic test
+          snapshots.
         </Text>
         <Reveal disabled tag="section" className={styles.demoBox}>
           <Stack gap={2}>
@@ -176,8 +172,8 @@ export default function RevealPlaygroundPage() {
               Disabled reveal
             </Heading>
             <Text>
-              No observer attached, no data-attr ever set. Stays at consumer
-              CSS default (opacity 0 in this demo).
+              No observer attached, no data-attr ever set. Stays at consumer CSS default (opacity 0
+              in this demo).
             </Text>
           </Stack>
         </Reveal>

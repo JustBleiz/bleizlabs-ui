@@ -1,8 +1,4 @@
-import {
-  forwardRef,
-  type HTMLAttributes,
-  type ReactNode,
-} from 'react';
+import { forwardRef, type HTMLAttributes, type ReactNode } from 'react';
 import { cn } from '../../utils/cn';
 import styles from './InputGroup.module.scss';
 
@@ -67,8 +63,7 @@ import styles from './InputGroup.module.scss';
  *   <Button variant="secondary">Check</Button>
  * </InputGroup>
  */
-export interface InputGroupProps
-  extends Omit<HTMLAttributes<HTMLDivElement>, 'role'> {
+export interface InputGroupProps extends Omit<HTMLAttributes<HTMLDivElement>, 'role'> {
   /**
    * Accessible name for `role="group"` (REQUIRED — TS-enforced for
    * symmetry with ButtonGroup precedent). When a visible heading
@@ -91,17 +86,13 @@ export interface InputGroupProps
   children: ReactNode;
 }
 
-export const InputGroup = forwardRef<HTMLDivElement, InputGroupProps>(
-  function InputGroup({ className, children, ...rest }, ref) {
-    return (
-      <div
-        ref={ref}
-        role="group"
-        className={cn(styles.root, className)}
-        {...rest}
-      >
-        {children}
-      </div>
-    );
-  },
-);
+export const InputGroup = forwardRef<HTMLDivElement, InputGroupProps>(function InputGroup(
+  { className, children, ...rest },
+  ref,
+) {
+  return (
+    <div ref={ref} role="group" className={cn(styles.root, className)} {...rest}>
+      {children}
+    </div>
+  );
+});

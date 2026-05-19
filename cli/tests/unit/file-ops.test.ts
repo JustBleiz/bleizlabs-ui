@@ -84,8 +84,7 @@ describe('file-ops', () => {
         p,
         '# User content\n\nMy rules\n\n<!-- BEGIN:bleizlabs-ui v0.9.0 -->\nold\n<!-- END:bleizlabs-ui -->\n\n## More user content',
       );
-      const newBlock =
-        '<!-- BEGIN:bleizlabs-ui v0.10.0 -->\nnew rules\n<!-- END:bleizlabs-ui -->';
+      const newBlock = '<!-- BEGIN:bleizlabs-ui v0.10.0 -->\nnew rules\n<!-- END:bleizlabs-ui -->';
       const r = updateManagedBlock(p, newBlock);
       expect(r.action).toBe('backed-up-and-overwritten');
       const out = fs.readFileSync(p, 'utf8');

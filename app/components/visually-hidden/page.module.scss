@@ -27,7 +27,9 @@
   width: fit-content;
   color: var(--color-text-secondary);
   text-decoration: none;
-  &:hover { color: var(--color-brand); }
+  &:hover {
+    color: var(--color-brand);
+  }
 }
 
 .section {

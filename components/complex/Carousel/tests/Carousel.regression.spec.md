@@ -5,7 +5,10 @@
 ## Tests
 
 ```ts
-test('CAR-R13 — prefers-reduced-motion disables auto-rotation entirely', async ({ page, context }) => {
+test('CAR-R13 — prefers-reduced-motion disables auto-rotation entirely', async ({
+  page,
+  context,
+}) => {
   await context.emulateMedia({ reducedMotion: 'reduce' });
   await page.goto('/components/carousel?autoRotate=1&interval=500');
   await page.waitForTimeout(2000);
@@ -17,7 +20,9 @@ test('CAR-R14 — auto-rotate loops from last to first', async ({ page }) => {
   await page.goto('/components/carousel?autoRotate=1&interval=300&slides=3');
   await page.waitForTimeout(1200); // past 3 intervals
   // Should loop back to slide 1 eventually
-  const visibleSlide = await page.locator('[role="group"][aria-roledescription="slide"]:not([aria-hidden="true"])').first();
+  const visibleSlide = await page
+    .locator('[role="group"][aria-roledescription="slide"]:not([aria-hidden="true"])')
+    .first();
   expect(await visibleSlide.getAttribute('aria-label')).toMatch(/Slide \d of 3/);
 });
 

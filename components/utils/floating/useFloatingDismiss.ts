@@ -101,8 +101,7 @@ export function useFloatingDismiss(config: FloatingDismissConfig): void {
       onDismiss();
     };
     document.addEventListener('pointerdown', handlePointerDown, { capture: true });
-    return () =>
-      document.removeEventListener('pointerdown', handlePointerDown, { capture: true });
+    return () => document.removeEventListener('pointerdown', handlePointerDown, { capture: true });
   }, [config.open, config.closeOnOutsideClick]);
 
   // Window scroll — capture phase, passive. Opt-in for ContextMenu.
@@ -124,7 +123,6 @@ export function useFloatingDismiss(config: FloatingDismissConfig): void {
       configRef.current.onDismiss();
     };
     window.addEventListener('scroll', handleScroll, { capture: true, passive: true });
-    return () =>
-      window.removeEventListener('scroll', handleScroll, { capture: true });
+    return () => window.removeEventListener('scroll', handleScroll, { capture: true });
   }, [config.open, config.closeOnScroll]);
 }

@@ -47,36 +47,34 @@ export interface DataRowProps extends HTMLAttributes<HTMLDivElement> {
   responsive?: boolean;
 }
 
-export const DataRow = forwardRef<HTMLDivElement, DataRowProps>(
-  function DataRow(
-    { label, value, children, responsive = true, className, ...rest },
-    ref,
-  ) {
-    const slot = children ?? value;
+export const DataRow = forwardRef<HTMLDivElement, DataRowProps>(function DataRow(
+  { label, value, children, responsive = true, className, ...rest },
+  ref,
+) {
+  const slot = children ?? value;
 
-    return (
-      <Inline
-        ref={ref}
-        gap={3}
-        align="baseline"
-        justify="between"
-        collapseBelow={responsive ? 'md' : undefined}
-        className={cn(styles.root, className)}
-        {...rest}
-      >
-        <Text variant="caption" color="muted" className={styles.label}>
-          {label}
-        </Text>
-        <div className={styles.value}>
-          {typeof slot === 'string' || typeof slot === 'number' ? (
-            <Text variant="body" color="primary">
-              {slot}
-            </Text>
-          ) : (
-            slot
-          )}
-        </div>
-      </Inline>
-    );
-  },
-);
+  return (
+    <Inline
+      ref={ref}
+      gap={3}
+      align="baseline"
+      justify="between"
+      collapseBelow={responsive ? 'md' : undefined}
+      className={cn(styles.root, className)}
+      {...rest}
+    >
+      <Text variant="caption" color="muted" className={styles.label}>
+        {label}
+      </Text>
+      <div className={styles.value}>
+        {typeof slot === 'string' || typeof slot === 'number' ? (
+          <Text variant="body" color="primary">
+            {slot}
+          </Text>
+        ) : (
+          slot
+        )}
+      </div>
+    </Inline>
+  );
+});

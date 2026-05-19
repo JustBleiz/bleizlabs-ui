@@ -31,9 +31,7 @@ export function createFloatingContext<T>(
   function useFloatingContextValue(componentName: string): T {
     const ctx = useContext(Context);
     if (!ctx) {
-      throw new Error(
-        `${componentName} must be rendered inside a <${parentName}> parent.`,
-      );
+      throw new Error(`${componentName} must be rendered inside a <${parentName}> parent.`);
     }
     return ctx;
   }

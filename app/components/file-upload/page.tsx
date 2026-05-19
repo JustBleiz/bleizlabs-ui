@@ -1,10 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import {
-  FileUpload,
-  type FileRejection,
-} from '@/components/complex/FileUpload';
+import { FileUpload, type FileRejection } from '@/components/complex/FileUpload';
 import { FileChip } from '@/components/molecules/FileChip';
 import { Form, FormSubmit } from '@/components/complex/Form';
 import { Field, FieldLabel, FieldMessage } from '@/components/complex/Field';
@@ -43,9 +40,8 @@ export default function FileUploadPlayground() {
           FileUpload
         </Heading>
         <Text color="secondary">
-          Drop zone + native file input wrapper. Native File API + HTML5
-          drag/drop. Render-props children for full control over zero state,
-          drag-over visual, and browse trigger.
+          Drop zone + native file input wrapper. Native File API + HTML5 drag/drop. Render-props
+          children for full control over zero state, drag-over visual, and browse trigger.
         </Text>
         <Inline gap={2} wrap>
           <Badge color="info">complex/FileUpload</Badge>
@@ -70,9 +66,7 @@ export default function FileUploadPlayground() {
             {({ isDragging, openPicker }) => (
               <div className={styles.zoneContent}>
                 <Text>
-                  {isDragging
-                    ? 'Release to upload'
-                    : 'Drag a file here or click to browse'}
+                  {isDragging ? 'Release to upload' : 'Drag a file here or click to browse'}
                 </Text>
                 <Button
                   onClick={(event) => {
@@ -106,8 +100,8 @@ export default function FileUploadPlayground() {
           2. Multiple files (max 5)
         </Heading>
         <Text color="secondary">
-          Multiple selection with explicit cap. Excess files trigger{' '}
-          <code>too-many-files</code> rejection.
+          Multiple selection with explicit cap. Excess files trigger <code>too-many-files</code>{' '}
+          rejection.
         </Text>
         <div className={styles.demo}>
           <FileUpload
@@ -119,9 +113,7 @@ export default function FileUploadPlayground() {
           >
             {({ isDragging, openPicker }) => (
               <div className={styles.zoneContent}>
-                <Text>
-                  {isDragging ? 'Release to upload' : 'Drop up to 5 files'}
-                </Text>
+                <Text>{isDragging ? 'Release to upload' : 'Drop up to 5 files'}</Text>
                 <Button
                   onClick={(event) => {
                     event.stopPropagation();
@@ -143,9 +135,7 @@ export default function FileUploadPlayground() {
                   name={f.name}
                   size={f.size}
                   mimeType={f.type}
-                  onRemove={() =>
-                    setMulti((prev) => prev.filter((_, i) => i !== idx))
-                  }
+                  onRemove={() => setMulti((prev) => prev.filter((_, i) => i !== idx))}
                 />
               ))}
             </div>
@@ -167,8 +157,7 @@ export default function FileUploadPlayground() {
           3. Accept filter — PDF only
         </Heading>
         <Text color="secondary">
-          <code>accept=&quot;application/pdf&quot;</code> — non-PDF files
-          rejected.
+          <code>accept=&quot;application/pdf&quot;</code> — non-PDF files rejected.
         </Text>
         <div className={styles.demo}>
           <FileUpload
@@ -179,9 +168,7 @@ export default function FileUploadPlayground() {
           >
             {({ isDragging, openPicker }) => (
               <div className={styles.zoneContent}>
-                <Text>
-                  {isDragging ? 'Release to upload' : 'PDF documents only'}
-                </Text>
+                <Text>{isDragging ? 'Release to upload' : 'PDF documents only'}</Text>
                 <Button
                   onClick={(event) => {
                     event.stopPropagation();
@@ -198,12 +185,7 @@ export default function FileUploadPlayground() {
           {pdfs.length > 0 && (
             <div className={styles.fileList}>
               {pdfs.map((f, idx) => (
-                <FileChip
-                  key={`${f.name}-${idx}`}
-                  name={f.name}
-                  size={f.size}
-                  mimeType={f.type}
-                />
+                <FileChip key={`${f.name}-${idx}`} name={f.name} size={f.size} mimeType={f.type} />
               ))}
             </div>
           )}
@@ -216,8 +198,7 @@ export default function FileUploadPlayground() {
           4. Max size (1 MB)
         </Heading>
         <Text color="secondary">
-          <code>maxSize=1_000_000</code> — oversize files rejected with{' '}
-          <code>file-too-large</code>.
+          <code>maxSize=1_000_000</code> — oversize files rejected with <code>file-too-large</code>.
         </Text>
         <div className={styles.demo}>
           <FileUpload
@@ -228,9 +209,7 @@ export default function FileUploadPlayground() {
           >
             {({ isDragging, openPicker }) => (
               <div className={styles.zoneContent}>
-                <Text>
-                  {isDragging ? 'Release to upload' : 'Max 1 MB'}
-                </Text>
+                <Text>{isDragging ? 'Release to upload' : 'Max 1 MB'}</Text>
                 <Button
                   onClick={(event) => {
                     event.stopPropagation();
@@ -258,8 +237,7 @@ export default function FileUploadPlayground() {
             <Inline gap={2} wrap>
               <Badge color="warning">Rejected</Badge>
               <Text color="muted" variant="small">
-                {sizedRejects[0]?.file.name} —{' '}
-                {sizedRejects[0]?.reasons.join(', ')}
+                {sizedRejects[0]?.file.name} — {sizedRejects[0]?.reasons.join(', ')}
               </Text>
             </Inline>
           )}
@@ -272,8 +250,8 @@ export default function FileUploadPlayground() {
           5. Form integration (required + Field)
         </Heading>
         <Text color="secondary">
-          FileUpload nested inside <code>&lt;Field&gt;</code> participates in
-          native form validation. Required + FormData multipart.
+          FileUpload nested inside <code>&lt;Field&gt;</code> participates in native form
+          validation. Required + FormData multipart.
         </Text>
         <div className={styles.formDemo}>
           <Form
@@ -297,9 +275,7 @@ export default function FileUploadPlayground() {
                 {({ isDragging, openPicker }) => (
                   <div className={styles.zoneContent}>
                     <Text>
-                      {isDragging
-                        ? 'Release to attach'
-                        : 'PDF or image — drop or browse'}
+                      {isDragging ? 'Release to attach' : 'PDF or image — drop or browse'}
                     </Text>
                     <Button
                       onClick={(event) => {
@@ -314,9 +290,7 @@ export default function FileUploadPlayground() {
                   </div>
                 )}
               </FileUpload>
-              <FieldMessage match="valueMissing">
-                Attachment is required
-              </FieldMessage>
+              <FieldMessage match="valueMissing">Attachment is required</FieldMessage>
             </Field>
             <FormSubmit>Submit</FormSubmit>
             {submitted != null && (
@@ -337,9 +311,8 @@ export default function FileUploadPlayground() {
           6. Error state (image only, max 1 MB)
         </Heading>
         <Text color="secondary">
-          Combined constraints — accept filter <em>and</em> maxSize. Each
-          rejection carries an ordered <code>reasons</code> array (most
-          specific first).
+          Combined constraints — accept filter <em>and</em> maxSize. Each rejection carries an
+          ordered <code>reasons</code> array (most specific first).
         </Text>
         <div className={styles.demo}>
           <FileUpload
@@ -392,16 +365,14 @@ export default function FileUploadPlayground() {
           7. Disabled state
         </Heading>
         <Text color="secondary">
-          <code>disabled</code> blocks drag, click, and picker. Drop zone
-          remains focusable so AT can announce its state.
+          <code>disabled</code> blocks drag, click, and picker. Drop zone remains focusable so AT
+          can announce its state.
         </Text>
         <div className={styles.demo}>
           <FileUpload disabled aria-label="Disabled file upload">
             {({ disabled }) => (
               <div className={styles.zoneContent}>
-                <Text color={disabled ? 'muted' : 'primary'}>
-                  Uploads currently disabled
-                </Text>
+                <Text color={disabled ? 'muted' : 'primary'}>Uploads currently disabled</Text>
               </div>
             )}
           </FileUpload>

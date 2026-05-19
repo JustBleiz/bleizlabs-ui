@@ -67,7 +67,7 @@ test('ArrowDown skips disabled items', async ({ page }) => {
   for (let i = 0; i < 10; i++) {
     await page.keyboard.press('ArrowDown');
     const ariaDisabled = await page.evaluate(() =>
-      document.activeElement?.getAttribute('aria-disabled')
+      document.activeElement?.getAttribute('aria-disabled'),
     );
     expect(ariaDisabled).not.toBe('true');
   }
@@ -79,7 +79,7 @@ test('typeahead jumps to matching item', async ({ page }) => {
   await page.keyboard.press('d');
   // Should land on an item starting with 'd' (e.g., "Delete", "Duplicate")
   const active = await page.evaluate(() =>
-    document.activeElement?.textContent?.toLowerCase().startsWith('d')
+    document.activeElement?.textContent?.toLowerCase().startsWith('d'),
   );
   expect(active).toBe(true);
 });

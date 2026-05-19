@@ -251,11 +251,7 @@ export function ContextMenuTrigger({
   }
 
   return (
-    <div
-      className={className}
-      onPointerDown={handlePointerDown}
-      onContextMenu={handleContextMenu}
-    >
+    <div className={className} onPointerDown={handlePointerDown} onContextMenu={handleContextMenu}>
       {children}
     </div>
   );
@@ -265,16 +261,18 @@ export function ContextMenuTrigger({
 // ContextMenuContent — portal + position at cursor + keyboard handler + dismiss
 // ──────────────────────────────────────────────────────────────────────────
 
-const MENU_ITEM_SELECTOR = [
-  '[role="menuitem"]:not([aria-disabled="true"]):not([disabled])',
-].join(',');
+const MENU_ITEM_SELECTOR = ['[role="menuitem"]:not([aria-disabled="true"]):not([disabled])'].join(
+  ',',
+);
 
 function getMenuItems(container: HTMLElement): HTMLButtonElement[] {
   return Array.from(container.querySelectorAll<HTMLButtonElement>(MENU_ITEM_SELECTOR));
 }
 
-export interface ContextMenuContentProps
-  extends Omit<HTMLAttributes<HTMLDivElement>, 'role' | 'aria-modal'> {
+export interface ContextMenuContentProps extends Omit<
+  HTMLAttributes<HTMLDivElement>,
+  'role' | 'aria-modal'
+> {
   children?: ReactNode;
   className?: string;
 }
@@ -436,12 +434,10 @@ export function ContextMenuContent({ children, className, ...rest }: ContextMenu
         }, 500);
 
         const buffer = typeaheadBufferRef.current;
-        const searchFrom =
-          activeIndex >= 0 ? activeIndex + (buffer.length === 1 ? 1 : 0) : 0;
+        const searchFrom = activeIndex >= 0 ? activeIndex + (buffer.length === 1 ? 1 : 0) : 0;
         const rotated = [...items.slice(searchFrom), ...items.slice(0, searchFrom)];
         const match = rotated.find((item) => {
-          const textValue =
-            item.getAttribute('data-text-value') ?? item.textContent ?? '';
+          const textValue = item.getAttribute('data-text-value') ?? item.textContent ?? '';
           return textValue.toLowerCase().startsWith(buffer);
         });
         if (match) {
@@ -500,8 +496,10 @@ export function ContextMenuContent({ children, className, ...rest }: ContextMenu
 // ContextMenuItem
 // ──────────────────────────────────────────────────────────────────────────
 
-export interface ContextMenuItemProps
-  extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'role' | 'onSelect'> {
+export interface ContextMenuItemProps extends Omit<
+  ButtonHTMLAttributes<HTMLButtonElement>,
+  'role' | 'onSelect'
+> {
   children: ReactNode;
   /**
    * Callback fired when the item is activated (click, Enter, Space). Receives

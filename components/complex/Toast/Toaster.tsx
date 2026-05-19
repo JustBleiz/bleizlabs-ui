@@ -228,11 +228,7 @@ export const Toaster = forwardRef<HTMLOListElement, ToasterProps>(function Toast
         {...rest}
       >
         {toasts.map((toastItem) => (
-          <ToastCard
-            key={toastItem.id}
-            item={toastItem}
-            closeButton={closeButton}
-          />
+          <ToastCard key={toastItem.id} item={toastItem} closeButton={closeButton} />
         ))}
       </ol>
     </FloatingPortal>
@@ -302,16 +298,10 @@ function ToastCard({ item, closeButton }: ToastCardProps) {
         ) : null}
         <div className={styles.content}>
           {item.title ? <div className={styles.title}>{item.title}</div> : null}
-          {item.description ? (
-            <div className={styles.description}>{item.description}</div>
-          ) : null}
+          {item.description ? <div className={styles.description}>{item.description}</div> : null}
         </div>
         {item.action ? (
-          <button
-            type="button"
-            className={styles.action}
-            onClick={handleActionClick}
-          >
+          <button type="button" className={styles.action} onClick={handleActionClick}>
             {item.action.label}
           </button>
         ) : null}
@@ -365,16 +355,36 @@ function defaultIconFor(variant: ToastVariant): ReactNode {
 
 function SuccessIcon() {
   return (
-    <svg width="18" height="18" viewBox="0 0 20 20" fill="none" aria-hidden="true" focusable="false">
+    <svg
+      width="18"
+      height="18"
+      viewBox="0 0 20 20"
+      fill="none"
+      aria-hidden="true"
+      focusable="false"
+    >
       <circle cx="10" cy="10" r="8" stroke="currentColor" strokeWidth="1.5" />
-      <path d="M6.5 10.5l2.5 2.5 4.5-5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+      <path
+        d="M6.5 10.5l2.5 2.5 4.5-5"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
     </svg>
   );
 }
 
 function ErrorIcon() {
   return (
-    <svg width="18" height="18" viewBox="0 0 20 20" fill="none" aria-hidden="true" focusable="false">
+    <svg
+      width="18"
+      height="18"
+      viewBox="0 0 20 20"
+      fill="none"
+      aria-hidden="true"
+      focusable="false"
+    >
       <circle cx="10" cy="10" r="8" stroke="currentColor" strokeWidth="1.5" />
       <path d="M7 7l6 6M13 7l-6 6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
     </svg>
@@ -383,25 +393,61 @@ function ErrorIcon() {
 
 function WarningIcon() {
   return (
-    <svg width="18" height="18" viewBox="0 0 20 20" fill="none" aria-hidden="true" focusable="false">
-      <path d="M10 2.5L18 16H2L10 2.5z" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round" />
-      <path d="M10 8v3.5M10 13.5v.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+    <svg
+      width="18"
+      height="18"
+      viewBox="0 0 20 20"
+      fill="none"
+      aria-hidden="true"
+      focusable="false"
+    >
+      <path
+        d="M10 2.5L18 16H2L10 2.5z"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M10 8v3.5M10 13.5v.5"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+      />
     </svg>
   );
 }
 
 function InfoIcon() {
   return (
-    <svg width="18" height="18" viewBox="0 0 20 20" fill="none" aria-hidden="true" focusable="false">
+    <svg
+      width="18"
+      height="18"
+      viewBox="0 0 20 20"
+      fill="none"
+      aria-hidden="true"
+      focusable="false"
+    >
       <circle cx="10" cy="10" r="8" stroke="currentColor" strokeWidth="1.5" />
-      <path d="M10 9.5V14M10 6.5v.01" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+      <path
+        d="M10 9.5V14M10 6.5v.01"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+      />
     </svg>
   );
 }
 
 function CloseIcon() {
   return (
-    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true" focusable="false">
+    <svg
+      width="14"
+      height="14"
+      viewBox="0 0 14 14"
+      fill="none"
+      aria-hidden="true"
+      focusable="false"
+    >
       <path d="M3 3l8 8M11 3l-8 8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
     </svg>
   );

@@ -43,9 +43,7 @@ test.describe('DataTable — regressions', () => {
     });
     await page.goto('/components/data-table');
     await page.waitForLoadState('networkidle');
-    const hydrationWarnings = warnings.filter((w) =>
-      w.toLowerCase().includes('hydration'),
-    );
+    const hydrationWarnings = warnings.filter((w) => w.toLowerCase().includes('hydration'));
     expect(hydrationWarnings).toHaveLength(0);
   });
 
@@ -59,15 +57,11 @@ test.describe('DataTable — regressions', () => {
     });
     await page.reload();
     await page.waitForLoadState('networkidle');
-    const hydrationWarnings = warnings.filter((w) =>
-      w.toLowerCase().includes('hydration'),
-    );
+    const hydrationWarnings = warnings.filter((w) => w.toLowerCase().includes('hydration'));
     expect(hydrationWarnings).toHaveLength(0);
   });
 
-  test('DT-RG03 — controlled selectedRows external update propagates', async ({
-    page,
-  }) => {
+  test('DT-RG03 — controlled selectedRows external update propagates', async ({ page }) => {
     await page.goto('/components/data-table');
     const grids = allGrids(page);
     const grid = grids.nth(2);
@@ -125,9 +119,7 @@ test.describe('DataTable — regressions', () => {
     await expect(grid).toBeVisible();
   });
 
-  test('DT-RG07 — global filter clear via backspace does not crash', async ({
-    page,
-  }) => {
+  test('DT-RG07 — global filter clear via backspace does not crash', async ({ page }) => {
     await page.goto('/components/data-table');
     const search = page.getByRole('textbox', { name: /Global search/i });
     await search.scrollIntoViewIfNeeded();
@@ -172,9 +164,7 @@ test.describe('DataTable — regressions', () => {
     expect(dialogFired).toBe(false);
   });
 
-  test('DT-RG10 — Tab order: header buttons reachable before body', async ({
-    page,
-  }) => {
+  test('DT-RG10 — Tab order: header buttons reachable before body', async ({ page }) => {
     await page.goto('/components/data-table');
     const grids = allGrids(page);
     const grid = grids.nth(1);
@@ -183,9 +173,7 @@ test.describe('DataTable — regressions', () => {
     await expect(firstSortBtn).toBeFocused();
   });
 
-  test('DT-RG11 — expanded content not part of roving tabindex set', async ({
-    page,
-  }) => {
+  test('DT-RG11 — expanded content not part of roving tabindex set', async ({ page }) => {
     await page.goto('/components/data-table');
     const grids = allGrids(page);
     const grid = grids.nth(3);
@@ -194,7 +182,9 @@ test.describe('DataTable — regressions', () => {
     await expandBtn.click();
     await page.waitForTimeout(100);
     // Expanded content's children should not carry tabindex=0 belonging to grid roving
-    const rovingCount = await grid.locator(':is([role="gridcell"], [role="columnheader"])[tabindex="0"]').count();
+    const rovingCount = await grid
+      .locator(':is([role="gridcell"], [role="columnheader"])[tabindex="0"]')
+      .count();
     expect(rovingCount).toBe(1);
   });
 
@@ -204,8 +194,12 @@ test.describe('DataTable — regressions', () => {
     const grid1 = grids.first();
     const grid2 = grids.nth(1);
     await grid1.locator('[role="gridcell"]').first().focus();
-    const grid1Roving = await grid1.locator(':is([role="gridcell"], [role="columnheader"])[tabindex="0"]').count();
-    const grid2Roving = await grid2.locator(':is([role="gridcell"], [role="columnheader"])[tabindex="0"]').count();
+    const grid1Roving = await grid1
+      .locator(':is([role="gridcell"], [role="columnheader"])[tabindex="0"]')
+      .count();
+    const grid2Roving = await grid2
+      .locator(':is([role="gridcell"], [role="columnheader"])[tabindex="0"]')
+      .count();
     expect(grid1Roving).toBe(1);
     expect(grid2Roving).toBe(1);
   });
@@ -224,9 +218,7 @@ test.describe('DataTable — regressions', () => {
     await expect(grid).toBeVisible();
   });
 
-  test('DT-RG14 — sticky header has position:sticky in computed style', async ({
-    page,
-  }) => {
+  test('DT-RG14 — sticky header has position:sticky in computed style', async ({ page }) => {
     await page.goto('/components/data-table');
     const grids = allGrids(page);
     const grid = grids.nth(3);
@@ -241,9 +233,7 @@ test.describe('DataTable — regressions', () => {
     expect(position).toBe('sticky');
   });
 
-  test('DT-RG15 — Space on row checkbox does not also trigger row click', async ({
-    page,
-  }) => {
+  test('DT-RG15 — Space on row checkbox does not also trigger row click', async ({ page }) => {
     await page.goto('/components/data-table');
     let dialogFired = false;
     page.on('dialog', async (d) => {
@@ -259,9 +249,7 @@ test.describe('DataTable — regressions', () => {
     expect(dialogFired).toBe(false);
   });
 
-  test('DT-RG16 — small data + pagination=false: no footer crash', async ({
-    page,
-  }) => {
+  test('DT-RG16 — small data + pagination=false: no footer crash', async ({ page }) => {
     await page.goto('/components/data-table');
     const grid = allGrids(page).first();
     await expect(grid).toBeVisible();
@@ -270,9 +258,7 @@ test.describe('DataTable — regressions', () => {
     expect(await pagination.count()).toBe(0);
   });
 
-  test('DT-RG17 — searching while sorted preserves sort indicator', async ({
-    page,
-  }) => {
+  test('DT-RG17 — searching while sorted preserves sort indicator', async ({ page }) => {
     await page.goto('/components/data-table');
     const grids = allGrids(page);
     const grid = grids.nth(1);
@@ -300,9 +286,7 @@ test.describe('DataTable — regressions', () => {
     expect(selected).toBeGreaterThanOrEqual(1);
   });
 
-  test('DT-RG19 — toggle density + RTL + striped in sequence is stable', async ({
-    page,
-  }) => {
+  test('DT-RG19 — toggle density + RTL + striped in sequence is stable', async ({ page }) => {
     await page.goto('/components/data-table');
     const errors: string[] = [];
     page.on('pageerror', (e) => errors.push(e.message));
@@ -319,9 +303,7 @@ test.describe('DataTable — regressions', () => {
     expect(errors).toEqual([]);
   });
 
-  test('DT-RG20 — axe-core passes after sort + filter + select sequence', async ({
-    page,
-  }) => {
+  test('DT-RG20 — axe-core passes after sort + filter + select sequence', async ({ page }) => {
     await page.goto('/components/data-table');
     const grids = allGrids(page);
     const sortableGrid = grids.nth(1);

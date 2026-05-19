@@ -11,9 +11,7 @@ import type { Page, Locator } from '@playwright/test';
 export function zoneBy(page: Page, ariaLabel: string): Locator {
   // Drop zone is a plain <div tabIndex={0} aria-label> (NOT role="button" —
   // would trigger axe nested-interactive vs. consumer-rendered Browse button).
-  return page.locator(
-    `div[tabindex][aria-label="${ariaLabel}"]`,
-  );
+  return page.locator(`div[tabindex][aria-label="${ariaLabel}"]`);
 }
 
 export function hiddenInputOf(zone: Locator): Locator {

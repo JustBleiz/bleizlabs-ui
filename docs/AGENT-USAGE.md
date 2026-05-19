@@ -85,23 +85,27 @@ Three cascade layers, override the one matching your scope:
 
 // 1. Quick reskin — override semantic tokens at :root
 :root {
-  --color-brand:        #00E0B8;
-  --color-accent:       #7C3AED;
-  --radius-md:          12px;
-  --font-primary:       'YourFont', system-ui, sans-serif;
+  --color-brand: #00e0b8;
+  --color-accent: #7c3aed;
+  --radius-md: 12px;
+  --font-primary: 'YourFont', system-ui, sans-serif;
 }
 
 // 2. Dark theme overrides
 [data-theme='dark'] {
-  --color-surface:      #0a0a0a;
+  --color-surface: #0a0a0a;
   --color-text-primary: #fafafa;
 }
 
 // 3. Deep reskin — override SEEDS (every scale + shadow + hover state cascades)
 @use '@bleizlabs/ui/styles' with (
-  $seed-brand:        #00E0B8,
-  $seed-accent:       #7C3AED,
-  $seed-font-primary: ('YourFont', system-ui, sans-serif),
+  $seed-brand: #00e0b8,
+  $seed-accent: #7c3aed,
+  $seed-font-primary: (
+    'YourFont',
+    system-ui,
+    sans-serif,
+  )
 );
 ```
 
@@ -155,7 +159,7 @@ import { Button } from '@bleizlabs/ui';
 
 <Button asChild>
   <Link href="/dashboard">Open dashboard</Link>
-</Button>
+</Button>;
 ```
 
 ```tsx
@@ -163,10 +167,8 @@ import { Button } from '@bleizlabs/ui';
 import { Card } from '@bleizlabs/ui';
 
 <Card asChild>
-  <article>
-    {/* card visual treatment + article semantics */}
-  </article>
-</Card>
+  <article>{/* card visual treatment + article semantics */}</article>
+</Card>;
 ```
 
 ```tsx
@@ -175,7 +177,7 @@ import { Heading, Anchor } from '@bleizlabs/ui';
 
 <Heading level={2} asChild>
   <Anchor href="/section">Section title that links</Anchor>
-</Heading>
+</Heading>;
 ```
 
 Hard rule: `asChild` accepts **exactly one** React element child. Two children, a fragment with multiple elements, or a string-only child will throw at runtime. The child must accept `className` and `ref` (functional components: use ref-as-prop or `forwardRef`).
@@ -248,7 +250,9 @@ import { ProjectCard } from '@/_components/shared/organisms/ProjectCard';
 export function ProjectsList({ projects }: { projects: Project[] }) {
   return (
     <Stack gap={3}>
-      {projects.map((p) => <ProjectCard key={p.id} project={p} />)}
+      {projects.map((p) => (
+        <ProjectCard key={p.id} project={p} />
+      ))}
     </Stack>
   );
 }
@@ -291,14 +295,16 @@ import { Stack, Inline, Container, Section, Heading } from '@bleizlabs/ui';
 <Section tag="section" aria-labelledby="hero-heading">
   <Container size="lg">
     <Stack gap={6}>
-      <Heading level={1} id="hero-heading">Title</Heading>
+      <Heading level={1} id="hero-heading">
+        Title
+      </Heading>
       <Inline gap={3} wrap>
         <Button>Primary</Button>
         <Button variant="ghost">Secondary</Button>
       </Inline>
     </Stack>
   </Container>
-</Section>
+</Section>;
 ```
 
 `gap` accepts numeric scale (matches `--space-{0..20}` Tailwind 4px scale: 1=4px, 2=8px, 3=12px, 4=16px, 6=24px, 8=32px, 10=40px). `Stack` defaults to vertical, `Inline` to horizontal — flip via `direction` prop if needed but it's almost always cleaner to pick the right component.
@@ -333,7 +339,11 @@ Anti-pattern: raw `<h1>`, `<h2>`, `<h3>` in `.tsx` — always `<Heading level={N
 ```tsx
 import { Form, Field, Input, Select, Combobox, Checkbox, Button } from '@bleizlabs/ui';
 
-<Form onSubmit={async (data) => { await save(data); }}>
+<Form
+  onSubmit={async (data) => {
+    await save(data);
+  }}
+>
   <Field name="email" required>
     <Field.Label>Email</Field.Label>
     <Input type="email" placeholder="you@example.com" />
@@ -344,7 +354,12 @@ import { Form, Field, Input, Select, Combobox, Checkbox, Button } from '@bleizla
 
   <Field name="role">
     <Field.Label>Role</Field.Label>
-    <Combobox items={[{ value: 'admin', label: 'Admin' }, { value: 'editor', label: 'Editor' }]} />
+    <Combobox
+      items={[
+        { value: 'admin', label: 'Admin' },
+        { value: 'editor', label: 'Editor' },
+      ]}
+    />
   </Field>
 
   <Field name="terms">
@@ -352,7 +367,7 @@ import { Form, Field, Input, Select, Combobox, Checkbox, Button } from '@bleizla
   </Field>
 
   <Button type="submit">Submit</Button>
-</Form>
+</Form>;
 ```
 
 `<Form>` reads via FormData on submit — no manual `useState` per field. `<Field.Message match="...">` maps to native ValidityState keys (`valueMissing`, `typeMismatch`, `tooShort`, `patternMismatch`, etc.) plus custom validators. The `<Field>` compound handles label association, aria-describedby, and aria-invalid wiring automatically.
@@ -378,7 +393,7 @@ import { Card, CardHeader, CardBody, Heading, Text, Badge, KpiValue, Avatar } fr
     <KpiValue value={42} unit="tasks" delta={+12} deltaTone="positive" />
     <Text color="secondary">12 added this week</Text>
   </CardBody>
-</Card>
+</Card>;
 ```
 
 `Card` is a surface, not a styled organism — projects compose `<Card>` + atoms into project-specific organisms like `<ProjectCard project={data}>`. The lib does not ship preset `<StatsCard>` / `<ActionCard>` / `<IconHeaderCard>` — those were deprecated in 0.16.0 in favor of consumer composition.
@@ -427,11 +442,17 @@ import { Dialog } from '@bleizlabs/ui';
     <Dialog.Title>Confirm action</Dialog.Title>
     <Dialog.Description>This cannot be undone.</Dialog.Description>
     <Inline gap={3} justify="end">
-      <Dialog.Cancel asChild><Button variant="ghost">Cancel</Button></Dialog.Cancel>
-      <Dialog.Confirm asChild><Button variant="danger" onClick={handleDelete}>Delete</Button></Dialog.Confirm>
+      <Dialog.Cancel asChild>
+        <Button variant="ghost">Cancel</Button>
+      </Dialog.Cancel>
+      <Dialog.Confirm asChild>
+        <Button variant="danger" onClick={handleDelete}>
+          Delete
+        </Button>
+      </Dialog.Confirm>
     </Inline>
   </Dialog.Content>
-</Dialog>
+</Dialog>;
 ```
 
 All overlay primitives use the same in-house `useFloating` + `computePosition` engine + `useFocusTrap` + dismiss helper. Hydration is mount-gated (see D.4) — no SSR warnings.
@@ -450,11 +471,15 @@ import { DataTable } from '@bleizlabs/ui';
   columns={[
     { id: 'name', header: 'Name', accessor: (row) => row.name, sortable: true },
     { id: 'client', header: 'Client', accessor: (row) => row.client.name, sortable: true },
-    { id: 'stage', header: 'Stage', cell: (row) => <Badge color={stageColor(row.stage)}>{row.stage}</Badge> },
+    {
+      id: 'stage',
+      header: 'Stage',
+      cell: (row) => <Badge color={stageColor(row.stage)}>{row.stage}</Badge>,
+    },
   ]}
   pagination={{ pageSize: 20 }}
   selection={{ mode: 'multiple' }}
-/>
+/>;
 ```
 
 `DataTable` is a **generic-data** primitive — accepts any row shape, columns are configured. It's NOT a business-domain organism (`<ProjectsTable>` lives in your project, composing `<DataTable>` with project-specific columns). For >500 rows, pair with `@tanstack/virtual` for windowing.
@@ -504,14 +529,7 @@ These small primitives close common dashboard / panel / marketing-site patterns.
 ```tsx
 import { LineChart } from '@bleizlabs/ui';
 
-<LineChart
-  data={metrics}
-  xKey="date"
-  yKey="value"
-  height={240}
-  showGrid
-  showTooltip
-/>
+<LineChart data={metrics} xKey="date" yKey="value" height={240} showGrid showTooltip />;
 ```
 
 For **>500 points** (high-frequency time series, scatter plots with thousands of marks, 3D viz, real-time streaming): bring D3 directly or use Recharts/Chart.js. The lib's charts are for typical dashboard cards, not analytics products.
@@ -558,16 +576,16 @@ Top-10 fixed anti-patterns (also in `AGENTS.md`), expanded with fix recipes:
 
 Things the lib intentionally does NOT ship. Bring these externally if you need them:
 
-| Concern | Recommended external | Why lib doesn't ship |
-|---|---|---|
-| Drag and drop | `dnd-kit` | Vast scope, headless preference, lib stays UI-primitive focused |
-| Rich text editor | `lexical` or `tiptap` | Editor is a product, not a primitive |
-| Advanced calendar / planning widgets beyond DatePicker | `fullcalendar` | Domain-specific app, not a primitive |
-| 3D / advanced viz beyond 5 chart primitives | `d3` direct | Too domain-specific for a universal library |
-| Tree view (file explorer / nested hierarchy) | No recommendation yet | Borderline; check CHANGELOG for current status |
-| Color picker | Bring your own | Niche, app-specific |
-| Virtualized list / large grid (>500 rows) | `@tanstack/virtual` paired with `<DataTable>` | Virtualization concern orthogonal to grid primitive |
-| Animation library beyond `<Reveal>` | `framer-motion` if you need complex orchestration | `<Reveal>` covers scroll-trigger; complex animation is consumer choice |
+| Concern                                                | Recommended external                              | Why lib doesn't ship                                                   |
+| ------------------------------------------------------ | ------------------------------------------------- | ---------------------------------------------------------------------- |
+| Drag and drop                                          | `dnd-kit`                                         | Vast scope, headless preference, lib stays UI-primitive focused        |
+| Rich text editor                                       | `lexical` or `tiptap`                             | Editor is a product, not a primitive                                   |
+| Advanced calendar / planning widgets beyond DatePicker | `fullcalendar`                                    | Domain-specific app, not a primitive                                   |
+| 3D / advanced viz beyond 5 chart primitives            | `d3` direct                                       | Too domain-specific for a universal library                            |
+| Tree view (file explorer / nested hierarchy)           | No recommendation yet                             | Borderline; check CHANGELOG for current status                         |
+| Color picker                                           | Bring your own                                    | Niche, app-specific                                                    |
+| Virtualized list / large grid (>500 rows)              | `@tanstack/virtual` paired with `<DataTable>`     | Virtualization concern orthogonal to grid primitive                    |
+| Animation library beyond `<Reveal>`                    | `framer-motion` if you need complex orchestration | `<Reveal>` covers scroll-trigger; complex animation is consumer choice |
 
 If you're working on a feature that genuinely needs one of the above, install the external lib directly. The cheat-sheet's job is to keep you from re-inventing what the lib ships, not to stop you from using the rest of the ecosystem.
 
@@ -577,28 +595,28 @@ If you're working on a feature that genuinely needs one of the above, install th
 
 Top-20 reached patterns, one-liner each:
 
-| Want | Use |
-|---|---|
-| Vertical layout | `<Stack gap={N}>` |
-| Horizontal layout | `<Inline gap={N}>` |
-| Page width constraint | `<Container size="lg">` |
-| Section landmark | `<Section tag="section" aria-labelledby="...">` |
-| Headings | `<Heading level={N} size="...">` (level = semantics, size = visual) |
-| Body text | `<Text variant="body" color="secondary">` |
-| Inline link | `<Anchor href="...">` or `<Anchor asChild><Link href="..." /></Anchor>` |
-| Button | `<Button variant="primary|ghost|danger" size="sm|md|lg">` |
-| Polymorphic render | `<Component asChild><CustomElement /></Component>` |
-| Surface container | `<Card padding={N} radius="md|lg|xl">` |
-| Status indicator | `<Badge color="success|warning|danger|info|brand|neutral">` |
-| Avatar with initials fallback | `<Avatar src="..." name="..." />` |
-| Imperative notification | `toast.success('...')` (after `<Toaster>` mounted once) |
-| Modal | `<Dialog><Dialog.Trigger /><Dialog.Content>...</Dialog.Content></Dialog>` |
-| Side panel | `<Sheet side="right">` |
-| Tooltip on hover | `<Tooltip content="..."><Button>...</Button></Tooltip>` |
-| Form with native validation | `<Form><Field name="..."><Field.Label /><Input /><Field.Message match="..." /></Field></Form>` |
-| Data grid | `<DataTable data={...} columns={[...]} pagination={{...}} />` |
-| Reveal on scroll | `<Reveal tag="section">...</Reveal>` |
-| Loading skeleton | `<Skeleton height={N} width={N|"100%"} />` |
+| Want                          | Use                                                                                            |
+| ----------------------------- | ---------------------------------------------------------------------------------------------- | ----------- | ---------------- | ---- | ----- | ---------- |
+| Vertical layout               | `<Stack gap={N}>`                                                                              |
+| Horizontal layout             | `<Inline gap={N}>`                                                                             |
+| Page width constraint         | `<Container size="lg">`                                                                        |
+| Section landmark              | `<Section tag="section" aria-labelledby="...">`                                                |
+| Headings                      | `<Heading level={N} size="...">` (level = semantics, size = visual)                            |
+| Body text                     | `<Text variant="body" color="secondary">`                                                      |
+| Inline link                   | `<Anchor href="...">` or `<Anchor asChild><Link href="..." /></Anchor>`                        |
+| Button                        | `<Button variant="primary                                                                      | ghost       | danger" size="sm | md   | lg">` |
+| Polymorphic render            | `<Component asChild><CustomElement /></Component>`                                             |
+| Surface container             | `<Card padding={N} radius="md                                                                  | lg          | xl">`            |
+| Status indicator              | `<Badge color="success                                                                         | warning     | danger           | info | brand | neutral">` |
+| Avatar with initials fallback | `<Avatar src="..." name="..." />`                                                              |
+| Imperative notification       | `toast.success('...')` (after `<Toaster>` mounted once)                                        |
+| Modal                         | `<Dialog><Dialog.Trigger /><Dialog.Content>...</Dialog.Content></Dialog>`                      |
+| Side panel                    | `<Sheet side="right">`                                                                         |
+| Tooltip on hover              | `<Tooltip content="..."><Button>...</Button></Tooltip>`                                        |
+| Form with native validation   | `<Form><Field name="..."><Field.Label /><Input /><Field.Message match="..." /></Field></Form>` |
+| Data grid                     | `<DataTable data={...} columns={[...]} pagination={{...}} />`                                  |
+| Reveal on scroll              | `<Reveal tag="section">...</Reveal>`                                                           |
+| Loading skeleton              | `<Skeleton height={N} width={N                                                                 | "100%"} />` |
 
 ---
 
@@ -606,18 +624,18 @@ Top-20 reached patterns, one-liner each:
 
 Common failure modes + fixes:
 
-| Symptom | Cause | Fix |
-|---|---|---|
-| `Error: Slot expects a single React element child` | `asChild` got multiple children, a Fragment with multiple elements, or a string-only child | Wrap in a single element: `<Button asChild><a href="...">...</a></Button>`. One child only. |
-| Hydration mismatch warning on `<DateTimePicker>` | Server-rendered date format ≠ client locale | Pass `value` as ISO string; let the lib's Intl format on client. Avoid local `new Date()` derivations during render. |
-| Token override not cascading | Override placed in `:root` of a CSS module (scoped) instead of `app/globals.scss` (global) | Move to `app/globals.scss` — semantic token overrides belong global. |
-| `<Field.Message match="...">` never shows | `match` key doesn't match the actual ValidityState property | Use exact `valueMissing` / `typeMismatch` / `tooShort` / `patternMismatch` / `rangeOverflow` / `rangeUnderflow` / `stepMismatch` / `badInput` / `customError` keys. |
-| `'use client' must be the first directive` build error | `'use client'` placed after imports or comments not stripped first | Move directive to line 1 of the file. Block comments before are OK; imports must come after. |
-| Phase 7.1 mirror-SCSS warning | Same `.module.scss` rules in 2+ consumer files | Extract shared component to `app/_components/shared/<layer>/<Name>/` per Q3. |
-| `library-first-guard` warning on Edit | Raw `<button>` / `<input>` / `<h1-6>` / local atom shadowing in `.tsx` | Import the lib atom. To suppress for a specific line (rare, justified case): `// @library-first-skip` comment above the raw element. |
-| `scss-important-guard` warning | `!important` in `.module.scss` without justification | Refactor to component variant or `className` passthrough. If genuinely necessary: `// @important-ok: <reason>` comment on the same line. |
-| `<Anchor asChild>` + Next.js `<Link>` + typedRoutes TS error | `<Link href>` is union-typed when `typedRoutes: true`; Anchor's `href` is `string` | Drop `href` from `<Anchor>` and let `<Link href>` provide it: `<Anchor asChild><Link href="/dashboard">...</Link></Anchor>` |
-| Toast appears server-side then re-renders | `toast(...)` called during render instead of in effect / event handler | `toast` is imperative — call in `useEffect`, event handler, or after `await` inside an action. Never in render. |
+| Symptom                                                      | Cause                                                                                      | Fix                                                                                                                                                                 |
+| ------------------------------------------------------------ | ------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `Error: Slot expects a single React element child`           | `asChild` got multiple children, a Fragment with multiple elements, or a string-only child | Wrap in a single element: `<Button asChild><a href="...">...</a></Button>`. One child only.                                                                         |
+| Hydration mismatch warning on `<DateTimePicker>`             | Server-rendered date format ≠ client locale                                                | Pass `value` as ISO string; let the lib's Intl format on client. Avoid local `new Date()` derivations during render.                                                |
+| Token override not cascading                                 | Override placed in `:root` of a CSS module (scoped) instead of `app/globals.scss` (global) | Move to `app/globals.scss` — semantic token overrides belong global.                                                                                                |
+| `<Field.Message match="...">` never shows                    | `match` key doesn't match the actual ValidityState property                                | Use exact `valueMissing` / `typeMismatch` / `tooShort` / `patternMismatch` / `rangeOverflow` / `rangeUnderflow` / `stepMismatch` / `badInput` / `customError` keys. |
+| `'use client' must be the first directive` build error       | `'use client'` placed after imports or comments not stripped first                         | Move directive to line 1 of the file. Block comments before are OK; imports must come after.                                                                        |
+| Phase 7.1 mirror-SCSS warning                                | Same `.module.scss` rules in 2+ consumer files                                             | Extract shared component to `app/_components/shared/<layer>/<Name>/` per Q3.                                                                                        |
+| `library-first-guard` warning on Edit                        | Raw `<button>` / `<input>` / `<h1-6>` / local atom shadowing in `.tsx`                     | Import the lib atom. To suppress for a specific line (rare, justified case): `// @library-first-skip` comment above the raw element.                                |
+| `scss-important-guard` warning                               | `!important` in `.module.scss` without justification                                       | Refactor to component variant or `className` passthrough. If genuinely necessary: `// @important-ok: <reason>` comment on the same line.                            |
+| `<Anchor asChild>` + Next.js `<Link>` + typedRoutes TS error | `<Link href>` is union-typed when `typedRoutes: true`; Anchor's `href` is `string`         | Drop `href` from `<Anchor>` and let `<Link href>` provide it: `<Anchor asChild><Link href="/dashboard">...</Link></Anchor>`                                         |
+| Toast appears server-side then re-renders                    | `toast(...)` called during render instead of in effect / event handler                     | `toast` is imperative — call in `useEffect`, event handler, or after `await` inside an action. Never in render.                                                     |
 
 When stuck: read the component's JSDoc directly (`node_modules/@bleizlabs/ui/components/<category>/<Name>/<Name>.tsx`). The JSDoc is the canonical per-prop reference.
 
@@ -628,6 +646,7 @@ When stuck: read the component's JSDoc directly (`node_modules/@bleizlabs/ui/com
 The full list of every component family in `manifest.json`. Auto-generated by `scripts/build-agent-inventory.mjs` — manual edits will be overwritten on next regeneration. Sort: by category, then alphabetical by family name within category.
 
 Column meanings:
+
 - **Component** — family name (the primary import).
 - **Category** — `manifest.json` category enum (display/feedback/interactive/layout/molecules/presets/specialized/typography/complex).
 - **Client?** — `yes` = family's primary file carries `'use client'` directive (component needs client runtime). `no` = renders as Server Component by default.
@@ -639,113 +658,113 @@ For utilities (Slot / cn / mergeRefs / VisuallyHidden) and type-only exports not
 <!-- INVENTORY:START — auto-generated by scripts/build-agent-inventory.mjs. Do not edit by hand. -->
 <!-- Generated from components/manifest.json at lib version 0.25.0. Component count: 106. -->
 
-| Component | Category | Client? | Import | One-line summary |
-|---|---|---|---|---|
-| `Container` | layout | no | `import { Container } from '@bleizlabs/ui'` | Container — max-width centered wrapper layout atom. |
-| `GridLayout` | layout | no | `import { GridLayout } from '@bleizlabs/ui'` | GridLayout — multi-column CSS Grid layout atom. |
-| `Inline` | layout | no | `import { Inline } from '@bleizlabs/ui'` | Inline — horizontal flex layout atom. |
-| `Section` | layout | no | `import { Section } from '@bleizlabs/ui'` | Section — full-width semantic band layout atom. |
-| `Stack` | layout | no | `import { Stack } from '@bleizlabs/ui'` | Stack — vertical flex layout atom. |
-| `Anchor` | typography | no | `import { Anchor } from '@bleizlabs/ui'` | Anchor — inline body-text link atom (v0.4.0). |
-| `Eyebrow` | typography | no | `import { Eyebrow } from '@bleizlabs/ui'` | Eyebrow — small uppercase atelier label with optional numeric prefix. |
-| `Heading` | typography | no | `import { Heading } from '@bleizlabs/ui'` | Heading — semantic heading element with decoupled visual size. |
-| `Mark` | typography | no | `import { Mark } from '@bleizlabs/ui'` | Mark — inline highlight atom. |
-| `Text` | typography | no | `import { Text } from '@bleizlabs/ui'` | Text — universal body text component. |
-| `AspectRatio` | display | no | `import { AspectRatio } from '@bleizlabs/ui'` | AspectRatio — media container with fixed aspect ratio (Phase 3 D8, Tier B). |
-| `Avatar` | display | no | `import { Avatar } from '@bleizlabs/ui'` | Avatar — user identity image with text-initials fallback (Phase 3 D5). |
-| `Badge` | display | no | `import { Badge } from '@bleizlabs/ui'` | Badge — small status / category indicator (klocek atom). |
-| `Card` | display | no | `import { Card } from '@bleizlabs/ui'` | Card — surface container atom (klocek display primitive). |
-| `CodeBlock` | display | yes | `import { CodeBlock } from '@bleizlabs/ui'` | CodeBlock — preformatted code surface with optional language badge, copy button, and line-number gutter. |
-| `EdgeBar` | display | no | `import { EdgeBar } from '@bleizlabs/ui'` | EdgeBar — absolute-positioned colored stripe along one edge of a `position: relative` parent. |
-| `IconBox` | display | no | `import { IconBox } from '@bleizlabs/ui'` | IconBox — square icon container with bg + color variants (Phase 3 D4). |
-| `KpiValue` | display | no | `import { KpiValue } from '@bleizlabs/ui'` | KpiValue — universal large-number metric display molecule (Server Component since v0.7.0; merged with PercentValue… |
-| `Reveal` | display | yes | `import { Reveal } from '@bleizlabs/ui'` | Reveal — scroll-triggered IntersectionObserver gate atom (Phase 3 D9, Tier B). |
-| `Separator` | display | no | `import { Separator } from '@bleizlabs/ui'` | Separator — divider line atom (Phase 3 D3, ex Divider per D24 rename). |
-| `Skeleton` | display | no | `import { Skeleton } from '@bleizlabs/ui'` | Skeleton — loading placeholder atom (Phase 3 D6). |
-| `Spinner` | display | no | `import { Spinner } from '@bleizlabs/ui'` | Spinner — inline loading indicator (Phase 3 D7). |
-| `Table` | display | no | `import { Table } from '@bleizlabs/ui'` | Table — semantic `<table>` primitive with base styling (Phase 11 CI23). |
-| `Accordion` | interactive | yes | `import { Accordion } from '@bleizlabs/ui'` | Accordion — disclosure panel with header trigger (Phase 4 I9). |
-| `Button` | interactive | no | `import { Button } from '@bleizlabs/ui'` | Button — primary interactive atom (Phase 4 I1). |
-| `ButtonGroup` | interactive | no | `import { ButtonGroup } from '@bleizlabs/ui'` | ButtonGroup — joined row/column of related buttons (Phase 4 I1.5). |
-| `Checkbox` | interactive | yes | `import { Checkbox } from '@bleizlabs/ui'` | Checkbox — boolean form input with custom styling (Phase 4 I4). |
-| `Input` | interactive | no | `import { Input } from '@bleizlabs/ui'` | Input — headless styled `<input>` wrapper (klocek atom, paradigm 1). |
-| `InputGroup` | interactive | no | `import { InputGroup } from '@bleizlabs/ui'` | InputGroup — multi-element form widget container (Phase 4 expansion E08, Layer 2 of D26). |
-| `Label` | interactive | no | `import { Label } from '@bleizlabs/ui'` | Label — form-coupled label element (Phase 4 I2.5, moved from Phase 2 in E05). |
-| `MaskedInput` | interactive | yes | `import { MaskedInput } from '@bleizlabs/ui'` | MaskedInput — pattern-masked text input (Phase 4 expansion E08, Layer 3 of D26). |
-| `NumberInput` | interactive | yes | `import { NumberInput } from '@bleizlabs/ui'` | NumberInput — locale-aware numeric form input (Phase 4 expansion E08, Layer 3 of D26). |
-| `PasswordInput` | interactive | yes | `import { PasswordInput } from '@bleizlabs/ui'` | PasswordInput — password form input with show/hide toggle and optional strength meter (Phase 4 expansion E08, Layer 3… |
-| `PhoneInput` | interactive | yes | `import { PhoneInput } from '@bleizlabs/ui'` | PhoneInput — telephone number input with mask presets (Phase 4 expansion E08, Layer 3 of D26). |
-| `RadioGroup` | interactive | yes | `import { RadioGroup } from '@bleizlabs/ui'` | RadioGroup — radio button group with shared name + value (Phase 4 I5). |
-| `Rating` | interactive | yes | `import { Rating } from '@bleizlabs/ui'` | Rating — APG radiogroup star-rating input primitive. |
-| `Switch` | interactive | yes | `import { Switch } from '@bleizlabs/ui'` | Switch — boolean toggle with animated thumb (Phase 4 I8, Tier A). |
-| `TagsInput` | interactive | yes | `import { TagsInput } from '@bleizlabs/ui'` | TagsInput — freeform tag input (E01.2 of 0.19.0 Forms expansion). |
-| `Textarea` | interactive | yes | `import { Textarea } from '@bleizlabs/ui'` | Textarea — multi-line text form input (Phase 4 I3). |
-| `TextLink` | interactive | no | `import { TextLink } from '@bleizlabs/ui'` | TextLink — inline atelier link atom (v0.4.2). |
-| `TimeInput` | interactive | yes | `import { TimeInput } from '@bleizlabs/ui'` | TimeInput — accessible 24h ISO time field rendered as a `role="group"` of `role="spinbutton"` inputs (hours, minutes,… |
-| `Toggle` | interactive | yes | `import { Toggle } from '@bleizlabs/ui'` | Toggle — single button with on/off state (Phase 4 I6). |
-| `ToggleGroup` | interactive | yes | `import { ToggleGroup } from '@bleizlabs/ui'` | ToggleGroup — group of Toggle children with single or multiple selection (Phase 4 I7). |
-| `Alert` | feedback | no | `import { Alert } from '@bleizlabs/ui'` | Alert — semantic feedback notification with 4 variants (klocek molecule). |
-| `Banner` | feedback | no | `import { Banner } from '@bleizlabs/ui'` | Banner — page-wide notification primitive. |
-| `Empty` | feedback | no | `import { Empty } from '@bleizlabs/ui'` | Empty — placeholder for empty lists / zero-result screens (klocek molecule). |
-| `Progress` | feedback | no | `import { Progress } from '@bleizlabs/ui'` | Progress — step indicator OR percent progress bar. |
-| `AnimatedCounter` | specialized | yes | `import { AnimatedCounter } from '@bleizlabs/ui'` | AnimatedCounter — count-up animation from 0 to a target value (Phase 6 P3). |
-| `AreaChart` | specialized | yes | `import { AreaChart } from '@bleizlabs/ui'` | AreaChart — multi-series SVG area chart (line + filled region below) with crosshair tooltip + keyboard data-point… |
-| `AvailabilityBar` | specialized | no | `import { AvailabilityBar } from '@bleizlabs/ui'` | AvailabilityBar — day-by-day status strip (Phase 6 P7, Tier B, server-safe). |
-| `BarChart` | specialized | no | `import { BarChart } from '@bleizlabs/ui'` | BarChart — universal single-series bar chart (Phase 6 P9, Tier B, server-safe). |
-| `Breadcrumb` | specialized | no | `import { Breadcrumb } from '@bleizlabs/ui'` | Breadcrumb — semantic navigation trail (Phase 6 P4, tier A, server-safe). |
-| `Dot` | specialized | no | `import { Dot } from '@bleizlabs/ui'` | Dot — small round status indicator (Phase 6 P1, core, server-safe). |
-| `Kbd` | specialized | no | `import { Kbd } from '@bleizlabs/ui'` | Kbd — keyboard shortcut key display (Phase 6 P8, Tier B, server-safe). |
-| `LineChart` | specialized | yes | `import { LineChart } from '@bleizlabs/ui'` | LineChart — multi-series SVG line chart with crosshair tooltip + keyboard data-point navigation + sr-only `<table>`… |
-| `MetricBar` | specialized | no | `import { MetricBar } from '@bleizlabs/ui'` | MetricBar — usage / capacity progress indicator (Phase 6 P2, core, server-safe). |
-| `Pagination` | specialized | yes | `import { Pagination } from '@bleizlabs/ui'` | Pagination — page navigation control (Phase 6 P5, tier A, `'use client'`). |
-| `PieChart` | specialized | yes | `import { PieChart } from '@bleizlabs/ui'` | PieChart — SVG pie chart with optional donut variant, segment hover + keyboard navigation, segment percentage labels,… |
-| `Sparkline` | specialized | yes | `import { Sparkline } from '@bleizlabs/ui'` | Sparkline — tiny inline single-series chart (line + optional filled area) for embedding in `<Card>`, table cells, KPI… |
-| `ThemeToggle` | specialized | yes | `import { ThemeToggle } from '@bleizlabs/ui'` | ThemeToggle — single-button light/dark theme switcher (Phase 6 Specialized). |
-| `UsageDonut` | specialized | no | `import { UsageDonut } from '@bleizlabs/ui'` | UsageDonut — multi-segment SVG donut chart (Phase 6 P6, Tier B, server-safe). |
-| `AccordionGroup` | molecules | yes | `import { AccordionGroup } from '@bleizlabs/ui'` | AccordionGroup — FAQ-style wrapper for multiple Accordion panels (Phase 7 M4). |
-| `AvatarGroup` | molecules | no | `import { AvatarGroup } from '@bleizlabs/ui'` | AvatarGroup — stacked-avatar molecule with overflow chip. |
-| `BackLink` | molecules | no | `import { BackLink } from '@bleizlabs/ui'` | BackLink — "back to previous view" navigation molecule (Phase 7 M2). |
-| `BreakdownList` | molecules | no | `import { BreakdownList } from '@bleizlabs/ui'` | BreakdownList — universal labeled progress list (compound molecule). |
-| `Chip` | molecules | no | `import { Chip } from '@bleizlabs/ui'` | Chip — pill-shaped filter chip with toggle (default) or display-only mode. |
-| `DataRow` | molecules | no | `import { DataRow } from '@bleizlabs/ui'` | DataRow — label/value pair molecule (Phase 7 M1, server-safe). |
-| `FileChip` | molecules | no | `import { FileChip } from '@bleizlabs/ui'` | FileChip — file attachment chip (Phase 5 M7). |
-| `Header` | molecules | no | `import { Header } from '@bleizlabs/ui'` | Header — universal block-header molecule. |
-| `IconButton` | molecules | no | `import { IconButton } from '@bleizlabs/ui'` | IconButton — accessibility-enforcing wrapper over `Button` with `iconOnly={true}`. |
-| `MetricTile` | molecules | no | `import { MetricTile } from '@bleizlabs/ui'` | MetricTile — universal metric tile molecule (label + value + optional icon + optional description). |
-| `SectionDivider` | molecules | no | `import { SectionDivider } from '@bleizlabs/ui'` | SectionDivider — labeled visual section break (Phase 7 M3, server-safe). |
-| `Timeline` | molecules | no | `import { Timeline } from '@bleizlabs/ui'` | Timeline — chronological event-list molecule (compound: Timeline + TimelineItem + TimelineMarker, flat exports). |
-| `FormSurface` | presets | no | `import { FormSurface } from '@bleizlabs/ui'` | FormSurface — semantic `<form>` wrapper around a Card surface (klocek). |
-| `AlertDialog` | complex | yes | `import { AlertDialog } from '@bleizlabs/ui'` | AlertDialog — modal alert dialog composing portal + overlay + focus-trapped content (Phase 10 CI2, E16). |
-| `Calendar` | complex | yes | `import { Calendar } from '@bleizlabs/ui'` | Calendar — accessible single-date calendar grid per WAI-ARIA APG `/grid/`. |
-| `Carousel` | complex | yes | `import { Carousel } from '@bleizlabs/ui'` | Carousel — accessible auto-rotating content slider (Phase 10 CI21). |
-| `Collapsible` | complex | yes | `import { Collapsible } from '@bleizlabs/ui'` | Collapsible — APG `disclosure` compound for single-panel show/hide. |
-| `Combobox` | complex | yes | `import { Combobox } from '@bleizlabs/ui'` | Combobox — editable single-OR-multi-select form field per WAI-ARIA APG /combobox/ (editable listbox variant) +… |
-| `Command` | complex | yes | `import { Command } from '@bleizlabs/ui'` | Command — Cmd+K / Ctrl+K command palette (Phase 10 CI19). |
-| `ContextMenu` | complex | yes | `import { ContextMenu } from '@bleizlabs/ui'` | ContextMenu — right-click menu triggered by a `contextmenu` event. |
-| `DataTable` | complex | yes | `import { DataTable } from '@bleizlabs/ui'` | DataTable — generic-data grid primitive z sortowaniem, filtrowaniem, paginacją, selection, expansion + APG `/grid/`… |
-| `DatePicker` | complex | yes | `import { DatePicker } from '@bleizlabs/ui'` | DatePicker — accessible single-date form field composed of an editable text input + embedded Calendar popup per… |
-| `DateRangePicker` | complex | yes | `import { DateRangePicker } from '@bleizlabs/ui'` | DateRangePicker — accessible date-range form field composed of an editable text input + embedded multi-month Calendar… |
-| `DateTimePicker` | complex | yes | `import { DateTimePicker } from '@bleizlabs/ui'` | DateTimePicker — accessible single-instant form field composed of an editable combobox input + popover containing a… |
-| `Dialog` | complex | yes | `import { Dialog } from '@bleizlabs/ui'` | Dialog — modal dialog composing portal + overlay + focus-trapped content (Phase 10 CI1, E15, first Complex Interactive… |
-| `Drawer` | complex | yes | `import { Drawer } from '@bleizlabs/ui'` | Drawer — bottom-positioned modal sheet composing portal + overlay + focus-trapped content (Phase 10 CI3, E17). |
-| `DropdownMenu` | complex | yes | `import { DropdownMenu } from '@bleizlabs/ui'` | DropdownMenu — accessible menu triggered by a button per WAI-ARIA APG /menu/. |
-| `Field` | complex | yes | `import { Field } from '@bleizlabs/ui'` | Field — accessible form-row compound (label + control + description + messages). |
-| `FileUpload` | complex | yes | `import { FileUpload } from '@bleizlabs/ui'` | FileUpload — drop zone + native file input wrapper. |
-| `Form` | complex | yes | `import { Form } from '@bleizlabs/ui'` | Form — accessible form root with native Constraint Validation API. |
-| `HoverCard` | complex | yes | `import { HoverCard } from '@bleizlabs/ui'` | HoverCard — hover-triggered floating surface for rich contextual content. |
-| `InputOTP` | complex | yes | `import { InputOTP } from '@bleizlabs/ui'` | InputOTP — one-time password / verification code entry (Phase 10 CI18). |
-| `NavigationMenu` | complex | yes | `import { NavigationMenu } from '@bleizlabs/ui'` | NavigationMenu — accessible navigation menubar per WAI-ARIA APG /menubar/. |
-| `Popover` | complex | yes | `import { Popover } from '@bleizlabs/ui'` | Popover — floating panel anchored to a trigger for contextual content. |
-| `ScrollArea` | complex | yes | `import { ScrollArea } from '@bleizlabs/ui'` | ScrollArea — accessible custom-scrollbar wrapper (Phase 10 CI20). |
-| `Select` | complex | yes | `import { Select } from '@bleizlabs/ui'` | Select — single-value dropdown form field per WAI-ARIA APG /combobox/ (collapsed listbox, select-only variant) +… |
-| `Sheet` | complex | yes | `import { Sheet } from '@bleizlabs/ui'` | Sheet — side panel modal sheet composing portal + overlay + focus-trapped content (Phase 10 CI4, E18). |
-| `Sidebar` | complex | yes | `import { Sidebar } from '@bleizlabs/ui'` | Sidebar — Phase 10 CI22 FINISHER (80/80 Phase 10 COMPLETE). |
-| `Slider` | complex | yes | `import { Slider } from '@bleizlabs/ui'` | Slider — accessible single-thumb value selector (Phase 10 CI14). |
-| `Stepper` | complex | yes | `import { Stepper } from '@bleizlabs/ui'` | Stepper — visual + semantic multi-step progress indicator with optional keyboard navigation when clickable. |
-| `Tabs` | complex | yes | `import { Tabs } from '@bleizlabs/ui'` | Tabs — accessible tabs widget per WAI-ARIA APG /tabs/. |
-| `TimePicker` | complex | yes | `import { TimePicker } from '@bleizlabs/ui'` | TimePicker — accessible time form field composed of an editable text input (`role="combobox"`) + popover with 2-3… |
-| `Toast` | complex | yes | `import { Toaster } from '@bleizlabs/ui'` | Toaster — singleton notification surface for imperative `toast()` API. |
-| `Toolbar` | complex | yes | `import { Toolbar } from '@bleizlabs/ui'` | Toolbar — accessible toolbar container per WAI-ARIA APG `/toolbar/`. |
-| `Tooltip` | complex | yes | `import { Tooltip } from '@bleizlabs/ui'` | Tooltip — modeless floating label shown on hover or keyboard focus. |
+| Component         | Category    | Client? | Import                                            | One-line summary                                                                                                        |
+| ----------------- | ----------- | ------- | ------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
+| `Container`       | layout      | no      | `import { Container } from '@bleizlabs/ui'`       | Container — max-width centered wrapper layout atom.                                                                     |
+| `GridLayout`      | layout      | no      | `import { GridLayout } from '@bleizlabs/ui'`      | GridLayout — multi-column CSS Grid layout atom.                                                                         |
+| `Inline`          | layout      | no      | `import { Inline } from '@bleizlabs/ui'`          | Inline — horizontal flex layout atom.                                                                                   |
+| `Section`         | layout      | no      | `import { Section } from '@bleizlabs/ui'`         | Section — full-width semantic band layout atom.                                                                         |
+| `Stack`           | layout      | no      | `import { Stack } from '@bleizlabs/ui'`           | Stack — vertical flex layout atom.                                                                                      |
+| `Anchor`          | typography  | no      | `import { Anchor } from '@bleizlabs/ui'`          | Anchor — inline body-text link atom (v0.4.0).                                                                           |
+| `Eyebrow`         | typography  | no      | `import { Eyebrow } from '@bleizlabs/ui'`         | Eyebrow — small uppercase atelier label with optional numeric prefix.                                                   |
+| `Heading`         | typography  | no      | `import { Heading } from '@bleizlabs/ui'`         | Heading — semantic heading element with decoupled visual size.                                                          |
+| `Mark`            | typography  | no      | `import { Mark } from '@bleizlabs/ui'`            | Mark — inline highlight atom.                                                                                           |
+| `Text`            | typography  | no      | `import { Text } from '@bleizlabs/ui'`            | Text — universal body text component.                                                                                   |
+| `AspectRatio`     | display     | no      | `import { AspectRatio } from '@bleizlabs/ui'`     | AspectRatio — media container with fixed aspect ratio (Phase 3 D8, Tier B).                                             |
+| `Avatar`          | display     | no      | `import { Avatar } from '@bleizlabs/ui'`          | Avatar — user identity image with text-initials fallback (Phase 3 D5).                                                  |
+| `Badge`           | display     | no      | `import { Badge } from '@bleizlabs/ui'`           | Badge — small status / category indicator (klocek atom).                                                                |
+| `Card`            | display     | no      | `import { Card } from '@bleizlabs/ui'`            | Card — surface container atom (klocek display primitive).                                                               |
+| `CodeBlock`       | display     | yes     | `import { CodeBlock } from '@bleizlabs/ui'`       | CodeBlock — preformatted code surface with optional language badge, copy button, and line-number gutter.                |
+| `EdgeBar`         | display     | no      | `import { EdgeBar } from '@bleizlabs/ui'`         | EdgeBar — absolute-positioned colored stripe along one edge of a `position: relative` parent.                           |
+| `IconBox`         | display     | no      | `import { IconBox } from '@bleizlabs/ui'`         | IconBox — square icon container with bg + color variants (Phase 3 D4).                                                  |
+| `KpiValue`        | display     | no      | `import { KpiValue } from '@bleizlabs/ui'`        | KpiValue — universal large-number metric display molecule (Server Component since v0.7.0; merged with PercentValue…     |
+| `Reveal`          | display     | yes     | `import { Reveal } from '@bleizlabs/ui'`          | Reveal — scroll-triggered IntersectionObserver gate atom (Phase 3 D9, Tier B).                                          |
+| `Separator`       | display     | no      | `import { Separator } from '@bleizlabs/ui'`       | Separator — divider line atom (Phase 3 D3, ex Divider per D24 rename).                                                  |
+| `Skeleton`        | display     | no      | `import { Skeleton } from '@bleizlabs/ui'`        | Skeleton — loading placeholder atom (Phase 3 D6).                                                                       |
+| `Spinner`         | display     | no      | `import { Spinner } from '@bleizlabs/ui'`         | Spinner — inline loading indicator (Phase 3 D7).                                                                        |
+| `Table`           | display     | no      | `import { Table } from '@bleizlabs/ui'`           | Table — semantic `<table>` primitive with base styling (Phase 11 CI23).                                                 |
+| `Accordion`       | interactive | yes     | `import { Accordion } from '@bleizlabs/ui'`       | Accordion — disclosure panel with header trigger (Phase 4 I9).                                                          |
+| `Button`          | interactive | no      | `import { Button } from '@bleizlabs/ui'`          | Button — primary interactive atom (Phase 4 I1).                                                                         |
+| `ButtonGroup`     | interactive | no      | `import { ButtonGroup } from '@bleizlabs/ui'`     | ButtonGroup — joined row/column of related buttons (Phase 4 I1.5).                                                      |
+| `Checkbox`        | interactive | yes     | `import { Checkbox } from '@bleizlabs/ui'`        | Checkbox — boolean form input with custom styling (Phase 4 I4).                                                         |
+| `Input`           | interactive | no      | `import { Input } from '@bleizlabs/ui'`           | Input — headless styled `<input>` wrapper (klocek atom, paradigm 1).                                                    |
+| `InputGroup`      | interactive | no      | `import { InputGroup } from '@bleizlabs/ui'`      | InputGroup — multi-element form widget container (Phase 4 expansion E08, Layer 2 of D26).                               |
+| `Label`           | interactive | no      | `import { Label } from '@bleizlabs/ui'`           | Label — form-coupled label element (Phase 4 I2.5, moved from Phase 2 in E05).                                           |
+| `MaskedInput`     | interactive | yes     | `import { MaskedInput } from '@bleizlabs/ui'`     | MaskedInput — pattern-masked text input (Phase 4 expansion E08, Layer 3 of D26).                                        |
+| `NumberInput`     | interactive | yes     | `import { NumberInput } from '@bleizlabs/ui'`     | NumberInput — locale-aware numeric form input (Phase 4 expansion E08, Layer 3 of D26).                                  |
+| `PasswordInput`   | interactive | yes     | `import { PasswordInput } from '@bleizlabs/ui'`   | PasswordInput — password form input with show/hide toggle and optional strength meter (Phase 4 expansion E08, Layer 3…  |
+| `PhoneInput`      | interactive | yes     | `import { PhoneInput } from '@bleizlabs/ui'`      | PhoneInput — telephone number input with mask presets (Phase 4 expansion E08, Layer 3 of D26).                          |
+| `RadioGroup`      | interactive | yes     | `import { RadioGroup } from '@bleizlabs/ui'`      | RadioGroup — radio button group with shared name + value (Phase 4 I5).                                                  |
+| `Rating`          | interactive | yes     | `import { Rating } from '@bleizlabs/ui'`          | Rating — APG radiogroup star-rating input primitive.                                                                    |
+| `Switch`          | interactive | yes     | `import { Switch } from '@bleizlabs/ui'`          | Switch — boolean toggle with animated thumb (Phase 4 I8, Tier A).                                                       |
+| `TagsInput`       | interactive | yes     | `import { TagsInput } from '@bleizlabs/ui'`       | TagsInput — freeform tag input (E01.2 of 0.19.0 Forms expansion).                                                       |
+| `Textarea`        | interactive | yes     | `import { Textarea } from '@bleizlabs/ui'`        | Textarea — multi-line text form input (Phase 4 I3).                                                                     |
+| `TextLink`        | interactive | no      | `import { TextLink } from '@bleizlabs/ui'`        | TextLink — inline atelier link atom (v0.4.2).                                                                           |
+| `TimeInput`       | interactive | yes     | `import { TimeInput } from '@bleizlabs/ui'`       | TimeInput — accessible 24h ISO time field rendered as a `role="group"` of `role="spinbutton"` inputs (hours, minutes,…  |
+| `Toggle`          | interactive | yes     | `import { Toggle } from '@bleizlabs/ui'`          | Toggle — single button with on/off state (Phase 4 I6).                                                                  |
+| `ToggleGroup`     | interactive | yes     | `import { ToggleGroup } from '@bleizlabs/ui'`     | ToggleGroup — group of Toggle children with single or multiple selection (Phase 4 I7).                                  |
+| `Alert`           | feedback    | no      | `import { Alert } from '@bleizlabs/ui'`           | Alert — semantic feedback notification with 4 variants (klocek molecule).                                               |
+| `Banner`          | feedback    | no      | `import { Banner } from '@bleizlabs/ui'`          | Banner — page-wide notification primitive.                                                                              |
+| `Empty`           | feedback    | no      | `import { Empty } from '@bleizlabs/ui'`           | Empty — placeholder for empty lists / zero-result screens (klocek molecule).                                            |
+| `Progress`        | feedback    | no      | `import { Progress } from '@bleizlabs/ui'`        | Progress — step indicator OR percent progress bar.                                                                      |
+| `AnimatedCounter` | specialized | yes     | `import { AnimatedCounter } from '@bleizlabs/ui'` | AnimatedCounter — count-up animation from 0 to a target value (Phase 6 P3).                                             |
+| `AreaChart`       | specialized | yes     | `import { AreaChart } from '@bleizlabs/ui'`       | AreaChart — multi-series SVG area chart (line + filled region below) with crosshair tooltip + keyboard data-point…      |
+| `AvailabilityBar` | specialized | no      | `import { AvailabilityBar } from '@bleizlabs/ui'` | AvailabilityBar — day-by-day status strip (Phase 6 P7, Tier B, server-safe).                                            |
+| `BarChart`        | specialized | no      | `import { BarChart } from '@bleizlabs/ui'`        | BarChart — universal single-series bar chart (Phase 6 P9, Tier B, server-safe).                                         |
+| `Breadcrumb`      | specialized | no      | `import { Breadcrumb } from '@bleizlabs/ui'`      | Breadcrumb — semantic navigation trail (Phase 6 P4, tier A, server-safe).                                               |
+| `Dot`             | specialized | no      | `import { Dot } from '@bleizlabs/ui'`             | Dot — small round status indicator (Phase 6 P1, core, server-safe).                                                     |
+| `Kbd`             | specialized | no      | `import { Kbd } from '@bleizlabs/ui'`             | Kbd — keyboard shortcut key display (Phase 6 P8, Tier B, server-safe).                                                  |
+| `LineChart`       | specialized | yes     | `import { LineChart } from '@bleizlabs/ui'`       | LineChart — multi-series SVG line chart with crosshair tooltip + keyboard data-point navigation + sr-only `<table>`…    |
+| `MetricBar`       | specialized | no      | `import { MetricBar } from '@bleizlabs/ui'`       | MetricBar — usage / capacity progress indicator (Phase 6 P2, core, server-safe).                                        |
+| `Pagination`      | specialized | yes     | `import { Pagination } from '@bleizlabs/ui'`      | Pagination — page navigation control (Phase 6 P5, tier A, `'use client'`).                                              |
+| `PieChart`        | specialized | yes     | `import { PieChart } from '@bleizlabs/ui'`        | PieChart — SVG pie chart with optional donut variant, segment hover + keyboard navigation, segment percentage labels,…  |
+| `Sparkline`       | specialized | yes     | `import { Sparkline } from '@bleizlabs/ui'`       | Sparkline — tiny inline single-series chart (line + optional filled area) for embedding in `<Card>`, table cells, KPI…  |
+| `ThemeToggle`     | specialized | yes     | `import { ThemeToggle } from '@bleizlabs/ui'`     | ThemeToggle — single-button light/dark theme switcher (Phase 6 Specialized).                                            |
+| `UsageDonut`      | specialized | no      | `import { UsageDonut } from '@bleizlabs/ui'`      | UsageDonut — multi-segment SVG donut chart (Phase 6 P6, Tier B, server-safe).                                           |
+| `AccordionGroup`  | molecules   | yes     | `import { AccordionGroup } from '@bleizlabs/ui'`  | AccordionGroup — FAQ-style wrapper for multiple Accordion panels (Phase 7 M4).                                          |
+| `AvatarGroup`     | molecules   | no      | `import { AvatarGroup } from '@bleizlabs/ui'`     | AvatarGroup — stacked-avatar molecule with overflow chip.                                                               |
+| `BackLink`        | molecules   | no      | `import { BackLink } from '@bleizlabs/ui'`        | BackLink — "back to previous view" navigation molecule (Phase 7 M2).                                                    |
+| `BreakdownList`   | molecules   | no      | `import { BreakdownList } from '@bleizlabs/ui'`   | BreakdownList — universal labeled progress list (compound molecule).                                                    |
+| `Chip`            | molecules   | no      | `import { Chip } from '@bleizlabs/ui'`            | Chip — pill-shaped filter chip with toggle (default) or display-only mode.                                              |
+| `DataRow`         | molecules   | no      | `import { DataRow } from '@bleizlabs/ui'`         | DataRow — label/value pair molecule (Phase 7 M1, server-safe).                                                          |
+| `FileChip`        | molecules   | no      | `import { FileChip } from '@bleizlabs/ui'`        | FileChip — file attachment chip (Phase 5 M7).                                                                           |
+| `Header`          | molecules   | no      | `import { Header } from '@bleizlabs/ui'`          | Header — universal block-header molecule.                                                                               |
+| `IconButton`      | molecules   | no      | `import { IconButton } from '@bleizlabs/ui'`      | IconButton — accessibility-enforcing wrapper over `Button` with `iconOnly={true}`.                                      |
+| `MetricTile`      | molecules   | no      | `import { MetricTile } from '@bleizlabs/ui'`      | MetricTile — universal metric tile molecule (label + value + optional icon + optional description).                     |
+| `SectionDivider`  | molecules   | no      | `import { SectionDivider } from '@bleizlabs/ui'`  | SectionDivider — labeled visual section break (Phase 7 M3, server-safe).                                                |
+| `Timeline`        | molecules   | no      | `import { Timeline } from '@bleizlabs/ui'`        | Timeline — chronological event-list molecule (compound: Timeline + TimelineItem + TimelineMarker, flat exports).        |
+| `FormSurface`     | presets     | no      | `import { FormSurface } from '@bleizlabs/ui'`     | FormSurface — semantic `<form>` wrapper around a Card surface (klocek).                                                 |
+| `AlertDialog`     | complex     | yes     | `import { AlertDialog } from '@bleizlabs/ui'`     | AlertDialog — modal alert dialog composing portal + overlay + focus-trapped content (Phase 10 CI2, E16).                |
+| `Calendar`        | complex     | yes     | `import { Calendar } from '@bleizlabs/ui'`        | Calendar — accessible single-date calendar grid per WAI-ARIA APG `/grid/`.                                              |
+| `Carousel`        | complex     | yes     | `import { Carousel } from '@bleizlabs/ui'`        | Carousel — accessible auto-rotating content slider (Phase 10 CI21).                                                     |
+| `Collapsible`     | complex     | yes     | `import { Collapsible } from '@bleizlabs/ui'`     | Collapsible — APG `disclosure` compound for single-panel show/hide.                                                     |
+| `Combobox`        | complex     | yes     | `import { Combobox } from '@bleizlabs/ui'`        | Combobox — editable single-OR-multi-select form field per WAI-ARIA APG /combobox/ (editable listbox variant) +…         |
+| `Command`         | complex     | yes     | `import { Command } from '@bleizlabs/ui'`         | Command — Cmd+K / Ctrl+K command palette (Phase 10 CI19).                                                               |
+| `ContextMenu`     | complex     | yes     | `import { ContextMenu } from '@bleizlabs/ui'`     | ContextMenu — right-click menu triggered by a `contextmenu` event.                                                      |
+| `DataTable`       | complex     | yes     | `import { DataTable } from '@bleizlabs/ui'`       | DataTable — generic-data grid primitive z sortowaniem, filtrowaniem, paginacją, selection, expansion + APG `/grid/`…    |
+| `DatePicker`      | complex     | yes     | `import { DatePicker } from '@bleizlabs/ui'`      | DatePicker — accessible single-date form field composed of an editable text input + embedded Calendar popup per…        |
+| `DateRangePicker` | complex     | yes     | `import { DateRangePicker } from '@bleizlabs/ui'` | DateRangePicker — accessible date-range form field composed of an editable text input + embedded multi-month Calendar…  |
+| `DateTimePicker`  | complex     | yes     | `import { DateTimePicker } from '@bleizlabs/ui'`  | DateTimePicker — accessible single-instant form field composed of an editable combobox input + popover containing a…    |
+| `Dialog`          | complex     | yes     | `import { Dialog } from '@bleizlabs/ui'`          | Dialog — modal dialog composing portal + overlay + focus-trapped content (Phase 10 CI1, E15, first Complex Interactive… |
+| `Drawer`          | complex     | yes     | `import { Drawer } from '@bleizlabs/ui'`          | Drawer — bottom-positioned modal sheet composing portal + overlay + focus-trapped content (Phase 10 CI3, E17).          |
+| `DropdownMenu`    | complex     | yes     | `import { DropdownMenu } from '@bleizlabs/ui'`    | DropdownMenu — accessible menu triggered by a button per WAI-ARIA APG /menu/.                                           |
+| `Field`           | complex     | yes     | `import { Field } from '@bleizlabs/ui'`           | Field — accessible form-row compound (label + control + description + messages).                                        |
+| `FileUpload`      | complex     | yes     | `import { FileUpload } from '@bleizlabs/ui'`      | FileUpload — drop zone + native file input wrapper.                                                                     |
+| `Form`            | complex     | yes     | `import { Form } from '@bleizlabs/ui'`            | Form — accessible form root with native Constraint Validation API.                                                      |
+| `HoverCard`       | complex     | yes     | `import { HoverCard } from '@bleizlabs/ui'`       | HoverCard — hover-triggered floating surface for rich contextual content.                                               |
+| `InputOTP`        | complex     | yes     | `import { InputOTP } from '@bleizlabs/ui'`        | InputOTP — one-time password / verification code entry (Phase 10 CI18).                                                 |
+| `NavigationMenu`  | complex     | yes     | `import { NavigationMenu } from '@bleizlabs/ui'`  | NavigationMenu — accessible navigation menubar per WAI-ARIA APG /menubar/.                                              |
+| `Popover`         | complex     | yes     | `import { Popover } from '@bleizlabs/ui'`         | Popover — floating panel anchored to a trigger for contextual content.                                                  |
+| `ScrollArea`      | complex     | yes     | `import { ScrollArea } from '@bleizlabs/ui'`      | ScrollArea — accessible custom-scrollbar wrapper (Phase 10 CI20).                                                       |
+| `Select`          | complex     | yes     | `import { Select } from '@bleizlabs/ui'`          | Select — single-value dropdown form field per WAI-ARIA APG /combobox/ (collapsed listbox, select-only variant) +…       |
+| `Sheet`           | complex     | yes     | `import { Sheet } from '@bleizlabs/ui'`           | Sheet — side panel modal sheet composing portal + overlay + focus-trapped content (Phase 10 CI4, E18).                  |
+| `Sidebar`         | complex     | yes     | `import { Sidebar } from '@bleizlabs/ui'`         | Sidebar — Phase 10 CI22 FINISHER (80/80 Phase 10 COMPLETE).                                                             |
+| `Slider`          | complex     | yes     | `import { Slider } from '@bleizlabs/ui'`          | Slider — accessible single-thumb value selector (Phase 10 CI14).                                                        |
+| `Stepper`         | complex     | yes     | `import { Stepper } from '@bleizlabs/ui'`         | Stepper — visual + semantic multi-step progress indicator with optional keyboard navigation when clickable.             |
+| `Tabs`            | complex     | yes     | `import { Tabs } from '@bleizlabs/ui'`            | Tabs — accessible tabs widget per WAI-ARIA APG /tabs/.                                                                  |
+| `TimePicker`      | complex     | yes     | `import { TimePicker } from '@bleizlabs/ui'`      | TimePicker — accessible time form field composed of an editable text input (`role="combobox"`) + popover with 2-3…      |
+| `Toast`           | complex     | yes     | `import { Toaster } from '@bleizlabs/ui'`         | Toaster — singleton notification surface for imperative `toast()` API.                                                  |
+| `Toolbar`         | complex     | yes     | `import { Toolbar } from '@bleizlabs/ui'`         | Toolbar — accessible toolbar container per WAI-ARIA APG `/toolbar/`.                                                    |
+| `Tooltip`         | complex     | yes     | `import { Tooltip } from '@bleizlabs/ui'`         | Tooltip — modeless floating label shown on hover or keyboard focus.                                                     |
 
 <!-- INVENTORY:END -->

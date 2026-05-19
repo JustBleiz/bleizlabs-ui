@@ -31,11 +31,9 @@ export default function ToastPlayground() {
           Toast
         </Heading>
         <Text variant="lead" color="muted">
-          Transient notifications with an imperative API — call{' '}
-          <code>toast(...)</code> from anywhere, a single{' '}
-          <code>&lt;Toaster /&gt;</code> mounted once renders the queue. Pauses
-          on hover, focus, or tab visibility loss; integrates with promises
-          for async feedback.
+          Transient notifications with an imperative API — call <code>toast(...)</code> from
+          anywhere, a single <code>&lt;Toaster /&gt;</code> mounted once renders the queue. Pauses
+          on hover, focus, or tab visibility loss; integrates with promises for async feedback.
         </Text>
         <Inline gap={2} wrap>
           <Badge color="success">ARIA live regions</Badge>
@@ -53,8 +51,8 @@ export default function ToastPlayground() {
           Toaster configuration
         </Heading>
         <Text variant="body" color="muted">
-          One <code>&lt;Toaster /&gt;</code> mounted at the bottom of this page. Change position
-          + richColors to see live behavior.
+          One <code>&lt;Toaster /&gt;</code> mounted at the bottom of this page. Change position +
+          richColors to see live behavior.
         </Text>
         <Inline gap={2} wrap>
           {(
@@ -93,20 +91,14 @@ export default function ToastPlayground() {
         </Heading>
         <Text variant="body" color="muted">
           <code>toast()</code> default + 4 variants with inline icons. Error variant uses{' '}
-          <code>role=&quot;alert&quot;</code> + <code>aria-live=&quot;assertive&quot;</code>;
-          others use <code>role=&quot;status&quot;</code> + <code>aria-live=&quot;polite&quot;</code>.
+          <code>role=&quot;alert&quot;</code> + <code>aria-live=&quot;assertive&quot;</code>; others
+          use <code>role=&quot;status&quot;</code> + <code>aria-live=&quot;polite&quot;</code>.
         </Text>
         <Inline gap={2} wrap>
-          <Button
-            variant="secondary"
-            onClick={() => toast('Default notification')}
-          >
+          <Button variant="secondary" onClick={() => toast('Default notification')}>
             toast()
           </Button>
-          <Button
-            variant="secondary"
-            onClick={() => toast.success('Saved successfully')}
-          >
+          <Button variant="secondary" onClick={() => toast.success('Saved successfully')}>
             toast.success()
           </Button>
           <Button
@@ -240,8 +232,8 @@ export default function ToastPlayground() {
           5. Dedup by explicit <code>id</code>
         </Heading>
         <Text variant="body" color="muted">
-          Subsequent calls with same <code>id</code> UPDATE the existing toast instead of adding
-          a duplicate. Useful for save-status patterns.
+          Subsequent calls with same <code>id</code> UPDATE the existing toast instead of adding a
+          duplicate. Useful for save-status patterns.
         </Text>
         <Inline gap={2}>
           <Button
@@ -279,9 +271,9 @@ export default function ToastPlayground() {
           6. Promise toast
         </Heading>
         <Text variant="body" color="muted">
-          <code>toast.promise(promise, &#123; loading, success, error &#125;)</code> transitions
-          a single toast from loading → success/error as the promise resolves. Fires three
-          lifecycle states on ONE toast id.
+          <code>toast.promise(promise, &#123; loading, success, error &#125;)</code> transitions a
+          single toast from loading → success/error as the promise resolves. Fires three lifecycle
+          states on ONE toast id.
         </Text>
         <Inline gap={2}>
           <Button

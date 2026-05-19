@@ -19,10 +19,7 @@ import {
 } from 'react';
 import { cn } from '../../utils/cn';
 import { mergeRefs } from '../../utils/mergeRefs';
-import {
-  usePointerDrag,
-  type UsePointerDragHandlers,
-} from '../../utils/gesture';
+import { usePointerDrag, type UsePointerDragHandlers } from '../../utils/gesture';
 import { useMatchMedia } from '../../utils/match-media';
 import styles from './Carousel.module.scss';
 
@@ -73,8 +70,7 @@ import styles from './Carousel.module.scss';
 
 export type CarouselDir = 'ltr' | 'rtl';
 
-export interface CarouselProps
-  extends Omit<HTMLAttributes<HTMLElement>, 'defaultValue'> {
+export interface CarouselProps extends Omit<HTMLAttributes<HTMLElement>, 'defaultValue'> {
   /** Controlled current slide index. */
   index?: number;
   /** Uncontrolled initial slide index. Default `0`. */
@@ -103,8 +99,7 @@ export interface CarouselProps
   children: ReactNode;
 }
 
-export interface CarouselViewportProps
-  extends HTMLAttributes<HTMLDivElement> {
+export interface CarouselViewportProps extends HTMLAttributes<HTMLDivElement> {
   children: ReactNode;
 }
 
@@ -112,24 +107,30 @@ export interface CarouselSlideProps extends HTMLAttributes<HTMLDivElement> {
   children: ReactNode;
 }
 
-export interface CarouselPrevProps
-  extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'disabled' | 'children'> {
+export interface CarouselPrevProps extends Omit<
+  ButtonHTMLAttributes<HTMLButtonElement>,
+  'disabled' | 'children'
+> {
   /** Override button label. Default `'Previous slide'`. */
   label?: string;
   /** Override chevron icon. */
   children?: ReactNode;
 }
 
-export interface CarouselNextProps
-  extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'disabled' | 'children'> {
+export interface CarouselNextProps extends Omit<
+  ButtonHTMLAttributes<HTMLButtonElement>,
+  'disabled' | 'children'
+> {
   /** Override button label. Default `'Next slide'`. */
   label?: string;
   /** Override icon. */
   children?: ReactNode;
 }
 
-export interface CarouselPauseProps
-  extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'aria-pressed' | 'children'> {
+export interface CarouselPauseProps extends Omit<
+  ButtonHTMLAttributes<HTMLButtonElement>,
+  'aria-pressed' | 'children'
+> {
   /** Override play label. Default `'Play carousel'`. */
   playLabel?: string;
   /** Override pause label. Default `'Pause carousel'`. */
@@ -226,9 +227,7 @@ export const Carousel = forwardRef<HTMLElement, CarouselProps>(function Carousel
   // Pause reasons — state (not ref) so derived values isPaused / shouldRotate
   // are safe to read during render per React 19 `react-hooks/refs` rule.
   // Each add/delete creates a new Set instance to trigger re-render.
-  const [pauseReasons, setPauseReasons] = useState<ReadonlySet<PauseReason>>(
-    () => new Set(),
-  );
+  const [pauseReasons, setPauseReasons] = useState<ReadonlySet<PauseReason>>(() => new Set());
 
   const addPauseReason = useCallback((reason: PauseReason) => {
     setPauseReasons((prev) => {
@@ -283,10 +282,7 @@ export const Carousel = forwardRef<HTMLElement, CarouselProps>(function Carousel
     };
   }, []);
 
-  const getSlideIndex = useCallback(
-    (id: string) => slideIds.indexOf(id),
-    [slideIds],
-  );
+  const getSlideIndex = useCallback((id: string) => slideIds.indexOf(id), [slideIds]);
 
   const commit = useCallback(
     (next: number) => {
@@ -303,14 +299,8 @@ export const Carousel = forwardRef<HTMLElement, CarouselProps>(function Carousel
   );
 
   const goto = useCallback((next: number) => commit(next), [commit]);
-  const goPrev = useCallback(
-    () => commit(latestIndexRef.current - 1),
-    [commit],
-  );
-  const goNext = useCallback(
-    () => commit(latestIndexRef.current + 1),
-    [commit],
-  );
+  const goPrev = useCallback(() => commit(latestIndexRef.current - 1), [commit]);
+  const goNext = useCallback(() => commit(latestIndexRef.current + 1), [commit]);
 
   const togglePause = useCallback(() => {
     setPauseReasons((prev) => {
@@ -412,10 +402,7 @@ export const Carousel = forwardRef<HTMLElement, CarouselProps>(function Carousel
   const setRootEl = useCallback((el: HTMLElement | null) => {
     rootRef.current = el;
   }, []);
-  const mergedRootRef = useMemo(
-    () => mergeRefs<HTMLElement>(ref, setRootEl),
-    [ref, setRootEl],
-  );
+  const mergedRootRef = useMemo(() => mergeRefs<HTMLElement>(ref, setRootEl), [ref, setRootEl]);
 
   useEffect(() => {
     const root = rootRef.current;
@@ -592,52 +579,50 @@ export const CarouselViewport = forwardRef<HTMLDivElement, CarouselViewportProps
 // CarouselSlide
 // ============================================================================
 
-export const CarouselSlide = forwardRef<HTMLDivElement, CarouselSlideProps>(
-  function CarouselSlide({ children, className, ...rest }, ref) {
-    const ctx = useCarouselContext('CarouselSlide');
-    const generatedId = useId();
-    const slideId = `slide-${generatedId}`;
+export const CarouselSlide = forwardRef<HTMLDivElement, CarouselSlideProps>(function CarouselSlide(
+  { children, className, ...rest },
+  ref,
+) {
+  const ctx = useCarouselContext('CarouselSlide');
+  const generatedId = useId();
+  const slideId = `slide-${generatedId}`;
 
-    // Only depend on the stable `registerSlide` reference (useCallback with
-    // empty deps at line ~277) — NOT the whole `ctx` object. The context value
-    // re-memos whenever `slideIds` changes (because `getSlideIndex` depends on
-    // it), and using `ctx` as a dep here would cause register → setSlideIds →
-    // new ctx identity → effect re-runs → unregister → setSlideIds → infinite
-    // render loop (observed as "Maximum update depth exceeded").
-    const { registerSlide } = ctx;
-    useLayoutEffect(() => {
-      const unregister = registerSlide(slideId);
-      return unregister;
-    }, [registerSlide, slideId]);
+  // Only depend on the stable `registerSlide` reference (useCallback with
+  // empty deps at line ~277) — NOT the whole `ctx` object. The context value
+  // re-memos whenever `slideIds` changes (because `getSlideIndex` depends on
+  // it), and using `ctx` as a dep here would cause register → setSlideIds →
+  // new ctx identity → effect re-runs → unregister → setSlideIds → infinite
+  // render loop (observed as "Maximum update depth exceeded").
+  const { registerSlide } = ctx;
+  useLayoutEffect(() => {
+    const unregister = registerSlide(slideId);
+    return unregister;
+  }, [registerSlide, slideId]);
 
-    const myIndex = ctx.getSlideIndex(slideId);
-    const isCurrent = myIndex !== -1 && myIndex === ctx.index;
-    const label =
-      myIndex === -1
-        ? undefined
-        : `${myIndex + 1} of ${ctx.total}`;
+  const myIndex = ctx.getSlideIndex(slideId);
+  const isCurrent = myIndex !== -1 && myIndex === ctx.index;
+  const label = myIndex === -1 ? undefined : `${myIndex + 1} of ${ctx.total}`;
 
-    return (
-      <div
-        ref={ref}
-        {...rest}
-        className={cn(styles.slide, className)}
-        role="group"
-        aria-roledescription="slide"
-        aria-label={label}
-        // E142 L2 a11y: `inert` on non-current slides makes them
-        // non-focusable AND hides them from the a11y tree — replaces
-        // `aria-hidden="true"`, which WCAG 4.1.2 forbids on elements
-        // containing focusable descendants (axe: aria-hidden-focus).
-        // inert is baseline across Chromium 102+, Firefox 112+, Safari 15.5+.
-        inert={!isCurrent}
-        data-current={isCurrent ? 'true' : undefined}
-      >
-        {children}
-      </div>
-    );
-  },
-);
+  return (
+    <div
+      ref={ref}
+      {...rest}
+      className={cn(styles.slide, className)}
+      role="group"
+      aria-roledescription="slide"
+      aria-label={label}
+      // E142 L2 a11y: `inert` on non-current slides makes them
+      // non-focusable AND hides them from the a11y tree — replaces
+      // `aria-hidden="true"`, which WCAG 4.1.2 forbids on elements
+      // containing focusable descendants (axe: aria-hidden-focus).
+      // inert is baseline across Chromium 102+, Firefox 112+, Safari 15.5+.
+      inert={!isCurrent}
+      data-current={isCurrent ? 'true' : undefined}
+    >
+      {children}
+    </div>
+  );
+});
 
 // ============================================================================
 // CarouselPrev
@@ -676,93 +661,77 @@ const ChevronRightIcon = () => (
 );
 
 const PlayIcon = () => (
-  <svg
-    width="14"
-    height="14"
-    viewBox="0 0 16 16"
-    fill="currentColor"
-    aria-hidden="true"
-  >
+  <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
     <polygon points="4 3 13 8 4 13" />
   </svg>
 );
 
 const PauseIcon = () => (
-  <svg
-    width="14"
-    height="14"
-    viewBox="0 0 16 16"
-    fill="currentColor"
-    aria-hidden="true"
-  >
+  <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
     <rect x="4" y="3" width="3" height="10" />
     <rect x="9" y="3" width="3" height="10" />
   </svg>
 );
 
-export const CarouselPrev = forwardRef<HTMLButtonElement, CarouselPrevProps>(
-  function CarouselPrev(
-    { label = 'Previous slide', className, children, onClick, ...rest },
-    ref,
-  ) {
-    const ctx = useCarouselContext('CarouselPrev');
-    const disabled = !ctx.loop && ctx.index === 0;
-    const atEdge = ctx.total <= 1;
-    return (
-      <button
-        ref={ref}
-        type="button"
-        {...rest}
-        className={cn(styles.navButton, styles.prev, className)}
-        aria-label={label}
-        aria-controls={ctx.viewportId}
-        aria-disabled={disabled || atEdge ? 'true' : undefined}
-        data-disabled={disabled || atEdge ? 'true' : undefined}
-        onClick={(event) => {
-          if (disabled || atEdge) return;
-          ctx.goPrev();
-          onClick?.(event);
-        }}
-      >
-        {children ?? (ctx.dir === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />)}
-      </button>
-    );
-  },
-);
+export const CarouselPrev = forwardRef<HTMLButtonElement, CarouselPrevProps>(function CarouselPrev(
+  { label = 'Previous slide', className, children, onClick, ...rest },
+  ref,
+) {
+  const ctx = useCarouselContext('CarouselPrev');
+  const disabled = !ctx.loop && ctx.index === 0;
+  const atEdge = ctx.total <= 1;
+  return (
+    <button
+      ref={ref}
+      type="button"
+      {...rest}
+      className={cn(styles.navButton, styles.prev, className)}
+      aria-label={label}
+      aria-controls={ctx.viewportId}
+      aria-disabled={disabled || atEdge ? 'true' : undefined}
+      data-disabled={disabled || atEdge ? 'true' : undefined}
+      onClick={(event) => {
+        if (disabled || atEdge) return;
+        ctx.goPrev();
+        onClick?.(event);
+      }}
+    >
+      {children ?? (ctx.dir === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />)}
+    </button>
+  );
+});
 
 // ============================================================================
 // CarouselNext
 // ============================================================================
 
-export const CarouselNext = forwardRef<HTMLButtonElement, CarouselNextProps>(
-  function CarouselNext(
-    { label = 'Next slide', className, children, onClick, ...rest },
-    ref,
-  ) {
-    const ctx = useCarouselContext('CarouselNext');
-    const disabled = !ctx.loop && ctx.index === ctx.total - 1;
-    const atEdge = ctx.total <= 1;
-    return (
-      <button
-        ref={ref}
-        type="button"
-        {...rest}
-        className={cn(styles.navButton, styles.next, className)}
-        aria-label={label}
-        aria-controls={ctx.viewportId}
-        aria-disabled={disabled || atEdge ? 'true' : undefined}
-        data-disabled={disabled || atEdge ? 'true' : undefined}
-        onClick={(event) => {
-          if (disabled || atEdge) return;
-          ctx.goNext();
-          onClick?.(event);
-        }}
-      >
-        {children ?? (ctx.dir === 'rtl' ? <ChevronLeftIcon /> : <ChevronRightIcon />)}
-      </button>
-    );
-  },
-);
+export const CarouselNext = forwardRef<HTMLButtonElement, CarouselNextProps>(function CarouselNext(
+  { label = 'Next slide', className, children, onClick, ...rest },
+  ref,
+) {
+  const ctx = useCarouselContext('CarouselNext');
+  const disabled = !ctx.loop && ctx.index === ctx.total - 1;
+  const atEdge = ctx.total <= 1;
+  return (
+    <button
+      ref={ref}
+      type="button"
+      {...rest}
+      className={cn(styles.navButton, styles.next, className)}
+      aria-label={label}
+      aria-controls={ctx.viewportId}
+      aria-disabled={disabled || atEdge ? 'true' : undefined}
+      data-disabled={disabled || atEdge ? 'true' : undefined}
+      onClick={(event) => {
+        if (disabled || atEdge) return;
+        ctx.goNext();
+        onClick?.(event);
+      }}
+    >
+      {children ?? (ctx.dir === 'rtl' ? <ChevronLeftIcon /> : <ChevronRightIcon />)}
+    </button>
+  );
+});
 
 // ============================================================================
 // CarouselPause
@@ -797,11 +766,7 @@ export const CarouselPause = forwardRef<HTMLButtonElement, CarouselPauseProps>(
           onClick?.(event);
         }}
       >
-        {children
-          ? children(ctx.isPaused)
-          : ctx.isPaused
-            ? <PlayIcon />
-            : <PauseIcon />}
+        {children ? children(ctx.isPaused) : ctx.isPaused ? <PlayIcon /> : <PauseIcon />}
       </button>
     );
   },

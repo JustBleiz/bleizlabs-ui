@@ -34,21 +34,11 @@
 
 // Gradient: fade in/out from transparent to color and back. Direction-aware.
 .variantGradient.horizontal {
-  background: linear-gradient(
-    90deg,
-    transparent 0%,
-    var(--color-border) 50%,
-    transparent 100%
-  );
+  background: linear-gradient(90deg, transparent 0%, var(--color-border) 50%, transparent 100%);
 }
 
 .variantGradient.vertical {
-  background: linear-gradient(
-    180deg,
-    transparent 0%,
-    var(--color-border) 50%,
-    transparent 100%
-  );
+  background: linear-gradient(180deg, transparent 0%, var(--color-border) 50%, transparent 100%);
 }
 
 // Custom color override beats variant color.

@@ -59,7 +59,9 @@ test('OTP-R14 — custom RegExp pattern: only matching chars accepted', async ({
 
 test('OTP-R15 — SSR safe: no hydration warning', async ({ page }) => {
   const warnings: string[] = [];
-  page.on('console', (msg) => { if (msg.type() === 'warning') warnings.push(msg.text()); });
+  page.on('console', (msg) => {
+    if (msg.type() === 'warning') warnings.push(msg.text());
+  });
   await page.goto('/components/input-otp');
   await page.reload();
   expect(warnings.filter((w) => w.toLowerCase().includes('hydration'))).toHaveLength(0);

@@ -11,11 +11,7 @@
  */
 
 import { test, expect } from '@playwright/test';
-import {
-  hourFieldOf,
-  minuteFieldOf,
-  timeInputBy,
-} from './_helpers';
+import { hourFieldOf, minuteFieldOf, timeInputBy } from './_helpers';
 
 test.describe('TimeInput — bounds + step', () => {
   test.beforeEach(async ({ page }) => {

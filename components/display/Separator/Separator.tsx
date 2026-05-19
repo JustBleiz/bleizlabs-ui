@@ -1,8 +1,4 @@
-import {
-  forwardRef,
-  type CSSProperties,
-  type HTMLAttributes,
-} from 'react';
+import { forwardRef, type CSSProperties, type HTMLAttributes } from 'react';
 import { Slot } from '../../utils/Slot';
 import { cn } from '../../utils/cn';
 import styles from './Separator.module.scss';
@@ -49,49 +45,47 @@ const VARIANT_CLASS: Record<SeparatorVariant, string> = {
   brand: styles.variantBrand!,
 };
 
-export const Separator = forwardRef<HTMLElement, SeparatorProps>(
-  function Separator(
-    {
-      variant = 'subtle',
-      orientation = 'horizontal',
-      color,
-      decorative = true,
-      asChild = false,
-      className,
-      style,
-      ...rest
-    },
-    ref,
-  ) {
-    const isVertical = orientation === 'vertical';
-    // Horizontal default → <hr>. Vertical → <div role="separator">.
-    // asChild always wins if set.
-    const Comp = asChild ? Slot : isVertical ? 'div' : 'hr';
-
-    const sepVars: CSSProperties = color
-      ? ({ '--separator-color': color } as CSSProperties)
-      : ({} as CSSProperties);
-
-    const a11yProps = decorative
-      ? { 'aria-hidden': true }
-      : isVertical
-        ? { role: 'separator', 'aria-orientation': 'vertical' as const }
-        : {};
-
-    return (
-      <Comp
-        ref={ref as never}
-        className={cn(
-          styles.root,
-          VARIANT_CLASS[variant],
-          isVertical ? styles.vertical : styles.horizontal,
-          color && styles.customColor,
-          className,
-        )}
-        style={{ ...style, ...sepVars }}
-        {...a11yProps}
-        {...rest}
-      />
-    );
+export const Separator = forwardRef<HTMLElement, SeparatorProps>(function Separator(
+  {
+    variant = 'subtle',
+    orientation = 'horizontal',
+    color,
+    decorative = true,
+    asChild = false,
+    className,
+    style,
+    ...rest
   },
-);
+  ref,
+) {
+  const isVertical = orientation === 'vertical';
+  // Horizontal default → <hr>. Vertical → <div role="separator">.
+  // asChild always wins if set.
+  const Comp = asChild ? Slot : isVertical ? 'div' : 'hr';
+
+  const sepVars: CSSProperties = color
+    ? ({ '--separator-color': color } as CSSProperties)
+    : ({} as CSSProperties);
+
+  const a11yProps = decorative
+    ? { 'aria-hidden': true }
+    : isVertical
+      ? { role: 'separator', 'aria-orientation': 'vertical' as const }
+      : {};
+
+  return (
+    <Comp
+      ref={ref as never}
+      className={cn(
+        styles.root,
+        VARIANT_CLASS[variant],
+        isVertical ? styles.vertical : styles.horizontal,
+        color && styles.customColor,
+        className,
+      )}
+      style={{ ...style, ...sepVars }}
+      {...a11yProps}
+      {...rest}
+    />
+  );
+});

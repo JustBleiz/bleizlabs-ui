@@ -40,9 +40,7 @@ test('on close via Tab: focus moves to next document tabbable', async ({ page })
   await page.getByText('Right-click me').first().click({ button: 'right' });
   await page.keyboard.press('Tab');
   // Focus should NOT be on a menu item — browser Tab propagates
-  const activeRole = await page.evaluate(() =>
-    document.activeElement?.getAttribute('role')
-  );
+  const activeRole = await page.evaluate(() => document.activeElement?.getAttribute('role'));
   expect(activeRole).not.toBe('menuitem');
 });
 
@@ -60,7 +58,7 @@ test('disabled items are never focused by keyboard nav', async ({ page }) => {
   for (let i = 0; i < 20; i++) {
     await page.keyboard.press('ArrowDown');
     const ariaDisabled = await page.evaluate(() =>
-      document.activeElement?.getAttribute('aria-disabled')
+      document.activeElement?.getAttribute('aria-disabled'),
     );
     expect(ariaDisabled).not.toBe('true');
   }
@@ -71,8 +69,8 @@ test('tabIndex: all items have tabIndex=-1 (menu uses arrow keys)', async ({ pag
   await page.getByText('Right-click me').first().click({ button: 'right' });
   const tabIndices = await page.evaluate(() =>
     Array.from(document.querySelectorAll('[role="menuitem"]')).map(
-      (el) => (el as HTMLElement).tabIndex
-    )
+      (el) => (el as HTMLElement).tabIndex,
+    ),
   );
   expect(tabIndices.every((t) => t === -1)).toBe(true);
 });

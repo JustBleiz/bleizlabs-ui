@@ -1,9 +1,4 @@
-import {
-  forwardRef,
-  type CSSProperties,
-  type HTMLAttributes,
-  type ReactNode,
-} from 'react';
+import { forwardRef, type CSSProperties, type HTMLAttributes, type ReactNode } from 'react';
 import { Slot } from '../../utils/Slot';
 import { cn } from '../../utils/cn';
 import type { SpaceIndex } from '../../types/spacing';
@@ -55,42 +50,39 @@ export interface ContainerProps extends HTMLAttributes<HTMLDivElement> {
   children?: ReactNode;
 }
 
-export const Container = forwardRef<HTMLDivElement, ContainerProps>(
-  function Container(
-    {
-      size = 'lg',
-      padding = 4,
-      centered = true,
-      asChild = false,
-      className,
-      style,
-      children,
-      ...rest
-    },
-    ref,
-  ) {
-    const Comp = asChild ? Slot : 'div';
-
-    const maxWidth = size === 'fluid' ? '100%' : `var(--container-${size})`;
-    const padX =
-      padding === 'none' ? '0' : `var(--space-${padding})`;
-    const marginX = centered ? 'auto' : '0';
-
-    const containerVars: CSSProperties = {
-      '--container-max': maxWidth,
-      '--container-padding-x': padX,
-      '--container-margin-x': marginX,
-    } as CSSProperties;
-
-    return (
-      <Comp
-        ref={ref}
-        className={cn(styles.root, className)}
-        style={{ ...style, ...containerVars }}
-        {...rest}
-      >
-        {children}
-      </Comp>
-    );
+export const Container = forwardRef<HTMLDivElement, ContainerProps>(function Container(
+  {
+    size = 'lg',
+    padding = 4,
+    centered = true,
+    asChild = false,
+    className,
+    style,
+    children,
+    ...rest
   },
-);
+  ref,
+) {
+  const Comp = asChild ? Slot : 'div';
+
+  const maxWidth = size === 'fluid' ? '100%' : `var(--container-${size})`;
+  const padX = padding === 'none' ? '0' : `var(--space-${padding})`;
+  const marginX = centered ? 'auto' : '0';
+
+  const containerVars: CSSProperties = {
+    '--container-max': maxWidth,
+    '--container-padding-x': padX,
+    '--container-margin-x': marginX,
+  } as CSSProperties;
+
+  return (
+    <Comp
+      ref={ref}
+      className={cn(styles.root, className)}
+      style={{ ...style, ...containerVars }}
+      {...rest}
+    >
+      {children}
+    </Comp>
+  );
+});

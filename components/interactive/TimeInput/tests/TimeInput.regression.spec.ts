@@ -18,12 +18,7 @@
  */
 
 import { test, expect } from '@playwright/test';
-import {
-  hourFieldOf,
-  minuteFieldOf,
-  periodToggleOf,
-  timeInputBy,
-} from './_helpers';
+import { hourFieldOf, minuteFieldOf, periodToggleOf, timeInputBy } from './_helpers';
 
 test.describe('TimeInput — regression cases', () => {
   test.beforeEach(async ({ page }) => {
@@ -77,9 +72,7 @@ test.describe('TimeInput — regression cases', () => {
     await expect(hour).toHaveAttribute('aria-valuetext', /12 AM/);
   });
 
-  test('TI-R05 — single "3" in hour auto-advances (30+ impossible, max 23)', async ({
-    page,
-  }) => {
+  test('TI-R05 — single "3" in hour auto-advances (30+ impossible, max 23)', async ({ page }) => {
     const picker = timeInputBy(page, 'Start time');
     const hour = hourFieldOf(picker);
     const minute = minuteFieldOf(picker);

@@ -7,7 +7,9 @@ unskip when referenced integration scenarios land.
 ## Tests
 
 ```ts
-test('radix-620 — hover content does not disappear when pointer enters tooltip', async ({ page }) => {
+test('radix-620 — hover content does not disappear when pointer enters tooltip', async ({
+  page,
+}) => {
   // SC 1.4.13 hoverable — grace area prevents premature close during pointer travel.
   await page.goto('/components/tooltip');
   const trigger = page.getByRole('button', { name: 'Save' });
@@ -141,11 +143,13 @@ test('radix-1612 — tooltip follows trigger on scroll', async ({ page }) => {
   const after = await page.getByRole('tooltip').boundingBox();
   // Tooltip y should decrease by ~100 (followed scroll)
   if (before && after) {
-    expect(Math.abs((before.y - 100) - after.y)).toBeLessThan(10);
+    expect(Math.abs(before.y - 100 - after.y)).toBeLessThan(10);
   }
 });
 
-test('radix-3081 — tooltip inside form does not submit on click [documentation test]', async ({ page }) => {
+test('radix-3081 — tooltip inside form does not submit on click [documentation test]', async ({
+  page,
+}) => {
   // Consumer responsibility: use type="button" on trigger inside forms.
   // Our Slot passes through consumer's type attribute unchanged.
   await page.goto('/components/tooltip');

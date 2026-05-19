@@ -1,9 +1,4 @@
-import {
-  forwardRef,
-  type CSSProperties,
-  type HTMLAttributes,
-  type ReactNode,
-} from 'react';
+import { forwardRef, type CSSProperties, type HTMLAttributes, type ReactNode } from 'react';
 import { cn } from '../../utils/cn';
 import styles from './KpiValue.module.scss';
 
@@ -176,7 +171,7 @@ function deriveColor(
   value: number | string,
   color: KpiValueColorOrAuto,
   thresholds: KpiValueProps['thresholds'],
-  inverse: boolean
+  inverse: boolean,
 ): KpiValueColor {
   if (color !== 'auto') return color;
   if (typeof value !== 'number') return 'primary';
@@ -203,17 +198,13 @@ function deriveColor(
  * identity). Other units render via separate `.unit` small/muted span
  * (handled by parent caller, this function only returns the value text).
  */
-function formatStaticValue(
-  value: number | string,
-  decimals: number | undefined
-): string {
+function formatStaticValue(value: number | string, decimals: number | undefined): string {
   if (typeof value === 'string') return value;
   if (decimals === undefined) return String(value);
   return value.toFixed(decimals);
 }
 
-export interface KpiValueProps
-  extends Omit<HTMLAttributes<HTMLDivElement>, 'children'> {
+export interface KpiValueProps extends Omit<HTMLAttributes<HTMLDivElement>, 'children'> {
   /**
    * Main display value. Number or string — both render as-is. For
    * animated count-up use {@link KpiValueAnimated}.
@@ -300,66 +291,58 @@ export interface KpiValueProps
   children?: never;
 }
 
-export const KpiValue = forwardRef<HTMLDivElement, KpiValueProps>(
-  function KpiValue(
-    {
-      value,
-      unit,
-      size = 'lg',
-      color = 'primary',
-      decimals,
-      thresholds,
-      inverse = false,
-      trend,
-      benchmark,
-      renderValue,
-      className,
-      style,
-      ...rest
-    },
-    ref
-  ) {
-    const resolvedColor = deriveColor(value, color, thresholds, inverse);
-    const valueColorVar = VALUE_COLOR_VAR[resolvedColor];
-    const effectiveDecimals = decimals ?? 0;
-    const isPercentUnit = unit === '%';
+export const KpiValue = forwardRef<HTMLDivElement, KpiValueProps>(function KpiValue(
+  {
+    value,
+    unit,
+    size = 'lg',
+    color = 'primary',
+    decimals,
+    thresholds,
+    inverse = false,
+    trend,
+    benchmark,
+    renderValue,
+    className,
+    style,
+    ...rest
+  },
+  ref,
+) {
+  const resolvedColor = deriveColor(value, color, thresholds, inverse);
+  const valueColorVar = VALUE_COLOR_VAR[resolvedColor];
+  const effectiveDecimals = decimals ?? 0;
+  const isPercentUnit = unit === '%';
 
-    const valueNode = renderValue
-      ? renderValue(value, effectiveDecimals)
-      : isPercentUnit && typeof value === 'number'
+  const valueNode = renderValue
+    ? renderValue(value, effectiveDecimals)
+    : isPercentUnit && typeof value === 'number'
       ? `${formatStaticValue(value, decimals)}%`
       : formatStaticValue(value, decimals);
 
-    return (
-      <div
-        ref={ref}
-        className={cn(styles.root, className)}
-        style={
-          {
-            ...style,
-            '--kpi-value-color': valueColorVar,
-          } as CSSProperties
-        }
-        {...rest}
-      >
-        <span className={cn(styles.valueRow, SIZE_CLASS[size])}>
-          <span className={styles.value}>{valueNode}</span>
-          {unit && !isPercentUnit && (
-            <span className={styles.unit}>{unit}</span>
-          )}
+  return (
+    <div
+      ref={ref}
+      className={cn(styles.root, className)}
+      style={
+        {
+          ...style,
+          '--kpi-value-color': valueColorVar,
+        } as CSSProperties
+      }
+      {...rest}
+    >
+      <span className={cn(styles.valueRow, SIZE_CLASS[size])}>
+        <span className={styles.value}>{valueNode}</span>
+        {unit && !isPercentUnit && <span className={styles.unit}>{unit}</span>}
+      </span>
+      {trend && (
+        <span className={cn(styles.trendRow, TREND_CLASS[trend.direction])}>
+          {trend.icon ?? <DefaultTrendIcon direction={trend.direction} />}
+          {trend.label && <span className={styles.trendLabel}>{trend.label}</span>}
         </span>
-        {trend && (
-          <span className={cn(styles.trendRow, TREND_CLASS[trend.direction])}>
-            {trend.icon ?? <DefaultTrendIcon direction={trend.direction} />}
-            {trend.label && (
-              <span className={styles.trendLabel}>{trend.label}</span>
-            )}
-          </span>
-        )}
-        {benchmark && (
-          <span className={styles.benchmark}>{benchmark}</span>
-        )}
-      </div>
-    );
-  }
-);
+      )}
+      {benchmark && <span className={styles.benchmark}>{benchmark}</span>}
+    </div>
+  );
+});

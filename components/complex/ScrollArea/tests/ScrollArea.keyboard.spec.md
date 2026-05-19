@@ -30,7 +30,9 @@ test('SA-R03 — Home/End scroll to top/bottom', async ({ page }) => {
   const viewport = page.locator('[data-scroll-area-viewport]').first();
   await viewport.focus();
   await page.keyboard.press('End');
-  const scrollEnd = await viewport.evaluate((el) => el.scrollTop + el.clientHeight >= el.scrollHeight - 1);
+  const scrollEnd = await viewport.evaluate(
+    (el) => el.scrollTop + el.clientHeight >= el.scrollHeight - 1,
+  );
   expect(scrollEnd).toBe(true);
   await page.keyboard.press('Home');
   expect(await viewport.evaluate((el) => el.scrollTop)).toBe(0);

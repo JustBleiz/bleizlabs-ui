@@ -47,8 +47,7 @@ export interface AvailabilitySegment {
   status: AvailabilityStatus;
 }
 
-export interface AvailabilityBarProps
-  extends Omit<HTMLAttributes<HTMLDivElement>, 'aria-label'> {
+export interface AvailabilityBarProps extends Omit<HTMLAttributes<HTMLDivElement>, 'aria-label'> {
   /** Day-by-day segments (left-to-right order). Empty array → nothing renders. */
   segments: AvailabilitySegment[];
   /** Accessible name (required). Used as `aria-label` + in the summary text. */
@@ -69,58 +68,57 @@ const STATUS_LABEL: Record<AvailabilityStatus, string> = {
   down: 'down',
 };
 
-export const AvailabilityBar = forwardRef<
-  HTMLDivElement,
-  AvailabilityBarProps
->(function AvailabilityBar(
-  { segments, label, showLabels = false, className, style, ...rest },
-  ref,
-) {
-  const counts = useMemo(() => {
-    const result = { ok: 0, warning: 0, down: 0 };
-    for (const segment of segments) {
-      result[segment.status] += 1;
+export const AvailabilityBar = forwardRef<HTMLDivElement, AvailabilityBarProps>(
+  function AvailabilityBar(
+    { segments, label, showLabels = false, className, style, ...rest },
+    ref,
+  ) {
+    const counts = useMemo(() => {
+      const result = { ok: 0, warning: 0, down: 0 };
+      for (const segment of segments) {
+        result[segment.status] += 1;
+      }
+      return result;
+    }, [segments]);
+
+    if (segments.length === 0) {
+      return null;
     }
-    return result;
-  }, [segments]);
 
-  if (segments.length === 0) {
-    return null;
-  }
+    const summary = `${label}. ${segments.length} days: ${counts.ok} ok, ${counts.warning} warnings, ${counts.down} down.`;
+    const firstDate = segments[0]?.date;
+    const lastDate = segments[segments.length - 1]?.date;
 
-  const summary = `${label}. ${segments.length} days: ${counts.ok} ok, ${counts.warning} warnings, ${counts.down} down.`;
-  const firstDate = segments[0]?.date;
-  const lastDate = segments[segments.length - 1]?.date;
+    const cssVars = {
+      ...style,
+      '--availability-cells': segments.length,
+    } as React.CSSProperties;
 
-  const cssVars = {
-    ...style,
-    '--availability-cells': segments.length,
-  } as React.CSSProperties;
-
-  return (
-    <div
-      ref={ref}
-      role="img"
-      aria-label={summary}
-      className={cn(styles.root, className)}
-      style={cssVars}
-      {...rest}
-    >
-      <ul role="list" className={styles.strip}>
-        {segments.map((segment, index) => (
-          <li
-            key={`${index}-${segment.date}`}
-            title={`${segment.date} — ${STATUS_LABEL[segment.status]}`}
-            className={cn(styles.cell, STATUS_CLASS[segment.status])}
-          />
-        ))}
-      </ul>
-      {showLabels ? (
-        <div aria-hidden="true" className={styles.labels}>
-          <span className={styles.labelStart}>{firstDate}</span>
-          <span className={styles.labelEnd}>{lastDate}</span>
-        </div>
-      ) : null}
-    </div>
-  );
-});
+    return (
+      <div
+        ref={ref}
+        role="img"
+        aria-label={summary}
+        className={cn(styles.root, className)}
+        style={cssVars}
+        {...rest}
+      >
+        <ul role="list" className={styles.strip}>
+          {segments.map((segment, index) => (
+            <li
+              key={`${index}-${segment.date}`}
+              title={`${segment.date} — ${STATUS_LABEL[segment.status]}`}
+              className={cn(styles.cell, STATUS_CLASS[segment.status])}
+            />
+          ))}
+        </ul>
+        {showLabels ? (
+          <div aria-hidden="true" className={styles.labels}>
+            <span className={styles.labelStart}>{firstDate}</span>
+            <span className={styles.labelEnd}>{lastDate}</span>
+          </div>
+        ) : null}
+      </div>
+    );
+  },
+);

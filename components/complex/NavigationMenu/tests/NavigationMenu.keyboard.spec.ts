@@ -116,9 +116,7 @@ test.describe('NavigationMenu — keyboard interactions', () => {
     await expect(boreal).toBeFocused();
   });
 
-  test('NM-R10 — Escape in submenu returns focus to parent menubar item', async ({
-    page,
-  }) => {
+  test('NM-R10 — Escape in submenu returns focus to parent menubar item', async ({ page }) => {
     const menubar = page.getByRole('menubar', { name: 'Main' });
     const productsTrigger = menubar.getByRole('menuitem', { name: 'Products' });
     await productsTrigger.click();
@@ -130,9 +128,7 @@ test.describe('NavigationMenu — keyboard interactions', () => {
     await expect(submenu).not.toBeVisible();
   });
 
-  test('NM-R12 — rapid Left/Right arrow bounce does not stutter focus', async ({
-    page,
-  }) => {
+  test('NM-R12 — rapid Left/Right arrow bounce does not stutter focus', async ({ page }) => {
     const menubar = page.getByRole('menubar', { name: 'Main' });
     const first = menubar.getByRole('menuitem', { name: 'Products' });
     await first.focus();
@@ -187,9 +183,7 @@ test.describe('NavigationMenu — keyboard interactions', () => {
     await expect(last).toBeFocused();
   });
 
-  test('ArrowRight inside submenu advances to the NEXT menubar item (F6)', async ({
-    page,
-  }) => {
+  test('ArrowRight inside submenu advances to the NEXT menubar item (F6)', async ({ page }) => {
     // E142 L4 F6 — submenu ArrowRight now calls stopPropagation so the
     // list-level handler cannot also advance (previously doubled up).
     const menubar = page.getByRole('menubar', { name: 'Main' });

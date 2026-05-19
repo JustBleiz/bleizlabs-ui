@@ -55,11 +55,10 @@ import styles from './Sheet.module.scss';
 export type SheetSide = 'left' | 'right' | 'top' | 'bottom';
 export type SheetSize = 'sm' | 'md' | 'lg';
 
-export interface SheetProps
-  extends Omit<
-    HTMLAttributes<HTMLDivElement>,
-    'title' | 'role' | 'aria-modal' | 'aria-labelledby' | 'aria-describedby'
-  > {
+export interface SheetProps extends Omit<
+  HTMLAttributes<HTMLDivElement>,
+  'title' | 'role' | 'aria-modal' | 'aria-labelledby' | 'aria-describedby'
+> {
   /** Controlled open state. Sheet is always modal. */
   open: boolean;
   /** Callback invoked when sheet requests to close (Escape, overlay click, close button). */
@@ -304,9 +303,7 @@ export function Sheet({
     if (!open) return;
     const portalRoot = contentRef.current?.parentElement;
     if (!portalRoot) return;
-    const siblings = Array.from(document.body.children).filter(
-      (el) => el !== portalRoot,
-    );
+    const siblings = Array.from(document.body.children).filter((el) => el !== portalRoot);
     const hadInert = siblings.map((el) => el.hasAttribute('inert'));
     siblings.forEach((el) => el.setAttribute('inert', ''));
     return () => {
@@ -335,9 +332,7 @@ export function Sheet({
 
   const describedBy = description ? descriptionId : undefined;
   const isHorizontal = side === 'left' || side === 'right';
-  const sizeClass = isHorizontal
-    ? SIZE_CLASS_HORIZONTAL[size]
-    : SIZE_CLASS_VERTICAL[size];
+  const sizeClass = isHorizontal ? SIZE_CLASS_HORIZONTAL[size] : SIZE_CLASS_VERTICAL[size];
 
   return createPortal(
     <div
@@ -379,12 +374,7 @@ export function Sheet({
           ) : null}
         </header>
         {description ? (
-          <Text
-            id={descriptionId}
-            variant="body"
-            color="muted"
-            className={styles.description}
-          >
+          <Text id={descriptionId} variant="body" color="muted" className={styles.description}>
             {description}
           </Text>
         ) : null}

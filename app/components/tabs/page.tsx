@@ -1,12 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import {
-  Tabs,
-  TabsList,
-  TabsTrigger,
-  TabsContent,
-} from '@/components/complex/Tabs';
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/complex/Tabs';
 import { Heading } from '@/components/typography/Heading';
 import { Text } from '@/components/typography/Text';
 import { Stack } from '@/components/layout/Stack';
@@ -23,10 +18,9 @@ export default function TabsPlayground() {
           Tabs
         </Heading>
         <Text variant="lead" color="muted">
-          Accessible tabs for switching between related panels. Three visual
-          variants (underline, pill, segmented), horizontal or vertical
-          orientation, automatic or manual activation, and RTL support.
-          Roving tabindex keeps the tab sequence clean for keyboard users.
+          Accessible tabs for switching between related panels. Three visual variants (underline,
+          pill, segmented), horizontal or vertical orientation, automatic or manual activation, and
+          RTL support. Roving tabindex keeps the tab sequence clean for keyboard users.
         </Text>
       </header>
 
@@ -64,8 +58,8 @@ export default function TabsPlayground() {
                   Tasks
                 </Heading>
                 <Text variant="body">
-                  Task list with filters, assignees, and due dates. Typically the busiest panel
-                  in project dashboards.
+                  Task list with filters, assignees, and due dates. Typically the busiest panel in
+                  project dashboards.
                 </Text>
               </Stack>
             </TabsContent>
@@ -75,8 +69,8 @@ export default function TabsPlayground() {
                   Team
                 </Heading>
                 <Text variant="body">
-                  Members, roles, invitations, and access levels. Suitable for Provider-based
-                  invite UI patterns.
+                  Members, roles, invitations, and access levels. Suitable for Provider-based invite
+                  UI patterns.
                 </Text>
               </Stack>
             </TabsContent>
@@ -133,8 +127,8 @@ export default function TabsPlayground() {
           3. Segmented variant
         </Heading>
         <Text variant="body" color="muted">
-          iOS-style tight segmented control. Active button is raised via box-shadow. Tightly
-          grouped with equal-width triggers via flex:1.
+          iOS-style tight segmented control. Active button is raised via box-shadow. Tightly grouped
+          with equal-width triggers via flex:1.
         </Text>
         <div className={styles.demo}>
           <Tabs defaultValue="grid">
@@ -162,8 +156,8 @@ export default function TabsPlayground() {
           4. Vertical orientation
         </Heading>
         <Text variant="body" color="muted">
-          Sidebar-style tabs. <code>orientation=&quot;vertical&quot;</code> swaps keyboard nav
-          from Right/Left to Down/Up, and the underline variant switches from border-bottom to
+          Sidebar-style tabs. <code>orientation=&quot;vertical&quot;</code> swaps keyboard nav from
+          Right/Left to Down/Up, and the underline variant switches from border-bottom to
           border-right.
         </Text>
         <div className={styles.demo}>
@@ -225,8 +219,8 @@ export default function TabsPlayground() {
           5. Manual activation mode
         </Heading>
         <Text variant="body" color="muted">
-          Arrows move focus only; Space/Enter activates. Use for async-loaded panels where
-          switching on every arrow keypress would fire unnecessary network requests.
+          Arrows move focus only; Space/Enter activates. Use for async-loaded panels where switching
+          on every arrow keypress would fire unnecessary network requests.
         </Text>
         <div className={styles.demo}>
           <Tabs defaultValue="analytics" activationMode="manual">
@@ -237,8 +231,8 @@ export default function TabsPlayground() {
             </TabsList>
             <TabsContent value="analytics">
               <Text variant="body">
-                <strong>Manual mode:</strong> Tab into this area, use arrows to move focus
-                across triggers without activating, then Space/Enter to actually switch panels.
+                <strong>Manual mode:</strong> Tab into this area, use arrows to move focus across
+                triggers without activating, then Space/Enter to actually switch panels.
               </Text>
             </TabsContent>
             <TabsContent value="reports">
@@ -257,9 +251,9 @@ export default function TabsPlayground() {
           6. Controlled mode + disabled trigger
         </Heading>
         <Text variant="body" color="muted">
-          Pass <code>value</code> + <code>onValueChange</code> for controlled state.
-          Currently selected: <Badge color="brand">{controlledValue}</Badge>. The Enterprise tab
-          is disabled — arrow nav and Home/End skip it.
+          Pass <code>value</code> + <code>onValueChange</code> for controlled state. Currently
+          selected: <Badge color="brand">{controlledValue}</Badge>. The Enterprise tab is disabled —
+          arrow nav and Home/End skip it.
         </Text>
         <div className={styles.demo}>
           <Tabs value={controlledValue} onValueChange={setControlledValue}>
@@ -314,8 +308,8 @@ export default function TabsPlayground() {
             <kbd>Space</kbd> / <kbd>Enter</kbd> in manual mode — activate focused trigger
           </li>
           <li>
-            <kbd>Cmd</kbd> + <kbd>Arrow</kbd> — NOT intercepted (browser hotkeys like Cmd+←
-            back-nav take precedence, Radix TB-R04 fix)
+            <kbd>Cmd</kbd> + <kbd>Arrow</kbd> — NOT intercepted (browser hotkeys like Cmd+← back-nav
+            take precedence, Radix TB-R04 fix)
           </li>
         </ul>
         <div className={styles.demo}>

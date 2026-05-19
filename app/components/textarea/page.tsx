@@ -13,37 +13,57 @@ export default function TextareaPlaygroundPage() {
   return (
     <main className={styles.main}>
       <header className={styles.header}>
-        <Link href="/" className={styles.back}>← back</Link>
-        <Heading level={1} size="4xl">Textarea</Heading>
+        <Link href="/" className={styles.back}>
+          ← back
+        </Link>
+        <Heading level={1} size="4xl">
+          Textarea
+        </Heading>
         <p className={styles.intro}>
-          Multi-line text form input with auto-coupled Label, error / helper text wiring,
-          and configurable resize behavior. Renders own internal Label via the `label` prop —
-          for standalone Label usage see the Label playground.
+          Multi-line text form input with auto-coupled Label, error / helper text wiring, and
+          configurable resize behavior. Renders own internal Label via the `label` prop — for
+          standalone Label usage see the Label playground.
         </p>
       </header>
 
       <section className={styles.demo}>
-        <Heading level={2} size="2xl">1. Default — label + name + rows=4</Heading>
+        <Heading level={2} size="2xl">
+          1. Default — label + name + rows=4
+        </Heading>
         <div className={styles.field}>
           <Textarea label="Bio" name="bio" rows={4} placeholder="Tell us about yourself..." />
         </div>
       </section>
 
       <section className={styles.demo}>
-        <Heading level={2} size="2xl">2. Resize variants</Heading>
+        <Heading level={2} size="2xl">
+          2. Resize variants
+        </Heading>
         <Text variant="caption" color="muted">
           Drag the corner handle in each textarea to confirm the allowed resize axis.
         </Text>
         <div className={styles.fieldGrid}>
           <Textarea label="resize='none'" name="resize-none" resize="none" rows={3} />
-          <Textarea label="resize='vertical' (default)" name="resize-vertical" resize="vertical" rows={3} />
-          <Textarea label="resize='horizontal'" name="resize-horizontal" resize="horizontal" rows={3} />
+          <Textarea
+            label="resize='vertical' (default)"
+            name="resize-vertical"
+            resize="vertical"
+            rows={3}
+          />
+          <Textarea
+            label="resize='horizontal'"
+            name="resize-horizontal"
+            resize="horizontal"
+            rows={3}
+          />
           <Textarea label="resize='both'" name="resize-both" resize="both" rows={3} />
         </div>
       </section>
 
       <section className={styles.demo}>
-        <Heading level={2} size="2xl">3. With helperText</Heading>
+        <Heading level={2} size="2xl">
+          3. With helperText
+        </Heading>
         <div className={styles.field}>
           <Textarea
             label="Comments"
@@ -55,9 +75,12 @@ export default function TextareaPlaygroundPage() {
       </section>
 
       <section className={styles.demo}>
-        <Heading level={2} size="2xl">4. Error state</Heading>
+        <Heading level={2} size="2xl">
+          4. Error state
+        </Heading>
         <Text variant="caption" color="muted">
-          The `error` prop renders below the textarea, sets `aria-invalid`, and links via `aria-describedby`.
+          The `error` prop renders below the textarea, sets `aria-invalid`, and links via
+          `aria-describedby`.
         </Text>
         <div className={styles.field}>
           <Textarea
@@ -71,7 +94,9 @@ export default function TextareaPlaygroundPage() {
       </section>
 
       <section className={styles.demo}>
-        <Heading level={2} size="2xl">5. Required + disabled</Heading>
+        <Heading level={2} size="2xl">
+          5. Required + disabled
+        </Heading>
         <div className={styles.fieldGrid}>
           <Textarea
             label="Description"
@@ -91,11 +116,13 @@ export default function TextareaPlaygroundPage() {
       </section>
 
       <section className={styles.demo}>
-        <Heading level={2} size="2xl">6. hideLabel — visually hidden</Heading>
+        <Heading level={2} size="2xl">
+          6. hideLabel — visually hidden
+        </Heading>
         <Text variant="caption" color="muted">
-          Label stays in the accessibility tree (sr-only) — screen readers announce it,
-          sighted users see only the textarea. Use sparingly when the surrounding context already
-          names the field.
+          Label stays in the accessibility tree (sr-only) — screen readers announce it, sighted
+          users see only the textarea. Use sparingly when the surrounding context already names the
+          field.
         </Text>
         <div className={styles.field}>
           <Textarea
@@ -109,9 +136,12 @@ export default function TextareaPlaygroundPage() {
       </section>
 
       <section className={styles.demo}>
-        <Heading level={2} size="2xl">7. Controlled with live counter</Heading>
+        <Heading level={2} size="2xl">
+          7. Controlled with live counter
+        </Heading>
         <Text variant="caption" color="muted">
-          Demonstrates `value` + `onChange` controlled mode. Helper text reflects the current length.
+          Demonstrates `value` + `onChange` controlled mode. Helper text reflects the current
+          length.
         </Text>
         <div className={styles.field}>
           <Textarea

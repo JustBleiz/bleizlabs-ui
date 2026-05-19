@@ -12,14 +12,18 @@
 ## Tests
 
 ```ts
-test('HC-R03 — focus on trigger opens instantly (WCAG SC 2.1.1 keyboard parity)', async ({ page }) => {
+test('HC-R03 — focus on trigger opens instantly (WCAG SC 2.1.1 keyboard parity)', async ({
+  page,
+}) => {
   await page.goto('/components/hover-card');
   await page.keyboard.press('Tab'); // focus first trigger
   // Focus path bypasses openDelay — content appears immediately
   await expect(page.getByRole('dialog')).toBeVisible();
 });
 
-test('HC-R05 — Escape closes without losing trigger focus (WCAG SC 1.4.13 dismissable)', async ({ page }) => {
+test('HC-R05 — Escape closes without losing trigger focus (WCAG SC 1.4.13 dismissable)', async ({
+  page,
+}) => {
   await page.goto('/components/hover-card');
   const trigger = page.getByRole('link', { name: '@acme' });
   await trigger.focus();

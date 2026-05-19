@@ -26,9 +26,7 @@ test.describe('Toast — focus behavior', () => {
     await page.goto('/components/toast');
   });
 
-  test('TST-R04 — toast does NOT steal focus on open (WCAG 2.4.3)', async ({
-    page,
-  }) => {
+  test('TST-R04 — toast does NOT steal focus on open (WCAG 2.4.3)', async ({ page }) => {
     const trigger = page.getByRole('button', { name: 'toast()', exact: true });
     // Retry focus() until it sticks — guards against React hydration race
     // where focus applies to pre-hydration DOM and is lost when React replaces
@@ -44,9 +42,7 @@ test.describe('Toast — focus behavior', () => {
     await expect(trigger).toBeFocused();
   });
 
-  test('TST-R05 — hover pauses auto-dismiss timer (WCAG 1.4.13 hoverable)', async ({
-    page,
-  }) => {
+  test('TST-R05 — hover pauses auto-dismiss timer (WCAG 1.4.13 hoverable)', async ({ page }) => {
     // Sticky error toast — duration: Infinity. We use hover to confirm the
     // pause wiring is active (isPausedGlobally flip). Testing a real timer
     // expiry with hover is flaky because the 4000ms default is too long for

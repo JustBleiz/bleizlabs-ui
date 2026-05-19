@@ -88,7 +88,9 @@ test.describe('Drawer — regression cases', () => {
     expect(closed).not.toBe('hidden');
   });
 
-  test('#2270 inherited — focus returns to correct trigger (not first tabbable)', async ({ page }) => {
+  test('#2270 inherited — focus returns to correct trigger (not first tabbable)', async ({
+    page,
+  }) => {
     const t1 = page.getByRole('button', { name: /open basic drawer/i });
     const t2 = page.getByRole('button', { name: /open filters drawer/i });
     await t2.click();
@@ -104,7 +106,9 @@ test.describe('Drawer — regression cases', () => {
     await expect(page.locator(`#${labelledBy}`)).toBeVisible();
   });
 
-  test('#3007 inherited — aria-describedby conditional (present only with description)', async ({ page }) => {
+  test('#3007 inherited — aria-describedby conditional (present only with description)', async ({
+    page,
+  }) => {
     await page.getByRole('button', { name: /open filters drawer/i }).click();
     let describedBy = await page.getByRole('dialog').getAttribute('aria-describedby');
     expect(describedBy).toBeTruthy();

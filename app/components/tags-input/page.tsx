@@ -39,9 +39,8 @@ export default function TagsInputPlayground() {
           TagsInput
         </Heading>
         <Text color="secondary">
-          Freeform tag input. Type and press Enter / comma to commit. Backspace
-          on empty removes the last chip. Paste a delimited string to
-          batch-add. Zero deps — native input + chip render.
+          Freeform tag input. Type and press Enter / comma to commit. Backspace on empty removes the
+          last chip. Paste a delimited string to batch-add. Zero deps — native input + chip render.
         </Text>
         <Inline gap={2} wrap>
           <Badge color="info">interactive/TagsInput</Badge>
@@ -56,8 +55,8 @@ export default function TagsInputPlayground() {
           1. Basic uncontrolled
         </Heading>
         <Text color="secondary">
-          Defaults — Enter or comma commits, Backspace removes last, paste
-          splits on comma/semicolon/newline.
+          Defaults — Enter or comma commits, Backspace removes last, paste splits on
+          comma/semicolon/newline.
         </Text>
         <div className={styles.demo}>
           <TagsInput
@@ -74,8 +73,8 @@ export default function TagsInputPlayground() {
           2. Controlled with maxTags=5
         </Heading>
         <Text color="secondary">
-          Controlled value + <code>maxTags</code> cap. Excess attempts
-          rejected with <code>too-many</code> reason.
+          Controlled value + <code>maxTags</code> cap. Excess attempts rejected with{' '}
+          <code>too-many</code> reason.
         </Text>
         <div className={styles.demo}>
           <TagsInput
@@ -110,9 +109,7 @@ export default function TagsInputPlayground() {
             value={lowercase}
             onChange={setLowercase}
             onReject={setLowercaseRejects}
-            validate={(tag) =>
-              tag === tag.toLowerCase() || 'Must be lowercase'
-            }
+            validate={(tag) => tag === tag.toLowerCase() || 'Must be lowercase'}
             placeholder="Try 'React' to see rejection..."
           />
           {lowercaseRejects.length > 0 && (
@@ -120,8 +117,7 @@ export default function TagsInputPlayground() {
               <Badge color="warning">Rejected</Badge>
               <Text color="muted" variant="small">
                 {lowercaseRejects[0]?.value}:{' '}
-                {lowercaseRejects[0]?.message ??
-                  lowercaseRejects[0]?.reasons.join(', ')}
+                {lowercaseRejects[0]?.message ?? lowercaseRejects[0]?.reasons.join(', ')}
               </Text>
             </Inline>
           )}
@@ -134,8 +130,7 @@ export default function TagsInputPlayground() {
           4. Allow duplicates
         </Heading>
         <Text color="secondary">
-          Default rejects duplicates. <code>allowDuplicates</code> opt-in
-          accepts them.
+          Default rejects duplicates. <code>allowDuplicates</code> opt-in accepts them.
         </Text>
         <div className={styles.demo}>
           <TagsInput
@@ -154,9 +149,8 @@ export default function TagsInputPlayground() {
           5. Form integration (required + FormData)
         </Heading>
         <Text color="secondary">
-          Hidden <code>&lt;input type=&quot;hidden&quot;&gt;</code> serializes
-          as comma-joined string. Consumer reads via{' '}
-          <code>formData.get(name).split(&apos;,&apos;)</code>.
+          Hidden <code>&lt;input type=&quot;hidden&quot;&gt;</code> serializes as comma-joined
+          string. Consumer reads via <code>formData.get(name).split(&apos;,&apos;)</code>.
         </Text>
         <div className={styles.formDemo}>
           <Form
@@ -180,9 +174,7 @@ export default function TagsInputPlayground() {
                 required
                 placeholder="Add at least one..."
               />
-              <FieldMessage match="valueMissing">
-                At least one keyword required
-              </FieldMessage>
+              <FieldMessage match="valueMissing">At least one keyword required</FieldMessage>
             </Field>
             <FormSubmit>Submit</FormSubmit>
             {submitted != null && (
@@ -203,14 +195,10 @@ export default function TagsInputPlayground() {
           6. Paste split
         </Heading>
         <Text color="secondary">
-          Paste <code>red, green, blue</code> (with commas) — each becomes
-          its own chip.
+          Paste <code>red, green, blue</code> (with commas) — each becomes its own chip.
         </Text>
         <div className={styles.demo}>
-          <TagsInput
-            aria-label="Paste split tags"
-            placeholder="Paste 'red, green, blue' here..."
-          />
+          <TagsInput aria-label="Paste split tags" placeholder="Paste 'red, green, blue' here..." />
         </div>
       </section>
 
@@ -220,15 +208,10 @@ export default function TagsInputPlayground() {
           7. Disabled state
         </Heading>
         <Text color="secondary">
-          <code>disabled</code> blocks typing and chip removal. Wrapper
-          remains visible for context.
+          <code>disabled</code> blocks typing and chip removal. Wrapper remains visible for context.
         </Text>
         <div className={styles.demo}>
-          <TagsInput
-            aria-label="Disabled tags"
-            defaultValue={['readonly', 'archived']}
-            disabled
-          />
+          <TagsInput aria-label="Disabled tags" defaultValue={['readonly', 'archived']} disabled />
         </div>
       </section>
     </main>

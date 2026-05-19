@@ -10,7 +10,10 @@ export default function StackPlaygroundPage() {
           ← back
         </Link>
         <h1>Stack</h1>
-        <p>Vertical flex layout atom. Six variants demonstrating gap, align, justify, divider, and asChild.</p>
+        <p>
+          Vertical flex layout atom. Six variants demonstrating gap, align, justify, divider, and
+          asChild.
+        </p>
       </header>
 
       <section className={styles.demo}>

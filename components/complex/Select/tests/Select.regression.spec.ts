@@ -18,9 +18,7 @@ test.describe('Select — regressions', () => {
     await page.emulateMedia({ reducedMotion: 'reduce' });
   });
 
-  test('SL-R02 — SSR hydration: no hydration warnings on initial render', async ({
-    page,
-  }) => {
+  test('SL-R02 — SSR hydration: no hydration warnings on initial render', async ({ page }) => {
     const warnings: string[] = [];
     page.on('console', (msg) => {
       if (msg.type() === 'warning' || msg.type() === 'error') {
@@ -31,9 +29,7 @@ test.describe('Select — regressions', () => {
     await page.waitForLoadState('networkidle');
     await page.reload();
     await page.waitForLoadState('networkidle');
-    const hydrationWarnings = warnings.filter((w) =>
-      w.toLowerCase().includes('hydration'),
-    );
+    const hydrationWarnings = warnings.filter((w) => w.toLowerCase().includes('hydration'));
     expect(hydrationWarnings).toHaveLength(0);
   });
 
@@ -50,18 +46,14 @@ test.describe('Select — regressions', () => {
     await expect(page.getByRole('listbox')).toHaveCount(0);
   });
 
-  test('SL-R15 — exactly one listbox mounted per open cycle', async ({
-    page,
-  }) => {
+  test('SL-R15 — exactly one listbox mounted per open cycle', async ({ page }) => {
     await page.goto('/components/select');
     const trigger = page.getByRole('combobox').first();
     await trigger.click();
     await expect(page.getByRole('listbox')).toHaveCount(1);
   });
 
-  test('Controlled value: external button updates trigger display', async ({
-    page,
-  }) => {
+  test('Controlled value: external button updates trigger display', async ({ page }) => {
     await page.goto('/components/select');
     const sections = page.locator('section');
     const controlled = sections.nth(2);
@@ -77,23 +69,17 @@ test.describe('Select — regressions', () => {
     await expect(trigger).toContainText(/Enterprise/i);
   });
 
-  test('Form participation: hidden input syncs with selected value', async ({
-    page,
-  }) => {
+  test('Form participation: hidden input syncs with selected value', async ({ page }) => {
     await page.goto('/components/select');
     const sections = page.locator('section');
     // idx 5 — form participation demo, name="country" defaultValue="pl"
     const formSection = sections.nth(5);
-    await expect(
-      formSection.getByRole('heading', { name: /Form participation/ }),
-    ).toBeVisible();
+    await expect(formSection.getByRole('heading', { name: /Form participation/ })).toBeVisible();
     await formSection.getByRole('button', { name: 'Submit' }).click();
     await expect(formSection.getByText(/Submitted:\s*pl/)).toBeVisible();
   });
 
-  test('Disabled Select: click trigger is a no-op (listbox never opens)', async ({
-    page,
-  }) => {
+  test('Disabled Select: click trigger is a no-op (listbox never opens)', async ({ page }) => {
     await page.goto('/components/select');
     const sections = page.locator('section');
     const disabled = sections.nth(6);
@@ -107,46 +93,28 @@ test.describe('Select — regressions', () => {
     await expect(page.getByRole('listbox')).toHaveCount(0);
   });
 
-  test.skip(
-    'SL-R01 — controlled↔uncontrolled runtime switch [PLAYGROUND-DEP: no toggle demo]',
-    async () => {
-      // Spec expects a "Toggle controlled" button. Playground has only a
-      // persistent controlled section.
-    },
-  );
+  test.skip('SL-R01 — controlled↔uncontrolled runtime switch [PLAYGROUND-DEP: no toggle demo]', async () => {
+    // Spec expects a "Toggle controlled" button. Playground has only a
+    // persistent controlled section.
+  });
 
-  test.skip(
-    'SL-R19 — dark mode color flicker [PLAYGROUND-DEP: no theme toggle demo]',
-    async () => {
-      // No theme toggle demo in playground.
-    },
-  );
+  test.skip('SL-R19 — dark mode color flicker [PLAYGROUND-DEP: no theme toggle demo]', async () => {
+    // No theme toggle demo in playground.
+  });
 
-  test.skip(
-    'SL-R20 — RTL arrow semantics [PLAYGROUND-DEP: no dir=rtl demo]',
-    async () => {
-      // Playground has no RTL demo route.
-    },
-  );
+  test.skip('SL-R20 — RTL arrow semantics [PLAYGROUND-DEP: no dir=rtl demo]', async () => {
+    // Playground has no RTL demo route.
+  });
 
-  test.skip(
-    'SL-R21 — mobile touch portal listbox [PLAYGROUND-DEP: desktop Chromium only per D-E142.7]',
-    async () => {
-      // Playwright desktop Chromium has no touch context; spec uses isMobile.
-    },
-  );
+  test.skip('SL-R21 — mobile touch portal listbox [PLAYGROUND-DEP: desktop Chromium only per D-E142.7]', async () => {
+    // Playwright desktop Chromium has no touch context; spec uses isMobile.
+  });
 
-  test.skip(
-    'SL-R22 — typeahead with diacritic folding [PLAYGROUND-DEP: no ?locale=pl demo with Łódź/Lublin]',
-    async () => {
-      // Playground uses ASCII country names only.
-    },
-  );
+  test.skip('SL-R22 — typeahead with diacritic folding [PLAYGROUND-DEP: no ?locale=pl demo with Łódź/Lublin]', async () => {
+    // Playground uses ASCII country names only.
+  });
 
-  test.skip(
-    'SL-R16 — nested Dialog+Select Escape ordering [PLAYGROUND-DEP: no Dialog-wrapping-Select demo]',
-    async () => {
-      // Playground has no Dialog that wraps a Select.
-    },
-  );
+  test.skip('SL-R16 — nested Dialog+Select Escape ordering [PLAYGROUND-DEP: no Dialog-wrapping-Select demo]', async () => {
+    // Playground has no Dialog that wraps a Select.
+  });
 });

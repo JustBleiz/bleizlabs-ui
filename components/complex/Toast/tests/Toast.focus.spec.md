@@ -37,7 +37,9 @@ test('TST-R05 — hover pauses auto-dismiss timer (WCAG SC 1.4.13 hoverable)', a
   await expect(toast).not.toBeVisible();
 });
 
-test('TST-R06 — focus inside toast pauses auto-dismiss (WCAG SC 1.4.13 focusable)', async ({ page }) => {
+test('TST-R06 — focus inside toast pauses auto-dismiss (WCAG SC 1.4.13 focusable)', async ({
+  page,
+}) => {
   await page.goto('/components/toast?duration=2000&action=undo');
   await page.getByRole('button', { name: 'Show toast with action' }).click();
   const actionBtn = page.getByRole('button', { name: 'Undo' });

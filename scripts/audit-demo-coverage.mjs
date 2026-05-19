@@ -142,13 +142,9 @@ function main() {
     process.exit(0);
   }
 
-  console.error(
-    `[audit-demo-coverage] FAIL — ${missing.length} component(s) missing demo route:`,
-  );
+  console.error(`[audit-demo-coverage] FAIL — ${missing.length} component(s) missing demo route:`);
   for (const m of missing) {
-    console.error(
-      `  • ${m.category}/${m.name} → expected app/components/${m.slug}/page.tsx`,
-    );
+    console.error(`  • ${m.category}/${m.name} → expected app/components/${m.slug}/page.tsx`);
   }
   console.error(
     '\nFix: add the missing route OR add the component to ROUTE_ALIASES in scripts/audit-demo-coverage.mjs.',

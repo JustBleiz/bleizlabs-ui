@@ -98,7 +98,12 @@ function countProps(interfaceBody) {
   while (i < lines.length) {
     const line = lines[i];
     // Skip pure comment lines (single line)
-    if (/^\s*\/\//.test(line) || /^\s*\*/.test(line) || /^\s*\/\*/.test(line) || line.trim() === '') {
+    if (
+      /^\s*\/\//.test(line) ||
+      /^\s*\*/.test(line) ||
+      /^\s*\/\*/.test(line) ||
+      line.trim() === ''
+    ) {
       i++;
       continue;
     }
@@ -156,7 +161,9 @@ for (const file of files) {
   } else {
     // description = at least one non-empty line before the first @tag
     const beforeFirstTag = header.split(/\n\s*\*\s*@/)[0];
-    const descLines = beforeFirstTag.split('\n').filter((l) => l.replace(/^\s*\*\s*/, '').trim().length > 0);
+    const descLines = beforeFirstTag
+      .split('\n')
+      .filter((l) => l.replace(/^\s*\*\s*/, '').trim().length > 0);
     if (descLines.length === 0) missingTags.push('description');
     for (const tag of REQUIRED_TAGS) {
       if (!header.includes(tag)) missingTags.push(tag);
@@ -185,7 +192,9 @@ if (OUT_JSON) {
 } else if (OUT_SUMMARY) {
   for (const c of report.components) {
     const tag = c.status === 'PASS' ? '✓' : '✗';
-    console.log(`${tag} ${c.file} — props:${c.totalProps} undoc:${c.undocumentedProps.length} missing:[${c.headerMissing.join(', ')}]`);
+    console.log(
+      `${tag} ${c.file} — props:${c.totalProps} undoc:${c.undocumentedProps.length} missing:[${c.headerMissing.join(', ')}]`,
+    );
   }
   console.log(`\n[audit-jsdoc] ${report.passed}/${report.total} pass, ${report.failed} fail`);
 } else {
@@ -200,7 +209,9 @@ if (OUT_JSON) {
         console.log(`    missing header: ${c.headerMissing.join(', ')}`);
       }
       if (c.undocumentedProps.length > 0) {
-        console.log(`    undocumented props (${c.undocumentedProps.length}): ${c.undocumentedProps.join(', ')}`);
+        console.log(
+          `    undocumented props (${c.undocumentedProps.length}): ${c.undocumentedProps.join(', ')}`,
+        );
       }
     }
   }

@@ -26,9 +26,7 @@ test.describe('DateRangePicker — numberOfMonths layout', () => {
     await expect(grids).toHaveCount(1);
   });
 
-  test('DR-MTH02 — numberOfMonths=2 renders two side-by-side Calendars', async ({
-    page,
-  }) => {
+  test('DR-MTH02 — numberOfMonths=2 renders two side-by-side Calendars', async ({ page }) => {
     const picker = rangeBy(page, 'Two-month side-by-side');
     await openPicker(picker);
     const dialog = dialogOf(page);
@@ -44,9 +42,7 @@ test.describe('DateRangePicker — numberOfMonths layout', () => {
     await expect(grids).toHaveCount(3);
   });
 
-  test('DR-MTH04 — single sync header label spans first to last month', async ({
-    page,
-  }) => {
+  test('DR-MTH04 — single sync header label spans first to last month', async ({ page }) => {
     const picker = rangeBy(page, 'Two-month side-by-side');
     await openPicker(picker);
     const dialog = dialogOf(page);
@@ -56,9 +52,7 @@ test.describe('DateRangePicker — numberOfMonths layout', () => {
     expect(text).toMatch(/—/);
   });
 
-  test('DR-MTH05 — chevron Next shifts displayMonth for both Calendars', async ({
-    page,
-  }) => {
+  test('DR-MTH05 — chevron Next shifts displayMonth for both Calendars', async ({ page }) => {
     const picker = rangeBy(page, 'Two-month side-by-side');
     await openPicker(picker);
     const dialog = dialogOf(page);

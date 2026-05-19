@@ -1,11 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import {
-  TimePicker,
-  TimePickerInput,
-  TimePickerContent,
-} from '@/components/complex/TimePicker';
+import { TimePicker, TimePickerInput, TimePickerContent } from '@/components/complex/TimePicker';
 import { Heading } from '@/components/typography/Heading';
 import { Text } from '@/components/typography/Text';
 import { Inline } from '@/components/layout/Inline';
@@ -41,12 +37,10 @@ export default function TimePickerPlayground() {
           TimePicker
         </Heading>
         <Text variant="lead" color="muted">
-          Combobox input + popover with scrollable listboxes per WAI-ARIA APG
-          `/combobox/` + `/listbox/`. Type a time directly (Enter to commit)
-          OR open the popover (Alt+ArrowDown / click) and pick hour /
-          minute / seconds / AM-PM from columns. Step filters minute
-          listbox content. Always emits 24h ISO regardless of display
-          cycle.
+          Combobox input + popover with scrollable listboxes per WAI-ARIA APG `/combobox/` +
+          `/listbox/`. Type a time directly (Enter to commit) OR open the popover (Alt+ArrowDown /
+          click) and pick hour / minute / seconds / AM-PM from columns. Step filters minute listbox
+          content. Always emits 24h ISO regardless of display cycle.
         </Text>
         <Inline gap={2} wrap>
           <Badge color="success">APG combobox + listbox</Badge>
@@ -63,8 +57,8 @@ export default function TimePickerPlayground() {
           1. Basic 24h (uncontrolled)
         </Heading>
         <Text variant="body" color="muted">
-          Alt+ArrowDown or click input to open. ArrowUp/Down inside a column
-          navigates options; Enter commits + advances to next column.
+          Alt+ArrowDown or click input to open. ArrowUp/Down inside a column navigates options;
+          Enter commits + advances to next column.
         </Text>
         <div className={styles.demo}>
           <TimePicker defaultValue="08:30" hourCycle="24h">
@@ -80,16 +74,11 @@ export default function TimePickerPlayground() {
           2. 12h with AM/PM (controlled)
         </Heading>
         <Text variant="body" color="muted">
-          AM/PM listbox renders at logical-end of the group in 12h mode.
-          Hour listbox shows 1-12. Emitted value always 24h ISO.
+          AM/PM listbox renders at logical-end of the group in 12h mode. Hour listbox shows 1-12.
+          Emitted value always 24h ISO.
         </Text>
         <div className={styles.demo}>
-          <TimePicker
-            value={twelveH}
-            onValueChange={setTwelveH}
-            hourCycle="12h"
-            locale="en-US"
-          >
+          <TimePicker value={twelveH} onValueChange={setTwelveH} hourCycle="12h" locale="en-US">
             <TimePickerInput aria-label="Meeting time" />
             <TimePickerContent />
           </TimePicker>
@@ -108,12 +97,7 @@ export default function TimePickerPlayground() {
           <code>withSeconds</code> adds a third listbox column.
         </Text>
         <div className={styles.demo}>
-          <TimePicker
-            value={withSec}
-            onValueChange={setWithSec}
-            hourCycle="24h"
-            withSeconds
-          >
+          <TimePicker value={withSec} onValueChange={setWithSec} hourCycle="24h" withSeconds>
             <TimePickerInput aria-label="Race finish" />
             <TimePickerContent />
           </TimePicker>
@@ -129,16 +113,11 @@ export default function TimePickerPlayground() {
           4. Step = 15 minutes
         </Heading>
         <Text variant="body" color="muted">
-          Minute listbox shows only step-aligned options: 00, 15, 30, 45.
-          Out-of-step controlled value snaps to nearest step on open.
+          Minute listbox shows only step-aligned options: 00, 15, 30, 45. Out-of-step controlled
+          value snaps to nearest step on open.
         </Text>
         <div className={styles.demo}>
-          <TimePicker
-            value={stepped}
-            onValueChange={setStepped}
-            hourCycle="24h"
-            step={15}
-          >
+          <TimePicker value={stepped} onValueChange={setStepped} hourCycle="24h" step={15}>
             <TimePickerInput aria-label="Slot" />
             <TimePickerContent />
           </TimePicker>
@@ -151,9 +130,8 @@ export default function TimePickerPlayground() {
           5. Min / max bounds
         </Heading>
         <Text variant="body" color="muted">
-          <code>min=&quot;09:00&quot;</code>,{' '}
-          <code>max=&quot;17:00&quot;</code>. Committed value clamps to range
-          at commit boundary.
+          <code>min=&quot;09:00&quot;</code>, <code>max=&quot;17:00&quot;</code>. Committed value
+          clamps to range at commit boundary.
         </Text>
         <div className={styles.demo}>
           <TimePicker
@@ -182,12 +160,7 @@ export default function TimePickerPlayground() {
           surfaces native <code>:invalid</code> on submit when empty.
         </Text>
         <form className={styles.formDemo} onSubmit={handleSubmit} noValidate>
-          <TimePicker
-            name="appointment"
-            defaultValue="10:00"
-            hourCycle="24h"
-            required
-          >
+          <TimePicker name="appointment" defaultValue="10:00" hourCycle="24h" required>
             <TimePickerInput aria-label="Appointment" />
             <TimePickerContent />
           </TimePicker>

@@ -11,7 +11,9 @@
 ## Tests
 
 ```ts
-test('SL-R04 — ArrowUp on closed Select with no value opens + highlights last', async ({ page }) => {
+test('SL-R04 — ArrowUp on closed Select with no value opens + highlights last', async ({
+  page,
+}) => {
   await page.goto('/components/select?value=');
   const trigger = page.getByRole('combobox');
   await trigger.focus();

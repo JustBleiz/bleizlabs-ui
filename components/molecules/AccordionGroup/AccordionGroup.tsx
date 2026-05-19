@@ -11,10 +11,7 @@ import {
   type ReactElement,
   type ReactNode,
 } from 'react';
-import {
-  Accordion,
-  type AccordionProps,
-} from '../../interactive/Accordion';
+import { Accordion, type AccordionProps } from '../../interactive/Accordion';
 import { Stack } from '../../layout/Stack';
 import type { SpaceIndex } from '../../types/spacing';
 import { cn } from '../../utils/cn';
@@ -85,20 +82,10 @@ function toOpenSet(value: number | number[] | undefined): Set<number> {
 
 export const AccordionGroup = forwardRef<HTMLDivElement, AccordionGroupProps>(
   function AccordionGroup(
-    {
-      children,
-      mode = 'single',
-      defaultOpen,
-      onOpenChange,
-      gap = 2,
-      className,
-      ...rest
-    },
+    { children, mode = 'single', defaultOpen, onOpenChange, gap = 2, className, ...rest },
     ref,
   ) {
-    const [openSet, setOpenSet] = useState<Set<number>>(() =>
-      toOpenSet(defaultOpen),
-    );
+    const [openSet, setOpenSet] = useState<Set<number>>(() => toOpenSet(defaultOpen));
 
     const updateSet = useCallback(
       (index: number, next: boolean) => {

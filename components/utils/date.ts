@@ -311,10 +311,7 @@ export function parseTime(iso: string): { h: number; m: number; s: number } | nu
  *   formatTime({ h: 9, m: 0, s: 45 }, true)       // "09:00:45"
  *   formatTime({ h: 14, m: 30 }, true)            // "14:30:00"
  */
-export function formatTime(
-  t: { h: number; m: number; s?: number },
-  withSeconds = false,
-): string {
+export function formatTime(t: { h: number; m: number; s?: number }, withSeconds = false): string {
   const hh = String(t.h).padStart(2, '0');
   const mm = String(t.m).padStart(2, '0');
   if (withSeconds) {
@@ -425,11 +422,7 @@ export function parseIsoDateTimeString(iso: string): Date | null {
   if (mo < 0 || mo > 11 || d < 1 || d > 31) return null;
   if (h < 0 || h > 23 || mi < 0 || mi > 59 || s < 0 || s > 59) return null;
   const dt = new Date(y, mo, d, h, mi, s, 0);
-  if (
-    dt.getFullYear() !== y ||
-    dt.getMonth() !== mo ||
-    dt.getDate() !== d
-  ) {
+  if (dt.getFullYear() !== y || dt.getMonth() !== mo || dt.getDate() !== d) {
     return null;
   }
   return dt;

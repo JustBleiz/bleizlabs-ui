@@ -106,7 +106,9 @@ test.describe('AlertDialog — Radix regression cases', () => {
     expect(closedOverflow).not.toBe('hidden');
   });
 
-  test('#2270 inherited — focus returns to trigger that opened dialog (not first tabbable)', async ({ page }) => {
+  test('#2270 inherited — focus returns to trigger that opened dialog (not first tabbable)', async ({
+    page,
+  }) => {
     const t1 = page.getByRole('button', { name: /open basic alert/i });
     const t2 = page.getByRole('button', { name: /open critical alert/i });
     await t2.click();
@@ -131,7 +133,9 @@ test.describe('AlertDialog — Radix regression cases', () => {
     await expect(page.locator(`#${labelledBy}`)).toBeVisible();
   });
 
-  test('#3007 inherited — aria-describedby ALWAYS present (stricter than Dialog)', async ({ page }) => {
+  test('#3007 inherited — aria-describedby ALWAYS present (stricter than Dialog)', async ({
+    page,
+  }) => {
     await page.getByRole('button', { name: /open basic alert/i }).click();
     const alert = page.getByRole('alertdialog');
     const describedBy = await alert.getAttribute('aria-describedby');
@@ -202,7 +206,10 @@ test.describe('AlertDialog — Radix regression cases', () => {
   test('AD-4: closeOnOverlayClick defaults false (Dialog defaults true)', async ({ page }) => {
     await page.getByRole('button', { name: /open basic alert/i }).click();
     // Click overlay (not content)
-    await page.locator('[data-state="open"]').first().click({ position: { x: 5, y: 5 } });
+    await page
+      .locator('[data-state="open"]')
+      .first()
+      .click({ position: { x: 5, y: 5 } });
     // Alert stays open
     await expect(page.getByRole('alertdialog')).toBeVisible();
   });
@@ -271,7 +278,9 @@ test.describe('AlertDialog — Radix regression cases', () => {
     // PLAYGROUND-DEP: needs form scenario. Unskip after add.
   });
 
-  test('AD-16: Mobile pointer-events timing — tap on Cancel works first try (Radix #1241)', async ({ page }) => {
+  test('AD-16: Mobile pointer-events timing — tap on Cancel works first try (Radix #1241)', async ({
+    page,
+  }) => {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.getByRole('button', { name: /open basic alert/i }).tap();
     await page.getByRole('button', { name: 'Cancel' }).tap();
