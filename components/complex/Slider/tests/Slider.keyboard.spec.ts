@@ -44,9 +44,7 @@ test.describe('Slider — keyboard interactions', () => {
     expect(after).toBeGreaterThan(before);
   });
 
-  test('Basic ArrowRight advances by 1 step (default step)', async ({
-    page,
-  }) => {
+  test('Basic ArrowRight advances by 1 step (default step)', async ({ page }) => {
     const sections = page.locator('section');
     const basic = sections.nth(0);
     const thumb = basic.getByRole('slider');
@@ -57,9 +55,7 @@ test.describe('Slider — keyboard interactions', () => {
     expect(after).toBe(before + 1);
   });
 
-  test('SL-R04 — ArrowRight past max clamps at max (no NaN)', async ({
-    page,
-  }) => {
+  test('SL-R04 — ArrowRight past max clamps at max (no NaN)', async ({ page }) => {
     const sections = page.locator('section');
     const basic = sections.nth(0);
     const thumb = basic.getByRole('slider');
@@ -117,9 +113,7 @@ test.describe('Slider — keyboard interactions', () => {
     expect(Number(await thumb.getAttribute('aria-valuenow'))).toBe(start);
   });
 
-  test('SL-R13 — Vertical: ArrowUp increases regardless of layout', async ({
-    page,
-  }) => {
+  test('SL-R13 — Vertical: ArrowUp increases regardless of layout', async ({ page }) => {
     // Section 8 — Vertical, starts at 50
     const sections = page.locator('section');
     const vertical = sections.nth(7);
@@ -147,9 +141,7 @@ test.describe('Slider — keyboard interactions', () => {
     await expect(thumb).toHaveAttribute('aria-valuenow', '100');
   });
 
-  test('Ctrl/Alt/Meta modifiers ignored (browser hotkey passthrough)', async ({
-    page,
-  }) => {
+  test('Ctrl/Alt/Meta modifiers ignored (browser hotkey passthrough)', async ({ page }) => {
     const sections = page.locator('section');
     const basic = sections.nth(0);
     const thumb = basic.getByRole('slider');

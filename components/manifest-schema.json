@@ -70,7 +70,19 @@
         },
         "category": {
           "type": "string",
-          "enum": ["layout", "typography", "display", "interactive", "feedback", "specialized", "molecules", "presets", "complex", "utils", "types"],
+          "enum": [
+            "layout",
+            "typography",
+            "display",
+            "interactive",
+            "feedback",
+            "specialized",
+            "molecules",
+            "presets",
+            "complex",
+            "utils",
+            "types"
+          ],
           "description": "Lib category slug."
         },
         "path": {

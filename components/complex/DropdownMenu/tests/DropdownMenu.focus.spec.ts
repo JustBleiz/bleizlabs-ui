@@ -73,9 +73,8 @@ test.describe('DropdownMenu — focus management', () => {
   test('disabled items are never focused by keyboard nav', async ({ page }) => {
     await page.getByRole('button', { name: 'File' }).click();
     for (let i = 0; i < 20; i++) {
-       
       await page.keyboard.press('ArrowDown');
-       
+
       const ariaDisabled = await page.evaluate(() =>
         document.activeElement?.getAttribute('aria-disabled'),
       );

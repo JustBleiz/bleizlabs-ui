@@ -1,8 +1,4 @@
-import {
-  forwardRef,
-  type TdHTMLAttributes,
-  type ThHTMLAttributes,
-} from 'react';
+import { forwardRef, type TdHTMLAttributes, type ThHTMLAttributes } from 'react';
 import { cn } from '../../utils/cn';
 import styles from './TableCell.module.scss';
 
@@ -42,15 +38,13 @@ export interface TableCellBaseProps {
 }
 
 export interface TableCellTdProps
-  extends TableCellBaseProps,
-    Omit<TdHTMLAttributes<HTMLTableCellElement>, 'align'> {
+  extends TableCellBaseProps, Omit<TdHTMLAttributes<HTMLTableCellElement>, 'align'> {
   /** Render as `<td>` (default — body data cell). */
   as?: 'td';
 }
 
 export interface TableCellThProps
-  extends TableCellBaseProps,
-    Omit<ThHTMLAttributes<HTMLTableCellElement>, 'align'> {
+  extends TableCellBaseProps, Omit<ThHTMLAttributes<HTMLTableCellElement>, 'align'> {
   /** Render as `<th>` (header cell). */
   as: 'th';
 }
@@ -63,18 +57,19 @@ const ALIGN_CLASS: Record<TableCellAlign, string> = {
   end: styles.alignEnd!,
 };
 
-export const TableCell = forwardRef<HTMLTableCellElement, TableCellProps>(
-  function TableCell({ as = 'td', align = 'start', width, className, style, children, ...rest }, ref) {
-    const Comp = as === 'th' ? 'th' : 'td';
-    return (
-      <Comp
-        ref={ref}
-        className={cn(styles.root, ALIGN_CLASS[align], className)}
-        style={width !== undefined ? { width, ...style } : style}
-        {...rest}
-      >
-        {children}
-      </Comp>
-    );
-  },
-);
+export const TableCell = forwardRef<HTMLTableCellElement, TableCellProps>(function TableCell(
+  { as = 'td', align = 'start', width, className, style, children, ...rest },
+  ref,
+) {
+  const Comp = as === 'th' ? 'th' : 'td';
+  return (
+    <Comp
+      ref={ref}
+      className={cn(styles.root, ALIGN_CLASS[align], className)}
+      style={width !== undefined ? { width, ...style } : style}
+      {...rest}
+    >
+      {children}
+    </Comp>
+  );
+});

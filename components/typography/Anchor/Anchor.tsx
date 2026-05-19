@@ -1,8 +1,4 @@
-import {
-  forwardRef,
-  type AnchorHTMLAttributes,
-  type ReactNode,
-} from 'react';
+import { forwardRef, type AnchorHTMLAttributes, type ReactNode } from 'react';
 import { Slot } from '../../utils/Slot';
 import { cn } from '../../utils/cn';
 import styles from './Anchor.module.scss';
@@ -58,28 +54,29 @@ export interface AnchorProps extends AnchorHTMLAttributes<HTMLAnchorElement> {
   children: ReactNode;
 }
 
-export const Anchor = forwardRef<HTMLAnchorElement, AnchorProps>(
-  function Anchor({ asChild = false, children, className, ...rest }, ref) {
-    const Comp = asChild ? Slot : 'a';
+export const Anchor = forwardRef<HTMLAnchorElement, AnchorProps>(function Anchor(
+  { asChild = false, children, className, ...rest },
+  ref,
+) {
+  const Comp = asChild ? Slot : 'a';
 
-    const safeRest =
-      rest.target === '_blank'
-        ? {
-            ...rest,
-            rel: Array.from(
-              new Set([
-                ...(rest.rel ? rest.rel.split(/\s+/).filter(Boolean) : []),
-                'noopener',
-                'noreferrer',
-              ]),
-            ).join(' '),
-          }
-        : rest;
+  const safeRest =
+    rest.target === '_blank'
+      ? {
+          ...rest,
+          rel: Array.from(
+            new Set([
+              ...(rest.rel ? rest.rel.split(/\s+/).filter(Boolean) : []),
+              'noopener',
+              'noreferrer',
+            ]),
+          ).join(' '),
+        }
+      : rest;
 
-    return (
-      <Comp ref={ref} className={cn(styles.root, className)} {...safeRest}>
-        {children}
-      </Comp>
-    );
-  },
-);
+  return (
+    <Comp ref={ref} className={cn(styles.root, className)} {...safeRest}>
+      {children}
+    </Comp>
+  );
+});

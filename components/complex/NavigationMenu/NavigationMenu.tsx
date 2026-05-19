@@ -145,9 +145,7 @@ interface NavigationMenuGroupContextValue {
   onClose: () => void;
 }
 
-const NavigationMenuGroupContext = createContext<NavigationMenuGroupContextValue | null>(
-  null,
-);
+const NavigationMenuGroupContext = createContext<NavigationMenuGroupContextValue | null>(null);
 
 export interface NavigationMenuProviderProps {
   /** Sibling NavigationMenu instances sharing open-delay group state. */
@@ -187,9 +185,7 @@ export function NavigationMenuProvider({
   const openCountRef = useRef(0);
 
   const shouldSkipDelay = useCallback(
-    () =>
-      openCountRef.current > 0 ||
-      Date.now() - lastCloseRef.current < skipDelayDuration,
+    () => openCountRef.current > 0 || Date.now() - lastCloseRef.current < skipDelayDuration,
     [skipDelayDuration],
   );
 
@@ -468,8 +464,10 @@ function setRovingTabindex(items: HTMLElement[], activeIndex: number): void {
 // NavigationMenuList — `<ul role="menubar">` with arrow-key roving + typeahead
 // ──────────────────────────────────────────────────────────────────────────
 
-export interface NavigationMenuListProps
-  extends Omit<HTMLAttributes<HTMLUListElement>, 'role' | 'aria-orientation'> {
+export interface NavigationMenuListProps extends Omit<
+  HTMLAttributes<HTMLUListElement>,
+  'role' | 'aria-orientation'
+> {
   children: ReactNode;
   /** REQUIRED — accessible name for the menubar (APG `/menubar/` mandate). */
   'aria-label': string;
@@ -518,15 +516,12 @@ export const NavigationMenuList = forwardRef<HTMLUListElement, NavigationMenuLis
       };
     }, []);
 
-    const focusItem = useCallback(
-      (items: HTMLElement[], index: number) => {
-        const target = items[index];
-        if (!target) return;
-        setRovingTabindex(items, index);
-        target.focus();
-      },
-      [],
-    );
+    const focusItem = useCallback((items: HTMLElement[], index: number) => {
+      const target = items[index];
+      if (!target) return;
+      setRovingTabindex(items, index);
+      target.focus();
+    }, []);
 
     const handleKeyDown = useCallback(
       (event: React.KeyboardEvent<HTMLUListElement>) => {
@@ -567,8 +562,7 @@ export const NavigationMenuList = forwardRef<HTMLUListElement, NavigationMenuLis
             const nextItem = items[next];
             if (openValue !== null && nextItem) {
               const nextValue = nextItem.getAttribute('data-menu-value');
-              const nextHasSubmenu =
-                nextItem.getAttribute('aria-haspopup') === 'menu';
+              const nextHasSubmenu = nextItem.getAttribute('aria-haspopup') === 'menu';
               if (nextValue && nextHasSubmenu) {
                 setOpenValue(nextValue);
               } else {
@@ -585,8 +579,7 @@ export const NavigationMenuList = forwardRef<HTMLUListElement, NavigationMenuLis
             const prevItem = items[prev];
             if (openValue !== null && prevItem) {
               const prevValue = prevItem.getAttribute('data-menu-value');
-              const prevHasSubmenu =
-                prevItem.getAttribute('aria-haspopup') === 'menu';
+              const prevHasSubmenu = prevItem.getAttribute('aria-haspopup') === 'menu';
               if (prevValue && prevHasSubmenu) {
                 setOpenValue(prevValue);
               } else {
@@ -610,12 +603,7 @@ export const NavigationMenuList = forwardRef<HTMLUListElement, NavigationMenuLis
         }
 
         // Typeahead — printable single-character keys.
-        if (
-          event.key.length === 1 &&
-          !event.ctrlKey &&
-          !event.metaKey &&
-          !event.altKey
-        ) {
+        if (event.key.length === 1 && !event.ctrlKey && !event.metaKey && !event.altKey) {
           const char = event.key.toLowerCase();
           typeaheadBufferRef.current += char;
           if (typeaheadTimerRef.current) clearTimeout(typeaheadTimerRef.current);
@@ -625,15 +613,10 @@ export const NavigationMenuList = forwardRef<HTMLUListElement, NavigationMenuLis
           }, 500);
 
           const buffer = typeaheadBufferRef.current;
-          const searchFrom =
-            activeIndex >= 0 ? activeIndex + (buffer.length === 1 ? 1 : 0) : 0;
-          const rotated = [
-            ...items.slice(searchFrom),
-            ...items.slice(0, searchFrom),
-          ];
+          const searchFrom = activeIndex >= 0 ? activeIndex + (buffer.length === 1 ? 1 : 0) : 0;
+          const rotated = [...items.slice(searchFrom), ...items.slice(0, searchFrom)];
           const match = rotated.find((item) => {
-            const textValue =
-              item.getAttribute('data-text-value') ?? item.textContent ?? '';
+            const textValue = item.getAttribute('data-text-value') ?? item.textContent ?? '';
             return textValue.toLowerCase().startsWith(buffer);
           });
           if (match) {
@@ -680,8 +663,7 @@ interface NavigationMenuItemContextValue {
 const [NavigationMenuItemProvider, useNavigationMenuItem] =
   createFloatingContext<NavigationMenuItemContextValue>('NavigationMenuItem');
 
-export interface NavigationMenuItemProps
-  extends Omit<LiHTMLAttributes<HTMLLIElement>, 'role'> {
+export interface NavigationMenuItemProps extends Omit<LiHTMLAttributes<HTMLLIElement>, 'role'> {
   /** Unique id of this item within the menubar. Used as the open-state value. */
   value: string;
   children: ReactNode;
@@ -732,11 +714,10 @@ export function NavigationMenuItem({
 // NavigationMenuTrigger — `<button role="menuitem">` opens submenu
 // ──────────────────────────────────────────────────────────────────────────
 
-export interface NavigationMenuTriggerProps
-  extends Omit<
-    ButtonHTMLAttributes<HTMLButtonElement>,
-    'aria-expanded' | 'aria-haspopup' | 'aria-controls' | 'role'
-  > {
+export interface NavigationMenuTriggerProps extends Omit<
+  ButtonHTMLAttributes<HTMLButtonElement>,
+  'aria-expanded' | 'aria-haspopup' | 'aria-controls' | 'role'
+> {
   children: ReactNode;
   /**
    * Override text used for menubar typeahead matching. When omitted, the
@@ -941,14 +922,7 @@ export const NavigationMenuTrigger = forwardRef<HTMLElement, NavigationMenuTrigg
         }
         onPointerLeave?.(event as unknown as React.PointerEvent<HTMLButtonElement>);
       },
-      [
-        hoverTrigger,
-        isCoarsePointer,
-        cancelPendingOpen,
-        isOpen,
-        scheduleClose,
-        onPointerLeave,
-      ],
+      [hoverTrigger, isCoarsePointer, cancelPendingOpen, isOpen, scheduleClose, onPointerLeave],
     );
 
     // Focus path — instant open per SC 2.1.1. Focus also takes over roving
@@ -1040,8 +1014,10 @@ function getSubmenuLinks(container: HTMLElement): HTMLElement[] {
   return Array.from(container.querySelectorAll<HTMLElement>(SUBMENU_LINK_SELECTOR));
 }
 
-export interface NavigationMenuContentProps
-  extends Omit<HTMLAttributes<HTMLDivElement>, 'role' | 'aria-labelledby'> {
+export interface NavigationMenuContentProps extends Omit<
+  HTMLAttributes<HTMLDivElement>,
+  'role' | 'aria-labelledby'
+> {
   children?: ReactNode;
   /** Submenu placement relative to its trigger. Default `'bottom-start'`. */
   placement?: NavigationMenuPlacement;
@@ -1067,7 +1043,11 @@ export function NavigationMenuContent({
 
   const isOpen = openValue === value;
 
-  const { refs, floatingStyles, placement: actualPlacement } = useFloating({
+  const {
+    refs,
+    floatingStyles,
+    placement: actualPlacement,
+  } = useFloating({
     open: isOpen,
     placement,
     offset: sideOffset,
@@ -1200,9 +1180,7 @@ export function NavigationMenuContent({
           // menubar item, opens its submenu if exists").
           if (!list) return;
           const items = getMenubarItems(list);
-          const currentIdx = items.findIndex(
-            (it) => it.getAttribute('data-menu-value') === value,
-          );
+          const currentIdx = items.findIndex((it) => it.getAttribute('data-menu-value') === value);
           if (currentIdx === -1) return;
           const nextIdx = currentIdx < items.length - 1 ? currentIdx + 1 : 0;
           const nextItem = items[nextIdx];
@@ -1228,9 +1206,7 @@ export function NavigationMenuContent({
           event.stopPropagation();
           if (!list) return;
           const items = getMenubarItems(list);
-          const currentIdx = items.findIndex(
-            (it) => it.getAttribute('data-menu-value') === value,
-          );
+          const currentIdx = items.findIndex((it) => it.getAttribute('data-menu-value') === value);
           if (currentIdx === -1) return;
           const prevIdx = currentIdx > 0 ? currentIdx - 1 : items.length - 1;
           const prevItem = items[prevIdx];
@@ -1262,12 +1238,7 @@ export function NavigationMenuContent({
       }
 
       // Typeahead (submenu scope).
-      if (
-        event.key.length === 1 &&
-        !event.ctrlKey &&
-        !event.metaKey &&
-        !event.altKey
-      ) {
+      if (event.key.length === 1 && !event.ctrlKey && !event.metaKey && !event.altKey) {
         const char = event.key.toLowerCase();
         typeaheadBufferRef.current += char;
         if (typeaheadTimerRef.current) clearTimeout(typeaheadTimerRef.current);
@@ -1277,12 +1248,10 @@ export function NavigationMenuContent({
         }, 500);
 
         const buffer = typeaheadBufferRef.current;
-        const searchFrom =
-          activeIndex >= 0 ? activeIndex + (buffer.length === 1 ? 1 : 0) : 0;
+        const searchFrom = activeIndex >= 0 ? activeIndex + (buffer.length === 1 ? 1 : 0) : 0;
         const rotated = [...links.slice(searchFrom), ...links.slice(0, searchFrom)];
         const match = rotated.find((link) => {
-          const textValue =
-            link.getAttribute('data-text-value') ?? link.textContent ?? '';
+          const textValue = link.getAttribute('data-text-value') ?? link.textContent ?? '';
           return textValue.toLowerCase().startsWith(buffer);
         });
         if (match) {
@@ -1341,8 +1310,10 @@ export function NavigationMenuContent({
 // exists in the parent NavigationMenuItem.
 // ──────────────────────────────────────────────────────────────────────────
 
-export interface NavigationMenuLinkProps
-  extends Omit<AnchorHTMLAttributes<HTMLAnchorElement>, 'role' | 'onSelect'> {
+export interface NavigationMenuLinkProps extends Omit<
+  AnchorHTMLAttributes<HTMLAnchorElement>,
+  'role' | 'onSelect'
+> {
   children: ReactNode;
   /**
    * When `true`, marks this link as the current page (wires `aria-current="page"`
@@ -1371,16 +1342,7 @@ export interface NavigationMenuLinkProps
 
 export const NavigationMenuLink = forwardRef<HTMLAnchorElement, NavigationMenuLinkProps>(
   function NavigationMenuLink(
-    {
-      children,
-      active,
-      onSelect,
-      onClick,
-      textValue,
-      asChild = false,
-      className,
-      ...rest
-    },
+    { children, active, onSelect, onClick, textValue, asChild = false, className, ...rest },
     forwardedRef,
   ) {
     const root = useNavigationMenuRoot('<NavigationMenuLink>');

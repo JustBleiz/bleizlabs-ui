@@ -5,19 +5,10 @@ import {
   type ComponentManifest,
   type ManifestFamily,
 } from '../lib/registry-loader.js';
-import {
-  detectProject,
-  type ProjectInfo,
-} from '../lib/project-detector.js';
-import {
-  findMissingWrappers,
-  generateWrappers,
-} from '../lib/wrapper-generator.js';
+import { detectProject, type ProjectInfo } from '../lib/project-detector.js';
+import { findMissingWrappers, generateWrappers } from '../lib/wrapper-generator.js';
 import { autoMigrate } from '../lib/migrate-categories.js';
-import {
-  writeFileIdempotent,
-  type WriteFileResult,
-} from '../lib/file-ops.js';
+import { writeFileIdempotent, type WriteFileResult } from '../lib/file-ops.js';
 import {
   renderWrapperTsx,
   renderWrapperTsxTypeOnly,
@@ -40,10 +31,7 @@ interface ResolvedFamilies {
   typesOnly: ManifestFamily[];
 }
 
-export async function runAdd(
-  importMetaUrl: string,
-  options: AddOptions,
-): Promise<number> {
+export async function runAdd(importMetaUrl: string, options: AddOptions): Promise<number> {
   const log = console.log;
   log(pc.bold(pc.cyan('@bleizlabs/ui add')) + pc.dim(` (dry-run: ${options.dryRun})`));
   log('');
@@ -138,7 +126,9 @@ export async function runAdd(
   const written = results.filter((r) => r.action !== 'skipped').length;
   const skipped = results.filter((r) => r.action === 'skipped').length;
   log(pc.bold('Summary'));
-  log(`  ${pc.green('✓')} ${written} files written, ${skipped} skipped (user-modified or marker absent)`);
+  log(
+    `  ${pc.green('✓')} ${written} files written, ${skipped} skipped (user-modified or marker absent)`,
+  );
   log(`  ${pc.green('✓')} root barrel regenerated`);
   log('');
   log(pc.green(pc.bold('add complete.')));
@@ -257,10 +247,7 @@ function writeOne(
     );
   }
   results.push(
-    writeFileIdempotent(
-      path.join(familyDir, 'index.ts'),
-      renderWrapperIndex(family, libVersion),
-    ),
+    writeFileIdempotent(path.join(familyDir, 'index.ts'), renderWrapperIndex(family, libVersion)),
   );
 
   return results;
@@ -269,7 +256,10 @@ function writeOne(
 function printFamilyList(label: string, families: ManifestFamily[]): void {
   if (families.length === 0) return;
   console.log(`  ${pc.dim(label.padEnd(12))} ${families.length} families`);
-  const names = families.map((f) => f.family).slice(0, 12).join(', ');
+  const names = families
+    .map((f) => f.family)
+    .slice(0, 12)
+    .join(', ');
   const more = families.length > 12 ? `, ... (+${families.length - 12} more)` : '';
   console.log(`    ${pc.dim(names + more)}`);
 }

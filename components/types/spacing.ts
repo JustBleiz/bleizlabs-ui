@@ -9,18 +9,4 @@
  * Container padding, Section py, Card padding, etc.) so that "12" cannot be
  * accidentally passed where the token doesn't exist.
  */
-export type SpaceIndex =
-  | 0
-  | 1
-  | 2
-  | 3
-  | 4
-  | 5
-  | 6
-  | 7
-  | 8
-  | 10
-  | 12
-  | 14
-  | 16
-  | 20;
+export type SpaceIndex = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 10 | 12 | 14 | 16 | 20;

@@ -24,18 +24,14 @@ test.describe('Toast — ARIA + accessibility tree', () => {
     await page.goto('/components/toast');
   });
 
-  test('TST-R07 — variant="error" → role="alert" + aria-live="assertive"', async ({
-    page,
-  }) => {
+  test('TST-R07 — variant="error" → role="alert" + aria-live="assertive"', async ({ page }) => {
     await page.getByRole('button', { name: 'toast.error()' }).click();
     const errorToast = page.getByRole('alert').filter({ hasText: 'Failed to save' });
     await expect(errorToast).toBeVisible();
     await expect(errorToast).toHaveAttribute('aria-live', 'assertive');
   });
 
-  test('TST-R08 — non-error variants → role="status" + aria-live="polite"', async ({
-    page,
-  }) => {
+  test('TST-R08 — non-error variants → role="status" + aria-live="polite"', async ({ page }) => {
     await page.getByRole('button', { name: 'toast.success()' }).click();
     const successToast = page.getByRole('status').filter({ hasText: 'Saved successfully' });
     // Toast portal mounts + slide-in animation; raise timeout headroom for cold CI.
@@ -43,12 +39,8 @@ test.describe('Toast — ARIA + accessibility tree', () => {
     await expect(successToast).toHaveAttribute('aria-live', 'polite');
   });
 
-  test('TST-R09 — aria-atomic="true" on every toast (title+description unit)', async ({
-    page,
-  }) => {
-    await page
-      .getByRole('button', { name: 'title + description' })
-      .click();
+  test('TST-R09 — aria-atomic="true" on every toast (title+description unit)', async ({ page }) => {
+    await page.getByRole('button', { name: 'title + description' }).click();
     const toast = page.getByRole('status').filter({ hasText: 'Invitation sent' });
     await expect(toast).toBeVisible();
     await expect(toast).toHaveAttribute('aria-atomic', 'true');
@@ -91,9 +83,7 @@ test.describe('Toast — ARIA + accessibility tree', () => {
     expect(results.violations).toEqual([]);
   });
 
-  test('axe-core zero violations — with active status toast', async ({
-    page,
-  }) => {
+  test('axe-core zero violations — with active status toast', async ({ page }) => {
     await page.getByRole('button', { name: 'title + description' }).click();
     await expect(page.getByRole('status').filter({ hasText: 'Invitation sent' })).toBeVisible();
     // E142 L4 F3 — list role violation fixed: role="status" / "alert" now
@@ -109,13 +99,9 @@ test.describe('Toast — ARIA + accessibility tree', () => {
     expect(results.violations).toEqual([]);
   });
 
-  test('axe-core zero violations — sticky error with action + close', async ({
-    page,
-  }) => {
+  test('axe-core zero violations — sticky error with action + close', async ({ page }) => {
     await page.getByRole('button', { name: 'Show sticky error' }).click();
-    await expect(
-      page.getByRole('alert').filter({ hasText: 'Connection lost' }),
-    ).toBeVisible();
+    await expect(page.getByRole('alert').filter({ hasText: 'Connection lost' })).toBeVisible();
     // E142 L4 F3 fixed the list semantics; color-contrast still deferred
     // (see sibling test comment).
     const results = await new AxeBuilder({ page })

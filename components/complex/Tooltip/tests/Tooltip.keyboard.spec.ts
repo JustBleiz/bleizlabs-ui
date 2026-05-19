@@ -56,7 +56,9 @@ test.describe('Tooltip — keyboard interactions (APG)', () => {
     await expect(page.getByRole('tooltip')).toBeVisible();
   });
 
-  test('hover persists when pointer enters tooltip content (SC 1.4.13 hoverable)', async ({ page }) => {
+  test('hover persists when pointer enters tooltip content (SC 1.4.13 hoverable)', async ({
+    page,
+  }) => {
     const trigger = page.getByRole('button', { name: 'APG reference' });
     await trigger.hover();
     await page.waitForTimeout(800);

@@ -56,9 +56,9 @@
   // need line-heights outside the base {tight: 1.2, snug: 1.375, normal: 1.5,
   // relaxed: 1.625} scale. Dedicated semantic tokens — the atelier display
   // tier owns its own budget for densely-stacked editorial typography.
-  --line-height-display: 1.05;            // Hero H1 atelier display tier
-  --line-height-display-loose: 1.1;       // Hero-editorial multi-line aside
-  --line-height-form-card-title: 1.25;    // Form-card title compact stack
+  --line-height-display: 1.05; // Hero H1 atelier display tier
+  --line-height-display-loose: 1.1; // Hero-editorial multi-line aside
+  --line-height-form-card-title: 1.25; // Form-card title compact stack
   --line-height-form-card-subtitle: 1.45; // Form-card subtitle readable copy
 
   --font-weight-regular: #{$font-weight-regular};
@@ -387,8 +387,8 @@
   // Dedicated semantic tokens for single-purpose values that don't map to
   // the base spacing scale — visual identity preservation with independent
   // override path.
-  --badge-dot-size: 6px;            // Badge .dot (gap between --space-1 4px and --space-2 8px)
-  --border-width-accent: 3px;       // Card .accentLeft/.accentTop border-width (gap between 2px and 4px)
+  --badge-dot-size: 6px; // Badge .dot (gap between --space-1 4px and --space-2 8px)
+  --border-width-accent: 3px; // Card .accentLeft/.accentTop border-width (gap between 2px and 4px)
 
   // ==========================================================================
   // ICON-BOX FONT-SIZE GAP-FILL TOKEN
@@ -493,7 +493,7 @@
 
     // See ":root[data-theme='dark']" override block below for semantics +
     // WCAG rationale.
-    --color-text-on-brand: #25292E;
+    --color-text-on-brand: #25292e;
 
     --card-bg-glass: rgba(255, 255, 255, 0.04);
   } @else {
@@ -513,7 +513,7 @@
 
     // See ":root[data-theme='light']" override block below for semantics +
     // WCAG rationale.
-    --color-text-on-brand: #25292E;
+    --color-text-on-brand: #25292e;
 
     --card-bg-glass: rgba(255, 255, 255, 0.6);
   }
@@ -546,7 +546,7 @@
   // ~5.88:1 on teal; passes AA body + AA UI. Consumers with very-dark brand
   // seeds (e.g. navy #1E3A8A) should override this token in their
   // globals.scss.
-  --color-text-on-brand: #25292E;
+  --color-text-on-brand: #25292e;
 
   --card-bg-glass: rgba(255, 255, 255, 0.6);
 
@@ -596,7 +596,7 @@
   // semantics so light theme can fix its `white`-on-brand AA bug without
   // affecting dark theme. See light-theme block above for full rationale +
   // consumer override pattern for dark-brand-seed projects.
-  --color-text-on-brand: #25292E;
+  --color-text-on-brand: #25292e;
 
   --card-bg-glass: rgba(255, 255, 255, 0.04);
 
@@ -683,10 +683,20 @@ body {
 //    p=1em) break Card/Section padding rhythm when consumer embeds raw markup.
 //    Lib <Heading>/<Text> atoms own their own margins; raw elements get clean
 //    slate (consumer composes spacing via Stack/Inline gap or own SCSS).
-h1, h2, h3, h4, h5, h6,
-p, figure, blockquote,
-dl, dd, pre,
-ul, ol {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+figure,
+blockquote,
+dl,
+dd,
+pre,
+ul,
+ol {
   margin: 0;
 }
 
@@ -702,7 +712,11 @@ ol[role='list'] {
 // 4. Form element font inheritance — browsers ship <button>/<input>/<select>/
 //    <textarea> with system font (e.g. -webkit-small-control), breaking
 //    typographic consistency inside surfaces. Force inherit from :root.
-button, input, select, textarea, optgroup {
+button,
+input,
+select,
+textarea,
+optgroup {
   font: inherit;
   color: inherit;
   letter-spacing: inherit;
@@ -710,7 +724,11 @@ button, input, select, textarea, optgroup {
 
 // 5. Media block-level + responsive — prevents inline-baseline gap below
 //    images and overflow when image natural width exceeds Card width.
-img, picture, video, canvas, svg {
+img,
+picture,
+video,
+canvas,
+svg {
   display: block;
   max-width: 100%;
 }

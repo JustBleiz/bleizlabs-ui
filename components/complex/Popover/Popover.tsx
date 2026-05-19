@@ -231,11 +231,10 @@ export function Popover({
 // PopoverTrigger — Slot-or-button wrapper, merges ARIA + toggle click
 // ──────────────────────────────────────────────────────────────────────────
 
-export interface PopoverTriggerProps
-  extends Omit<
-    ButtonHTMLAttributes<HTMLButtonElement>,
-    'aria-expanded' | 'aria-haspopup' | 'aria-controls'
-  > {
+export interface PopoverTriggerProps extends Omit<
+  ButtonHTMLAttributes<HTMLButtonElement>,
+  'aria-expanded' | 'aria-haspopup' | 'aria-controls'
+> {
   children: ReactNode;
   /**
    * When `true`, Slot-wraps the single React element child, merging ARIA and
@@ -244,79 +243,76 @@ export interface PopoverTriggerProps
   asChild?: boolean;
 }
 
-export const PopoverTrigger = forwardRef<HTMLElement, PopoverTriggerProps>(
-  function PopoverTrigger({ children, asChild = false, onClick, ...rest }, forwardedRef) {
-    const ctx = usePopoverContext('<PopoverTrigger>');
-    const { open, setOpen, triggerId, contentId, triggerRef } = ctx;
+export const PopoverTrigger = forwardRef<HTMLElement, PopoverTriggerProps>(function PopoverTrigger(
+  { children, asChild = false, onClick, ...rest },
+  forwardedRef,
+) {
+  const ctx = usePopoverContext('<PopoverTrigger>');
+  const { open, setOpen, triggerId, contentId, triggerRef } = ctx;
 
-    const mergedRef = mergeRefs(
-      forwardedRef,
-      (node: HTMLElement | null) => {
-        triggerRef.current = node;
-      },
-    );
+  const mergedRef = mergeRefs(forwardedRef, (node: HTMLElement | null) => {
+    triggerRef.current = node;
+  });
 
-    const handleClick = useCallback(
-      (event: React.MouseEvent<HTMLElement>) => {
-        // Respect aria-disabled / native disabled. Native disabled blocks events
-        // natively for a real <button>, but Slot-wrapped custom triggers may
-        // bypass it — check explicitly.
-        const target = event.currentTarget;
-        if (target.getAttribute('aria-disabled') === 'true') return;
-        if (target instanceof HTMLButtonElement && target.disabled) return;
-        setOpen(!open);
-      },
-      [open, setOpen],
-    );
+  const handleClick = useCallback(
+    (event: React.MouseEvent<HTMLElement>) => {
+      // Respect aria-disabled / native disabled. Native disabled blocks events
+      // natively for a real <button>, but Slot-wrapped custom triggers may
+      // bypass it — check explicitly.
+      const target = event.currentTarget;
+      if (target.getAttribute('aria-disabled') === 'true') return;
+      if (target instanceof HTMLButtonElement && target.disabled) return;
+      setOpen(!open);
+    },
+    [open, setOpen],
+  );
 
-    const ariaProps = {
-      id: triggerId,
-      'aria-expanded': open,
-      'aria-haspopup': 'dialog' as const,
-      'aria-controls': open ? contentId : undefined,
-    };
+  const ariaProps = {
+    id: triggerId,
+    'aria-expanded': open,
+    'aria-haspopup': 'dialog' as const,
+    'aria-controls': open ? contentId : undefined,
+  };
 
-    if (asChild) {
-      return (
-        <Slot
-          ref={mergedRef}
-          {...ariaProps}
-          onClick={(event) => {
-            handleClick(event);
-            onClick?.(event as unknown as React.MouseEvent<HTMLButtonElement>);
-          }}
-        >
-          {children}
-        </Slot>
-      );
-    }
-
+  if (asChild) {
     return (
-      <button
-        ref={mergedRef as React.Ref<HTMLButtonElement>}
-        type="button"
+      <Slot
+        ref={mergedRef}
         {...ariaProps}
         onClick={(event) => {
           handleClick(event);
-          onClick?.(event);
+          onClick?.(event as unknown as React.MouseEvent<HTMLButtonElement>);
         }}
-        {...rest}
       >
         {children}
-      </button>
+      </Slot>
     );
-  },
-);
+  }
+
+  return (
+    <button
+      ref={mergedRef as React.Ref<HTMLButtonElement>}
+      type="button"
+      {...ariaProps}
+      onClick={(event) => {
+        handleClick(event);
+        onClick?.(event);
+      }}
+      {...rest}
+    >
+      {children}
+    </button>
+  );
+});
 
 // ──────────────────────────────────────────────────────────────────────────
 // PopoverContent — portal + positioning + focus management + dismiss
 // ──────────────────────────────────────────────────────────────────────────
 
-export interface PopoverContentProps
-  extends Omit<
-    HTMLAttributes<HTMLDivElement>,
-    'role' | 'aria-modal' | 'aria-labelledby' | 'aria-describedby' | 'title'
-  > {
+export interface PopoverContentProps extends Omit<
+  HTMLAttributes<HTMLDivElement>,
+  'role' | 'aria-modal' | 'aria-labelledby' | 'aria-describedby' | 'title'
+> {
   /** Optional title — renders as `<Heading level={3}>` and wires `aria-labelledby`. */
   title?: string;
   /** Optional description — renders as `<Text>` and wires `aria-describedby`. */
@@ -364,7 +360,12 @@ export function PopoverContent({
   const titleId = `${contentId}-title`;
   const descId = `${contentId}-desc`;
 
-  const { refs, floatingStyles, arrowStyles, placement: actualPlacement } = useFloating({
+  const {
+    refs,
+    floatingStyles,
+    arrowStyles,
+    placement: actualPlacement,
+  } = useFloating({
     open,
     placement,
     offset: sideOffset,
@@ -475,12 +476,7 @@ export function PopoverContent({
                 </Heading>
               )}
               {description && (
-                <Text
-                  id={descId}
-                  variant="small"
-                  color="muted"
-                  className={styles.description}
-                >
+                <Text id={descId} variant="small" color="muted" className={styles.description}>
                   {description}
                 </Text>
               )}

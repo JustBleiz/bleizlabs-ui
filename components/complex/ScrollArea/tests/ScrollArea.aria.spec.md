@@ -8,7 +8,9 @@
 test('SA-R06 — native scrollbars hidden (scrollbar-width: none)', async ({ page }) => {
   await page.goto('/components/scroll-area');
   const viewport = page.locator('[data-scroll-area-viewport]').first();
-  const scrollbarWidth = await viewport.evaluate((el) => window.getComputedStyle(el).getPropertyValue('scrollbar-width'));
+  const scrollbarWidth = await viewport.evaluate((el) =>
+    window.getComputedStyle(el).getPropertyValue('scrollbar-width'),
+  );
   expect(scrollbarWidth).toMatch(/none/);
 });
 
@@ -20,7 +22,9 @@ test('SA-R07 — custom scrollbars shown only when content overflows', async ({ 
   expect(visible).toBe(false);
 });
 
-test('SA-R08 — coarse pointer (touch): native scroll preserved, thumbs can be hidden', async ({ browser }) => {
+test('SA-R08 — coarse pointer (touch): native scroll preserved, thumbs can be hidden', async ({
+  browser,
+}) => {
   const ctx = await browser.newContext({ hasTouch: true, isMobile: true });
   const mobilePage = await ctx.newPage();
   await mobilePage.goto('/components/scroll-area');

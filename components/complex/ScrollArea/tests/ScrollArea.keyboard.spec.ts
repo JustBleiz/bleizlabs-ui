@@ -25,9 +25,7 @@ test.describe('ScrollArea — keyboard interaction', () => {
     await page.goto('/components/scroll-area');
   });
 
-  test('SA-R01 — viewport tabIndex=0 preserves native keyboard scroll', async ({
-    page,
-  }) => {
+  test('SA-R01 — viewport tabIndex=0 preserves native keyboard scroll', async ({ page }) => {
     // Section 1 — Basic. First scrollable viewport on the page.
     const sections = page.locator('section');
     const basic = sections.nth(0);
@@ -55,9 +53,7 @@ test.describe('ScrollArea — keyboard interaction', () => {
       .toBeGreaterThan(initial);
   });
 
-  test('SA-R03 — End scrolls to bottom; Home scrolls back to top', async ({
-    page,
-  }) => {
+  test('SA-R03 — End scrolls to bottom; Home scrolls back to top', async ({ page }) => {
     const sections = page.locator('section');
     const basic = sections.nth(0);
     const viewport = basic.locator('div[tabindex="0"]').first();
@@ -67,9 +63,7 @@ test.describe('ScrollArea — keyboard interaction', () => {
     await expect
       .poll(
         async () =>
-          viewport.evaluate(
-            (el) => el.scrollTop + el.clientHeight >= el.scrollHeight - 1,
-          ),
+          viewport.evaluate((el) => el.scrollTop + el.clientHeight >= el.scrollHeight - 1),
         { timeout: 2000 },
       )
       .toBe(true);

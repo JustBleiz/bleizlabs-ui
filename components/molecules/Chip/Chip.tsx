@@ -54,13 +54,7 @@ import styles from './Chip.module.scss';
  */
 export type ChipSize = 'sm' | 'md';
 export type ChipTone = 'default' | 'brand';
-export type ChipDotColor =
-  | 'brand'
-  | 'success'
-  | 'warning'
-  | 'error'
-  | 'info'
-  | 'muted';
+export type ChipDotColor = 'brand' | 'success' | 'warning' | 'error' | 'info' | 'muted';
 
 // ----------------------------------------------------------------------------
 // Shared / variant prop types
@@ -180,10 +174,7 @@ const ChipImpl = forwardRef<HTMLElement, ChipProps>(function Chip(props, ref) {
         {...spanRest}
       >
         {dot ? (
-          <span
-            aria-hidden="true"
-            className={cn(styles.dot, DOT_COLOR_CLASS[dotColor])}
-          />
+          <span aria-hidden="true" className={cn(styles.dot, DOT_COLOR_CLASS[dotColor])} />
         ) : null}
         <span className={styles.label}>{children}</span>
       </span>
@@ -226,10 +217,7 @@ const ChipImpl = forwardRef<HTMLElement, ChipProps>(function Chip(props, ref) {
       {...rest}
     >
       {dot ? (
-        <span
-          aria-hidden="true"
-          className={cn(styles.dot, DOT_COLOR_CLASS[dotColor])}
-        />
+        <span aria-hidden="true" className={cn(styles.dot, DOT_COLOR_CLASS[dotColor])} />
       ) : null}
       <span className={styles.label}>{children}</span>
     </button>
@@ -245,9 +233,7 @@ ChipImpl.displayName = 'Chip';
  * narrows to the interactive variant.
  */
 type ChipComponent = {
-  (
-    props: ChipInteractiveProps & { ref?: Ref<HTMLButtonElement> },
-  ): ReactElement;
+  (props: ChipInteractiveProps & { ref?: Ref<HTMLButtonElement> }): ReactElement;
   (props: ChipDisplayProps & { ref?: Ref<HTMLSpanElement> }): ReactElement;
   displayName?: string;
 };

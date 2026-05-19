@@ -31,7 +31,9 @@ test('CB-R07 — IME composition guard: composed chars do not trigger filter', a
   await expect(page.getByRole('listbox')).toBeVisible();
 });
 
-test('CB-R17 — Escape bubble: clear search first, then close if already empty', async ({ page }) => {
+test('CB-R17 — Escape bubble: clear search first, then close if already empty', async ({
+  page,
+}) => {
   await page.goto('/components/combobox?dialog=1');
   await page.getByRole('button', { name: 'Open Dialog' }).click();
   const input = page.getByRole('dialog').getByRole('combobox');

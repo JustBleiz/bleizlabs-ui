@@ -52,8 +52,7 @@ export interface BreadcrumbItem {
   icon?: ReactNode;
 }
 
-export interface BreadcrumbProps
-  extends Omit<HTMLAttributes<HTMLElement>, 'aria-label'> {
+export interface BreadcrumbProps extends Omit<HTMLAttributes<HTMLElement>, 'aria-label'> {
   /** Ordered list of breadcrumb items (first item = root, last item = current page). */
   items: BreadcrumbItem[];
   /** Separator element rendered between items. Default `'›'` (right-chevron). */
@@ -80,85 +79,71 @@ function collapseItems(
   return [first, 'ellipsis', ...tail];
 }
 
-export const Breadcrumb = forwardRef<HTMLElement, BreadcrumbProps>(
-  function Breadcrumb(
-    {
-      items,
-      separator = '›',
-      ariaLabel = 'Breadcrumb',
-      maxItems,
-      className,
-      ...rest
-    },
-    ref,
-  ) {
-    const displayItems = collapseItems(items, maxItems);
-    const lastIndex = displayItems.length - 1;
+export const Breadcrumb = forwardRef<HTMLElement, BreadcrumbProps>(function Breadcrumb(
+  { items, separator = '›', ariaLabel = 'Breadcrumb', maxItems, className, ...rest },
+  ref,
+) {
+  const displayItems = collapseItems(items, maxItems);
+  const lastIndex = displayItems.length - 1;
 
-    return (
-      <nav
-        ref={ref}
-        aria-label={ariaLabel}
-        className={cn(styles.root, className)}
-        {...rest}
-      >
-        <ol className={styles.list}>
-          {displayItems.map((entry, index) => {
-            const isLast = index === lastIndex;
-            const separatorNode = !isLast ? (
-              <span aria-hidden="true" className={styles.separator}>
-                {separator}
-              </span>
-            ) : null;
+  return (
+    <nav ref={ref} aria-label={ariaLabel} className={cn(styles.root, className)} {...rest}>
+      <ol className={styles.list}>
+        {displayItems.map((entry, index) => {
+          const isLast = index === lastIndex;
+          const separatorNode = !isLast ? (
+            <span aria-hidden="true" className={styles.separator}>
+              {separator}
+            </span>
+          ) : null;
 
-            if (entry === 'ellipsis') {
-              return (
-                <li key={`ellipsis-${index}`} className={styles.item}>
-                  <span aria-hidden="true" className={styles.ellipsis}>
-                    …
-                  </span>
-                  {separatorNode}
-                </li>
-              );
-            }
-
-            const iconNode = entry.icon ? (
-              <span aria-hidden="true" className={styles.icon}>
-                {entry.icon}
-              </span>
-            ) : null;
-
-            const innerContent = (
-              <>
-                {iconNode}
-                <span className={styles.label}>{entry.label}</span>
-              </>
-            );
-
+          if (entry === 'ellipsis') {
             return (
-              <li key={`${index}-${entry.label}`} className={styles.item}>
-                {entry.href ? (
-                  <a
-                    href={entry.href}
-                    aria-current={isLast ? 'page' : undefined}
-                    className={cn(styles.link, isLast && styles.current)}
-                  >
-                    {innerContent}
-                  </a>
-                ) : (
-                  <span
-                    aria-current={isLast ? 'page' : undefined}
-                    className={cn(styles.text, isLast && styles.current)}
-                  >
-                    {innerContent}
-                  </span>
-                )}
+              <li key={`ellipsis-${index}`} className={styles.item}>
+                <span aria-hidden="true" className={styles.ellipsis}>
+                  …
+                </span>
                 {separatorNode}
               </li>
             );
-          })}
-        </ol>
-      </nav>
-    );
-  },
-);
+          }
+
+          const iconNode = entry.icon ? (
+            <span aria-hidden="true" className={styles.icon}>
+              {entry.icon}
+            </span>
+          ) : null;
+
+          const innerContent = (
+            <>
+              {iconNode}
+              <span className={styles.label}>{entry.label}</span>
+            </>
+          );
+
+          return (
+            <li key={`${index}-${entry.label}`} className={styles.item}>
+              {entry.href ? (
+                <a
+                  href={entry.href}
+                  aria-current={isLast ? 'page' : undefined}
+                  className={cn(styles.link, isLast && styles.current)}
+                >
+                  {innerContent}
+                </a>
+              ) : (
+                <span
+                  aria-current={isLast ? 'page' : undefined}
+                  className={cn(styles.text, isLast && styles.current)}
+                >
+                  {innerContent}
+                </span>
+              )}
+              {separatorNode}
+            </li>
+          );
+        })}
+      </ol>
+    </nav>
+  );
+});

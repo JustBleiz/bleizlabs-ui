@@ -44,9 +44,7 @@ export function loadManifest(importMetaUrl: string): ComponentManifest {
   try {
     raw = fs.readFileSync(manifestPath, 'utf8');
   } catch (e) {
-    throw new Error(
-      `Failed to read manifest at ${manifestPath}: ${(e as Error).message}`,
-    );
+    throw new Error(`Failed to read manifest at ${manifestPath}: ${(e as Error).message}`);
   }
 
   let parsed: unknown;
@@ -114,7 +112,5 @@ function isManifest(v: unknown): v is ComponentManifest {
 export function countTotalNames(manifest: ComponentManifest): number {
   const sum = (fams: ManifestFamily[]): number =>
     fams.reduce((n, f) => n + f.exports.length + f.types.length + f.hooks.length, 0);
-  return (
-    sum(manifest.components) + sum(manifest.utilities) + sum(manifest.typesOnly)
-  );
+  return sum(manifest.components) + sum(manifest.utilities) + sum(manifest.typesOnly);
 }

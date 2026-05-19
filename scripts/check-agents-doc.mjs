@@ -87,7 +87,9 @@ collectFamilyExports(manifest.components || []);
 collectFamilyExports(manifest.utilities || []);
 collectFamilyExports(manifest.typesOnly || []);
 
-info(`manifest exports: ${validExports.size} identifiers across ${manifest.components.length} components + ${manifest.utilities.length} utilities + ${manifest.typesOnly.length} typesOnly`);
+info(
+  `manifest exports: ${validExports.size} identifiers across ${manifest.components.length} components + ${manifest.utilities.length} utilities + ${manifest.typesOnly.length} typesOnly`,
+);
 
 // -----------------------------------------------------------------------
 // Check 1: Inventory row count matches manifest.components.length
@@ -97,7 +99,9 @@ const usageSrc = fs.readFileSync(AGENT_USAGE_MD, 'utf8');
 const invStartIdx = usageSrc.indexOf(INVENTORY_START);
 const invEndIdx = usageSrc.indexOf(INVENTORY_END);
 if (invStartIdx === -1 || invEndIdx === -1 || invEndIdx < invStartIdx) {
-  err(`docs/AGENT-USAGE.md missing INVENTORY:START / INVENTORY:END markers (in correct order). Run \`node scripts/build-agent-inventory.mjs\` to populate the table.`);
+  err(
+    `docs/AGENT-USAGE.md missing INVENTORY:START / INVENTORY:END markers (in correct order). Run \`node scripts/build-agent-inventory.mjs\` to populate the table.`,
+  );
 } else {
   const inventoryBlock = usageSrc.slice(invStartIdx, invEndIdx);
   // Count rows: lines starting with "| `" (component-name cell) inside
@@ -144,7 +148,12 @@ function* iterFences(src, sourceFile) {
       continue;
     }
     if (inFence && line.match(/^```\s*$/)) {
-      yield { lang: fenceLang, content: fenceBuffer.join('\n'), sourceFile, fenceLine: fenceStartLine };
+      yield {
+        lang: fenceLang,
+        content: fenceBuffer.join('\n'),
+        sourceFile,
+        fenceLine: fenceStartLine,
+      };
       inFence = false;
       fenceLang = '';
       fenceBuffer = [];
@@ -212,7 +221,9 @@ for (const { file, label } of docs) {
         (fence.lang === 'js' || fence.lang === 'jsx') &&
         /import\s+(?:type\s+)?\{[\s\S]*?\}\s+from\s+['"]@bleizlabs\/ui['"]/.test(fence.content)
       ) {
-        warn(`${label}:${fence.fenceLine} fence lang \`${fence.lang}\` contains @bleizlabs/ui import — retag as \`tsx\` / \`typescript\` / \`ts\` for the import to be checked.`);
+        warn(
+          `${label}:${fence.fenceLine} fence lang \`${fence.lang}\` contains @bleizlabs/ui import — retag as \`tsx\` / \`typescript\` / \`ts\` for the import to be checked.`,
+        );
       }
       continue;
     }
@@ -220,7 +231,9 @@ for (const { file, label } of docs) {
     for (const id of ids) {
       totalChecked++;
       if (!validExports.has(id)) {
-        err(`${label}:${fence.fenceLine} (lang=${fence.lang}) — imported identifier \`${id}\` from '@bleizlabs/ui' not found in manifest exports.`);
+        err(
+          `${label}:${fence.fenceLine} (lang=${fence.lang}) — imported identifier \`${id}\` from '@bleizlabs/ui' not found in manifest exports.`,
+        );
       } else {
         totalResolved++;
       }
@@ -228,7 +241,9 @@ for (const { file, label } of docs) {
   }
 }
 
-info(`imports checked: ${totalChecked} (resolved: ${totalResolved}, unresolved: ${totalChecked - totalResolved})`);
+info(
+  `imports checked: ${totalChecked} (resolved: ${totalResolved}, unresolved: ${totalChecked - totalResolved})`,
+);
 
 // -----------------------------------------------------------------------
 // Result

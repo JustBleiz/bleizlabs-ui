@@ -19,21 +19,15 @@ export interface CardBodyProps extends HTMLAttributes<HTMLDivElement> {
   asChild?: boolean;
 }
 
-export const CardBody = forwardRef<HTMLDivElement, CardBodyProps>(
-  function CardBody(
-    { asChild = false, className, children, ...rest },
-    ref,
-  ) {
-    const Comp = asChild ? Slot : 'div';
+export const CardBody = forwardRef<HTMLDivElement, CardBodyProps>(function CardBody(
+  { asChild = false, className, children, ...rest },
+  ref,
+) {
+  const Comp = asChild ? Slot : 'div';
 
-    return (
-      <Comp
-        ref={ref}
-        className={cn(styles.root, className)}
-        {...rest}
-      >
-        {children}
-      </Comp>
-    );
-  },
-);
+  return (
+    <Comp ref={ref} className={cn(styles.root, className)} {...rest}>
+      {children}
+    </Comp>
+  );
+});

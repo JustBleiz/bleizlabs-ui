@@ -21,9 +21,7 @@ test.describe('DateRangePicker — range selection state machine', () => {
     await page.goto('/components/date-range-picker');
   });
 
-  test('DR-RNG01 — first click sets pendingFrom (no commit fire on input)', async ({
-    page,
-  }) => {
+  test('DR-RNG01 — first click sets pendingFrom (no commit fire on input)', async ({ page }) => {
     const picker = rangeBy(page, 'Basic single-month range');
     const input = inputOf(picker);
     await openPicker(picker);
@@ -58,7 +56,7 @@ test.describe('DateRangePicker — range selection state machine', () => {
     const fromCell = cellByIso(page, fromIso);
     const toCell = cellByIso(page, toIso);
     // Some months may have fromIso outside the current display — skip-safe
-    if (await fromCell.count() === 0 || await toCell.count() === 0) {
+    if ((await fromCell.count()) === 0 || (await toCell.count()) === 0) {
       test.skip();
       return;
     }
@@ -81,7 +79,7 @@ test.describe('DateRangePicker — range selection state machine', () => {
     const earlierIso = `${y}-${m}-10`;
     const laterCell = cellByIso(page, laterIso);
     const earlierCell = cellByIso(page, earlierIso);
-    if (await laterCell.count() === 0 || await earlierCell.count() === 0) {
+    if ((await laterCell.count()) === 0 || (await earlierCell.count()) === 0) {
       test.skip();
       return;
     }
@@ -105,7 +103,7 @@ test.describe('DateRangePicker — range selection state machine', () => {
     const m = String(now.getMonth() + 1).padStart(2, '0');
     const iso = `${y}-${m}-15`;
     const cell = cellByIso(page, iso);
-    if (await cell.count() === 0) {
+    if ((await cell.count()) === 0) {
       test.skip();
       return;
     }
@@ -119,9 +117,7 @@ test.describe('DateRangePicker — range selection state machine', () => {
     expect(matches?.length).toBe(2);
   });
 
-  test('DR-RNG06 — typed "YYYY-MM-DD → YYYY-MM-DD" commits range on Enter', async ({
-    page,
-  }) => {
+  test('DR-RNG06 — typed "YYYY-MM-DD → YYYY-MM-DD" commits range on Enter', async ({ page }) => {
     const picker = rangeBy(page, 'Basic single-month range');
     const input = inputOf(picker);
     await input.click({ force: true });

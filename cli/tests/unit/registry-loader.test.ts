@@ -13,9 +13,7 @@ describe('registry-loader', () => {
   let tmpRoot: string;
   let importMetaUrl: string;
 
-  function buildManifest(
-    overrides: Partial<ComponentManifest> = {},
-  ): ComponentManifest {
+  function buildManifest(overrides: Partial<ComponentManifest> = {}): ComponentManifest {
     return {
       schemaVersion: '1',
       libVersion: '0.10.0',
@@ -65,19 +63,12 @@ describe('registry-loader', () => {
   });
 
   it('throws actionable error when manifest missing', () => {
-    expect(() => loadManifest(importMetaUrl)).toThrow(
-      /manifest not found/i,
-    );
-    expect(() => loadManifest(importMetaUrl)).toThrow(
-      /predate v0\.10\.0/i,
-    );
+    expect(() => loadManifest(importMetaUrl)).toThrow(/manifest not found/i);
+    expect(() => loadManifest(importMetaUrl)).toThrow(/predate v0\.10\.0/i);
   });
 
   it('throws on invalid JSON', () => {
-    fs.writeFileSync(
-      path.join(tmpRoot, 'components', 'manifest.json'),
-      'not valid json {',
-    );
+    fs.writeFileSync(path.join(tmpRoot, 'components', 'manifest.json'), 'not valid json {');
     expect(() => loadManifest(importMetaUrl)).toThrow(/not valid JSON/i);
   });
 
@@ -86,9 +77,7 @@ describe('registry-loader', () => {
       path.join(tmpRoot, 'components', 'manifest.json'),
       JSON.stringify(buildManifest({ schemaVersion: '999' })),
     );
-    expect(() => loadManifest(importMetaUrl)).toThrow(
-      /Unsupported manifest schema version: 999/,
-    );
+    expect(() => loadManifest(importMetaUrl)).toThrow(/Unsupported manifest schema version: 999/);
   });
 
   it('throws on malformed shape (missing components array)', () => {
@@ -118,10 +107,24 @@ describe('registry-loader', () => {
         },
       ],
       utilities: [
-        { family: 'cn', category: 'utils', path: 'utils/cn', exports: ['cn'], types: ['ClassValue'], hooks: [] },
+        {
+          family: 'cn',
+          category: 'utils',
+          path: 'utils/cn',
+          exports: ['cn'],
+          types: ['ClassValue'],
+          hooks: [],
+        },
       ],
       typesOnly: [
-        { family: 'spacing', category: 'types', path: 'types/spacing', exports: [], types: ['SpaceIndex'], hooks: [] },
+        {
+          family: 'spacing',
+          category: 'types',
+          path: 'types/spacing',
+          exports: [],
+          types: ['SpaceIndex'],
+          hooks: [],
+        },
       ],
     });
     expect(countTotalNames(m)).toBe(3 + 2 + 1); // 6

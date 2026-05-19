@@ -43,10 +43,10 @@ export default function ContextMenuPlaygroundPage() {
           ContextMenu
         </Heading>
         <Text className={styles.intro}>
-          Right-click menu anchored to the pointer position. Shares the full
-          keyboard model with DropdownMenu, suppresses the native browser menu,
-          and closes on scroll to match OS conventions. Wrap any element —
-          table rows, cards, tree nodes — with <code>ContextMenuTrigger</code>.
+          Right-click menu anchored to the pointer position. Shares the full keyboard model with
+          DropdownMenu, suppresses the native browser menu, and closes on scroll to match OS
+          conventions. Wrap any element — table rows, cards, tree nodes — with{' '}
+          <code>ContextMenuTrigger</code>.
         </Text>
         <Button
           variant="secondary"
@@ -62,11 +62,7 @@ export default function ContextMenuPlaygroundPage() {
             scroll event that dismisses any open ContextMenu (closeOnScroll
             default true). Renders placeholder line when lastAction is null so
             subsequent menuitem clicks cause no layout delta in CI. */}
-        <Text
-          variant="small"
-          color={lastAction ? 'brand' : 'muted'}
-          aria-live="polite"
-        >
+        <Text variant="small" color={lastAction ? 'brand' : 'muted'} aria-live="polite">
           {lastAction ? (
             <>
               Last action: <code>{lastAction}</code>
@@ -83,8 +79,8 @@ export default function ContextMenuPlaygroundPage() {
           Basic drop-zone context menu
         </Heading>
         <Text>
-          Right-click inside the zone below to open the context menu at cursor coordinates.
-          The native browser context menu is suppressed via <code>event.preventDefault()</code>.
+          Right-click inside the zone below to open the context menu at cursor coordinates. The
+          native browser context menu is suppressed via <code>event.preventDefault()</code>.
         </Text>
         <ContextMenu>
           <ContextMenuTrigger asChild={false}>
@@ -95,12 +91,8 @@ export default function ContextMenuPlaygroundPage() {
             <ContextMenuItem onSelect={() => setLastAction('Copy')}>Copy</ContextMenuItem>
             <ContextMenuItem onSelect={() => setLastAction('Paste')}>Paste</ContextMenuItem>
             <ContextMenuSeparator />
-            <ContextMenuItem onSelect={() => setLastAction('Duplicate')}>
-              Duplicate
-            </ContextMenuItem>
-            <ContextMenuItem onSelect={() => setLastAction('Delete')}>
-              Delete
-            </ContextMenuItem>
+            <ContextMenuItem onSelect={() => setLastAction('Duplicate')}>Duplicate</ContextMenuItem>
+            <ContextMenuItem onSelect={() => setLastAction('Delete')}>Delete</ContextMenuItem>
           </ContextMenuContent>
         </ContextMenu>
       </section>
@@ -111,8 +103,8 @@ export default function ContextMenuPlaygroundPage() {
           Per-row context menu (asChild on list items)
         </Heading>
         <Text>
-          Each file row has its own <code>ContextMenu</code> with <code>asChild</code>{' '}
-          wrapping the row element — no wrapper div breaks the list DOM.
+          Each file row has its own <code>ContextMenu</code> with <code>asChild</code> wrapping the
+          row element — no wrapper div breaks the list DOM.
         </Text>
         <div className={styles.fileList}>
           {FILES.map((file) => (
@@ -180,9 +172,9 @@ export default function ContextMenuPlaygroundPage() {
           Disabled trigger — allows native browser menu
         </Heading>
         <Text>
-          When the trigger has <code>disabled=true</code>, <code>onContextMenu</code> does
-          NOT call <code>preventDefault()</code> — the user gets their native browser
-          context menu instead of ours.
+          When the trigger has <code>disabled=true</code>, <code>onContextMenu</code> does NOT call{' '}
+          <code>preventDefault()</code> — the user gets their native browser context menu instead of
+          ours.
         </Text>
         <ContextMenu>
           <ContextMenuTrigger disabled asChild={false}>
@@ -201,8 +193,8 @@ export default function ContextMenuPlaygroundPage() {
         </Heading>
         <Text>
           <code>onSelect</code> receives a cancelable <code>CustomEvent</code>. Calling{' '}
-          <code>event.preventDefault()</code> keeps the menu open — useful for toggle
-          actions (grid / ruler) or future CheckboxItem patterns.
+          <code>event.preventDefault()</code> keeps the menu open — useful for toggle actions (grid
+          / ruler) or future CheckboxItem patterns.
         </Text>
         <ContextMenu>
           <ContextMenuTrigger asChild={false}>
@@ -240,9 +232,8 @@ export default function ContextMenuPlaygroundPage() {
           Controlled state
         </Heading>
         <Text>
-          Consumer owns open state via <code>open</code> + <code>onOpenChange</code>.
-          Escape, outside click, item select, and scroll all trigger{' '}
-          <code>onOpenChange(false)</code>.
+          Consumer owns open state via <code>open</code> + <code>onOpenChange</code>. Escape,
+          outside click, item select, and scroll all trigger <code>onOpenChange(false)</code>.
         </Text>
         <div className={styles.row}>
           <ContextMenu open={controlledOpen} onOpenChange={setControlledOpen}>

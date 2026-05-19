@@ -1,0 +1,13 @@
+node_modules/
+.next/
+out/
+build/
+dist/
+cli-dist/
+.turbo/
+coverage/
+playwright-report/
+test-results/
+playground/compiled.css
+*.min.css
+*.css.map

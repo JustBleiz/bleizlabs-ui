@@ -27,11 +27,10 @@ export default function TogglesPlaygroundPage() {
           Toggle + ToggleGroup + Switch + Accordion
         </Heading>
         <Text className={styles.intro}>
-          Four state-heavy interactive primitives. <code>Toggle</code> is a
-          press-state button; <code>ToggleGroup</code> joins toggles into a
-          single segmented control; <code>Switch</code> is an on/off preference
-          control; <code>Accordion</code> is an expand/collapse disclosure
-          panel. All support controlled and uncontrolled usage.
+          Four state-heavy interactive primitives. <code>Toggle</code> is a press-state button;{' '}
+          <code>ToggleGroup</code> joins toggles into a single segmented control;{' '}
+          <code>Switch</code> is an on/off preference control; <code>Accordion</code> is an
+          expand/collapse disclosure panel. All support controlled and uncontrolled usage.
         </Text>
       </header>
 

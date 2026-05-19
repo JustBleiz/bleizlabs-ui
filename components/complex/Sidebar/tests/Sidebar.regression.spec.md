@@ -5,7 +5,9 @@
 ## Tests
 
 ```ts
-test('SB-R11 — breakpoint: desktop <aside> visible, mobile <dialog> hidden by default', async ({ page }) => {
+test('SB-R11 — breakpoint: desktop <aside> visible, mobile <dialog> hidden by default', async ({
+  page,
+}) => {
   await page.setViewportSize({ width: 1200, height: 800 });
   await page.goto('/components/sidebar');
   await expect(page.locator('aside')).toBeVisible();
@@ -13,7 +15,9 @@ test('SB-R11 — breakpoint: desktop <aside> visible, mobile <dialog> hidden by 
 });
 
 test('SB-R12 — cookie persistence: SSR-friendly, no flash', async ({ page, context }) => {
-  await context.addCookies([{ name: 'sidebar-collapsed', value: 'true', url: 'http://localhost:3000' }]);
+  await context.addCookies([
+    { name: 'sidebar-collapsed', value: 'true', url: 'http://localhost:3000' },
+  ]);
   await page.goto('/components/sidebar');
   // Initial render respects cookie — no collapsed→expanded flash
   const sidebar = page.locator('aside');

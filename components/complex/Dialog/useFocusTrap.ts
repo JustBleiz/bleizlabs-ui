@@ -62,12 +62,9 @@ export function useFocusTrap(
     if (!container) return;
 
     const previousFocus =
-      typeof document !== 'undefined'
-        ? (document.activeElement as HTMLElement | null)
-        : null;
+      typeof document !== 'undefined' ? (document.activeElement as HTMLElement | null) : null;
 
-    const initialTarget =
-      initialFocusRef?.current ?? getFirstTabbable(container);
+    const initialTarget = initialFocusRef?.current ?? getFirstTabbable(container);
 
     const focusFrame = requestAnimationFrame(() => {
       if (initialTarget) {

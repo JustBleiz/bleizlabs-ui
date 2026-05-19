@@ -81,85 +81,78 @@ export interface CodeBlockProps extends HTMLAttributes<HTMLPreElement> {
   copiedLabel?: string;
 }
 
-export const CodeBlock = forwardRef<HTMLPreElement, CodeBlockProps>(
-  function CodeBlock(
-    {
-      children,
-      language,
-      showLineNumbers = false,
-      copy = false,
-      copyText,
-      copyLabel = 'Copy code',
-      copiedLabel = 'Copied',
-      className,
-      ...rest
-    },
-    ref,
-  ) {
-    const [copied, setCopied] = useState(false);
-
-    const childIsString = typeof children === 'string';
-
-    const lineCount = useMemo(() => {
-      if (!showLineNumbers || !childIsString) return 0;
-      const trimmed = (children as string).replace(/\n$/, '');
-      return trimmed.split('\n').length;
-    }, [children, showLineNumbers, childIsString]);
-
-    const handleCopy = useCallback(async () => {
-      const payload =
-        copyText !== undefined
-          ? copyText
-          : childIsString
-            ? (children as string)
-            : '';
-      if (!payload || typeof navigator === 'undefined' || !navigator.clipboard) {
-        return;
-      }
-      try {
-        await navigator.clipboard.writeText(payload);
-        setCopied(true);
-        window.setTimeout(() => setCopied(false), 2000);
-      } catch {
-        // Clipboard refused (permissions / insecure context) — leave state
-        // unchanged; consumer can wrap with its own toast feedback.
-      }
-    }, [copyText, childIsString, children]);
-
-    return (
-      <pre ref={ref} className={cn(styles.root, className)} {...rest}>
-        {(language || copy) && (
-          <div className={styles.chrome}>
-            {language && (
-              <span aria-hidden="true" className={styles.language}>
-                {language}
-              </span>
-            )}
-            {copy && (
-              <button
-                type="button"
-                className={styles.copy}
-                onClick={handleCopy}
-                aria-label={copied ? copiedLabel : copyLabel}
-              >
-                <span aria-hidden="true">{copied ? copiedLabel : copyLabel}</span>
-              </button>
-            )}
-          </div>
-        )}
-        <code className={cn(styles.code, showLineNumbers && styles.withLines)}>
-          {showLineNumbers && lineCount > 0 ? (
-            <span aria-hidden="true" className={styles.lines}>
-              {Array.from({ length: lineCount }, (_, i) => (
-                <span key={i} className={styles.line}>
-                  {i + 1}
-                </span>
-              ))}
-            </span>
-          ) : null}
-          <span className={styles.content}>{children}</span>
-        </code>
-      </pre>
-    );
+export const CodeBlock = forwardRef<HTMLPreElement, CodeBlockProps>(function CodeBlock(
+  {
+    children,
+    language,
+    showLineNumbers = false,
+    copy = false,
+    copyText,
+    copyLabel = 'Copy code',
+    copiedLabel = 'Copied',
+    className,
+    ...rest
   },
-);
+  ref,
+) {
+  const [copied, setCopied] = useState(false);
+
+  const childIsString = typeof children === 'string';
+
+  const lineCount = useMemo(() => {
+    if (!showLineNumbers || !childIsString) return 0;
+    const trimmed = (children as string).replace(/\n$/, '');
+    return trimmed.split('\n').length;
+  }, [children, showLineNumbers, childIsString]);
+
+  const handleCopy = useCallback(async () => {
+    const payload = copyText !== undefined ? copyText : childIsString ? (children as string) : '';
+    if (!payload || typeof navigator === 'undefined' || !navigator.clipboard) {
+      return;
+    }
+    try {
+      await navigator.clipboard.writeText(payload);
+      setCopied(true);
+      window.setTimeout(() => setCopied(false), 2000);
+    } catch {
+      // Clipboard refused (permissions / insecure context) — leave state
+      // unchanged; consumer can wrap with its own toast feedback.
+    }
+  }, [copyText, childIsString, children]);
+
+  return (
+    <pre ref={ref} className={cn(styles.root, className)} {...rest}>
+      {(language || copy) && (
+        <div className={styles.chrome}>
+          {language && (
+            <span aria-hidden="true" className={styles.language}>
+              {language}
+            </span>
+          )}
+          {copy && (
+            <button
+              type="button"
+              className={styles.copy}
+              onClick={handleCopy}
+              aria-label={copied ? copiedLabel : copyLabel}
+            >
+              <span aria-hidden="true">{copied ? copiedLabel : copyLabel}</span>
+            </button>
+          )}
+        </div>
+      )}
+      <code className={cn(styles.code, showLineNumbers && styles.withLines)}>
+        {showLineNumbers && lineCount > 0 ? (
+          <span aria-hidden="true" className={styles.lines}>
+            {Array.from({ length: lineCount }, (_, i) => (
+              <span key={i} className={styles.line}>
+                {i + 1}
+              </span>
+            ))}
+          </span>
+        ) : null}
+        <span className={styles.content}>{children}</span>
+      </code>
+    </pre>
+  );
+});

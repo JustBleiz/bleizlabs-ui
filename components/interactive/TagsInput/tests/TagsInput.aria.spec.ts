@@ -10,13 +10,7 @@
 
 import { test, expect } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
-import {
-  inputBy,
-  wrapperOf,
-  chipsOf,
-  removeBtnOf,
-  liveRegionOf,
-} from './_helpers';
+import { inputBy, wrapperOf, chipsOf, removeBtnOf, liveRegionOf } from './_helpers';
 
 const URL = '/components/tags-input';
 
@@ -68,10 +62,7 @@ test.describe('TagsInput — ARIA', () => {
     const input = inputBy(page, 'Basic tags');
     const describedby = await input.getAttribute('aria-describedby');
     expect(describedby).toBeTruthy();
-    await expect(input.page().locator(`#${describedby}`)).toHaveAttribute(
-      'role',
-      'status',
-    );
+    await expect(input.page().locator(`#${describedby}`)).toHaveAttribute('role', 'status');
   });
 
   test('TI-A07: disabled wrapper has data-state=disabled', async ({ page }) => {
@@ -97,13 +88,16 @@ test.describe('TagsInput — ARIA', () => {
     // No assertion on invalid state here yet — onReject fires but invalid
     // prop is consumer-driven (demo doesn't set invalid). Just confirm
     // rejection visible. Both visible badge + live region carry the message.
-    await expect(input.page().getByText(/Must be lowercase/i).first()).toBeVisible();
+    await expect(
+      input
+        .page()
+        .getByText(/Must be lowercase/i)
+        .first(),
+    ).toBeVisible();
   });
 
   test('TI-A10: axe-core zero violations on demo route', async ({ page }) => {
-    const results = await new AxeBuilder({ page })
-      .disableRules(['region'])
-      .analyze();
+    const results = await new AxeBuilder({ page }).disableRules(['region']).analyze();
     expect(results.violations).toEqual([]);
   });
 });

@@ -56,11 +56,10 @@ import styles from './Dialog.module.scss';
  */
 export type DialogSize = 'sm' | 'md' | 'lg' | 'xl';
 
-export interface DialogProps
-  extends Omit<
-    HTMLAttributes<HTMLDivElement>,
-    'title' | 'role' | 'aria-modal' | 'aria-labelledby' | 'aria-describedby'
-  > {
+export interface DialogProps extends Omit<
+  HTMLAttributes<HTMLDivElement>,
+  'title' | 'role' | 'aria-modal' | 'aria-labelledby' | 'aria-describedby'
+> {
   /** Controlled open state. Dialog is modal-only, always controlled. */
   open: boolean;
   /** Callback invoked when the dialog requests to close (Escape, overlay click, close button). */
@@ -252,9 +251,7 @@ export function Dialog({
     if (!open) return;
     const portalRoot = contentRef.current?.parentElement;
     if (!portalRoot) return;
-    const siblings = Array.from(document.body.children).filter(
-      (el) => el !== portalRoot,
-    );
+    const siblings = Array.from(document.body.children).filter((el) => el !== portalRoot);
     const hadInert = siblings.map((el) => el.hasAttribute('inert'));
     siblings.forEach((el) => el.setAttribute('inert', ''));
     return () => {
@@ -286,11 +283,7 @@ export function Dialog({
   const describedBy = description ? descriptionId : undefined;
 
   return createPortal(
-    <div
-      className={styles.root}
-      onClick={handleOverlayClick}
-      data-state={open ? 'open' : 'closed'}
-    >
+    <div className={styles.root} onClick={handleOverlayClick} data-state={open ? 'open' : 'closed'}>
       <div
         ref={contentRef}
         role="dialog"
@@ -315,12 +308,7 @@ export function Dialog({
           </button>
         </header>
         {description ? (
-          <Text
-            id={descriptionId}
-            variant="body"
-            color="muted"
-            className={styles.description}
-          >
+          <Text id={descriptionId} variant="body" color="muted" className={styles.description}>
             {description}
           </Text>
         ) : null}

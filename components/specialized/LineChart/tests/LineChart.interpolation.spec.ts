@@ -17,9 +17,7 @@ test.describe('LineChart — interpolation', () => {
     await page.goto(URL, { waitUntil: 'networkidle' });
   });
 
-  test('LC-I01: smooth interpolation emits cubic Bezier commands (C)', async ({
-    page,
-  }) => {
+  test('LC-I01: smooth interpolation emits cubic Bezier commands (C)', async ({ page }) => {
     const chart = chartByTitle(page, 'Weekly leads');
     const path = pathsOf(chart).first();
     const d = await path.getAttribute('d');
@@ -27,9 +25,7 @@ test.describe('LineChart — interpolation', () => {
     expect(d!).toContain('C ');
   });
 
-  test('LC-I02: linear interpolation emits only L commands (no C)', async ({
-    page,
-  }) => {
+  test('LC-I02: linear interpolation emits only L commands (no C)', async ({ page }) => {
     const chart = chartByTitle(page, 'Lead source comparison');
     const path = pathsOf(chart).first();
     const d = await path.getAttribute('d');
@@ -49,9 +45,7 @@ test.describe('LineChart — interpolation', () => {
     }
   });
 
-  test('LC-I04: path has pathLength=1 attribute for animation', async ({
-    page,
-  }) => {
+  test('LC-I04: path has pathLength=1 attribute for animation', async ({ page }) => {
     const chart = chartByTitle(page, 'Weekly leads');
     const path = pathsOf(chart).first();
     await expect(path).toHaveAttribute('pathLength', '1');

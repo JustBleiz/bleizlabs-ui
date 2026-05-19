@@ -88,64 +88,47 @@ export interface AvatarGroupProps extends HTMLAttributes<HTMLDivElement> {
   asChild?: boolean;
 }
 
-export const AvatarGroup = forwardRef<HTMLDivElement, AvatarGroupProps>(
-  function AvatarGroup(
-    {
-      max = 3,
-      size = 'md',
-      overlap = 2,
-      asChild = false,
-      className,
-      style,
-      children,
-      ...rest
-    },
-    ref,
-  ) {
-    const Comp = asChild ? Slot : 'div';
+export const AvatarGroup = forwardRef<HTMLDivElement, AvatarGroupProps>(function AvatarGroup(
+  { max = 3, size = 'md', overlap = 2, asChild = false, className, style, children, ...rest },
+  ref,
+) {
+  const Comp = asChild ? Slot : 'div';
 
-    const all = Children.toArray(children).filter(isValidElement);
-    const total = all.length;
-    const exceeds = total > max;
-    // When overflowing, last visible slot is the overflow chip — show
-    // (max - 1) real avatars then the "+N" chip. When total ≤ max,
-    // render every avatar; no chip.
-    const visible = exceeds ? all.slice(0, max - 1) : all;
-    const excess = exceeds ? total - (max - 1) : 0;
+  const all = Children.toArray(children).filter(isValidElement);
+  const total = all.length;
+  const exceeds = total > max;
+  // When overflowing, last visible slot is the overflow chip — show
+  // (max - 1) real avatars then the "+N" chip. When total ≤ max,
+  // render every avatar; no chip.
+  const visible = exceeds ? all.slice(0, max - 1) : all;
+  const excess = exceeds ? total - (max - 1) : 0;
 
-    const groupStyle: CSSProperties = {
-      ...style,
-      '--avatar-group-overlap': `var(--space-${overlap})`,
-    } as CSSProperties;
+  const groupStyle: CSSProperties = {
+    ...style,
+    '--avatar-group-overlap': `var(--space-${overlap})`,
+  } as CSSProperties;
 
-    return (
-      <Comp
-        ref={ref}
-        role="list"
-        className={cn(styles.root, className)}
-        style={groupStyle}
-        {...rest}
-      >
-        {visible.map((child, idx) => (
-          <span key={getChildKey(child, idx)} role="listitem" className={styles.item}>
-            {cloneWithSize(child, size)}
-          </span>
-        ))}
-        {exceeds ? (
-          <span role="listitem" className={styles.item}>
-            <Avatar
-              size={size}
-              fallback={`+${excess}`}
-              alt={`${excess} more`}
-              aria-label={`${excess} more`}
-              className={styles.overflowChip}
-            />
-          </span>
-        ) : null}
-      </Comp>
-    );
-  },
-);
+  return (
+    <Comp ref={ref} role="list" className={cn(styles.root, className)} style={groupStyle} {...rest}>
+      {visible.map((child, idx) => (
+        <span key={getChildKey(child, idx)} role="listitem" className={styles.item}>
+          {cloneWithSize(child, size)}
+        </span>
+      ))}
+      {exceeds ? (
+        <span role="listitem" className={styles.item}>
+          <Avatar
+            size={size}
+            fallback={`+${excess}`}
+            alt={`${excess} more`}
+            aria-label={`${excess} more`}
+            className={styles.overflowChip}
+          />
+        </span>
+      ) : null}
+    </Comp>
+  );
+});
 
 /**
  * Inject `size` onto a child only when (a) the child is an Avatar-like

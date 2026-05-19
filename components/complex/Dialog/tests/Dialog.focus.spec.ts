@@ -43,9 +43,7 @@ test.describe('Dialog — focus management', () => {
 
     for (let i = 0; i < 10; i += 1) {
       await page.keyboard.press('Tab');
-      const isInside = await dialog.evaluate((el) =>
-        el.contains(document.activeElement),
-      );
+      const isInside = await dialog.evaluate((el) => el.contains(document.activeElement));
       expect(isInside).toBe(true);
     }
   });

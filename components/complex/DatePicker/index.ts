@@ -17,14 +17,6 @@
  *   </DatePicker>
  */
 
-export {
-  DatePicker,
-  DatePickerInput,
-  DatePickerContent,
-} from './DatePicker';
+export { DatePicker, DatePickerInput, DatePickerContent } from './DatePicker';
 
-export type {
-  DatePickerProps,
-  DatePickerInputProps,
-  DatePickerContentProps,
-} from './DatePicker';
+export type { DatePickerProps, DatePickerInputProps, DatePickerContentProps } from './DatePicker';

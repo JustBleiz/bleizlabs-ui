@@ -11,12 +11,7 @@
  */
 
 import { test, expect } from '@playwright/test';
-import {
-  hiddenInputOf,
-  hourFieldOf,
-  minuteFieldOf,
-  timeInputBy,
-} from './_helpers';
+import { hiddenInputOf, hourFieldOf, minuteFieldOf, timeInputBy } from './_helpers';
 
 test.describe('TimeInput — form integration', () => {
   test.beforeEach(async ({ page }) => {

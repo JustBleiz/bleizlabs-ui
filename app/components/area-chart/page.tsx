@@ -65,12 +65,10 @@ export default function AreaChartPlayground() {
           AreaChart
         </Heading>
         <Text color="secondary">
-          Multi-series SVG area chart with line stroke + filled region below,
-          crosshair tooltip, keyboard data-point navigation, and sr-only{' '}
-          <code>&lt;table&gt;</code> a11y fallback. Zero external deps. Same
-          API surface as <code>LineChart</code> plus <code>fillOpacity</code>{' '}
-          + <code>gradient</code> visual axes. Stacked variant deferred to a
-          0.20.x follow-up.
+          Multi-series SVG area chart with line stroke + filled region below, crosshair tooltip,
+          keyboard data-point navigation, and sr-only <code>&lt;table&gt;</code> a11y fallback. Zero
+          external deps. Same API surface as <code>LineChart</code> plus <code>fillOpacity</code> +{' '}
+          <code>gradient</code> visual axes. Stacked variant deferred to a 0.20.x follow-up.
         </Text>
         <Inline gap={2} wrap>
           <Badge color="info">specialized/AreaChart</Badge>
@@ -103,9 +101,8 @@ export default function AreaChartPlayground() {
           2. Multi-series (3 series) — overlapping semi-transparent fills
         </Heading>
         <Text color="secondary">
-          Three lead sources, linear interpolation, <code>fillOpacity=0.25</code>{' '}
-          so overlapping regions stay readable. Crosshair tooltip shows all
-          three values at the hovered/focused X.
+          Three lead sources, linear interpolation, <code>fillOpacity=0.25</code> so overlapping
+          regions stay readable. Crosshair tooltip shows all three values at the hovered/focused X.
         </Text>
         <div className={styles.demo}>
           <AreaChart
@@ -115,8 +112,18 @@ export default function AreaChartPlayground() {
             fillOpacity={0.25}
             series={[
               { id: 'linkedin', name: 'LinkedIn', data: linkedinWeekly },
-              { id: 'cold-email', name: 'Cold email', data: coldEmailWeekly, color: 'var(--color-success)' },
-              { id: 'partner', name: 'Partner', data: partnerWeekly, color: 'var(--color-warning)' },
+              {
+                id: 'cold-email',
+                name: 'Cold email',
+                data: coldEmailWeekly,
+                color: 'var(--color-success)',
+              },
+              {
+                id: 'partner',
+                name: 'Partner',
+                data: partnerWeekly,
+                color: 'var(--color-warning)',
+              },
             ]}
           />
         </div>
@@ -128,10 +135,9 @@ export default function AreaChartPlayground() {
           3. Gradient fill — fade to baseline (<code>gradient</code>)
         </Heading>
         <Text color="secondary">
-          When <code>gradient=true</code> the fill renders as a vertical
-          linear gradient from series color (top of area) to transparent
-          (baseline) — the &quot;sparkline / report&quot; report look.{' '}
-          <code>fillOpacity</code> scales the top stop intensity.
+          When <code>gradient=true</code> the fill renders as a vertical linear gradient from series
+          color (top of area) to transparent (baseline) — the &quot;sparkline / report&quot; report
+          look. <code>fillOpacity</code> scales the top stop intensity.
         </Text>
         <div className={styles.demo}>
           <AreaChart
@@ -150,9 +156,8 @@ export default function AreaChartPlayground() {
           4. Time axis — Date values + locale-aware tick format
         </Heading>
         <Text color="secondary">
-          24 monthly MWh values over 2024-2025. X values are JS{' '}
-          <code>Date</code> objects; consumer formats ticks via{' '}
-          <code>xAxis.tickFormat</code>.
+          24 monthly MWh values over 2024-2025. X values are JS <code>Date</code> objects; consumer
+          formats ticks via <code>xAxis.tickFormat</code>.
         </Text>
         <div className={styles.demo}>
           <AreaChart
@@ -162,7 +167,20 @@ export default function AreaChartPlayground() {
             gradient
             xAxis={{
               tickFormat: (v) => {
-                const months = ['sty','lut','mar','kwi','maj','cze','lip','sie','wrz','paź','lis','gru'];
+                const months = [
+                  'sty',
+                  'lut',
+                  'mar',
+                  'kwi',
+                  'maj',
+                  'cze',
+                  'lip',
+                  'sie',
+                  'wrz',
+                  'paź',
+                  'lis',
+                  'gru',
+                ];
                 const d = v instanceof Date ? v : typeof v === 'number' ? new Date(v) : null;
                 if (!d) return String(v);
                 return `${months[d.getUTCMonth()]} ${String(d.getUTCFullYear() % 100).padStart(2, '0')}`;
@@ -178,10 +196,9 @@ export default function AreaChartPlayground() {
           5. Negative values + zero-crossing baseline
         </Heading>
         <Text color="secondary">
-          Revenue growth with values from -60 to +280. Y-axis auto-includes
-          zero baseline; area renders both above (filled toward zero) and
-          below (filled downward from zero). Baseline = 0 when domain spans
-          both signs.
+          Revenue growth with values from -60 to +280. Y-axis auto-includes zero baseline; area
+          renders both above (filled toward zero) and below (filled downward from zero). Baseline =
+          0 when domain spans both signs.
         </Text>
         <div className={styles.demo}>
           <AreaChart
@@ -198,9 +215,8 @@ export default function AreaChartPlayground() {
           6. Empty state (default render)
         </Heading>
         <Text color="secondary">
-          When series is <code>[]</code> the lib renders a default
-          &quot;No data&quot; message. Sr-only <code>&lt;table&gt;</code>{' '}
-          still renders with caption + headers (empty tbody).
+          When series is <code>[]</code> the lib renders a default &quot;No data&quot; message.
+          Sr-only <code>&lt;table&gt;</code> still renders with caption + headers (empty tbody).
         </Text>
         <div className={styles.demo}>
           <AreaChart title="No data available" series={[]} />
@@ -213,9 +229,8 @@ export default function AreaChartPlayground() {
           7. Custom tooltip via <code>renderTooltip</code> slot
         </Heading>
         <Text color="secondary">
-          Override the default tooltip body. The slot receives a full context
-          with focused point + all-series-at-X for &quot;crosshair&quot; style
-          comparisons.
+          Override the default tooltip body. The slot receives a full context with focused point +
+          all-series-at-X for &quot;crosshair&quot; style comparisons.
         </Text>
         <div className={styles.demo}>
           <AreaChart
@@ -224,7 +239,14 @@ export default function AreaChartPlayground() {
             gradient
             renderTooltip={(ctx) => (
               <div style={{ textAlign: 'center' }}>
-                <div style={{ fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--color-text-muted)' }}>
+                <div
+                  style={{
+                    fontSize: '0.7rem',
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.05em',
+                    color: 'var(--color-text-muted)',
+                  }}
+                >
                   {ctx.datum.label ?? String(ctx.datum.x)}
                 </div>
                 <div style={{ fontSize: '1.5rem', fontWeight: 600, color: ctx.color }}>
@@ -245,16 +267,20 @@ export default function AreaChartPlayground() {
           8. Interactive — <code>onPointClick</code> callback
         </Heading>
         <Text color="secondary">
-          Click a data point (or press Space/Enter on focused point) to fire
-          the callback. Use case: drill-down navigation, lock tooltip,
-          external filter state.
+          Click a data point (or press Space/Enter on focused point) to fire the callback. Use case:
+          drill-down navigation, lock tooltip, external filter state.
         </Text>
         <div className={styles.demo}>
           <AreaChart
             title="Click points to filter"
             series={[
               { id: 'linkedin', name: 'LinkedIn', data: linkedinWeekly },
-              { id: 'cold-email', name: 'Cold email', data: coldEmailWeekly, color: 'var(--color-success)' },
+              {
+                id: 'cold-email',
+                name: 'Cold email',
+                data: coldEmailWeekly,
+                color: 'var(--color-success)',
+              },
             ]}
             fillOpacity={0.2}
             onPointClick={(seriesId, idx) => setSelected({ seriesId, idx })}
@@ -281,8 +307,8 @@ export default function AreaChartPlayground() {
         </Heading>
         <Text color="secondary">
           Disable path-draw + fill fade-in for PDF export / print preview.{' '}
-          <code>prefers-reduced-motion: reduce</code> ALSO suppresses
-          animation regardless of this prop.
+          <code>prefers-reduced-motion: reduce</code> ALSO suppresses animation regardless of this
+          prop.
         </Text>
         <div className={styles.demo}>
           <AreaChart

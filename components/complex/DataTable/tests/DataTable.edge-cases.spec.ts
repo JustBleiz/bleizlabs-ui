@@ -37,9 +37,9 @@ test.describe('DataTable — edge cases', () => {
     const loadingSection = page.locator('section').nth(5);
     await loadingSection.scrollIntoViewIfNeeded();
     // Loading example is first sub-table in section 6
-    const loadingGrid = loadingSection.locator(
-      '[data-state="loading"], [aria-busy="true"]',
-    ).first();
+    const loadingGrid = loadingSection
+      .locator('[data-state="loading"], [aria-busy="true"]')
+      .first();
     const visible = await loadingGrid.isVisible().catch(() => false);
     if (visible) {
       await expect(loadingGrid).toBeVisible();
@@ -51,9 +51,7 @@ test.describe('DataTable — edge cases', () => {
     }
   });
 
-  test('DT-EC03 — loading wrapper exposes aria-busy or data-state', async ({
-    page,
-  }) => {
+  test('DT-EC03 — loading wrapper exposes aria-busy or data-state', async ({ page }) => {
     const loadingSection = page.locator('section').nth(5);
     await loadingSection.scrollIntoViewIfNeeded();
     const busy = await loadingSection.locator('[aria-busy="true"], [data-state="loading"]').count();
@@ -126,9 +124,7 @@ test.describe('DataTable — edge cases', () => {
     await page.waitForTimeout(400);
     // Body has zero data rows but grid still present
     await expect(grid).toBeVisible();
-    const rowsBesidesHeader = await grid
-      .locator('tbody [role="row"]')
-      .count();
+    const rowsBesidesHeader = await grid.locator('tbody [role="row"]').count();
     expect(rowsBesidesHeader).toBe(0);
   });
 
@@ -154,9 +150,7 @@ test.describe('DataTable — edge cases', () => {
     expect(text).toMatch(/Page 2 of 2/);
   });
 
-  test('DT-EC12 — rapid arrow-key navigation does not throw console errors', async ({
-    page,
-  }) => {
+  test('DT-EC12 — rapid arrow-key navigation does not throw console errors', async ({ page }) => {
     const errors: string[] = [];
     page.on('pageerror', (e) => errors.push(e.message));
     const grid = allGrids(page).first();

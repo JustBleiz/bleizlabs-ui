@@ -72,10 +72,7 @@ export function writeFileIdempotent(
  * - File exists with markers → replace block content, preserve outside.
  * - File exists without markers → APPEND block at end (with leading separator).
  */
-export function updateManagedBlock(
-  filePath: string,
-  newBlock: string,
-): WriteFileResult {
+export function updateManagedBlock(filePath: string, newBlock: string): WriteFileResult {
   if (!fs.existsSync(filePath)) {
     ensureDir(path.dirname(filePath));
     writeAtomic(filePath, newBlock + '\n');
@@ -88,7 +85,8 @@ export function updateManagedBlock(
 
   if (beginMatch && endMatch && beginMatch.index !== undefined) {
     const before = existing.slice(0, beginMatch.index).trimEnd();
-    const afterStart = endMatch.index !== undefined ? endMatch.index + endMatch[0].length : existing.length;
+    const afterStart =
+      endMatch.index !== undefined ? endMatch.index + endMatch[0].length : existing.length;
     const after = existing.slice(afterStart).replace(/^\s*/, '');
 
     const parts: string[] = [];

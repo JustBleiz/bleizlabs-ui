@@ -1,12 +1,6 @@
 'use client';
 
-import {
-  forwardRef,
-  useId,
-  useMemo,
-  useState,
-  type InputHTMLAttributes,
-} from 'react';
+import { forwardRef, useId, useMemo, useState, type InputHTMLAttributes } from 'react';
 import { cn } from '../../utils/cn';
 import { Label } from '../Label';
 import styles from './PasswordInput.module.scss';
@@ -95,8 +89,10 @@ import styles from './PasswordInput.module.scss';
  *   error={pwd.length > 0 && pwd.length < 12 ? 'At least 12 characters' : undefined}
  * />
  */
-export interface PasswordInputProps
-  extends Omit<InputHTMLAttributes<HTMLInputElement>, 'type' | 'size'> {
+export interface PasswordInputProps extends Omit<
+  InputHTMLAttributes<HTMLInputElement>,
+  'type' | 'size'
+> {
   /** Visible label text. */
   label: string;
   /** Form field name. */
@@ -164,7 +160,14 @@ function calculateStrength(value: string): StrengthLevel {
 
 function EyeOpenIcon() {
   return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
       <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7z" />
       <circle cx="12" cy="12" r="3" />
     </svg>
@@ -173,7 +176,14 @@ function EyeOpenIcon() {
 
 function EyeClosedIcon() {
   return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
       <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-10-8-10-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 10 8 10 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24" />
       <line x1="2" y1="2" x2="22" y2="22" />
     </svg>
@@ -207,8 +217,7 @@ export const PasswordInput = forwardRef<HTMLInputElement, PasswordInputProps>(
     const errorId = error ? `${inputId}-error` : undefined;
     const helperId = helperText && !error ? `${inputId}-helper` : undefined;
     const strengthId = showStrength ? `${inputId}-strength` : undefined;
-    const describedBy =
-      [errorId, helperId, strengthId].filter(Boolean).join(' ') || undefined;
+    const describedBy = [errorId, helperId, strengthId].filter(Boolean).join(' ') || undefined;
 
     const [visible, setVisible] = useState(false);
     const isControlled = controlledValue !== undefined;
@@ -216,9 +225,7 @@ export const PasswordInput = forwardRef<HTMLInputElement, PasswordInputProps>(
       if (defaultValue == null) return '';
       return String(defaultValue);
     });
-    const currentValue = isControlled
-      ? String(controlledValue ?? '')
-      : uncontrolledValue;
+    const currentValue = isControlled ? String(controlledValue ?? '') : uncontrolledValue;
 
     const strength: StrengthLevel = useMemo(
       () => (showStrength ? calculateStrength(currentValue) : 0),
@@ -293,10 +300,22 @@ export const PasswordInput = forwardRef<HTMLInputElement, PasswordInputProps>(
                 aligns with the library-wide `data-state` attribute convention
                 used by Accordion, Switch, Dialog, Popover, etc.
               */}
-              <span className={styles.strengthSegment} data-state={strength >= 1 ? 'filled' : undefined} />
-              <span className={styles.strengthSegment} data-state={strength >= 2 ? 'filled' : undefined} />
-              <span className={styles.strengthSegment} data-state={strength >= 3 ? 'filled' : undefined} />
-              <span className={styles.strengthSegment} data-state={strength >= 4 ? 'filled' : undefined} />
+              <span
+                className={styles.strengthSegment}
+                data-state={strength >= 1 ? 'filled' : undefined}
+              />
+              <span
+                className={styles.strengthSegment}
+                data-state={strength >= 2 ? 'filled' : undefined}
+              />
+              <span
+                className={styles.strengthSegment}
+                data-state={strength >= 3 ? 'filled' : undefined}
+              />
+              <span
+                className={styles.strengthSegment}
+                data-state={strength >= 4 ? 'filled' : undefined}
+              />
             </div>
             {/*
               `aria-live` is scoped to just the label span (NOT the whole

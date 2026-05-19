@@ -1,8 +1,4 @@
-import {
-  forwardRef,
-  type InputHTMLAttributes,
-  type ReactNode,
-} from 'react';
+import { forwardRef, type InputHTMLAttributes, type ReactNode } from 'react';
 import { cn } from '../../utils/cn';
 import styles from './Input.module.scss';
 
@@ -69,14 +65,7 @@ import styles from './Input.module.scss';
  * // Icon decorations
  * <Input startIcon={<SearchIcon />} type="search" />
  */
-export type InputType =
-  | 'text'
-  | 'email'
-  | 'password'
-  | 'number'
-  | 'tel'
-  | 'url'
-  | 'search';
+export type InputType = 'text' | 'email' | 'password' | 'number' | 'tel' | 'url' | 'search';
 
 /**
  * Visual size preset. `'md'` (default) matches the original 0.x size —
@@ -86,8 +75,7 @@ export type InputType =
  */
 export type InputSize = 'sm' | 'md' | 'lg';
 
-export interface InputProps
-  extends Omit<InputHTMLAttributes<HTMLInputElement>, 'type' | 'size'> {
+export interface InputProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'type' | 'size'> {
   /** Input type. Default `'text'`. */
   type?: InputType;
   /** Visual size preset (`'sm' | 'md' | 'lg'`). Default `'md'`. */
@@ -129,7 +117,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
     className,
     ...rest
   },
-  ref
+  ref,
 ) {
   const hasStartIconSlot = Boolean(startIcon) && !prefix;
   const hasEndIconSlot = Boolean(endIcon) && !suffix;
@@ -142,7 +130,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
         invalid && styles.inputWrapError,
         hasStartIconSlot && styles.hasStartIcon,
         hasEndIconSlot && styles.hasEndIcon,
-        className
+        className,
       )}
     >
       {prefix ? (

@@ -13,12 +13,7 @@
  */
 
 import { test, expect } from '@playwright/test';
-import {
-  hourFieldOf,
-  minuteFieldOf,
-  periodToggleOf,
-  timeInputBy,
-} from './_helpers';
+import { hourFieldOf, minuteFieldOf, periodToggleOf, timeInputBy } from './_helpers';
 
 test.describe('TimeInput — keyboard model', () => {
   test.beforeEach(async ({ page }) => {

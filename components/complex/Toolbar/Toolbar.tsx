@@ -145,13 +145,9 @@ const TOOLBAR_ITEM_SELECTOR = [
 ].join(', ');
 
 function getToolbarItems(toolbar: HTMLElement): HTMLElement[] {
-  const all = Array.from(
-    toolbar.querySelectorAll<HTMLElement>(TOOLBAR_ITEM_SELECTOR),
-  );
+  const all = Array.from(toolbar.querySelectorAll<HTMLElement>(TOOLBAR_ITEM_SELECTOR));
   // Filter out items inside an opt-out subtree (consumer escape hatch).
-  return all.filter(
-    (el) => !el.closest('[data-toolbar-skip-roving="true"]'),
-  );
+  return all.filter((el) => !el.closest('[data-toolbar-skip-roving="true"]'));
 }
 
 function setRovingTabindex(items: HTMLElement[], activeIndex: number): void {
@@ -164,8 +160,10 @@ function setRovingTabindex(items: HTMLElement[], activeIndex: number): void {
 // Toolbar — root component (single export, lightweight per spec §2)
 // ──────────────────────────────────────────────────────────────────────────
 
-export interface ToolbarProps
-  extends Omit<HTMLAttributes<HTMLDivElement>, 'role' | 'aria-orientation' | 'dir'> {
+export interface ToolbarProps extends Omit<
+  HTMLAttributes<HTMLDivElement>,
+  'role' | 'aria-orientation' | 'dir'
+> {
   /** Toolbar items (Button, ToggleGroup, Separator, etc.) participating in roving tabindex. */
   children: ReactNode;
   /** REQUIRED — accessible name for the toolbar (APG `/toolbar/` mandate). */
@@ -230,9 +228,7 @@ export const Toolbar = forwardRef<HTMLDivElement, ToolbarProps>(function Toolbar
     if (!toolbar) return;
     const items = getToolbarItems(toolbar);
     if (items.length === 0) return;
-    const hasActive = items.some(
-      (it) => it.getAttribute('tabindex') === '0',
-    );
+    const hasActive = items.some((it) => it.getAttribute('tabindex') === '0');
     if (!hasActive) {
       setRovingTabindex(items, 0);
     }
@@ -252,9 +248,7 @@ export const Toolbar = forwardRef<HTMLDivElement, ToolbarProps>(function Toolbar
     const observer = new MutationObserver(() => {
       const items = getToolbarItems(toolbar);
       if (items.length === 0) return;
-      const hasActive = items.some(
-        (it) => it.getAttribute('tabindex') === '0',
-      );
+      const hasActive = items.some((it) => it.getAttribute('tabindex') === '0');
       if (!hasActive) {
         setRovingTabindex(items, 0);
       }
@@ -297,9 +291,7 @@ export const Toolbar = forwardRef<HTMLDivElement, ToolbarProps>(function Toolbar
         return;
       }
 
-      const activeIndex = items.findIndex(
-        (el) => el === document.activeElement,
-      );
+      const activeIndex = items.findIndex((el) => el === document.activeElement);
       // If focus isn't on a toolbar item (e.g., focus is on a portaled
       // popover content), defer to native handling. Without this guard,
       // arrow keys inside a child Combobox-listbox would be hijacked.
@@ -311,37 +303,19 @@ export const Toolbar = forwardRef<HTMLDivElement, ToolbarProps>(function Toolbar
       const isHorizontal = orientation === 'horizontal';
       const isRtl = dir === 'rtl';
       // In horizontal + RTL, Right/Left semantics are swapped.
-      const nextKey = isHorizontal
-        ? isRtl
-          ? 'ArrowLeft'
-          : 'ArrowRight'
-        : 'ArrowDown';
-      const prevKey = isHorizontal
-        ? isRtl
-          ? 'ArrowRight'
-          : 'ArrowLeft'
-        : 'ArrowUp';
+      const nextKey = isHorizontal ? (isRtl ? 'ArrowLeft' : 'ArrowRight') : 'ArrowDown';
+      const prevKey = isHorizontal ? (isRtl ? 'ArrowRight' : 'ArrowLeft') : 'ArrowUp';
 
       switch (event.key) {
         case nextKey: {
           event.preventDefault();
-          const nextIdx =
-            activeIndex < items.length - 1
-              ? activeIndex + 1
-              : loop
-                ? 0
-                : activeIndex;
+          const nextIdx = activeIndex < items.length - 1 ? activeIndex + 1 : loop ? 0 : activeIndex;
           focusItem(items, nextIdx);
           return;
         }
         case prevKey: {
           event.preventDefault();
-          const prevIdx =
-            activeIndex > 0
-              ? activeIndex - 1
-              : loop
-                ? items.length - 1
-                : 0;
+          const prevIdx = activeIndex > 0 ? activeIndex - 1 : loop ? items.length - 1 : 0;
           focusItem(items, prevIdx);
           return;
         }
@@ -375,20 +349,17 @@ export const Toolbar = forwardRef<HTMLDivElement, ToolbarProps>(function Toolbar
   // toolbar root for `focusin` (bubbling) instead of attaching to every
   // child, because children are consumer-composed and we don't have refs
   // to them.
-  const handleFocus = useCallback(
-    (event: React.FocusEvent<HTMLDivElement>) => {
-      const toolbar = toolbarRef.current;
-      if (!toolbar) return;
-      const target = event.target as HTMLElement;
-      if (!target) return;
-      const items = getToolbarItems(toolbar);
-      const idx = items.indexOf(target);
-      if (idx !== -1) {
-        setRovingTabindex(items, idx);
-      }
-    },
-    [],
-  );
+  const handleFocus = useCallback((event: React.FocusEvent<HTMLDivElement>) => {
+    const toolbar = toolbarRef.current;
+    if (!toolbar) return;
+    const target = event.target as HTMLElement;
+    if (!target) return;
+    const items = getToolbarItems(toolbar);
+    const idx = items.indexOf(target);
+    if (idx !== -1) {
+      setRovingTabindex(items, idx);
+    }
+  }, []);
 
   return (
     <div

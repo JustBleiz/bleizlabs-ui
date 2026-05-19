@@ -1,8 +1,4 @@
-import {
-  forwardRef,
-  type CSSProperties,
-  type HTMLAttributes,
-} from 'react';
+import { forwardRef, type CSSProperties, type HTMLAttributes } from 'react';
 import { Slot } from '../../utils/Slot';
 import { cn } from '../../utils/cn';
 import styles from './Avatar.module.scss';
@@ -68,17 +64,7 @@ const SIZE_CLASS: Record<AvatarSize, string> = {
 };
 
 export const Avatar = forwardRef<HTMLSpanElement, AvatarProps>(function Avatar(
-  {
-    src,
-    alt,
-    fallback,
-    size = 'md',
-    shape = 'circle',
-    asChild = false,
-    className,
-    style,
-    ...rest
-  },
+  { src, alt, fallback, size = 'md', shape = 'circle', asChild = false, className, style, ...rest },
   ref,
 ) {
   const Comp = asChild ? Slot : 'span';

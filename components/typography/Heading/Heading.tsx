@@ -136,57 +136,45 @@ const COLOR_VAR: Record<NonNullable<HeadingProps['color']>, string> = {
   brand: 'var(--color-brand-500)',
 };
 
-export const Heading = forwardRef<HTMLHeadingElement, HeadingProps>(
-  function Heading(
-    {
-      level = 2,
-      size,
-      weight = 'semibold',
-      color = 'primary',
-      align = 'start',
-      asChild = false,
-      className,
-      style,
-      children,
-      ...rest
-    },
-    ref,
-  ) {
-    const resolvedSize: HeadingSize = size ?? DEFAULT_SIZE_BY_LEVEL[level];
-
-    const headingVars: CSSProperties = {
-      '--heading-weight': WEIGHT_VAR[weight],
-      '--heading-color': COLOR_VAR[color],
-      '--heading-align': align,
-    } as CSSProperties;
-
-    const mergedClassName = cn(styles.root, SIZE_CLASS[resolvedSize], className);
-    const mergedStyle = { ...style, ...headingVars };
-
-    if (asChild) {
-      return (
-        <Slot
-          ref={ref as Ref<HTMLElement>}
-          className={mergedClassName}
-          style={mergedStyle}
-          {...rest}
-        >
-          {children}
-        </Slot>
-      );
-    }
-
-    const Tag = `h${level}` as HeadingTag;
-
-    return (
-      <Tag
-        ref={ref}
-        className={mergedClassName}
-        style={mergedStyle}
-        {...rest}
-      >
-        {children}
-      </Tag>
-    );
+export const Heading = forwardRef<HTMLHeadingElement, HeadingProps>(function Heading(
+  {
+    level = 2,
+    size,
+    weight = 'semibold',
+    color = 'primary',
+    align = 'start',
+    asChild = false,
+    className,
+    style,
+    children,
+    ...rest
   },
-);
+  ref,
+) {
+  const resolvedSize: HeadingSize = size ?? DEFAULT_SIZE_BY_LEVEL[level];
+
+  const headingVars: CSSProperties = {
+    '--heading-weight': WEIGHT_VAR[weight],
+    '--heading-color': COLOR_VAR[color],
+    '--heading-align': align,
+  } as CSSProperties;
+
+  const mergedClassName = cn(styles.root, SIZE_CLASS[resolvedSize], className);
+  const mergedStyle = { ...style, ...headingVars };
+
+  if (asChild) {
+    return (
+      <Slot ref={ref as Ref<HTMLElement>} className={mergedClassName} style={mergedStyle} {...rest}>
+        {children}
+      </Slot>
+    );
+  }
+
+  const Tag = `h${level}` as HeadingTag;
+
+  return (
+    <Tag ref={ref} className={mergedClassName} style={mergedStyle} {...rest}>
+      {children}
+    </Tag>
+  );
+});

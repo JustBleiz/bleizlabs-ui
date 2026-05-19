@@ -34,9 +34,7 @@ function InboxIcon() {
 const ALL_VARIANTS: AlertVariant[] = ['critical', 'warning', 'info', 'success'];
 
 export default function FeedbackPlaygroundPage() {
-  const [visibleAlerts, setVisibleAlerts] = useState<Set<AlertVariant>>(
-    new Set(ALL_VARIANTS),
-  );
+  const [visibleAlerts, setVisibleAlerts] = useState<Set<AlertVariant>>(new Set(ALL_VARIANTS));
   const [uploadValue, setUploadValue] = useState(42);
   const [stageIndex, setStageIndex] = useState(1);
 
@@ -62,12 +60,11 @@ export default function FeedbackPlaygroundPage() {
           Feedback
         </Heading>
         <Text className={styles.intro}>
-          Three feedback primitives. <code>Empty</code> fills placeholder space
-          for empty lists and zero-result states. <code>Alert</code> presents
-          semantic notifications with optional dismiss. <code>Progress</code>{' '}
-          renders either a continuous percent bar or a multi-step stage
-          indicator (in two display modes — pills for distinct steps, track
-          for continuous lifecycle).
+          Three feedback primitives. <code>Empty</code> fills placeholder space for empty lists and
+          zero-result states. <code>Alert</code> presents semantic notifications with optional
+          dismiss. <code>Progress</code> renders either a continuous percent bar or a multi-step
+          stage indicator (in two display modes — pills for distinct steps, track for continuous
+          lifecycle).
         </Text>
       </header>
 
@@ -79,9 +76,8 @@ export default function FeedbackPlaygroundPage() {
           Empty
         </Heading>
         <Text>
-          Placeholder surface for zero-result states. Icon + title +
-          description + CTA slot. Add <code>role=&quot;status&quot;</code> via
-          spread for async-rendered empty states.
+          Placeholder surface for zero-result states. Icon + title + description + CTA slot. Add{' '}
+          <code>role=&quot;status&quot;</code> via spread for async-rendered empty states.
         </Text>
 
         <div className={styles.stack}>
@@ -104,9 +100,8 @@ export default function FeedbackPlaygroundPage() {
         </Heading>
         <Text>
           Four variants (critical / warning / info / success). Critical uses{' '}
-          <code>role=&quot;alert&quot;</code>, the others use{' '}
-          <code>status</code>. Optional dismiss, href on body, and timestamp
-          slots.
+          <code>role=&quot;alert&quot;</code>, the others use <code>status</code>. Optional dismiss,
+          href on body, and timestamp slots.
         </Text>
 
         <div className={styles.stack}>
@@ -155,18 +150,13 @@ export default function FeedbackPlaygroundPage() {
           Progress — Stages (pills)
         </Heading>
         <Text>
-          Default <code>displayMode=&quot;pills&quot;</code> — horizontal pill
-          strip rendered as <code>&lt;ol aria-label&gt;</code> with{' '}
-          <code>aria-current=&quot;step&quot;</code> on the active step.
-          Backward-compatible with pre-0.5.0 (no prop = pills).
+          Default <code>displayMode=&quot;pills&quot;</code> — horizontal pill strip rendered as{' '}
+          <code>&lt;ol aria-label&gt;</code> with <code>aria-current=&quot;step&quot;</code> on the
+          active step. Backward-compatible with pre-0.5.0 (no prop = pills).
         </Text>
 
         <div className={styles.stack}>
-          <Progress
-            label="Client project progress"
-            stages={STAGES}
-            currentStage={stageIndex}
-          />
+          <Progress label="Client project progress" stages={STAGES} currentStage={stageIndex} />
         </div>
 
         <div className={styles.controls}>
@@ -181,9 +171,7 @@ export default function FeedbackPlaygroundPage() {
           <Button
             variant="secondary"
             size="sm"
-            onClick={() =>
-              setStageIndex((i) => Math.min(STAGES.length - 1, i + 1))
-            }
+            onClick={() => setStageIndex((i) => Math.min(STAGES.length - 1, i + 1))}
             disabled={stageIndex === STAGES.length - 1}
           >
             Next stage →
@@ -199,13 +187,12 @@ export default function FeedbackPlaygroundPage() {
           Progress — Stages (track)
         </Heading>
         <Text>
-          <code>displayMode=&quot;track&quot;</code> — equal-width edge-to-edge
-          segments with labels below. Shipped in 0.5.0 as additive, backward-
-          compatible extension. Same <code>role=&quot;list&quot;</code> +{' '}
-          <code>aria-current=&quot;step&quot;</code> semantics as pills.
-          Useful for multi-stage state machines where segment progression
-          matters more than individual pill identity (e.g., 7-stage project
-          lifecycle, multi-step checkout, onboarding flow).
+          <code>displayMode=&quot;track&quot;</code> — equal-width edge-to-edge segments with labels
+          below. Shipped in 0.5.0 as additive, backward- compatible extension. Same{' '}
+          <code>role=&quot;list&quot;</code> + <code>aria-current=&quot;step&quot;</code> semantics
+          as pills. Useful for multi-stage state machines where segment progression matters more
+          than individual pill identity (e.g., 7-stage project lifecycle, multi-step checkout,
+          onboarding flow).
         </Text>
 
         <div className={styles.stack}>
@@ -246,9 +233,7 @@ export default function FeedbackPlaygroundPage() {
           <Button
             variant="secondary"
             size="sm"
-            onClick={() =>
-              setStageIndex((i) => Math.min(STAGES.length - 1, i + 1))
-            }
+            onClick={() => setStageIndex((i) => Math.min(STAGES.length - 1, i + 1))}
             disabled={stageIndex === STAGES.length - 1}
           >
             Next stage →
@@ -264,10 +249,9 @@ export default function FeedbackPlaygroundPage() {
           Progress — Percent
         </Heading>
         <Text>
-          Linear bar rendered with <code>role=&quot;progressbar&quot;</code>{' '}
-          and <code>aria-valuenow/min/max</code>. Width is injected via the{' '}
-          <code>--progress-value</code> CSS variable. Values are clamped to{' '}
-          [0, max].
+          Linear bar rendered with <code>role=&quot;progressbar&quot;</code> and{' '}
+          <code>aria-valuenow/min/max</code>. Width is injected via the{' '}
+          <code>--progress-value</code> CSS variable. Values are clamped to [0, max].
         </Text>
 
         <div className={styles.stack}>

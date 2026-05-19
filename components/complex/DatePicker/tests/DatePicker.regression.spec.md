@@ -31,7 +31,11 @@ test('DP-R14 — min/max clamp BOTH input + Calendar', async ({ page }) => {
   expect(await input.getAttribute('aria-invalid')).toBe('true');
   // Calendar also respects min/max (cells before min disabled)
   await input.click();
-  const outOfRangeCell = page.getByRole('grid').getByRole('gridcell').filter({ hasText: '31' }).first();
+  const outOfRangeCell = page
+    .getByRole('grid')
+    .getByRole('gridcell')
+    .filter({ hasText: '31' })
+    .first();
   // March dates shown as out-of-range prev month (disabled)
   expect(await outOfRangeCell.getAttribute('aria-disabled')).toBe('true');
 });
@@ -39,7 +43,11 @@ test('DP-R14 — min/max clamp BOTH input + Calendar', async ({ page }) => {
 test('DP-R15 — disabled predicate: per-date custom disable function', async ({ page }) => {
   await page.goto('/components/date-picker?disableWeekends=1');
   await page.getByRole('combobox').click();
-  const weekendCell = page.getByRole('grid').getByRole('gridcell').filter({ hasText: '18' }).first(); // Sat
+  const weekendCell = page
+    .getByRole('grid')
+    .getByRole('gridcell')
+    .filter({ hasText: '18' })
+    .first(); // Sat
   expect(await weekendCell.getAttribute('aria-disabled')).toBe('true');
 });
 
@@ -60,7 +68,9 @@ test('DP-R17 — 6th useFloatingValueState consumer: pattern stable', async ({ p
 
 test('DP-R18 — SSR safe: no hydration warning', async ({ page }) => {
   const warnings: string[] = [];
-  page.on('console', (msg) => { if (msg.type() === 'warning') warnings.push(msg.text()); });
+  page.on('console', (msg) => {
+    if (msg.type() === 'warning') warnings.push(msg.text());
+  });
   await page.goto('/components/date-picker');
   await page.reload();
   expect(warnings.filter((w) => w.toLowerCase().includes('hydration'))).toHaveLength(0);

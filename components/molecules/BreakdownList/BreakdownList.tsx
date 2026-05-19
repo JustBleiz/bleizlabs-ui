@@ -1,9 +1,4 @@
-import {
-  forwardRef,
-  type HTMLAttributes,
-  type LiHTMLAttributes,
-  type ReactNode,
-} from 'react';
+import { forwardRef, type HTMLAttributes, type LiHTMLAttributes, type ReactNode } from 'react';
 import { Progress, type ProgressPercentColor } from '../../feedback/Progress/Progress';
 import { cn } from '../../utils/cn';
 import styles from './BreakdownList.module.scss';
@@ -62,12 +57,7 @@ import styles from './BreakdownList.module.scss';
  * }
  */
 
-export type BreakdownListTone =
-  | 'brand'
-  | 'info'
-  | 'success'
-  | 'warning'
-  | 'error';
+export type BreakdownListTone = 'brand' | 'info' | 'success' | 'warning' | 'error';
 
 const TONE_TO_PROGRESS_COLOR: Record<BreakdownListTone, ProgressPercentColor> = {
   brand: 'brand',
@@ -77,8 +67,7 @@ const TONE_TO_PROGRESS_COLOR: Record<BreakdownListTone, ProgressPercentColor> = 
   error: 'error-strong',
 };
 
-export interface BreakdownListProps
-  extends Omit<HTMLAttributes<HTMLUListElement>, 'children'> {
+export interface BreakdownListProps extends Omit<HTMLAttributes<HTMLUListElement>, 'children'> {
   /** Required accessible label scoping the breakdown semantically. */
   'aria-label': string;
   /** `<BreakdownListItem>` nodes (consumer iterates own data). */
@@ -92,11 +81,10 @@ export const BreakdownList = forwardRef<HTMLUListElement, BreakdownListProps>(
         {children}
       </ul>
     );
-  }
+  },
 );
 
-export interface BreakdownListItemProps
-  extends Omit<LiHTMLAttributes<HTMLLIElement>, 'children'> {
+export interface BreakdownListItemProps extends Omit<LiHTMLAttributes<HTMLLIElement>, 'children'> {
   /**
    * Label slot. Free-form ReactNode — consumer composes plain string, formatted
    * label with inline percent (`<Inline justify="between"><span>Name</span>
@@ -123,16 +111,8 @@ export interface BreakdownListItemProps
 
 export const BreakdownListItem = forwardRef<HTMLLIElement, BreakdownListItemProps>(
   function BreakdownListItem(
-    {
-      label,
-      value,
-      max = 100,
-      tone = 'brand',
-      description,
-      className,
-      ...rest
-    },
-    ref
+    { label, value, max = 100, tone = 'brand', description, className, ...rest },
+    ref,
   ) {
     const progressColor = TONE_TO_PROGRESS_COLOR[tone];
     const clampedValue = Math.max(0, Math.min(max, value));
@@ -146,22 +126,15 @@ export const BreakdownListItem = forwardRef<HTMLLIElement, BreakdownListItemProp
       typeof label === 'string'
         ? `${label} — ${percentLabel}`
         : consumerAriaLabel
-        ? `${consumerAriaLabel} — ${percentLabel}`
-        : percentLabel;
+          ? `${consumerAriaLabel} — ${percentLabel}`
+          : percentLabel;
 
     return (
       <li ref={ref} className={cn(styles.item, className)} {...rest}>
         <div className={styles.labelRow}>{label}</div>
-        <Progress
-          value={clampedValue}
-          max={max}
-          color={progressColor}
-          label={ariaLabel}
-        />
-        {description ? (
-          <div className={styles.description}>{description}</div>
-        ) : null}
+        <Progress value={clampedValue} max={max} color={progressColor} label={ariaLabel} />
+        {description ? <div className={styles.description}>{description}</div> : null}
       </li>
     );
-  }
+  },
 );

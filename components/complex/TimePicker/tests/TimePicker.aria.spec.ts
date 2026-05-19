@@ -71,9 +71,7 @@ test.describe('TimePicker — ARIA semantics', () => {
   test('TP-A07 — axe-core zero violations', async ({ page }) => {
     const picker = pickerBy(page, 'Start time');
     await openPicker(picker);
-    const results = await new AxeBuilder({ page })
-      .disableRules(['color-contrast'])
-      .analyze();
+    const results = await new AxeBuilder({ page }).disableRules(['color-contrast']).analyze();
     expect(results.violations).toEqual([]);
   });
 });

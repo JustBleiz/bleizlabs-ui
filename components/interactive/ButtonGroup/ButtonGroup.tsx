@@ -1,8 +1,4 @@
-import {
-  forwardRef,
-  type HTMLAttributes,
-  type ReactNode,
-} from 'react';
+import { forwardRef, type HTMLAttributes, type ReactNode } from 'react';
 import { cn } from '../../utils/cn';
 import styles from './ButtonGroup.module.scss';
 
@@ -39,8 +35,7 @@ import styles from './ButtonGroup.module.scss';
  */
 export type ButtonGroupOrientation = 'horizontal' | 'vertical';
 
-export interface ButtonGroupProps
-  extends Omit<HTMLAttributes<HTMLDivElement>, 'role'> {
+export interface ButtonGroupProps extends Omit<HTMLAttributes<HTMLDivElement>, 'role'> {
   /** Layout direction. Default `horizontal`. */
   orientation?: ButtonGroupOrientation;
   /** Collapse inner radii + dedupe borders. Default `true`. */
@@ -51,34 +46,26 @@ export interface ButtonGroupProps
   children: ReactNode;
 }
 
-export const ButtonGroup = forwardRef<HTMLDivElement, ButtonGroupProps>(
-  function ButtonGroup(
-    {
-      orientation = 'horizontal',
-      attached = true,
-      className,
-      children,
-      ...rest
-    },
-    ref,
-  ) {
-    const isVertical = orientation === 'vertical';
-    return (
-      <div
-        ref={ref}
-        role="group"
-        data-orientation={orientation}
-        className={cn(
-          styles.root,
-          isVertical && styles.vertical,
-          attached && (isVertical ? styles.attachedVertical : styles.attachedHorizontal),
-          !attached && styles.detached,
-          className,
-        )}
-        {...rest}
-      >
-        {children}
-      </div>
-    );
-  },
-);
+export const ButtonGroup = forwardRef<HTMLDivElement, ButtonGroupProps>(function ButtonGroup(
+  { orientation = 'horizontal', attached = true, className, children, ...rest },
+  ref,
+) {
+  const isVertical = orientation === 'vertical';
+  return (
+    <div
+      ref={ref}
+      role="group"
+      data-orientation={orientation}
+      className={cn(
+        styles.root,
+        isVertical && styles.vertical,
+        attached && (isVertical ? styles.attachedVertical : styles.attachedHorizontal),
+        !attached && styles.detached,
+        className,
+      )}
+      {...rest}
+    >
+      {children}
+    </div>
+  );
+});

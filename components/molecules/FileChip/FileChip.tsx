@@ -1,8 +1,4 @@
-import {
-  forwardRef,
-  type HTMLAttributes,
-  type ReactElement,
-} from 'react';
+import { forwardRef, type HTMLAttributes, type ReactElement } from 'react';
 import { Button } from '../../interactive/Button';
 import { Spinner } from '../../display/Spinner';
 import { Text } from '../../typography/Text';
@@ -255,77 +251,70 @@ function RetryIcon(): ReactElement {
   );
 }
 
-export const FileChip = forwardRef<HTMLDivElement, FileChipProps>(
-  function FileChip(
-    {
-      name,
-      size,
-      mimeType,
-      variant = 'uploaded',
-      onRemove,
-      onRetry,
-      removeLabel = 'Remove file',
-      retryLabel = 'Retry',
-      uploadingLabel = 'Uploading',
-      className,
-      ...rest
-    },
-    ref,
-  ) {
-    const category = getMimeCategory(mimeType);
-    const showRemove = variant !== 'uploading' && typeof onRemove === 'function';
-    const showRetry = variant === 'error' && typeof onRetry === 'function';
+export const FileChip = forwardRef<HTMLDivElement, FileChipProps>(function FileChip(
+  {
+    name,
+    size,
+    mimeType,
+    variant = 'uploaded',
+    onRemove,
+    onRetry,
+    removeLabel = 'Remove file',
+    retryLabel = 'Retry',
+    uploadingLabel = 'Uploading',
+    className,
+    ...rest
+  },
+  ref,
+) {
+  const category = getMimeCategory(mimeType);
+  const showRemove = variant !== 'uploading' && typeof onRemove === 'function';
+  const showRetry = variant === 'error' && typeof onRetry === 'function';
 
-    return (
-      <div
-        ref={ref}
-        className={cn(styles.root, VARIANT_CLASS[variant], className)}
-        data-variant={variant}
-        {...rest}
-      >
-        <span className={styles.icon}>
-          {variant === 'uploading' ? (
-            <Spinner size="sm" color="current" label={uploadingLabel} />
-          ) : (
-            <MimeIcon category={category} />
+  return (
+    <div
+      ref={ref}
+      className={cn(styles.root, VARIANT_CLASS[variant], className)}
+      data-variant={variant}
+      {...rest}
+    >
+      <span className={styles.icon}>
+        {variant === 'uploading' ? (
+          <Spinner size="sm" color="current" label={uploadingLabel} />
+        ) : (
+          <MimeIcon category={category} />
+        )}
+      </span>
+
+      <Text variant="caption" color="primary" asChild>
+        <span className={styles.filename} title={name}>
+          {name}
+        </span>
+      </Text>
+
+      <Text variant="caption" color="secondary" asChild>
+        <span className={styles.size}>{formatBytes(size)}</span>
+      </Text>
+
+      {(showRetry || showRemove) && (
+        <span className={styles.actions}>
+          {showRetry && (
+            <Button variant="ghost" size="sm" icon={<RetryIcon />} onClick={onRetry}>
+              {retryLabel}
+            </Button>
+          )}
+          {showRemove && (
+            <Button
+              variant="ghost"
+              size="sm"
+              iconOnly
+              icon={<CloseIcon />}
+              aria-label={removeLabel}
+              onClick={onRemove}
+            />
           )}
         </span>
-
-        <Text variant="caption" color="primary" asChild>
-          <span className={styles.filename} title={name}>
-            {name}
-          </span>
-        </Text>
-
-        <Text variant="caption" color="secondary" asChild>
-          <span className={styles.size}>{formatBytes(size)}</span>
-        </Text>
-
-        {(showRetry || showRemove) && (
-          <span className={styles.actions}>
-            {showRetry && (
-              <Button
-                variant="ghost"
-                size="sm"
-                icon={<RetryIcon />}
-                onClick={onRetry}
-              >
-                {retryLabel}
-              </Button>
-            )}
-            {showRemove && (
-              <Button
-                variant="ghost"
-                size="sm"
-                iconOnly
-                icon={<CloseIcon />}
-                aria-label={removeLabel}
-                onClick={onRemove}
-              />
-            )}
-          </span>
-        )}
-      </div>
-    );
-  },
-);
+      )}
+    </div>
+  );
+});

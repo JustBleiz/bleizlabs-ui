@@ -18,9 +18,7 @@ test.describe('Command — regressions', () => {
     await page.emulateMedia({ reducedMotion: 'reduce' });
   });
 
-  test('CMD-R14 — filter auto mode: substring filter reduces option count', async ({
-    page,
-  }) => {
+  test('CMD-R14 — filter auto mode: substring filter reduces option count', async ({ page }) => {
     await page.goto('/components/command');
     await page.getByRole('button', { name: 'Open city picker' }).click();
     const dialog = page.getByRole('dialog');
@@ -34,9 +32,7 @@ test.describe('Command — regressions', () => {
     expect(filtered).toBeGreaterThanOrEqual(1);
   });
 
-  test('CMD-R16 — all-filter-out: CommandEmpty shows + no options visible', async ({
-    page,
-  }) => {
+  test('CMD-R16 — all-filter-out: CommandEmpty shows + no options visible', async ({ page }) => {
     await page.goto('/components/command');
     await page.getByRole('button', { name: 'Open city picker' }).click();
     const dialog = page.getByRole('dialog');
@@ -48,9 +44,7 @@ test.describe('Command — regressions', () => {
     await expect(dialog.getByText(/No cities found/i)).toBeVisible();
   });
 
-  test('Custom filter (startsWith) — only prefix matches appear', async ({
-    page,
-  }) => {
+  test('Custom filter (startsWith) — only prefix matches appear', async ({ page }) => {
     await page.goto('/components/command');
     await page.getByRole('button', { name: 'Open startsWith palette' }).click();
     const dialog = page.getByRole('dialog');
@@ -92,9 +86,7 @@ test.describe('Command — regressions', () => {
     await expect(status).toHaveText(/Loading/i);
   });
 
-  test('SSR hydration: no hydration warnings on initial render', async ({
-    page,
-  }) => {
+  test('SSR hydration: no hydration warnings on initial render', async ({ page }) => {
     const warnings: string[] = [];
     page.on('console', (msg) => {
       if (msg.type() === 'warning' || msg.type() === 'error') {
@@ -105,27 +97,16 @@ test.describe('Command — regressions', () => {
     await page.waitForLoadState('networkidle');
     await page.reload();
     await page.waitForLoadState('networkidle');
-    const hydrationWarnings = warnings.filter((w) =>
-      w.toLowerCase().includes('hydration'),
-    );
+    const hydrationWarnings = warnings.filter((w) => w.toLowerCase().includes('hydration'));
     expect(hydrationWarnings).toHaveLength(0);
   });
 
-  test.skip(
-    'CMD-R15 — filter=false consumer-managed [PLAYGROUND-DEP: no filter={false} demo]',
-    async () => {
-      // All demos use default 'auto' or custom function filter. No
-      // filter={false} example.
-    },
-  );
+  test.skip('CMD-R15 — filter=false consumer-managed [PLAYGROUND-DEP: no filter={false} demo]', async () => {
+    // All demos use default 'auto' or custom function filter. No
+    // filter={false} example.
+  });
 
-  test.skip(
-    'CMD-R19 — virtualized command list [PLAYGROUND-DEP: virtualization deferred to v2]',
-    async () => {},
-  );
+  test.skip('CMD-R19 — virtualized command list [PLAYGROUND-DEP: virtualization deferred to v2]', async () => {});
 
-  test.skip(
-    'CMD-R20 — nested command pages [PLAYGROUND-DEP: single-page only in v1]',
-    async () => {},
-  );
+  test.skip('CMD-R20 — nested command pages [PLAYGROUND-DEP: single-page only in v1]', async () => {});
 });

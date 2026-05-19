@@ -39,9 +39,7 @@ test.describe('DatePicker — ARIA + accessibility tree', () => {
     await expect(input).toHaveAttribute('aria-expanded', 'true');
   });
 
-  test('DP-R09 — popup role="dialog" + aria-modal="false"', async ({
-    page,
-  }) => {
+  test('DP-R09 — popup role="dialog" + aria-modal="false"', async ({ page }) => {
     const input = page.getByRole('combobox').first();
     await input.focus();
     await page.keyboard.press('ArrowDown');
@@ -59,9 +57,7 @@ test.describe('DatePicker — ARIA + accessibility tree', () => {
     await expect(popup).toHaveAttribute('aria-labelledby', inputId as string);
   });
 
-  test('DP-R10 — embedded Calendar has role="grid" + gridcells', async ({
-    page,
-  }) => {
+  test('DP-R10 — embedded Calendar has role="grid" + gridcells', async ({ page }) => {
     const firstInput = page.getByRole('combobox').first();
     await firstInput.focus();
     await page.keyboard.press('ArrowDown');
@@ -71,9 +67,7 @@ test.describe('DatePicker — ARIA + accessibility tree', () => {
     expect(await cells.count()).toBeGreaterThan(0);
   });
 
-  test('Selected date has aria-selected=true on its gridcell', async ({
-    page,
-  }) => {
+  test('Selected date has aria-selected=true on its gridcell', async ({ page }) => {
     // idx 1 — controlled with defaultValue 2026-04-20
     const sections = page.locator('section');
     const controlled = sections.nth(1);
@@ -82,18 +76,14 @@ test.describe('DatePicker — ARIA + accessibility tree', () => {
     await page.keyboard.press('ArrowDown');
     const grid = page.getByRole('grid');
     // Button inside gridcell has data-calendar-cell="2026-04-20"
-    const selectedButton = grid.locator(
-      'button[data-calendar-cell="2026-04-20"]',
-    );
+    const selectedButton = grid.locator('button[data-calendar-cell="2026-04-20"]');
     await expect(selectedButton).toBeVisible();
     // Parent cell has aria-selected=true
     const parentCell = selectedButton.locator('xpath=..');
     await expect(parentCell).toHaveAttribute('aria-selected', 'true');
   });
 
-  test('Disabled widget: input has aria-disabled=true + won\'t open popup', async ({
-    page,
-  }) => {
+  test("Disabled widget: input has aria-disabled=true + won't open popup", async ({ page }) => {
     // idx 6 — disabled demo
     const sections = page.locator('section');
     const disabled = sections.nth(6);
@@ -111,9 +101,7 @@ test.describe('DatePicker — ARIA + accessibility tree', () => {
     await expect(input).toHaveAttribute('aria-required', 'true');
   });
 
-  test('aria snapshot contains combobox + dialog when open', async ({
-    page,
-  }) => {
+  test('aria snapshot contains combobox + dialog when open', async ({ page }) => {
     const input = page.getByRole('combobox').first();
     await input.focus();
     await page.keyboard.press('ArrowDown');
@@ -129,9 +117,7 @@ test.describe('DatePicker — ARIA + accessibility tree', () => {
     expect(results.violations).toEqual([]);
   });
 
-  test('axe-core zero violations — popup open with Calendar', async ({
-    page,
-  }) => {
+  test('axe-core zero violations — popup open with Calendar', async ({ page }) => {
     const firstInput = page.getByRole('combobox').first();
     await firstInput.focus();
     await page.keyboard.press('ArrowDown');
@@ -142,9 +128,7 @@ test.describe('DatePicker — ARIA + accessibility tree', () => {
     expect(results.violations).toEqual([]);
   });
 
-  test('DP-R11 — aria-invalid="true" on invalid date input (F10)', async ({
-    page,
-  }) => {
+  test('DP-R11 — aria-invalid="true" on invalid date input (F10)', async ({ page }) => {
     // E142 L4 F10 — commitSearch now flips an internal hasValidationError
     // flag when the typed string fails to parse, and DatePickerInput ORs
     // that flag with the explicit `invalid` prop when writing aria-invalid.

@@ -77,8 +77,18 @@ $seed-info: #3b82f6 !default; // blue-500
 // for a brand display font (Satoshi, Cabinet Grotesk, custom) and keep Inter
 // for body to preserve readability.
 
-$seed-font-primary: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif !default;
-$seed-font-secondary: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif !default;
+$seed-font-primary:
+  'Inter',
+  system-ui,
+  -apple-system,
+  'Segoe UI',
+  sans-serif !default;
+$seed-font-secondary:
+  'Inter',
+  system-ui,
+  -apple-system,
+  'Segoe UI',
+  sans-serif !default;
 $seed-font-mono: ui-monospace, 'SF Mono', Consolas, Menlo, monospace !default;
 
 // Font scale multiplier — 1 = default, 1.125 = 12.5% larger globally
@@ -125,11 +135,16 @@ $seed-page-padding: 6 !default; // 24px — page-level top/bottom padding
 
 $seed-radius-scale: (
   none: 0,
-  sm: 4, // 4px — tight corners, small badges
-  md: 8, // 8px — button, input
-  lg: 12, // 12px — card default (D14-adjacent)
-  xl: 16, // 16px — large card, modal, drawer
-  '2xl': 24, // 24px — hero card
+  sm: 4,
+  // 4px — tight corners, small badges
+  md: 8,
+  // 8px — button, input
+  lg: 12,
+  // 12px — card default (D14-adjacent)
+  xl: 16,
+  // 16px — large card, modal, drawer
+  '2xl': 24,
+  // 24px — hero card
   full: 9999, // fully rounded (avatar circle, pill)
 ) !default;
 

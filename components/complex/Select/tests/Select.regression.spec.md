@@ -17,7 +17,9 @@ test('SL-R01 — controlled-to-uncontrolled runtime switch does not crash', asyn
 
 test('SL-R02 — SSR hydration: no mismatch on initial render', async ({ page }) => {
   const warnings: string[] = [];
-  page.on('console', (msg) => { if (msg.type() === 'warning') warnings.push(msg.text()); });
+  page.on('console', (msg) => {
+    if (msg.type() === 'warning') warnings.push(msg.text());
+  });
   await page.goto('/components/select?value=option-2');
   await page.reload();
   // No hydration warnings in console
@@ -75,7 +77,9 @@ test('SL-R15 — portal renders once per mount (no SSR double-portal)', async ({
   expect(await listboxes.count()).toBe(1);
 });
 
-test('SL-R16 — nested Dialog+Select: Escape closes Select first, Dialog stays open', async ({ page }) => {
+test('SL-R16 — nested Dialog+Select: Escape closes Select first, Dialog stays open', async ({
+  page,
+}) => {
   await page.goto('/components/select?dialog=1');
   await page.getByRole('button', { name: 'Open Dialog' }).click();
   const dialog = page.getByRole('dialog');

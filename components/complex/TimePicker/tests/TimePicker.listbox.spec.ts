@@ -12,14 +12,7 @@
  */
 
 import { test, expect } from '@playwright/test';
-import {
-  dialogOf,
-  inputOf,
-  listboxOf,
-  openPicker,
-  optionByValue,
-  pickerBy,
-} from './_helpers';
+import { dialogOf, inputOf, listboxOf, openPicker, optionByValue, pickerBy } from './_helpers';
 
 test.describe('TimePicker — listbox interactions', () => {
   test.beforeEach(async ({ page }) => {

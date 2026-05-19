@@ -10,8 +10,8 @@ export interface Project {
   priority: ProjectPriority;
   owner: string;
   budget: number;
-  deadline: string;          // ISO date
-  progress: number;          // 0-100
+  deadline: string; // ISO date
+  progress: number; // 0-100
   archived: boolean;
   overdue: boolean;
   description: string;
@@ -32,8 +32,16 @@ const OWNERS = [
 const STATUSES: ProjectStatus[] = ['active', 'paused', 'completed', 'archived'];
 const PRIORITIES: ProjectPriority[] = ['low', 'medium', 'high', 'critical'];
 const TAG_POOL = [
-  'frontend', 'backend', 'design', 'ops', 'product',
-  'urgent', 'research', 'maintenance', 'launch', 'iteration',
+  'frontend',
+  'backend',
+  'design',
+  'ops',
+  'product',
+  'urgent',
+  'research',
+  'maintenance',
+  'launch',
+  'iteration',
 ];
 
 function pick<T>(arr: T[], idx: number): T {
@@ -43,9 +51,7 @@ function pick<T>(arr: T[], idx: number): T {
 function pickTags(seed: number): string[] {
   const count = (seed % 3) + 1;
   const start = seed % TAG_POOL.length;
-  return Array.from({ length: count }, (_, i) =>
-    pick(TAG_POOL, start + i),
-  );
+  return Array.from({ length: count }, (_, i) => pick(TAG_POOL, start + i));
 }
 
 export const MOCK_PROJECTS: Project[] = Array.from({ length: 47 }, (_, i) => {
@@ -54,25 +60,22 @@ export const MOCK_PROJECTS: Project[] = Array.from({ length: 47 }, (_, i) => {
   const archived = status === 'archived';
   return {
     id: `proj-${String(i + 1).padStart(3, '0')}`,
-    name: [
-      `Atelier Q${(i % 4) + 1} Refresh`,
-      `Marketing Funnel Pivot`,
-      `Customer Portal v${(i % 3) + 2}`,
-      `Onboarding Wizard`,
-      `Billing Migration`,
-      `Performance Sweep`,
-      `Mobile Rollout`,
-      `Design System Audit`,
-    ][i % 8] + ` #${String(i + 1).padStart(3, '0')}`,
+    name:
+      [
+        `Atelier Q${(i % 4) + 1} Refresh`,
+        `Marketing Funnel Pivot`,
+        `Customer Portal v${(i % 3) + 2}`,
+        `Onboarding Wizard`,
+        `Billing Migration`,
+        `Performance Sweep`,
+        `Mobile Rollout`,
+        `Design System Audit`,
+      ][i % 8] + ` #${String(i + 1).padStart(3, '0')}`,
     status,
     priority: pick(PRIORITIES, i + 2),
     owner: pick(OWNERS, i + 3),
-    budget: ((i + 1) * 8500) % 250000 + 12000,
-    deadline: new Date(
-      2026,
-      5 + (i % 7),
-      ((i * 5) % 28) + 1,
-    ).toISOString(),
+    budget: (((i + 1) * 8500) % 250000) + 12000,
+    deadline: new Date(2026, 5 + (i % 7), ((i * 5) % 28) + 1).toISOString(),
     progress: archived ? 100 : Math.min(100, (i * 13) % 110),
     archived,
     overdue: isOverdue,

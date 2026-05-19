@@ -62,9 +62,7 @@ test.describe('ContextMenu — regression cases', () => {
     await expect(page.getByRole('menu')).toBeVisible();
   });
 
-  test('CM-R10 — position uses clientX/clientY (viewport-relative)', async ({
-    page,
-  }) => {
+  test('CM-R10 — position uses clientX/clientY (viewport-relative)', async ({ page }) => {
     const trigger = page.getByText('Right-click me', { exact: true });
     await trigger.scrollIntoViewIfNeeded();
     // Scroll + wait two rAF so close-on-scroll handler observes the scroll
@@ -114,9 +112,7 @@ test.describe('ContextMenu — regression cases', () => {
     await expect(page.getByRole('menu')).not.toBeVisible();
   });
 
-  test('CM-R13 — disabled trigger does not prevent native context menu', async ({
-    page,
-  }) => {
+  test('CM-R13 — disabled trigger does not prevent native context menu', async ({ page }) => {
     const disabledTrigger = page.getByText('Right-click disabled trigger', {
       exact: true,
     });
@@ -126,9 +122,7 @@ test.describe('ContextMenu — regression cases', () => {
     await expect(page.getByRole('menu')).not.toBeVisible();
   });
 
-  test('CM-R14 — re-right-click at new coords opens at new position', async ({
-    page,
-  }) => {
+  test('CM-R14 — re-right-click at new coords opens at new position', async ({ page }) => {
     const trigger = page.getByText('Right-click me', { exact: true });
     await trigger.scrollIntoViewIfNeeded();
     const triggerBox = await trigger.boundingBox();
@@ -186,9 +180,7 @@ test.describe('ContextMenu — regression cases', () => {
     await expect(page.getByRole('menu')).toBeVisible();
   });
 
-  test('CM-R17 — rapid right-clicks leave menu in consistent state', async ({
-    page,
-  }) => {
+  test('CM-R17 — rapid right-clicks leave menu in consistent state', async ({ page }) => {
     const trigger = page.getByText('Right-click me', { exact: true });
     await trigger.click({ button: 'right' });
     await expect(page.getByRole('menu')).toBeVisible();

@@ -16,18 +16,14 @@
 import { test, expect } from '@playwright/test';
 
 test.describe('Carousel — regression cases', () => {
-  test('CAR-R13 — prefers-reduced-motion disables auto-rotation', async ({
-    page,
-  }) => {
+  test('CAR-R13 — prefers-reduced-motion disables auto-rotation', async ({ page }) => {
     await page.emulateMedia({ reducedMotion: 'reduce' });
     await page.goto('/components/carousel');
     const auto = page
       .locator('section')
       .filter({ has: page.getByRole('heading', { name: /^2\. Auto-rotate/ }) })
       .first();
-    const currentSlide = auto.locator(
-      '[aria-roledescription="slide"][data-current="true"]',
-    );
+    const currentSlide = auto.locator('[aria-roledescription="slide"][data-current="true"]');
     const before = await currentSlide.first().getAttribute('aria-label');
     // Auto-rotate interval is 3000ms. With PRM, pauseReasons contains
     // 'reduced-motion' -> shouldRotate=false -> no interval scheduled.
@@ -56,9 +52,7 @@ test.describe('Carousel — regression cases', () => {
     await expect(slides.nth(0)).toHaveAttribute('data-current', 'true');
   });
 
-  test('CAR-R15 — controlled index: dot button updates active slide', async ({
-    page,
-  }) => {
+  test('CAR-R15 — controlled index: dot button updates active slide', async ({ page }) => {
     await page.emulateMedia({ reducedMotion: 'reduce' });
     await page.goto('/components/carousel');
     const controlled = page
@@ -81,9 +75,7 @@ test.describe('Carousel — regression cases', () => {
     // "fetch more slides" demo not present in the playground.
   });
 
-  test('CAR-R18 — announceAutoRotate=true populates live region', async ({
-    page,
-  }) => {
+  test('CAR-R18 — announceAutoRotate=true populates live region', async ({ page }) => {
     // Do NOT emulate reduced motion here — reduced motion disables rotation.
     await page.goto('/components/carousel');
     const announced = page
@@ -101,9 +93,7 @@ test.describe('Carousel — regression cases', () => {
       .toMatch(/Slide \d+ of \d+/);
   });
 
-  test('CAR-R19 — combined pause reasons: hover + focus stay paused on blur', async ({
-    page,
-  }) => {
+  test('CAR-R19 — combined pause reasons: hover + focus stay paused on blur', async ({ page }) => {
     // Do NOT emulate reduced motion — we need auto-rotate to actually be
     // alive so the hover/focus pause is observable as "no advance".
     await page.goto('/components/carousel');
@@ -113,9 +103,7 @@ test.describe('Carousel — regression cases', () => {
       .first();
     const root = auto.locator('[aria-roledescription="carousel"]').first();
     const viewport = auto.locator('div[tabindex="0"]').first();
-    const currentSlide = auto.locator(
-      '[aria-roledescription="slide"][data-current="true"]',
-    );
+    const currentSlide = auto.locator('[aria-roledescription="slide"][data-current="true"]');
     // Hover + focus — both pause reasons active.
     await root.hover();
     await viewport.focus();

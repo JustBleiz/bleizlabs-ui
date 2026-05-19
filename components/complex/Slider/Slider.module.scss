@@ -132,7 +132,9 @@
     transform: scale(1.05) translate(-48%, -48%);
   }
 
-  &[data-orientation='horizontal'][style*='right']:hover:not([data-disabled='true']):not([data-readonly='true']) {
+  &[data-orientation='horizontal'][style*='right']:hover:not([data-disabled='true']):not(
+      [data-readonly='true']
+    ) {
     transform: scale(1.05) translate(48%, -48%);
   }
 
@@ -140,7 +142,9 @@
     transform: scale(1.05) translate(-48%, 48%);
   }
 
-  &[data-orientation='vertical'][style*='top']:hover:not([data-disabled='true']):not([data-readonly='true']) {
+  &[data-orientation='vertical'][style*='top']:hover:not([data-disabled='true']):not(
+      [data-readonly='true']
+    ) {
     transform: scale(1.05) translate(-48%, -48%);
   }
 
@@ -190,15 +194,21 @@
     transform: translate(-50%, -50%);
   }
 
-  .thumb[data-orientation='horizontal'][style*='right']:hover:not([data-disabled='true']):not([data-readonly='true']) {
+  .thumb[data-orientation='horizontal'][style*='right']:hover:not([data-disabled='true']):not(
+      [data-readonly='true']
+    ) {
     transform: translate(50%, -50%);
   }
 
-  .thumb[data-orientation='vertical']:hover:not([data-disabled='true']):not([data-readonly='true']) {
+  .thumb[data-orientation='vertical']:hover:not([data-disabled='true']):not(
+      [data-readonly='true']
+    ) {
     transform: translate(-50%, 50%);
   }
 
-  .thumb[data-orientation='vertical'][style*='top']:hover:not([data-disabled='true']):not([data-readonly='true']) {
+  .thumb[data-orientation='vertical'][style*='top']:hover:not([data-disabled='true']):not(
+      [data-readonly='true']
+    ) {
     transform: translate(-50%, -50%);
   }
 }

@@ -1,9 +1,4 @@
-import {
-  forwardRef,
-  type CSSProperties,
-  type HTMLAttributes,
-  type ReactNode,
-} from 'react';
+import { forwardRef, type CSSProperties, type HTMLAttributes, type ReactNode } from 'react';
 import { Slot } from '../../utils/Slot';
 import { cn } from '../../utils/cn';
 import styles from './Text.module.scss';
@@ -77,13 +72,7 @@ import styles from './Text.module.scss';
  *   <span>Inline text via asChild</span>
  * </Text>
  */
-export type TextVariant =
-  | 'lead'
-  | 'body'
-  | 'body-strong'
-  | 'small'
-  | 'caption'
-  | 'eyebrow';
+export type TextVariant = 'lead' | 'body' | 'body-strong' | 'small' | 'caption' | 'eyebrow';
 
 export interface TextProps extends HTMLAttributes<HTMLParagraphElement> {
   /** Typography preset. Default `body`. */
@@ -116,16 +105,15 @@ const VARIANT_CLASS: Record<TextVariant, string> = {
   eyebrow: styles.eyebrow!,
 };
 
-// E142 L2 a11y: `brand` previously pinned to `--color-brand-500`, the raw
-// seed. On mid-tone seeds (e.g. teal-500) the 500 step failed AA against
-// surface-raised / card bgs (~3.9:1). `--color-brand-strong` is the
-// theme-aware strong token — brand-700 on light, brand-300 on dark —
-// which the design system already tunes for legibility on both themes.
+// `brand` maps to the canonical brand semantic token so Text stays visually
+// consistent with buttons, links, borders, icons, and other brand chrome.
+// Projects that need higher-contrast brand text can override `--color-brand`
+// or compose explicit styles with `--color-brand-strong`.
 const COLOR_VAR: Record<NonNullable<TextProps['color']>, string> = {
   primary: 'var(--color-text-primary)',
   secondary: 'var(--color-text-secondary)',
   muted: 'var(--color-text-muted)',
-  brand: 'var(--color-brand-strong)',
+  brand: 'var(--color-brand)',
   inherit: 'inherit',
 };
 
@@ -177,12 +165,7 @@ export const Text = forwardRef<HTMLParagraphElement, TextProps>(function Text(
   return (
     <Comp
       ref={ref}
-      className={cn(
-        styles.root,
-        VARIANT_CLASS[variant],
-        uppercase && styles.uppercase,
-        className,
-      )}
+      className={cn(styles.root, VARIANT_CLASS[variant], uppercase && styles.uppercase, className)}
       style={{ ...style, ...textVars }}
       {...rest}
     >

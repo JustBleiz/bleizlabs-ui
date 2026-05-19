@@ -153,9 +153,7 @@ test.describe('Sheet — regression cases', () => {
 
   for (const side of ['left', 'right', 'top', 'bottom'] as const) {
     test(`SH-2..5: side=${side} renders with correct alignment`, async ({ page }) => {
-      await page
-        .getByRole('button', { name: new RegExp(`open ${side} sheet$`, 'i') })
-        .click();
+      await page.getByRole('button', { name: new RegExp(`open ${side} sheet$`, 'i') }).click();
       const sheet = page.getByRole('dialog');
       await expect(sheet).toBeVisible();
       const box = await sheet.boundingBox();
@@ -204,9 +202,7 @@ test.describe('Sheet — regression cases', () => {
 
   for (const side of ['left', 'right', 'top', 'bottom'] as const) {
     test(`SH-9..12: side=${side} rounds only inner corners`, async ({ page }) => {
-      await page
-        .getByRole('button', { name: new RegExp(`open ${side} sheet$`, 'i') })
-        .click();
+      await page.getByRole('button', { name: new RegExp(`open ${side} sheet$`, 'i') }).click();
       const sheet = page.getByRole('dialog');
       const radii = await sheet.evaluate((el) => {
         const s = window.getComputedStyle(el);

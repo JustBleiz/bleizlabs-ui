@@ -1,8 +1,4 @@
-export {
-  DateTimePicker,
-  DateTimePickerInput,
-  DateTimePickerContent,
-} from './DateTimePicker';
+export { DateTimePicker, DateTimePickerInput, DateTimePickerContent } from './DateTimePicker';
 export type {
   DateTimePickerProps,
   DateTimePickerInputProps,

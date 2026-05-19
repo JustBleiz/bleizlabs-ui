@@ -204,9 +204,7 @@ const FormContext = createContext<FormContextValue | null>(null);
 export function useFormContext(): FormContextValue {
   const ctx = useContext(FormContext);
   if (!ctx) {
-    throw new Error(
-      'useFormContext() must be called inside a <Form> component.',
-    );
+    throw new Error('useFormContext() must be called inside a <Form> component.');
   }
   return ctx;
 }
@@ -235,8 +233,7 @@ export function snapshotValidity(validity: ValidityState): FieldValidity {
 // Form — root component, native <form> + context provider
 // ──────────────────────────────────────────────────────────────────────────
 
-export interface FormProps
-  extends Omit<FormHTMLAttributes<HTMLFormElement>, 'onSubmit'> {
+export interface FormProps extends Omit<FormHTMLAttributes<HTMLFormElement>, 'onSubmit'> {
   /** Field + Form.Submit compound children rendered inside the form element. */
   children: ReactNode;
   /**
@@ -308,16 +305,13 @@ export const FormRoot = forwardRef<HTMLFormElement, FormProps>(function Form(
     };
   }, []);
 
-  const reportFieldValidity = useCallback(
-    (name: string, validity: FieldValidity) => {
-      // Imperative update — does NOT trigger a Form re-render. Field
-      // owns its own local re-render via its own state when it needs to
-      // surface validity changes visually. Form's responsibility is just
-      // aggregation (read by Field on submit / blur, not on every keystroke).
-      fieldValidityRef.current[name] = validity;
-    },
-    [],
-  );
+  const reportFieldValidity = useCallback((name: string, validity: FieldValidity) => {
+    // Imperative update — does NOT trigger a Form re-render. Field
+    // owns its own local re-render via its own state when it needs to
+    // surface validity changes visually. Form's responsibility is just
+    // aggregation (read by Field on submit / blur, not on every keystroke).
+    fieldValidityRef.current[name] = validity;
+  }, []);
 
   const handleSubmit = useCallback(
     (event: FormEvent<HTMLFormElement>) => {
@@ -390,8 +384,7 @@ export const FormRoot = forwardRef<HTMLFormElement, FormProps>(function Form(
 // Form.Submit — submit button slot
 // ──────────────────────────────────────────────────────────────────────────
 
-export interface FormSubmitProps
-  extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'type'> {
+export interface FormSubmitProps extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'type'> {
   children: ReactNode;
   /**
    * When `true`, Slot-wraps the single React element child, forwarding
@@ -415,50 +408,46 @@ export interface FormSubmitProps
  * (all complex/* compounds use forwardRef). Migration to React-19 ref-as-prop
  * would happen library-wide as a coordinated cutover, not per-component.
  */
-export const FormSubmit = forwardRef<HTMLButtonElement, FormSubmitProps>(
-  function FormSubmit({ children, asChild = false, className, ...rest }, forwardedRef) {
-    // Assert we're inside a Form. Throws if not — same invariant as
-    // TabsTrigger/TabsContent siblings.
-    useFormContext();
+export const FormSubmit = forwardRef<HTMLButtonElement, FormSubmitProps>(function FormSubmit(
+  { children, asChild = false, className, ...rest },
+  forwardedRef,
+) {
+  // Assert we're inside a Form. Throws if not — same invariant as
+  // TabsTrigger/TabsContent siblings.
+  useFormContext();
 
-    if (asChild) {
-      return (
-        <Slot
-          ref={forwardedRef}
-          // DOCUMENTED canonical pattern. Slot's prop type is HTMLAttributes<HTMLElement>
-          // which intentionally OMITS `type` (arbitrary elements may not accept it).
-          // When Slot-wrapping a <button> child the `type="submit"` is structurally
-          // valid + REQUIRED for native form-submit semantics — Slot.cloneElement
-          // passes it through verbatim to the wrapped <button>. Same suppression
-          // pattern Radix Slot itself documents (`@radix-ui/react-slot`).
-          // Alternatives considered: (a) extending Slot's type signature globally
-          // — would leak `type` onto non-button slot consumers; (b) `as unknown as`
-          // cast — silently swallows future Slot signature regressions WITHOUT
-          // the TS-aware future-fail signal that @ts-expect-error provides
-          // (when/if Slot's signature ever does include `type`, this directive
-          // will surface a build error — that's the desired regression detector).
-          // @ts-expect-error see comment block above.
-          type="submit"
-          className={cn(styles.submit, className)}
-          {...rest}
-        >
-          {children}
-        </Slot>
-      );
-    }
-
+  if (asChild) {
     return (
-      <button
+      <Slot
         ref={forwardedRef}
+        // DOCUMENTED canonical pattern. Slot's prop type is HTMLAttributes<HTMLElement>
+        // which intentionally OMITS `type` (arbitrary elements may not accept it).
+        // When Slot-wrapping a <button> child the `type="submit"` is structurally
+        // valid + REQUIRED for native form-submit semantics — Slot.cloneElement
+        // passes it through verbatim to the wrapped <button>. Same suppression
+        // pattern Radix Slot itself documents (`@radix-ui/react-slot`).
+        // Alternatives considered: (a) extending Slot's type signature globally
+        // — would leak `type` onto non-button slot consumers; (b) `as unknown as`
+        // cast — silently swallows future Slot signature regressions WITHOUT
+        // the TS-aware future-fail signal that @ts-expect-error provides
+        // (when/if Slot's signature ever does include `type`, this directive
+        // will surface a build error — that's the desired regression detector).
+        // @ts-expect-error see comment block above.
         type="submit"
         className={cn(styles.submit, className)}
         {...rest}
       >
         {children}
-      </button>
+      </Slot>
     );
-  },
-);
+  }
+
+  return (
+    <button ref={forwardedRef} type="submit" className={cn(styles.submit, className)} {...rest}>
+      {children}
+    </button>
+  );
+});
 
 // ──────────────────────────────────────────────────────────────────────────
 // Compound export — Form root + Form.Submit subcomponent

@@ -20,43 +20,31 @@ test.describe('Form — focus management', () => {
     // After page load, focus should be on body (or a skip-link if present),
     // NOT auto-pulled to a form field — Form is not a modal, no autofocus
     // imposed by the component.
-    const activeTagName = await page.evaluate(
-      () => document.activeElement?.tagName,
-    );
+    const activeTagName = await page.evaluate(() => document.activeElement?.tagName);
     expect(activeTagName).not.toBe('INPUT');
     expect(activeTagName).not.toBe('TEXTAREA');
   });
 
-  test('submit button is keyboard-reachable via Tab traversal', async ({
-    page,
-  }) => {
+  test('submit button is keyboard-reachable via Tab traversal', async ({ page }) => {
     const emailInput = page.getByRole('textbox', { name: /^email$/i }).first();
     await emailInput.focus();
     await page.keyboard.press('Tab');
-    const submit = page
-      .getByRole('button', { name: /^send$/i })
-      .first();
+    const submit = page.getByRole('button', { name: /^send$/i }).first();
     await expect(submit).toBeFocused();
   });
 
   test('Form.Submit asChild forwards focus correctly', async ({ page }) => {
     // Section 1 uses Form.Submit asChild + lib Button. Verify it's still
     // a focusable button reachable by name.
-    const submit = page
-      .getByRole('button', { name: /^send$/i })
-      .first();
+    const submit = page.getByRole('button', { name: /^send$/i }).first();
     await submit.focus();
     await expect(submit).toBeFocused();
   });
 
-  test('Form.Submit native button (no asChild) is focusable', async ({
-    page,
-  }) => {
+  test('Form.Submit native button (no asChild) is focusable', async ({ page }) => {
     // Section 4 uses bare Form.Submit with no asChild — should render a
     // native <button type="submit"> with .submit class.
-    const submit = page
-      .getByRole('button', { name: /^send$/i })
-      .last(); // last "Send" button on the page = section 4
+    const submit = page.getByRole('button', { name: /^send$/i }).last(); // last "Send" button on the page = section 4
     await submit.focus();
     await expect(submit).toBeFocused();
   });

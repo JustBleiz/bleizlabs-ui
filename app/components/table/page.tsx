@@ -26,10 +26,22 @@ type Invoice = {
 
 const INVOICES: ReadonlyArray<Invoice> = [
   { id: 'INV-001', customer: 'Acme Corp', amount: 4200, status: 'paid', date: '2026-04-10' },
-  { id: 'INV-002', customer: 'Globex Industries', amount: 1850, status: 'pending', date: '2026-04-12' },
+  {
+    id: 'INV-002',
+    customer: 'Globex Industries',
+    amount: 1850,
+    status: 'pending',
+    date: '2026-04-12',
+  },
   { id: 'INV-003', customer: 'Initech LLC', amount: 9800, status: 'paid', date: '2026-04-14' },
   { id: 'INV-004', customer: 'Umbrella Co', amount: 640, status: 'overdue', date: '2026-04-02' },
-  { id: 'INV-005', customer: 'Stark Industries', amount: 15200, status: 'paid', date: '2026-04-15' },
+  {
+    id: 'INV-005',
+    customer: 'Stark Industries',
+    amount: 15200,
+    status: 'paid',
+    date: '2026-04-15',
+  },
 ];
 
 const STATUS_COLOR: Record<Invoice['status'], 'success' | 'warning' | 'error'> = {
@@ -65,13 +77,11 @@ export default function TablePlayground() {
           Table
         </Heading>
         <p className={styles.intro}>
-          Semantic table primitives — six atoms (Table, Header, Body, Footer,
-          Row, Cell) plus striped, bordered, and compact variants. For grid
-          features (sorting, filtering, pagination, selection, expansion,
-          frozen columns, APG <code>/grid/</code> keyboard model), use the
-          0.17.0 <a href="/components/data-table">DataTable</a> primitive —
-          it composes this Table compound internally. Zero external runtime
-          dependencies.
+          Semantic table primitives — six atoms (Table, Header, Body, Footer, Row, Cell) plus
+          striped, bordered, and compact variants. For grid features (sorting, filtering,
+          pagination, selection, expansion, frozen columns, APG <code>/grid/</code> keyboard model),
+          use the 0.17.0 <a href="/components/data-table">DataTable</a> primitive — it composes this
+          Table compound internally. Zero external runtime dependencies.
         </p>
       </header>
 
@@ -121,8 +131,8 @@ export default function TablePlayground() {
           2. Striped
         </Heading>
         <Text variant="small" color="muted">
-          <code>striped</code> prop — even TableBody rows get raised
-          background. Header + Footer stay static.
+          <code>striped</code> prop — even TableBody rows get raised background. Header + Footer
+          stay static.
         </Text>
         <Table striped>
           <TableHeader>
@@ -160,8 +170,8 @@ export default function TablePlayground() {
           3. Bordered + compact
         </Heading>
         <Text variant="small" color="muted">
-          <code>bordered</code> adds full-grid borders; <code>compact</code>{' '}
-          reduces cell padding for dense displays.
+          <code>bordered</code> adds full-grid borders; <code>compact</code> reduces cell padding
+          for dense displays.
         </Text>
         <Table bordered compact>
           <TableHeader>
@@ -201,8 +211,8 @@ export default function TablePlayground() {
           4. Row interaction — hoverable + selected
         </Heading>
         <Text variant="small" color="muted">
-          Click a row to select. <code>hoverable</code> enables pointer
-          feedback; <code>selected</code> applies brand tint + aria-selected.
+          Click a row to select. <code>hoverable</code> enables pointer feedback;{' '}
+          <code>selected</code> applies brand tint + aria-selected.
         </Text>
         <Inline gap={2} align="center">
           <Badge color="brand">selected</Badge>
@@ -251,9 +261,9 @@ export default function TablePlayground() {
           5. With TableFooter — totals row
         </Heading>
         <Text variant="small" color="muted">
-          <code>TableFooter</code> semantic section for summary rows. Separate
-          top border automatically. Uses <code>as=&quot;th&quot;</code>{' '}
-          <code>scope=&quot;row&quot;</code> on label cells.
+          <code>TableFooter</code> semantic section for summary rows. Separate top border
+          automatically. Uses <code>as=&quot;th&quot;</code> <code>scope=&quot;row&quot;</code> on
+          label cells.
         </Text>
         <Table>
           <TableHeader>
@@ -301,9 +311,8 @@ export default function TablePlayground() {
           6. Disabled row
         </Heading>
         <Text variant="small" color="muted">
-          <code>disabled</code> prop mutes the row visually + sets
-          aria-disabled. Click handlers still fire — consumer checks the flag
-          if they need to block interaction.
+          <code>disabled</code> prop mutes the row visually + sets aria-disabled. Click handlers
+          still fire — consumer checks the flag if they need to block interaction.
         </Text>
         <Table>
           <TableHeader>
@@ -345,18 +354,17 @@ export default function TablePlayground() {
           7. Need grid features? Use <code>&lt;DataTable&gt;</code>
         </Heading>
         <Text variant="small" color="muted">
-          Sorting, filtering, pagination, selection, expansion, frozen
-          columns, mobile card fallback, RTL, APG <code>/grid/</code>{' '}
-          keyboard model, and aria-live announcements ship in the 0.17.0{' '}
+          Sorting, filtering, pagination, selection, expansion, frozen columns, mobile card
+          fallback, RTL, APG <code>/grid/</code> keyboard model, and aria-live announcements ship in
+          the 0.17.0{' '}
           <a href="/components/data-table">
             <code>&lt;DataTable&gt;</code>
           </a>{' '}
-          primitive. It composes these Table atoms internally, so you keep
-          the same semantic markup and styling without pulling in an
-          external headless engine.
+          primitive. It composes these Table atoms internally, so you keep the same semantic markup
+          and styling without pulling in an external headless engine.
         </Text>
         <code className={styles.codeBlock}>
-{`// In your app — zero external runtime deps
+          {`// In your app — zero external runtime deps
 import { DataTable, type ColumnDef } from '@bleizlabs/ui';
 
 const columns: ColumnDef<Project>[] = [

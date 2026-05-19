@@ -24,9 +24,7 @@ let tmpProject: string;
 
 beforeAll(() => {
   if (!fs.existsSync(CLI_BIN)) {
-    throw new Error(
-      `CLI bundle missing at ${CLI_BIN}. Run \`npm run build:cli\` first.`,
-    );
+    throw new Error(`CLI bundle missing at ${CLI_BIN}. Run \`npm run build:cli\` first.`);
   }
 
   // Init doesn't need node_modules — only reads package.json for dep
@@ -48,12 +46,42 @@ describe('init flow (integration)', () => {
 
     // Wrapper layer — category-nested per CLI v0.11+
     expect(fs.existsSync(path.join(tmpProject, 'app', '_components', 'ui', 'index.ts'))).toBe(true);
-    expect(fs.existsSync(path.join(tmpProject, 'app', '_components', 'ui', 'interactive', 'Button', 'Button.tsx'))).toBe(true);
-    expect(fs.existsSync(path.join(tmpProject, 'app', '_components', 'ui', 'interactive', 'Button', 'Button.module.scss'))).toBe(true);
-    expect(fs.existsSync(path.join(tmpProject, 'app', '_components', 'ui', 'display', 'Card', 'Card.tsx'))).toBe(true);
-    expect(fs.existsSync(path.join(tmpProject, 'app', '_components', 'ui', 'complex', 'Sidebar', 'Sidebar.tsx'))).toBe(true);
-    expect(fs.existsSync(path.join(tmpProject, 'app', '_components', 'ui', 'utils', 'cn', 'cn.tsx'))).toBe(true);
-    expect(fs.existsSync(path.join(tmpProject, 'app', '_components', 'ui', 'types', 'spacing', 'spacing.tsx'))).toBe(true);
+    expect(
+      fs.existsSync(
+        path.join(tmpProject, 'app', '_components', 'ui', 'interactive', 'Button', 'Button.tsx'),
+      ),
+    ).toBe(true);
+    expect(
+      fs.existsSync(
+        path.join(
+          tmpProject,
+          'app',
+          '_components',
+          'ui',
+          'interactive',
+          'Button',
+          'Button.module.scss',
+        ),
+      ),
+    ).toBe(true);
+    expect(
+      fs.existsSync(
+        path.join(tmpProject, 'app', '_components', 'ui', 'display', 'Card', 'Card.tsx'),
+      ),
+    ).toBe(true);
+    expect(
+      fs.existsSync(
+        path.join(tmpProject, 'app', '_components', 'ui', 'complex', 'Sidebar', 'Sidebar.tsx'),
+      ),
+    ).toBe(true);
+    expect(
+      fs.existsSync(path.join(tmpProject, 'app', '_components', 'ui', 'utils', 'cn', 'cn.tsx')),
+    ).toBe(true);
+    expect(
+      fs.existsSync(
+        path.join(tmpProject, 'app', '_components', 'ui', 'types', 'spacing', 'spacing.tsx'),
+      ),
+    ).toBe(true);
 
     // Styles
     expect(fs.existsSync(path.join(tmpProject, 'app', 'globals.scss'))).toBe(true);
@@ -109,7 +137,15 @@ describe('init flow (integration)', () => {
   });
 
   it('init re-run preserves user-modified file (no marker)', () => {
-    const buttonPath = path.join(tmpProject, 'app', '_components', 'ui', 'interactive', 'Button', 'Button.tsx');
+    const buttonPath = path.join(
+      tmpProject,
+      'app',
+      '_components',
+      'ui',
+      'interactive',
+      'Button',
+      'Button.tsx',
+    );
     const userContent = '// USER MODIFIED — no marker\nexport { Button } from "@bleizlabs/ui";\n';
     fs.writeFileSync(buttonPath, userContent);
 
@@ -145,11 +181,7 @@ describe('init flow (integration)', () => {
 // Helpers
 // ---------------------------------------------------------------------------
 
-function runCli(
-  args: string[],
-  cwd: string,
-  opts: { ignoreError?: boolean } = {},
-): string {
+function runCli(args: string[], cwd: string, opts: { ignoreError?: boolean } = {}): string {
   try {
     return execFileSync(process.execPath, [CLI_BIN, ...args], {
       cwd,

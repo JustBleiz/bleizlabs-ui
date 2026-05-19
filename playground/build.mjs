@@ -71,11 +71,13 @@ const expectedTokens = [
   '[data-theme=dark]',
 ];
 
-const missing = expectedTokens.filter(token => !result.css.includes(token));
+const missing = expectedTokens.filter((token) => !result.css.includes(token));
 if (missing.length > 0) {
   console.error('[bleizlabs-ui] VERIFICATION FAILED — missing expected tokens:');
-  missing.forEach(t => console.error('  -', t));
+  missing.forEach((t) => console.error('  -', t));
   process.exit(2);
 }
 
-console.log(`[bleizlabs-ui] Verification OK — all ${expectedTokens.length} expected tokens present`);
+console.log(
+  `[bleizlabs-ui] Verification OK — all ${expectedTokens.length} expected tokens present`,
+);

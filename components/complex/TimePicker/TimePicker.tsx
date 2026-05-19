@@ -129,12 +129,7 @@ import { useFloating } from '../../utils/useFloating';
 import type { Placement } from '../../utils/position';
 import { cn } from '../../utils/cn';
 import { mergeRefs } from '../../utils/mergeRefs';
-import {
-  clampTime,
-  formatTime,
-  parseTime,
-  resolveHourCycle,
-} from '../../utils/date';
+import { clampTime, formatTime, parseTime, resolveHourCycle } from '../../utils/date';
 import { useResolvedLocale } from '../../utils/locale';
 import styles from './TimePicker.module.scss';
 
@@ -172,9 +167,7 @@ function formatDisplay(
   const display = to12hDisplay(parsed.h);
   const hh = String(display).padStart(2, '0');
   const mm = String(parsed.m).padStart(2, '0');
-  const body = withSeconds
-    ? `${hh}:${mm}:${String(parsed.s).padStart(2, '0')}`
-    : `${hh}:${mm}`;
+  const body = withSeconds ? `${hh}:${mm}:${String(parsed.s).padStart(2, '0')}` : `${hh}:${mm}`;
   return `${body} ${period}`;
 }
 
@@ -264,8 +257,10 @@ const [TimePickerContextProvider, useTimePickerContext] =
 // ──────────────────────────────────────────────────────────────────────────
 // TimePicker — root
 
-export interface TimePickerProps
-  extends Omit<HTMLAttributes<HTMLDivElement>, 'children' | 'defaultValue' | 'onChange' | 'dir'> {
+export interface TimePickerProps extends Omit<
+  HTMLAttributes<HTMLDivElement>,
+  'children' | 'defaultValue' | 'onChange' | 'dir'
+> {
   /** Controlled 24h ISO value (`"HH:MM"` or `"HH:MM:SS"`) or null. */
   value?: string | null;
   /** Uncontrolled initial 24h ISO value. */
@@ -304,239 +299,237 @@ export interface TimePickerProps
   children?: ReactNode;
 }
 
-export const TimePicker = forwardRef<HTMLDivElement, TimePickerProps>(function TimePicker(
-  props,
-  ref,
-) {
-  const {
-    value: controlledValue,
-    defaultValue,
-    onValueChange,
-    open: controlledOpen,
-    defaultOpen,
-    onOpenChange,
-    withSeconds = false,
-    hourCycle: hourCycleProp,
-    locale: localeProp,
-    step = 1,
-    min,
-    max,
-    disabled = false,
-    required = false,
-    name,
-    placement = 'bottom-start',
-    sideOffset = 4,
-    children,
-    className,
-    ...rest
-  } = props;
+export const TimePicker = forwardRef<HTMLDivElement, TimePickerProps>(
+  function TimePicker(props, ref) {
+    const {
+      value: controlledValue,
+      defaultValue,
+      onValueChange,
+      open: controlledOpen,
+      defaultOpen,
+      onOpenChange,
+      withSeconds = false,
+      hourCycle: hourCycleProp,
+      locale: localeProp,
+      step = 1,
+      min,
+      max,
+      disabled = false,
+      required = false,
+      name,
+      placement = 'bottom-start',
+      sideOffset = 4,
+      children,
+      className,
+      ...rest
+    } = props;
 
-  const locale = useResolvedLocale(localeProp);
-  const hourCycle = hourCycleProp ?? resolveHourCycle(locale);
+    const locale = useResolvedLocale(localeProp);
+    const hourCycle = hourCycleProp ?? resolveHourCycle(locale);
 
-  // Value state (string-based)
-  const handleValueChange = useCallback(
-    (next: string | null) => {
-      onValueChange?.(next);
-    },
-    [onValueChange],
-  );
-  const { value, setValue } = useFloatingValueState<string>({
-    controlledValue,
-    defaultValue: defaultValue ?? null,
-    onValueChange: handleValueChange,
-  });
+    // Value state (string-based)
+    const handleValueChange = useCallback(
+      (next: string | null) => {
+        onValueChange?.(next);
+      },
+      [onValueChange],
+    );
+    const { value, setValue } = useFloatingValueState<string>({
+      controlledValue,
+      defaultValue: defaultValue ?? null,
+      onValueChange: handleValueChange,
+    });
 
-  // Open state
-  const { open, setOpen } = useFloatingState({
-    controlledOpen,
-    defaultOpen: defaultOpen ?? false,
-    onOpenChange,
-  });
+    // Open state
+    const { open, setOpen } = useFloatingState({
+      controlledOpen,
+      defaultOpen: defaultOpen ?? false,
+      onOpenChange,
+    });
 
-  // Search state — prev-value sentinel pattern (mirrors DatePicker)
-  const [search, setSearchState] = useState<string>(() =>
-    formatDisplay(value, hourCycle, withSeconds),
-  );
-  const [prevValueIso, setPrevValueIso] = useState<string | null>(value);
-  if (value !== prevValueIso) {
-    setPrevValueIso(value);
-    setSearchState(formatDisplay(value, hourCycle, withSeconds));
-  }
+    // Search state — prev-value sentinel pattern (mirrors DatePicker)
+    const [search, setSearchState] = useState<string>(() =>
+      formatDisplay(value, hourCycle, withSeconds),
+    );
+    const [prevValueIso, setPrevValueIso] = useState<string | null>(value);
+    if (value !== prevValueIso) {
+      setPrevValueIso(value);
+      setSearchState(formatDisplay(value, hourCycle, withSeconds));
+    }
 
-  // Refs
-  const inputRef = useRef<HTMLInputElement | null>(null);
-  const contentRef = useRef<HTMLDivElement | null>(null);
+    // Refs
+    const inputRef = useRef<HTMLInputElement | null>(null);
+    const contentRef = useRef<HTMLDivElement | null>(null);
 
-  // IDs
-  const baseId = useId();
-  const inputId = `${baseId}-input`;
-  const contentId = `${baseId}-content`;
+    // IDs
+    const baseId = useId();
+    const inputId = `${baseId}-input`;
+    const contentId = `${baseId}-content`;
 
-  const [hasValidationError, setHasValidationError] = useState(false);
+    const [hasValidationError, setHasValidationError] = useState(false);
 
-  const setSearch = useCallback((next: string) => {
-    setSearchState(next);
-    setHasValidationError(false);
-  }, []);
+    const setSearch = useCallback((next: string) => {
+      setSearchState(next);
+      setHasValidationError(false);
+    }, []);
 
-  const commitSearch = useCallback(() => {
-    if (search.trim() === '') {
-      if (required) {
+    const commitSearch = useCallback(() => {
+      if (search.trim() === '') {
+        if (required) {
+          setHasValidationError(true);
+          return;
+        }
+        setValue(null);
+        setHasValidationError(false);
+        return;
+      }
+      const parsed = parseDisplay(search, hourCycle, withSeconds);
+      if (!parsed) {
         setHasValidationError(true);
         return;
       }
-      setValue(null);
-      setHasValidationError(false);
-      return;
-    }
-    const parsed = parseDisplay(search, hourCycle, withSeconds);
-    if (!parsed) {
-      setHasValidationError(true);
-      return;
-    }
-    const clamped = clampTime(parsed, min, max);
-    setValue(clamped);
-    setSearchState(formatDisplay(clamped, hourCycle, withSeconds));
-    setHasValidationError(false);
-  }, [search, hourCycle, withSeconds, min, max, setValue, required]);
-
-  const revertSearch = useCallback(() => {
-    setSearchState(formatDisplay(value, hourCycle, withSeconds));
-    setHasValidationError(false);
-  }, [value, hourCycle, withSeconds]);
-
-  const openPopup = useCallback(
-    (focusListbox = false) => {
-      if (disabled) return;
-      setOpen(true);
-      if (focusListbox) {
-        // Defer until popup renders
-        requestAnimationFrame(() => {
-          const firstOption = contentRef.current?.querySelector<HTMLElement>(
-            '[data-listbox="h"] [role="option"][tabindex="0"]',
-          );
-          firstOption?.focus();
-        });
-      }
-    },
-    [disabled, setOpen],
-  );
-
-  const closePopup = useCallback(
-    (returnFocus = true) => {
-      setOpen(false);
-      if (returnFocus) inputRef.current?.focus();
-    },
-    [setOpen],
-  );
-
-  // Per-field commit: updates the underlying ISO value preserving other fields.
-  const commitField = useCallback(
-    (field: 'h' | 'm' | 's' | 'p', raw: number | Period) => {
-      const base = value ? parseTime(value) : { h: 0, m: 0, s: 0 };
-      const current = base ?? { h: 0, m: 0, s: 0 };
-      const next = { ...current };
-      if (field === 'h') {
-        if (hourCycle === '12h' && typeof raw === 'number') {
-          next.h = from12hCommit(raw, periodOf(current.h));
-        } else if (typeof raw === 'number') {
-          next.h = Math.max(0, Math.min(23, raw));
-        }
-      } else if (field === 'm' && typeof raw === 'number') {
-        next.m = Math.max(0, Math.min(59, raw));
-      } else if (field === 's' && typeof raw === 'number') {
-        next.s = Math.max(0, Math.min(59, raw));
-      } else if (field === 'p' && (raw === 'AM' || raw === 'PM')) {
-        const display = to12hDisplay(current.h);
-        next.h = from12hCommit(display, raw);
-      }
-      const iso = formatTime(next, withSeconds);
-      const clamped = clampTime(iso, min, max);
+      const clamped = clampTime(parsed, min, max);
       setValue(clamped);
-    },
-    [value, hourCycle, withSeconds, min, max, setValue],
-  );
+      setSearchState(formatDisplay(clamped, hourCycle, withSeconds));
+      setHasValidationError(false);
+    }, [search, hourCycle, withSeconds, min, max, setValue, required]);
 
-  const advanceListbox = useCallback(
-    (current: 'h' | 'm' | 's' | 'p') => {
-      const order: Array<'h' | 'm' | 's' | 'p'> = ['h', 'm'];
-      if (withSeconds) order.push('s');
-      if (hourCycle === '12h') order.push('p');
-      const idx = order.indexOf(current);
-      const nextKey = order[idx + 1];
-      if (!nextKey) {
-        closePopup(true);
-        return;
-      }
-      requestAnimationFrame(() => {
-        const nextEl = contentRef.current?.querySelector<HTMLElement>(
-          `[data-listbox="${nextKey}"] [role="option"][tabindex="0"]`,
-        );
-        nextEl?.focus();
-      });
-    },
-    [withSeconds, hourCycle, closePopup],
-  );
+    const revertSearch = useCallback(() => {
+      setSearchState(formatDisplay(value, hourCycle, withSeconds));
+      setHasValidationError(false);
+    }, [value, hourCycle, withSeconds]);
 
-  const contextValue: TimePickerContextValue = {
-    value,
-    setValue,
-    open,
-    setOpen,
-    search,
-    setSearch,
-    commitSearch,
-    revertSearch,
-    hasValidationError,
-    openPopup,
-    closePopup,
-    inputRef,
-    contentRef,
-    isDisabled: disabled,
-    required,
-    hourCycle,
-    withSeconds,
-    step,
-    min,
-    max,
-    locale,
-    placement,
-    sideOffset,
-    baseId,
-    inputId,
-    contentId,
-    name,
-    commitField,
-    advanceListbox,
-  };
+    const openPopup = useCallback(
+      (focusListbox = false) => {
+        if (disabled) return;
+        setOpen(true);
+        if (focusListbox) {
+          // Defer until popup renders
+          requestAnimationFrame(() => {
+            const firstOption = contentRef.current?.querySelector<HTMLElement>(
+              '[data-listbox="h"] [role="option"][tabindex="0"]',
+            );
+            firstOption?.focus();
+          });
+        }
+      },
+      [disabled, setOpen],
+    );
 
-  return (
-    <TimePickerContextProvider value={contextValue}>
-      <div ref={ref} className={cn(styles.root, className)} {...rest}>
-        {children}
-        {name ? (
-          <input
-            type="hidden"
-            name={name}
-            value={value ?? ''}
-            required={required}
-            data-time-picker-hidden
-          />
-        ) : null}
-      </div>
-    </TimePickerContextProvider>
-  );
-});
+    const closePopup = useCallback(
+      (returnFocus = true) => {
+        setOpen(false);
+        if (returnFocus) inputRef.current?.focus();
+      },
+      [setOpen],
+    );
+
+    // Per-field commit: updates the underlying ISO value preserving other fields.
+    const commitField = useCallback(
+      (field: 'h' | 'm' | 's' | 'p', raw: number | Period) => {
+        const base = value ? parseTime(value) : { h: 0, m: 0, s: 0 };
+        const current = base ?? { h: 0, m: 0, s: 0 };
+        const next = { ...current };
+        if (field === 'h') {
+          if (hourCycle === '12h' && typeof raw === 'number') {
+            next.h = from12hCommit(raw, periodOf(current.h));
+          } else if (typeof raw === 'number') {
+            next.h = Math.max(0, Math.min(23, raw));
+          }
+        } else if (field === 'm' && typeof raw === 'number') {
+          next.m = Math.max(0, Math.min(59, raw));
+        } else if (field === 's' && typeof raw === 'number') {
+          next.s = Math.max(0, Math.min(59, raw));
+        } else if (field === 'p' && (raw === 'AM' || raw === 'PM')) {
+          const display = to12hDisplay(current.h);
+          next.h = from12hCommit(display, raw);
+        }
+        const iso = formatTime(next, withSeconds);
+        const clamped = clampTime(iso, min, max);
+        setValue(clamped);
+      },
+      [value, hourCycle, withSeconds, min, max, setValue],
+    );
+
+    const advanceListbox = useCallback(
+      (current: 'h' | 'm' | 's' | 'p') => {
+        const order: Array<'h' | 'm' | 's' | 'p'> = ['h', 'm'];
+        if (withSeconds) order.push('s');
+        if (hourCycle === '12h') order.push('p');
+        const idx = order.indexOf(current);
+        const nextKey = order[idx + 1];
+        if (!nextKey) {
+          closePopup(true);
+          return;
+        }
+        requestAnimationFrame(() => {
+          const nextEl = contentRef.current?.querySelector<HTMLElement>(
+            `[data-listbox="${nextKey}"] [role="option"][tabindex="0"]`,
+          );
+          nextEl?.focus();
+        });
+      },
+      [withSeconds, hourCycle, closePopup],
+    );
+
+    const contextValue: TimePickerContextValue = {
+      value,
+      setValue,
+      open,
+      setOpen,
+      search,
+      setSearch,
+      commitSearch,
+      revertSearch,
+      hasValidationError,
+      openPopup,
+      closePopup,
+      inputRef,
+      contentRef,
+      isDisabled: disabled,
+      required,
+      hourCycle,
+      withSeconds,
+      step,
+      min,
+      max,
+      locale,
+      placement,
+      sideOffset,
+      baseId,
+      inputId,
+      contentId,
+      name,
+      commitField,
+      advanceListbox,
+    };
+
+    return (
+      <TimePickerContextProvider value={contextValue}>
+        <div ref={ref} className={cn(styles.root, className)} {...rest}>
+          {children}
+          {name ? (
+            <input
+              type="hidden"
+              name={name}
+              value={value ?? ''}
+              required={required}
+              data-time-picker-hidden
+            />
+          ) : null}
+        </div>
+      </TimePickerContextProvider>
+    );
+  },
+);
 
 // ──────────────────────────────────────────────────────────────────────────
 // TimePickerInput
 
-export interface TimePickerInputProps
-  extends Omit<
-    InputHTMLAttributes<HTMLInputElement>,
-    'value' | 'defaultValue' | 'onChange' | 'type' | 'role' | 'disabled'
-  > {
+export interface TimePickerInputProps extends Omit<
+  InputHTMLAttributes<HTMLInputElement>,
+  'value' | 'defaultValue' | 'onChange' | 'type' | 'role' | 'disabled'
+> {
   /** Placeholder string. Sensible default per hourCycle when omitted. */
   placeholder?: string;
   /** Custom invalid override (OR-merged with internal validation flag). */
@@ -548,16 +541,11 @@ export const TimePickerInput = forwardRef<HTMLInputElement, TimePickerInputProps
     const ctx = useTimePickerContext('TimePickerInput');
     const isComposingRef = useRef(false);
 
-    const effectivePlaceholder =
-      placeholder ?? (ctx.hourCycle === '12h' ? 'HH:MM AM/PM' : 'HH:MM');
+    const effectivePlaceholder = placeholder ?? (ctx.hourCycle === '12h' ? 'HH:MM AM/PM' : 'HH:MM');
 
     const handleKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
       if (ctx.isDisabled) return;
-      if (
-        isComposingRef.current ||
-        event.nativeEvent.isComposing ||
-        event.key === 'Process'
-      ) {
+      if (isComposingRef.current || event.nativeEvent.isComposing || event.key === 'Process') {
         onKeyDown?.(event);
         return;
       }
@@ -641,8 +629,7 @@ export const TimePickerInput = forwardRef<HTMLInputElement, TimePickerInputProps
 // ──────────────────────────────────────────────────────────────────────────
 // TimePickerContent
 
-export interface TimePickerContentProps
-  extends Omit<HTMLAttributes<HTMLDivElement>, 'role'> {
+export interface TimePickerContentProps extends Omit<HTMLAttributes<HTMLDivElement>, 'role'> {
   /** Override popover aria-label. */
   ariaLabel?: string;
 }
@@ -839,4 +826,3 @@ function Listbox<T extends number | Period>({
     </ul>
   );
 }
-

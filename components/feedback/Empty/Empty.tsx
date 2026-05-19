@@ -65,7 +65,7 @@ export interface EmptyProps extends Omit<HTMLAttributes<HTMLDivElement>, 'title'
 
 export const Empty = forwardRef<HTMLDivElement, EmptyProps>(function Empty(
   { icon, title, description, cta, className, ...rest },
-  ref
+  ref,
 ) {
   return (
     <div ref={ref} className={cn(styles.root, className)} {...rest}>
@@ -75,9 +75,7 @@ export const Empty = forwardRef<HTMLDivElement, EmptyProps>(function Empty(
         </div>
       ) : null}
       <div className={styles.title}>{title}</div>
-      {description ? (
-        <div className={styles.description}>{description}</div>
-      ) : null}
+      {description ? <div className={styles.description}>{description}</div> : null}
       {cta ? <div className={styles.cta}>{cta}</div> : null}
     </div>
   );

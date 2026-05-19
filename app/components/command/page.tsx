@@ -47,9 +47,9 @@ export default function CommandPlayground() {
           Command
         </Heading>
         <Text variant="lead" color="muted">
-          Cmd+K command palette — a modal, searchable action launcher. Type
-          to filter, arrow keys to navigate, Enter to run. Groups, shortcuts,
-          loading states, and custom filter functions are built in.
+          Cmd+K command palette — a modal, searchable action launcher. Type to filter, arrow keys to
+          navigate, Enter to run. Groups, shortcuts, loading states, and custom filter functions are
+          built in.
         </Text>
         {lastAction !== null ? (
           <Inline gap={2} align="center">
@@ -74,11 +74,7 @@ export default function CommandPlayground() {
         <Button size="sm" variant="primary" onClick={() => setBasicOpen(true)}>
           Open palette
         </Button>
-        <Command
-          open={basicOpen}
-          onOpenChange={setBasicOpen}
-          aria-label="Basic command palette"
-        >
+        <Command open={basicOpen} onOpenChange={setBasicOpen} aria-label="Basic command palette">
           <CommandInput placeholder="Type a command…" />
           <CommandList>
             <CommandEmpty>No results found.</CommandEmpty>
@@ -108,11 +104,7 @@ export default function CommandPlayground() {
             CommandGroup with heading; CommandShortcut inline kbd pill.
           </Text>
         </header>
-        <Button
-          size="sm"
-          variant="primary"
-          onClick={() => setGroupedOpen(true)}
-        >
+        <Button size="sm" variant="primary" onClick={() => setGroupedOpen(true)}>
           Open grouped palette
         </Button>
         <Command
@@ -173,22 +165,14 @@ export default function CommandPlayground() {
             3. Filter behavior
           </Heading>
           <Text variant="small" color="muted">
-            Type &quot;paris&quot; to see contains filter; group heading hides
-            when all items filter out.
+            Type &quot;paris&quot; to see contains filter; group heading hides when all items filter
+            out.
           </Text>
         </header>
-        <Button
-          size="sm"
-          variant="primary"
-          onClick={() => setFilteredOpen(true)}
-        >
+        <Button size="sm" variant="primary" onClick={() => setFilteredOpen(true)}>
           Open city picker
         </Button>
-        <Command
-          open={filteredOpen}
-          onOpenChange={setFilteredOpen}
-          aria-label="City picker"
-        >
+        <Command open={filteredOpen} onOpenChange={setFilteredOpen} aria-label="City picker">
           <CommandInput placeholder="Search cities…" />
           <CommandList>
             <CommandEmpty>No cities found.</CommandEmpty>
@@ -242,25 +226,16 @@ export default function CommandPlayground() {
             4. Keyboard shortcut (Cmd+K / Ctrl+K)
           </Heading>
           <Text variant="small" color="muted">
-            Press <code>⌘K</code> (or <code>Ctrl+K</code>) anywhere on this
-            page to toggle. Consumer binds the key via{' '}
-            <code>useCommandShortcut</code> hook.
+            Press <code>⌘K</code> (or <code>Ctrl+K</code>) anywhere on this page to toggle. Consumer
+            binds the key via <code>useCommandShortcut</code> hook.
           </Text>
         </header>
         <Inline gap={2}>
-          <Button
-            size="sm"
-            variant="secondary"
-            onClick={() => setShortcutOpen(true)}
-          >
+          <Button size="sm" variant="secondary" onClick={() => setShortcutOpen(true)}>
             Or click here
           </Button>
         </Inline>
-        <Command
-          open={shortcutOpen}
-          onOpenChange={setShortcutOpen}
-          aria-label="Shortcut palette"
-        >
+        <Command open={shortcutOpen} onOpenChange={setShortcutOpen} aria-label="Shortcut palette">
           <CommandInput placeholder="⌘K palette — type a command…" />
           <CommandList>
             <CommandEmpty>No results.</CommandEmpty>
@@ -292,11 +267,7 @@ export default function CommandPlayground() {
             <code>loading</code> prop shows CommandLoading placeholder.
           </Text>
         </header>
-        <Button
-          size="sm"
-          variant="primary"
-          onClick={() => setLoadingOpen(true)}
-        >
+        <Button size="sm" variant="primary" onClick={() => setLoadingOpen(true)}>
           Open loading palette
         </Button>
         <Command
@@ -320,11 +291,7 @@ export default function CommandPlayground() {
             Custom filter function overrides default substring contains.
           </Text>
         </header>
-        <Button
-          size="sm"
-          variant="primary"
-          onClick={() => setCustomFilterOpen(true)}
-        >
+        <Button size="sm" variant="primary" onClick={() => setCustomFilterOpen(true)}>
           Open startsWith palette
         </Button>
         <Command
@@ -333,11 +300,7 @@ export default function CommandPlayground() {
           aria-label="startsWith palette"
           filter={(items, search) =>
             items
-              .filter((item) =>
-                item.textContent
-                  .toLowerCase()
-                  .startsWith(search.toLowerCase()),
-              )
+              .filter((item) => item.textContent.toLowerCase().startsWith(search.toLowerCase()))
               .map((item) => item.id)
           }
         >
@@ -378,8 +341,7 @@ export default function CommandPlayground() {
             <code>type</code> — filter listbox live
           </li>
           <li>
-            <code>ArrowDown / ArrowUp</code> — navigate items (skip disabled,
-            wrap)
+            <code>ArrowDown / ArrowUp</code> — navigate items (skip disabled, wrap)
           </li>
           <li>
             <code>Home / End</code> — first / last item
@@ -388,8 +350,7 @@ export default function CommandPlayground() {
             <code>PageDown / PageUp</code> — jump ±10 items
           </li>
           <li>
-            <code>Enter</code> — commit highlighted item (calls{' '}
-            <code>onSelect</code>)
+            <code>Enter</code> — commit highlighted item (calls <code>onSelect</code>)
           </li>
           <li>
             <code>Escape</code> — close dialog, restore focus to trigger

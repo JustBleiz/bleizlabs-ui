@@ -20,9 +20,7 @@ test.describe('Toolbar — ARIA + accessibility tree', () => {
     await page.goto('/components/toolbar');
   });
 
-  test('toolbar has role + aria-label + aria-orientation (horizontal)', async ({
-    page,
-  }) => {
+  test('toolbar has role + aria-label + aria-orientation (horizontal)', async ({ page }) => {
     const toolbar = page.getByRole('toolbar', { name: 'Formatting' });
     await expect(toolbar).toBeVisible();
     await expect(toolbar).toHaveAttribute('aria-label', 'Formatting');
@@ -58,9 +56,7 @@ test.describe('Toolbar — ARIA + accessibility tree', () => {
   });
 
   test('axe-core: zero violations on toolbar demo page', async ({ page }) => {
-    const results = await new AxeBuilder({ page })
-      .include('main')
-      .analyze();
+    const results = await new AxeBuilder({ page }).include('main').analyze();
     expect(results.violations).toEqual([]);
   });
 

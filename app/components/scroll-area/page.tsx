@@ -60,10 +60,9 @@ export default function ScrollAreaPlayground() {
           ScrollArea
         </Heading>
         <Text variant="lead" color="muted">
-          Custom-styled scrollbars that preserve native scroll behaviour — so
-          keyboard scroll, momentum, and touch fling all keep working. Four
-          visibility modes cover design tools, product UIs, and mobile-first
-          layouts.
+          Custom-styled scrollbars that preserve native scroll behaviour — so keyboard scroll,
+          momentum, and touch fling all keep working. Four visibility modes cover design tools,
+          product UIs, and mobile-first layouts.
         </Text>
         <Inline gap={2} wrap>
           <Badge color="success">native scroll preserved</Badge>
@@ -79,9 +78,9 @@ export default function ScrollAreaPlayground() {
           1. Basic — auto-default children
         </Heading>
         <Text variant="body" color="muted">
-          Bare <code>&lt;ScrollArea&gt;</code> auto-renders viewport + both
-          scrollbars + corner. Default visibility <code>scroll</code> (visible
-          while scrolling, auto-hides after 600ms linger).
+          Bare <code>&lt;ScrollArea&gt;</code> auto-renders viewport + both scrollbars + corner.
+          Default visibility <code>scroll</code> (visible while scrolling, auto-hides after 600ms
+          linger).
         </Text>
         <ScrollArea className={styles.fixedBox}>
           <div className={styles.verticalContent}>
@@ -97,8 +96,8 @@ export default function ScrollAreaPlayground() {
           2. Visibility: always
         </Heading>
         <Text variant="body" color="muted">
-          Scrollbar always visible. Useful for design tools and developer UIs
-          where persistent scroll indication matters.
+          Scrollbar always visible. Useful for design tools and developer UIs where persistent
+          scroll indication matters.
         </Text>
         <ScrollArea className={styles.fixedBox} visibility="always">
           <div className={styles.verticalContent}>
@@ -114,8 +113,8 @@ export default function ScrollAreaPlayground() {
           3. Visibility: hover
         </Heading>
         <Text variant="body" color="muted">
-          Scrollbar appears only on pointer-enter over the root. Desktop
-          minimalist mode; touch devices never see scrollbars (no hover).
+          Scrollbar appears only on pointer-enter over the root. Desktop minimalist mode; touch
+          devices never see scrollbars (no hover).
         </Text>
         <ScrollArea className={styles.fixedBox} visibility="hover">
           <div className={styles.verticalContent}>
@@ -131,9 +130,9 @@ export default function ScrollAreaPlayground() {
           4. Visibility: auto (touch-aware)
         </Heading>
         <Text variant="body" color="muted">
-          Desktop (<code>pointer: fine</code>) → visible on scroll/hover. Touch
-          (<code>pointer: coarse</code>) → scrollbars entirely hidden, native
-          mobile scrollbars take over.
+          Desktop (<code>pointer: fine</code>) → visible on scroll/hover. Touch (
+          <code>pointer: coarse</code>) → scrollbars entirely hidden, native mobile scrollbars take
+          over.
         </Text>
         <ScrollArea className={styles.fixedBox} visibility="auto">
           <div className={styles.verticalContent}>
@@ -149,13 +148,10 @@ export default function ScrollAreaPlayground() {
           5. Horizontal scroll (wide table)
         </Heading>
         <Text variant="body" color="muted">
-          Wide table triggers horizontal scrollbar only. Vertical scrollbar
-          auto-hidden because content fits vertically.
+          Wide table triggers horizontal scrollbar only. Vertical scrollbar auto-hidden because
+          content fits vertically.
         </Text>
-        <ScrollArea
-          className={styles.wideBox}
-          visibility="always"
-        >
+        <ScrollArea className={styles.wideBox} visibility="always">
           <TallTable rows={8} />
         </ScrollArea>
       </section>
@@ -165,14 +161,10 @@ export default function ScrollAreaPlayground() {
           6. Both axes + corner cell
         </Heading>
         <Text variant="body" color="muted">
-          Wide + tall content triggers both scrollbars with corner cell at
-          intersection. Each scrollbar drags independently; track click pages
-          by one viewport dimension.
+          Wide + tall content triggers both scrollbars with corner cell at intersection. Each
+          scrollbar drags independently; track click pages by one viewport dimension.
         </Text>
-        <ScrollArea
-          className={styles.fixedBox}
-          visibility="always"
-        >
+        <ScrollArea className={styles.fixedBox} visibility="always">
           <TallTable rows={40} />
         </ScrollArea>
       </section>
@@ -182,8 +174,8 @@ export default function ScrollAreaPlayground() {
           7. Content fits — no scrollbars
         </Heading>
         <Text variant="body" color="muted">
-          When content fits within viewport, scrollbars don&apos;t render. Clean
-          state, no dead scroll affordance.
+          When content fits within viewport, scrollbars don&apos;t render. Clean state, no dead
+          scroll affordance.
         </Text>
         <ScrollArea className={styles.fixedBox} visibility="always">
           <div className={styles.verticalContent}>
@@ -197,9 +189,8 @@ export default function ScrollAreaPlayground() {
           8. Explicit composition
         </Heading>
         <Text variant="body" color="muted">
-          Opt into explicit slot composition for custom scrollbar structure.
-          Omit <code>ScrollAreaCorner</code> if content can&apos;t scroll both
-          axes simultaneously.
+          Opt into explicit slot composition for custom scrollbar structure. Omit{' '}
+          <code>ScrollAreaCorner</code> if content can&apos;t scroll both axes simultaneously.
         </Text>
         <ScrollArea className={styles.fixedBox} visibility="always">
           <ScrollAreaViewport>

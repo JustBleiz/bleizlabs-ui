@@ -19,9 +19,7 @@ test.describe('Tabs — keyboard interactions', () => {
     await page.goto('/components/tabs');
   });
 
-  test('ArrowRight moves focus + activates next tab (automatic mode)', async ({
-    page,
-  }) => {
+  test('ArrowRight moves focus + activates next tab (automatic mode)', async ({ page }) => {
     const tablist = page.getByRole('tablist', { name: 'Project sections' });
     const overview = tablist.getByRole('tab', { name: 'Overview' });
     const tasks = tablist.getByRole('tab', { name: 'Tasks' });
@@ -31,9 +29,7 @@ test.describe('Tabs — keyboard interactions', () => {
     await expect(tasks).toHaveAttribute('aria-selected', 'true');
   });
 
-  test('ArrowLeft wraps from first tab to last (loop=true default)', async ({
-    page,
-  }) => {
+  test('ArrowLeft wraps from first tab to last (loop=true default)', async ({ page }) => {
     const tablist = page.getByRole('tablist', { name: 'Project sections' });
     const first = tablist.getByRole('tab', { name: 'Overview' });
     const last = tablist.getByRole('tab', { name: 'Activity' });
@@ -60,9 +56,7 @@ test.describe('Tabs — keyboard interactions', () => {
     await expect(last).toBeFocused();
   });
 
-  test('TB-R03 — Tab key moves focus INTO tabpanel (panel tabindex=0)', async ({
-    page,
-  }) => {
+  test('TB-R03 — Tab key moves focus INTO tabpanel (panel tabindex=0)', async ({ page }) => {
     const tablist = page.getByRole('tablist', { name: 'Project sections' });
     const overview = tablist.getByRole('tab', { name: 'Overview' });
     const tasks = tablist.getByRole('tab', { name: 'Tasks' });
@@ -78,9 +72,7 @@ test.describe('Tabs — keyboard interactions', () => {
     expect(panelFocused).toBe(true);
   });
 
-  test('TB-R04 — Meta/Cmd+ArrowLeft pass-through (browser back hotkey)', async ({
-    page,
-  }) => {
+  test('TB-R04 — Meta/Cmd+ArrowLeft pass-through (browser back hotkey)', async ({ page }) => {
     const tablist = page.getByRole('tablist', { name: 'Project sections' });
     const tasks = tablist.getByRole('tab', { name: 'Tasks' });
     await tasks.click();
@@ -167,9 +159,7 @@ test.describe('Tabs — keyboard interactions', () => {
     // When added, verify ArrowLeft moves to next tab instead of previous.
   });
 
-  test('TB-R18 — rapid arrow key presses produce synchronous state updates', async ({
-    page,
-  }) => {
+  test('TB-R18 — rapid arrow key presses produce synchronous state updates', async ({ page }) => {
     const tablist = page.getByRole('tablist', { name: 'Project sections' });
     await tablist.getByRole('tab').first().focus();
     // Overview → Tasks → Team → Activity → Overview (4 tabs wrap back)

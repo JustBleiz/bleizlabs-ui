@@ -58,10 +58,9 @@ export default function HoverCardPlaygroundPage() {
           HoverCard
         </Heading>
         <Text className={styles.intro}>
-          Floating surface that opens on hover or focus, for rich previews like
-          user cards, link metadata, or product details. Unlike Tooltip,
-          HoverCard can contain interactive content — links, buttons, nested
-          components — and supports a grace area for pointer travel.
+          Floating surface that opens on hover or focus, for rich previews like user cards, link
+          metadata, or product details. Unlike Tooltip, HoverCard can contain interactive content —
+          links, buttons, nested components — and supports a grace area for pointer travel.
         </Text>
       </header>
 
@@ -71,8 +70,8 @@ export default function HoverCardPlaygroundPage() {
         </Heading>
         <Text>
           Default <code>openDelay=700</code> + <code>closeDelay=300</code> (Radix conventions).
-          Hover the link to open after the warm-up delay; pointer can travel into the surface
-          via grace area; pointer leave (or focus-out via Tab) closes after the close delay.
+          Hover the link to open after the warm-up delay; pointer can travel into the surface via
+          grace area; pointer leave (or focus-out via Tab) closes after the close delay.
         </Text>
         <div className={styles.row}>
           <Text>
@@ -104,10 +103,10 @@ export default function HoverCardPlaygroundPage() {
           Avatar trigger with rich content
         </Heading>
         <Text>
-          <code>HoverCardTrigger asChild</code> wraps the Avatar without adding a wrapper
-          element. Content slot accepts arbitrary JSX — buttons inside the surface remain
-          interactive (focus moves freely, blur with <code>relatedTarget</code> awareness keeps
-          the surface open while the user is interacting).
+          <code>HoverCardTrigger asChild</code> wraps the Avatar without adding a wrapper element.
+          Content slot accepts arbitrary JSX — buttons inside the surface remain interactive (focus
+          moves freely, blur with <code>relatedTarget</code> awareness keeps the surface open while
+          the user is interacting).
         </Text>
         <div className={styles.row}>
           <HoverCard>
@@ -129,8 +128,8 @@ export default function HoverCardPlaygroundPage() {
               }
             >
               <Text>
-                Type, motion, systems. Currently obsessed with seed-based design tokens and the
-                math behind variable typography.
+                Type, motion, systems. Currently obsessed with seed-based design tokens and the math
+                behind variable typography.
               </Text>
               <Badge color="brand">Design</Badge>
             </HoverCardContent>
@@ -143,10 +142,9 @@ export default function HoverCardPlaygroundPage() {
           Provider — delay group (skip warm-up after first open)
         </Heading>
         <Text>
-          Wrap a feed/sidebar in <code>HoverCardProvider</code>. Once one HoverCard opens,
-          siblings open instantly within the <code>skipDelayDuration</code> window (default
-          300ms). Mirror of <code>TooltipProvider</code> — same callback-based pattern
-          for delay-group coordination.
+          Wrap a feed/sidebar in <code>HoverCardProvider</code>. Once one HoverCard opens, siblings
+          open instantly within the <code>skipDelayDuration</code> window (default 300ms). Mirror of{' '}
+          <code>TooltipProvider</code> — same callback-based pattern for delay-group coordination.
         </Text>
         <HoverCardProvider>
           <ul className={styles.feed}>
@@ -204,8 +202,8 @@ export default function HoverCardPlaygroundPage() {
                 <code>openDelay=150</code> + <code>closeDelay=500</code>
               </Text>
               <Text>
-                Useful for snappy nav links where the preview should appear immediately on hover
-                but linger long enough for the user to commit to clicking through.
+                Useful for snappy nav links where the preview should appear immediately on hover but
+                linger long enough for the user to commit to clicking through.
               </Text>
             </HoverCardContent>
           </HoverCard>
@@ -221,8 +219,8 @@ export default function HoverCardPlaygroundPage() {
                 <code>openDelay=1500</code> + <code>closeDelay=100</code>
               </Text>
               <Text>
-                Useful when the trigger overlaps with other clickable elements — wait for
-                deliberate hover intent before showing the preview.
+                Useful when the trigger overlaps with other clickable elements — wait for deliberate
+                hover intent before showing the preview.
               </Text>
             </HoverCardContent>
           </HoverCard>
@@ -234,9 +232,9 @@ export default function HoverCardPlaygroundPage() {
           Controlled state
         </Heading>
         <Text>
-          Consumer owns <code>open</code> via <code>open</code> + <code>onOpenChange</code>.
-          Hover, focus, and blur still drive the open transitions — but consumer code can also
-          force-open or force-close programmatically.
+          Consumer owns <code>open</code> via <code>open</code> + <code>onOpenChange</code>. Hover,
+          focus, and blur still drive the open transitions — but consumer code can also force-open
+          or force-close programmatically.
         </Text>
         <div className={styles.row}>
           <HoverCard open={controlledOpen} onOpenChange={setControlledOpen}>
@@ -246,16 +244,10 @@ export default function HoverCardPlaygroundPage() {
               </a>
             </HoverCardTrigger>
             <HoverCardContent title="Mira Singh" description="Product Manager @ Northwave">
-              <Text>
-                Healthcare CDSS, clinical workflows, and the ethics of AI in medicine.
-              </Text>
+              <Text>Healthcare CDSS, clinical workflows, and the ethics of AI in medicine.</Text>
             </HoverCardContent>
           </HoverCard>
-          <Button
-            size="sm"
-            variant="secondary"
-            onClick={() => setControlledOpen((prev) => !prev)}
-          >
+          <Button size="sm" variant="secondary" onClick={() => setControlledOpen((prev) => !prev)}>
             {controlledOpen ? 'Force close' : 'Force open'}
           </Button>
           <Text variant="caption">
@@ -269,11 +261,11 @@ export default function HoverCardPlaygroundPage() {
           Keyboard parity (focus path)
         </Heading>
         <Text>
-          Tab into the link below — focus opens the HoverCard <strong>instantly</strong> (no
-          warm-up delay; SC 2.1.1 explicit intent). Tab again to move into content (the inner
-          link inside the HoverCard); the surface stays open because{' '}
-          <code>relatedTarget</code> is contained in the popper. Tab out to close. Press Escape
-          at any time to close without losing trigger focus (SC 1.4.13 dismissable).
+          Tab into the link below — focus opens the HoverCard <strong>instantly</strong> (no warm-up
+          delay; SC 2.1.1 explicit intent). Tab again to move into content (the inner link inside
+          the HoverCard); the surface stays open because <code>relatedTarget</code> is contained in
+          the popper. Tab out to close. Press Escape at any time to close without losing trigger
+          focus (SC 1.4.13 dismissable).
         </Text>
         <div className={styles.row}>
           <HoverCard>
@@ -287,9 +279,9 @@ export default function HoverCardPlaygroundPage() {
               description="Tab into the link below to test focus retention"
             >
               <Text>
-                Focus moves into this surface when you press Tab. The HoverCard stays open
-                because <code>onBlur</code> on the trigger checks <code>relatedTarget</code> —
-                if focus moved into the popper container, the close is suppressed.
+                Focus moves into this surface when you press Tab. The HoverCard stays open because{' '}
+                <code>onBlur</code> on the trigger checks <code>relatedTarget</code> — if focus
+                moved into the popper container, the close is suppressed.
               </Text>
               <a href="#" className={styles.link}>
                 Inner action link

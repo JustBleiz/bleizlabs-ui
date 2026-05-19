@@ -27,9 +27,7 @@ test.describe('Slider — focus behavior', () => {
     await page.goto('/components/slider');
   });
 
-  test('SL-R05 — track click jumps position AND thumb receives focus (F12)', async ({
-    page,
-  }) => {
+  test('SL-R05 — track click jumps position AND thumb receives focus (F12)', async ({ page }) => {
     const sections = page.locator('section');
     const volume = sections.nth(1);
     const thumb = volume.getByRole('slider');
@@ -50,9 +48,7 @@ test.describe('Slider — focus behavior', () => {
   test('SL-R22 — disabled thumb has aria-disabled + tabIndex=0 (focusable for SR, F11)', async ({
     page,
   }) => {
-    const thumb = page
-      .getByRole('slider', { name: 'Disabled (aria-disabled, focusable)' })
-      .first();
+    const thumb = page.getByRole('slider', { name: 'Disabled (aria-disabled, focusable)' }).first();
     await expect(thumb).toHaveAttribute('aria-disabled', 'true');
     // F11 — disabled thumb stays focusable, aligning runtime with the
     // docblock claim + library convention (Select/Tabs/NavigationMenu).
@@ -60,12 +56,8 @@ test.describe('Slider — focus behavior', () => {
     expect(tabindex).toBe('0');
   });
 
-  test('Read-only thumb is focusable (tabIndex=0), keyboard no-op', async ({
-    page,
-  }) => {
-    const thumb = page
-      .getByRole('slider', { name: 'Read-only (focusable, no changes)' })
-      .first();
+  test('Read-only thumb is focusable (tabIndex=0), keyboard no-op', async ({ page }) => {
+    const thumb = page.getByRole('slider', { name: 'Read-only (focusable, no changes)' }).first();
     await thumb.focus();
     await expect(thumb).toBeFocused();
     const before = await thumb.getAttribute('aria-valuenow');

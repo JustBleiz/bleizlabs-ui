@@ -2,10 +2,7 @@
 
 import Link from 'next/link';
 import { useMemo, useState } from 'react';
-import {
-  DataTable,
-  type ColumnDef,
-} from '@/components/complex/DataTable';
+import { DataTable, type ColumnDef } from '@/components/complex/DataTable';
 import { Heading } from '@/components/typography/Heading';
 import { Text } from '@/components/typography/Text';
 import { Stack } from '@/components/layout/Stack';
@@ -28,20 +25,14 @@ import {
 } from './_data/mock-projects';
 import styles from './page.module.scss';
 
-const STATUS_COLOR: Record<
-  ProjectStatus,
-  'success' | 'warning' | 'info' | 'default'
-> = {
+const STATUS_COLOR: Record<ProjectStatus, 'success' | 'warning' | 'info' | 'default'> = {
   active: 'success',
   paused: 'warning',
   completed: 'info',
   archived: 'default',
 };
 
-const PRIORITY_COLOR: Record<
-  ProjectPriority,
-  'info' | 'warning' | 'error' | 'default'
-> = {
+const PRIORITY_COLOR: Record<ProjectPriority, 'info' | 'warning' | 'error' | 'default'> = {
   low: 'default',
   medium: 'info',
   high: 'warning',
@@ -52,9 +43,7 @@ export default function DataTablePlaygroundPage() {
   // ─────────────────────────────────────────────────────────────────────────
   // Use case 4 — full-featured controls
   // ─────────────────────────────────────────────────────────────────────────
-  const [density, setDensity] = useState<'compact' | 'cozy' | 'comfortable'>(
-    'cozy',
-  );
+  const [density, setDensity] = useState<'compact' | 'cozy' | 'comfortable'>('cozy');
   const [dir, setDir] = useState<'ltr' | 'rtl'>('ltr');
   const [striped, setStriped] = useState(true);
   const [globalSearch, setGlobalSearch] = useState('');
@@ -104,9 +93,7 @@ export default function DataTablePlaygroundPage() {
         id: 'status',
         header: 'Status',
         sortable: (a, b) => a.status.localeCompare(b.status),
-        cell: (row) => (
-          <Badge color={STATUS_COLOR[row.status]} label={STATUS_LABELS[row.status]} />
-        ),
+        cell: (row) => <Badge color={STATUS_COLOR[row.status]} label={STATUS_LABELS[row.status]} />,
       },
       {
         id: 'budget',
@@ -127,9 +114,7 @@ export default function DataTablePlaygroundPage() {
       {
         id: 'status',
         header: 'Status',
-        cell: (row) => (
-          <Badge color={STATUS_COLOR[row.status]} label={STATUS_LABELS[row.status]} />
-        ),
+        cell: (row) => <Badge color={STATUS_COLOR[row.status]} label={STATUS_LABELS[row.status]} />,
       },
       {
         id: 'budget',
@@ -163,9 +148,7 @@ export default function DataTablePlaygroundPage() {
         id: 'status',
         header: 'Status',
         sortable: (a, b) => a.status.localeCompare(b.status),
-        cell: (row) => (
-          <Badge color={STATUS_COLOR[row.status]} label={STATUS_LABELS[row.status]} />
-        ),
+        cell: (row) => <Badge color={STATUS_COLOR[row.status]} label={STATUS_LABELS[row.status]} />,
       },
       {
         id: 'priority',
@@ -226,9 +209,7 @@ export default function DataTablePlaygroundPage() {
       {
         id: 'status',
         header: 'Status',
-        cell: (row) => (
-          <Badge color={STATUS_COLOR[row.status]} label={STATUS_LABELS[row.status]} />
-        ),
+        cell: (row) => <Badge color={STATUS_COLOR[row.status]} label={STATUS_LABELS[row.status]} />,
       },
       {
         id: 'priority',
@@ -266,12 +247,11 @@ export default function DataTablePlaygroundPage() {
           DataTable
         </Heading>
         <Text className={styles.intro}>
-          Generic-data grid primitive z deklaratywnymi column defs, sortowaniem,
-          filtrowaniem, paginacją, selection, expansion, frozen columns, mobile
-          fallback i pełnym APG <code>/grid/</code> (lub <code>/treegrid/</code>
-          z <code>expandable</code>) keyboard model. Composes 10+ lib primitives
-          (Table compound, Pagination, Checkbox, Input, Skeleton, Empty, Alert)
-          — zero external runtime deps.
+          Generic-data grid primitive z deklaratywnymi column defs, sortowaniem, filtrowaniem,
+          paginacją, selection, expansion, frozen columns, mobile fallback i pełnym APG{' '}
+          <code>/grid/</code> (lub <code>/treegrid/</code>z <code>expandable</code>) keyboard model.
+          Composes 10+ lib primitives (Table compound, Pagination, Checkbox, Input, Skeleton, Empty,
+          Alert) — zero external runtime deps.
         </Text>
       </header>
 
@@ -283,9 +263,9 @@ export default function DataTablePlaygroundPage() {
           1. Basic — paste-and-go
         </Heading>
         <Text className={styles.sectionIntro}>
-          Minimum API: pass <code>data</code> + <code>columns</code>. Zero
-          features. Każda kolumna ma <code>id</code>, <code>header</code> i{' '}
-          <code>accessorKey</code>. Format wartości fallback (string/number/Date).
+          Minimum API: pass <code>data</code> + <code>columns</code>. Zero features. Każda kolumna
+          ma <code>id</code>, <code>header</code> i <code>accessorKey</code>. Format wartości
+          fallback (string/number/Date).
         </Text>
         <DataTable
           data={MOCK_PROJECTS.slice(0, 5)}
@@ -303,9 +283,8 @@ export default function DataTablePlaygroundPage() {
           2. Sortable + filterable
         </Heading>
         <Text className={styles.sectionIntro}>
-          Klik na header sortuje kolumnę (cycle: asc → desc → none){' '}
-          <code>aria-sort</code> updated. Header filter row renderuje
-          domyślne text inputy. Custom cell renderers via{' '}
+          Klik na header sortuje kolumnę (cycle: asc → desc → none) <code>aria-sort</code> updated.
+          Header filter row renderuje domyślne text inputy. Custom cell renderers via{' '}
           <code>cell: (row) =&gt; ReactNode</code>.
         </Text>
         <DataTable
@@ -325,11 +304,10 @@ export default function DataTablePlaygroundPage() {
           3. Selection + pagination
         </Heading>
         <Text className={styles.sectionIntro}>
-          Discriminated union enforced via TypeScript:{' '}
-          <code>selection=&quot;multiple&quot;</code> wymaga callback
-          z <code>(rows: Project[])</code>. Header checkbox z indeterminate
-          state. Selected count + clear button via imperative handle (Space
-          toggles selection wiersza po klawiaturze).
+          Discriminated union enforced via TypeScript: <code>selection=&quot;multiple&quot;</code>{' '}
+          wymaga callback z <code>(rows: Project[])</code>. Header checkbox z indeterminate state.
+          Selected count + clear button via imperative handle (Space toggles selection wiersza po
+          klawiaturze).
         </Text>
         <Stack gap={3}>
           <Inline gap={3} justify="between" align="center">
@@ -339,11 +317,7 @@ export default function DataTablePlaygroundPage() {
                 : `${selected3.length} ${selected3.length === 1 ? 'row' : 'rows'} selected`}
             </Text>
             {selected3.length > 0 && (
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setSelected3([])}
-              >
+              <Button variant="ghost" size="sm" onClick={() => setSelected3([])}>
                 Clear
               </Button>
             )}
@@ -369,11 +343,10 @@ export default function DataTablePlaygroundPage() {
           4. Full-featured (frozen columns + density + RTL + striped)
         </Heading>
         <Text className={styles.sectionIntro}>
-          Wszystko: frozen <code>name</code> column left + frozen{' '}
-          <code>actions</code> right (logical properties — automatyczne RTL
-          swap), 7 sortable columns, filter row, selection, expansion,
-          density toggle, RTL toggle, striped toggle, custom Badge cells.
-          Try keyboard nav (Arrow keys, Home/End, Space, Enter).
+          Wszystko: frozen <code>name</code> column left + frozen <code>actions</code> right
+          (logical properties — automatyczne RTL swap), 7 sortable columns, filter row, selection,
+          expansion, density toggle, RTL toggle, striped toggle, custom Badge cells. Try keyboard
+          nav (Arrow keys, Home/End, Space, Enter).
         </Text>
         <Stack gap={3}>
           <Inline gap={4} wrap align="center">
@@ -387,9 +360,15 @@ export default function DataTablePlaygroundPage() {
                 type="single"
                 aria-label="Density"
               >
-                <Toggle value="compact" size="sm">Compact</Toggle>
-                <Toggle value="cozy" size="sm">Cozy</Toggle>
-                <Toggle value="comfortable" size="sm">Comfy</Toggle>
+                <Toggle value="compact" size="sm">
+                  Compact
+                </Toggle>
+                <Toggle value="cozy" size="sm">
+                  Cozy
+                </Toggle>
+                <Toggle value="comfortable" size="sm">
+                  Comfy
+                </Toggle>
               </ToggleGroup>
             </Inline>
             <Inline gap={2} align="center">
@@ -431,9 +410,7 @@ export default function DataTablePlaygroundPage() {
               />
             </Inline>
             <Text variant="small">
-              {selected4.length === 0
-                ? 'No selection'
-                : `${selected4.length} selected`}
+              {selected4.length === 0 ? 'No selection' : `${selected4.length} selected`}
             </Text>
           </Inline>
           <DataTable
@@ -462,9 +439,7 @@ export default function DataTablePlaygroundPage() {
               ),
             }}
             pagination={{ pageSize: 10, pageSizeOptions: [5, 10, 20, 50] }}
-            rowVariant={(row) =>
-              row.overdue ? 'warning' : row.archived ? 'default' : 'default'
-            }
+            rowVariant={(row) => (row.overdue ? 'warning' : row.archived ? 'default' : 'default')}
             rowDisabled={(row) => row.archived}
             getRowId={(row) => row.id}
             stickyHeader
@@ -481,10 +456,9 @@ export default function DataTablePlaygroundPage() {
           5. Real-world — panel projects z onRowClick
         </Heading>
         <Text className={styles.sectionIntro}>
-          Realistyczny use case z panel/CRM: klikalne wiersze otwierające
-          detail page, sortowanie, paginacja, badges per status/priority,
-          formatted currency + date. Mobile: poniżej 768px renderuje się
-          card list zamiast tabeli.
+          Realistyczny use case z panel/CRM: klikalne wiersze otwierające detail page, sortowanie,
+          paginacja, badges per status/priority, formatted currency + date. Mobile: poniżej 768px
+          renderuje się card list zamiast tabeli.
         </Text>
         <DataTable
           data={realWorldData}
@@ -507,10 +481,9 @@ export default function DataTablePlaygroundPage() {
           6. States — empty, loading, error
         </Heading>
         <Text className={styles.sectionIntro}>
-          Three state machine: <code>state=&quot;loading&quot;</code> renders
-          skeleton rows respecting column widths.{' '}
-          <code>state=&quot;error&quot;</code> renders Alert z optional retry.{' '}
-          Empty data renders <code>&lt;Empty&gt;</code> primitive (or{' '}
+          Three state machine: <code>state=&quot;loading&quot;</code> renders skeleton rows
+          respecting column widths. <code>state=&quot;error&quot;</code> renders Alert z optional
+          retry. Empty data renders <code>&lt;Empty&gt;</code> primitive (or{' '}
           <code>renderEmpty</code> slot).
         </Text>
         <Stack gap={4}>

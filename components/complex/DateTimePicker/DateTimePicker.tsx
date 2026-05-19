@@ -88,7 +88,12 @@ import {
   type ReactNode,
   type RefObject,
 } from 'react';
-import { Calendar, type CalendarDisabled, type CalendarWeekStart, type CalendarDir } from '../Calendar';
+import {
+  Calendar,
+  type CalendarDisabled,
+  type CalendarWeekStart,
+  type CalendarDir,
+} from '../Calendar';
 import { TimeInput } from '../../interactive/TimeInput';
 import {
   createFloatingContext,
@@ -201,8 +206,10 @@ function parseDisplay(input: string): Date | null {
 // ──────────────────────────────────────────────────────────────────────────
 // DateTimePicker — root
 
-export interface DateTimePickerProps
-  extends Omit<HTMLAttributes<HTMLDivElement>, 'children' | 'defaultValue' | 'onChange' | 'dir'> {
+export interface DateTimePickerProps extends Omit<
+  HTMLAttributes<HTMLDivElement>,
+  'children' | 'defaultValue' | 'onChange' | 'dir'
+> {
   /** Controlled value. */
   value?: Date | null;
   /** Uncontrolled initial value. */
@@ -254,239 +261,237 @@ export interface DateTimePickerProps
   children?: ReactNode;
 }
 
-export const DateTimePicker = forwardRef<HTMLDivElement, DateTimePickerProps>(function DateTimePicker(
-  props,
-  ref,
-) {
-  const {
-    value: controlledValue,
-    defaultValue,
-    onValueChange,
-    open: controlledOpen,
-    defaultOpen,
-    onOpenChange,
-    min,
-    max,
-    disabledDates,
-    disabled = false,
-    required = false,
-    name,
-    locale: localeProp,
-    weekStartsOn,
-    dir = 'ltr',
-    withSeconds = false,
-    hourCycle,
-    timeStep = 1,
-    showTimeSteppers = false,
-    placement = 'bottom-start',
-    sideOffset = 4,
-    children,
-    className,
-    ...rest
-  } = props;
+export const DateTimePicker = forwardRef<HTMLDivElement, DateTimePickerProps>(
+  function DateTimePicker(props, ref) {
+    const {
+      value: controlledValue,
+      defaultValue,
+      onValueChange,
+      open: controlledOpen,
+      defaultOpen,
+      onOpenChange,
+      min,
+      max,
+      disabledDates,
+      disabled = false,
+      required = false,
+      name,
+      locale: localeProp,
+      weekStartsOn,
+      dir = 'ltr',
+      withSeconds = false,
+      hourCycle,
+      timeStep = 1,
+      showTimeSteppers = false,
+      placement = 'bottom-start',
+      sideOffset = 4,
+      children,
+      className,
+      ...rest
+    } = props;
 
-  const locale = useResolvedLocale(localeProp);
+    const locale = useResolvedLocale(localeProp);
 
-  const handleValueChange = useCallback(
-    (next: Date | null) => {
-      onValueChange?.(next);
-    },
-    [onValueChange],
-  );
-  const { value, setValue } = useFloatingValueState<Date>({
-    controlledValue,
-    defaultValue: defaultValue ?? null,
-    onValueChange: handleValueChange,
-  });
+    const handleValueChange = useCallback(
+      (next: Date | null) => {
+        onValueChange?.(next);
+      },
+      [onValueChange],
+    );
+    const { value, setValue } = useFloatingValueState<Date>({
+      controlledValue,
+      defaultValue: defaultValue ?? null,
+      onValueChange: handleValueChange,
+    });
 
-  const { open, setOpen } = useFloatingState({
-    controlledOpen,
-    defaultOpen: defaultOpen ?? false,
-    onOpenChange,
-  });
+    const { open, setOpen } = useFloatingState({
+      controlledOpen,
+      defaultOpen: defaultOpen ?? false,
+      onOpenChange,
+    });
 
-  // Search state (prev-value sentinel)
-  const [search, setSearchState] = useState<string>(() => formatDisplay(value, withSeconds));
-  const [prevValue, setPrevValue] = useState<Date | null>(value);
-  if (value !== prevValue) {
-    setPrevValue(value);
-    setSearchState(formatDisplay(value, withSeconds));
-  }
+    // Search state (prev-value sentinel)
+    const [search, setSearchState] = useState<string>(() => formatDisplay(value, withSeconds));
+    const [prevValue, setPrevValue] = useState<Date | null>(value);
+    if (value !== prevValue) {
+      setPrevValue(value);
+      setSearchState(formatDisplay(value, withSeconds));
+    }
 
-  // Refs
-  const inputRef = useRef<HTMLInputElement | null>(null);
-  const contentRef = useRef<HTMLDivElement | null>(null);
+    // Refs
+    const inputRef = useRef<HTMLInputElement | null>(null);
+    const contentRef = useRef<HTMLDivElement | null>(null);
 
-  // IDs
-  const baseId = useId();
-  const inputId = `${baseId}-input`;
-  const contentId = `${baseId}-content`;
+    // IDs
+    const baseId = useId();
+    const inputId = `${baseId}-input`;
+    const contentId = `${baseId}-content`;
 
-  const [hasValidationError, setHasValidationError] = useState(false);
+    const [hasValidationError, setHasValidationError] = useState(false);
 
-  const setSearch = useCallback((next: string) => {
-    setSearchState(next);
-    setHasValidationError(false);
-  }, []);
+    const setSearch = useCallback((next: string) => {
+      setSearchState(next);
+      setHasValidationError(false);
+    }, []);
 
-  const commitSearch = useCallback(() => {
-    if (search.trim() === '') {
-      if (required) {
+    const commitSearch = useCallback(() => {
+      if (search.trim() === '') {
+        if (required) {
+          setHasValidationError(true);
+          return;
+        }
+        setValue(null);
+        setHasValidationError(false);
+        return;
+      }
+      const parsed = parseDisplay(search);
+      if (!parsed) {
         setHasValidationError(true);
         return;
       }
-      setValue(null);
+      if (!isDateInRange(parsed, min, max)) {
+        setHasValidationError(true);
+        return;
+      }
+      setValue(parsed);
+      setSearchState(formatDisplay(parsed, withSeconds));
       setHasValidationError(false);
-      return;
-    }
-    const parsed = parseDisplay(search);
-    if (!parsed) {
-      setHasValidationError(true);
-      return;
-    }
-    if (!isDateInRange(parsed, min, max)) {
-      setHasValidationError(true);
-      return;
-    }
-    setValue(parsed);
-    setSearchState(formatDisplay(parsed, withSeconds));
-    setHasValidationError(false);
-  }, [search, min, max, withSeconds, setValue, required]);
+    }, [search, min, max, withSeconds, setValue, required]);
 
-  const openPopup = useCallback(
-    (focusCalendar = false) => {
-      if (disabled) return;
-      setOpen(true);
-      if (focusCalendar) {
-        requestAnimationFrame(() => {
-          const focusableCell = contentRef.current?.querySelector<HTMLElement>(
-            'button[data-calendar-cell][tabindex="0"]',
-          );
-          focusableCell?.focus();
-        });
-      }
-    },
-    [disabled, setOpen],
-  );
+    const openPopup = useCallback(
+      (focusCalendar = false) => {
+        if (disabled) return;
+        setOpen(true);
+        if (focusCalendar) {
+          requestAnimationFrame(() => {
+            const focusableCell = contentRef.current?.querySelector<HTMLElement>(
+              'button[data-calendar-cell][tabindex="0"]',
+            );
+            focusableCell?.focus();
+          });
+        }
+      },
+      [disabled, setOpen],
+    );
 
-  const closePopup = useCallback(
-    (returnFocus = true) => {
-      setOpen(false);
-      if (returnFocus) inputRef.current?.focus();
-    },
-    [setOpen],
-  );
+    const closePopup = useCallback(
+      (returnFocus = true) => {
+        setOpen(false);
+        if (returnFocus) inputRef.current?.focus();
+      },
+      [setOpen],
+    );
 
-  const isDisabledDate = useCallback(
-    (date: Date) => {
-      if (!isDateInRange(date, min ? startOfDay(min) : undefined, max ? startOfDay(max) : undefined)) {
-        return true;
-      }
-      if (Array.isArray(disabledDates)) {
-        const start = startOfDay(date);
-        return disabledDates.some((d) => isSameDay(startOfDay(d), start));
-      }
-      if (typeof disabledDates === 'function') return disabledDates(date);
-      return false;
-    },
-    [min, max, disabledDates],
-  );
+    const isDisabledDate = useCallback(
+      (date: Date) => {
+        if (
+          !isDateInRange(date, min ? startOfDay(min) : undefined, max ? startOfDay(max) : undefined)
+        ) {
+          return true;
+        }
+        if (Array.isArray(disabledDates)) {
+          const start = startOfDay(date);
+          return disabledDates.some((d) => isSameDay(startOfDay(d), start));
+        }
+        if (typeof disabledDates === 'function') return disabledDates(date);
+        return false;
+      },
+      [min, max, disabledDates],
+    );
 
-  // Calendar value (date-only)
-  const calendarValue = dateOnly(value);
+    // Calendar value (date-only)
+    const calendarValue = dateOnly(value);
 
-  const handleCalendarSelect = useCallback(
-    (next: Date | null) => {
-      if (!next) {
-        setValue(null);
-        return;
-      }
-      // Preserve existing time when changing date
-      const time = value
-        ? formatTime(
-            { h: value.getHours(), m: value.getMinutes(), s: value.getSeconds() },
-            true,
-          )
-        : '00:00:00';
-      const combined = combineDateTime(next, time);
-      setValue(combined);
-    },
-    [value, setValue],
-  );
+    const handleCalendarSelect = useCallback(
+      (next: Date | null) => {
+        if (!next) {
+          setValue(null);
+          return;
+        }
+        // Preserve existing time when changing date
+        const time = value
+          ? formatTime({ h: value.getHours(), m: value.getMinutes(), s: value.getSeconds() }, true)
+          : '00:00:00';
+        const combined = combineDateTime(next, time);
+        setValue(combined);
+      },
+      [value, setValue],
+    );
 
-  const handleTimeChange = useCallback(
-    (timeIso: string) => {
-      if (timeIso === '') {
-        // Time cleared while date set → keep date at start-of-day
-        if (value) setValue(startOfDay(value));
-        return;
-      }
-      const baseDate = value ?? new Date();
-      const combined = combineDateTime(baseDate, timeIso);
-      setValue(combined);
-    },
-    [value, setValue],
-  );
+    const handleTimeChange = useCallback(
+      (timeIso: string) => {
+        if (timeIso === '') {
+          // Time cleared while date set → keep date at start-of-day
+          if (value) setValue(startOfDay(value));
+          return;
+        }
+        const baseDate = value ?? new Date();
+        const combined = combineDateTime(baseDate, timeIso);
+        setValue(combined);
+      },
+      [value, setValue],
+    );
 
-  const contextValue: DateTimePickerContextValue = {
-    value,
-    setValue,
-    open,
-    setOpen,
-    search,
-    setSearch,
-    commitSearch,
-    hasValidationError,
-    openPopup,
-    closePopup,
-    inputRef,
-    contentRef,
-    isDisabled: disabled,
-    required,
-    min,
-    max,
-    disabledDates,
-    locale,
-    weekStartsOn,
-    dir,
-    withSeconds,
-    hourCycle,
-    timeStep,
-    showTimeSteppers,
-    placement,
-    sideOffset,
-    baseId,
-    inputId,
-    contentId,
-    name,
-  };
+    const contextValue: DateTimePickerContextValue = {
+      value,
+      setValue,
+      open,
+      setOpen,
+      search,
+      setSearch,
+      commitSearch,
+      hasValidationError,
+      openPopup,
+      closePopup,
+      inputRef,
+      contentRef,
+      isDisabled: disabled,
+      required,
+      min,
+      max,
+      disabledDates,
+      locale,
+      weekStartsOn,
+      dir,
+      withSeconds,
+      hourCycle,
+      timeStep,
+      showTimeSteppers,
+      placement,
+      sideOffset,
+      baseId,
+      inputId,
+      contentId,
+      name,
+    };
 
-  const internalValue: InternalStateProps = {
-    calendarValue,
-    handleCalendarSelect,
-    handleTimeChange,
-    isDisabledDate,
-  };
+    const internalValue: InternalStateProps = {
+      calendarValue,
+      handleCalendarSelect,
+      handleTimeChange,
+      isDisabledDate,
+    };
 
-  return (
-    <DateTimePickerContextProvider value={contextValue}>
-      <InternalStateProvider value={internalValue}>
-        <div ref={ref} className={cn(styles.root, className)} {...rest}>
-          {children}
-          {name ? (
-            <input
-              type="hidden"
-              name={name}
-              value={value ? toIsoDateTimeString(value) : ''}
-              required={required}
-              data-date-time-picker-hidden
-            />
-          ) : null}
-        </div>
-      </InternalStateProvider>
-    </DateTimePickerContextProvider>
-  );
-});
+    return (
+      <DateTimePickerContextProvider value={contextValue}>
+        <InternalStateProvider value={internalValue}>
+          <div ref={ref} className={cn(styles.root, className)} {...rest}>
+            {children}
+            {name ? (
+              <input
+                type="hidden"
+                name={name}
+                value={value ? toIsoDateTimeString(value) : ''}
+                required={required}
+                data-date-time-picker-hidden
+              />
+            ) : null}
+          </div>
+        </InternalStateProvider>
+      </DateTimePickerContextProvider>
+    );
+  },
+);
 
 // Internal state passthrough — exposes calendar handlers to Content via context
 interface InternalStateProps {
@@ -502,11 +507,10 @@ const [InternalStateProvider, useInternalStateContext] =
 // ──────────────────────────────────────────────────────────────────────────
 // DateTimePickerInput
 
-export interface DateTimePickerInputProps
-  extends Omit<
-    InputHTMLAttributes<HTMLInputElement>,
-    'value' | 'defaultValue' | 'onChange' | 'type' | 'role' | 'disabled'
-  > {
+export interface DateTimePickerInputProps extends Omit<
+  InputHTMLAttributes<HTMLInputElement>,
+  'value' | 'defaultValue' | 'onChange' | 'type' | 'role' | 'disabled'
+> {
   placeholder?: string;
   ariaInvalid?: boolean;
 }
@@ -518,11 +522,7 @@ export const DateTimePickerInput = forwardRef<HTMLInputElement, DateTimePickerIn
 
     const handleKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
       if (ctx.isDisabled) return;
-      if (
-        isComposingRef.current ||
-        event.nativeEvent.isComposing ||
-        event.key === 'Process'
-      ) {
+      if (isComposingRef.current || event.nativeEvent.isComposing || event.key === 'Process') {
         onKeyDown?.(event);
         return;
       }
@@ -580,9 +580,7 @@ export const DateTimePickerInput = forwardRef<HTMLInputElement, DateTimePickerIn
         autoComplete="off"
         spellCheck={false}
         className={cn(styles.input, ctx.isDisabled && styles.inputDisabled, rest.className)}
-        placeholder={
-          placeholder ?? (ctx.withSeconds ? 'YYYY-MM-DD HH:MM:SS' : 'YYYY-MM-DD HH:MM')
-        }
+        placeholder={placeholder ?? (ctx.withSeconds ? 'YYYY-MM-DD HH:MM:SS' : 'YYYY-MM-DD HH:MM')}
         value={ctx.search}
         onChange={(event) => ctx.setSearch(event.target.value)}
         onKeyDown={handleKeyDown}
@@ -604,8 +602,7 @@ export const DateTimePickerInput = forwardRef<HTMLInputElement, DateTimePickerIn
 // ──────────────────────────────────────────────────────────────────────────
 // DateTimePickerContent
 
-export interface DateTimePickerContentProps
-  extends Omit<HTMLAttributes<HTMLDivElement>, 'role'> {
+export interface DateTimePickerContentProps extends Omit<HTMLAttributes<HTMLDivElement>, 'role'> {
   ariaLabel?: string;
 }
 

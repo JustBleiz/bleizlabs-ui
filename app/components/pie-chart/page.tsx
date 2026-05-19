@@ -56,12 +56,10 @@ export default function PieChartPlayground() {
           PieChart
         </Heading>
         <Text color="secondary">
-          SVG pie chart with optional donut variant, segment hover +
-          keyboard navigation, optional on-segment percentage labels, and
-          sr-only <code>&lt;table&gt;</code> a11y fallback. Pie semantics
-          = categorical composition (full 360°), complementing{' '}
-          <code>UsageDonut</code> (partial progress with visible remainder).
-          Zero external deps.
+          SVG pie chart with optional donut variant, segment hover + keyboard navigation, optional
+          on-segment percentage labels, and sr-only <code>&lt;table&gt;</code> a11y fallback. Pie
+          semantics = categorical composition (full 360°), complementing <code>UsageDonut</code>{' '}
+          (partial progress with visible remainder). Zero external deps.
         </Text>
         <Inline gap={2} wrap>
           <Badge color="info">specialized/PieChart</Badge>
@@ -76,9 +74,8 @@ export default function PieChartPlayground() {
           1. Basic pie — 3 segments, default colors
         </Heading>
         <Text color="secondary">
-          Three lead sources, default brand-family colors cycle. Hover or
-          Tab → Arrow keys to navigate segments. Tooltip shows name + value
-          + percentage at segment midpoint.
+          Three lead sources, default brand-family colors cycle. Hover or Tab → Arrow keys to
+          navigate segments. Tooltip shows name + value + percentage at segment midpoint.
         </Text>
         <div className={styles.demo}>
           <div className={styles.chartBox}>
@@ -97,10 +94,9 @@ export default function PieChartPlayground() {
           2. Donut variant + center label
         </Heading>
         <Text color="secondary">
-          <code>variant=&quot;donut&quot;</code> renders an annulus with inner
-          hole at 60% of outer radius. <code>centerLabel</code> slot accepts
-          any ReactNode — consumer composes own typography for the center
-          summary.
+          <code>variant=&quot;donut&quot;</code> renders an annulus with inner hole at 60% of outer
+          radius. <code>centerLabel</code> slot accepts any ReactNode — consumer composes own
+          typography for the center summary.
         </Text>
         <div className={styles.demo}>
           <div className={styles.chartBox}>
@@ -111,8 +107,12 @@ export default function PieChartPlayground() {
               data={timeAllocation}
               centerLabel={
                 <Stack gap={0}>
-                  <Text variant="caption" color="muted">Total</Text>
-                  <Heading level={3} size="lg">{totalHours}h</Heading>
+                  <Text variant="caption" color="muted">
+                    Total
+                  </Text>
+                  <Heading level={3} size="lg">
+                    {totalHours}h
+                  </Heading>
                 </Stack>
               }
             />
@@ -126,23 +126,22 @@ export default function PieChartPlayground() {
           3. On-segment percentage labels (<code>showLabels</code>)
         </Heading>
         <Text color="secondary">
-          When <code>showLabels</code> is set, segments with ≥10% share
-          render their percentage on the segment midline. Smaller slices
-          auto-hide to avoid label collision (leader-line labels for small
-          slices deferred to 0.20.x).
+          When <code>showLabels</code> is set, segments with ≥10% share render their percentage on
+          the segment midline. Smaller slices auto-hide to avoid label collision (leader-line labels
+          for small slices deferred to 0.20.x).
         </Text>
         <div className={styles.demo}>
           <Inline gap={6} wrap>
             <div className={styles.chartBox}>
-              <Text variant="caption" color="muted">Pie + labels</Text>
-              <PieChart
-                title="Traffic share by source"
-                data={trafficShare}
-                showLabels
-              />
+              <Text variant="caption" color="muted">
+                Pie + labels
+              </Text>
+              <PieChart title="Traffic share by source" data={trafficShare} showLabels />
             </div>
             <div className={styles.chartBox}>
-              <Text variant="caption" color="muted">Donut + labels</Text>
+              <Text variant="caption" color="muted">
+                Donut + labels
+              </Text>
               <PieChart
                 title="Traffic share (donut)"
                 variant="donut"
@@ -150,7 +149,9 @@ export default function PieChartPlayground() {
                 showLabels
                 centerLabel={
                   <Stack gap={0}>
-                    <Text variant="caption" color="muted">Total visits</Text>
+                    <Text variant="caption" color="muted">
+                      Total visits
+                    </Text>
                     <Heading level={3} size="lg">
                       {trafficShare.reduce((a, d) => a + d.value, 0).toLocaleString()}
                     </Heading>
@@ -168,10 +169,9 @@ export default function PieChartPlayground() {
           4. Long-tail distribution (5 segments, small slices auto-hide labels)
         </Heading>
         <Text color="secondary">
-          Five segments with a long tail (62% / 18% / 12% / 5% / 3%). With{' '}
-          <code>showLabels</code>, the bottom two segments (5%, 3%) skip
-          their labels to avoid collision; tooltip + sr-only table still
-          carry the value.
+          Five segments with a long tail (62% / 18% / 12% / 5% / 3%). With <code>showLabels</code>,
+          the bottom two segments (5%, 3%) skip their labels to avoid collision; tooltip + sr-only
+          table still carry the value.
         </Text>
         <div className={styles.demo}>
           <div className={styles.chartBox}>
@@ -182,8 +182,12 @@ export default function PieChartPlayground() {
               showLabels
               centerLabel={
                 <Stack gap={0}>
-                  <Text variant="caption" color="muted">Bot escalation</Text>
-                  <Heading level={3} size="lg">62%</Heading>
+                  <Text variant="caption" color="muted">
+                    Bot escalation
+                  </Text>
+                  <Heading level={3} size="lg">
+                    62%
+                  </Heading>
                 </Stack>
               }
             />
@@ -197,9 +201,9 @@ export default function PieChartPlayground() {
           5. Interactive — <code>onSegmentClick</code> callback
         </Heading>
         <Text color="secondary">
-          Click a segment (or press Space/Enter on a focused segment) to
-          fire the callback. Tab → Arrow Right/Down → cycle segments, Home
-          / End jump first / last, Escape dismiss pinned tooltip.
+          Click a segment (or press Space/Enter on a focused segment) to fire the callback. Tab →
+          Arrow Right/Down → cycle segments, Home / End jump first / last, Escape dismiss pinned
+          tooltip.
         </Text>
         <div className={styles.demo}>
           <div className={styles.chartBox}>
@@ -211,8 +215,12 @@ export default function PieChartPlayground() {
               onSegmentClick={(seg, idx) => setSelected({ name: seg.name, idx })}
               centerLabel={
                 <Stack gap={0}>
-                  <Text variant="caption" color="muted">Click to filter</Text>
-                  <Heading level={3} size="lg">{selected ? selected.name : '—'}</Heading>
+                  <Text variant="caption" color="muted">
+                    Click to filter
+                  </Text>
+                  <Heading level={3} size="lg">
+                    {selected ? selected.name : '—'}
+                  </Heading>
                 </Stack>
               }
             />
@@ -238,27 +246,36 @@ export default function PieChartPlayground() {
           6. Edge cases — single + empty
         </Heading>
         <Text color="secondary">
-          Single segment renders as a full circle (no division). Empty data
-          renders default &quot;No data&quot; placeholder + empty sr-only
-          table (with caption + headers).
+          Single segment renders as a full circle (no division). Empty data renders default &quot;No
+          data&quot; placeholder + empty sr-only table (with caption + headers).
         </Text>
         <div className={styles.demo}>
           <Inline gap={6} wrap>
             <div className={styles.chartBox}>
-              <Text variant="caption" color="muted">Single 100% segment</Text>
+              <Text variant="caption" color="muted">
+                Single 100% segment
+              </Text>
               <PieChart title="One category only" data={singleSegment} />
             </div>
             <div className={styles.chartBox}>
-              <Text variant="caption" color="muted">Single segment, donut</Text>
+              <Text variant="caption" color="muted">
+                Single segment, donut
+              </Text>
               <PieChart
                 title="One category (donut)"
                 variant="donut"
                 data={singleSegment}
-                centerLabel={<Heading level={3} size="lg">100%</Heading>}
+                centerLabel={
+                  <Heading level={3} size="lg">
+                    100%
+                  </Heading>
+                }
               />
             </div>
             <div className={styles.chartBox}>
-              <Text variant="caption" color="muted">Empty</Text>
+              <Text variant="caption" color="muted">
+                Empty
+              </Text>
               <PieChart title="No data yet" data={[]} />
             </div>
           </Inline>
@@ -271,8 +288,8 @@ export default function PieChartPlayground() {
           7. Custom tooltip via <code>renderTooltip</code> slot
         </Heading>
         <Text color="secondary">
-          Override the default tooltip body. The slot receives the full
-          context: datum + color + segmentIndex + ratio + percent + total.
+          Override the default tooltip body. The slot receives the full context: datum + color +
+          segmentIndex + ratio + percent + total.
         </Text>
         <div className={styles.demo}>
           <div className={styles.chartBox}>
@@ -282,12 +299,14 @@ export default function PieChartPlayground() {
               data={leadSources}
               renderTooltip={(ctx) => (
                 <div style={{ textAlign: 'center', minWidth: 120 }}>
-                  <div style={{
-                    fontSize: '0.7rem',
-                    textTransform: 'uppercase',
-                    letterSpacing: '0.05em',
-                    color: 'var(--color-text-muted)',
-                  }}>
+                  <div
+                    style={{
+                      fontSize: '0.7rem',
+                      textTransform: 'uppercase',
+                      letterSpacing: '0.05em',
+                      color: 'var(--color-text-muted)',
+                    }}
+                  >
                     {ctx.datum.name}
                   </div>
                   <div style={{ fontSize: '1.5rem', fontWeight: 600, color: ctx.color }}>
@@ -301,7 +320,9 @@ export default function PieChartPlayground() {
               centerLabel={
                 <Card padding={3} radius="sm">
                   <CardBody>
-                    <Text variant="caption" color="muted">Hover or focus a slice</Text>
+                    <Text variant="caption" color="muted">
+                      Hover or focus a slice
+                    </Text>
                   </CardBody>
                 </Card>
               }
@@ -316,9 +337,9 @@ export default function PieChartPlayground() {
           8. Animation off (<code>animate=false</code>)
         </Heading>
         <Text color="secondary">
-          Disable enter-fade animation for static report contexts (PDF
-          export, print preview). <code>prefers-reduced-motion: reduce</code>{' '}
-          also suppresses animation regardless of this prop.
+          Disable enter-fade animation for static report contexts (PDF export, print preview).{' '}
+          <code>prefers-reduced-motion: reduce</code> also suppresses animation regardless of this
+          prop.
         </Text>
         <div className={styles.demo}>
           <div className={styles.chartBox}>

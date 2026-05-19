@@ -101,10 +101,9 @@ export default function StepperPlayground() {
           Stepper
         </Heading>
         <Text color="secondary">
-          Multi-step visual progress indicator with optional keyboard
-          navigation when clickable. Compound: <code>&lt;Stepper&gt;</code> +
-          <code>&lt;Step&gt;</code>. Auto-derives status from{' '}
-          <code>currentStep</code> (complete / active / pending). Explicit{' '}
+          Multi-step visual progress indicator with optional keyboard navigation when clickable.
+          Compound: <code>&lt;Stepper&gt;</code> +<code>&lt;Step&gt;</code>. Auto-derives status
+          from <code>currentStep</code> (complete / active / pending). Explicit{' '}
           <code>status=&quot;error&quot;</code> overrides derivation.
         </Text>
         <Inline gap={2} wrap>
@@ -120,8 +119,8 @@ export default function StepperPlayground() {
           1. Basic horizontal (visual only)
         </Heading>
         <Text color="secondary">
-          Three steps, second is active. List landmark; no keyboard navigation.
-          Step circles aria-hidden, sr-only verbose announcements per step.
+          Three steps, second is active. List landmark; no keyboard navigation. Step circles
+          aria-hidden, sr-only verbose announcements per step.
         </Text>
         <div className={styles.demo}>
           <Stepper currentStep={1} aria-label="Order progress">
@@ -138,15 +137,11 @@ export default function StepperPlayground() {
           2. Vertical orientation
         </Heading>
         <Text color="secondary">
-          Same component, orientation=&quot;vertical&quot;. Connecting line
-          flips axis; flex direction toggles via data-orientation.
+          Same component, orientation=&quot;vertical&quot;. Connecting line flips axis; flex
+          direction toggles via data-orientation.
         </Text>
         <div className={styles.demo}>
-          <Stepper
-            currentStep={2}
-            orientation="vertical"
-            aria-label="Contract negotiation phases"
-          >
+          <Stepper currentStep={2} orientation="vertical" aria-label="Contract negotiation phases">
             <Step label="Draft" />
             <Step label="Review" />
             <Step label="Signature" />
@@ -161,9 +156,8 @@ export default function StepperPlayground() {
           3. With descriptions
         </Heading>
         <Text color="secondary">
-          Each step accepts an optional description ReactNode rendered below
-          the label. Lib does NOT auto-wrap into Text variants — consumer
-          supplies any ReactNode.
+          Each step accepts an optional description ReactNode rendered below the label. Lib does NOT
+          auto-wrap into Text variants — consumer supplies any ReactNode.
         </Text>
         <div className={styles.demo}>
           <Stepper currentStep={1} aria-label="Lead intake wizard">
@@ -181,9 +175,9 @@ export default function StepperPlayground() {
           4. Interactive — visited-only navigation
         </Heading>
         <Text color="secondary">
-          clickableSteps=&quot;visited&quot; — only complete steps respond to
-          click + keyboard. Use Next/Back to advance, then click any complete
-          step to revisit. Tab + Arrows + Home/End + Space/Enter all wired.
+          clickableSteps=&quot;visited&quot; — only complete steps respond to click + keyboard. Use
+          Next/Back to advance, then click any complete step to revisit. Tab + Arrows + Home/End +
+          Space/Enter all wired.
         </Text>
         <div className={styles.demo}>
           <Stepper
@@ -214,9 +208,7 @@ export default function StepperPlayground() {
             >
               Next
             </Button>
-            <span className={styles.controlLabel}>
-              Current step: {wizardStep + 1} / 4
-            </span>
+            <span className={styles.controlLabel}>Current step: {wizardStep + 1} / 4</span>
           </Inline>
         </div>
       </section>
@@ -227,9 +219,8 @@ export default function StepperPlayground() {
           5. Error state on a step
         </Heading>
         <Text color="secondary">
-          Explicit <code>status=&quot;error&quot;</code> overrides
-          currentStep-derived status. The error icon is always rendered (D4 —
-          WCAG 1.4.1 don&apos;t rely on color alone).
+          Explicit <code>status=&quot;error&quot;</code> overrides currentStep-derived status. The
+          error icon is always rendered (D4 — WCAG 1.4.1 don&apos;t rely on color alone).
         </Text>
         <div className={styles.demo}>
           <Stepper currentStep={3} aria-label="Import wizard">
@@ -247,16 +238,11 @@ export default function StepperPlayground() {
           6. Custom icons + size scale
         </Heading>
         <Text color="secondary">
-          Pass <code>icon</code> per Step. <code>size=&quot;lg&quot;</code>{' '}
-          bumps the circle scale to 40px. Error status would still force the
-          warning glyph regardless of icon override.
+          Pass <code>icon</code> per Step. <code>size=&quot;lg&quot;</code> bumps the circle scale
+          to 40px. Error status would still force the warning glyph regardless of icon override.
         </Text>
         <div className={styles.demo}>
-          <Stepper
-            currentStep={1}
-            size="lg"
-            aria-label="Hydrogen contract phases"
-          >
+          <Stepper currentStep={1} size="lg" aria-label="Hydrogen contract phases">
             <Step label="Draft" icon={<DraftIcon />} />
             <Step label="Review" icon={<ReviewIcon />} />
             <Step label="Signature" icon={<SignIcon />} />

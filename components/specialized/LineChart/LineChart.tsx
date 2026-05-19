@@ -195,8 +195,7 @@ export interface LineChartTooltipContext {
   }>;
 }
 
-export interface LineChartProps
-  extends Omit<HTMLAttributes<HTMLDivElement>, 'children' | 'title'> {
+export interface LineChartProps extends Omit<HTMLAttributes<HTMLDivElement>, 'children' | 'title'> {
   /** Multi-series data. */
   series: LineChartSeries[];
   /** Required for a11y — used as `<caption>` of sr-only table + chart title. */
@@ -242,7 +241,7 @@ export interface LineChartProps
 
 interface NormalizedDatum {
   origX: number | Date | string;
-  x: number;          // normalized numeric X
+  x: number; // normalized numeric X
   y: number;
   label?: string;
 }
@@ -397,9 +396,7 @@ export const LineChart = forwardRef<HTMLDivElement, LineChartProps>(
       };
     }, [series, xAxis?.tickFormat]);
 
-    const hasData =
-      normalizedSeries.length > 0 &&
-      normalizedSeries.some((s) => s.data.length > 0);
+    const hasData = normalizedSeries.length > 0 && normalizedSeries.some((s) => s.data.length > 0);
 
     // Domain derivation
     const { xDomain, yDomain } = useMemo(() => {
@@ -444,8 +441,7 @@ export const LineChart = forwardRef<HTMLDivElement, LineChartProps>(
 
     // Generate paths per series
     const paths = useMemo(() => {
-      const interp =
-        interpolation === 'linear' ? generateLinearPath : generateSmoothPath;
+      const interp = interpolation === 'linear' ? generateLinearPath : generateSmoothPath;
       return normalizedSeries.map((s) => {
         const plotted = s.data.map((d) => ({
           x: xScale(d.x),
@@ -456,10 +452,7 @@ export const LineChart = forwardRef<HTMLDivElement, LineChartProps>(
     }, [normalizedSeries, xScale, yScale, interpolation]);
 
     // Ticks
-    const yTicks = useMemo(
-      () => yAxis?.ticks ?? niceTicks(yDomain, 5),
-      [yAxis?.ticks, yDomain],
-    );
+    const yTicks = useMemo(() => yAxis?.ticks ?? niceTicks(yDomain, 5), [yAxis?.ticks, yDomain]);
     const xTicks = useMemo(() => {
       if (xAxis?.ticks) return xAxis.ticks;
       // For unified X (categorical/ordinal), use up to 6 evenly-spaced
@@ -548,38 +541,28 @@ export const LineChart = forwardRef<HTMLDivElement, LineChartProps>(
 
         switch (event.key) {
           case 'ArrowRight': {
-            const nextPt =
-              pointIdx < currentSeries.data.length - 1 ? pointIdx + 1 : 0;
+            const nextPt = pointIdx < currentSeries.data.length - 1 ? pointIdx + 1 : 0;
             move({ seriesIdx, pointIdx: nextPt });
             return;
           }
           case 'ArrowLeft': {
-            const nextPt =
-              pointIdx > 0 ? pointIdx - 1 : currentSeries.data.length - 1;
+            const nextPt = pointIdx > 0 ? pointIdx - 1 : currentSeries.data.length - 1;
             move({ seriesIdx, pointIdx: nextPt });
             return;
           }
           case 'ArrowDown': {
-            const nextSeries =
-              seriesIdx < normalizedSeries.length - 1 ? seriesIdx + 1 : 0;
+            const nextSeries = seriesIdx < normalizedSeries.length - 1 ? seriesIdx + 1 : 0;
             const targetSeries = normalizedSeries[nextSeries];
             if (!targetSeries) return;
-            const clampedPt = Math.min(
-              pointIdx,
-              Math.max(0, targetSeries.data.length - 1),
-            );
+            const clampedPt = Math.min(pointIdx, Math.max(0, targetSeries.data.length - 1));
             move({ seriesIdx: nextSeries, pointIdx: clampedPt });
             return;
           }
           case 'ArrowUp': {
-            const nextSeries =
-              seriesIdx > 0 ? seriesIdx - 1 : normalizedSeries.length - 1;
+            const nextSeries = seriesIdx > 0 ? seriesIdx - 1 : normalizedSeries.length - 1;
             const targetSeries = normalizedSeries[nextSeries];
             if (!targetSeries) return;
-            const clampedPt = Math.min(
-              pointIdx,
-              Math.max(0, targetSeries.data.length - 1),
-            );
+            const clampedPt = Math.min(pointIdx, Math.max(0, targetSeries.data.length - 1));
             move({ seriesIdx: nextSeries, pointIdx: clampedPt });
             return;
           }
@@ -826,18 +809,13 @@ export const LineChart = forwardRef<HTMLDivElement, LineChartProps>(
           </thead>
           <tbody>
             {unifiedX.map((xVal) => {
-              const xLabel =
-                unifiedXLabels.labelByX.get(xVal) ?? String(xVal);
+              const xLabel = unifiedXLabels.labelByX.get(xVal) ?? String(xVal);
               return (
                 <tr key={xVal}>
                   <th scope="row">{xLabel}</th>
                   {normalizedSeries.map((s) => {
                     const datumAt = s.data.find((d) => d.x === xVal);
-                    return (
-                      <td key={s.id}>
-                        {datumAt ? tooltipFormat(datumAt.y) : '—'}
-                      </td>
-                    );
+                    return <td key={s.id}>{datumAt ? tooltipFormat(datumAt.y) : '—'}</td>;
                   })}
                 </tr>
               );
@@ -944,9 +922,7 @@ export const LineChart = forwardRef<HTMLDivElement, LineChartProps>(
                 />
                 {xTicks.map((t) => {
                   const x = xScale(t);
-                  const tickLabel =
-                    unifiedXLabels.labelByX.get(t) ??
-                    formatX(t, xAxis?.tickFormat);
+                  const tickLabel = unifiedXLabels.labelByX.get(t) ?? formatX(t, xAxis?.tickFormat);
                   return (
                     <text
                       key={`xt-${t}`}
@@ -986,11 +962,8 @@ export const LineChart = forwardRef<HTMLDivElement, LineChartProps>(
                   const cx = xScale(d.x);
                   const cy = yScale(d.y);
                   const isActive =
-                    activeTarget?.seriesIdx === sIdx &&
-                    activeTarget.pointIdx === pIdx;
-                  const isRoving =
-                    focused?.seriesIdx === sIdx &&
-                    focused.pointIdx === pIdx;
+                    activeTarget?.seriesIdx === sIdx && activeTarget.pointIdx === pIdx;
+                  const isRoving = focused?.seriesIdx === sIdx && focused.pointIdx === pIdx;
                   return (
                     <g key={`${s.id}-${pIdx}`}>
                       <circle
@@ -1026,19 +999,13 @@ export const LineChart = forwardRef<HTMLDivElement, LineChartProps>(
                 {unifiedX.map((xVal, idx) => {
                   const cx = xScale(xVal);
                   const prevX = idx > 0 ? xScale(unifiedX[idx - 1]!) : cx;
-                  const nextX =
-                    idx < unifiedX.length - 1
-                      ? xScale(unifiedX[idx + 1]!)
-                      : cx;
+                  const nextX = idx < unifiedX.length - 1 ? xScale(unifiedX[idx + 1]!) : cx;
                   const left = (prevX + cx) / 2;
                   const right = (cx + nextX) / 2;
                   // Clamp to plot bounds so first/last cell still hits.
-                  const clampedLeft =
-                    idx === 0 ? PADDING_LEFT : left;
+                  const clampedLeft = idx === 0 ? PADDING_LEFT : left;
                   const clampedRight =
-                    idx === unifiedX.length - 1
-                      ? PADDING_LEFT + PLOT_WIDTH
-                      : right;
+                    idx === unifiedX.length - 1 ? PADDING_LEFT + PLOT_WIDTH : right;
                   const width = Math.max(0, clampedRight - clampedLeft);
                   return (
                     <rect
@@ -1073,11 +1040,7 @@ export const LineChart = forwardRef<HTMLDivElement, LineChartProps>(
               ) : (
                 <>
                   <div className={styles.tooltipTitle}>
-                    {formatX(
-                      tooltipContext.datum.x,
-                      xAxis?.tickFormat,
-                      tooltipContext.datum.label,
-                    )}
+                    {formatX(tooltipContext.datum.x, xAxis?.tickFormat, tooltipContext.datum.label)}
                   </div>
                   {tooltipContext.allSeriesAtX.map((row) => (
                     <div key={row.seriesId} className={styles.tooltipRow}>

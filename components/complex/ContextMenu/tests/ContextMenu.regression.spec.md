@@ -40,7 +40,9 @@ test.skip('CM-R05 — asChild on table row preserves layout [PLAYGROUND-DEP: tab
   // ContextMenu wrapping <tr> with asChild=true does not break table layout
 });
 
-test('CM-R09 — right-click inside menu content suppresses browser native menu', async ({ page }) => {
+test('CM-R09 — right-click inside menu content suppresses browser native menu', async ({
+  page,
+}) => {
   await page.goto('/components/context-menu');
   await page.getByText('Right-click me').first().click({ button: 'right' });
   const item = page.getByRole('menuitem').first();

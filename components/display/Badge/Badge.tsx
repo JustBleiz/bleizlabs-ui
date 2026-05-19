@@ -41,13 +41,7 @@ import styles from './Badge.module.scss';
  *   <Badge label="Live" color="success" />
  * </Inline>
  */
-export type BadgeColor =
-  | 'default'
-  | 'brand'
-  | 'success'
-  | 'warning'
-  | 'error'
-  | 'info';
+export type BadgeColor = 'default' | 'brand' | 'success' | 'warning' | 'error' | 'info';
 
 export interface BadgeProps extends HTMLAttributes<HTMLSpanElement> {
   /** Visible label text (required when `asChild` is false). */
@@ -75,17 +69,8 @@ const COLOR_CLASS: Record<BadgeColor, string> = {
 };
 
 export const Badge = forwardRef<HTMLSpanElement, BadgeProps>(function Badge(
-  {
-    label,
-    color = 'default',
-    pill = false,
-    icon,
-    asChild = false,
-    className,
-    children,
-    ...rest
-  },
-  ref
+  { label, color = 'default', pill = false, icon, asChild = false, className, children, ...rest },
+  ref,
 ) {
   const Comp = asChild ? Slot : 'span';
 
@@ -105,12 +90,7 @@ export const Badge = forwardRef<HTMLSpanElement, BadgeProps>(function Badge(
   return (
     <Comp
       ref={ref}
-      className={cn(
-        styles.root,
-        COLOR_CLASS[color],
-        pill && styles.pill,
-        className
-      )}
+      className={cn(styles.root, COLOR_CLASS[color], pill && styles.pill, className)}
       {...rest}
     >
       {inner}

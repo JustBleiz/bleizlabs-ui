@@ -40,18 +40,14 @@ test.describe('ContextMenu — ARIA + accessibility tree', () => {
     expect(await disabled.getAttribute('aria-disabled')).toBe('true');
   });
 
-  test('separator has role="separator" with horizontal orientation', async ({
-    page,
-  }) => {
+  test('separator has role="separator" with horizontal orientation', async ({ page }) => {
     await page.getByText('Right-click me', { exact: true }).click({ button: 'right' });
     const separator = page.getByRole('separator').first();
     await expect(separator).toBeVisible();
     expect(await separator.getAttribute('aria-orientation')).toBe('horizontal');
   });
 
-  test('group has role="group" with aria-labelledby pointing to label', async ({
-    page,
-  }) => {
+  test('group has role="group" with aria-labelledby pointing to label', async ({ page }) => {
     // File-row demos use groups with labels (e.g. "File actions")
     const fileRow = page.getByText('report.pdf').locator('..');
     await fileRow.scrollIntoViewIfNeeded();

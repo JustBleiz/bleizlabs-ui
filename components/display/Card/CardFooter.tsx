@@ -30,33 +30,19 @@ export interface CardFooterProps extends HTMLAttributes<HTMLDivElement> {
   asChild?: boolean;
 }
 
-export const CardFooter = forwardRef<HTMLDivElement, CardFooterProps>(
-  function CardFooter(
-    {
-      border = false,
-      action = false,
-      asChild = false,
-      className,
-      children,
-      ...rest
-    },
-    ref,
-  ) {
-    const Comp = asChild ? Slot : 'div';
+export const CardFooter = forwardRef<HTMLDivElement, CardFooterProps>(function CardFooter(
+  { border = false, action = false, asChild = false, className, children, ...rest },
+  ref,
+) {
+  const Comp = asChild ? Slot : 'div';
 
-    return (
-      <Comp
-        ref={ref}
-        className={cn(
-          styles.root,
-          border && styles.border,
-          action && styles.action,
-          className,
-        )}
-        {...rest}
-      >
-        {children}
-      </Comp>
-    );
-  },
-);
+  return (
+    <Comp
+      ref={ref}
+      className={cn(styles.root, border && styles.border, action && styles.action, className)}
+      {...rest}
+    >
+      {children}
+    </Comp>
+  );
+});

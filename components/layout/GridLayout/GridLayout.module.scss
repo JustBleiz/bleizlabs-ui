@@ -47,10 +47,7 @@
   .root {
     grid-template-columns: var(
       --grid-cols-xl,
-      var(
-        --grid-cols-lg,
-        var(--grid-cols-md, var(--grid-cols-sm, var(--grid-cols)))
-      )
+      var(--grid-cols-lg, var(--grid-cols-md, var(--grid-cols-sm, var(--grid-cols))))
     );
   }
 }

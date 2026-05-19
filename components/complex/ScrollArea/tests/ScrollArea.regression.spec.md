@@ -5,7 +5,9 @@
 ## Tests
 
 ```ts
-test('SA-R09 — orientation="both": horizontal + vertical scrollbars independent', async ({ page }) => {
+test('SA-R09 — orientation="both": horizontal + vertical scrollbars independent', async ({
+  page,
+}) => {
   await page.goto('/components/scroll-area?orientation=both');
   const hThumb = page.locator('[data-orientation="horizontal"] [data-scroll-area-thumb]');
   const vThumb = page.locator('[data-orientation="vertical"] [data-scroll-area-thumb]');
@@ -61,7 +63,9 @@ test('SA-R14 — scroll shadow indicators on overflow', async ({ page }) => {
 
 test('SA-R15 — SSR safe: no hydration mismatch', async ({ page }) => {
   const warnings: string[] = [];
-  page.on('console', (msg) => { if (msg.type() === 'warning') warnings.push(msg.text()); });
+  page.on('console', (msg) => {
+    if (msg.type() === 'warning') warnings.push(msg.text());
+  });
   await page.goto('/components/scroll-area');
   await page.reload();
   expect(warnings.filter((w) => w.toLowerCase().includes('hydration'))).toHaveLength(0);

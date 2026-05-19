@@ -56,10 +56,9 @@ export default function DateRangePickerPlayground() {
           DateRangePicker
         </Heading>
         <Text variant="lead" color="muted">
-          Pick a date range from a multi-month calendar popover. Composes
-          DatePicker keyboard ergonomics with multi-month Calendar instances.
-          Supports 1/2/3 side-by-side months, hover preview during selection,
-          and form integration via paired hidden inputs.
+          Pick a date range from a multi-month calendar popover. Composes DatePicker keyboard
+          ergonomics with multi-month Calendar instances. Supports 1/2/3 side-by-side months, hover
+          preview during selection, and form integration via paired hidden inputs.
         </Text>
         <Inline gap={2} wrap>
           <Badge color="success">APG dialog + grid</Badge>
@@ -77,11 +76,10 @@ export default function DateRangePickerPlayground() {
           1. Basic single-month range
         </Heading>
         <Text variant="body" color="muted">
-          Uncontrolled. Click two dates to set the range. The second click
-          orders bounds automatically (earlier click = from, later = to).
-          Hover preview during selection shows what range the click 2 will
-          commit. Cross-grid Tab: arrows stop at month boundary; Tab moves
-          to next month&apos;s focusable cell.
+          Uncontrolled. Click two dates to set the range. The second click orders bounds
+          automatically (earlier click = from, later = to). Hover preview during selection shows
+          what range the click 2 will commit. Cross-grid Tab: arrows stop at month boundary; Tab
+          moves to next month&apos;s focusable cell.
         </Text>
         <div className={styles.demo}>
           <DateRangePicker aria-label="Basic single-month range">
@@ -97,8 +95,7 @@ export default function DateRangePickerPlayground() {
           2. Two-month side-by-side (controlled)
         </Heading>
         <Text variant="body" color="muted">
-          Consumer owns state. Current range:{' '}
-          <strong>{formatRange(twoMonth, 'en-US')}</strong>
+          Consumer owns state. Current range: <strong>{formatRange(twoMonth, 'en-US')}</strong>
         </Text>
         <div className={styles.demo}>
           <DateRangePicker
@@ -136,8 +133,8 @@ export default function DateRangePickerPlayground() {
           3. Three-month wide
         </Heading>
         <Text variant="body" color="muted">
-          Wide picker for long-range planning. Three side-by-side months,
-          single sync&apos;d header chevron navigation.
+          Wide picker for long-range planning. Three side-by-side months, single sync&apos;d header
+          chevron navigation.
         </Text>
         <div className={styles.demo}>
           <DateRangePicker numberOfMonths={3} aria-label="Three-month wide">
@@ -153,8 +150,8 @@ export default function DateRangePickerPlayground() {
           4. Polish locale (pl-PL — Mon-first)
         </Heading>
         <Text variant="body" color="muted">
-          Week starts Monday per Polish locale conventions. Month and weekday
-          names auto-localized via <code>Intl.DateTimeFormat</code>.
+          Week starts Monday per Polish locale conventions. Month and weekday names auto-localized
+          via <code>Intl.DateTimeFormat</code>.
         </Text>
         <div className={styles.demo}>
           <DateRangePicker
@@ -199,9 +196,9 @@ export default function DateRangePickerPlayground() {
           6. Form integration (<code>required</code>)
         </Heading>
         <Text variant="body" color="muted">
-          Renders paired hidden inputs <code>trip_from</code> +{' '}
-          <code>trip_to</code>. With <code>required</code>, browser{' '}
-          <code>:invalid</code> blocks submit until both bounds are set.
+          Renders paired hidden inputs <code>trip_from</code> + <code>trip_to</code>. With{' '}
+          <code>required</code>, browser <code>:invalid</code> blocks submit until both bounds are
+          set.
         </Text>
         <form className={styles.formDemo} onSubmit={handleSubmit}>
           <DateRangePicker

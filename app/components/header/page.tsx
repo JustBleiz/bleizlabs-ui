@@ -21,11 +21,10 @@ export default function HeaderPlaygroundPage() {
           Header
         </Heading>
         <p className={styles.lead}>
-          Universal block-header molecule. Pure layout primitive — body slot
-          (children) + optional actions slot inside flex row. Zero visual
-          chrome by default; visual identity comes from composed children
-          (consumer picks Heading size, Text variant, Badge styles).
-          Replaces SectionHeader + PageHeader with one ≤3-prop primitive.
+          Universal block-header molecule. Pure layout primitive — body slot (children) + optional
+          actions slot inside flex row. Zero visual chrome by default; visual identity comes from
+          composed children (consumer picks Heading size, Text variant, Badge styles). Replaces
+          SectionHeader + PageHeader with one ≤3-prop primitive.
         </p>
       </header>
 
@@ -72,9 +71,7 @@ export default function HeaderPlaygroundPage() {
           <Heading level={3} size="3xl">
             Account settings
           </Heading>
-          <Text variant="lead">
-            Manage your profile and notification preferences.
-          </Text>
+          <Text variant="lead">Manage your profile and notification preferences.</Text>
           <Inline gap={2}>
             <Badge color="success">Verified</Badge>
             <Badge color="info">2FA enabled</Badge>
@@ -94,12 +91,11 @@ export default function HeaderPlaygroundPage() {
           }
         >
           <Heading level={3} size="xl">
-            A noticeably long heading that wraps onto two lines on narrower
-            viewports
+            A noticeably long heading that wraps onto two lines on narrower viewports
           </Heading>
           <Text variant="caption">
-            The single-line action button stays at the title baseline rather
-            than vertically-centering against the multi-line body.
+            The single-line action button stays at the title baseline rather than
+            vertically-centering against the multi-line body.
           </Text>
         </Header>
       </section>

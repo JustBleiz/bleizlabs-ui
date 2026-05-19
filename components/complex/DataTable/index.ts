@@ -1,8 +1,4 @@
-export {
-  DataTable,
-  useDataTableState,
-  DEFAULT_DATA_TABLE_LABELS,
-} from './DataTable';
+export { DataTable, useDataTableState, DEFAULT_DATA_TABLE_LABELS } from './DataTable';
 
 export type {
   DataTableProps,

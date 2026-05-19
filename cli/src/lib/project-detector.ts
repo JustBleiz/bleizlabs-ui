@@ -39,10 +39,7 @@ export function detectProject(cwd: string = process.cwd()): ProjectInfo {
   const hasLibDep = '@bleizlabs/ui' in allDeps;
 
   // Find app/ directory — common locations.
-  const appDirCandidates = [
-    path.join(cwd, 'app'),
-    path.join(cwd, 'src', 'app'),
-  ];
+  const appDirCandidates = [path.join(cwd, 'app'), path.join(cwd, 'src', 'app')];
   let appDirPath: string | null = null;
   for (const candidate of appDirCandidates) {
     if (fs.existsSync(candidate) && fs.statSync(candidate).isDirectory()) {
@@ -107,9 +104,7 @@ export function validateProject(info: ProjectInfo): void {
     );
   }
   if (!info.hasLibDep) {
-    errs.push(
-      `No "@bleizlabs/ui" dependency found. Install first: npm install @bleizlabs/ui`,
-    );
+    errs.push(`No "@bleizlabs/ui" dependency found. Install first: npm install @bleizlabs/ui`);
   }
   if (!info.hasAppDir) {
     errs.push(

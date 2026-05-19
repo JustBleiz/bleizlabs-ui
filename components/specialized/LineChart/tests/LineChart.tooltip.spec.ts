@@ -9,13 +9,7 @@
  */
 
 import { test, expect } from '@playwright/test';
-import {
-  chartByTitle,
-  pointByIndex,
-  tooltipOf,
-  crosshairOf,
-  activatePoint,
-} from './_helpers';
+import { chartByTitle, pointByIndex, tooltipOf, crosshairOf, activatePoint } from './_helpers';
 
 const URL = '/components/line-chart';
 
@@ -24,9 +18,7 @@ test.describe('LineChart — tooltip', () => {
     await page.goto(URL, { waitUntil: 'networkidle' });
   });
 
-  test('LC-T01: focus on data point shows tooltip + crosshair', async ({
-    page,
-  }) => {
+  test('LC-T01: focus on data point shows tooltip + crosshair', async ({ page }) => {
     const chart = chartByTitle(page, 'Weekly leads');
     const point = pointByIndex(chart, 0, 0);
     await activatePoint(point);
@@ -41,9 +33,7 @@ test.describe('LineChart — tooltip', () => {
     expect(cls).toContain('crosshairVisible');
   });
 
-  test('LC-T02: tooltip contains series name + formatted value', async ({
-    page,
-  }) => {
+  test('LC-T02: tooltip contains series name + formatted value', async ({ page }) => {
     const chart = chartByTitle(page, 'Lead source comparison');
     const point = pointByIndex(chart, 0, 0);
     await activatePoint(point);
@@ -55,9 +45,7 @@ test.describe('LineChart — tooltip', () => {
     expect(text).toContain('Partner');
   });
 
-  test('LC-T03: tooltip dismissed on Escape (when pinned)', async ({
-    page,
-  }) => {
+  test('LC-T03: tooltip dismissed on Escape (when pinned)', async ({ page }) => {
     const chart = chartByTitle(page, 'Click points to filter');
     const point = pointByIndex(chart, 0, 2);
     await activatePoint(point);
@@ -77,9 +65,7 @@ test.describe('LineChart — tooltip', () => {
     expect(count).toBe(3);
   });
 
-  test('LC-T05: custom renderTooltip slot replaces default body', async ({
-    page,
-  }) => {
+  test('LC-T05: custom renderTooltip slot replaces default body', async ({ page }) => {
     const chart = chartByTitle(page, 'Weekly leads (custom tooltip)');
     const point = pointByIndex(chart, 0, 5);
     await activatePoint(point);

@@ -50,8 +50,7 @@ import { KpiValue, type KpiValueProps } from './KpiValue';
  * // Locale override (default: derived from navigator.language by AnimatedCounter)
  * <KpiValueAnimated value={1234.5} decimals={1} locale="en-US" />
  */
-export interface KpiValueAnimatedProps
-  extends Omit<KpiValueProps, 'renderValue' | 'value'> {
+export interface KpiValueAnimatedProps extends Omit<KpiValueProps, 'renderValue' | 'value'> {
   /**
    * Numeric value to animate towards. AnimatedCounter requires a number;
    * static-string fallbacks should use {@link KpiValue} directly.
@@ -74,10 +73,7 @@ export interface KpiValueAnimatedProps
 }
 
 export const KpiValueAnimated = forwardRef<HTMLDivElement, KpiValueAnimatedProps>(
-  function KpiValueAnimated(
-    { value, duration, locale, animated = true, ...rest },
-    ref
-  ) {
+  function KpiValueAnimated({ value, duration, locale, animated = true, ...rest }, ref) {
     // When `unit === '%'`, route the suffix through AnimatedCounter so the
     // animation tween includes the symbol (matches static KpiValue percent
     // attachment + ex-PercentValueAnimated visual identity).
@@ -102,14 +98,16 @@ export const KpiValueAnimated = forwardRef<HTMLDivElement, KpiValueAnimatedProps
               {...(isPercentUnit ? { suffix: '%' } : {})}
             />
           ) : typeof v === 'number' ? (
-            isPercentUnit
-              ? `${v.toFixed(decimals)}%`
-              : v.toFixed(decimals)
+            isPercentUnit ? (
+              `${v.toFixed(decimals)}%`
+            ) : (
+              v.toFixed(decimals)
+            )
           ) : (
             String(v)
           )
         }
       />
     );
-  }
+  },
 );

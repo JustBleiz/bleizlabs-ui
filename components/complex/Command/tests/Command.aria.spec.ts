@@ -28,17 +28,13 @@ test.describe('Command — ARIA + accessibility tree', () => {
     await page.goto('/components/command');
   });
 
-  test('CMD-R10 — modal shell role="dialog" + aria-modal="true"', async ({
-    page,
-  }) => {
+  test('CMD-R10 — modal shell role="dialog" + aria-modal="true"', async ({ page }) => {
     await page.getByRole('button', { name: 'Open palette' }).click();
     const dialog = page.getByRole('dialog');
     await expect(dialog).toHaveAttribute('aria-modal', 'true');
   });
 
-  test('CMD-R09 — input role="combobox" + aria-expanded + aria-controls', async ({
-    page,
-  }) => {
+  test('CMD-R09 — input role="combobox" + aria-expanded + aria-controls', async ({ page }) => {
     await page.getByRole('button', { name: 'Open palette' }).click();
     const input = page.getByRole('combobox');
     await expect(input).toHaveAttribute('aria-expanded', 'true');
@@ -57,23 +53,19 @@ test.describe('Command — ARIA + accessibility tree', () => {
     await expect(listbox).toHaveAttribute('aria-labelledby', inputId as string);
   });
 
-  test('CMD-R11 — exactly one aria-selected option after open', async ({
-    page,
-  }) => {
+  test('CMD-R11 — exactly one aria-selected option after open', async ({ page }) => {
     await page.getByRole('button', { name: 'Open palette' }).click();
     // Scope to dialog to avoid counting hidden-registry options of other
     // closed palettes on the page.
     const dialog = page.getByRole('dialog');
     const options = dialog.getByRole('option');
-    const selectedCount = await options.evaluateAll((els) =>
-      els.filter((el) => el.getAttribute('aria-selected') === 'true').length,
+    const selectedCount = await options.evaluateAll(
+      (els) => els.filter((el) => el.getAttribute('aria-selected') === 'true').length,
     );
     expect(selectedCount).toBe(1);
   });
 
-  test('CMD-R12 — groups have role="group" + aria-labelledby', async ({
-    page,
-  }) => {
+  test('CMD-R12 — groups have role="group" + aria-labelledby', async ({ page }) => {
     // idx 1 — grouped palette
     await page.getByRole('button', { name: 'Open grouped palette' }).click();
     const dialog = page.getByRole('dialog');
@@ -94,9 +86,7 @@ test.describe('Command — ARIA + accessibility tree', () => {
     await expect(cut).toHaveAttribute('aria-disabled', 'true');
   });
 
-  test('aria snapshot contains dialog + combobox + listbox + option', async ({
-    page,
-  }) => {
+  test('aria snapshot contains dialog + combobox + listbox + option', async ({ page }) => {
     await page.getByRole('button', { name: 'Open palette' }).click();
     const dialog = page.getByRole('dialog');
     const snapshot = await dialog.ariaSnapshot();
@@ -105,18 +95,14 @@ test.describe('Command — ARIA + accessibility tree', () => {
     expect(snapshot).toContain('listbox');
   });
 
-  test('axe-core zero violations — default page (no palette open)', async ({
-    page,
-  }) => {
+  test('axe-core zero violations — default page (no palette open)', async ({ page }) => {
     const results = await new AxeBuilder({ page })
       .withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa'])
       .analyze();
     expect(results.violations).toEqual([]);
   });
 
-  test('axe-core zero violations — palette open with items', async ({
-    page,
-  }) => {
+  test('axe-core zero violations — palette open with items', async ({ page }) => {
     await page.getByRole('button', { name: 'Open palette' }).click();
     await expect(page.getByRole('dialog')).toBeVisible();
     const results = await new AxeBuilder({ page })
@@ -125,9 +111,7 @@ test.describe('Command — ARIA + accessibility tree', () => {
     expect(results.violations).toEqual([]);
   });
 
-  test('axe-core zero violations — filtered listbox with matches', async ({
-    page,
-  }) => {
+  test('axe-core zero violations — filtered listbox with matches', async ({ page }) => {
     await page.getByRole('button', { name: 'Open palette' }).click();
     const input = page.getByRole('combobox');
     await expect(input).toBeFocused();
@@ -149,19 +133,14 @@ test.describe('Command — ARIA + accessibility tree', () => {
     await page.getByRole('button', { name: 'Open grouped palette' }).click();
     await expect(page.getByRole('dialog')).toBeVisible();
     const shortcut = page.getByRole('dialog').locator('[class*="shortcut"]').first();
-    const resolved = await shortcut.evaluate((el) =>
-      window.getComputedStyle(el).color,
-    );
+    const resolved = await shortcut.evaluate((el) => window.getComputedStyle(el).color);
     // Dark theme --color-text-secondary = neutral-300 = #c7c7c7.
     // Browsers report as rgb(199, 199, 199).
     expect(resolved).toBe('rgb(199, 199, 199)');
   });
 
-  test.skip(
-    'CMD-R13 — dev-mode warn when no aria-label [PLAYGROUND-DEP: all demos provide aria-label]',
-    async () => {
-      // Every playground Command has aria-label set; no demo exercises the
-      // missing-label warning path.
-    },
-  );
+  test.skip('CMD-R13 — dev-mode warn when no aria-label [PLAYGROUND-DEP: all demos provide aria-label]', async () => {
+    // Every playground Command has aria-label set; no demo exercises the
+    // missing-label warning path.
+  });
 });

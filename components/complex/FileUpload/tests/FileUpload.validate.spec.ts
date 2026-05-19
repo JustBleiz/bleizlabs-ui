@@ -16,9 +16,7 @@ test.describe('FileUpload — validation', () => {
 
   test('FU-V01: accept="application/pdf" accepts PDF', async ({ page }) => {
     const zone = zoneBy(page, 'Upload PDF documents');
-    await selectFiles(zone, [
-      { name: 'spec.pdf', mimeType: 'application/pdf' },
-    ]);
+    await selectFiles(zone, [{ name: 'spec.pdf', mimeType: 'application/pdf' }]);
     await expect(page.getByText('spec.pdf')).toBeVisible();
   });
 
@@ -26,9 +24,7 @@ test.describe('FileUpload — validation', () => {
     // FU-R06 — rejection visible only via the live region "rejected" announce
     // and absence of FileChip.
     const zone = zoneBy(page, 'Upload PDF documents');
-    await selectFiles(zone, [
-      { name: 'screenshot.png', mimeType: 'image/png' },
-    ]);
+    await selectFiles(zone, [{ name: 'screenshot.png', mimeType: 'image/png' }]);
     await expect(page.getByText('screenshot.png', { exact: true })).toHaveCount(0);
   });
 
@@ -48,18 +44,14 @@ test.describe('FileUpload — validation', () => {
 
   test('FU-V04: maxSize=1_000_000 rejects 2 MB file', async ({ page }) => {
     const zone = zoneBy(page, 'Upload file under 1 megabyte');
-    await selectFiles(zone, [
-      { name: 'big.txt', mimeType: 'text/plain', bytes: 2_000_000 },
-    ]);
+    await selectFiles(zone, [{ name: 'big.txt', mimeType: 'text/plain', bytes: 2_000_000 }]);
     // Rejection visible.
     await expect(page.getByText(/Rejected/i).first()).toBeVisible();
   });
 
   test('FU-V05: maxSize boundary — exactly maxSize accepts', async ({ page }) => {
     const zone = zoneBy(page, 'Upload file under 1 megabyte');
-    await selectFiles(zone, [
-      { name: 'exact.txt', mimeType: 'text/plain', bytes: 1_000_000 },
-    ]);
+    await selectFiles(zone, [{ name: 'exact.txt', mimeType: 'text/plain', bytes: 1_000_000 }]);
     // exact size === maxSize is NOT > maxSize, so accepted.
     await expect(page.getByText('exact.txt')).toBeVisible();
   });
@@ -80,7 +72,9 @@ test.describe('FileUpload — validation', () => {
     await expect(page.getByText(/1 rejected|rejected/i).first()).toBeVisible();
   });
 
-  test('FU-V07: multiple file rejection — combined accept + size in error use case', async ({ page }) => {
+  test('FU-V07: multiple file rejection — combined accept + size in error use case', async ({
+    page,
+  }) => {
     const zone = zoneBy(page, 'Upload image under 1 megabyte');
     await selectFiles(zone, [
       // wrong type → file-invalid-type

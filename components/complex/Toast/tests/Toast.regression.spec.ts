@@ -27,9 +27,7 @@ test.describe('Toast — regression cases', () => {
     await page.goto('/components/toast');
   });
 
-  test('TST-R11 — dedup by id: same id updates existing (no duplicate)', async ({
-    page,
-  }) => {
+  test('TST-R11 — dedup by id: same id updates existing (no duplicate)', async ({ page }) => {
     // Section 5: button `1. saving` uses id=save-status title=Saving...
     //            button `2. saved (same id)` uses same id, title=Saved
     await page.getByRole('button', { name: '1. saving' }).click();
@@ -45,13 +43,11 @@ test.describe('Toast — regression cases', () => {
   test('TST-R12 — promise() transitions loading → success', async ({ page }) => {
     await page.getByRole('button', { name: 'promise (success)' }).click();
     // Loading state (variant='info', duration=Infinity).
-    await expect(
-      page.getByRole('status').filter({ hasText: 'Publishing article…' }),
-    ).toBeVisible();
+    await expect(page.getByRole('status').filter({ hasText: 'Publishing article…' })).toBeVisible();
     // After 1500ms promise resolves, same toast id transitions to success.
-    await expect(
-      page.getByRole('status').filter({ hasText: 'Article published' }),
-    ).toBeVisible({ timeout: 4000 });
+    await expect(page.getByRole('status').filter({ hasText: 'Article published' })).toBeVisible({
+      timeout: 4000,
+    });
     await expect(
       page.getByRole('status').filter({ hasText: 'Publishing article…' }),
     ).not.toBeVisible();
@@ -59,13 +55,11 @@ test.describe('Toast — regression cases', () => {
 
   test('TST-R12b — promise() transitions loading → error', async ({ page }) => {
     await page.getByRole('button', { name: 'promise (error)' }).click();
-    await expect(
-      page.getByRole('status').filter({ hasText: 'Publishing article…' }),
-    ).toBeVisible();
+    await expect(page.getByRole('status').filter({ hasText: 'Publishing article…' })).toBeVisible();
     // On reject the info toast id updates to error variant + title.
-    await expect(
-      page.getByRole('alert').filter({ hasText: 'Publish failed' }),
-    ).toBeVisible({ timeout: 4000 });
+    await expect(page.getByRole('alert').filter({ hasText: 'Publish failed' })).toBeVisible({
+      timeout: 4000,
+    });
   });
 
   test('TST-R13 — duration: Infinity requires manual dismissal', async ({ page }) => {
@@ -107,17 +101,13 @@ test.describe('Toast — regression cases', () => {
     });
   });
 
-  test('TST-R15 — reduced-motion uses fade animation (no transform slide)', async ({
-    page,
-  }) => {
+  test('TST-R15 — reduced-motion uses fade animation (no transform slide)', async ({ page }) => {
     // reducedMotion is set in beforeEach. The Toast module.scss defines a
     // toastInFade keyframe (opacity only) under @media (prefers-reduced-motion).
     await page.getByRole('button', { name: 'toast()', exact: true }).click();
     const toast = page.getByRole('status').filter({ hasText: 'Default notification' });
     await expect(toast).toBeVisible();
-    const animationName = await toast.evaluate(
-      (el) => window.getComputedStyle(el).animationName,
-    );
+    const animationName = await toast.evaluate((el) => window.getComputedStyle(el).animationName);
     // Under reduced motion, the name is the fade variant (not toastIn).
     expect(animationName).toContain('toastInFade');
   });
@@ -140,26 +130,18 @@ test.describe('Toast — regression cases', () => {
 
   test('toast.dismiss() clears all toasts', async ({ page }) => {
     await page.getByRole('button', { name: 'Spawn 3' }).click();
-    await expect(
-      page.getByRole('status').filter({ hasText: /Toast [ABC]/ }),
-    ).toHaveCount(3);
+    await expect(page.getByRole('status').filter({ hasText: /Toast [ABC]/ })).toHaveCount(3);
     await page.getByRole('button', { name: 'Dismiss all' }).click();
-    await expect(
-      page.getByRole('status').filter({ hasText: /Toast [ABC]/ }),
-    ).toHaveCount(0);
+    await expect(page.getByRole('status').filter({ hasText: /Toast [ABC]/ })).toHaveCount(0);
   });
 
-  test('Action button: retry toast fires onClick + dismisses parent', async ({
-    page,
-  }) => {
+  test('Action button: retry toast fires onClick + dismisses parent', async ({ page }) => {
     await page.getByRole('button', { name: 'Show retry toast' }).click();
     const errorToast = page.getByRole('alert').filter({ hasText: 'Failed to load' });
     await expect(errorToast).toBeVisible();
     await page.getByRole('button', { name: 'Retry', exact: true }).click();
     await expect(errorToast).not.toBeVisible();
-    await expect(
-      page.getByRole('status').filter({ hasText: 'Retrying…' }),
-    ).toBeVisible();
+    await expect(page.getByRole('status').filter({ hasText: 'Retrying…' })).toBeVisible();
   });
 
   test('Stack order: newest toast on top (bottom-right position)', async ({ page }) => {

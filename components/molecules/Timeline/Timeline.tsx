@@ -66,12 +66,13 @@ export interface TimelineProps extends HTMLAttributes<HTMLOListElement> {
   children: ReactNode;
 }
 
-export const Timeline = forwardRef<HTMLOListElement, TimelineProps>(
-  function Timeline({ className, children, ...rest }, ref) {
-    return (
-      <ol ref={ref} className={cn(styles.root, className)} {...rest}>
-        {children}
-      </ol>
-    );
-  },
-);
+export const Timeline = forwardRef<HTMLOListElement, TimelineProps>(function Timeline(
+  { className, children, ...rest },
+  ref,
+) {
+  return (
+    <ol ref={ref} className={cn(styles.root, className)} {...rest}>
+      {children}
+    </ol>
+  );
+});

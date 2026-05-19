@@ -32,11 +32,10 @@ export default function InputPlaygroundPage() {
           Input + Label + Textarea
         </Heading>
         <Text className={styles.intro}>
-          Core form field primitives — <code>Input</code>, <code>Label</code>,
-          and <code>Textarea</code>. Controlled or uncontrolled, auto-generated
-          ids wire Label to field, and error states propagate through{' '}
-          <code>aria-invalid</code> and <code>aria-describedby</code>{' '}
-          automatically.
+          Core form field primitives — <code>Input</code>, <code>Label</code>, and{' '}
+          <code>Textarea</code>. Controlled or uncontrolled, auto-generated ids wire Label to field,
+          and error states propagate through <code>aria-invalid</code> and{' '}
+          <code>aria-describedby</code> automatically.
         </Text>
       </header>
 
@@ -59,18 +58,8 @@ export default function InputPlaygroundPage() {
         <Heading level={2} size="2xl">
           Input &mdash; uncontrolled
         </Heading>
-        <Input
-          aria-label="Full name"
-          name="name"
-          placeholder="Jane Doe"
-          defaultValue=""
-        />
-        <Input
-          aria-label="Username"
-          name="username"
-          placeholder="jane"
-          required
-        />
+        <Input aria-label="Full name" name="name" placeholder="Jane Doe" defaultValue="" />
+        <Input aria-label="Username" name="username" placeholder="jane" required />
       </section>
 
       <section className={styles.section}>
@@ -104,12 +93,7 @@ export default function InputPlaygroundPage() {
         <Heading level={2} size="2xl">
           Input &mdash; disabled
         </Heading>
-        <Input
-          aria-label="API key"
-          name="apiKey"
-          defaultValue="sk-***************"
-          disabled
-        />
+        <Input aria-label="API key" name="apiKey" defaultValue="sk-***************" disabled />
       </section>
 
       <section className={styles.section}>

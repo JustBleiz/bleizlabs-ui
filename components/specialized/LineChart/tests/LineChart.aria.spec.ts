@@ -19,9 +19,7 @@ test.describe('LineChart — ARIA', () => {
     await page.goto(URL, { waitUntil: 'networkidle' });
   });
 
-  test('LC-A01: root has role="img" with aria-labelledby + aria-describedby', async ({
-    page,
-  }) => {
+  test('LC-A01: root has role="img" with aria-labelledby + aria-describedby', async ({ page }) => {
     const chart = chartByTitle(page, 'Weekly leads');
     await expect(chart).toHaveAttribute('role', 'img');
     const labelledBy = await chart.getAttribute('aria-labelledby');
@@ -68,18 +66,14 @@ test.describe('LineChart — ARIA', () => {
     expect(ariaLabel).toMatch(/Week 1.*\d+/);
   });
 
-  test('LC-A06: live region exists with role=status + aria-live=polite', async ({
-    page,
-  }) => {
+  test('LC-A06: live region exists with role=status + aria-live=polite', async ({ page }) => {
     const chart = chartByTitle(page, 'Weekly leads');
     const live = liveRegionOf(chart);
     await expect(live).toHaveAttribute('aria-live', 'polite');
     await expect(live).toHaveAttribute('aria-atomic', 'true');
   });
 
-  test('LC-A07: empty-state chart still has sr-only table with caption', async ({
-    page,
-  }) => {
+  test('LC-A07: empty-state chart still has sr-only table with caption', async ({ page }) => {
     const chart = chartByTitle(page, 'No data available');
     const table = srTableOf(chart);
     await expect(table).toBeAttached();
@@ -90,9 +84,7 @@ test.describe('LineChart — ARIA', () => {
   });
 
   test('LC-A08: axe-core zero violations on demo route', async ({ page }) => {
-    const results = await new AxeBuilder({ page })
-      .disableRules(['region'])
-      .analyze();
+    const results = await new AxeBuilder({ page }).disableRules(['region']).analyze();
     expect(results.violations).toEqual([]);
   });
 });

@@ -6,7 +6,7 @@
 **NVDA version tested:** NVDA 2024.x (record actual)
 **Browser:** Firefox (primary) / Chrome (secondary)
 **Executed on:** YYYY-MM-DD by <name>
-**Verdict:** [ ] PASS  [ ] PASS with notes  [ ] FAIL
+**Verdict:** [ ] PASS [ ] PASS with notes [ ] FAIL
 
 ---
 
@@ -69,13 +69,15 @@
 ## Findings
 
 ### PASS notes
+
 - <anything unexpected but correct>
 
 ### Issues (severity)
+
 - **CRITICAL:** <blocks SR users>
 - **IMPORTANT:** <degraded UX>
 - **NITPICK:** <cosmetic>
 
 ---
 
-**Verdict:** __________________ **Date:** __________ **Tester:** __________
+**Verdict:** **\*\*\*\***\_\_**\*\*\*\*** **Date:** \***\*\_\_\*\*** **Tester:** \***\*\_\_\*\***

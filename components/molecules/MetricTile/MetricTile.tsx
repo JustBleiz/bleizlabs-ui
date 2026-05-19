@@ -1,8 +1,4 @@
-import {
-  forwardRef,
-  type HTMLAttributes,
-  type ReactNode,
-} from 'react';
+import { forwardRef, type HTMLAttributes, type ReactNode } from 'react';
 import { Inline } from '../../layout/Inline';
 import { Stack } from '../../layout/Stack';
 import { cn } from '../../utils/cn';
@@ -86,8 +82,7 @@ const TONE_COLOR_VAR: Record<MetricTileTone, string> = {
   brand: 'var(--color-brand-strong)',
 };
 
-export interface MetricTileProps
-  extends Omit<HTMLAttributes<HTMLDivElement>, 'children'> {
+export interface MetricTileProps extends Omit<HTMLAttributes<HTMLDivElement>, 'children'> {
   /**
    * Label describing the metric (e.g. `"Status"`, `"MRR"`, `"Open tickets"`).
    * Plain string — rendered with caption-tier styling (small uppercase muted)
@@ -129,51 +124,30 @@ export interface MetricTileProps
   children?: never;
 }
 
-export const MetricTile = forwardRef<HTMLDivElement, MetricTileProps>(
-  function MetricTile(
-    {
-      label,
-      value,
-      icon,
-      description,
-      tone = 'default',
-      className,
-      style,
-      ...rest
-    },
-    ref
-  ) {
-    const valueColorVar = TONE_COLOR_VAR[tone];
+export const MetricTile = forwardRef<HTMLDivElement, MetricTileProps>(function MetricTile(
+  { label, value, icon, description, tone = 'default', className, style, ...rest },
+  ref,
+) {
+  const valueColorVar = TONE_COLOR_VAR[tone];
 
-    const iconNode = icon ? (
-      <span className={styles.icon} aria-hidden="true">
-        {icon}
-      </span>
-    ) : null;
+  const iconNode = icon ? (
+    <span className={styles.icon} aria-hidden="true">
+      {icon}
+    </span>
+  ) : null;
 
-    return (
-      <div
-        ref={ref}
-        className={cn(styles.root, className)}
-        style={style}
-        {...rest}
-      >
-        <Stack gap={1}>
-          <span className={styles.label}>{label}</span>
-          <Inline gap={2} align="baseline">
-            {iconNode}
-            <span
-              className={styles.value}
-              style={{ color: valueColorVar }}
-            >
-              {value}
-            </span>
-          </Inline>
-          {description ? (
-            <div className={styles.description}>{description}</div>
-          ) : null}
-        </Stack>
-      </div>
-    );
-  }
-);
+  return (
+    <div ref={ref} className={cn(styles.root, className)} style={style} {...rest}>
+      <Stack gap={1}>
+        <span className={styles.label}>{label}</span>
+        <Inline gap={2} align="baseline">
+          {iconNode}
+          <span className={styles.value} style={{ color: valueColorVar }}>
+            {value}
+          </span>
+        </Inline>
+        {description ? <div className={styles.description}>{description}</div> : null}
+      </Stack>
+    </div>
+  );
+});

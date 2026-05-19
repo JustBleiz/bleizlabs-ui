@@ -29,9 +29,7 @@ test.describe('Drawer — keyboard interactions (APG dialog-modal)', () => {
     await page.keyboard.press('Tab');
     await page.keyboard.press('Tab');
     await page.keyboard.press('Tab');
-    await expect(
-      page.getByRole('button', { name: /open filters drawer/i }),
-    ).not.toBeFocused();
+    await expect(page.getByRole('button', { name: /open filters drawer/i })).not.toBeFocused();
   });
 
   test('Overlay click closes drawer (closeOnOverlayClick=true default)', async ({ page }) => {

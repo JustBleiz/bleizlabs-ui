@@ -11,7 +11,9 @@ test('CAR-R08 — root role="region" + aria-roledescription="carousel"', async (
   expect(await carousel.getAttribute('aria-roledescription')).toBe('carousel');
 });
 
-test('CAR-R09 — slides role="group" + aria-roledescription="slide" + aria-label="N of M"', async ({ page }) => {
+test('CAR-R09 — slides role="group" + aria-roledescription="slide" + aria-label="N of M"', async ({
+  page,
+}) => {
   await page.goto('/components/carousel');
   const firstSlide = page.locator('[role="group"][aria-roledescription="slide"]').first();
   expect(await firstSlide.getAttribute('aria-label')).toMatch(/^Slide \d of \d$/);

@@ -66,9 +66,13 @@ test('CAL-R22 — min/max date: prev chevron disabled at min boundary', async ({
   expect(await prevBtn.getAttribute('aria-disabled')).toBe('true');
 });
 
-test('CAL-R23 — SSR safe: Date formatting uses Intl (consistent server/client)', async ({ page }) => {
+test('CAL-R23 — SSR safe: Date formatting uses Intl (consistent server/client)', async ({
+  page,
+}) => {
   const warnings: string[] = [];
-  page.on('console', (msg) => { if (msg.type() === 'warning') warnings.push(msg.text()); });
+  page.on('console', (msg) => {
+    if (msg.type() === 'warning') warnings.push(msg.text());
+  });
   await page.goto('/components/calendar');
   await page.reload();
   expect(warnings.filter((w) => w.toLowerCase().includes('hydration'))).toHaveLength(0);

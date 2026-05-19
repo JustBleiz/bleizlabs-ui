@@ -31,11 +31,10 @@ import styles from './BackLink.module.scss';
  *   <Link href="/dashboard">Do dashboardu</Link>
  * </BackLink>
  */
-export interface BackLinkProps
-  extends Pick<
-    ButtonProps,
-    'href' | 'asChild' | 'className' | 'onClick' | 'id' | 'children'
-  > {
+export interface BackLinkProps extends Pick<
+  ButtonProps,
+  'href' | 'asChild' | 'className' | 'onClick' | 'id' | 'children'
+> {
   /**
    * Visible label text. Ignored when `asChild` is used (consumer provides
    * the anchor text via children).
@@ -70,28 +69,26 @@ function ArrowLeftIcon() {
 
 type BackLinkRef = ComponentRef<typeof Button>;
 
-export const BackLink = forwardRef<BackLinkRef, BackLinkProps>(
-  function BackLink(
-    { href, asChild = false, label, className, children, ...rest },
-    ref,
-  ) {
-    // v0.3.0 F_B8: `label` is now required (no Polish default). When
-    // `asChild` is used, children provide the text and `label` is ignored.
-    const content: ReactNode = asChild ? children : label;
+export const BackLink = forwardRef<BackLinkRef, BackLinkProps>(function BackLink(
+  { href, asChild = false, label, className, children, ...rest },
+  ref,
+) {
+  // v0.3.0 F_B8: `label` is now required (no Polish default). When
+  // `asChild` is used, children provide the text and `label` is ignored.
+  const content: ReactNode = asChild ? children : label;
 
-    return (
-      <Button
-        ref={ref}
-        variant="ghost"
-        size="sm"
-        icon={<ArrowLeftIcon />}
-        iconPosition="left"
-        {...(asChild ? { asChild: true } : { href })}
-        className={cn(styles.root, className)}
-        {...rest}
-      >
-        {content}
-      </Button>
-    );
-  },
-);
+  return (
+    <Button
+      ref={ref}
+      variant="ghost"
+      size="sm"
+      icon={<ArrowLeftIcon />}
+      iconPosition="left"
+      {...(asChild ? { asChild: true } : { href })}
+      className={cn(styles.root, className)}
+      {...rest}
+    >
+      {content}
+    </Button>
+  );
+});

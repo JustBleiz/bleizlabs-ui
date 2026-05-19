@@ -18,9 +18,7 @@ test.describe('Sheet — keyboard interactions (APG dialog-modal)', () => {
 
   for (const side of ['left', 'right', 'top', 'bottom'] as const) {
     test(`Escape closes ${side} sheet`, async ({ page }) => {
-      await page
-        .getByRole('button', { name: new RegExp(`open ${side} sheet$`, 'i') })
-        .click();
+      await page.getByRole('button', { name: new RegExp(`open ${side} sheet$`, 'i') }).click();
       await expect(page.getByRole('dialog')).toBeVisible();
       await page.keyboard.press('Escape');
       await expect(page.getByRole('dialog')).not.toBeVisible();

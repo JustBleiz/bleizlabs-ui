@@ -29,9 +29,7 @@ test.describe('Select — ARIA + accessibility tree', () => {
     await page.goto('/components/select');
   });
 
-  test('Trigger role="combobox" + aria-haspopup="listbox" + aria-expanded', async ({
-    page,
-  }) => {
+  test('Trigger role="combobox" + aria-haspopup="listbox" + aria-expanded', async ({ page }) => {
     const trigger = page.getByRole('combobox').first();
     await expect(trigger).toHaveAttribute('aria-haspopup', 'listbox');
     await expect(trigger).toHaveAttribute('aria-expanded', 'false');
@@ -43,9 +41,7 @@ test.describe('Select — ARIA + accessibility tree', () => {
     await expect(listbox).toHaveAttribute('id', controls as string);
   });
 
-  test('Listbox aria-labelledby={triggerId} + aria-multiselectable=false', async ({
-    page,
-  }) => {
+  test('Listbox aria-labelledby={triggerId} + aria-multiselectable=false', async ({ page }) => {
     const trigger = page.getByRole('combobox').first();
     await trigger.click();
     const listbox = page.getByRole('listbox').first();
@@ -54,9 +50,7 @@ test.describe('Select — ARIA + accessibility tree', () => {
     await expect(listbox).toHaveAttribute('aria-multiselectable', 'false');
   });
 
-  test('Items have role="option" + aria-selected synced to value', async ({
-    page,
-  }) => {
+  test('Items have role="option" + aria-selected synced to value', async ({ page }) => {
     // idx 0 — defaultValue="react" (React is selected)
     const trigger = page.getByRole('combobox').first();
     await trigger.click();
@@ -67,9 +61,7 @@ test.describe('Select — ARIA + accessibility tree', () => {
     await expect(vue).toHaveAttribute('aria-selected', 'false');
   });
 
-  test('Groups have role="group" + aria-labelledby pointing at SelectLabel', async ({
-    page,
-  }) => {
+  test('Groups have role="group" + aria-labelledby pointing at SelectLabel', async ({ page }) => {
     // idx 1 — grouped demo
     const sections = page.locator('section');
     const grouped = sections.nth(1);
@@ -84,9 +76,7 @@ test.describe('Select — ARIA + accessibility tree', () => {
     await expect(label).toHaveText('Production');
   });
 
-  test('Disabled items render aria-disabled (not native disabled)', async ({
-    page,
-  }) => {
+  test('Disabled items render aria-disabled (not native disabled)', async ({ page }) => {
     // idx 3 — regions demo with AP South/AP Northeast disabled
     const sections = page.locator('section');
     const disabled = sections.nth(3);
@@ -96,9 +86,7 @@ test.describe('Select — ARIA + accessibility tree', () => {
     await expect(apSouth).toHaveAttribute('aria-disabled', 'true');
   });
 
-  test('Separator has role="none" (NOT role=separator inside listbox)', async ({
-    page,
-  }) => {
+  test('Separator has role="none" (NOT role=separator inside listbox)', async ({ page }) => {
     // idx 1 (grouped) has SelectSeparator between groups. Listbox-child
     // separators use role="none" per Select Phase 5 IMP-5 (WAI-ARIA does
     // not allow role=separator inside listbox).

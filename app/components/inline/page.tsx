@@ -6,7 +6,9 @@ export default function InlinePlaygroundPage() {
   return (
     <main className={styles.main}>
       <header className={styles.header}>
-        <Link href="/" className={styles.back}>← back</Link>
+        <Link href="/" className={styles.back}>
+          ← back
+        </Link>
         <h1>Inline</h1>
         <p>Horizontal flex layout atom. Wrap, collapseBelow, asChild demos.</p>
       </header>

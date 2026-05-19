@@ -115,7 +115,7 @@ function useFieldContext(): FieldContextValue {
   const ctx = useContext(FieldContext);
   if (!ctx) {
     throw new Error(
-      'Field sub-components (Label/Control/Description/Message) must be rendered inside <Field>.'
+      'Field sub-components (Label/Control/Description/Message) must be rendered inside <Field>.',
     );
   }
   return ctx;
@@ -150,7 +150,7 @@ export interface FieldProps extends HTMLAttributes<HTMLDivElement> {
 
 const FieldRoot = forwardRef<HTMLDivElement, FieldProps>(function Field(
   { name, serverInvalid = false, children, className, ...rest },
-  forwardedRef
+  forwardedRef,
 ) {
   const formCtx = useOptionalFormContext();
   const reactId = useId();
@@ -240,7 +240,7 @@ const FieldRoot = forwardRef<HTMLDivElement, FieldProps>(function Field(
       isInvalid,
       registerDescribedBy,
       describedBy,
-    ]
+    ],
   );
 
   return (
@@ -263,23 +263,17 @@ const FieldRoot = forwardRef<HTMLDivElement, FieldProps>(function Field(
 // Field.Label
 // ──────────────────────────────────────────────────────────────────────────
 
-export interface FieldLabelProps
-  extends Omit<LabelHTMLAttributes<HTMLLabelElement>, 'htmlFor'> {
+export interface FieldLabelProps extends Omit<LabelHTMLAttributes<HTMLLabelElement>, 'htmlFor'> {
   children: ReactNode;
 }
 
 const FieldLabel = forwardRef<HTMLLabelElement, FieldLabelProps>(function FieldLabel(
   { children, className, ...rest },
-  forwardedRef
+  forwardedRef,
 ) {
   const { controlId } = useFieldContext();
   return (
-    <label
-      ref={forwardedRef}
-      htmlFor={controlId}
-      className={cn(styles.label, className)}
-      {...rest}
-    >
+    <label ref={forwardedRef} htmlFor={controlId} className={cn(styles.label, className)} {...rest}>
       {children}
     </label>
   );
@@ -296,10 +290,9 @@ export interface FieldControlProps {
 
 const FieldControl = forwardRef<HTMLElement, FieldControlProps>(function FieldControl(
   { children },
-  forwardedRef
+  forwardedRef,
 ) {
-  const { fieldName, controlId, isInvalid, describedBy, setControlEl } =
-    useFieldContext();
+  const { fieldName, controlId, isInvalid, describedBy, setControlEl } = useFieldContext();
 
   // Slot's prop interface is HTMLAttributes<HTMLElement> which omits form-only
   // attrs like `name`. Cast a typed prop bag at the call boundary; Slot's
@@ -312,10 +305,7 @@ const FieldControl = forwardRef<HTMLElement, FieldControlProps>(function FieldCo
   } as HTMLAttributes<HTMLElement>;
 
   return (
-    <Slot
-      ref={mergeRefs<HTMLElement>(forwardedRef, setControlEl)}
-      {...controlProps}
-    >
+    <Slot ref={mergeRefs<HTMLElement>(forwardedRef, setControlEl)} {...controlProps}>
       {children}
     </Slot>
   );
@@ -349,7 +339,7 @@ const FieldDescription = forwardRef<HTMLParagraphElement, FieldDescriptionProps>
         {children}
       </p>
     );
-  }
+  },
 );
 
 // ──────────────────────────────────────────────────────────────────────────
@@ -367,39 +357,39 @@ export interface FieldMessageProps extends HTMLAttributes<HTMLParagraphElement> 
   children: ReactNode;
 }
 
-const FieldMessage = forwardRef<HTMLParagraphElement, FieldMessageProps>(
-  function FieldMessage({ match, children, className, ...rest }, forwardedRef) {
-    const { validity, serverInvalid, hasSubmitted, registerDescribedBy } =
-      useFieldContext();
-    const messageId = useId();
+const FieldMessage = forwardRef<HTMLParagraphElement, FieldMessageProps>(function FieldMessage(
+  { match, children, className, ...rest },
+  forwardedRef,
+) {
+  const { validity, serverInvalid, hasSubmitted, registerDescribedBy } = useFieldContext();
+  const messageId = useId();
 
-    const matched =
-      match === 'customError'
-        ? serverInvalid || validity?.customError === true
-        : validity?.[match] === true;
+  const matched =
+    match === 'customError'
+      ? serverInvalid || validity?.customError === true
+      : validity?.[match] === true;
 
-    const shouldRender = matched && hasSubmitted;
+  const shouldRender = matched && hasSubmitted;
 
-    useEffect(() => {
-      if (!shouldRender) return;
-      return registerDescribedBy(messageId);
-    }, [shouldRender, messageId, registerDescribedBy]);
+  useEffect(() => {
+    if (!shouldRender) return;
+    return registerDescribedBy(messageId);
+  }, [shouldRender, messageId, registerDescribedBy]);
 
-    if (!shouldRender) return null;
+  if (!shouldRender) return null;
 
-    return (
-      <p
-        ref={forwardedRef}
-        id={messageId}
-        role="alert"
-        className={cn(styles.message, className)}
-        {...rest}
-      >
-        {children}
-      </p>
-    );
-  }
-);
+  return (
+    <p
+      ref={forwardedRef}
+      id={messageId}
+      role="alert"
+      className={cn(styles.message, className)}
+      {...rest}
+    >
+      {children}
+    </p>
+  );
+});
 
 // ──────────────────────────────────────────────────────────────────────────
 // Compound export
@@ -419,10 +409,4 @@ export const Field: FieldCompound = Object.assign(FieldRoot, {
   Message: FieldMessage,
 });
 
-export {
-  FieldRoot,
-  FieldLabel,
-  FieldControl,
-  FieldDescription,
-  FieldMessage,
-};
+export { FieldRoot, FieldLabel, FieldControl, FieldDescription, FieldMessage };

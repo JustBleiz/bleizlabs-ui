@@ -39,8 +39,10 @@ import styles from './SectionDivider.module.scss';
  */
 export type SectionDividerAlign = 'left' | 'center' | 'right';
 
-export interface SectionDividerProps
-  extends Omit<HTMLAttributes<HTMLDivElement>, 'role' | 'aria-orientation'> {
+export interface SectionDividerProps extends Omit<
+  HTMLAttributes<HTMLDivElement>,
+  'role' | 'aria-orientation'
+> {
   /** Visible label rendered between (or beside) the gradient separator lines. */
   children: ReactNode;
   /** Label position relative to the gradient lines. Default `'center'`. */
@@ -54,10 +56,7 @@ const ALIGN_CLASS: Record<SectionDividerAlign, string> = {
 };
 
 export const SectionDivider = forwardRef<HTMLDivElement, SectionDividerProps>(
-  function SectionDivider(
-    { children, align = 'center', className, ...rest },
-    ref,
-  ) {
+  function SectionDivider({ children, align = 'center', className, ...rest }, ref) {
     const showLeftLine = align === 'center' || align === 'right';
     const showRightLine = align === 'center' || align === 'left';
 
@@ -77,12 +76,7 @@ export const SectionDivider = forwardRef<HTMLDivElement, SectionDividerProps>(
             decorative
           />
         ) : null}
-        <Text
-          variant="caption"
-          color="secondary"
-          uppercase
-          className={styles.label}
-        >
+        <Text variant="caption" color="secondary" uppercase className={styles.label}>
           {children}
         </Text>
         {showRightLine ? (

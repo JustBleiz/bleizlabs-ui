@@ -1,8 +1,5 @@
 import Link from 'next/link';
-import {
-  BreakdownList,
-  BreakdownListItem,
-} from '@/components/molecules/BreakdownList';
+import { BreakdownList, BreakdownListItem } from '@/components/molecules/BreakdownList';
 import { Heading } from '@/components/typography/Heading';
 import { Text } from '@/components/typography/Text';
 import { Inline } from '@/components/layout/Inline';
@@ -40,12 +37,11 @@ export default function BreakdownListPlaygroundPage() {
         </Heading>
         <p className={styles.intro}>
           Universal labeled progress list (compound molecule). Shell{' '}
-          <code>&lt;BreakdownList&gt;</code> + item{' '}
-          <code>&lt;BreakdownListItem&gt;</code> — consumer iterates own data,
-          composes own label slot (plain string OR inline percent OR any
-          ReactNode), wraps own description typography. Klocek-discipline:
-          5-prop item, 2-prop shell, no forced typed array, no auto-wrap, no
-          density lockup. Bar styling delegated to Progress dependency.
+          <code>&lt;BreakdownList&gt;</code> + item <code>&lt;BreakdownListItem&gt;</code> —
+          consumer iterates own data, composes own label slot (plain string OR inline percent OR any
+          ReactNode), wraps own description typography. Klocek-discipline: 5-prop item, 2-prop
+          shell, no forced typed array, no auto-wrap, no density lockup. Bar styling delegated to
+          Progress dependency.
         </p>
       </header>
 
@@ -54,8 +50,8 @@ export default function BreakdownListPlaygroundPage() {
           1. Cautionary breakdown — top escalation reasons
         </Heading>
         <Text variant="small" color="secondary">
-          tone=&quot;warning&quot; (cautionary breakdown of why AI escalates).
-          Plain string label — no inline percent display.
+          tone=&quot;warning&quot; (cautionary breakdown of why AI escalates). Plain string label —
+          no inline percent display.
         </Text>
         <div className={styles.row}>
           <div className={styles.cell}>
@@ -79,8 +75,8 @@ export default function BreakdownListPlaygroundPage() {
         </Heading>
         <Text variant="small" color="secondary">
           tone=&quot;info&quot;. Label slot composes inline percent via{' '}
-          <code>&lt;Inline justify=&quot;between&quot;&gt;</code>; description
-          slot wraps raw count via <code>&lt;Text variant=&quot;small&quot;&gt;</code>.
+          <code>&lt;Inline justify=&quot;between&quot;&gt;</code>; description slot wraps raw count
+          via <code>&lt;Text variant=&quot;small&quot;&gt;</code>.
         </Text>
         <div className={styles.row}>
           <div className={styles.cell}>
@@ -140,29 +136,27 @@ export default function BreakdownListPlaygroundPage() {
           4. Tone variants (brand / info / success / warning / error)
         </Heading>
         <Text variant="small" color="secondary">
-          Tone affects ONLY the Progress bar color. Label and description stay
-          neutral (consumer typography).
+          Tone affects ONLY the Progress bar color. Label and description stay neutral (consumer
+          typography).
         </Text>
         <div className={styles.toneRow}>
-          {(['brand', 'info', 'success', 'warning', 'error'] as const).map(
-            (tone) => (
-              <div key={tone} className={styles.cell}>
-                <Text variant="caption" color="muted">
-                  tone=&quot;{tone}&quot;
-                </Text>
-                <BreakdownList aria-label={`Tone ${tone} demo`}>
-                  {ESCALATION_REASONS.map((item) => (
-                    <BreakdownListItem
-                      key={item.label}
-                      label={item.label}
-                      value={item.value}
-                      tone={tone}
-                    />
-                  ))}
-                </BreakdownList>
-              </div>
-            )
-          )}
+          {(['brand', 'info', 'success', 'warning', 'error'] as const).map((tone) => (
+            <div key={tone} className={styles.cell}>
+              <Text variant="caption" color="muted">
+                tone=&quot;{tone}&quot;
+              </Text>
+              <BreakdownList aria-label={`Tone ${tone} demo`}>
+                {ESCALATION_REASONS.map((item) => (
+                  <BreakdownListItem
+                    key={item.label}
+                    label={item.label}
+                    value={item.value}
+                    tone={tone}
+                  />
+                ))}
+              </BreakdownList>
+            </div>
+          ))}
         </div>
       </section>
 
@@ -171,8 +165,8 @@ export default function BreakdownListPlaygroundPage() {
           5. Custom max scale (value=150 on max=200)
         </Heading>
         <Text variant="small" color="secondary">
-          Pass <code>max</code> prop on item when value isn&apos;t a 0-100
-          percentage. ARIA label still derives correct percent for SR scan.
+          Pass <code>max</code> prop on item when value isn&apos;t a 0-100 percentage. ARIA label
+          still derives correct percent for SR scan.
         </Text>
         <div className={styles.row}>
           <div className={styles.cell}>
@@ -190,9 +184,9 @@ export default function BreakdownListPlaygroundPage() {
           6. Empty state (consumer-owned)
         </Heading>
         <Text variant="small" color="secondary">
-          Molecule never auto-wraps. Consumer renders own empty fallback when
-          data is missing — no <code>emptyMessage</code> prop bundling concerns.
-          The placeholder UI below is the consumer&apos;s, not the lib&apos;s.
+          Molecule never auto-wraps. Consumer renders own empty fallback when data is missing — no{' '}
+          <code>emptyMessage</code> prop bundling concerns. The placeholder UI below is the
+          consumer&apos;s, not the lib&apos;s.
         </Text>
         <div className={styles.row}>
           <div className={styles.empty}>
@@ -211,8 +205,7 @@ export default function BreakdownListPlaygroundPage() {
           7. Long labels (wrap, not truncate)
         </Heading>
         <Text variant="small" color="secondary">
-          Multi-word analytics labels wrap in label slot; Progress bar stays
-          full-width below.
+          Multi-word analytics labels wrap in label slot; Progress bar stays full-width below.
         </Text>
         <div className={styles.row}>
           <div className={styles.cell}>

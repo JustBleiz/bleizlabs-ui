@@ -45,7 +45,6 @@ test.describe('ContextMenu — keyboard interactions', () => {
     const itemCount = await page.getByRole('menuitem').count();
     // Press ArrowDown itemCount times — returns to first item after full cycle
     for (let i = 0; i < itemCount; i++) {
-       
       await page.keyboard.press('ArrowDown');
     }
     await expect(page.getByRole('menuitem').first()).toBeFocused();
@@ -80,9 +79,8 @@ test.describe('ContextMenu — keyboard interactions', () => {
     await trigger.click({ button: 'right' });
     await expect(page.getByRole('menuitem').first()).toBeFocused();
     for (let i = 0; i < 10; i++) {
-       
       await page.keyboard.press('ArrowDown');
-       
+
       const ariaDisabled = await page.evaluate(() =>
         document.activeElement?.getAttribute('aria-disabled'),
       );

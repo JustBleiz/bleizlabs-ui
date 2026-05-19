@@ -27,7 +27,9 @@ test('TB-R03 — Tab key moves focus only; arrows change tab in automatic mode',
   expect(await tasks.getAttribute('aria-selected')).toBe('true');
 });
 
-test('TB-R04 — Cmd/Ctrl+ArrowLeft skipped (browser back hotkey takes precedence)', async ({ page }) => {
+test('TB-R04 — Cmd/Ctrl+ArrowLeft skipped (browser back hotkey takes precedence)', async ({
+  page,
+}) => {
   await page.goto('/components/tabs');
   const tasks = page.getByRole('tab', { name: 'Tasks' });
   await tasks.click();

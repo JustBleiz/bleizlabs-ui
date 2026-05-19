@@ -100,9 +100,7 @@ function mergeProps(
     const parentValue = parent[key];
     const childValue = child[key];
     const isEventHandler =
-      key.startsWith('on') &&
-      typeof parentValue === 'function' &&
-      typeof childValue === 'function';
+      key.startsWith('on') && typeof parentValue === 'function' && typeof childValue === 'function';
 
     if (isEventHandler) {
       merged[key] = (...args: unknown[]) => {

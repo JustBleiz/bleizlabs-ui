@@ -16,13 +16,12 @@ import styles from './TableFooter.module.scss';
  */
 export type TableFooterProps = HTMLAttributes<HTMLTableSectionElement>;
 
-export const TableFooter = forwardRef<
-  HTMLTableSectionElement,
-  TableFooterProps
->(function TableFooter({ className, children, ...rest }, ref) {
-  return (
-    <tfoot ref={ref} className={cn(styles.root, className)} {...rest}>
-      {children}
-    </tfoot>
-  );
-});
+export const TableFooter = forwardRef<HTMLTableSectionElement, TableFooterProps>(
+  function TableFooter({ className, children, ...rest }, ref) {
+    return (
+      <tfoot ref={ref} className={cn(styles.root, className)} {...rest}>
+        {children}
+      </tfoot>
+    );
+  },
+);

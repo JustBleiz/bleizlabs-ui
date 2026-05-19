@@ -1,8 +1,4 @@
-import {
-  forwardRef,
-  type HTMLAttributes,
-  type ReactNode,
-} from 'react';
+import { forwardRef, type HTMLAttributes, type ReactNode } from 'react';
 import { Slot } from '../../utils/Slot';
 import { cn } from '../../utils/cn';
 import styles from './Eyebrow.module.scss';
@@ -45,8 +41,7 @@ import styles from './Eyebrow.module.scss';
  */
 export type EyebrowTone = 'muted' | 'secondary' | 'strong';
 
-export interface EyebrowProps
-  extends Omit<HTMLAttributes<HTMLSpanElement>, 'children'> {
+export interface EyebrowProps extends Omit<HTMLAttributes<HTMLSpanElement>, 'children'> {
   /**
    * Optional numeric or alphabetic prefix rendered before the label with a
    * hairline connector. Numbers are zero-padded to 2 digits (1 → "01").
@@ -78,35 +73,28 @@ function formatIndex(index: number | string): string {
   return index;
 }
 
-export const Eyebrow = forwardRef<HTMLSpanElement, EyebrowProps>(
-  function Eyebrow(
-    { index, tone = 'muted', asChild = false, className, children, ...rest },
-    ref,
-  ) {
-    const Comp = asChild ? Slot : 'span';
-    const hasIndex = index !== undefined && index !== null && index !== '';
+export const Eyebrow = forwardRef<HTMLSpanElement, EyebrowProps>(function Eyebrow(
+  { index, tone = 'muted', asChild = false, className, children, ...rest },
+  ref,
+) {
+  const Comp = asChild ? Slot : 'span';
+  const hasIndex = index !== undefined && index !== null && index !== '';
 
-    return (
-      <Comp
-        ref={ref}
-        className={cn(
-          styles.root,
-          TONE_CLASS[tone],
-          hasIndex && styles.withIndex,
-          className,
-        )}
-        {...rest}
-      >
-        {hasIndex ? (
-          <>
-            <span aria-hidden="true" className={styles.index}>
-              {formatIndex(index)}
-            </span>
-            <span aria-hidden="true" className={styles.hairline} />
-          </>
-        ) : null}
-        <span className={styles.label}>{children}</span>
-      </Comp>
-    );
-  },
-);
+  return (
+    <Comp
+      ref={ref}
+      className={cn(styles.root, TONE_CLASS[tone], hasIndex && styles.withIndex, className)}
+      {...rest}
+    >
+      {hasIndex ? (
+        <>
+          <span aria-hidden="true" className={styles.index}>
+            {formatIndex(index)}
+          </span>
+          <span aria-hidden="true" className={styles.hairline} />
+        </>
+      ) : null}
+      <span className={styles.label}>{children}</span>
+    </Comp>
+  );
+});

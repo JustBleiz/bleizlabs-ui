@@ -17,9 +17,7 @@ test.describe('Sidebar — keyboard interactions (desktop)', () => {
 
   test('SB-R01 — Tab navigates items in DOM order', async ({ page }) => {
     // Focus the first sidebar trigger button, then Tab through items
-    const trigger = page
-      .getByRole('button', { name: /toggle sidebar/i })
-      .first();
+    const trigger = page.getByRole('button', { name: /toggle sidebar/i }).first();
     await trigger.focus();
     // Items are anchor tags in nav landmark
     const firstNav = page.getByRole('navigation', { name: 'Primary navigation' });
@@ -78,10 +76,7 @@ test.describe('Sidebar — keyboard interactions (desktop)', () => {
     await expect(basicSidebar).toHaveAttribute('data-state', stateBefore!);
   });
 
-  test('ShortcutDemo: consumer-bound Cmd+B toggles its sidebar', async ({
-    page,
-    browserName,
-  }) => {
+  test('ShortcutDemo: consumer-bound Cmd+B toggles its sidebar', async ({ page, browserName }) => {
     // Section 4 wires Cmd/Ctrl+B via useSidebar hook in ShortcutInner.
     const modifier = browserName === 'webkit' ? 'Meta' : 'Control';
     const hotkeySidebar = page.locator('aside[aria-label="Shortcut sidebar"]');

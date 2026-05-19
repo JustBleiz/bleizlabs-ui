@@ -39,9 +39,7 @@ test.describe('Drawer — focus management (APG dialog-modal)', () => {
       await page.keyboard.press('Tab');
     }
     // Background trigger should never receive focus
-    await expect(
-      page.getByRole('button', { name: /open basic drawer/i }),
-    ).not.toBeFocused();
+    await expect(page.getByRole('button', { name: /open basic drawer/i })).not.toBeFocused();
   });
 
   test('Focus restores to trigger on close (Radix #1891)', async ({ page }) => {

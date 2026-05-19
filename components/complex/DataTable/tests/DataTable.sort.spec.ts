@@ -82,9 +82,7 @@ test.describe('DataTable — sort behavior', () => {
     // Click name header twice — defaultSort is asc, second click → desc
     await sortBtns.first().click();
     await page.waitForTimeout(50);
-    const header = grid
-      .locator('[role="columnheader"][aria-sort="descending"]')
-      .first();
+    const header = grid.locator('[role="columnheader"][aria-sort="descending"]').first();
     await expect(header).toBeVisible();
     const firstCell = grid.locator('[role="row"][aria-rowindex="3"] [role="gridcell"]').first();
     const secondCell = grid.locator('[role="row"][aria-rowindex="4"] [role="gridcell"]').first();

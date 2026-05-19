@@ -16,9 +16,7 @@ test.describe('Tabs — focus management', () => {
     await page.goto('/components/tabs');
   });
 
-  test('TB-R15 — active tabpanel has tabindex=0 (composite widget)', async ({
-    page,
-  }) => {
+  test('TB-R15 — active tabpanel has tabindex=0 (composite widget)', async ({ page }) => {
     // The active tabpanel in section 1 (Overview)
     const tablist = page.getByRole('tablist', { name: 'Project sections' });
     await tablist.getByRole('tab', { name: 'Overview' }).click();
@@ -26,9 +24,7 @@ test.describe('Tabs — focus management', () => {
     await expect(panel).toHaveAttribute('tabindex', '0');
   });
 
-  test('TB-R15b — Tab from active trigger moves focus INTO panel', async ({
-    page,
-  }) => {
+  test('TB-R15b — Tab from active trigger moves focus INTO panel', async ({ page }) => {
     const tablist = page.getByRole('tablist', { name: 'Project sections' });
     const overview = tablist.getByRole('tab', { name: 'Overview' });
     await overview.focus();
@@ -59,9 +55,7 @@ test.describe('Tabs — focus management', () => {
     await expect(team).toHaveAttribute('aria-selected', 'true');
   });
 
-  test('disabled tab does not take focus via click (aria-disabled)', async ({
-    page,
-  }) => {
+  test('disabled tab does not take focus via click (aria-disabled)', async ({ page }) => {
     // Section 6 — Enterprise (disabled)
     const tablist = page.getByRole('tablist', { name: 'Pricing tier' });
     const enterprise = tablist.getByRole('tab', { name: /Enterprise/ });

@@ -26,9 +26,7 @@ test.describe('Carousel — keyboard interaction', () => {
     await page.goto('/components/carousel');
   });
 
-  test('CAR-R01 — ArrowRight advances to next slide; ArrowLeft goes back', async ({
-    page,
-  }) => {
+  test('CAR-R01 — ArrowRight advances to next slide; ArrowLeft goes back', async ({ page }) => {
     // Section 1 — Basic. 5 slides total, start at 0.
     const basic = page
       .locator('section')
@@ -48,9 +46,7 @@ test.describe('Carousel — keyboard interaction', () => {
     await expect(slide1).toHaveAttribute('data-current', 'true');
   });
 
-  test('CAR-R02 — End jumps to last slide; Home jumps back to first', async ({
-    page,
-  }) => {
+  test('CAR-R02 — End jumps to last slide; Home jumps back to first', async ({ page }) => {
     const basic = page
       .locator('section')
       .filter({ has: page.getByRole('heading', { name: /Basic/ }) })
@@ -93,9 +89,7 @@ test.describe('Carousel — keyboard interaction', () => {
       .filter({ has: page.getByRole('heading', { name: /^2\. Auto-rotate/ }) })
       .first();
     const viewport = auto.locator('div[tabindex="0"]').first();
-    const currentSlide = auto.locator(
-      '[aria-roledescription="slide"][data-current="true"]',
-    );
+    const currentSlide = auto.locator('[aria-roledescription="slide"][data-current="true"]');
     // Focus BEFORE any auto-rotate tick fires.
     await viewport.focus();
     const initialCurrent = await currentSlide.first().getAttribute('aria-label');

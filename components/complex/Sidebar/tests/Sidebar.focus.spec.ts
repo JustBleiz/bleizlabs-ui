@@ -10,9 +10,7 @@ test.describe('Sidebar — focus management (desktop)', () => {
     await page.goto('/components/sidebar');
   });
 
-  test('SB-R06 — disabled item kept in Tab order (aria-disabled only)', async ({
-    page,
-  }) => {
+  test('SB-R06 — disabled item kept in Tab order (aria-disabled only)', async ({ page }) => {
     // Section 2 "Grouped sidebar" has a disabled "Permission denied" item
     const groupedSidebar = page.locator('aside[aria-label="Grouped sidebar"]');
     const disabled = groupedSidebar.getByRole('link', { name: 'Permission denied' });
@@ -22,9 +20,7 @@ test.describe('Sidebar — focus management (desktop)', () => {
     await expect(disabled).toBeFocused();
   });
 
-  test('disabled item: Enter does not trigger navigation (preventDefault)', async ({
-    page,
-  }) => {
+  test('disabled item: Enter does not trigger navigation (preventDefault)', async ({ page }) => {
     const groupedSidebar = page.locator('aside[aria-label="Grouped sidebar"]');
     const disabled = groupedSidebar.getByRole('link', { name: 'Permission denied' });
     await disabled.focus();
@@ -42,9 +38,7 @@ test.describe('Sidebar — focus management (desktop)', () => {
     await expect(dashboard).toHaveAttribute('data-active', 'true');
   });
 
-  test('SidebarTrigger: aria-expanded + aria-controls reflect state', async ({
-    page,
-  }) => {
+  test('SidebarTrigger: aria-expanded + aria-controls reflect state', async ({ page }) => {
     const basicSidebar = page.locator('aside[aria-label="Basic sidebar"]');
     const sidebarId = await basicSidebar.getAttribute('id');
     expect(sidebarId).toBeTruthy();

@@ -78,10 +78,9 @@ export default function ComboboxPlayground() {
           Combobox
         </Heading>
         <Text variant="lead" color="muted">
-          Autocomplete input with a filtered listbox. Type any substring to
-          narrow results (case-insensitive contains), navigate with arrow keys,
-          Enter to commit, Escape to revert. Supports free-text mode for
-          tag-input patterns.
+          Autocomplete input with a filtered listbox. Type any substring to narrow results
+          (case-insensitive contains), navigate with arrow keys, Enter to commit, Escape to revert.
+          Supports free-text mode for tag-input patterns.
         </Text>
       </header>
 
@@ -92,8 +91,8 @@ export default function ComboboxPlayground() {
         </Heading>
         <Text variant="body" color="muted">
           Type any substring to filter — <code>an</code> matches Canada/Austria/Andorra
-          (case-insensitive <code>contains</code>). Arrow keys navigate filtered results,
-          Enter commits, Escape clears.
+          (case-insensitive <code>contains</code>). Arrow keys navigate filtered results, Enter
+          commits, Escape clears.
         </Text>
         <div className={styles.demo}>
           <div className={styles.fieldGroup}>
@@ -121,9 +120,9 @@ export default function ComboboxPlayground() {
           2. Grouped options with labels + separators
         </Heading>
         <Text variant="body" color="muted">
-          <code>ComboboxGroup</code> + <code>ComboboxLabel</code> create semantic
-          groupings (<code>role=&quot;group&quot;</code> + <code>aria-labelledby</code>).
-          Groups filter as a unit — empty groups hide automatically.
+          <code>ComboboxGroup</code> + <code>ComboboxLabel</code> create semantic groupings (
+          <code>role=&quot;group&quot;</code> + <code>aria-labelledby</code>). Groups filter as a
+          unit — empty groups hide automatically.
         </Text>
         <div className={styles.demo}>
           <div className={styles.fieldGroup}>
@@ -178,9 +177,9 @@ export default function ComboboxPlayground() {
           3. Controlled mode with external state
         </Heading>
         <Text variant="body" color="muted">
-          Pass <code>value</code> + <code>onValueChange</code> to own the state
-          externally. Selected: <Badge color="brand">{controlledValue ?? '(none)'}</Badge>.
-          Buttons demonstrate external updates syncing the input display.
+          Pass <code>value</code> + <code>onValueChange</code> to own the state externally.
+          Selected: <Badge color="brand">{controlledValue ?? '(none)'}</Badge>. Buttons demonstrate
+          external updates syncing the input display.
         </Text>
         <div className={styles.demo}>
           <div className={styles.fieldGroup}>
@@ -200,25 +199,13 @@ export default function ComboboxPlayground() {
             </Combobox>
           </div>
           <div className={styles.formRow}>
-            <Button
-              variant="secondary"
-              size="sm"
-              onClick={() => setControlledValue('pl')}
-            >
+            <Button variant="secondary" size="sm" onClick={() => setControlledValue('pl')}>
               Jump to Poland
             </Button>
-            <Button
-              variant="secondary"
-              size="sm"
-              onClick={() => setControlledValue('jp')}
-            >
+            <Button variant="secondary" size="sm" onClick={() => setControlledValue('jp')}>
               Jump to Japan
             </Button>
-            <Button
-              variant="secondary"
-              size="sm"
-              onClick={() => setControlledValue(null)}
-            >
+            <Button variant="secondary" size="sm" onClick={() => setControlledValue(null)}>
               Clear
             </Button>
           </div>
@@ -231,9 +218,9 @@ export default function ComboboxPlayground() {
           4. Disabled items
         </Heading>
         <Text variant="body" color="muted">
-          Items marked <code>disabled</code> render with{' '}
-          <code>aria-disabled=&quot;true&quot;</code> and are skipped by keyboard nav.
-          Filter still applies to disabled items (visible in results but unselectable).
+          Items marked <code>disabled</code> render with <code>aria-disabled=&quot;true&quot;</code>{' '}
+          and are skipped by keyboard nav. Filter still applies to disabled items (visible in
+          results but unselectable).
         </Text>
         <div className={styles.demo}>
           <div className={styles.fieldGroup}>
@@ -256,18 +243,10 @@ export default function ComboboxPlayground() {
                   US West (Oregon)
                 </ComboboxItem>
                 <ComboboxSeparator />
-                <ComboboxItem
-                  value="ap-south-1"
-                  textValue="AP South (Mumbai)"
-                  disabled
-                >
+                <ComboboxItem value="ap-south-1" textValue="AP South (Mumbai)" disabled>
                   AP South (Mumbai) — capacity full
                 </ComboboxItem>
-                <ComboboxItem
-                  value="ap-northeast-1"
-                  textValue="AP Northeast (Tokyo)"
-                  disabled
-                >
+                <ComboboxItem value="ap-northeast-1" textValue="AP Northeast (Tokyo)" disabled>
                   AP Northeast (Tokyo) — capacity full
                 </ComboboxItem>
                 <ComboboxEmpty>No region matches.</ComboboxEmpty>
@@ -283,10 +262,9 @@ export default function ComboboxPlayground() {
           5. Free text mode (<code>acceptFreeText</code>)
         </Heading>
         <Text variant="body" color="muted">
-          With <code>acceptFreeText</code>, Enter commits the typed text as the value
-          even when no item matches. Useful for tag inputs, custom category entry, or
-          autocomplete-with-override flows. Without the prop (default), Enter on no-match
-          is a no-op.
+          With <code>acceptFreeText</code>, Enter commits the typed text as the value even when no
+          item matches. Useful for tag inputs, custom category entry, or autocomplete-with-override
+          flows. Without the prop (default), Enter on no-match is a no-op.
         </Text>
         <div className={styles.demo}>
           <div className={styles.fieldGroup}>
@@ -301,9 +279,7 @@ export default function ComboboxPlayground() {
                 <ComboboxItem value="typescript">typescript</ComboboxItem>
                 <ComboboxItem value="scss">scss</ComboboxItem>
                 <ComboboxItem value="a11y">a11y</ComboboxItem>
-                <ComboboxEmpty>
-                  No existing tag — press Enter to create a new one.
-                </ComboboxEmpty>
+                <ComboboxEmpty>No existing tag — press Enter to create a new one.</ComboboxEmpty>
               </ComboboxContent>
             </Combobox>
           </div>
@@ -317,9 +293,9 @@ export default function ComboboxPlayground() {
         </Heading>
         <Text variant="body" color="muted">
           When <code>name</code> is provided, Combobox renders a hidden{' '}
-          <code>&lt;input type=&quot;hidden&quot;&gt;</code> synced with the current
-          selection. Submit the form to see <code>FormData</code> serialization work.{' '}
-          <code>required</code> propagates for native validation.
+          <code>&lt;input type=&quot;hidden&quot;&gt;</code> synced with the current selection.
+          Submit the form to see <code>FormData</code> serialization work. <code>required</code>{' '}
+          propagates for native validation.
         </Text>
         <div className={styles.demo}>
           <form onSubmit={handleSubmit}>
@@ -361,11 +337,10 @@ export default function ComboboxPlayground() {
           7. Multi-select (multiple={`{true}`})
         </Heading>
         <Text variant="body" color="muted">
-          Pass <code>multiple</code> to switch the Combobox into multi-select
-          mode. Picking an item TOGGLES it in/out of the selection array, the
-          listbox stays open, and the search clears for the next pick.
-          Selected values render as inline chips left of the input. Backspace
-          on empty input removes the last chip — standard tag-input gesture.
+          Pass <code>multiple</code> to switch the Combobox into multi-select mode. Picking an item
+          TOGGLES it in/out of the selection array, the listbox stays open, and the search clears
+          for the next pick. Selected values render as inline chips left of the input. Backspace on
+          empty input removes the last chip — standard tag-input gesture.
         </Text>
 
         {/* 7.1 Uncontrolled multi-select */}
@@ -397,11 +372,7 @@ export default function ComboboxPlayground() {
           <Text variant="small" weight="semibold">
             7.2 Controlled — external state, current value displayed below
           </Text>
-          <Combobox
-            multiple
-            value={multiValue}
-            onValueChange={setMultiValue}
-          >
+          <Combobox multiple value={multiValue} onValueChange={setMultiValue}>
             <ComboboxInput
               placeholder="Search countries..."
               aria-label="Controlled multi countries"
@@ -447,16 +418,12 @@ export default function ComboboxPlayground() {
         {/* 7.3 Form participation — FormData multi-value */}
         <div className={styles.demoBlock}>
           <Text variant="small" weight="semibold">
-            7.3 Form participation — FormData multi-value (
-            <code>formData.getAll(name)</code>)
+            7.3 Form participation — FormData multi-value (<code>formData.getAll(name)</code>)
           </Text>
           <form onSubmit={handleMultiSubmit}>
             <Stack gap={3}>
               <Combobox multiple name="countries" defaultValue={['fr', 'es']}>
-                <ComboboxInput
-                  placeholder="Pick countries..."
-                  aria-label="Form countries"
-                />
+                <ComboboxInput placeholder="Pick countries..." aria-label="Form countries" />
                 <ComboboxContent>
                   {COUNTRIES.map((country) => (
                     <ComboboxItem key={country.value} value={country.value}>
@@ -473,9 +440,7 @@ export default function ComboboxPlayground() {
                 <div className={styles.submittedValue}>
                   Submitted (<code>getAll</code>):{' '}
                   <strong>
-                    {submittedMulti.length === 0
-                      ? '(empty array)'
-                      : submittedMulti.join(', ')}
+                    {submittedMulti.length === 0 ? '(empty array)' : submittedMulti.join(', ')}
                   </strong>
                 </div>
               )}
@@ -490,29 +455,28 @@ export default function ComboboxPlayground() {
           8. Keyboard walkthrough
         </Heading>
         <Text variant="body" color="muted">
-          Tab into any Combobox input above, then try every key from the APG{' '}
-          <code>/combobox/</code> editable spec:
+          Tab into any Combobox input above, then try every key from the APG <code>/combobox/</code>{' '}
+          editable spec:
         </Text>
         <ul className={styles.keyList}>
           <li>
-            <strong>Typing</strong> — opens the listbox (if closed) and filters results
-            via case-insensitive substring match. Highlight resets to first visible
-            enabled item.
+            <strong>Typing</strong> — opens the listbox (if closed) and filters results via
+            case-insensitive substring match. Highlight resets to first visible enabled item.
           </li>
           <li>
-            <kbd>ArrowDown</kbd> (closed) — opens listbox, highlights first enabled (or
-            current value).
+            <kbd>ArrowDown</kbd> (closed) — opens listbox, highlights first enabled (or current
+            value).
           </li>
           <li>
             <kbd>ArrowUp</kbd> (closed) — opens listbox, highlights last enabled.
           </li>
           <li>
-            <kbd>Alt</kbd>+<kbd>ArrowDown</kbd> — opens listbox showing ALL items
-            (ignores current filter — Radix convention for &quot;show all&quot;).
+            <kbd>Alt</kbd>+<kbd>ArrowDown</kbd> — opens listbox showing ALL items (ignores current
+            filter — Radix convention for &quot;show all&quot;).
           </li>
           <li>
-            <kbd>ArrowDown</kbd> / <kbd>ArrowUp</kbd> (open) — move highlight to
-            next/prev visible enabled option with wraparound.
+            <kbd>ArrowDown</kbd> / <kbd>ArrowUp</kbd> (open) — move highlight to next/prev visible
+            enabled option with wraparound.
           </li>
           <li>
             <kbd>Home</kbd> / <kbd>End</kbd> (open) — first / last visible enabled.
@@ -525,8 +489,8 @@ export default function ComboboxPlayground() {
             <code>onValueChange</code> + close + sync input to committed label.
           </li>
           <li>
-            <kbd>Enter</kbd> (open + empty matches + <code>acceptFreeText</code>) —
-            commit the typed search as the value.
+            <kbd>Enter</kbd> (open + empty matches + <code>acceptFreeText</code>) — commit the typed
+            search as the value.
           </li>
           <li>
             <kbd>Escape</kbd> (open) — close, revert input to current value&apos;s label.
@@ -535,53 +499,46 @@ export default function ComboboxPlayground() {
             <kbd>Escape</kbd> (closed + non-empty search) — clear input, keep value.
           </li>
           <li>
-            <kbd>Tab</kbd> (open) — commit highlighted (if any) + close + propagate to
-            next tabstop (Radix convention).
+            <kbd>Tab</kbd> (open) — commit highlighted (if any) + close + propagate to next tabstop
+            (Radix convention).
           </li>
           <li>
-            <kbd>Blur</kbd> (click elsewhere) — auto-commit if typed text exactly
-            matches an item&apos;s label; else revert input to current value&apos;s
-            label. Prevents orphaned text (Radix Strategy A).
+            <kbd>Blur</kbd> (click elsewhere) — auto-commit if typed text exactly matches an
+            item&apos;s label; else revert input to current value&apos;s label. Prevents orphaned
+            text (Radix Strategy A).
           </li>
           <li>
-            <kbd>Cmd</kbd>+<kbd>Arrow</kbd> / <kbd>Ctrl</kbd>+<kbd>Arrow</kbd> — NOT
-            intercepted (text-input navigation preserved).
+            <kbd>Cmd</kbd>+<kbd>Arrow</kbd> / <kbd>Ctrl</kbd>+<kbd>Arrow</kbd> — NOT intercepted
+            (text-input navigation preserved).
           </li>
         </ul>
         <Text variant="body" color="muted">
-          Multi-mode overrides (
-          <code>multiple={`{true}`}</code>):
+          Multi-mode overrides (<code>multiple={`{true}`}</code>):
         </Text>
         <ul className={styles.keyList}>
           <li>
-            <kbd>Space</kbd> (open) — TOGGLE highlighted in selection array,
-            keep listbox open, clear search. APG <code>/listbox/</code>{' '}
-            multi-selectable simple model. (Single mode: Space falls through
-            as a literal filter character.)
+            <kbd>Space</kbd> (open) — TOGGLE highlighted in selection array, keep listbox open,
+            clear search. APG <code>/listbox/</code> multi-selectable simple model. (Single mode:
+            Space falls through as a literal filter character.)
           </li>
           <li>
-            <kbd>Enter</kbd> (open + highlighted) — TOGGLE highlighted (NOT
-            commit-and-close as in single mode). Listbox stays open, search
-            clears.
+            <kbd>Enter</kbd> (open + highlighted) — TOGGLE highlighted (NOT commit-and-close as in
+            single mode). Listbox stays open, search clears.
           </li>
           <li>
-            <kbd>Backspace</kbd> (input value empty, no modifiers) — remove
-            LAST selected chip. Standard tag-input gesture (Gmail recipients,
-            GitHub topics).
+            <kbd>Backspace</kbd> (input value empty, no modifiers) — remove LAST selected chip.
+            Standard tag-input gesture (Gmail recipients, GitHub topics).
           </li>
           <li>
-            <kbd>Tab</kbd> (open) — close + clear search. Does NOT toggle
-            highlighted (Tab = &quot;I&apos;m done picking&quot;, not
-            commit). Selections persist as chips.
+            <kbd>Tab</kbd> (open) — close + clear search. Does NOT toggle highlighted (Tab =
+            &quot;I&apos;m done picking&quot;, not commit). Selections persist as chips.
           </li>
           <li>
-            <kbd>Escape</kbd> (open) — close + clear search. Selections
-            persist (chips remain) — no revert-to-committed-label since multi
-            mode has no single committed label.
+            <kbd>Escape</kbd> (open) — close + clear search. Selections persist (chips remain) — no
+            revert-to-committed-label since multi mode has no single committed label.
           </li>
           <li>
-            <kbd>Click</kbd> on chip × button — remove that single value,
-            restore focus to input.
+            <kbd>Click</kbd> on chip × button — remove that single value, restore focus to input.
           </li>
         </ul>
       </section>

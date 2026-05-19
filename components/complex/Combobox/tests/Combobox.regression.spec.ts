@@ -17,9 +17,7 @@ test.describe('Combobox — regressions', () => {
     await page.emulateMedia({ reducedMotion: 'reduce' });
   });
 
-  test('CB-R02 — SSR hydration: no hydration warnings on initial render', async ({
-    page,
-  }) => {
+  test('CB-R02 — SSR hydration: no hydration warnings on initial render', async ({ page }) => {
     const warnings: string[] = [];
     page.on('console', (msg) => {
       if (msg.type() === 'warning' || msg.type() === 'error') {
@@ -30,15 +28,11 @@ test.describe('Combobox — regressions', () => {
     await page.waitForLoadState('networkidle');
     await page.reload();
     await page.waitForLoadState('networkidle');
-    const hydrationWarnings = warnings.filter((w) =>
-      w.toLowerCase().includes('hydration'),
-    );
+    const hydrationWarnings = warnings.filter((w) => w.toLowerCase().includes('hydration'));
     expect(hydrationWarnings).toHaveLength(0);
   });
 
-  test('CB-R03 — filter race: rapid keystrokes produce final-state listbox', async ({
-    page,
-  }) => {
+  test('CB-R03 — filter race: rapid keystrokes produce final-state listbox', async ({ page }) => {
     await page.goto('/components/combobox');
     const input = page.getByRole('combobox').first();
     await input.focus();
@@ -64,9 +58,7 @@ test.describe('Combobox — regressions', () => {
     await expect(page.getByRole('listbox').first()).toBeVisible();
   });
 
-  test('Controlled value: external update commits via section 3 buttons', async ({
-    page,
-  }) => {
+  test('Controlled value: external update commits via section 3 buttons', async ({ page }) => {
     // Section 3 — controlled demo. External "Jump to X" buttons mutate the
     // controlled value. Verify the hidden form state via the aria-selected
     // attribute of the corresponding option when listbox re-opens.
@@ -83,9 +75,7 @@ test.describe('Combobox — regressions', () => {
     await expect(japan).toHaveAttribute('aria-selected', 'true');
   });
 
-  test('Search state never null: empty string is the valid initial', async ({
-    page,
-  }) => {
+  test('Search state never null: empty string is the valid initial', async ({ page }) => {
     await page.goto('/components/combobox');
     const input = page.getByRole('combobox').first();
     const initial = await input.inputValue();

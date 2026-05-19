@@ -25,11 +25,11 @@
 
 Three walls hit every product team:
 
-| Approach | What you get | What hurts |
-|---|---|---|
-| **Headless** (Radix, Headless UI) | Accessible primitives | Every project re-invents the design system from scratch |
-| **Styled** (MUI, Chakra, Ant Design) | Pre-built look | Locked into their design language + runtime dependency |
-| **Copy-paste** (shadcn/ui) | Great starting point | Every project forks forever — fixes don't propagate |
+| Approach                             | What you get          | What hurts                                              |
+| ------------------------------------ | --------------------- | ------------------------------------------------------- |
+| **Headless** (Radix, Headless UI)    | Accessible primitives | Every project re-invents the design system from scratch |
+| **Styled** (MUI, Chakra, Ant Design) | Pre-built look        | Locked into their design language + runtime dependency  |
+| **Copy-paste** (shadcn/ui)           | Great starting point  | Every project forks forever — fixes don't propagate     |
 
 `@bleizlabs/ui` sits between them: **fully styled** out of the box, **zero runtime UI dependencies**, **seed-token driven**. Override 5–10 seed values and the entire library reskins consistently — without forking source code.
 
@@ -107,7 +107,9 @@ export default function Page() {
   return (
     <Card padding={6} radius="lg">
       <CardHeader>
-        <Heading level={1} size="2xl">Hello from @bleizlabs/ui</Heading>
+        <Heading level={1} size="2xl">
+          Hello from @bleizlabs/ui
+        </Heading>
       </CardHeader>
       <CardBody>
         <Stack gap={4}>
@@ -130,17 +132,17 @@ That's it. No provider wrapping, no theme context, no runtime style computation.
 
 100+ focused components across 9 categories (live count in [`components/manifest.json`](components/manifest.json) — read for the canonical list at any version).
 
-| Category | Highlights |
-|---|---|
-| **Layout** | `Stack` · `Inline` · `Container` · `Section` · `GridLayout` |
-| **Typography** | `Heading` (decoupled level/size) · `Text` · `Anchor` · `Eyebrow` · `Mark` |
-| **Display** | `Card` (compound) · `Badge` · `Avatar` + `AvatarGroup` · `KpiValue` · `Reveal` · `Skeleton` · `Spinner` · `Table` · `CodeBlock` |
-| **Interactive (forms)** | `Button` · `Input` · `Select` · `Checkbox` · `RadioGroup` · `Switch` · `Toggle` · `Slider` · `Rating` |
-| **Feedback** | `Alert` · `Banner` · `Empty` · `Progress` · `Toaster` (imperative `toast()` API) |
-| **Specialized + Navigation** | `Breadcrumb` · `Pagination` · `ThemeToggle` · `Timeline` · `Kbd` + 5 small data-viz primitives |
-| **Molecules** | `Header` · `Field` · `Chip` · `DataRow` · `FileChip` · `BackLink` · `IconButton` and more |
-| **Charts** | `LineChart` · `AreaChart` · `BarChart` · `PieChart` · `Sparkline` (SVG, ≤500 points/series) |
-| **Complex / Data** | `Dialog` · `Sheet` · `Drawer` · `Popover` · `Tooltip` · `DropdownMenu` · `Combobox` · `DataTable` · `Form` + `Field` · `DatePicker` · `DateRangePicker` · `TimePicker` · `DateTimePicker` · `Sidebar` · `Tabs` · `Accordion` · `Stepper` · `NavigationMenu` · `Toolbar` |
+| Category                     | Highlights                                                                                                                                                                                                                                                              |
+| ---------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Layout**                   | `Stack` · `Inline` · `Container` · `Section` · `GridLayout`                                                                                                                                                                                                             |
+| **Typography**               | `Heading` (decoupled level/size) · `Text` · `Anchor` · `Eyebrow` · `Mark`                                                                                                                                                                                               |
+| **Display**                  | `Card` (compound) · `Badge` · `Avatar` + `AvatarGroup` · `KpiValue` · `Reveal` · `Skeleton` · `Spinner` · `Table` · `CodeBlock`                                                                                                                                         |
+| **Interactive (forms)**      | `Button` · `Input` · `Select` · `Checkbox` · `RadioGroup` · `Switch` · `Toggle` · `Slider` · `Rating`                                                                                                                                                                   |
+| **Feedback**                 | `Alert` · `Banner` · `Empty` · `Progress` · `Toaster` (imperative `toast()` API)                                                                                                                                                                                        |
+| **Specialized + Navigation** | `Breadcrumb` · `Pagination` · `ThemeToggle` · `Timeline` · `Kbd` + 5 small data-viz primitives                                                                                                                                                                          |
+| **Molecules**                | `Header` · `Field` · `Chip` · `DataRow` · `FileChip` · `BackLink` · `IconButton` and more                                                                                                                                                                               |
+| **Charts**                   | `LineChart` · `AreaChart` · `BarChart` · `PieChart` · `Sparkline` (SVG, ≤500 points/series)                                                                                                                                                                             |
+| **Complex / Data**           | `Dialog` · `Sheet` · `Drawer` · `Popover` · `Tooltip` · `DropdownMenu` · `Combobox` · `DataTable` · `Form` + `Field` · `DatePicker` · `DateRangePicker` · `TimePicker` · `DateTimePicker` · `Sidebar` · `Tabs` · `Accordion` · `Stepper` · `NavigationMenu` · `Toolbar` |
 
 **Highlights:**
 
@@ -164,14 +166,14 @@ Override semantic tokens at `:root`. Cascades to every component automatically.
 ```scss
 // app/globals.scss
 :root {
-  --color-brand:        #00E0B8;
-  --color-accent:       #7C3AED;
-  --radius-md:          12px;
-  --font-primary:       'YourFont', system-ui, sans-serif;
+  --color-brand: #00e0b8;
+  --color-accent: #7c3aed;
+  --radius-md: 12px;
+  --font-primary: 'YourFont', system-ui, sans-serif;
 }
 
 [data-theme='dark'] {
-  --color-surface:      #0a0a0a;
+  --color-surface: #0a0a0a;
   --color-text-primary: #fafafa;
 }
 ```
@@ -184,9 +186,13 @@ Override seed Sass variables when you want the entire color scale + derived shad
 
 ```scss
 @use '@bleizlabs/ui/styles' with (
-  $seed-brand:        #00E0B8,
-  $seed-accent:       #7C3AED,
-  $seed-font-primary: ('YourFont', system-ui, sans-serif),
+  $seed-brand: #00e0b8,
+  $seed-accent: #7c3aed,
+  $seed-font-primary: (
+    'YourFont',
+    system-ui,
+    sans-serif,
+  )
 );
 ```
 
@@ -252,17 +258,17 @@ Open `http://localhost:3000` for the component index, `/demo` for a combined sho
 - **Polymorphism via `asChild`** — pass-through rendering for `<Link>`, custom elements, etc., powered by an in-house `Slot` primitive
 - **APG-first accessibility** — every interactive component has a documented keyboard model, ARIA contract, and regression test catalogue
 
-| Layer | Choice |
-|---|---|
-| Framework | React 19 + Next.js 16.2 (App Router, Turbopack) |
-| Language | TypeScript 5.6 (strict, `noUncheckedIndexedAccess`) |
-| Styling | SCSS Modules + CSS custom properties (seed → semantic cascade) |
-| Polymorphism | In-house `Slot` primitive (Radix-style `asChild`) |
-| Positioning | In-house `useFloating` + `computePosition` |
-| Date math | In-house `utils/date.ts` (native `Date` + `Intl`) |
-| Focus management | In-house `useFocusTrap` + `findFirstTabbable` |
-| Drag gestures | In-house `usePointerDrag` with pointer-capture |
-| Testing | Playwright + `@axe-core/playwright` |
+| Layer            | Choice                                                         |
+| ---------------- | -------------------------------------------------------------- |
+| Framework        | React 19 + Next.js 16.2 (App Router, Turbopack)                |
+| Language         | TypeScript 5.6 (strict, `noUncheckedIndexedAccess`)            |
+| Styling          | SCSS Modules + CSS custom properties (seed → semantic cascade) |
+| Polymorphism     | In-house `Slot` primitive (Radix-style `asChild`)              |
+| Positioning      | In-house `useFloating` + `computePosition`                     |
+| Date math        | In-house `utils/date.ts` (native `Date` + `Intl`)              |
+| Focus management | In-house `useFocusTrap` + `findFirstTabbable`                  |
+| Drag gestures    | In-house `usePointerDrag` with pointer-capture                 |
+| Testing          | Playwright + `@axe-core/playwright`                            |
 
 No external UI library is imported at runtime.
 
@@ -287,11 +293,11 @@ npm run lint         # ESLint
 
 ## Browser support
 
-| Browser | Minimum version |
-|---|---|
+| Browser                  | Minimum version                                                                                                |
+| ------------------------ | -------------------------------------------------------------------------------------------------------------- |
 | Chrome / Edge (Chromium) | 111+ &nbsp;<sub>(Accordion `interpolate-size: allow-keywords` requires 129+; falls back to `max-height`)</sub> |
-| Firefox | 110+ |
-| Safari (desktop + iOS) | 16.4+ |
+| Firefox                  | 110+                                                                                                           |
+| Safari (desktop + iOS)   | 16.4+                                                                                                          |
 
 Every component ships with `prefers-reduced-motion: reduce` fallbacks and `forced-colors: active` (Windows High Contrast) mappings where relevant.
 

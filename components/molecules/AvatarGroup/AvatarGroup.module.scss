@@ -35,17 +35,39 @@
 // CSS doesn't know item count, so use a deep enough descending range
 // to cover typical group sizes (up to 20 avatars). Beyond that the
 // stacking is fine but identical between very-deep siblings.
-.item:nth-child(1) { z-index: 20; }
-.item:nth-child(2) { z-index: 19; }
-.item:nth-child(3) { z-index: 18; }
-.item:nth-child(4) { z-index: 17; }
-.item:nth-child(5) { z-index: 16; }
-.item:nth-child(6) { z-index: 15; }
-.item:nth-child(7) { z-index: 14; }
-.item:nth-child(8) { z-index: 13; }
-.item:nth-child(9) { z-index: 12; }
-.item:nth-child(10) { z-index: 11; }
-.item:nth-child(n + 11) { z-index: 1; }
+.item:nth-child(1) {
+  z-index: 20;
+}
+.item:nth-child(2) {
+  z-index: 19;
+}
+.item:nth-child(3) {
+  z-index: 18;
+}
+.item:nth-child(4) {
+  z-index: 17;
+}
+.item:nth-child(5) {
+  z-index: 16;
+}
+.item:nth-child(6) {
+  z-index: 15;
+}
+.item:nth-child(7) {
+  z-index: 14;
+}
+.item:nth-child(8) {
+  z-index: 13;
+}
+.item:nth-child(9) {
+  z-index: 12;
+}
+.item:nth-child(10) {
+  z-index: 11;
+}
+.item:nth-child(n + 11) {
+  z-index: 1;
+}
 
 // Overflow chip — composed via `<Avatar fallback="+N">` so it inherits
 // the group's `size`. Visual treatment differs from a regular avatar:

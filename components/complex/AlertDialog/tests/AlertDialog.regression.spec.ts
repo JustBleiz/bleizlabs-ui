@@ -105,7 +105,9 @@ test.describe('AlertDialog — Radix regression cases', () => {
     await expect(page.locator(`#${labelledBy}`)).toBeVisible();
   });
 
-  test('#3007 inherited — aria-describedby ALWAYS present (stricter than Dialog)', async ({ page }) => {
+  test('#3007 inherited — aria-describedby ALWAYS present (stricter than Dialog)', async ({
+    page,
+  }) => {
     await page.getByRole('button', { name: /open basic alert/i }).click();
     const alert = page.getByRole('alertdialog');
     const describedBy = await alert.getAttribute('aria-describedby');
@@ -234,7 +236,9 @@ test.describe('AlertDialog — Radix regression cases', () => {
     // PLAYGROUND-DEP: needs form scenario.
   });
 
-  test('AD-16: Mobile viewport pointer-events — Cancel works first try (Radix #1241)', async ({ page }) => {
+  test('AD-16: Mobile viewport pointer-events — Cancel works first try (Radix #1241)', async ({
+    page,
+  }) => {
     // Chromium desktop project has no touch; approximate the mobile-viewport pointer
     // flow with click() — the Radix #1241 bug was a pointerdown/pointerup ordering
     // race that manifests the same way under click in the absence of a touch context.

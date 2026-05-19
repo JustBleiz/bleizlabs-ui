@@ -28,10 +28,10 @@ export default function SheetPlaygroundPage() {
           Sheet
         </Heading>
         <Text className={styles.intro}>
-          Side-anchored modal panel that can slide in from the left, right,
-          top, or bottom edge. Useful for navigation, filters, and detail views
-          that shouldn&apos;t take over the full viewport. Inner corners round,
-          outer edge sits flush, and per-side animations are wired for you.
+          Side-anchored modal panel that can slide in from the left, right, top, or bottom edge.
+          Useful for navigation, filters, and detail views that shouldn&apos;t take over the full
+          viewport. Inner corners round, outer edge sits flush, and per-side animations are wired
+          for you.
         </Text>
       </header>
 
@@ -43,8 +43,8 @@ export default function SheetPlaygroundPage() {
         <Text color="muted">
           <code>{`side: 'left' | 'right' | 'top' | 'bottom'`}</code>. Default{' '}
           <code>{`'right'`}</code>. Each side gets its own slide animation, inner-corner
-          border-radius, outer-edge border removal, and matching safe-area-inset
-          padding (iPad notch / Dynamic Island / home indicator).
+          border-radius, outer-edge border removal, and matching safe-area-inset padding (iPad notch
+          / Dynamic Island / home indicator).
         </Text>
         <div className={styles.row}>
           <Button onClick={() => setLeftOpen(true)}>Open left sheet</Button>
@@ -59,13 +59,11 @@ export default function SheetPlaygroundPage() {
           side="left"
           title="Left sheet"
           description="Slides in from the left edge."
-          footer={
-            <Button onClick={() => setLeftOpen(false)}>Close</Button>
-          }
+          footer={<Button onClick={() => setLeftOpen(false)}>Close</Button>}
         >
           <Text>
-            Typical use: primary navigation drawer on desktop + mobile. Left
-            sheets honor <code>env(safe-area-inset-left)</code>.
+            Typical use: primary navigation drawer on desktop + mobile. Left sheets honor{' '}
+            <code>env(safe-area-inset-left)</code>.
           </Text>
         </Sheet>
 
@@ -85,9 +83,8 @@ export default function SheetPlaygroundPage() {
           }
         >
           <Text>
-            Right sheets are the default — common for detail panels, settings,
-            and contextual forms. Width: 420px (md). Close button visible by
-            default (<code>showCloseButton=true</code>).
+            Right sheets are the default — common for detail panels, settings, and contextual forms.
+            Width: 420px (md). Close button visible by default (<code>showCloseButton=true</code>).
           </Text>
         </Sheet>
 
@@ -97,14 +94,11 @@ export default function SheetPlaygroundPage() {
           side="top"
           title="Notification center"
           description="Slides down from the top."
-          footer={
-            <Button onClick={() => setTopOpen(false)}>Dismiss</Button>
-          }
+          footer={<Button onClick={() => setTopOpen(false)}>Dismiss</Button>}
         >
           <Text>
-            Top sheets are useful for global notifications, banner alerts, and
-            search overlays. Honors <code>env(safe-area-inset-top)</code> for
-            iPhone notch / Dynamic Island.
+            Top sheets are useful for global notifications, banner alerts, and search overlays.
+            Honors <code>env(safe-area-inset-top)</code> for iPhone notch / Dynamic Island.
           </Text>
         </Sheet>
 
@@ -114,14 +108,12 @@ export default function SheetPlaygroundPage() {
           side="bottom"
           title="Action sheet"
           description="Slides up from the bottom."
-          footer={
-            <Button onClick={() => setBottomOpen(false)}>Close</Button>
-          }
+          footer={<Button onClick={() => setBottomOpen(false)}>Close</Button>}
         >
           <Text>
-            Bottom sheets overlap with Drawer functionality. Use Drawer for
-            pure mobile action sheets (it&rsquo;s optimized for that case); use
-            Sheet when you want 4-direction symmetry.
+            Bottom sheets overlap with Drawer functionality. Use Drawer for pure mobile action
+            sheets (it&rsquo;s optimized for that case); use Sheet when you want 4-direction
+            symmetry.
           </Text>
         </Sheet>
       </section>
@@ -132,8 +124,8 @@ export default function SheetPlaygroundPage() {
           Minimal sheet (no close button)
         </Heading>
         <Text color="muted">
-          <code>showCloseButton=false</code> + no <code>description</code> →
-          header shows only title, <code>aria-describedby</code> absent.
+          <code>showCloseButton=false</code> + no <code>description</code> → header shows only
+          title, <code>aria-describedby</code> absent.
         </Text>
         <div className={styles.row}>
           <Button variant="secondary" onClick={() => setMinimalOpen(true)}>
@@ -149,8 +141,8 @@ export default function SheetPlaygroundPage() {
           footer={<Button onClick={() => setMinimalOpen(false)}>OK</Button>}
         >
           <Text>
-            Action-driven sheet — user must dismiss via Escape, overlay click,
-            or footer button. No X icon in header.
+            Action-driven sheet — user must dismiss via Escape, overlay click, or footer button. No
+            X icon in header.
           </Text>
         </Sheet>
       </section>
@@ -161,8 +153,8 @@ export default function SheetPlaygroundPage() {
           Locked sheet
         </Heading>
         <Text color="muted">
-          <code>closeOnEscape=false</code> + <code>closeOnOverlayClick=false</code>{' '}
-          — user must complete an explicit action via footer button.
+          <code>closeOnEscape=false</code> + <code>closeOnOverlayClick=false</code> — user must
+          complete an explicit action via footer button.
         </Text>
         <div className={styles.row}>
           <Button variant="warning" onClick={() => setLockedOpen(true)}>
@@ -183,16 +175,13 @@ export default function SheetPlaygroundPage() {
               <Button variant="ghost" onClick={() => setLockedOpen(false)}>
                 Log out
               </Button>
-              <Button onClick={() => setLockedOpen(false)}>
-                Extend session
-              </Button>
+              <Button onClick={() => setLockedOpen(false)}>Extend session</Button>
             </>
           }
         >
           <Text>
-            Use locked sheets sparingly — only when keyboard dismissal would
-            create a security or UX footgun. Overlay click and Escape both
-            blocked.
+            Use locked sheets sparingly — only when keyboard dismissal would create a security or UX
+            footgun. Overlay click and Escape both blocked.
           </Text>
         </Sheet>
       </section>
@@ -203,14 +192,12 @@ export default function SheetPlaygroundPage() {
           Scrollable sheet (sticky footer)
         </Heading>
         <Text color="muted">
-          Long content scrolls inside body while footer stays sticky. Inherits
-          Drawer&rsquo;s overflow isolation pattern (<code>overflow-y: auto</code>{' '}
-          on <code>.body</code>, not <code>.content</code>).
+          Long content scrolls inside body while footer stays sticky. Inherits Drawer&rsquo;s
+          overflow isolation pattern (<code>overflow-y: auto</code> on <code>.body</code>, not{' '}
+          <code>.content</code>).
         </Text>
         <div className={styles.row}>
-          <Button onClick={() => setScrollableOpen(true)}>
-            Open scrollable sheet
-          </Button>
+          <Button onClick={() => setScrollableOpen(true)}>Open scrollable sheet</Button>
         </div>
         <Sheet
           open={scrollableOpen}
@@ -219,16 +206,14 @@ export default function SheetPlaygroundPage() {
           size="lg"
           title="Long content"
           description="Body scrolls, footer stays pinned."
-          footer={
-            <Button onClick={() => setScrollableOpen(false)}>Close</Button>
-          }
+          footer={<Button onClick={() => setScrollableOpen(false)}>Close</Button>}
         >
           <div className={styles.scrollContent}>
             {Array.from({ length: 25 }, (_, i) => (
               <div key={i} className={styles.scrollItem}>
                 <Text variant="small">
-                  Item {i + 1} — scrollable content. Body flex-grows with
-                  isolated overflow; footer flex-shrinks at 0.
+                  Item {i + 1} — scrollable content. Body flex-grows with isolated overflow; footer
+                  flex-shrinks at 0.
                 </Text>
               </div>
             ))}
@@ -242,11 +227,10 @@ export default function SheetPlaygroundPage() {
           Size variants
         </Heading>
         <Text color="muted">
-          Horizontal (left/right): <code>sm 320px</code> /{' '}
-          <code>md 420px</code> / <code>lg 560px</code> widths. Vertical
-          (top/bottom): <code>sm 240px</code> / <code>md 360px</code> /{' '}
-          <code>lg 80vh</code> (with <code>80dvh</code> progressive override for
-          iOS Safari).
+          Horizontal (left/right): <code>sm 320px</code> / <code>md 420px</code> /{' '}
+          <code>lg 560px</code> widths. Vertical (top/bottom): <code>sm 240px</code> /{' '}
+          <code>md 360px</code> / <code>lg 80vh</code> (with <code>80dvh</code> progressive override
+          for iOS Safari).
         </Text>
         <div className={styles.row}>
           <Button variant="secondary" onClick={() => setSizeDemo({ side: 'right', size: 'sm' })}>
@@ -272,8 +256,7 @@ export default function SheetPlaygroundPage() {
           footer={<Button onClick={() => setSizeDemo(null)}>Close</Button>}
         >
           <Text>
-            Content fills the sheet up to the configured size. Overflow is
-            isolated to the body.
+            Content fills the sheet up to the configured size. Overflow is isolated to the body.
           </Text>
         </Sheet>
       </section>

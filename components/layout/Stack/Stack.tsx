@@ -115,10 +115,7 @@ export const Stack = forwardRef<HTMLDivElement, StackProps>(function Stack(
   );
 });
 
-function interleaveDividers(
-  children: ReactNode,
-  divider: ReactNode,
-): ReactNode {
+function interleaveDividers(children: ReactNode, divider: ReactNode): ReactNode {
   const items = Children.toArray(children);
   if (items.length <= 1) return items;
 
@@ -126,9 +123,7 @@ function interleaveDividers(
   items.forEach((child, index) => {
     out.push(child);
     if (index < items.length - 1) {
-      out.push(
-        <Fragment key={`stack-divider-${index}`}>{divider}</Fragment>,
-      );
+      out.push(<Fragment key={`stack-divider-${index}`}>{divider}</Fragment>);
     }
   });
   return out;

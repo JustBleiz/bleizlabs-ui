@@ -2,11 +2,7 @@
 
 import Link from 'next/link';
 import { useState } from 'react';
-import {
-  Tooltip,
-  TooltipProvider,
-  type TooltipPlacement,
-} from '@/components/complex/Tooltip';
+import { Tooltip, TooltipProvider, type TooltipPlacement } from '@/components/complex/Tooltip';
 import { Button } from '@/components/interactive/Button';
 import { Heading } from '@/components/typography/Heading';
 import { Text } from '@/components/typography/Text';
@@ -37,10 +33,9 @@ export default function TooltipPlaygroundPage() {
           Tooltip
         </Heading>
         <Text className={styles.intro}>
-          Short contextual label shown on hover or keyboard focus. Dismissable
-          with Escape, hoverable via a grace area so the pointer can travel
-          into the content, and fully keyboard-accessible — focus and hover
-          behave identically.
+          Short contextual label shown on hover or keyboard focus. Dismissable with Escape,
+          hoverable via a grace area so the pointer can travel into the content, and fully
+          keyboard-accessible — focus and hover behave identically.
         </Text>
       </header>
 
@@ -50,9 +45,9 @@ export default function TooltipPlaygroundPage() {
           Basic hover + focus
         </Heading>
         <Text>
-          Default placement <code>top</code>, default <code>delayDuration=700</code>. Keyboard:
-          Tab to focus — tooltip shows instantly (focus is explicit intent, no delay).
-          Mouse: hover and wait 700ms.
+          Default placement <code>top</code>, default <code>delayDuration=700</code>. Keyboard: Tab
+          to focus — tooltip shows instantly (focus is explicit intent, no delay). Mouse: hover and
+          wait 700ms.
         </Text>
         <div className={styles.row}>
           <Tooltip content="Save file (Ctrl+S)">
@@ -105,9 +100,8 @@ export default function TooltipPlaygroundPage() {
           Placement grid
         </Heading>
         <Text>
-          12 placements available. Positioning engine flips to the opposite axis when the
-          preferred placement would clip the viewport, and shifts along the cross-axis to stay
-          within bounds.
+          12 placements available. Positioning engine flips to the opposite axis when the preferred
+          placement would clip the viewport, and shifts along the cross-axis to stay within bounds.
         </Text>
         <div className={styles.placementGrid}>
           {PLACEMENTS.map((placement, index) => (
@@ -183,10 +177,7 @@ export default function TooltipPlaygroundPage() {
           >
             <Button>Programmatic target</Button>
           </Tooltip>
-          <Button
-            variant="secondary"
-            onClick={() => setControlledOpen((prev) => !prev)}
-          >
+          <Button variant="secondary" onClick={() => setControlledOpen((prev) => !prev)}>
             {controlledOpen ? 'Hide' : 'Show'} tooltip
           </Button>
         </div>
@@ -198,9 +189,9 @@ export default function TooltipPlaygroundPage() {
           Placement spec — keyboard walkthrough
         </Heading>
         <Text>
-          Tab through the buttons below with the keyboard. Each shows its tooltip on focus and
-          hides on blur. Press <span className={styles.kbd}>Esc</span> to dismiss without losing
-          focus — the trigger remains active.
+          Tab through the buttons below with the keyboard. Each shows its tooltip on focus and hides
+          on blur. Press <span className={styles.kbd}>Esc</span> to dismiss without losing focus —
+          the trigger remains active.
         </Text>
         <div className={styles.row}>
           <Tooltip content="First in tab order" placement="bottom">

@@ -15,12 +15,11 @@ export default function MarkPlaygroundPage() {
           Mark
         </Heading>
         <p className={styles.intro}>
-          Inline <code>&lt;mark&gt;</code> highlight atom. Token-driven —
-          tones remap a pair of CSS custom properties (<code>--mark-bg</code> /{' '}
-          <code>--mark-fg</code>) so a single rule set handles every tone.
-          Default tone matches the native browser pair (warning-soft).
-          Reach for the default tone when highlighting search-result
-          matches; reach for brand/success/error for editorial accents.
+          Inline <code>&lt;mark&gt;</code> highlight atom. Token-driven — tones remap a pair of CSS
+          custom properties (<code>--mark-bg</code> / <code>--mark-fg</code>) so a single rule set
+          handles every tone. Default tone matches the native browser pair (warning-soft). Reach for
+          the default tone when highlighting search-result matches; reach for brand/success/error
+          for editorial accents.
         </p>
       </header>
 
@@ -30,12 +29,12 @@ export default function MarkPlaygroundPage() {
         </Heading>
         <div className={styles.sectionBody}>
           <Text>
-            Witaj <Mark>świecie</Mark>, dzień dobry — to przykład{' '}
-            <Mark>dopasowania</Mark> wyniku wyszukiwania.
+            Witaj <Mark>świecie</Mark>, dzień dobry — to przykład <Mark>dopasowania</Mark> wyniku
+            wyszukiwania.
           </Text>
           <p className={styles.bodyText}>
-            Native <code>&lt;mark&gt;</code> announces &ldquo;highlighted&rdquo;
-            on supporting assistive tech.
+            Native <code>&lt;mark&gt;</code> announces &ldquo;highlighted&rdquo; on supporting
+            assistive tech.
           </p>
         </div>
       </section>
@@ -71,9 +70,12 @@ export default function MarkPlaygroundPage() {
         </Heading>
         <div className={styles.sectionBody}>
           <Text>
-            Treść z <Mark asChild color="brand"><span>wizualnym</span></Mark>{' '}
-            akcentem — element <code>&lt;span&gt;</code> nie wnosi semantyki
-            znacznika, więc czytniki ekranu nie ogłoszą podświetlenia.
+            Treść z{' '}
+            <Mark asChild color="brand">
+              <span>wizualnym</span>
+            </Mark>{' '}
+            akcentem — element <code>&lt;span&gt;</code> nie wnosi semantyki znacznika, więc
+            czytniki ekranu nie ogłoszą podświetlenia.
           </Text>
         </div>
       </section>

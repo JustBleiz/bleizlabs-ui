@@ -5,7 +5,9 @@
 ## Tests
 
 ```ts
-test('DP-R08 — input role="combobox" + aria-haspopup="dialog" + aria-expanded', async ({ page }) => {
+test('DP-R08 — input role="combobox" + aria-haspopup="dialog" + aria-expanded', async ({
+  page,
+}) => {
   await page.goto('/components/date-picker');
   const input = page.getByRole('combobox');
   expect(await input.getAttribute('aria-haspopup')).toBe('dialog');

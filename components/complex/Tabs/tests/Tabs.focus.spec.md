@@ -43,7 +43,9 @@ test('TB-R17 — nested Tabs in Dialog: inner roving tabindex independent', asyn
   expect(await innerTab2.getAttribute('aria-selected')).toBe('true');
 });
 
-test('TB-R21 — asChild Slot merges role + aria-* attributes onto custom element', async ({ page }) => {
+test('TB-R21 — asChild Slot merges role + aria-* attributes onto custom element', async ({
+  page,
+}) => {
   await page.goto('/components/tabs?asChild=1');
   // Playground uses <TabsTrigger asChild><CustomButton>...</CustomButton></TabsTrigger>
   const custom = page.locator('[data-custom-button]').first();

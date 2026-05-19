@@ -26,14 +26,8 @@ export function listboxOf(page: Page, field: 'h' | 'm' | 's' | 'p'): Locator {
   return page.locator(`ul[data-listbox="${field}"]`).first();
 }
 
-export function optionByValue(
-  page: Page,
-  field: 'h' | 'm' | 's' | 'p',
-  value: string,
-): Locator {
-  return page.locator(
-    `ul[data-listbox="${field}"] li[data-option-value="${value}"]`,
-  );
+export function optionByValue(page: Page, field: 'h' | 'm' | 's' | 'p', value: string): Locator {
+  return page.locator(`ul[data-listbox="${field}"] li[data-option-value="${value}"]`);
 }
 
 export async function openPicker(picker: Locator): Promise<void> {

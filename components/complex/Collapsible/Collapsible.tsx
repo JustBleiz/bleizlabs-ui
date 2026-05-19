@@ -87,8 +87,7 @@ function useCollapsibleContext(consumer: string): CollapsibleContextValue {
   return ctx;
 }
 
-export interface CollapsibleProps
-  extends Omit<HTMLAttributes<HTMLDivElement>, 'onChange'> {
+export interface CollapsibleProps extends Omit<HTMLAttributes<HTMLDivElement>, 'onChange'> {
   /** Controlled open state. Pair with `onOpenChange`. */
   open?: boolean;
   /** Uncontrolled initial state. Default `false`. */
@@ -101,100 +100,95 @@ export interface CollapsibleProps
   children: ReactNode;
 }
 
-export const Collapsible = forwardRef<HTMLDivElement, CollapsibleProps>(
-  function Collapsible(
-    {
-      open: controlledOpen,
-      defaultOpen = false,
-      onOpenChange,
-      disabled = false,
-      className,
-      children,
-      ...rest
-    },
-    ref,
-  ) {
-    const reactId = useId();
-    const triggerId = `${reactId}-trigger`;
-    const contentId = `${reactId}-content`;
-    const isControlled = controlledOpen !== undefined;
-    const [uncontrolledOpen, setUncontrolledOpen] = useState(defaultOpen);
-    const open = isControlled ? controlledOpen! : uncontrolledOpen;
-
-    const toggle = useCallback(() => {
-      if (disabled) return;
-      const next = !open;
-      if (!isControlled) setUncontrolledOpen(next);
-      onOpenChange?.(next);
-    }, [disabled, isControlled, onOpenChange, open]);
-
-    const value: CollapsibleContextValue = {
-      open,
-      toggle,
-      triggerId,
-      contentId,
-      disabled,
-    };
-
-    return (
-      <CollapsibleContext.Provider value={value}>
-        <div
-          ref={ref}
-          data-state={open ? 'open' : 'closed'}
-          data-disabled={disabled || undefined}
-          className={cn(styles.root, className)}
-          {...rest}
-        >
-          {children}
-        </div>
-      </CollapsibleContext.Provider>
-    );
+export const Collapsible = forwardRef<HTMLDivElement, CollapsibleProps>(function Collapsible(
+  {
+    open: controlledOpen,
+    defaultOpen = false,
+    onOpenChange,
+    disabled = false,
+    className,
+    children,
+    ...rest
   },
-);
+  ref,
+) {
+  const reactId = useId();
+  const triggerId = `${reactId}-trigger`;
+  const contentId = `${reactId}-content`;
+  const isControlled = controlledOpen !== undefined;
+  const [uncontrolledOpen, setUncontrolledOpen] = useState(defaultOpen);
+  const open = isControlled ? controlledOpen! : uncontrolledOpen;
 
-export interface CollapsibleTriggerProps
-  extends ButtonHTMLAttributes<HTMLButtonElement> {
+  const toggle = useCallback(() => {
+    if (disabled) return;
+    const next = !open;
+    if (!isControlled) setUncontrolledOpen(next);
+    onOpenChange?.(next);
+  }, [disabled, isControlled, onOpenChange, open]);
+
+  const value: CollapsibleContextValue = {
+    open,
+    toggle,
+    triggerId,
+    contentId,
+    disabled,
+  };
+
+  return (
+    <CollapsibleContext.Provider value={value}>
+      <div
+        ref={ref}
+        data-state={open ? 'open' : 'closed'}
+        data-disabled={disabled || undefined}
+        className={cn(styles.root, className)}
+        {...rest}
+      >
+        {children}
+      </div>
+    </CollapsibleContext.Provider>
+  );
+});
+
+export interface CollapsibleTriggerProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   /** Project trigger semantics onto a custom child (e.g. `<Button>`). */
   asChild?: boolean;
 }
 
-export const CollapsibleTrigger = forwardRef<
-  HTMLButtonElement,
-  CollapsibleTriggerProps
->(function CollapsibleTrigger(
-  { asChild = false, className, onClick, type, children, ...rest },
-  ref,
-) {
-  const { open, toggle, triggerId, contentId, disabled } =
-    useCollapsibleContext('CollapsibleTrigger');
+export const CollapsibleTrigger = forwardRef<HTMLButtonElement, CollapsibleTriggerProps>(
+  function CollapsibleTrigger(
+    { asChild = false, className, onClick, type, children, ...rest },
+    ref,
+  ) {
+    const { open, toggle, triggerId, contentId, disabled } =
+      useCollapsibleContext('CollapsibleTrigger');
 
-  const Comp = asChild ? Slot : 'button';
+    const Comp = asChild ? Slot : 'button';
 
-  return (
-    <Comp
-      ref={ref}
-      type={asChild ? undefined : (type ?? 'button')}
-      id={triggerId}
-      aria-expanded={open}
-      aria-controls={contentId}
-      data-state={open ? 'open' : 'closed'}
-      data-disabled={disabled || undefined}
-      disabled={asChild ? undefined : disabled}
-      className={cn(styles.trigger, className)}
-      onClick={(event) => {
-        onClick?.(event);
-        if (event.defaultPrevented) return;
-        toggle();
-      }}
-      {...rest}
-    >
-      {children}
-    </Comp>
-  );
-});
+    return (
+      <Comp
+        ref={ref}
+        type={asChild ? undefined : (type ?? 'button')}
+        id={triggerId}
+        aria-expanded={open}
+        aria-controls={contentId}
+        data-state={open ? 'open' : 'closed'}
+        data-disabled={disabled || undefined}
+        disabled={asChild ? undefined : disabled}
+        className={cn(styles.trigger, className)}
+        onClick={(event) => {
+          onClick?.(event);
+          if (event.defaultPrevented) return;
+          toggle();
+        }}
+        {...rest}
+      >
+        {children}
+      </Comp>
+    );
+  },
+);
 
-export interface CollapsibleContentProps
-  extends HTMLAttributes<HTMLDivElement> {
+export interface CollapsibleContentProps extends HTMLAttributes<HTMLDivElement> {
   /**
    * Keep content mounted in the DOM when closed (default `false` —
    * unmount on close). Set `true` when consumer needs to preserve
@@ -204,32 +198,27 @@ export interface CollapsibleContentProps
   forceMount?: boolean;
 }
 
-export const CollapsibleContent = forwardRef<
-  HTMLDivElement,
-  CollapsibleContentProps
->(function CollapsibleContent(
-  { forceMount = false, className, hidden, children, ...rest },
-  ref,
-) {
-  const { open, triggerId, contentId } =
-    useCollapsibleContext('CollapsibleContent');
+export const CollapsibleContent = forwardRef<HTMLDivElement, CollapsibleContentProps>(
+  function CollapsibleContent({ forceMount = false, className, hidden, children, ...rest }, ref) {
+    const { open, triggerId, contentId } = useCollapsibleContext('CollapsibleContent');
 
-  if (!open && !forceMount) {
-    return null;
-  }
+    if (!open && !forceMount) {
+      return null;
+    }
 
-  return (
-    <div
-      ref={ref}
-      id={contentId}
-      role="region"
-      aria-labelledby={triggerId}
-      data-state={open ? 'open' : 'closed'}
-      hidden={hidden ?? (!open || undefined)}
-      className={cn(styles.content, className)}
-      {...rest}
-    >
-      <div className={styles.contentInner}>{children}</div>
-    </div>
-  );
-});
+    return (
+      <div
+        ref={ref}
+        id={contentId}
+        role="region"
+        aria-labelledby={triggerId}
+        data-state={open ? 'open' : 'closed'}
+        hidden={hidden ?? (!open || undefined)}
+        className={cn(styles.content, className)}
+        {...rest}
+      >
+        <div className={styles.contentInner}>{children}</div>
+      </div>
+    );
+  },
+);

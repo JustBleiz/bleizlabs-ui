@@ -47,13 +47,11 @@ export default function InputProductionPlaygroundPage() {
           Production form inputs
         </Heading>
         <Text className={styles.intro}>
-          Everything a real CRM or admin product needs from its text fields.
-          Layer 1 adds prefix/suffix, character counter, clear button, and
-          loading state to <code>Input</code>. Layer 2 composes fields and
-          buttons into grouped controls via <code>InputGroup</code>. Layer 3
-          ships specialised inputs — <code>NumberInput</code>,{' '}
-          <code>MaskedInput</code>, <code>PhoneInput</code>, and{' '}
-          <code>PasswordInput</code>.
+          Everything a real CRM or admin product needs from its text fields. Layer 1 adds
+          prefix/suffix, character counter, clear button, and loading state to <code>Input</code>.
+          Layer 2 composes fields and buttons into grouped controls via <code>InputGroup</code>.
+          Layer 3 ships specialised inputs — <code>NumberInput</code>, <code>MaskedInput</code>,{' '}
+          <code>PhoneInput</code>, and <code>PasswordInput</code>.
         </Text>
       </header>
 
@@ -206,12 +204,7 @@ export default function InputProductionPlaygroundPage() {
           placeholder="____ ____ ____ ____"
         />
 
-        <MaskedInput
-          label="Date of birth"
-          name="dob"
-          preset="datePL"
-          placeholder="DD.MM.YYYY"
-        />
+        <MaskedInput label="Date of birth" name="dob" preset="datePL" placeholder="DD.MM.YYYY" />
       </section>
 
       {/* ============================================================ */}

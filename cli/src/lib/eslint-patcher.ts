@@ -1,12 +1,16 @@
 import fs from 'node:fs';
 import path from 'node:path';
-import {
-  renderEslintFlatSnippet,
-  renderEslintLegacySnippet,
-} from './templates.js';
+import { renderEslintFlatSnippet, renderEslintLegacySnippet } from './templates.js';
 import { writeFileIdempotent, type WriteFileResult } from './file-ops.js';
 
-export type EslintFormat = 'flat-js' | 'flat-mjs' | 'flat-ts' | 'legacy-json' | 'legacy-js' | 'legacy-cjs' | 'none';
+export type EslintFormat =
+  | 'flat-js'
+  | 'flat-mjs'
+  | 'flat-ts'
+  | 'legacy-json'
+  | 'legacy-js'
+  | 'legacy-cjs'
+  | 'none';
 
 const FLAT_CANDIDATES = [
   'eslint.config.mjs',
@@ -34,7 +38,13 @@ export function detectEslintConfig(cwd: string): DetectedEslint {
     if (fs.existsSync(p)) {
       const ext = name.split('.').pop()!;
       const fmt: EslintFormat =
-        ext === 'mjs' ? 'flat-mjs' : ext === 'ts' ? 'flat-ts' : ext === 'cjs' ? 'flat-js' : 'flat-js';
+        ext === 'mjs'
+          ? 'flat-mjs'
+          : ext === 'ts'
+            ? 'flat-ts'
+            : ext === 'cjs'
+              ? 'flat-js'
+              : 'flat-js';
       return { format: fmt, configPath: p };
     }
   }
@@ -119,14 +129,17 @@ function patchEslintJson(configPath: string): EslintPatchResult {
     status: 'applied',
     configPath,
     format: 'legacy-json',
-    message: 'ESLint legacy JSON config patched additively (rules + overrides merged). Backup at .eslintrc.json.bak.',
+    message:
+      'ESLint legacy JSON config patched additively (rules + overrides merged). Backup at .eslintrc.json.bak.',
     fileResult,
   };
 }
 
 function buildManualMergeMessage(detected: DetectedEslint): string {
   const isFlat = detected.format.startsWith('flat-');
-  const snippet = isFlat ? renderEslintFlatSnippet() : JSON.stringify(renderEslintLegacySnippet(), null, 2);
+  const snippet = isFlat
+    ? renderEslintFlatSnippet()
+    : JSON.stringify(renderEslintLegacySnippet(), null, 2);
   const formatLabel = isFlat ? 'ESLint FLAT config' : 'ESLint LEGACY config';
   const insertHint = isFlat
     ? 'Append the snippet inside your config array (typical export default [ ... ]):'

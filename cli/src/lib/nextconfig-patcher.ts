@@ -50,7 +50,9 @@ export function patchNextConfig(info: ProjectInfo): NextConfigPatchResult {
   //   export default { ... };
   //   module.exports = { ... };
   const literalMatch =
-    raw.match(/(const\s+(?:nextConfig|config)\s*(?::\s*[A-Za-z<>{}\[\]\s,|]+)?\s*=\s*)\{([\s\S]*?)\n\}\s*;?/) ||
+    raw.match(
+      /(const\s+(?:nextConfig|config)\s*(?::\s*[A-Za-z<>{}\[\]\s,|]+)?\s*=\s*)\{([\s\S]*?)\n\}\s*;?/,
+    ) ||
     raw.match(/(export\s+default\s*)\{([\s\S]*?)\n\}\s*;?/) ||
     raw.match(/(module\.exports\s*=\s*)\{([\s\S]*?)\n\}\s*;?/);
 
@@ -64,10 +66,7 @@ export function patchNextConfig(info: ProjectInfo): NextConfigPatchResult {
   }
 
   const objectBody = literalMatch[2] ?? '';
-  if (
-    /transpilePackages\s*:/.test(objectBody) ||
-    /sassOptions\s*:/.test(objectBody)
-  ) {
+  if (/transpilePackages\s*:/.test(objectBody) || /sassOptions\s*:/.test(objectBody)) {
     return {
       status: 'manual-required',
       configPath: info.nextConfigPath,
@@ -152,6 +151,6 @@ function buildManualSnippet(format: 'cjs' | 'mjs' | 'ts'): string {
     '',
     insert,
     '',
-    'Verification: SCSS imports `@use \'@bleizlabs/ui/styles\'` should resolve, and lib JSX/SCSS should compile.',
+    "Verification: SCSS imports `@use '@bleizlabs/ui/styles'` should resolve, and lib JSX/SCSS should compile.",
   ].join('\n');
 }

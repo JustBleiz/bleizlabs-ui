@@ -90,10 +90,7 @@ export function getDomain(values: number[], padding = 0): [number, number] {
 // Nice ticks (D3-style 1/2/5/10 magnitude rounding)
 // ──────────────────────────────────────────────────────────────────────────
 
-export function niceTicks(
-  domain: [number, number],
-  targetCount = 5,
-): number[] {
+export function niceTicks(domain: [number, number], targetCount = 5): number[] {
   const [d0, d1] = domain;
   const span = d1 - d0;
   if (span === 0) return [d0];
@@ -118,9 +115,7 @@ export function niceTicks(
 // Path generators
 // ──────────────────────────────────────────────────────────────────────────
 
-export function generateLinearPath(
-  points: Array<{ x: number; y: number }>,
-): string {
+export function generateLinearPath(points: Array<{ x: number; y: number }>): string {
   if (points.length === 0) return '';
   const first = points[0]!;
   if (points.length === 1) return `M ${first.x} ${first.y}`;
@@ -133,10 +128,7 @@ export function generateLinearPath(
  * Mantine "smooth" curve. First/last segments mirror endpoints to avoid
  * dangling control points.
  */
-export function generateSmoothPath(
-  points: Array<{ x: number; y: number }>,
-  tension = 0.5,
-): string {
+export function generateSmoothPath(points: Array<{ x: number; y: number }>, tension = 0.5): string {
   if (points.length === 0) return '';
   const first = points[0]!;
   if (points.length === 1) return `M ${first.x} ${first.y}`;
@@ -176,10 +168,7 @@ export function generateAreaPath(
   interpolation: ChartInterpolation,
 ): string {
   if (points.length === 0) return '';
-  const top =
-    interpolation === 'linear'
-      ? generateLinearPath(points)
-      : generateSmoothPath(points);
+  const top = interpolation === 'linear' ? generateLinearPath(points) : generateSmoothPath(points);
   const last = points[points.length - 1]!;
   const first = points[0]!;
   // top path → drop to baseline at last X → line to baseline at first X → close
@@ -196,10 +185,7 @@ export function generateAreaPath(
  * categorical mapping is series-aware); this helper only resolves Date
  * → epoch ms and number → number.
  */
-export function normalizeX(
-  value: number | Date | string,
-  ordinalIndex: number,
-): number {
+export function normalizeX(value: number | Date | string, ordinalIndex: number): number {
   if (value instanceof Date) return value.getTime();
   if (typeof value === 'number') return value;
   return ordinalIndex;

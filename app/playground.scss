@@ -44,7 +44,10 @@ main code {
 // Raw <a> inside playground prose. Exclusions cover anchors that own their
 // styling: `.back` (page-back), `[class*="Button"]` (Button asChild <a>),
 // `[class*="anchor"]` / `[class*="Back"]` (demo section navs).
-main a:not(.back):not([class*="anchor"]):not([class*="Back"]):not([class*="Button"]):not([class*="Sidebar"]):not([class*="Nav"]):not([class*="Card"]):not([class*="SiteHeader"]) {
+main
+  a:not(.back):not([class*='anchor']):not([class*='Back']):not([class*='Button']):not(
+    [class*='Sidebar']
+  ):not([class*='Nav']):not([class*='Card']):not([class*='SiteHeader']) {
   color: var(--color-brand-strong);
   text-decoration: underline;
   text-underline-offset: 2px;
@@ -53,4 +56,3 @@ main a:not(.back):not([class*="anchor"]):not([class*="Back"]):not([class*="Butto
     color: var(--color-brand);
   }
 }
-

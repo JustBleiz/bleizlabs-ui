@@ -65,12 +65,7 @@ import styles from './Button.module.scss';
  *   <Link href="/docs">Documentation</Link>
  * </Button>
  */
-export type ButtonVariant =
-  | 'primary'
-  | 'secondary'
-  | 'ghost'
-  | 'link'
-  | 'warning';
+export type ButtonVariant = 'primary' | 'secondary' | 'ghost' | 'link' | 'warning';
 export type ButtonSize = 'sm' | 'md' | 'lg';
 export type ButtonShape = 'rounded' | 'pill';
 
@@ -106,11 +101,7 @@ interface ButtonOwnProps {
 }
 
 export type ButtonProps = ButtonOwnProps &
-  Omit<
-    ButtonHTMLAttributes<HTMLButtonElement> &
-      AnchorHTMLAttributes<HTMLAnchorElement>,
-    'color'
-  >;
+  Omit<ButtonHTMLAttributes<HTMLButtonElement> & AnchorHTMLAttributes<HTMLAnchorElement>, 'color'>;
 
 const VARIANT_CLASS: Record<ButtonVariant, string> = {
   primary: styles.variantPrimary!,
@@ -175,9 +166,7 @@ export const Button = forwardRef<HTMLElement, ButtonProps>(function Button(
           {icon}
         </span>
       ) : null}
-      {!iconOnly && children ? (
-        <span className={styles.label}>{children}</span>
-      ) : null}
+      {!iconOnly && children ? <span className={styles.label}>{children}</span> : null}
       {iconOnly ? (
         <span aria-hidden="true" className={styles.icon}>
           {icon}
@@ -193,9 +182,7 @@ export const Button = forwardRef<HTMLElement, ButtonProps>(function Button(
 
   if (isLink) {
     const anchorRest = rest as AnchorHTMLAttributes<HTMLAnchorElement>;
-    const anchorOnClick = onClick as
-      | React.MouseEventHandler<HTMLAnchorElement>
-      | undefined;
+    const anchorOnClick = onClick as React.MouseEventHandler<HTMLAnchorElement> | undefined;
     return (
       <a
         ref={ref as React.Ref<HTMLAnchorElement>}

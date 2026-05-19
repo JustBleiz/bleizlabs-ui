@@ -1,10 +1,6 @@
 'use client';
 
-import {
-  forwardRef,
-  useId,
-  type TextareaHTMLAttributes,
-} from 'react';
+import { forwardRef, useId, type TextareaHTMLAttributes } from 'react';
 import { cn } from '../../utils/cn';
 import { Label } from '../Label';
 import styles from './Textarea.module.scss';
@@ -44,8 +40,7 @@ import styles from './Textarea.module.scss';
  */
 export type TextareaResize = 'none' | 'vertical' | 'horizontal' | 'both';
 
-export interface TextareaProps
-  extends Omit<TextareaHTMLAttributes<HTMLTextAreaElement>, 'cols'> {
+export interface TextareaProps extends Omit<TextareaHTMLAttributes<HTMLTextAreaElement>, 'cols'> {
   /** Visible label text. */
   label: string;
   /** Form field name. */
@@ -62,66 +57,64 @@ export interface TextareaProps
   hideLabel?: boolean;
 }
 
-export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
-  function Textarea(
-    {
-      label,
-      name,
-      rows = 4,
-      resize = 'vertical',
-      error,
-      helperText,
-      hideLabel = false,
-      required,
-      disabled,
-      id,
-      className,
-      style,
-      ...rest
-    },
-    ref,
-  ) {
-    const generatedId = useId();
-    const inputId = id ?? `${name}-${generatedId}`;
-    const errorId = error ? `${inputId}-error` : undefined;
-    const helperId = helperText && !error ? `${inputId}-helper` : undefined;
-    const describedBy = errorId ?? helperId;
+export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(function Textarea(
+  {
+    label,
+    name,
+    rows = 4,
+    resize = 'vertical',
+    error,
+    helperText,
+    hideLabel = false,
+    required,
+    disabled,
+    id,
+    className,
+    style,
+    ...rest
+  },
+  ref,
+) {
+  const generatedId = useId();
+  const inputId = id ?? `${name}-${generatedId}`;
+  const errorId = error ? `${inputId}-error` : undefined;
+  const helperId = helperText && !error ? `${inputId}-helper` : undefined;
+  const describedBy = errorId ?? helperId;
 
-    return (
-      <div className={cn(styles.field, disabled && styles.fieldDisabled, className)}>
-        <Label
-          htmlFor={inputId}
+  return (
+    <div className={cn(styles.field, disabled && styles.fieldDisabled, className)}>
+      <Label
+        htmlFor={inputId}
+        required={required}
+        disabled={disabled}
+        className={hideLabel ? styles.srOnly : undefined}
+      >
+        {label}
+      </Label>
+      <div className={cn(styles.wrap, error && styles.wrapError)}>
+        <textarea
+          ref={ref}
+          id={inputId}
+          name={name}
+          rows={rows}
           required={required}
           disabled={disabled}
-          className={hideLabel ? styles.srOnly : undefined}
-        >
-          {label}
-        </Label>
-        <div className={cn(styles.wrap, error && styles.wrapError)}>
-          <textarea
-            ref={ref}
-            id={inputId}
-            name={name}
-            rows={rows}
-            required={required}
-            disabled={disabled}
-            aria-invalid={error ? true : undefined}
-            aria-describedby={describedBy}
-            className={styles.textarea}
-            style={{ ...style, resize }}
-            {...rest}
-          />
-        </div>
-        {error ? (
-          <p id={errorId} className={styles.error} role="alert">
-            {error}
-          </p>
-        ) : helperText ? (
-          <p id={helperId} className={styles.helper}>
-            {helperText}
-          </p>
-        ) : null}
+          aria-invalid={error ? true : undefined}
+          aria-describedby={describedBy}
+          className={styles.textarea}
+          style={{ ...style, resize }}
+          {...rest}
+        />
       </div>
-    );
-  },
-);
+      {error ? (
+        <p id={errorId} className={styles.error} role="alert">
+          {error}
+        </p>
+      ) : helperText ? (
+        <p id={helperId} className={styles.helper}>
+          {helperText}
+        </p>
+      ) : null}
+    </div>
+  );
+});

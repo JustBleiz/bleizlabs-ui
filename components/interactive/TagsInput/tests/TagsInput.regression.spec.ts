@@ -99,7 +99,9 @@ test.describe('TagsInput — regression TI-R01..TI-R24', () => {
     await expect(input).toBeFocused();
   });
 
-  test('TI-R09: tab into input then Backspace edits text, does NOT delete chip', async ({ page }) => {
+  test('TI-R09: tab into input then Backspace edits text, does NOT delete chip', async ({
+    page,
+  }) => {
     const input = inputBy(page, 'Basic tags');
     await input.click();
     await input.pressSequentially('foo');
@@ -210,9 +212,7 @@ test.describe('TagsInput — regression TI-R01..TI-R24', () => {
     });
     await page.goto(URL);
     await page.waitForLoadState('networkidle');
-    expect(
-      errors.filter((e) => /hydrat|window is not defined/i.test(e)),
-    ).toHaveLength(0);
+    expect(errors.filter((e) => /hydrat|window is not defined/i.test(e))).toHaveLength(0);
   });
 
   test('TI-R20: removing chip preserves chip order', async ({ page }) => {
@@ -237,9 +237,7 @@ test.describe('TagsInput — regression TI-R01..TI-R24', () => {
     await input.click();
     await input.pressSequentially('inline,');
     const wrap = wrapperOf(input);
-    await expect(
-      wrap.locator('[role="listitem"]').filter({ hasText: 'inline' }),
-    ).toBeVisible();
+    await expect(wrap.locator('[role="listitem"]').filter({ hasText: 'inline' })).toBeVisible();
   });
 
   test('TI-R22: empty Enter does not crash form submit when not in form', async ({ page }) => {
@@ -268,7 +266,9 @@ test.describe('TagsInput — regression TI-R01..TI-R24', () => {
     await expect(chipsOf(wrap)).toHaveCount(0);
   });
 
-  test('TI-R25: live region announces consumer validate message, not enum code', async ({ page }) => {
+  test('TI-R25: live region announces consumer validate message, not enum code', async ({
+    page,
+  }) => {
     // Phase 4 Evaluator IMPORTANT #4 — was announcing "Tag rejected:
     // validate-failed" (enum) instead of consumer-supplied message ("Must
     // be lowercase"). Fix: prefer `rejection.message ?? rejection.reasons[0]`.

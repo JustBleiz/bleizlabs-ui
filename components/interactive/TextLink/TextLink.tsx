@@ -61,68 +61,60 @@ export interface TextLinkProps extends AnchorHTMLAttributes<HTMLAnchorElement> {
   hideArrow?: boolean;
 }
 
-export const TextLink = forwardRef<HTMLAnchorElement, TextLinkProps>(
-  function TextLink(
-    { asChild = false, children, hideArrow = false, className, ...rest },
-    ref,
-  ) {
-    // Auto-wire `rel="noopener noreferrer"` when target="_blank" to prevent
-    // reverse-tabnabbing (OWASP). Preserves and deduplicates consumer-provided
-    // rel tokens so `<TextLink target="_blank" rel="external">` keeps `external`.
-    const safeRest =
-      rest.target === '_blank'
-        ? {
-            ...rest,
-            rel: Array.from(
-              new Set(
-                [
-                  ...(rest.rel ? rest.rel.split(/\s+/).filter(Boolean) : []),
-                  'noopener',
-                  'noreferrer',
-                ],
-              ),
-            ).join(' '),
-          }
-        : rest;
+export const TextLink = forwardRef<HTMLAnchorElement, TextLinkProps>(function TextLink(
+  { asChild = false, children, hideArrow = false, className, ...rest },
+  ref,
+) {
+  // Auto-wire `rel="noopener noreferrer"` when target="_blank" to prevent
+  // reverse-tabnabbing (OWASP). Preserves and deduplicates consumer-provided
+  // rel tokens so `<TextLink target="_blank" rel="external">` keeps `external`.
+  const safeRest =
+    rest.target === '_blank'
+      ? {
+          ...rest,
+          rel: Array.from(
+            new Set([
+              ...(rest.rel ? rest.rel.split(/\s+/).filter(Boolean) : []),
+              'noopener',
+              'noreferrer',
+            ]),
+          ).join(' '),
+        }
+      : rest;
 
-    const arrow = !hideArrow ? (
-      <span className={styles.arrow} aria-hidden>
-        →
-      </span>
-    ) : null;
+  const arrow = !hideArrow ? (
+    <span className={styles.arrow} aria-hidden>
+      →
+    </span>
+  ) : null;
 
-    if (asChild) {
-      // Slot expects EXACTLY ONE React element child (isValidElement check).
-      // Passing children + arrow as siblings produces a children array
-      // (especially across RSC boundaries where Fragments serialize as arrays)
-      // → `isValidElement` returns false → Slot returns null → empty DOM.
-      //
-      // Fix (v0.4.2, mirrors Button B3 v0.3.3 recipe): clone the consumer's
-      // child and append the arrow into its own children, so Slot still sees
-      // a single valid element. hideArrow=true path passes the child untouched.
-      if (!isValidElement(children)) return null;
+  if (asChild) {
+    // Slot expects EXACTLY ONE React element child (isValidElement check).
+    // Passing children + arrow as siblings produces a children array
+    // (especially across RSC boundaries where Fragments serialize as arrays)
+    // → `isValidElement` returns false → Slot returns null → empty DOM.
+    //
+    // Fix (v0.4.2, mirrors Button B3 v0.3.3 recipe): clone the consumer's
+    // child and append the arrow into its own children, so Slot still sees
+    // a single valid element. hideArrow=true path passes the child untouched.
+    if (!isValidElement(children)) return null;
 
-      const child = children as ReactElement<{ children?: ReactNode }>;
-      const childWithArrow = arrow
-        ? cloneElement(child, undefined, child.props.children, arrow)
-        : child;
-
-      return (
-        <Slot
-          ref={ref}
-          className={cn(styles.root, className)}
-          {...safeRest}
-        >
-          {childWithArrow}
-        </Slot>
-      );
-    }
+    const child = children as ReactElement<{ children?: ReactNode }>;
+    const childWithArrow = arrow
+      ? cloneElement(child, undefined, child.props.children, arrow)
+      : child;
 
     return (
-      <a ref={ref} className={cn(styles.root, className)} {...safeRest}>
-        {children}
-        {arrow}
-      </a>
+      <Slot ref={ref} className={cn(styles.root, className)} {...safeRest}>
+        {childWithArrow}
+      </Slot>
     );
-  },
-);
+  }
+
+  return (
+    <a ref={ref} className={cn(styles.root, className)} {...safeRest}>
+      {children}
+      {arrow}
+    </a>
+  );
+});

@@ -112,17 +112,10 @@ export interface FileUploadRenderProps {
   disabled: boolean;
 }
 
-export interface FileUploadProps
-  extends Omit<
-    HTMLAttributes<HTMLDivElement>,
-    | 'children'
-    | 'onChange'
-    | 'onDrop'
-    | 'onDragEnter'
-    | 'onDragLeave'
-    | 'onDragOver'
-    | 'onKeyDown'
-  > {
+export interface FileUploadProps extends Omit<
+  HTMLAttributes<HTMLDivElement>,
+  'children' | 'onChange' | 'onDrop' | 'onDragEnter' | 'onDragLeave' | 'onDragOver' | 'onKeyDown'
+> {
   /**
    * Render-props content. Receives drag/picker state. Consumer renders own
    * zero state, drag-over hint, browse trigger, and any file-list display.
@@ -348,9 +341,8 @@ export const FileUpload = forwardRef<HTMLDivElement, FileUploadProps>(function F
         onFiles?.(accepted);
         // Live region — accept count (verbose count per Q1 (α)).
         setAnnounce(
-          (accepted.length === 1
-            ? '1 file accepted'
-            : `${accepted.length} files accepted`) + marker,
+          (accepted.length === 1 ? '1 file accepted' : `${accepted.length} files accepted`) +
+            marker,
         );
       }
       if (rejected.length > 0) {
@@ -358,9 +350,8 @@ export const FileUpload = forwardRef<HTMLDivElement, FileUploadProps>(function F
         // Live region — count-only for rejections per Q1 (β). Reasons
         // surface via consumer's visual alert.
         setAnnounce(
-          (rejected.length === 1
-            ? '1 file rejected'
-            : `${rejected.length} files rejected`) + marker,
+          (rejected.length === 1 ? '1 file rejected' : `${rejected.length} files rejected`) +
+            marker,
         );
       }
     },
@@ -435,15 +426,12 @@ export const FileUpload = forwardRef<HTMLDivElement, FileUploadProps>(function F
     [disabled, accept],
   );
 
-  const handleDragOver = useCallback(
-    (event: DragEvent<HTMLDivElement>): void => {
-      // ALWAYS preventDefault on dragover, or drop never fires + browser
-      // navigates to the file (FU-R18). Even when disabled — we want to
-      // suppress browser-default file-open without engaging drop logic.
-      event.preventDefault();
-    },
-    [],
-  );
+  const handleDragOver = useCallback((event: DragEvent<HTMLDivElement>): void => {
+    // ALWAYS preventDefault on dragover, or drop never fires + browser
+    // navigates to the file (FU-R18). Even when disabled — we want to
+    // suppress browser-default file-open without engaging drop logic.
+    event.preventDefault();
+  }, []);
 
   const handleDragLeave = useCallback(
     (event: DragEvent<HTMLDivElement>): void => {

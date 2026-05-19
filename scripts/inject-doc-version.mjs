@@ -35,10 +35,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, '..');
 const PKG_JSON = path.join(ROOT, 'package.json');
 
-const TARGETS = [
-  path.join(ROOT, 'AGENTS.md'),
-  path.join(ROOT, 'docs', 'AGENT-USAGE.md'),
-];
+const TARGETS = [path.join(ROOT, 'AGENTS.md'), path.join(ROOT, 'docs', 'AGENT-USAGE.md')];
 
 const TOKEN = '__VERSION__';
 
@@ -110,4 +107,6 @@ console.log(`  replacements:   ${totalReplacements}`);
 for (const { file, count } of filesProcessed) {
   console.log(`    ${file}: ${count}`);
 }
-console.log(`  NOTE: working tree now dirty. Run \`node scripts/inject-doc-version.mjs --revert\` after publish to restore template state.`);
+console.log(
+  `  NOTE: working tree now dirty. Run \`node scripts/inject-doc-version.mjs --revert\` after publish to restore template state.`,
+);

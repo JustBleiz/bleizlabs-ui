@@ -103,8 +103,7 @@ import styles from './Sparkline.module.scss';
  */
 export type SparklineInterpolation = ChartInterpolation;
 
-export interface SparklineProps
-  extends Omit<HTMLAttributes<HTMLDivElement>, 'children' | 'title'> {
+export interface SparklineProps extends Omit<HTMLAttributes<HTMLDivElement>, 'children' | 'title'> {
   /**
    * Y values; X is inferred as ordinal index 0..N-1. Empty array renders
    * the empty state. Single value renders a horizontal stroke at that
@@ -249,12 +248,9 @@ export const Sparkline = forwardRef<HTMLDivElement, SparklineProps>(
     // Generate paths (line + optional area)
     const paths = useMemo(() => {
       if (plottedPoints.length === 0) return { line: '', area: '' };
-      const interpFn =
-        interpolation === 'linear' ? generateLinearPath : generateSmoothPath;
+      const interpFn = interpolation === 'linear' ? generateLinearPath : generateSmoothPath;
       const line = interpFn(plottedPoints);
-      const areaPath = area
-        ? generateAreaPath(plottedPoints, baselineY, interpolation)
-        : '';
+      const areaPath = area ? generateAreaPath(plottedPoints, baselineY, interpolation) : '';
       return { line, area: areaPath };
     }, [plottedPoints, interpolation, area, baselineY]);
 
@@ -355,13 +351,7 @@ export const Sparkline = forwardRef<HTMLDivElement, SparklineProps>(
             {/* Gradient defs — when area + gradient enabled */}
             {area && gradient && (
               <defs>
-                <linearGradient
-                  id={gradientId}
-                  x1="0"
-                  y1="0"
-                  x2="0"
-                  y2="1"
-                >
+                <linearGradient id={gradientId} x1="0" y1="0" x2="0" y2="1">
                   <stop
                     offset="0%"
                     stopColor={color}
@@ -383,12 +373,7 @@ export const Sparkline = forwardRef<HTMLDivElement, SparklineProps>(
             )}
 
             {/* Line stroke (on top) */}
-            <path
-              className={pathClasses}
-              d={paths.line}
-              stroke={color}
-              pathLength={1}
-            />
+            <path className={pathClasses} d={paths.line} stroke={color} pathLength={1} />
           </svg>
         </div>
         {a11yLayer}

@@ -15,20 +15,24 @@ export default function FormSurfacePlaygroundPage() {
   return (
     <main className={styles.main}>
       <header className={styles.header}>
-        <Link href="/" className={styles.back}>← back</Link>
-        <Heading level={1} size="4xl">FormSurface</Heading>
+        <Link href="/" className={styles.back}>
+          ← back
+        </Link>
+        <Heading level={1} size="4xl">
+          FormSurface
+        </Heading>
         <p className={styles.intro}>
-          Semantic <code>&lt;form&gt;</code> wrapper around a Card surface.
-          Renders a native form element so browser submission, validation,
-          and autofill all work — and uses Card slots
-          (<code>CardHeader</code> / <code>CardBody</code> /{' '}
-          <code>CardFooter</code>) for visual structure. Consumer composes
-          its own typography in each slot.
+          Semantic <code>&lt;form&gt;</code> wrapper around a Card surface. Renders a native form
+          element so browser submission, validation, and autofill all work — and uses Card slots (
+          <code>CardHeader</code> / <code>CardBody</code> / <code>CardFooter</code>) for visual
+          structure. Consumer composes its own typography in each slot.
         </p>
       </header>
 
       <section className={styles.demo}>
-        <Heading level={2} size="2xl">1. Basic form — header + body + footer</Heading>
+        <Heading level={2} size="2xl">
+          1. Basic form — header + body + footer
+        </Heading>
         <FormSurface
           padding={5}
           radius="lg"
@@ -64,17 +68,25 @@ export default function FormSurfacePlaygroundPage() {
             </Stack>
           </CardBody>
           <CardFooter action>
-            <Text variant="small" color="secondary">Forgot your password?</Text>
+            <Text variant="small" color="secondary">
+              Forgot your password?
+            </Text>
             <Inline gap={2}>
-              <Button variant="ghost" type="button">Cancel</Button>
-              <Button variant="primary" type="submit">Sign in</Button>
+              <Button variant="ghost" type="button">
+                Cancel
+              </Button>
+              <Button variant="primary" type="submit">
+                Sign in
+              </Button>
             </Inline>
           </CardFooter>
         </FormSurface>
       </section>
 
       <section className={styles.demo}>
-        <Heading level={2} size="2xl">2. Compact form (smaller padding + radius)</Heading>
+        <Heading level={2} size="2xl">
+          2. Compact form (smaller padding + radius)
+        </Heading>
         <FormSurface
           padding={4}
           radius="md"
@@ -94,7 +106,9 @@ export default function FormSurfacePlaygroundPage() {
                 type="search"
                 placeholder="Search the catalogue..."
               />
-              <Button variant="primary" type="submit">Search</Button>
+              <Button variant="primary" type="submit">
+                Search
+              </Button>
             </Inline>
           </CardBody>
         </FormSurface>

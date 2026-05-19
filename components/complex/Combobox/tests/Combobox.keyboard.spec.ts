@@ -56,9 +56,7 @@ test.describe('Combobox — keyboard interactions', () => {
     await expect(input).toHaveAttribute('aria-activedescendant', firstId as string);
   });
 
-  test('ArrowDown moves highlight forward (aria-activedescendant follows)', async ({
-    page,
-  }) => {
+  test('ArrowDown moves highlight forward (aria-activedescendant follows)', async ({ page }) => {
     const input = page.getByRole('combobox').first();
     await input.focus();
     await input.fill('a');
@@ -71,9 +69,7 @@ test.describe('Combobox — keyboard interactions', () => {
     expect(currentActive).not.toBe(firstId);
   });
 
-  test('End / Home navigate to last / first visible enabled option', async ({
-    page,
-  }) => {
+  test('End / Home navigate to last / first visible enabled option', async ({ page }) => {
     const input = page.getByRole('combobox').first();
     await input.focus();
     await input.fill('a');
@@ -98,9 +94,7 @@ test.describe('Combobox — keyboard interactions', () => {
     await expect(input).toHaveAttribute('aria-activedescendant', firstId as string);
   });
 
-  test('Enter commits highlighted option (filter → highlight → Enter)', async ({
-    page,
-  }) => {
+  test('Enter commits highlighted option (filter → highlight → Enter)', async ({ page }) => {
     const input = page.getByRole('combobox').first();
     await input.focus();
     await input.fill('pol'); // filters to Poland
@@ -111,9 +105,7 @@ test.describe('Combobox — keyboard interactions', () => {
     await expect(input).toHaveValue(/Poland/i);
   });
 
-  test('Escape (open with text) reverts search to current committed label', async ({
-    page,
-  }) => {
+  test('Escape (open with text) reverts search to current committed label', async ({ page }) => {
     const input = page.getByRole('combobox').first();
     // Commit Poland first via type + Enter
     await input.focus();
@@ -129,18 +121,13 @@ test.describe('Combobox — keyboard interactions', () => {
     await expect(input).toHaveValue(/Poland/i);
   });
 
-  test.skip(
-    'Escape (closed with non-empty search) clears search [LIB-BEHAVIOR: outside-click/blur already reverts search, making this path unreachable from playground]',
-    async () => {
-      // Spec expects: Escape on a closed input with non-empty search clears
-      // the search. In practice every close path (outside-click, blur) also
-      // reverts/clears search when no committed value exists.
-    },
-  );
+  test.skip('Escape (closed with non-empty search) clears search [LIB-BEHAVIOR: outside-click/blur already reverts search, making this path unreachable from playground]', async () => {
+    // Spec expects: Escape on a closed input with non-empty search clears
+    // the search. In practice every close path (outside-click, blur) also
+    // reverts/clears search when no committed value exists.
+  });
 
-  test('Tab commits highlighted + closes listbox (Radix convention)', async ({
-    page,
-  }) => {
+  test('Tab commits highlighted + closes listbox (Radix convention)', async ({ page }) => {
     const input = page.getByRole('combobox').first();
     await input.focus();
     await input.fill('po');
@@ -150,9 +137,7 @@ test.describe('Combobox — keyboard interactions', () => {
     await expect(input).toHaveValue(/^(Poland|Portugal)$/i);
   });
 
-  test('Modifier-arrow (Ctrl+ArrowDown) does not open listbox', async ({
-    page,
-  }) => {
+  test('Modifier-arrow (Ctrl+ArrowDown) does not open listbox', async ({ page }) => {
     const input = page.getByRole('combobox').first();
     await input.focus();
     await page.keyboard.press('Control+ArrowDown');
@@ -175,11 +160,8 @@ test.describe('Combobox — keyboard interactions', () => {
     });
   });
 
-  test.skip(
-    'CB-R17 — Escape bubble inside Dialog [PLAYGROUND-DEP: no ?dialog=1 demo]',
-    async () => {
-      // Spec expects /components/combobox?dialog=1 with a Dialog hosting a
-      // Combobox. Playground has no such scenario.
-    },
-  );
+  test.skip('CB-R17 — Escape bubble inside Dialog [PLAYGROUND-DEP: no ?dialog=1 demo]', async () => {
+    // Spec expects /components/combobox?dialog=1 with a Dialog hosting a
+    // Combobox. Playground has no such scenario.
+  });
 });

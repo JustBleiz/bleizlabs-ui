@@ -15,14 +15,7 @@
  */
 
 import { test, expect } from '@playwright/test';
-import {
-  dialogOf,
-  hiddenInputOf,
-  inputOf,
-  openPicker,
-  optionByValue,
-  pickerBy,
-} from './_helpers';
+import { dialogOf, hiddenInputOf, inputOf, openPicker, optionByValue, pickerBy } from './_helpers';
 
 test.describe('TimePicker — regression cases', () => {
   test.beforeEach(async ({ page }) => {
@@ -84,9 +77,7 @@ test.describe('TimePicker — regression cases', () => {
     await expect(dialogOf(page)).not.toBeVisible();
   });
 
-  test('TP-R09 — hidden input matches displayed ISO post-listbox-commit', async ({
-    page,
-  }) => {
+  test('TP-R09 — hidden input matches displayed ISO post-listbox-commit', async ({ page }) => {
     const picker = pickerBy(page, 'Appointment');
     await openPicker(picker);
     await optionByValue(page, 'h', '13').dispatchEvent('click');

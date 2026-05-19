@@ -13,7 +13,9 @@ test.describe('Tooltip — regression cases (Radix closed issues)', () => {
     await page.goto('/components/tooltip');
   });
 
-  test('radix-620 — hover content does not disappear when pointer enters tooltip', async ({ page }) => {
+  test('radix-620 — hover content does not disappear when pointer enters tooltip', async ({
+    page,
+  }) => {
     const trigger = page.getByRole('button', { name: 'APG reference' });
     await trigger.hover();
     await page.waitForTimeout(800);
@@ -65,7 +67,9 @@ test.describe('Tooltip — regression cases (Radix closed issues)', () => {
     await expect(page.getByRole('tooltip')).toBeVisible();
   });
 
-  test('radix-2372 — TooltipProvider group: instant transitions after first open', async ({ page }) => {
+  test('radix-2372 — TooltipProvider group: instant transitions after first open', async ({
+    page,
+  }) => {
     // Use `exact: true` — other buttons on the page include 'bottom', 'bottom-start' etc.
     const boldBtn = page.getByRole('button', { name: 'B', exact: true });
     await boldBtn.scrollIntoViewIfNeeded();
@@ -128,9 +132,7 @@ test.describe('Tooltip — regression cases (Radix closed issues)', () => {
     expect(box).not.toBeNull();
     if (box) {
       expect(box.x).toBeGreaterThanOrEqual(0);
-      expect(box.x + box.width).toBeLessThanOrEqual(
-        await page.evaluate(() => window.innerWidth),
-      );
+      expect(box.x + box.width).toBeLessThanOrEqual(await page.evaluate(() => window.innerWidth));
     }
   });
 

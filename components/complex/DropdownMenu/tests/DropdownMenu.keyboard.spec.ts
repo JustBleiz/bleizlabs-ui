@@ -117,9 +117,8 @@ test.describe('DropdownMenu — keyboard interactions', () => {
     await page.getByRole('button', { name: 'File' }).click();
     // Navigate through items — disabled "Save as... (coming soon)" should be skipped
     for (let i = 0; i < 10; i++) {
-       
       await page.keyboard.press('ArrowDown');
-       
+
       const focused = await page.evaluate(() =>
         document.activeElement?.getAttribute('aria-disabled'),
       );

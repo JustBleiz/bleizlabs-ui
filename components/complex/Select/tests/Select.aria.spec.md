@@ -11,7 +11,9 @@
 ## Tests
 
 ```ts
-test('SL-R17 — form submit without value shows required validation when required', async ({ page }) => {
+test('SL-R17 — form submit without value shows required validation when required', async ({
+  page,
+}) => {
   await page.goto('/components/select?required=1');
   const form = page.locator('form');
   // Hidden input sync — empty value + required triggers native HTML5 validation
@@ -25,7 +27,9 @@ test('SL-R17 — form submit without value shows required validation when requir
   expect(validationMessage).toBeTruthy();
 });
 
-test('SL-R18 — placeholder styling distinct from selected value (data-placeholder)', async ({ page }) => {
+test('SL-R18 — placeholder styling distinct from selected value (data-placeholder)', async ({
+  page,
+}) => {
   await page.goto('/components/select?placeholder=Select%20option');
   const value = page.locator('[data-placeholder]');
   await expect(value).toBeVisible();
@@ -35,7 +39,9 @@ test('SL-R18 — placeholder styling distinct from selected value (data-placehol
   expect(color).toBeTruthy();
 });
 
-test('SL-R20 — RTL direction: arrow semantics reversed on horizontal axis only', async ({ page }) => {
+test('SL-R20 — RTL direction: arrow semantics reversed on horizontal axis only', async ({
+  page,
+}) => {
   await page.goto('/components/select?dir=rtl');
   const trigger = page.getByRole('combobox');
   await trigger.click();

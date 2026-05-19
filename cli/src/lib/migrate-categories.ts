@@ -106,10 +106,7 @@ export function migrateFlatToCategory(plan: MigrateCategoryResult): void {
  * Detect-and-migrate one-shot helper. Returns the plan that was applied so
  * callers can render a summary line.
  */
-export function autoMigrate(
-  manifest: ComponentManifest,
-  targetDir: string,
-): MigrateCategoryResult {
+export function autoMigrate(manifest: ComponentManifest, targetDir: string): MigrateCategoryResult {
   const plan = detectFlatLayout(manifest, targetDir);
   migrateFlatToCategory(plan);
   return plan;

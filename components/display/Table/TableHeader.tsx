@@ -17,13 +17,12 @@ import styles from './TableHeader.module.scss';
  */
 export type TableHeaderProps = HTMLAttributes<HTMLTableSectionElement>;
 
-export const TableHeader = forwardRef<
-  HTMLTableSectionElement,
-  TableHeaderProps
->(function TableHeader({ className, children, ...rest }, ref) {
-  return (
-    <thead ref={ref} className={cn(styles.root, className)} {...rest}>
-      {children}
-    </thead>
-  );
-});
+export const TableHeader = forwardRef<HTMLTableSectionElement, TableHeaderProps>(
+  function TableHeader({ className, children, ...rest }, ref) {
+    return (
+      <thead ref={ref} className={cn(styles.root, className)} {...rest}>
+        {children}
+      </thead>
+    );
+  },
+);

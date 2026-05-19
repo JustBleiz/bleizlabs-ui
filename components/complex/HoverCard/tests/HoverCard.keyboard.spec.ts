@@ -12,9 +12,7 @@ test.describe('HoverCard — keyboard interactions', () => {
     await page.goto('/components/hover-card');
   });
 
-  test('HC-R03 — focus on trigger opens instantly (SC 2.1.1 keyboard parity)', async ({
-    page,
-  }) => {
+  test('HC-R03 — focus on trigger opens instantly (SC 2.1.1 keyboard parity)', async ({ page }) => {
     const trigger = page.getByRole('link', { name: '@jane' }).first();
     await trigger.focus();
     // Focus path bypasses openDelay — content appears immediately

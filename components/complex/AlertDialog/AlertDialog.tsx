@@ -57,11 +57,10 @@ import styles from './AlertDialog.module.scss';
 export type AlertDialogSize = 'sm' | 'md' | 'lg';
 export type AlertDialogSeverity = 'info' | 'warning' | 'critical';
 
-export interface AlertDialogProps
-  extends Omit<
-    HTMLAttributes<HTMLDivElement>,
-    'title' | 'role' | 'aria-modal' | 'aria-labelledby' | 'aria-describedby'
-  > {
+export interface AlertDialogProps extends Omit<
+  HTMLAttributes<HTMLDivElement>,
+  'title' | 'role' | 'aria-modal' | 'aria-labelledby' | 'aria-describedby'
+> {
   /** Controlled open state. AlertDialog is always modal. */
   open: boolean;
   /** Callback invoked when the dialog requests to close (Escape, cancel button, or after action). */
@@ -264,9 +263,7 @@ export function AlertDialog({
     if (!open) return;
     const portalRoot = contentRef.current?.parentElement;
     if (!portalRoot) return;
-    const siblings = Array.from(document.body.children).filter(
-      (el) => el !== portalRoot,
-    );
+    const siblings = Array.from(document.body.children).filter((el) => el !== portalRoot);
     const hadInert = siblings.map((el) => el.hasAttribute('inert'));
     siblings.forEach((el) => el.setAttribute('inert', ''));
     return () => {
@@ -289,15 +286,10 @@ export function AlertDialog({
   // SSR guard + closed-state short-circuit.
   if (typeof document === 'undefined' || !open) return null;
 
-  const resolvedConfirmVariant =
-    confirmVariant ?? DEFAULT_CONFIRM_VARIANT[severity];
+  const resolvedConfirmVariant = confirmVariant ?? DEFAULT_CONFIRM_VARIANT[severity];
 
   return createPortal(
-    <div
-      className={styles.root}
-      onClick={handleOverlayClick}
-      data-state={open ? 'open' : 'closed'}
-    >
+    <div className={styles.root} onClick={handleOverlayClick} data-state={open ? 'open' : 'closed'}>
       <div
         ref={contentRef}
         role="alertdialog"
@@ -305,12 +297,7 @@ export function AlertDialog({
         aria-labelledby={titleId}
         aria-describedby={descriptionId}
         tabIndex={-1}
-        className={cn(
-          styles.content,
-          SIZE_CLASS[size],
-          SEVERITY_CLASS[severity],
-          className,
-        )}
+        className={cn(styles.content, SIZE_CLASS[size], SEVERITY_CLASS[severity], className)}
         {...rest}
       >
         <header className={styles.header}>
@@ -318,31 +305,17 @@ export function AlertDialog({
             {title}
           </Heading>
         </header>
-        <Text
-          id={descriptionId}
-          variant="body"
-          color="muted"
-          className={styles.description}
-        >
+        <Text id={descriptionId} variant="body" color="muted" className={styles.description}>
           {description}
         </Text>
         {children !== undefined && children !== null ? (
           <div className={styles.body}>{children}</div>
         ) : null}
         <div className={styles.actions}>
-          <Button
-            ref={cancelButtonRef}
-            type="button"
-            variant="ghost"
-            onClick={handleCancel}
-          >
+          <Button ref={cancelButtonRef} type="button" variant="ghost" onClick={handleCancel}>
             {cancelLabel}
           </Button>
-          <Button
-            type="button"
-            variant={resolvedConfirmVariant}
-            onClick={onConfirm}
-          >
+          <Button type="button" variant={resolvedConfirmVariant} onClick={onConfirm}>
             {confirmLabel}
           </Button>
         </div>

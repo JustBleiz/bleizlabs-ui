@@ -14,22 +14,22 @@
 // Component-local channels — tied to data-size selector. Values reuse
 // existing --space-* scale (R7-compliant). No new design tokens.
 .root {
-  --stepper-circle-size: var(--space-8);          // 32px (md default)
-  --stepper-number-size: 0.875rem;                // 14px
+  --stepper-circle-size: var(--space-8); // 32px (md default)
+  --stepper-number-size: 0.875rem; // 14px
   --stepper-label-size: 0.875rem;
-  --stepper-description-size: 0.75rem;            // 12px
+  --stepper-description-size: 0.75rem; // 12px
 }
 
 .root[data-size='sm'] {
-  --stepper-circle-size: var(--space-6);          // 24px
-  --stepper-number-size: 0.75rem;                 // 12px
+  --stepper-circle-size: var(--space-6); // 24px
+  --stepper-number-size: 0.75rem; // 12px
   --stepper-label-size: 0.75rem;
-  --stepper-description-size: 0.6875rem;          // 11px
+  --stepper-description-size: 0.6875rem; // 11px
 }
 
 .root[data-size='lg'] {
-  --stepper-circle-size: var(--space-10);         // 40px
-  --stepper-number-size: 1rem;                    // 16px
+  --stepper-circle-size: var(--space-10); // 40px
+  --stepper-number-size: 1rem; // 16px
   --stepper-label-size: 1rem;
   --stepper-description-size: 0.875rem;
 }
@@ -51,7 +51,7 @@
   &[data-orientation='horizontal'] {
     flex-direction: row;
     align-items: flex-start;
-    gap: 0;                       // step ::after handles spacing via left/right
+    gap: 0; // step ::after handles spacing via left/right
   }
 
   &[data-orientation='vertical'] {
@@ -66,7 +66,7 @@
 // ============================================================================
 
 .step {
-  position: relative;       // anchor for connecting line ::after
+  position: relative; // anchor for connecting line ::after
   display: flex;
 }
 
@@ -144,7 +144,7 @@
   color: var(--color-text-secondary);
   font-size: var(--stepper-number-size);
   font-weight: 600;
-  position: relative;                 // sit above the connecting line z-index
+  position: relative; // sit above the connecting line z-index
   z-index: 1;
   transition:
     background-color var(--duration-fast) var(--easing-default),
@@ -201,7 +201,7 @@
   font-weight: 500;
   color: var(--color-text-muted);
   line-height: 1.4;
-  word-break: break-word;            // Q3 (β) — wrap rather than overflow
+  word-break: break-word; // Q3 (β) — wrap rather than overflow
 
   .step[data-status='active'] &,
   .step[data-status='complete'] & {

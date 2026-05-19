@@ -18,7 +18,9 @@ test.describe('FileUpload — ARIA + keyboard + focus', () => {
     await page.goto(URL);
   });
 
-  test('FU-A01: drop zone is plain div (NOT role=button — axe nested-interactive) + accessible name', async ({ page }) => {
+  test('FU-A01: drop zone is plain div (NOT role=button — axe nested-interactive) + accessible name', async ({
+    page,
+  }) => {
     const zone = zoneBy(page, 'Upload single file');
     await expect(zone).toBeVisible();
     // Drop zone deliberately has NO role=button — see FileUpload.tsx @a11y
@@ -41,7 +43,9 @@ test.describe('FileUpload — ARIA + keyboard + focus', () => {
     await expect(zone).toHaveAttribute('tabindex', '-1');
   });
 
-  test('FU-A04: drop zone points to live region via aria-describedby (default)', async ({ page }) => {
+  test('FU-A04: drop zone points to live region via aria-describedby (default)', async ({
+    page,
+  }) => {
     const zone = zoneBy(page, 'Upload single file');
     const describedby = await zone.getAttribute('aria-describedby');
     expect(describedby).toBeTruthy();

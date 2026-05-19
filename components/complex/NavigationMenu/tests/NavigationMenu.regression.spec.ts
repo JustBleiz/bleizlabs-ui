@@ -14,9 +14,7 @@ test.describe('NavigationMenu — regression (closed-issue coverage)', () => {
     await page.goto('/components/navigation-menu');
   });
 
-  test('NM-R01 — Content rendered via Portal (outside normal flow)', async ({
-    page,
-  }) => {
+  test('NM-R01 — Content rendered via Portal (outside normal flow)', async ({ page }) => {
     const menubar = page.getByRole('menubar', { name: 'Main' });
     await menubar.getByRole('menuitem', { name: 'Products' }).click();
     const menu = page.getByRole('menu');
@@ -64,9 +62,7 @@ test.describe('NavigationMenu — regression (closed-issue coverage)', () => {
     // Per-submenu Item-level callback is not a public API.
   });
 
-  test('NM-R14 — hover delay cancels when pointer leaves before 200ms', async ({
-    page,
-  }) => {
+  test('NM-R14 — hover delay cancels when pointer leaves before 200ms', async ({ page }) => {
     const menubar = page.getByRole('menubar', { name: 'Main' });
     const trigger = menubar.getByRole('menuitem', { name: 'Products' });
     await trigger.scrollIntoViewIfNeeded();
@@ -102,9 +98,7 @@ test.describe('NavigationMenu — regression (closed-issue coverage)', () => {
     // covered by static review of effectiveOpenDelay (NavigationMenu.tsx:370).
   });
 
-  test('NM-R20 — visibilitychange (tab hidden) auto-closes menu (F13)', async ({
-    page,
-  }) => {
+  test('NM-R20 — visibilitychange (tab hidden) auto-closes menu (F13)', async ({ page }) => {
     // E142 L4 F13 — NavigationMenu subscribes to document.visibilitychange
     // while a submenu is open and auto-closes when the tab becomes hidden.
     const menubar = page.getByRole('menubar', { name: 'Main' });
@@ -130,9 +124,7 @@ test.describe('NavigationMenu — regression (closed-issue coverage)', () => {
     await expect(page.getByRole('menu')).not.toBeVisible();
   });
 
-  test('NM-R22 — controlled mode: onValueChange fires per open transition', async ({
-    page,
-  }) => {
+  test('NM-R22 — controlled mode: onValueChange fires per open transition', async ({ page }) => {
     // Section 6 is the controlled demo ("Controlled" aria-label)
     const menubar = page.getByRole('menubar', { name: 'Controlled' });
     const alpha = menubar.getByRole('menuitem', { name: 'Alpha' });

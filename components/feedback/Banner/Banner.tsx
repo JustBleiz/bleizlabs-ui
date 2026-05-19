@@ -1,9 +1,4 @@
-import {
-  forwardRef,
-  type HTMLAttributes,
-  type MouseEvent,
-  type ReactNode,
-} from 'react';
+import { forwardRef, type HTMLAttributes, type MouseEvent, type ReactNode } from 'react';
 import { cn } from '../../utils/cn';
 import styles from './Banner.module.scss';
 
@@ -96,13 +91,7 @@ const TONE_CLASS: Record<BannerTone, string> = {
 
 function DismissIcon() {
   return (
-    <svg
-      aria-hidden="true"
-      focusable="false"
-      viewBox="0 0 16 16"
-      width="16"
-      height="16"
-    >
+    <svg aria-hidden="true" focusable="false" viewBox="0 0 16 16" width="16" height="16">
       <path
         d="M4 4 L12 12 M12 4 L4 12"
         stroke="currentColor"
@@ -139,12 +128,7 @@ export const Banner = forwardRef<HTMLDivElement, BannerProps>(function Banner(
       ref={ref}
       role={isAssertive ? 'alert' : 'status'}
       aria-live={isAssertive ? 'assertive' : 'polite'}
-      className={cn(
-        styles.root,
-        TONE_CLASS[tone],
-        sticky && styles.sticky,
-        className,
-      )}
+      className={cn(styles.root, TONE_CLASS[tone], sticky && styles.sticky, className)}
       {...rest}
     >
       <div className={styles.message}>{children}</div>

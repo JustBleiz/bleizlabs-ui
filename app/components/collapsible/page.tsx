@@ -44,14 +44,11 @@ export default function CollapsiblePlaygroundPage() {
           Collapsible
         </Heading>
         <p className={styles.intro}>
-          APG <code>/disclosure/</code> compound — single-pane show/hide
-          primitive distinct from <code>AccordionGroup</code> (which is the{' '}
-          <code>/accordion/</code> Q+A pattern). Use Collapsible for &quot;show
-          more&quot; toggles, expandable details, optional settings — anywhere
-          the question/answer semantic is wrong. Compound:{' '}
-          <code>&lt;Collapsible&gt;</code> +{' '}
-          <code>&lt;CollapsibleTrigger&gt;</code> +{' '}
-          <code>&lt;CollapsibleContent&gt;</code>.
+          APG <code>/disclosure/</code> compound — single-pane show/hide primitive distinct from{' '}
+          <code>AccordionGroup</code> (which is the <code>/accordion/</code> Q+A pattern). Use
+          Collapsible for &quot;show more&quot; toggles, expandable details, optional settings —
+          anywhere the question/answer semantic is wrong. Compound: <code>&lt;Collapsible&gt;</code>{' '}
+          + <code>&lt;CollapsibleTrigger&gt;</code> + <code>&lt;CollapsibleContent&gt;</code>.
         </p>
       </header>
 
@@ -71,14 +68,13 @@ export default function CollapsiblePlaygroundPage() {
           <CollapsibleContent>
             <div className={styles.contentBody}>
               <Text>
-                Hidden options surface only when the user opts in. Native button
-                semantics — Enter and Space both toggle.
+                Hidden options surface only when the user opts in. Native button semantics — Enter
+                and Space both toggle.
               </Text>
               <Text variant="small" color="muted">
-                Heights animate via CSS Grid <code>0fr → 1fr</code>; no
-                JavaScript height measurement needed, supports content-aware
-                heights, and <code>prefers-reduced-motion</code> disables the
-                transition.
+                Heights animate via CSS Grid <code>0fr → 1fr</code>; no JavaScript height
+                measurement needed, supports content-aware heights, and{' '}
+                <code>prefers-reduced-motion</code> disables the transition.
               </Text>
             </div>
           </CollapsibleContent>
@@ -113,9 +109,8 @@ export default function CollapsiblePlaygroundPage() {
           3. Controlled mode
         </Heading>
         <Text variant="small" color="secondary">
-          Consumer owns <code>open</code> + reacts to{' '}
-          <code>onOpenChange</code>. Use when state needs to live outside the
-          component (URL hash, parent disclosure orchestration, etc.).
+          Consumer owns <code>open</code> + reacts to <code>onOpenChange</code>. Use when state
+          needs to live outside the component (URL hash, parent disclosure orchestration, etc.).
         </Text>
         <Collapsible
           open={controlledOpen}
@@ -153,8 +148,8 @@ export default function CollapsiblePlaygroundPage() {
           4. Trigger asChild — wrap a Button
         </Heading>
         <Text variant="small" color="secondary">
-          <code>asChild</code> projects trigger semantics + aria wiring onto
-          consumer&apos;s element (here: <code>&lt;Button variant=&quot;ghost&quot;&gt;</code>).
+          <code>asChild</code> projects trigger semantics + aria wiring onto consumer&apos;s element
+          (here: <code>&lt;Button variant=&quot;ghost&quot;&gt;</code>).
         </Text>
         <Collapsible className={styles.surface}>
           <CollapsibleTrigger asChild>
@@ -165,9 +160,8 @@ export default function CollapsiblePlaygroundPage() {
           <CollapsibleContent>
             <div className={styles.contentBody}>
               <Text>
-                v0.21.0 ships AvatarGroup + Rating + Collapsible + Banner plus
-                an opt-in TimeInput stepper amendment. See CHANGELOG for full
-                detail.
+                v0.21.0 ships AvatarGroup + Rating + Collapsible + Banner plus an opt-in TimeInput
+                stepper amendment. See CHANGELOG for full detail.
               </Text>
             </div>
           </CollapsibleContent>
@@ -179,8 +173,8 @@ export default function CollapsiblePlaygroundPage() {
           5. Disabled state
         </Heading>
         <Text variant="small" color="secondary">
-          <code>disabled</code> on root short-circuits the toggle handler;
-          trigger renders with <code>aria-disabled</code> + reduced opacity.
+          <code>disabled</code> on root short-circuits the toggle handler; trigger renders with{' '}
+          <code>aria-disabled</code> + reduced opacity.
         </Text>
         <Collapsible disabled className={styles.surface}>
           <CollapsibleTrigger>
@@ -201,25 +195,22 @@ export default function CollapsiblePlaygroundPage() {
           6. forceMount — keep content in DOM when closed
         </Heading>
         <Text variant="small" color="secondary">
-          Default behavior unmounts content when closed (clean DOM, lose
-          internal state). Set <code>forceMount</code> to preserve form
-          drafts / video playback / animation state across toggle cycles.
-          Content is hidden from a11y tree via the <code>hidden</code>{' '}
-          attribute when closed.
+          Default behavior unmounts content when closed (clean DOM, lose internal state). Set{' '}
+          <code>forceMount</code> to preserve form drafts / video playback / animation state across
+          toggle cycles. Content is hidden from a11y tree via the <code>hidden</code> attribute when
+          closed.
         </Text>
         <Collapsible className={styles.surface}>
           <CollapsibleTrigger>
             <span className={styles.triggerLine}>
-              Toggle (forceMount){' '}
-              <Chevron />
+              Toggle (forceMount) <Chevron />
             </span>
           </CollapsibleTrigger>
           <CollapsibleContent forceMount>
             <div className={styles.contentBody}>
               <Text>
-                I stay in the DOM even when collapsed — inspect the
-                document to verify. Useful when downstream state would be
-                lost on unmount.
+                I stay in the DOM even when collapsed — inspect the document to verify. Useful when
+                downstream state would be lost on unmount.
               </Text>
             </div>
           </CollapsibleContent>

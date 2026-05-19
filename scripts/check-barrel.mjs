@@ -38,28 +38,19 @@ function walk(dir) {
 
     // utils/ and types/ are re-exported by explicit names (Slot, cn, etc.),
     // not by `export * from`. Skip barrel-completeness check for them.
-    const relFromComponents = path
-      .relative(COMPONENTS_DIR, full)
-      .replace(/\\/g, '/');
-    if (
-      relFromComponents.startsWith('utils') ||
-      relFromComponents.startsWith('types')
-    ) {
+    const relFromComponents = path.relative(COMPONENTS_DIR, full).replace(/\\/g, '/');
+    if (relFromComponents.startsWith('utils') || relFromComponents.startsWith('types')) {
       continue;
     }
 
     const hasIndex =
-      fs.existsSync(path.join(full, 'index.ts')) ||
-      fs.existsSync(path.join(full, 'index.tsx'));
+      fs.existsSync(path.join(full, 'index.ts')) || fs.existsSync(path.join(full, 'index.tsx'));
 
     if (hasIndex) {
       const expected = `./${relFromComponents}`;
       // Barrel re-exports with `export * from './category/Name'` (no trailing
       // slash, no extension). Match the string presence.
-      if (
-        !barrel.includes(`'${expected}'`) &&
-        !barrel.includes(`"${expected}"`)
-      ) {
+      if (!barrel.includes(`'${expected}'`) && !barrel.includes(`"${expected}"`)) {
         missing.push(expected);
       }
     } else {
@@ -72,15 +63,15 @@ walk(COMPONENTS_DIR);
 
 if (missing.length > 0) {
   console.error(
-    `[check-barrel] FAIL — ${missing.length} component folder(s) not re-exported from components/index.ts:`
+    `[check-barrel] FAIL — ${missing.length} component folder(s) not re-exported from components/index.ts:`,
   );
   for (const m of missing) console.error(`  - ${m}`);
   console.error(
-    `\nAdd \`export * from '${missing[0]}';\` to components/index.ts for each missing folder.`
+    `\nAdd \`export * from '${missing[0]}';\` to components/index.ts for each missing folder.`,
   );
   process.exit(1);
 }
 
 console.log(
-  `[check-barrel] OK — every component folder with an index is re-exported from the barrel.`
+  `[check-barrel] OK — every component folder with an index is re-exported from the barrel.`,
 );

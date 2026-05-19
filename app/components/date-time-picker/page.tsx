@@ -53,11 +53,10 @@ export default function DateTimePickerPlayground() {
           DateTimePicker
         </Heading>
         <Text variant="lead" color="muted">
-          Combobox input + popover with Calendar grid above and inline
-          TimeInput below. Three Tab stops inside dialog (Calendar roving
-          cell → hour → minute, plus optional seconds + AM/PM). Form
-          submission emits ISO 8601 local datetime (`YYYY-MM-DDTHH:MM:SS`,
-          no tz suffix — server treats as local wall-clock).
+          Combobox input + popover with Calendar grid above and inline TimeInput below. Three Tab
+          stops inside dialog (Calendar roving cell → hour → minute, plus optional seconds + AM/PM).
+          Form submission emits ISO 8601 local datetime (`YYYY-MM-DDTHH:MM:SS`, no tz suffix —
+          server treats as local wall-clock).
         </Text>
         <Inline gap={2} wrap>
           <Badge color="success">APG combobox + grid + spinbutton</Badge>
@@ -74,15 +73,11 @@ export default function DateTimePickerPlayground() {
           1. Basic 24h (uncontrolled)
         </Heading>
         <Text variant="body" color="muted">
-          Alt+ArrowDown opens dialog + focuses Calendar. Click a date or
-          press Enter on a cell to commit + Tab into TimeInput to set the
-          hour/minute.
+          Alt+ArrowDown opens dialog + focuses Calendar. Click a date or press Enter on a cell to
+          commit + Tab into TimeInput to set the hour/minute.
         </Text>
         <div className={styles.demo}>
-          <DateTimePicker
-            defaultValue={new Date(2026, 4, 15, 9, 0)}
-            hourCycle="24h"
-          >
+          <DateTimePicker defaultValue={new Date(2026, 4, 15, 9, 0)} hourCycle="24h">
             <DateTimePickerInput aria-label="Start datetime" />
             <DateTimePickerContent />
           </DateTimePicker>
@@ -95,16 +90,11 @@ export default function DateTimePickerPlayground() {
           2. 12h with AM/PM (controlled)
         </Heading>
         <Text variant="body" color="muted">
-          TimeInput inside dialog renders AM/PM toggle at logical-end.
-          Emitted value retains 24h semantics on the Date object.
+          TimeInput inside dialog renders AM/PM toggle at logical-end. Emitted value retains 24h
+          semantics on the Date object.
         </Text>
         <div className={styles.demo}>
-          <DateTimePicker
-            value={twelveH}
-            onValueChange={setTwelveH}
-            hourCycle="12h"
-            locale="en-US"
-          >
+          <DateTimePicker value={twelveH} onValueChange={setTwelveH} hourCycle="12h" locale="en-US">
             <DateTimePickerInput aria-label="Meeting datetime" />
             <DateTimePickerContent />
           </DateTimePicker>
@@ -120,16 +110,11 @@ export default function DateTimePickerPlayground() {
           3. With seconds
         </Heading>
         <Text variant="body" color="muted">
-          <code>withSeconds</code> propagates to the inline TimeInput +
-          ISO output gains seconds component.
+          <code>withSeconds</code> propagates to the inline TimeInput + ISO output gains seconds
+          component.
         </Text>
         <div className={styles.demo}>
-          <DateTimePicker
-            value={withSec}
-            onValueChange={setWithSec}
-            hourCycle="24h"
-            withSeconds
-          >
+          <DateTimePicker value={withSec} onValueChange={setWithSec} hourCycle="24h" withSeconds>
             <DateTimePickerInput aria-label="Race datetime" />
             <DateTimePickerContent />
           </DateTimePicker>
@@ -148,12 +133,7 @@ export default function DateTimePickerPlayground() {
           ArrowUp/Down on the minute spinbutton increments by 15.
         </Text>
         <div className={styles.demo}>
-          <DateTimePicker
-            value={stepped}
-            onValueChange={setStepped}
-            hourCycle="24h"
-            timeStep={15}
-          >
+          <DateTimePicker value={stepped} onValueChange={setStepped} hourCycle="24h" timeStep={15}>
             <DateTimePickerInput aria-label="Slot datetime" />
             <DateTimePickerContent />
           </DateTimePicker>
@@ -166,10 +146,9 @@ export default function DateTimePickerPlayground() {
           5. Min / max + disabled weekends
         </Heading>
         <Text variant="body" color="muted">
-          <code>min=2026-05-01</code>, <code>max=2026-05-31</code>, weekends
-          disabled in Calendar grid. Time bounds inherited from min/max
-          when within-day clamping is needed (out-of-day instants clamp at
-          ISO 8601 level on commit).
+          <code>min=2026-05-01</code>, <code>max=2026-05-31</code>, weekends disabled in Calendar
+          grid. Time bounds inherited from min/max when within-day clamping is needed (out-of-day
+          instants clamp at ISO 8601 level on commit).
         </Text>
         <div className={styles.demo}>
           <DateTimePicker
@@ -192,8 +171,7 @@ export default function DateTimePickerPlayground() {
           6. Form integration + required
         </Heading>
         <Text variant="body" color="muted">
-          Hidden input emits ISO 8601 local datetime
-          (`YYYY-MM-DDTHH:MM:SS`).
+          Hidden input emits ISO 8601 local datetime (`YYYY-MM-DDTHH:MM:SS`).
         </Text>
         <form className={styles.formDemo} onSubmit={handleSubmit} noValidate>
           <DateTimePicker
@@ -224,11 +202,10 @@ export default function DateTimePickerPlayground() {
           7. showTimeSteppers — opt-in ↑↓ on embedded TimeInput (0.21.0)
         </Heading>
         <Text variant="body" color="muted">
-          <code>showTimeSteppers</code> propagates to the embedded{' '}
-          <code>&lt;TimeInput&gt;</code> in the popover content. Steppers act
-          on the currently-focused segment (hour / minute / second) with
-          pointer-down hold-to-repeat (400ms → 80ms). Open the picker to
-          see the steppers on the right edge of the time row.
+          <code>showTimeSteppers</code> propagates to the embedded <code>&lt;TimeInput&gt;</code> in
+          the popover content. Steppers act on the currently-focused segment (hour / minute /
+          second) with pointer-down hold-to-repeat (400ms → 80ms). Open the picker to see the
+          steppers on the right edge of the time row.
         </Text>
         <Inline gap={6} wrap>
           <DateTimePicker

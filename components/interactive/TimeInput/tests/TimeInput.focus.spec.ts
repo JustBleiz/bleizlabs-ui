@@ -10,12 +10,7 @@
  */
 
 import { test, expect } from '@playwright/test';
-import {
-  hourFieldOf,
-  minuteFieldOf,
-  periodToggleOf,
-  timeInputBy,
-} from './_helpers';
+import { hourFieldOf, minuteFieldOf, periodToggleOf, timeInputBy } from './_helpers';
 
 test.describe('TimeInput — focus management', () => {
   test.beforeEach(async ({ page }) => {
@@ -53,9 +48,7 @@ test.describe('TimeInput — focus management', () => {
     await expect(period).toBeFocused();
   });
 
-  test('TI-FCS04 — Backspace on empty buffer retreats to previous field', async ({
-    page,
-  }) => {
+  test('TI-FCS04 — Backspace on empty buffer retreats to previous field', async ({ page }) => {
     const picker = timeInputBy(page, 'Start time');
     const hour = hourFieldOf(picker);
     const minute = minuteFieldOf(picker);

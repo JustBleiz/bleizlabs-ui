@@ -1,12 +1,6 @@
 'use client';
 
-import {
-  forwardRef,
-  useId,
-  useMemo,
-  useState,
-  type InputHTMLAttributes,
-} from 'react';
+import { forwardRef, useId, useMemo, useState, type InputHTMLAttributes } from 'react';
 import { cn } from '../../utils/cn';
 import { useResolvedLocale } from '../../utils/locale';
 import { Label } from '../Label';
@@ -114,11 +108,10 @@ import styles from './NumberInput.module.scss';
  *   locale="en-US"
  * />
  */
-export interface NumberInputProps
-  extends Omit<
-    InputHTMLAttributes<HTMLInputElement>,
-    'type' | 'size' | 'value' | 'defaultValue' | 'onChange' | 'min' | 'max' | 'step'
-  > {
+export interface NumberInputProps extends Omit<
+  InputHTMLAttributes<HTMLInputElement>,
+  'type' | 'size' | 'value' | 'defaultValue' | 'onChange' | 'min' | 'max' | 'step'
+> {
   /** Visible label text. Renders a coupled `<Label htmlFor>` above the input. */
   label: string;
   /** Form field name (for native form submission via the formatted display value). */
@@ -247,9 +240,7 @@ function parseNumber(raw: string): number | undefined {
         cleaned = cleaned.replace(/\./g, '');
       } else {
         // Last dot is decimal, earlier ones are thousands.
-        cleaned =
-          cleaned.substring(0, lastDot).replace(/\./g, '') +
-          cleaned.substring(lastDot);
+        cleaned = cleaned.substring(0, lastDot).replace(/\./g, '') + cleaned.substring(lastDot);
       }
     }
     // Single dot is already valid for parseFloat.
@@ -267,162 +258,158 @@ function clampNumber(value: number, min?: number, max?: number): number {
   return next;
 }
 
-export const NumberInput = forwardRef<HTMLInputElement, NumberInputProps>(
-  function NumberInput(
-    {
-      label,
-      name,
-      value: controlledValue,
-      defaultValue,
-      onValueChange,
-      min,
-      max,
-      step,
-      decimals,
-      currency,
-      locale: localeProp,
-      suffix,
-      error,
-      helperText,
-      hideLabel = false,
-      required,
-      disabled,
-      id,
-      className,
-      onFocus: onFocusProp,
-      onBlur: onBlurProp,
-      ...rest
-    },
-    ref,
-  ) {
-    void step; // doc-only currently
-    const locale = useResolvedLocale(localeProp);
-    const generatedId = useId();
-    const inputId = id ?? `${name}-${generatedId}`;
-    const errorId = error ? `${inputId}-error` : undefined;
-    const helperId = helperText && !error ? `${inputId}-helper` : undefined;
-    const describedBy = errorId ?? helperId;
+export const NumberInput = forwardRef<HTMLInputElement, NumberInputProps>(function NumberInput(
+  {
+    label,
+    name,
+    value: controlledValue,
+    defaultValue,
+    onValueChange,
+    min,
+    max,
+    step,
+    decimals,
+    currency,
+    locale: localeProp,
+    suffix,
+    error,
+    helperText,
+    hideLabel = false,
+    required,
+    disabled,
+    id,
+    className,
+    onFocus: onFocusProp,
+    onBlur: onBlurProp,
+    ...rest
+  },
+  ref,
+) {
+  void step; // doc-only currently
+  const locale = useResolvedLocale(localeProp);
+  const generatedId = useId();
+  const inputId = id ?? `${name}-${generatedId}`;
+  const errorId = error ? `${inputId}-error` : undefined;
+  const helperId = helperText && !error ? `${inputId}-helper` : undefined;
+  const describedBy = errorId ?? helperId;
 
-    const effectiveDecimals = decimals ?? (currency ? 2 : 0);
-    const isControlled = controlledValue !== undefined;
-    const [uncontrolledValue, setUncontrolledValue] = useState<number | undefined>(
-      defaultValue,
-    );
-    const currentValue = isControlled ? controlledValue : uncontrolledValue;
+  const effectiveDecimals = decimals ?? (currency ? 2 : 0);
+  const isControlled = controlledValue !== undefined;
+  const [uncontrolledValue, setUncontrolledValue] = useState<number | undefined>(defaultValue);
+  const currentValue = isControlled ? controlledValue : uncontrolledValue;
 
-    // `display` mirrors what's shown in the input. It's a string because
-    // intermediate typed states may be unparseable (`-`, `1.`, `1.2.3`)
-    // and we don't want to lose the user's input mid-keystroke.
-    const formatted = useMemo(
-      () => formatNumber(currentValue, locale, effectiveDecimals, currency),
-      [currentValue, locale, effectiveDecimals, currency],
-    );
-    // v0.3.0 F_B3: derive display from props/state without setState during
-    // render OR in a useEffect. `typedDisplay` holds the user-typed raw
-    // string WHILE the user is interacting (focus/change); when it's
-    // `null`, the pure-derived `formatted` value wins — which means any
-    // controlled-value change from outside is reflected automatically.
-    // On blur we reset typedDisplay to `null` so the library-formatted
-    // string takes over. React's own docs recommend pure derivation for
-    // "mirror a prop" cases: https://react.dev/learn/you-might-not-need-an-effect
-    // Previous implementations either setState during render (anti-pattern)
-    // or setState inside useEffect (flagged by react-hooks/set-state-in-effect).
-    const [typedDisplay, setTypedDisplay] = useState<string | null>(null);
-    const display = typedDisplay ?? formatted;
+  // `display` mirrors what's shown in the input. It's a string because
+  // intermediate typed states may be unparseable (`-`, `1.`, `1.2.3`)
+  // and we don't want to lose the user's input mid-keystroke.
+  const formatted = useMemo(
+    () => formatNumber(currentValue, locale, effectiveDecimals, currency),
+    [currentValue, locale, effectiveDecimals, currency],
+  );
+  // v0.3.0 F_B3: derive display from props/state without setState during
+  // render OR in a useEffect. `typedDisplay` holds the user-typed raw
+  // string WHILE the user is interacting (focus/change); when it's
+  // `null`, the pure-derived `formatted` value wins — which means any
+  // controlled-value change from outside is reflected automatically.
+  // On blur we reset typedDisplay to `null` so the library-formatted
+  // string takes over. React's own docs recommend pure derivation for
+  // "mirror a prop" cases: https://react.dev/learn/you-might-not-need-an-effect
+  // Previous implementations either setState during render (anti-pattern)
+  // or setState inside useEffect (flagged by react-hooks/set-state-in-effect).
+  const [typedDisplay, setTypedDisplay] = useState<string | null>(null);
+  const display = typedDisplay ?? formatted;
 
-    const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-      const raw = event.target.value;
-      setTypedDisplay(raw);
-      const parsed = parseNumber(raw);
-      if (!isControlled) setUncontrolledValue(parsed);
-      onValueChange?.(parsed);
-    };
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const raw = event.target.value;
+    setTypedDisplay(raw);
+    const parsed = parseNumber(raw);
+    if (!isControlled) setUncontrolledValue(parsed);
+    onValueChange?.(parsed);
+  };
 
-    const handleFocus = (event: React.FocusEvent<HTMLInputElement>) => {
-      // Show raw value (no formatting) so user can edit cleanly. Use
-      // toFixed instead of String() to avoid scientific notation
-      // (e.g., 1e+21) for very large magnitudes — that notation would
-      // confuse parseNumber on blur and silently corrupt the value.
-      // toFixed handles the magnitude range typical for form inputs
-      // (currency, counts, measurements, percentages).
-      if (currentValue !== undefined) {
-        setTypedDisplay(currentValue.toFixed(effectiveDecimals));
-      }
-      onFocusProp?.(event);
-    };
+  const handleFocus = (event: React.FocusEvent<HTMLInputElement>) => {
+    // Show raw value (no formatting) so user can edit cleanly. Use
+    // toFixed instead of String() to avoid scientific notation
+    // (e.g., 1e+21) for very large magnitudes — that notation would
+    // confuse parseNumber on blur and silently corrupt the value.
+    // toFixed handles the magnitude range typical for form inputs
+    // (currency, counts, measurements, percentages).
+    if (currentValue !== undefined) {
+      setTypedDisplay(currentValue.toFixed(effectiveDecimals));
+    }
+    onFocusProp?.(event);
+  };
 
-    const handleBlur = (event: React.FocusEvent<HTMLInputElement>) => {
-      // Clamp + reformat on blur.
-      const parsed = parseNumber(display);
-      if (parsed !== undefined) {
-        const clamped = clampNumber(parsed, min, max);
-        if (!isControlled) setUncontrolledValue(clamped);
-        if (clamped !== currentValue) onValueChange?.(clamped);
-        // Clear typedDisplay so the derived `display` falls back to the
-        // library-formatted value. This guarantees the blur view always
-        // matches the latest `formatted` (which reflects the clamped
-        // controlled value after React re-renders).
-        setTypedDisplay(null);
-      } else {
-        setTypedDisplay('');
-        if (!isControlled) setUncontrolledValue(undefined);
-        if (currentValue !== undefined) onValueChange?.(undefined);
-      }
-      onBlurProp?.(event);
-    };
+  const handleBlur = (event: React.FocusEvent<HTMLInputElement>) => {
+    // Clamp + reformat on blur.
+    const parsed = parseNumber(display);
+    if (parsed !== undefined) {
+      const clamped = clampNumber(parsed, min, max);
+      if (!isControlled) setUncontrolledValue(clamped);
+      if (clamped !== currentValue) onValueChange?.(clamped);
+      // Clear typedDisplay so the derived `display` falls back to the
+      // library-formatted value. This guarantees the blur view always
+      // matches the latest `formatted` (which reflects the clamped
+      // controlled value after React re-renders).
+      setTypedDisplay(null);
+    } else {
+      setTypedDisplay('');
+      if (!isControlled) setUncontrolledValue(undefined);
+      if (currentValue !== undefined) onValueChange?.(undefined);
+    }
+    onBlurProp?.(event);
+  };
 
-    const showSuffix = suffix && !currency;
+  const showSuffix = suffix && !currency;
 
-    return (
-      <div className={cn(styles.field, disabled && styles.fieldDisabled, className)}>
-        <Label
-          htmlFor={inputId}
+  return (
+    <div className={cn(styles.field, disabled && styles.fieldDisabled, className)}>
+      <Label
+        htmlFor={inputId}
+        required={required}
+        disabled={disabled}
+        className={hideLabel ? styles.srOnly : undefined}
+      >
+        {label}
+      </Label>
+      <div
+        className={cn(
+          styles.inputWrap,
+          error && styles.inputWrapError,
+          showSuffix && styles.hasSuffix,
+        )}
+      >
+        <input
+          ref={ref}
+          id={inputId}
+          name={name}
+          type="text"
+          inputMode="decimal"
           required={required}
           disabled={disabled}
-          className={hideLabel ? styles.srOnly : undefined}
-        >
-          {label}
-        </Label>
-        <div
-          className={cn(
-            styles.inputWrap,
-            error && styles.inputWrapError,
-            showSuffix && styles.hasSuffix,
-          )}
-        >
-          <input
-            ref={ref}
-            id={inputId}
-            name={name}
-            type="text"
-            inputMode="decimal"
-            required={required}
-            disabled={disabled}
-            value={display}
-            onChange={handleChange}
-            onFocus={handleFocus}
-            onBlur={handleBlur}
-            aria-invalid={error ? true : undefined}
-            aria-describedby={describedBy}
-            className={styles.input}
-            {...rest}
-          />
-          {showSuffix ? (
-            <span className={styles.addonText} data-side="end">
-              {suffix}
-            </span>
-          ) : null}
-        </div>
-        {error ? (
-          <p id={errorId} className={styles.error} role="alert">
-            {error}
-          </p>
-        ) : helperText ? (
-          <p id={helperId} className={styles.helper}>
-            {helperText}
-          </p>
+          value={display}
+          onChange={handleChange}
+          onFocus={handleFocus}
+          onBlur={handleBlur}
+          aria-invalid={error ? true : undefined}
+          aria-describedby={describedBy}
+          className={styles.input}
+          {...rest}
+        />
+        {showSuffix ? (
+          <span className={styles.addonText} data-side="end">
+            {suffix}
+          </span>
         ) : null}
       </div>
-    );
-  },
-);
+      {error ? (
+        <p id={errorId} className={styles.error} role="alert">
+          {error}
+        </p>
+      ) : helperText ? (
+        <p id={helperId} className={styles.helper}>
+          {helperText}
+        </p>
+      ) : null}
+    </div>
+  );
+});

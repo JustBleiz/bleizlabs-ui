@@ -121,13 +121,9 @@ test.describe('Calendar layout-bounds — popover shrink-wrap (0.18.0 BUGFIX)', 
     expect(box!.h).toBeLessThan(400);
   });
 
-  test('CAL-LB07 — sanity: popover dimensions sane across all 4 components', async ({
-    page,
-  }) => {
+  test('CAL-LB07 — sanity: popover dimensions sane across all 4 components', async ({ page }) => {
     // Aggregate sanity — visit each, ensure no dialog exceeds MAX_POPOVER_W/H.
-    const routes = [
-      ['/components/date-picker', 'section >> nth=0 >> getByLabel=Open calendar'],
-    ];
+    const routes = [['/components/date-picker', 'section >> nth=0 >> getByLabel=Open calendar']];
     void routes; // helper not used — explicit asserts above cover routes
     // Quick smoke: DateRangePicker form integration case (required + 2 hidden inputs)
     await page.goto('/components/date-range-picker');

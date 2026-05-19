@@ -23,7 +23,9 @@ test('role="combobox" + aria-autocomplete="list" + aria-expanded on input', asyn
   expect(controls).toBeTruthy();
 });
 
-test('Listbox role="listbox" + aria-labelledby={inputId} + aria-multiselectable=false', async ({ page }) => {
+test('Listbox role="listbox" + aria-labelledby={inputId} + aria-multiselectable=false', async ({
+  page,
+}) => {
   await page.goto('/components/combobox');
   const input = page.getByRole('combobox');
   await input.click();

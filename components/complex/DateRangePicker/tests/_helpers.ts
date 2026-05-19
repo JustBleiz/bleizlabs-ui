@@ -46,7 +46,7 @@ export function cellByIso(scope: Locator | Page, iso: string): Locator {
  */
 export async function clickCell(scope: Locator | Page, iso: string): Promise<boolean> {
   const cell = cellByIso(scope, iso);
-  if (await cell.count() === 0) return false;
+  if ((await cell.count()) === 0) return false;
   await cell.dispatchEvent('click');
   return true;
 }

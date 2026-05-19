@@ -40,10 +40,9 @@ export default function InputOTPPlayground() {
           InputOTP
         </Heading>
         <Text variant="lead" color="muted">
-          One-time password and verification code entry. A single semantic
-          input is rendered underneath decorative slot cells, so screen readers
-          see one field and native SMS autofill works on iOS and Android out
-          of the box.
+          One-time password and verification code entry. A single semantic input is rendered
+          underneath decorative slot cells, so screen readers see one field and native SMS autofill
+          works on iOS and Android out of the box.
         </Text>
       </header>
 
@@ -54,8 +53,7 @@ export default function InputOTPPlayground() {
             1. Basic — 6-digit numeric (uncontrolled)
           </Heading>
           <Text variant="small" color="muted">
-            Auto-defaults to <code>maxLength</code> Slots when no children are
-            passed.
+            Auto-defaults to <code>maxLength</code> Slots when no children are passed.
           </Text>
         </header>
         <Stack gap={3}>
@@ -126,11 +124,7 @@ export default function InputOTPPlayground() {
             >
               Clear
             </Button>
-            <Button
-              size="sm"
-              variant="secondary"
-              onClick={() => setControlledValue('1234')}
-            >
+            <Button size="sm" variant="secondary" onClick={() => setControlledValue('1234')}>
               Set 1234
             </Button>
           </Inline>
@@ -158,8 +152,8 @@ export default function InputOTPPlayground() {
             4. Alphanumeric — license key style
           </Heading>
           <Text variant="small" color="muted">
-            <code>pattern=&quot;alphanumeric&quot;</code> accepts 0-9 A-Z a-z.
-            inputMode switches to <code>text</code>.
+            <code>pattern=&quot;alphanumeric&quot;</code> accepts 0-9 A-Z a-z. inputMode switches to{' '}
+            <code>text</code>.
           </Text>
         </header>
         <Stack gap={3}>
@@ -215,8 +209,7 @@ export default function InputOTPPlayground() {
             6. Disabled + Read-only
           </Heading>
           <Text variant="small" color="muted">
-            Disabled blocks focus + input; readOnly keeps focus but rejects
-            keystrokes.
+            Disabled blocks focus + input; readOnly keeps focus but rejects keystrokes.
           </Text>
         </header>
         <Stack gap={4}>
@@ -224,23 +217,13 @@ export default function InputOTPPlayground() {
             <Text variant="small" weight="semibold">
               Disabled
             </Text>
-            <InputOTP
-              maxLength={6}
-              defaultValue="123456"
-              disabled
-              aria-label="Disabled code"
-            />
+            <InputOTP maxLength={6} defaultValue="123456" disabled aria-label="Disabled code" />
           </Stack>
           <Stack gap={2}>
             <Text variant="small" weight="semibold">
               Read-only
             </Text>
-            <InputOTP
-              maxLength={6}
-              defaultValue="000000"
-              readOnly
-              aria-label="Read-only code"
-            />
+            <InputOTP maxLength={6} defaultValue="000000" readOnly aria-label="Read-only code" />
           </Stack>
         </Stack>
       </section>
@@ -252,18 +235,13 @@ export default function InputOTPPlayground() {
             7. Form participation
           </Heading>
           <Text variant="small" color="muted">
-            <code>name</code> prop enables native form submit. Required
-            validation handled by the browser.
+            <code>name</code> prop enables native form submit. Required validation handled by the
+            browser.
           </Text>
         </header>
         <form onSubmit={handleFormSubmit} className={styles.form}>
           <Stack gap={3}>
-            <InputOTP
-              maxLength={6}
-              name="verification"
-              required
-              aria-label="Verification code"
-            />
+            <InputOTP maxLength={6} name="verification" required aria-label="Verification code" />
             <Inline gap={2}>
               <Button type="submit" size="sm" variant="primary">
                 Verify
@@ -279,8 +257,7 @@ export default function InputOTPPlayground() {
             </Inline>
             {submittedCode !== null ? (
               <Text variant="small" color="muted">
-                Submitted:{' '}
-                <span className={styles.mono}>{submittedCode}</span>
+                Submitted: <span className={styles.mono}>{submittedCode}</span>
               </Text>
             ) : null}
           </Stack>
@@ -310,8 +287,7 @@ export default function InputOTPPlayground() {
               <code>ArrowLeft / ArrowRight / Home / End</code> — navigate
             </li>
             <li>
-              <code>Cmd/Ctrl+V</code> — paste &quot;123-456&quot; strips hyphen
-              + fills
+              <code>Cmd/Ctrl+V</code> — paste &quot;123-456&quot; strips hyphen + fills
             </li>
             <li>
               <code>Tab</code> — native tabstop exit

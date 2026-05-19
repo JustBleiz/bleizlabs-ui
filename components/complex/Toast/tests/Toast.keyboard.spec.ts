@@ -55,9 +55,7 @@ test.describe('Toast — keyboard interaction', () => {
     await expect(toast).toBeVisible();
   });
 
-  test('TST-R03 — action button activates via Enter + dismisses toast', async ({
-    page,
-  }) => {
+  test('TST-R03 — action button activates via Enter + dismisses toast', async ({ page }) => {
     const trigger = page.getByRole('button', { name: 'Show undo toast' });
     await trigger.click();
     const toast = page.getByRole('status').filter({ hasText: 'Message archived' });
@@ -69,9 +67,7 @@ test.describe('Toast — keyboard interaction', () => {
     // Action fires `toast.success('Restored')` + dismisses archived toast
     // (default `dismissOnClick: true`).
     await expect(toast).not.toBeVisible();
-    await expect(
-      page.getByRole('status').filter({ hasText: 'Restored' }),
-    ).toBeVisible();
+    await expect(page.getByRole('status').filter({ hasText: 'Restored' })).toBeVisible();
   });
 
   test('Close button (X) dismisses toast via keyboard', async ({ page }) => {

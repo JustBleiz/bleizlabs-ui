@@ -86,13 +86,7 @@ const VARIANT_CLASS: Record<AlertVariant, string> = {
 
 function DefaultCloseIcon() {
   return (
-    <svg
-      aria-hidden="true"
-      focusable="false"
-      viewBox="0 0 16 16"
-      width="16"
-      height="16"
-    >
+    <svg aria-hidden="true" focusable="false" viewBox="0 0 16 16" width="16" height="16">
       <path
         d="M4 4 L12 12 M12 4 L4 12"
         stroke="currentColor"
@@ -105,7 +99,7 @@ function DefaultCloseIcon() {
 
 export const Alert = forwardRef<HTMLDivElement, AlertProps>(function Alert(
   { variant, title, description, onClose, className, ...rest },
-  ref
+  ref,
 ) {
   const isCritical = variant === 'critical';
   const role = isCritical ? 'alert' : 'status';
@@ -126,9 +120,7 @@ export const Alert = forwardRef<HTMLDivElement, AlertProps>(function Alert(
     >
       <div className={styles.body}>
         <div className={styles.title}>{title}</div>
-        {description ? (
-          <div className={styles.description}>{description}</div>
-        ) : null}
+        {description ? <div className={styles.description}>{description}</div> : null}
       </div>
       {onClose ? (
         <button

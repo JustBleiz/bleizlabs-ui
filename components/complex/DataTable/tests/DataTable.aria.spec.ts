@@ -77,9 +77,7 @@ test.describe('DataTable — ARIA + accessibility tree', () => {
     // Section 4 — full-featured, has expandable
     const grids = allGrids(page);
     const fullGrid = grids.nth(3);
-    const expandBtn = fullGrid
-      .getByRole('button', { name: /Expand row|Collapse row/ })
-      .first();
+    const expandBtn = fullGrid.getByRole('button', { name: /Expand row|Collapse row/ }).first();
     await expandBtn.click();
     await page.waitForTimeout(100);
     // The row whose button we clicked is now aria-expanded="true"
@@ -87,9 +85,7 @@ test.describe('DataTable — ARIA + accessibility tree', () => {
     await expect(expandedRow.first()).toBeVisible();
   });
 
-  test('DT-A07 — aria-live polite region exists AND populates after sort', async ({
-    page,
-  }) => {
+  test('DT-A07 — aria-live polite region exists AND populates after sort', async ({ page }) => {
     const liveRegions = page.locator('[aria-live="polite"]');
     const count = await liveRegions.count();
     expect(count).toBeGreaterThanOrEqual(1);

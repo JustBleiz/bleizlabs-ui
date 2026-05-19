@@ -17,9 +17,7 @@ test.describe('Toolbar — focus management', () => {
     await page.goto('/components/toolbar');
   });
 
-  test('roving tabindex initial: first focusable item has tabindex=0', async ({
-    page,
-  }) => {
+  test('roving tabindex initial: first focusable item has tabindex=0', async ({ page }) => {
     const toolbar = page.getByRole('toolbar', { name: 'Document actions' });
     const newBtn = toolbar.getByRole('button', { name: 'New' });
     await expect(newBtn).toHaveAttribute('tabindex', '0');
@@ -66,15 +64,11 @@ test.describe('Toolbar — focus management', () => {
     // Focus should leave the toolbar — i.e., document.activeElement is no
     // longer one of the toolbar's items. We can check by asserting that
     // none of the toolbar's role="button" items have :focus.
-    const focusedInToolbar = await toolbar
-      .locator(':focus')
-      .count();
+    const focusedInToolbar = await toolbar.locator(':focus').count();
     expect(focusedInToolbar).toBe(0);
   });
 
-  test('re-entry via Tab lands on last-focused item (roving retention)', async ({
-    page,
-  }) => {
+  test('re-entry via Tab lands on last-focused item (roving retention)', async ({ page }) => {
     const toolbar = page.getByRole('toolbar', { name: 'Document actions' });
     const exportBtn = toolbar.getByRole('button', { name: 'Export' });
     // Move focus to Export inside toolbar
@@ -89,9 +83,7 @@ test.describe('Toolbar — focus management', () => {
 
   test('only ONE item has tabindex=0 at any time', async ({ page }) => {
     const toolbar = page.getByRole('toolbar', { name: 'Document actions' });
-    const tabbables = await toolbar
-      .locator('[tabindex="0"]')
-      .count();
+    const tabbables = await toolbar.locator('[tabindex="0"]').count();
     expect(tabbables).toBe(1);
   });
 });

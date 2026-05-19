@@ -29,10 +29,9 @@ export default function AlertDialogPlaygroundPage() {
           AlertDialog
         </Heading>
         <Text className={styles.intro}>
-          Blocking confirmation dialog for destructive or irreversible actions.
-          Requires an explicit Confirm or Cancel choice — overlay click and
-          Escape default to Cancel. Severity prop drives tone (info / warning /
-          critical) and the default confirm button style.
+          Blocking confirmation dialog for destructive or irreversible actions. Requires an explicit
+          Confirm or Cancel choice — overlay click and Escape default to Cancel. Severity prop
+          drives tone (info / warning / critical) and the default confirm button style.
         </Text>
         <div className={styles.counters}>
           <span data-testid="confirm-count">confirm: {confirmCount}</span>
@@ -48,10 +47,9 @@ export default function AlertDialogPlaygroundPage() {
           Basic alert (severity=warning)
         </Heading>
         <Text color="muted">
-          Default <code>severity=&quot;warning&quot;</code>. Initial focus on
-          Cancel (least destructive per APG). Escape calls{' '}
-          <code>onCancel</code>, not <code>onConfirm</code>. Overlay click
-          blocked (<code>closeOnOverlayClick=false</code> default).
+          Default <code>severity=&quot;warning&quot;</code>. Initial focus on Cancel (least
+          destructive per APG). Escape calls <code>onCancel</code>, not <code>onConfirm</code>.
+          Overlay click blocked (<code>closeOnOverlayClick=false</code> default).
         </Text>
 
         <div className={styles.row}>
@@ -83,9 +81,9 @@ export default function AlertDialogPlaygroundPage() {
           Critical alert (destructive)
         </Heading>
         <Text color="muted">
-          <code>severity=&quot;critical&quot;</code> — red border glow, confirm
-          variant inferred as <code>warning</code> (destructive button). Used
-          for irreversible operations (delete, purge, drop).
+          <code>severity=&quot;critical&quot;</code> — red border glow, confirm variant inferred as{' '}
+          <code>warning</code> (destructive button). Used for irreversible operations (delete,
+          purge, drop).
         </Text>
 
         <div className={styles.row}>
@@ -120,9 +118,9 @@ export default function AlertDialogPlaygroundPage() {
           Info alert (neutral)
         </Heading>
         <Text color="muted">
-          <code>severity=&quot;info&quot;</code> — blue border glow, confirm
-          variant inferred as <code>primary</code>. Used for confirmatory
-          non-destructive actions (proceed, acknowledge, continue).
+          <code>severity=&quot;info&quot;</code> — blue border glow, confirm variant inferred as{' '}
+          <code>primary</code>. Used for confirmatory non-destructive actions (proceed, acknowledge,
+          continue).
         </Text>
 
         <div className={styles.row}>
@@ -157,14 +155,12 @@ export default function AlertDialogPlaygroundPage() {
           Custom labels
         </Heading>
         <Text color="muted">
-          Both <code>cancelLabel</code> and <code>confirmLabel</code> accept
-          custom strings. Default Cancel label is &quot;Cancel&quot;.
+          Both <code>cancelLabel</code> and <code>confirmLabel</code> accept custom strings. Default
+          Cancel label is &quot;Cancel&quot;.
         </Text>
 
         <div className={styles.row}>
-          <Button onClick={() => setCustomLabelsOpen(true)}>
-            Open custom labels
-          </Button>
+          <Button onClick={() => setCustomLabelsOpen(true)}>Open custom labels</Button>
         </div>
 
         <AlertDialog
@@ -194,9 +190,9 @@ export default function AlertDialogPlaygroundPage() {
           Escape disabled
         </Heading>
         <Text color="muted">
-          <code>closeOnEscape=false</code> — user must make explicit button
-          choice. Use for critical security prompts where keyboard dismissal is
-          a footgun. Overlay click also blocked by default.
+          <code>closeOnEscape=false</code> — user must make explicit button choice. Use for critical
+          security prompts where keyboard dismissal is a footgun. Overlay click also blocked by
+          default.
         </Text>
 
         <div className={styles.row}>
@@ -233,9 +229,8 @@ export default function AlertDialogPlaygroundPage() {
           Size variants
         </Heading>
         <Text color="muted">
-          Three sizes: <code>sm</code> (360px), <code>md</code> (480px,
-          default), <code>lg</code> (600px). Narrower than Dialog because
-          alerts stay compact.
+          Three sizes: <code>sm</code> (360px), <code>md</code> (480px, default), <code>lg</code>{' '}
+          (600px). Narrower than Dialog because alerts stay compact.
         </Text>
 
         <div className={styles.row}>

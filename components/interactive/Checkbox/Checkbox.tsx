@@ -1,11 +1,6 @@
 'use client';
 
-import {
-  forwardRef,
-  useId,
-  type InputHTMLAttributes,
-  type ReactNode,
-} from 'react';
+import { forwardRef, useId, type InputHTMLAttributes, type ReactNode } from 'react';
 import { cn } from '../../utils/cn';
 import styles from './Checkbox.module.scss';
 
@@ -52,8 +47,10 @@ import styles from './Checkbox.module.scss';
  *   I accept the terms
  * </Checkbox>
  */
-export interface CheckboxProps
-  extends Omit<InputHTMLAttributes<HTMLInputElement>, 'type' | 'size'> {
+export interface CheckboxProps extends Omit<
+  InputHTMLAttributes<HTMLInputElement>,
+  'type' | 'size'
+> {
   /** Form field name. */
   name: string;
   /** Label content (clickable via wrapping `<label>`). */
@@ -64,72 +61,69 @@ export interface CheckboxProps
   helperText?: string;
 }
 
-export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
-  function Checkbox(
-    {
-      name,
-      children,
-      id,
-      className,
-      disabled,
-      error,
-      helperText,
-      required,
-      'aria-describedby': ariaDescribedByProp,
-      ...rest
-    },
-    ref,
-  ) {
-    const generatedId = useId();
-    const inputId = id ?? `${name}-${generatedId}`;
-    const descId = error || helperText ? `${inputId}-desc` : undefined;
-    const describedBy =
-      [ariaDescribedByProp, descId].filter(Boolean).join(' ') || undefined;
-    return (
-      <span className={cn(styles.field, className)}>
-        <label
-          htmlFor={inputId}
-          className={cn(styles.root, disabled && styles.disabled)}
-          data-disabled={disabled || undefined}
-        >
-          <input
-            ref={ref}
-            id={inputId}
-            name={name}
-            type="checkbox"
-            disabled={disabled}
-            required={required}
-            aria-required={required ? true : undefined}
-            aria-invalid={error ? true : undefined}
-            aria-describedby={describedBy}
-            className={styles.input}
-            {...rest}
-          />
-          <span aria-hidden="true" className={styles.box}>
-            <svg
-              viewBox="0 0 16 16"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              className={styles.check}
-            >
-              <path d="M3 8.5L6.5 12L13 4.5" />
-            </svg>
-          </span>
-          <span className={styles.label}>{children}</span>
-        </label>
-        {error ? (
-          <span id={descId} className={cn(styles.helper, styles.error)} role="alert">
-            {error}
-          </span>
-        ) : helperText ? (
-          <span id={descId} className={styles.helper}>
-            {helperText}
-          </span>
-        ) : null}
-      </span>
-    );
+export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(function Checkbox(
+  {
+    name,
+    children,
+    id,
+    className,
+    disabled,
+    error,
+    helperText,
+    required,
+    'aria-describedby': ariaDescribedByProp,
+    ...rest
   },
-);
+  ref,
+) {
+  const generatedId = useId();
+  const inputId = id ?? `${name}-${generatedId}`;
+  const descId = error || helperText ? `${inputId}-desc` : undefined;
+  const describedBy = [ariaDescribedByProp, descId].filter(Boolean).join(' ') || undefined;
+  return (
+    <span className={cn(styles.field, className)}>
+      <label
+        htmlFor={inputId}
+        className={cn(styles.root, disabled && styles.disabled)}
+        data-disabled={disabled || undefined}
+      >
+        <input
+          ref={ref}
+          id={inputId}
+          name={name}
+          type="checkbox"
+          disabled={disabled}
+          required={required}
+          aria-required={required ? true : undefined}
+          aria-invalid={error ? true : undefined}
+          aria-describedby={describedBy}
+          className={styles.input}
+          {...rest}
+        />
+        <span aria-hidden="true" className={styles.box}>
+          <svg
+            viewBox="0 0 16 16"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className={styles.check}
+          >
+            <path d="M3 8.5L6.5 12L13 4.5" />
+          </svg>
+        </span>
+        <span className={styles.label}>{children}</span>
+      </label>
+      {error ? (
+        <span id={descId} className={cn(styles.helper, styles.error)} role="alert">
+          {error}
+        </span>
+      ) : helperText ? (
+        <span id={descId} className={styles.helper}>
+          {helperText}
+        </span>
+      ) : null}
+    </span>
+  );
+});

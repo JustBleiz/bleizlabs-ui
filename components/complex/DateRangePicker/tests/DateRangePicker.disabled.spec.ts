@@ -24,7 +24,7 @@ test.describe('DateRangePicker — disabled dates', () => {
     await openPicker(picker);
     // 2026-05-02 is Saturday — should be disabled
     const sat = cellByIso(page, '2026-05-02');
-    if (await sat.count() === 0) {
+    if ((await sat.count()) === 0) {
       test.skip();
       return;
     }
@@ -36,7 +36,7 @@ test.describe('DateRangePicker — disabled dates', () => {
     const input = inputOf(picker);
     await openPicker(picker);
     const sat = cellByIso(page, '2026-05-02');
-    if (await sat.count() === 0) {
+    if ((await sat.count()) === 0) {
       test.skip();
       return;
     }
@@ -56,7 +56,7 @@ test.describe('DateRangePicker — disabled dates', () => {
     const friIso = '2026-05-08';
     const mon = cellByIso(page, monIso);
     const fri = cellByIso(page, friIso);
-    if (await mon.count() === 0 || await fri.count() === 0) {
+    if ((await mon.count()) === 0 || (await fri.count()) === 0) {
       test.skip();
       return;
     }
@@ -72,7 +72,7 @@ test.describe('DateRangePicker — disabled dates', () => {
     await openPicker(picker);
     // 2026-04-25 is before min=2026-05-01 — should be aria-disabled
     const outside = cellByIso(page, '2026-04-25');
-    if (await outside.count() === 0) {
+    if ((await outside.count()) === 0) {
       // Cell may not be rendered (showOutsideDays might hide); pass test trivially
       return;
     }

@@ -29,13 +29,7 @@ import styles from './Dot.module.scss';
  * <Dot color="error" pulse label="System offline" />
  * <Dot asChild color="brand"><time dateTime="2026-04-14">now</time></Dot>
  */
-export type DotColor =
-  | 'default'
-  | 'brand'
-  | 'success'
-  | 'warning'
-  | 'error'
-  | 'info';
+export type DotColor = 'default' | 'brand' | 'success' | 'warning' | 'error' | 'info';
 
 export type DotSize = 'xs' | 'sm' | 'md' | 'lg';
 
@@ -83,9 +77,7 @@ export const Dot = forwardRef<HTMLSpanElement, DotProps>(function Dot(
 ) {
   const Comp = asChild ? Slot : 'span';
 
-  const srLabel = label ? (
-    <span className={styles.srOnly}>{label}</span>
-  ) : null;
+  const srLabel = label ? <span className={styles.srOnly}>{label}</span> : null;
 
   return (
     <Comp

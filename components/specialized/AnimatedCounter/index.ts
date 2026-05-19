@@ -1,4 +1,1 @@
-export {
-  AnimatedCounter,
-  type AnimatedCounterProps,
-} from './AnimatedCounter';
+export { AnimatedCounter, type AnimatedCounterProps } from './AnimatedCounter';

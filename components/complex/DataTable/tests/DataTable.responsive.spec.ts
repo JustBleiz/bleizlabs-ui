@@ -16,9 +16,7 @@ test.describe('DataTable — responsive behavior', () => {
     await page.emulateMedia({ reducedMotion: 'reduce' });
   });
 
-  test('DT-R01 — desktop viewport renders tabular grid (role="grid")', async ({
-    page,
-  }) => {
+  test('DT-R01 — desktop viewport renders tabular grid (role="grid")', async ({ page }) => {
     await page.setViewportSize({ width: 1280, height: 800 });
     await page.goto('/components/data-table');
     const grid = allGrids(page).first();
@@ -43,9 +41,7 @@ test.describe('DataTable — responsive behavior', () => {
     expect(headerCount).toBe(0);
   });
 
-  test('DT-R03 — sticky header retains visibility after vertical scroll', async ({
-    page,
-  }) => {
+  test('DT-R03 — sticky header retains visibility after vertical scroll', async ({ page }) => {
     await page.setViewportSize({ width: 1280, height: 600 });
     await page.goto('/components/data-table');
     const grid = allGrids(page).nth(3); // full-featured stickyHeader
@@ -68,7 +64,9 @@ test.describe('DataTable — responsive behavior', () => {
     const grid = allGrids(page).nth(3); // full-featured has frozen left + right
     await grid.scrollIntoViewIfNeeded();
     // Find scroll container and scroll it horizontally
-    const scrollContainer = grid.locator('xpath=ancestor::div[contains(@class, "scrollContainer") or contains(@style, "overflow")][1]');
+    const scrollContainer = grid.locator(
+      'xpath=ancestor::div[contains(@class, "scrollContainer") or contains(@style, "overflow")][1]',
+    );
     const hasContainer = await scrollContainer.count();
     if (hasContainer > 0) {
       await scrollContainer.evaluate((el) => el.scrollBy(500, 0));

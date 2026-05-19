@@ -9,7 +9,9 @@ R14, R15, R16, R21, R23-R29 (remaining cases in keyboard/focus/aria specs).
 ```ts
 test('SL-R02 — React 19 refs: thumb ref clean (no warnings)', async ({ page }) => {
   const warnings: string[] = [];
-  page.on('console', (msg) => { if (msg.type() === 'warning') warnings.push(msg.text()); });
+  page.on('console', (msg) => {
+    if (msg.type() === 'warning') warnings.push(msg.text());
+  });
   await page.goto('/components/slider');
   await page.reload();
   expect(warnings.filter((w) => w.toLowerCase().includes('ref'))).toHaveLength(0);
@@ -17,7 +19,9 @@ test('SL-R02 — React 19 refs: thumb ref clean (no warnings)', async ({ page })
 
 test('SL-R03 — render-time prop sync (no setState-in-render warning)', async ({ page }) => {
   const warnings: string[] = [];
-  page.on('console', (msg) => { if (msg.type() === 'warning') warnings.push(msg.text()); });
+  page.on('console', (msg) => {
+    if (msg.type() === 'warning') warnings.push(msg.text());
+  });
   await page.goto('/components/slider?externalValue=1');
   await page.getByRole('button', { name: 'Change external value' }).click();
   await page.waitForTimeout(100);

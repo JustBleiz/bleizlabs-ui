@@ -75,8 +75,10 @@ export interface PaginationLabels {
   compact?: (current: number, total: number) => string;
 }
 
-export interface PaginationProps
-  extends Omit<HTMLAttributes<HTMLElement>, 'aria-label' | 'onChange'> {
+export interface PaginationProps extends Omit<
+  HTMLAttributes<HTMLElement>,
+  'aria-label' | 'onChange'
+> {
   /** Current active page (1-indexed). Clamped to `[1, totalPages]`. */
   currentPage: number;
   /** Total number of pages. `<= 1` renders nothing. */
@@ -144,133 +146,117 @@ function buildPageRange(
   }
 
   const middleRange = range(leftSibling, rightSibling);
-  return [
-    firstPage,
-    'ellipsis-left',
-    ...middleRange,
-    'ellipsis-right',
-    lastPage,
-  ];
+  return [firstPage, 'ellipsis-left', ...middleRange, 'ellipsis-right', lastPage];
 }
 
-export const Pagination = forwardRef<HTMLElement, PaginationProps>(
-  function Pagination(
-    {
-      currentPage,
-      totalPages,
-      onPageChange,
-      variant = 'full',
-      siblingCount = 1,
-      labels,
-      className,
-      ...rest
-    },
-    ref,
-  ) {
-    // v0.3.0 F_B9: merge translations with English defaults via `labels.nav`.
-    const L: Required<PaginationLabels> = {
-      ...DEFAULT_LABELS,
-      ...labels,
-    };
-    const safeCurrent = Math.max(1, Math.min(totalPages, currentPage));
+export const Pagination = forwardRef<HTMLElement, PaginationProps>(function Pagination(
+  {
+    currentPage,
+    totalPages,
+    onPageChange,
+    variant = 'full',
+    siblingCount = 1,
+    labels,
+    className,
+    ...rest
+  },
+  ref,
+) {
+  // v0.3.0 F_B9: merge translations with English defaults via `labels.nav`.
+  const L: Required<PaginationLabels> = {
+    ...DEFAULT_LABELS,
+    ...labels,
+  };
+  const safeCurrent = Math.max(1, Math.min(totalPages, currentPage));
 
-    const pageEntries = useMemo<PageEntry[]>(() => {
-      if (variant !== 'full') {
-        return [];
-      }
-      return buildPageRange(safeCurrent, totalPages, siblingCount);
-    }, [variant, safeCurrent, totalPages, siblingCount]);
-
-    if (totalPages <= 1) {
-      return null;
+  const pageEntries = useMemo<PageEntry[]>(() => {
+    if (variant !== 'full') {
+      return [];
     }
+    return buildPageRange(safeCurrent, totalPages, siblingCount);
+  }, [variant, safeCurrent, totalPages, siblingCount]);
 
-    const isFirst = safeCurrent === 1;
-    const isLast = safeCurrent === totalPages;
+  if (totalPages <= 1) {
+    return null;
+  }
 
-    const goTo = (page: number) => {
-      if (page < 1 || page > totalPages || page === safeCurrent) {
-        return;
-      }
-      onPageChange(page);
-    };
+  const isFirst = safeCurrent === 1;
+  const isLast = safeCurrent === totalPages;
 
-    return (
-      <nav
-        ref={ref}
-        aria-label={L.nav}
-        className={cn(
-          styles.root,
-          variant === 'compact' ? styles.variantCompact : styles.variantFull,
-          className,
-        )}
-        {...rest}
-      >
-        <ul role="list" className={styles.list}>
-          <li className={styles.item}>
-            <button
-              type="button"
-              className={styles.button}
-              aria-label={L.previous}
-              disabled={isFirst}
-              onClick={() => goTo(safeCurrent - 1)}
-            >
-              <span aria-hidden="true">‹</span>
-            </button>
-          </li>
+  const goTo = (page: number) => {
+    if (page < 1 || page > totalPages || page === safeCurrent) {
+      return;
+    }
+    onPageChange(page);
+  };
 
-          {variant === 'full' ? (
-            pageEntries.map((entry, index) => {
-              if (entry === 'ellipsis-left' || entry === 'ellipsis-right') {
-                return (
-                  <li
-                    key={`${entry}-${index}`}
-                    className={styles.item}
-                    aria-hidden="true"
-                  >
-                    <span className={styles.ellipsis}>…</span>
-                  </li>
-                );
-              }
+  return (
+    <nav
+      ref={ref}
+      aria-label={L.nav}
+      className={cn(
+        styles.root,
+        variant === 'compact' ? styles.variantCompact : styles.variantFull,
+        className,
+      )}
+      {...rest}
+    >
+      <ul role="list" className={styles.list}>
+        <li className={styles.item}>
+          <button
+            type="button"
+            className={styles.button}
+            aria-label={L.previous}
+            disabled={isFirst}
+            onClick={() => goTo(safeCurrent - 1)}
+          >
+            <span aria-hidden="true">‹</span>
+          </button>
+        </li>
 
-              const isActive = entry === safeCurrent;
+        {variant === 'full' ? (
+          pageEntries.map((entry, index) => {
+            if (entry === 'ellipsis-left' || entry === 'ellipsis-right') {
               return (
-                <li key={`page-${entry}`} className={styles.item}>
-                  <button
-                    type="button"
-                    className={cn(styles.button, isActive && styles.active)}
-                    aria-label={
-                      isActive ? L.pageCurrent(entry) : L.page(entry)
-                    }
-                    aria-current={isActive ? 'page' : undefined}
-                    onClick={() => goTo(entry)}
-                  >
-                    {entry}
-                  </button>
+                <li key={`${entry}-${index}`} className={styles.item} aria-hidden="true">
+                  <span className={styles.ellipsis}>…</span>
                 </li>
               );
-            })
-          ) : (
-            <li className={styles.item}>
-              <span className={styles.compactLabel}>
-                {L.compact(safeCurrent, totalPages)}
-              </span>
-            </li>
-          )}
+            }
 
+            const isActive = entry === safeCurrent;
+            return (
+              <li key={`page-${entry}`} className={styles.item}>
+                <button
+                  type="button"
+                  className={cn(styles.button, isActive && styles.active)}
+                  aria-label={isActive ? L.pageCurrent(entry) : L.page(entry)}
+                  aria-current={isActive ? 'page' : undefined}
+                  onClick={() => goTo(entry)}
+                >
+                  {entry}
+                </button>
+              </li>
+            );
+          })
+        ) : (
           <li className={styles.item}>
-            <button
-              type="button"
-              className={styles.button}
-              aria-label={L.next}
-              disabled={isLast}
-              onClick={() => goTo(safeCurrent + 1)}
-            >
-              <span aria-hidden="true">›</span>
-            </button>
+            <span className={styles.compactLabel}>{L.compact(safeCurrent, totalPages)}</span>
           </li>
-        </ul>
-      </nav>
-    );
-  },
-);
+        )}
+
+        <li className={styles.item}>
+          <button
+            type="button"
+            className={styles.button}
+            aria-label={L.next}
+            disabled={isLast}
+            onClick={() => goTo(safeCurrent + 1)}
+          >
+            <span aria-hidden="true">›</span>
+          </button>
+        </li>
+      </ul>
+    </nav>
+  );
+});

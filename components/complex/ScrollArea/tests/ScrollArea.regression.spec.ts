@@ -44,9 +44,7 @@ test.describe('ScrollArea — regression cases', () => {
     const viewport = basic.locator('div[tabindex="0"]').first();
     const scrollbar = basic.locator('[data-orientation="vertical"]').first();
     // Trigger scroll -> isScrolling=true -> data-visible='true'.
-    await viewport.evaluate((el) =>
-      el.scrollTo({ top: 100, behavior: 'instant' }),
-    );
+    await viewport.evaluate((el) => el.scrollTo({ top: 100, behavior: 'instant' }));
     // Dispatch a scroll event explicitly because programmatic scrollTo does
     // fire scroll but we want deterministic timing before the hide timer.
     await expect(scrollbar).toHaveAttribute('data-visible', 'true', {
@@ -57,15 +55,11 @@ test.describe('ScrollArea — regression cases', () => {
     await expect(scrollbar).not.toHaveAttribute('data-visible', 'true');
   });
 
-  test('SA-R11 — prefers-reduced-motion: track-click uses instant scroll', async ({
-    page,
-  }) => {
+  test('SA-R11 — prefers-reduced-motion: track-click uses instant scroll', async ({ page }) => {
     // reducedMotion set in beforeEach. Section 2 (always-visible scrollbar).
     const sections = page.locator('section');
     const always = sections.nth(1);
-    const scrollbar = always
-      .locator('[data-orientation="vertical"][data-visible="true"]')
-      .first();
+    const scrollbar = always.locator('[data-orientation="vertical"][data-visible="true"]').first();
     await scrollbar.scrollIntoViewIfNeeded();
     const viewport = always.locator('div[tabindex="0"]').first();
     const box = await scrollbar.boundingBox();
@@ -108,9 +102,7 @@ test.describe('ScrollArea — regression cases', () => {
     page.on('pageerror', (err) => warnings.push(err.message));
     await page.goto('/components/scroll-area');
     await page.reload();
-    const hydrationIssues = warnings.filter((w) =>
-      w.toLowerCase().includes('hydration'),
-    );
+    const hydrationIssues = warnings.filter((w) => w.toLowerCase().includes('hydration'));
     expect(hydrationIssues).toEqual([]);
   });
 
@@ -131,9 +123,7 @@ test.describe('ScrollArea — regression cases', () => {
     await expect(scrollbar).toHaveAttribute('data-visible', 'true');
   });
 
-  test('Explicit composition slot renders viewport + scrollbar + thumb', async ({
-    page,
-  }) => {
+  test('Explicit composition slot renders viewport + scrollbar + thumb', async ({ page }) => {
     // Section 8 — explicit composition. Viewport + vertical scrollbar +
     // thumb all render. Horizontal scrollbar is present in the JSX but
     // `shouldRender` returns false (no horizontal overflow at 960px max).

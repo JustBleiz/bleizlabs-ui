@@ -1,11 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import {
-  Calendar,
-  type CalendarDir,
-  type CalendarWeekStart,
-} from '@/components/complex/Calendar';
+import { Calendar, type CalendarDir, type CalendarWeekStart } from '@/components/complex/Calendar';
 import { Heading } from '@/components/typography/Heading';
 import { Text } from '@/components/typography/Text';
 import { Inline } from '@/components/layout/Inline';
@@ -39,11 +35,7 @@ export default function CalendarPlayground() {
 
   // Section 5 — disabled array
   const [arrayDisabled, setArrayDisabled] = useState<Date | null>(null);
-  const disabledDays = [
-    new Date(2026, 3, 10),
-    new Date(2026, 3, 11),
-    new Date(2026, 3, 12),
-  ];
+  const disabledDays = [new Date(2026, 3, 10), new Date(2026, 3, 11), new Date(2026, 3, 12)];
 
   // Section 6 — Polish locale
   const [polish, setPolish] = useState<Date | null>(new Date(2026, 3, 22));
@@ -67,10 +59,9 @@ export default function CalendarPlayground() {
           Calendar
         </Heading>
         <Text variant="lead" color="muted">
-          Single-date calendar grid with locale-aware day headers, 2D keyboard
-          navigation, and RTL support. All date math uses native{' '}
-          <code>Date</code> and <code>Intl.DateTimeFormat</code> — no date-fns,
-          no dayjs, no moment.
+          Single-date calendar grid with locale-aware day headers, 2D keyboard navigation, and RTL
+          support. All date math uses native <code>Date</code> and <code>Intl.DateTimeFormat</code>{' '}
+          — no date-fns, no dayjs, no moment.
         </Text>
         <Inline gap={2} wrap>
           <Badge color="success">APG /grid/</Badge>
@@ -89,8 +80,8 @@ export default function CalendarPlayground() {
         </Heading>
         <Text variant="body" color="muted">
           Default locale <code>en-US</code> (Sunday start). Click any date to select. Keyboard:
-          arrow keys move focus, Enter/Space selects, PageUp/Down = month, Shift+PageUp/Down =
-          year, Home/End = week bounds.
+          arrow keys move focus, Enter/Space selects, PageUp/Down = month, Shift+PageUp/Down = year,
+          Home/End = week bounds.
         </Text>
         <div className={styles.demo}>
           <Calendar />
@@ -187,8 +178,8 @@ export default function CalendarPlayground() {
           6. Polish locale (<code>pl-PL</code>) — Monday start
         </Heading>
         <Text variant="body" color="muted">
-          Month + weekday names from <code>Intl.DateTimeFormat(&apos;pl-PL&apos;)</code>. Week starts Monday
-          per ISO-8601 + locale detection.
+          Month + weekday names from <code>Intl.DateTimeFormat(&apos;pl-PL&apos;)</code>. Week
+          starts Monday per ISO-8601 + locale detection.
         </Text>
         <div className={styles.demo}>
           <Calendar value={polish} onValueChange={setPolish} locale="pl-PL" />
@@ -236,12 +227,7 @@ export default function CalendarPlayground() {
           days are hidden — cells remain for layout stability but empty content.
         </Text>
         <div className={styles.demo}>
-          <Calendar
-            value={fixed}
-            onValueChange={setFixed}
-            fixedWeeks
-            showOutsideDays={false}
-          />
+          <Calendar value={fixed} onValueChange={setFixed} fixedWeeks showOutsideDays={false} />
         </div>
       </section>
 

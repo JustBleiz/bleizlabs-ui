@@ -39,9 +39,7 @@ test.describe('DataTable — keyboard interactions', () => {
     expect(Number(focused)).toBe(Number(before) + 1);
   });
 
-  test('DT-K02 — ArrowDown moves focus to cell in next row, same column', async ({
-    page,
-  }) => {
+  test('DT-K02 — ArrowDown moves focus to cell in next row, same column', async ({ page }) => {
     const grid = allGrids(page).first();
     const firstCell = grid.locator('[role="gridcell"]').first();
     await firstCell.focus();
@@ -95,9 +93,7 @@ test.describe('DataTable — keyboard interactions', () => {
     expect(focused.col).toBe('1');
   });
 
-  test('DT-K06 — RTL ArrowLeft moves to NEXT cell (forward direction mirror)', async ({
-    page,
-  }) => {
+  test('DT-K06 — RTL ArrowLeft moves to NEXT cell (forward direction mirror)', async ({ page }) => {
     // Section 4 — full-featured with RTL toggle
     const rtlSwitch = page.getByRole('switch', { name: /RTL direction/i });
     await rtlSwitch.scrollIntoViewIfNeeded();
@@ -109,16 +105,12 @@ test.describe('DataTable — keyboard interactions', () => {
     await firstCell.focus();
     const before = await firstCell.getAttribute('aria-colindex');
     await page.keyboard.press('ArrowLeft');
-    const after = await page.evaluate(() =>
-      document.activeElement?.getAttribute('aria-colindex'),
-    );
+    const after = await page.evaluate(() => document.activeElement?.getAttribute('aria-colindex'));
     // RTL: ArrowLeft = forward = colindex + 1
     expect(Number(after)).toBe(Number(before) + 1);
   });
 
-  test('DT-K07 — Space toggles row selection when grid is selectable', async ({
-    page,
-  }) => {
+  test('DT-K07 — Space toggles row selection when grid is selectable', async ({ page }) => {
     // Section 3 — selection multiple
     const grids = allGrids(page);
     const selectionGrid = grids.nth(2);
@@ -148,17 +140,13 @@ test.describe('DataTable — keyboard interactions', () => {
     await expect(headerWithSort).toBeVisible();
   });
 
-  test('DT-K09 — Alt+ArrowRight passes through (does not change focus)', async ({
-    page,
-  }) => {
+  test('DT-K09 — Alt+ArrowRight passes through (does not change focus)', async ({ page }) => {
     const grid = allGrids(page).first();
     const firstCell = grid.locator('[role="gridcell"]').first();
     await firstCell.focus();
     const before = await firstCell.getAttribute('aria-colindex');
     await page.keyboard.press('Alt+ArrowRight');
-    const after = await page.evaluate(() =>
-      document.activeElement?.getAttribute('aria-colindex'),
-    );
+    const after = await page.evaluate(() => document.activeElement?.getAttribute('aria-colindex'));
     expect(after).toBe(before);
   });
 });

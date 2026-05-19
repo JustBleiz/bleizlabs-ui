@@ -35,12 +35,7 @@ import {
   type CSSProperties,
   type RefObject,
 } from 'react';
-import {
-  computePosition,
-  computeArrowPosition,
-  parsePlacement,
-  type Placement,
-} from './position';
+import { computePosition, computeArrowPosition, parsePlacement, type Placement } from './position';
 
 export interface UseFloatingArrowOption {
   /** Ref pointing at the rendered arrow DOM element. Hook reads offsetWidth/offsetHeight each update. */

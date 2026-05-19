@@ -25,9 +25,7 @@ test.describe('HoverCard — regression cases', () => {
     await expect(page.getByRole('dialog')).toBeVisible();
   });
 
-  test('HC-R02 — grace area: content pointer enter cancels close timer', async ({
-    page,
-  }) => {
+  test('HC-R02 — grace area: content pointer enter cancels close timer', async ({ page }) => {
     const trigger = page.getByRole('link', { name: '@jane' }).first();
     await trigger.hover();
     await page.waitForTimeout(800);
@@ -90,9 +88,7 @@ test.describe('HoverCard — regression cases', () => {
     await expect(page.getByRole('button', { name: /Force close/ })).toBeVisible();
   });
 
-  test('HC-R11 — placement data-placement attribute exposed on content', async ({
-    page,
-  }) => {
+  test('HC-R11 — placement data-placement attribute exposed on content', async ({ page }) => {
     const trigger = page.getByRole('link', { name: '@jane' }).first();
     await trigger.focus();
     const dialog = page.getByRole('dialog');

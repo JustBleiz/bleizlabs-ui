@@ -21,9 +21,7 @@ test.describe('Form — keyboard interactions (native form a11y)', () => {
     await page.goto('/components/form');
   });
 
-  test('Tab moves through fields in document order to submit button', async ({
-    page,
-  }) => {
+  test('Tab moves through fields in document order to submit button', async ({ page }) => {
     const emailInput = page.getByRole('textbox', { name: /^email$/i }).first();
     await emailInput.focus();
     await expect(emailInput).toBeFocused();
@@ -31,16 +29,12 @@ test.describe('Form — keyboard interactions (native form a11y)', () => {
     await page.keyboard.press('Tab');
     // Next focusable should be the submit button (Form section 1 has only
     // 1 input + submit).
-    const submit = page
-      .getByRole('button', { name: /^send$/i })
-      .first();
+    const submit = page.getByRole('button', { name: /^send$/i }).first();
     await expect(submit).toBeFocused();
   });
 
   test('Shift+Tab moves backward through fields', async ({ page }) => {
-    const submit = page
-      .getByRole('button', { name: /^send$/i })
-      .first();
+    const submit = page.getByRole('button', { name: /^send$/i }).first();
     await submit.focus();
     await expect(submit).toBeFocused();
 

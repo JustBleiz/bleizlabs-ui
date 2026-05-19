@@ -1,9 +1,4 @@
-import {
-  forwardRef,
-  type CSSProperties,
-  type HTMLAttributes,
-  type ReactNode,
-} from 'react';
+import { forwardRef, type CSSProperties, type HTMLAttributes, type ReactNode } from 'react';
 import { Slot } from '../../utils/Slot';
 import { cn } from '../../utils/cn';
 import styles from './AspectRatio.module.scss';
@@ -45,34 +40,20 @@ export interface AspectRatioProps extends HTMLAttributes<HTMLDivElement> {
   children?: ReactNode;
 }
 
-export const AspectRatio = forwardRef<HTMLDivElement, AspectRatioProps>(
-  function AspectRatio(
-    {
-      ratio = 16 / 9,
-      asChild = false,
-      className,
-      style,
-      children,
-      ...rest
-    },
-    ref,
-  ) {
-    const Comp = asChild ? Slot : 'div';
+export const AspectRatio = forwardRef<HTMLDivElement, AspectRatioProps>(function AspectRatio(
+  { ratio = 16 / 9, asChild = false, className, style, children, ...rest },
+  ref,
+) {
+  const Comp = asChild ? Slot : 'div';
 
-    const arStyle: CSSProperties = {
-      '--aspect-ratio': String(ratio),
-      ...style,
-    } as CSSProperties;
+  const arStyle: CSSProperties = {
+    '--aspect-ratio': String(ratio),
+    ...style,
+  } as CSSProperties;
 
-    return (
-      <Comp
-        ref={ref}
-        className={cn(styles.root, className)}
-        style={arStyle}
-        {...rest}
-      >
-        <span className={styles.inner}>{children}</span>
-      </Comp>
-    );
-  },
-);
+  return (
+    <Comp ref={ref} className={cn(styles.root, className)} style={arStyle} {...rest}>
+      <span className={styles.inner}>{children}</span>
+    </Comp>
+  );
+});

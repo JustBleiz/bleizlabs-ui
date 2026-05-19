@@ -37,9 +37,7 @@ test.describe('Sheet — focus management (APG dialog-modal)', () => {
     for (let i = 0; i < 10; i++) {
       await page.keyboard.press('Tab');
     }
-    await expect(
-      page.getByRole('button', { name: /open right sheet/i }),
-    ).not.toBeFocused();
+    await expect(page.getByRole('button', { name: /open right sheet/i })).not.toBeFocused();
   });
 
   test('Focus restores to trigger on close (Radix #1891)', async ({ page }) => {

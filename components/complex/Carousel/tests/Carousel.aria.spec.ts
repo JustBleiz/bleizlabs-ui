@@ -22,9 +22,7 @@ test.describe('Carousel — ARIA + accessibility tree', () => {
     await page.goto('/components/carousel');
   });
 
-  test('CAR-R08 — root has aria-roledescription="carousel" + aria-label', async ({
-    page,
-  }) => {
+  test('CAR-R08 — root has aria-roledescription="carousel" + aria-label', async ({ page }) => {
     const basic = page
       .locator('section')
       .filter({ has: page.getByRole('heading', { name: /Basic/ }) })
@@ -50,9 +48,7 @@ test.describe('Carousel — ARIA + accessibility tree', () => {
     await expect(firstSlide).toHaveAttribute('aria-label', /^\d+ of \d+$/);
   });
 
-  test('CAR-R10 — non-current slides get inert attribute (NOT aria-hidden)', async ({
-    page,
-  }) => {
+  test('CAR-R10 — non-current slides get inert attribute (NOT aria-hidden)', async ({ page }) => {
     const basic = page
       .locator('section')
       .filter({ has: page.getByRole('heading', { name: /Basic/ }) })
@@ -74,9 +70,7 @@ test.describe('Carousel — ARIA + accessibility tree', () => {
     }
   });
 
-  test('CAR-R11 — pause button aria-pressed synced with pause state', async ({
-    page,
-  }) => {
+  test('CAR-R11 — pause button aria-pressed synced with pause state', async ({ page }) => {
     const auto = page
       .locator('section')
       .filter({ has: page.getByRole('heading', { name: /Auto-rotate/ }) })
@@ -88,9 +82,7 @@ test.describe('Carousel — ARIA + accessibility tree', () => {
     await expect(playBtn).toHaveAttribute('aria-pressed', 'true');
   });
 
-  test('CAR-R12 — live region has role="status" + aria-live="polite"', async ({
-    page,
-  }) => {
+  test('CAR-R12 — live region has role="status" + aria-live="polite"', async ({ page }) => {
     // Live region is inside the Carousel root. Scope to first Carousel.
     const basic = page
       .locator('section')
@@ -101,9 +93,7 @@ test.describe('Carousel — ARIA + accessibility tree', () => {
     await expect(live).toHaveAttribute('aria-atomic', 'true');
   });
 
-  test('CarouselPrev + CarouselNext have aria-controls linking to viewport', async ({
-    page,
-  }) => {
+  test('CarouselPrev + CarouselNext have aria-controls linking to viewport', async ({ page }) => {
     const basic = page
       .locator('section')
       .filter({ has: page.getByRole('heading', { name: /Basic/ }) })
@@ -119,9 +109,7 @@ test.describe('Carousel — ARIA + accessibility tree', () => {
     await expect(viewport).toBeVisible();
   });
 
-  test('Prev is aria-disabled at first slide (no loop); Next at last slide', async ({
-    page,
-  }) => {
+  test('Prev is aria-disabled at first slide (no loop); Next at last slide', async ({ page }) => {
     const basic = page
       .locator('section')
       .filter({ has: page.getByRole('heading', { name: /Basic/ }) })
@@ -168,9 +156,7 @@ test.describe('Carousel — ARIA + accessibility tree', () => {
     expect(results.violations).toEqual([]);
   });
 
-  test('axe-core zero violations — after navigating to second slide', async ({
-    page,
-  }) => {
+  test('axe-core zero violations — after navigating to second slide', async ({ page }) => {
     const basic = page
       .locator('section')
       .filter({ has: page.getByRole('heading', { name: /Basic/ }) })

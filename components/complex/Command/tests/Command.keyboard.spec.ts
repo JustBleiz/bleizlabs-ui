@@ -21,9 +21,7 @@ test.describe('Command — keyboard interactions', () => {
     await page.goto('/components/command');
   });
 
-  test('CMD-R01 — ArrowDown/ArrowUp navigate filtered items', async ({
-    page,
-  }) => {
+  test('CMD-R01 — ArrowDown/ArrowUp navigate filtered items', async ({ page }) => {
     await page.getByRole('button', { name: 'Open palette' }).click();
     const dialog = page.getByRole('dialog');
     const input = dialog.getByRole('combobox');
@@ -56,9 +54,7 @@ test.describe('Command — keyboard interactions', () => {
     await expect(page.getByRole('dialog')).toHaveCount(0);
   });
 
-  test('CMD-R03 — Escape closes palette + restores focus to trigger', async ({
-    page,
-  }) => {
+  test('CMD-R03 — Escape closes palette + restores focus to trigger', async ({ page }) => {
     const triggerBtn = page.getByRole('button', { name: 'Open palette' });
     await triggerBtn.click();
     const input = page.getByRole('combobox');
@@ -98,9 +94,7 @@ test.describe('Command — keyboard interactions', () => {
     await expect(first).toHaveAttribute('aria-selected', 'true');
   });
 
-  test('Typing filters the listbox live (substring default)', async ({
-    page,
-  }) => {
+  test('Typing filters the listbox live (substring default)', async ({ page }) => {
     // idx 2 — city picker
     await page.getByRole('button', { name: 'Open city picker' }).click();
     const dialog = page.getByRole('dialog');
@@ -111,9 +105,7 @@ test.describe('Command — keyboard interactions', () => {
     await expect(options.first()).toContainText(/Paris/i);
   });
 
-  test('Disabled item is never aria-selected when filtered', async ({
-    page,
-  }) => {
+  test('Disabled item is never aria-selected when filtered', async ({ page }) => {
     // idx 1 — Cut (disabled) filter test
     await page.getByRole('button', { name: 'Open grouped palette' }).click();
     const dialog = page.getByRole('dialog');
@@ -139,18 +131,15 @@ test.describe('Command — keyboard interactions', () => {
     await expect(page.getByRole('dialog')).toHaveCount(0);
   });
 
-  test.skip(
-    'CMD-R17 — IME composition guard [PLAYWRIGHT-DEP: synthetic CompositionEvent does not traverse React event delegation reliably in Chromium; composition guard verified in source (Command.tsx:644 + 645 keyCode 229 check)]',
-    async () => {
-      // Previously passed because commitHighlighted had a listener-race bug
-      // (E142 L4 F8). Now that commit works correctly via direct onSelect
-      // dispatch, the test fails under `el.dispatchEvent(new CompositionEvent(...))`
-      // because React's synthetic event delegation does not reliably fire
-      // `onCompositionStart` for script-dispatched CompositionEvent objects
-      // (real IME events set internal flags React expects). The guard
-      // itself is verified by two independent checks in handleKeyDown:
-      // `isComposingRef.current` AND `event.keyCode === 229` / `key === 'Process'`.
-      // A real IME integration test belongs in a manual NVDA/VoiceOver sweep.
-    },
-  );
+  test.skip('CMD-R17 — IME composition guard [PLAYWRIGHT-DEP: synthetic CompositionEvent does not traverse React event delegation reliably in Chromium; composition guard verified in source (Command.tsx:644 + 645 keyCode 229 check)]', async () => {
+    // Previously passed because commitHighlighted had a listener-race bug
+    // (E142 L4 F8). Now that commit works correctly via direct onSelect
+    // dispatch, the test fails under `el.dispatchEvent(new CompositionEvent(...))`
+    // because React's synthetic event delegation does not reliably fire
+    // `onCompositionStart` for script-dispatched CompositionEvent objects
+    // (real IME events set internal flags React expects). The guard
+    // itself is verified by two independent checks in handleKeyDown:
+    // `isComposingRef.current` AND `event.keyCode === 229` / `key === 'Process'`.
+    // A real IME integration test belongs in a manual NVDA/VoiceOver sweep.
+  });
 });

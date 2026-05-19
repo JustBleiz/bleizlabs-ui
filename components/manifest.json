@@ -1,22 +1,10 @@
 {
   "schemaVersion": "1",
-  "libVersion": "0.25.0",
-  "generatedAt": "2026-05-13T11:27:37.334Z",
+  "libVersion": "0.26.0",
+  "generatedAt": "2026-05-19T16:47:35.189Z",
   "categories": {
-    "layout": [
-      "Container",
-      "GridLayout",
-      "Inline",
-      "Section",
-      "Stack"
-    ],
-    "typography": [
-      "Anchor",
-      "Eyebrow",
-      "Heading",
-      "Mark",
-      "Text"
-    ],
+    "layout": ["Container", "GridLayout", "Inline", "Section", "Stack"],
+    "typography": ["Anchor", "Eyebrow", "Heading", "Mark", "Text"],
     "display": [
       "AspectRatio",
       "Avatar",
@@ -54,12 +42,7 @@
       "Toggle",
       "ToggleGroup"
     ],
-    "feedback": [
-      "Alert",
-      "Banner",
-      "Empty",
-      "Progress"
-    ],
+    "feedback": ["Alert", "Banner", "Empty", "Progress"],
     "specialized": [
       "AnimatedCounter",
       "AreaChart",
@@ -90,9 +73,7 @@
       "SectionDivider",
       "Timeline"
     ],
-    "presets": [
-      "FormSurface"
-    ],
+    "presets": ["FormSurface"],
     "complex": [
       "AlertDialog",
       "Calendar",
@@ -135,12 +116,8 @@
       "path": "layout/Container",
       "isClient": false,
       "summary": "Container — max-width centered wrapper layout atom.",
-      "exports": [
-        "Container"
-      ],
-      "types": [
-        "ContainerProps"
-      ],
+      "exports": ["Container"],
+      "types": ["ContainerProps"],
       "hooks": []
     },
     {
@@ -149,13 +126,8 @@
       "path": "layout/GridLayout",
       "isClient": false,
       "summary": "GridLayout — multi-column CSS Grid layout atom.",
-      "exports": [
-        "GridLayout"
-      ],
-      "types": [
-        "GridLayoutProps",
-        "GridLayoutResponsive"
-      ],
+      "exports": ["GridLayout"],
+      "types": ["GridLayoutProps", "GridLayoutResponsive"],
       "hooks": []
     },
     {
@@ -164,12 +136,8 @@
       "path": "layout/Inline",
       "isClient": false,
       "summary": "Inline — horizontal flex layout atom.",
-      "exports": [
-        "Inline"
-      ],
-      "types": [
-        "InlineProps"
-      ],
+      "exports": ["Inline"],
+      "types": ["InlineProps"],
       "hooks": []
     },
     {
@@ -178,12 +146,8 @@
       "path": "layout/Section",
       "isClient": false,
       "summary": "Section — full-width semantic band layout atom.",
-      "exports": [
-        "Section"
-      ],
-      "types": [
-        "SectionProps"
-      ],
+      "exports": ["Section"],
+      "types": ["SectionProps"],
       "hooks": []
     },
     {
@@ -192,12 +156,8 @@
       "path": "layout/Stack",
       "isClient": false,
       "summary": "Stack — vertical flex layout atom.",
-      "exports": [
-        "Stack"
-      ],
-      "types": [
-        "StackProps"
-      ],
+      "exports": ["Stack"],
+      "types": ["StackProps"],
       "hooks": []
     },
     {
@@ -206,12 +166,8 @@
       "path": "typography/Anchor",
       "isClient": false,
       "summary": "Anchor — inline body-text link atom (v0.4.0).",
-      "exports": [
-        "Anchor"
-      ],
-      "types": [
-        "AnchorProps"
-      ],
+      "exports": ["Anchor"],
+      "types": ["AnchorProps"],
       "hooks": []
     },
     {
@@ -220,13 +176,8 @@
       "path": "typography/Eyebrow",
       "isClient": false,
       "summary": "Eyebrow — small uppercase atelier label with optional numeric prefix.",
-      "exports": [
-        "Eyebrow"
-      ],
-      "types": [
-        "EyebrowProps",
-        "EyebrowTone"
-      ],
+      "exports": ["Eyebrow"],
+      "types": ["EyebrowProps", "EyebrowTone"],
       "hooks": []
     },
     {
@@ -235,14 +186,8 @@
       "path": "typography/Heading",
       "isClient": false,
       "summary": "Heading — semantic heading element with decoupled visual size.",
-      "exports": [
-        "Heading"
-      ],
-      "types": [
-        "HeadingLevel",
-        "HeadingProps",
-        "HeadingSize"
-      ],
+      "exports": ["Heading"],
+      "types": ["HeadingLevel", "HeadingProps", "HeadingSize"],
       "hooks": []
     },
     {
@@ -251,13 +196,8 @@
       "path": "typography/Mark",
       "isClient": false,
       "summary": "Mark — inline highlight atom.",
-      "exports": [
-        "Mark"
-      ],
-      "types": [
-        "MarkColor",
-        "MarkProps"
-      ],
+      "exports": ["Mark"],
+      "types": ["MarkColor", "MarkProps"],
       "hooks": []
     },
     {
@@ -266,13 +206,8 @@
       "path": "typography/Text",
       "isClient": false,
       "summary": "Text — universal body text component.",
-      "exports": [
-        "Text"
-      ],
-      "types": [
-        "TextProps",
-        "TextVariant"
-      ],
+      "exports": ["Text"],
+      "types": ["TextProps", "TextVariant"],
       "hooks": []
     },
     {
@@ -281,12 +216,8 @@
       "path": "display/AspectRatio",
       "isClient": false,
       "summary": "AspectRatio — media container with fixed aspect ratio (Phase 3 D8, Tier B).",
-      "exports": [
-        "AspectRatio"
-      ],
-      "types": [
-        "AspectRatioProps"
-      ],
+      "exports": ["AspectRatio"],
+      "types": ["AspectRatioProps"],
       "hooks": []
     },
     {
@@ -295,14 +226,8 @@
       "path": "display/Avatar",
       "isClient": false,
       "summary": "Avatar — user identity image with text-initials fallback (Phase 3 D5).",
-      "exports": [
-        "Avatar"
-      ],
-      "types": [
-        "AvatarProps",
-        "AvatarShape",
-        "AvatarSize"
-      ],
+      "exports": ["Avatar"],
+      "types": ["AvatarProps", "AvatarShape", "AvatarSize"],
       "hooks": []
     },
     {
@@ -311,13 +236,8 @@
       "path": "display/Badge",
       "isClient": false,
       "summary": "Badge — small status / category indicator (klocek atom).",
-      "exports": [
-        "Badge"
-      ],
-      "types": [
-        "BadgeColor",
-        "BadgeProps"
-      ],
+      "exports": ["Badge"],
+      "types": ["BadgeColor", "BadgeProps"],
       "hooks": []
     },
     {
@@ -326,13 +246,7 @@
       "path": "display/Card",
       "isClient": false,
       "summary": "Card — surface container atom (klocek display primitive).",
-      "exports": [
-        "Card",
-        "CardBody",
-        "CardFooter",
-        "CardHeader",
-        "CardSection"
-      ],
+      "exports": ["Card", "CardBody", "CardFooter", "CardHeader", "CardSection"],
       "types": [
         "CardBodyProps",
         "CardDirection",
@@ -351,12 +265,8 @@
       "path": "display/CodeBlock",
       "isClient": true,
       "summary": "CodeBlock — preformatted code surface with optional language badge, copy button, and line-number gutter.",
-      "exports": [
-        "CodeBlock"
-      ],
-      "types": [
-        "CodeBlockProps"
-      ],
+      "exports": ["CodeBlock"],
+      "types": ["CodeBlockProps"],
       "hooks": []
     },
     {
@@ -365,15 +275,8 @@
       "path": "display/EdgeBar",
       "isClient": false,
       "summary": "EdgeBar — absolute-positioned colored stripe along one edge of a `position: relative` parent.",
-      "exports": [
-        "EdgeBar"
-      ],
-      "types": [
-        "EdgeBarColor",
-        "EdgeBarPosition",
-        "EdgeBarProps",
-        "EdgeBarThickness"
-      ],
+      "exports": ["EdgeBar"],
+      "types": ["EdgeBarColor", "EdgeBarPosition", "EdgeBarProps", "EdgeBarThickness"],
       "hooks": []
     },
     {
@@ -382,14 +285,8 @@
       "path": "display/IconBox",
       "isClient": false,
       "summary": "IconBox — square icon container with bg + color variants (Phase 3 D4).",
-      "exports": [
-        "IconBox"
-      ],
-      "types": [
-        "IconBoxProps",
-        "IconBoxSize",
-        "IconBoxVariant"
-      ],
+      "exports": ["IconBox"],
+      "types": ["IconBoxProps", "IconBoxSize", "IconBoxVariant"],
       "hooks": []
     },
     {
@@ -398,15 +295,8 @@
       "path": "display/KpiValue",
       "isClient": false,
       "summary": "KpiValue — universal large-number metric display molecule (Server Component since v0.7.0; merged with PercentValue…",
-      "exports": [
-        "KpiValue",
-        "KpiValueAnimated"
-      ],
-      "types": [
-        "KpiTrendDirection",
-        "KpiValueAnimatedProps",
-        "KpiValueProps"
-      ],
+      "exports": ["KpiValue", "KpiValueAnimated"],
+      "types": ["KpiTrendDirection", "KpiValueAnimatedProps", "KpiValueProps"],
       "hooks": []
     },
     {
@@ -415,13 +305,8 @@
       "path": "display/Reveal",
       "isClient": true,
       "summary": "Reveal — scroll-triggered IntersectionObserver gate atom (Phase 3 D9, Tier B).",
-      "exports": [
-        "Reveal"
-      ],
-      "types": [
-        "RevealProps",
-        "RevealTag"
-      ],
+      "exports": ["Reveal"],
+      "types": ["RevealProps", "RevealTag"],
       "hooks": []
     },
     {
@@ -430,14 +315,8 @@
       "path": "display/Separator",
       "isClient": false,
       "summary": "Separator — divider line atom (Phase 3 D3, ex Divider per D24 rename).",
-      "exports": [
-        "Separator"
-      ],
-      "types": [
-        "SeparatorOrientation",
-        "SeparatorProps",
-        "SeparatorVariant"
-      ],
+      "exports": ["Separator"],
+      "types": ["SeparatorOrientation", "SeparatorProps", "SeparatorVariant"],
       "hooks": []
     },
     {
@@ -446,14 +325,8 @@
       "path": "display/Skeleton",
       "isClient": false,
       "summary": "Skeleton — loading placeholder atom (Phase 3 D6).",
-      "exports": [
-        "Skeleton"
-      ],
-      "types": [
-        "SkeletonAnimation",
-        "SkeletonProps",
-        "SkeletonVariant"
-      ],
+      "exports": ["Skeleton"],
+      "types": ["SkeletonAnimation", "SkeletonProps", "SkeletonVariant"],
       "hooks": []
     },
     {
@@ -462,14 +335,8 @@
       "path": "display/Spinner",
       "isClient": false,
       "summary": "Spinner — inline loading indicator (Phase 3 D7).",
-      "exports": [
-        "Spinner"
-      ],
-      "types": [
-        "SpinnerColor",
-        "SpinnerProps",
-        "SpinnerSize"
-      ],
+      "exports": ["Spinner"],
+      "types": ["SpinnerColor", "SpinnerProps", "SpinnerSize"],
       "hooks": []
     },
     {
@@ -478,14 +345,7 @@
       "path": "display/Table",
       "isClient": false,
       "summary": "Table — semantic `<table>` primitive with base styling (Phase 11 CI23).",
-      "exports": [
-        "Table",
-        "TableBody",
-        "TableCell",
-        "TableFooter",
-        "TableHeader",
-        "TableRow"
-      ],
+      "exports": ["Table", "TableBody", "TableCell", "TableFooter", "TableHeader", "TableRow"],
       "types": [
         "TableBodyProps",
         "TableCellAlign",
@@ -503,12 +363,8 @@
       "path": "interactive/Accordion",
       "isClient": true,
       "summary": "Accordion — disclosure panel with header trigger (Phase 4 I9).",
-      "exports": [
-        "Accordion"
-      ],
-      "types": [
-        "AccordionProps"
-      ],
+      "exports": ["Accordion"],
+      "types": ["AccordionProps"],
       "hooks": []
     },
     {
@@ -517,14 +373,8 @@
       "path": "interactive/Button",
       "isClient": false,
       "summary": "Button — primary interactive atom (Phase 4 I1).",
-      "exports": [
-        "Button"
-      ],
-      "types": [
-        "ButtonProps",
-        "ButtonSize",
-        "ButtonVariant"
-      ],
+      "exports": ["Button"],
+      "types": ["ButtonProps", "ButtonSize", "ButtonVariant"],
       "hooks": []
     },
     {
@@ -533,13 +383,8 @@
       "path": "interactive/ButtonGroup",
       "isClient": false,
       "summary": "ButtonGroup — joined row/column of related buttons (Phase 4 I1.5).",
-      "exports": [
-        "ButtonGroup"
-      ],
-      "types": [
-        "ButtonGroupOrientation",
-        "ButtonGroupProps"
-      ],
+      "exports": ["ButtonGroup"],
+      "types": ["ButtonGroupOrientation", "ButtonGroupProps"],
       "hooks": []
     },
     {
@@ -548,12 +393,8 @@
       "path": "interactive/Checkbox",
       "isClient": true,
       "summary": "Checkbox — boolean form input with custom styling (Phase 4 I4).",
-      "exports": [
-        "Checkbox"
-      ],
-      "types": [
-        "CheckboxProps"
-      ],
+      "exports": ["Checkbox"],
+      "types": ["CheckboxProps"],
       "hooks": []
     },
     {
@@ -562,13 +403,8 @@
       "path": "interactive/Input",
       "isClient": false,
       "summary": "Input — headless styled `<input>` wrapper (klocek atom, paradigm 1).",
-      "exports": [
-        "Input"
-      ],
-      "types": [
-        "InputProps",
-        "InputType"
-      ],
+      "exports": ["Input"],
+      "types": ["InputProps", "InputType"],
       "hooks": []
     },
     {
@@ -577,14 +413,8 @@
       "path": "interactive/InputGroup",
       "isClient": false,
       "summary": "InputGroup — multi-element form widget container (Phase 4 expansion E08, Layer 2 of D26).",
-      "exports": [
-        "InputGroup",
-        "InputGroupText"
-      ],
-      "types": [
-        "InputGroupProps",
-        "InputGroupTextProps"
-      ],
+      "exports": ["InputGroup", "InputGroupText"],
+      "types": ["InputGroupProps", "InputGroupTextProps"],
       "hooks": []
     },
     {
@@ -593,12 +423,8 @@
       "path": "interactive/Label",
       "isClient": false,
       "summary": "Label — form-coupled label element (Phase 4 I2.5, moved from Phase 2 in E05).",
-      "exports": [
-        "Label"
-      ],
-      "types": [
-        "LabelProps"
-      ],
+      "exports": ["Label"],
+      "types": ["LabelProps"],
       "hooks": []
     },
     {
@@ -607,17 +433,8 @@
       "path": "interactive/MaskedInput",
       "isClient": true,
       "summary": "MaskedInput — pattern-masked text input (Phase 4 expansion E08, Layer 3 of D26).",
-      "exports": [
-        "MASK_PRESETS",
-        "MaskedInput",
-        "applyMask",
-        "countPlaceholders",
-        "unmask"
-      ],
-      "types": [
-        "MaskPreset",
-        "MaskedInputProps"
-      ],
+      "exports": ["MASK_PRESETS", "MaskedInput", "applyMask", "countPlaceholders", "unmask"],
+      "types": ["MaskPreset", "MaskedInputProps"],
       "hooks": []
     },
     {
@@ -626,12 +443,8 @@
       "path": "interactive/NumberInput",
       "isClient": true,
       "summary": "NumberInput — locale-aware numeric form input (Phase 4 expansion E08, Layer 3 of D26).",
-      "exports": [
-        "NumberInput"
-      ],
-      "types": [
-        "NumberInputProps"
-      ],
+      "exports": ["NumberInput"],
+      "types": ["NumberInputProps"],
       "hooks": []
     },
     {
@@ -640,12 +453,8 @@
       "path": "interactive/PasswordInput",
       "isClient": true,
       "summary": "PasswordInput — password form input with show/hide toggle and optional strength meter (Phase 4 expansion E08, Layer 3…",
-      "exports": [
-        "PasswordInput"
-      ],
-      "types": [
-        "PasswordInputProps"
-      ],
+      "exports": ["PasswordInput"],
+      "types": ["PasswordInputProps"],
       "hooks": []
     },
     {
@@ -654,13 +463,8 @@
       "path": "interactive/PhoneInput",
       "isClient": true,
       "summary": "PhoneInput — telephone number input with mask presets (Phase 4 expansion E08, Layer 3 of D26).",
-      "exports": [
-        "PhoneInput"
-      ],
-      "types": [
-        "PhoneInputProps",
-        "PhonePreset"
-      ],
+      "exports": ["PhoneInput"],
+      "types": ["PhoneInputProps", "PhonePreset"],
       "hooks": []
     },
     {
@@ -669,17 +473,9 @@
       "path": "interactive/RadioGroup",
       "isClient": true,
       "summary": "RadioGroup — radio button group with shared name + value (Phase 4 I5).",
-      "exports": [
-        "RadioGroup",
-        "RadioGroupItem"
-      ],
-      "types": [
-        "RadioGroupItemProps",
-        "RadioGroupProps"
-      ],
-      "hooks": [
-        "useRadioGroupContext"
-      ]
+      "exports": ["RadioGroup", "RadioGroupItem"],
+      "types": ["RadioGroupItemProps", "RadioGroupProps"],
+      "hooks": ["useRadioGroupContext"]
     },
     {
       "family": "Rating",
@@ -687,13 +483,8 @@
       "path": "interactive/Rating",
       "isClient": true,
       "summary": "Rating — APG radiogroup star-rating input primitive.",
-      "exports": [
-        "Rating"
-      ],
-      "types": [
-        "RatingProps",
-        "RatingSize"
-      ],
+      "exports": ["Rating"],
+      "types": ["RatingProps", "RatingSize"],
       "hooks": []
     },
     {
@@ -702,13 +493,8 @@
       "path": "interactive/Switch",
       "isClient": true,
       "summary": "Switch — boolean toggle with animated thumb (Phase 4 I8, Tier A).",
-      "exports": [
-        "Switch"
-      ],
-      "types": [
-        "SwitchProps",
-        "SwitchSize"
-      ],
+      "exports": ["Switch"],
+      "types": ["SwitchProps", "SwitchSize"],
       "hooks": []
     },
     {
@@ -717,9 +503,7 @@
       "path": "interactive/TagsInput",
       "isClient": true,
       "summary": "TagsInput — freeform tag input (E01.2 of 0.19.0 Forms expansion).",
-      "exports": [
-        "TagsInput"
-      ],
+      "exports": ["TagsInput"],
       "types": [
         "TagRejection",
         "TagRejectionReason",
@@ -735,13 +519,8 @@
       "path": "interactive/Textarea",
       "isClient": true,
       "summary": "Textarea — multi-line text form input (Phase 4 I3).",
-      "exports": [
-        "Textarea"
-      ],
-      "types": [
-        "TextareaProps",
-        "TextareaResize"
-      ],
+      "exports": ["Textarea"],
+      "types": ["TextareaProps", "TextareaResize"],
       "hooks": []
     },
     {
@@ -750,12 +529,8 @@
       "path": "interactive/TextLink",
       "isClient": false,
       "summary": "TextLink — inline atelier link atom (v0.4.2).",
-      "exports": [
-        "TextLink"
-      ],
-      "types": [
-        "TextLinkProps"
-      ],
+      "exports": ["TextLink"],
+      "types": ["TextLinkProps"],
       "hooks": []
     },
     {
@@ -764,12 +539,8 @@
       "path": "interactive/TimeInput",
       "isClient": true,
       "summary": "TimeInput — accessible 24h ISO time field rendered as a `role=\"group\"` of `role=\"spinbutton\"` inputs (hours, minutes,…",
-      "exports": [
-        "TimeInput"
-      ],
-      "types": [
-        "TimeInputProps"
-      ],
+      "exports": ["TimeInput"],
+      "types": ["TimeInputProps"],
       "hooks": []
     },
     {
@@ -778,13 +549,8 @@
       "path": "interactive/Toggle",
       "isClient": true,
       "summary": "Toggle — single button with on/off state (Phase 4 I6).",
-      "exports": [
-        "Toggle"
-      ],
-      "types": [
-        "ToggleProps",
-        "ToggleSize"
-      ],
+      "exports": ["Toggle"],
+      "types": ["ToggleProps", "ToggleSize"],
       "hooks": []
     },
     {
@@ -793,13 +559,8 @@
       "path": "interactive/ToggleGroup",
       "isClient": true,
       "summary": "ToggleGroup — group of Toggle children with single or multiple selection (Phase 4 I7).",
-      "exports": [
-        "ToggleGroup"
-      ],
-      "types": [
-        "ToggleGroupOrientation",
-        "ToggleGroupProps"
-      ],
+      "exports": ["ToggleGroup"],
+      "types": ["ToggleGroupOrientation", "ToggleGroupProps"],
       "hooks": []
     },
     {
@@ -808,13 +569,8 @@
       "path": "feedback/Alert",
       "isClient": false,
       "summary": "Alert — semantic feedback notification with 4 variants (klocek molecule).",
-      "exports": [
-        "Alert"
-      ],
-      "types": [
-        "AlertProps",
-        "AlertVariant"
-      ],
+      "exports": ["Alert"],
+      "types": ["AlertProps", "AlertVariant"],
       "hooks": []
     },
     {
@@ -823,13 +579,8 @@
       "path": "feedback/Banner",
       "isClient": false,
       "summary": "Banner — page-wide notification primitive.",
-      "exports": [
-        "Banner"
-      ],
-      "types": [
-        "BannerProps",
-        "BannerTone"
-      ],
+      "exports": ["Banner"],
+      "types": ["BannerProps", "BannerTone"],
       "hooks": []
     },
     {
@@ -838,12 +589,8 @@
       "path": "feedback/Empty",
       "isClient": false,
       "summary": "Empty — placeholder for empty lists / zero-result screens (klocek molecule).",
-      "exports": [
-        "Empty"
-      ],
-      "types": [
-        "EmptyProps"
-      ],
+      "exports": ["Empty"],
+      "types": ["EmptyProps"],
       "hooks": []
     },
     {
@@ -852,13 +599,8 @@
       "path": "feedback/Progress",
       "isClient": false,
       "summary": "Progress — step indicator OR percent progress bar.",
-      "exports": [
-        "Progress"
-      ],
-      "types": [
-        "ProgressProps",
-        "ProgressStageDisplayMode"
-      ],
+      "exports": ["Progress"],
+      "types": ["ProgressProps", "ProgressStageDisplayMode"],
       "hooks": []
     },
     {
@@ -867,12 +609,8 @@
       "path": "specialized/AnimatedCounter",
       "isClient": true,
       "summary": "AnimatedCounter — count-up animation from 0 to a target value (Phase 6 P3).",
-      "exports": [
-        "AnimatedCounter"
-      ],
-      "types": [
-        "AnimatedCounterProps"
-      ],
+      "exports": ["AnimatedCounter"],
+      "types": ["AnimatedCounterProps"],
       "hooks": []
     },
     {
@@ -881,9 +619,7 @@
       "path": "specialized/AreaChart",
       "isClient": true,
       "summary": "AreaChart — multi-series SVG area chart (line + filled region below) with crosshair tooltip + keyboard data-point…",
-      "exports": [
-        "AreaChart"
-      ],
+      "exports": ["AreaChart"],
       "types": [
         "AreaChartAxisConfig",
         "AreaChartDatum",
@@ -900,14 +636,8 @@
       "path": "specialized/AvailabilityBar",
       "isClient": false,
       "summary": "AvailabilityBar — day-by-day status strip (Phase 6 P7, Tier B, server-safe).",
-      "exports": [
-        "AvailabilityBar"
-      ],
-      "types": [
-        "AvailabilityBarProps",
-        "AvailabilitySegment",
-        "AvailabilityStatus"
-      ],
+      "exports": ["AvailabilityBar"],
+      "types": ["AvailabilityBarProps", "AvailabilitySegment", "AvailabilityStatus"],
       "hooks": []
     },
     {
@@ -916,14 +646,8 @@
       "path": "specialized/BarChart",
       "isClient": false,
       "summary": "BarChart — universal single-series bar chart (Phase 6 P9, Tier B, server-safe).",
-      "exports": [
-        "BarChart"
-      ],
-      "types": [
-        "BarChartDatum",
-        "BarChartProps",
-        "BarChartTone"
-      ],
+      "exports": ["BarChart"],
+      "types": ["BarChartDatum", "BarChartProps", "BarChartTone"],
       "hooks": []
     },
     {
@@ -932,13 +656,8 @@
       "path": "specialized/Breadcrumb",
       "isClient": false,
       "summary": "Breadcrumb — semantic navigation trail (Phase 6 P4, tier A, server-safe).",
-      "exports": [
-        "Breadcrumb"
-      ],
-      "types": [
-        "BreadcrumbItem",
-        "BreadcrumbProps"
-      ],
+      "exports": ["Breadcrumb"],
+      "types": ["BreadcrumbItem", "BreadcrumbProps"],
       "hooks": []
     },
     {
@@ -947,14 +666,8 @@
       "path": "specialized/Dot",
       "isClient": false,
       "summary": "Dot — small round status indicator (Phase 6 P1, core, server-safe).",
-      "exports": [
-        "Dot"
-      ],
-      "types": [
-        "DotColor",
-        "DotProps",
-        "DotSize"
-      ],
+      "exports": ["Dot"],
+      "types": ["DotColor", "DotProps", "DotSize"],
       "hooks": []
     },
     {
@@ -963,13 +676,8 @@
       "path": "specialized/Kbd",
       "isClient": false,
       "summary": "Kbd — keyboard shortcut key display (Phase 6 P8, Tier B, server-safe).",
-      "exports": [
-        "Kbd"
-      ],
-      "types": [
-        "KbdProps",
-        "KbdSize"
-      ],
+      "exports": ["Kbd"],
+      "types": ["KbdProps", "KbdSize"],
       "hooks": []
     },
     {
@@ -978,9 +686,7 @@
       "path": "specialized/LineChart",
       "isClient": true,
       "summary": "LineChart — multi-series SVG line chart with crosshair tooltip + keyboard data-point navigation + sr-only `<table>`…",
-      "exports": [
-        "LineChart"
-      ],
+      "exports": ["LineChart"],
       "types": [
         "LineChartAxisConfig",
         "LineChartDatum",
@@ -997,12 +703,8 @@
       "path": "specialized/MetricBar",
       "isClient": false,
       "summary": "MetricBar — usage / capacity progress indicator (Phase 6 P2, core, server-safe).",
-      "exports": [
-        "MetricBar"
-      ],
-      "types": [
-        "MetricBarProps"
-      ],
+      "exports": ["MetricBar"],
+      "types": ["MetricBarProps"],
       "hooks": []
     },
     {
@@ -1011,13 +713,8 @@
       "path": "specialized/Pagination",
       "isClient": true,
       "summary": "Pagination — page navigation control (Phase 6 P5, tier A, `'use client'`).",
-      "exports": [
-        "Pagination"
-      ],
-      "types": [
-        "PaginationProps",
-        "PaginationVariant"
-      ],
+      "exports": ["Pagination"],
+      "types": ["PaginationProps", "PaginationVariant"],
       "hooks": []
     },
     {
@@ -1026,15 +723,8 @@
       "path": "specialized/PieChart",
       "isClient": true,
       "summary": "PieChart — SVG pie chart with optional donut variant, segment hover + keyboard navigation, segment percentage labels,…",
-      "exports": [
-        "PieChart"
-      ],
-      "types": [
-        "PieChartDatum",
-        "PieChartProps",
-        "PieChartTooltipContext",
-        "PieChartVariant"
-      ],
+      "exports": ["PieChart"],
+      "types": ["PieChartDatum", "PieChartProps", "PieChartTooltipContext", "PieChartVariant"],
       "hooks": []
     },
     {
@@ -1043,13 +733,8 @@
       "path": "specialized/Sparkline",
       "isClient": true,
       "summary": "Sparkline — tiny inline single-series chart (line + optional filled area) for embedding in `<Card>`, table cells, KPI…",
-      "exports": [
-        "Sparkline"
-      ],
-      "types": [
-        "SparklineInterpolation",
-        "SparklineProps"
-      ],
+      "exports": ["Sparkline"],
+      "types": ["SparklineInterpolation", "SparklineProps"],
       "hooks": []
     },
     {
@@ -1058,13 +743,8 @@
       "path": "specialized/ThemeToggle",
       "isClient": true,
       "summary": "ThemeToggle — single-button light/dark theme switcher (Phase 6 Specialized).",
-      "exports": [
-        "ThemeToggle"
-      ],
-      "types": [
-        "Theme",
-        "ThemeToggleProps"
-      ],
+      "exports": ["ThemeToggle"],
+      "types": ["Theme", "ThemeToggleProps"],
       "hooks": []
     },
     {
@@ -1073,14 +753,8 @@
       "path": "specialized/UsageDonut",
       "isClient": false,
       "summary": "UsageDonut — multi-segment SVG donut chart (Phase 6 P6, Tier B, server-safe).",
-      "exports": [
-        "UsageDonut"
-      ],
-      "types": [
-        "UsageDonutProps",
-        "UsageDonutSegment",
-        "UsageDonutSize"
-      ],
+      "exports": ["UsageDonut"],
+      "types": ["UsageDonutProps", "UsageDonutSegment", "UsageDonutSize"],
       "hooks": []
     },
     {
@@ -1089,13 +763,8 @@
       "path": "molecules/AccordionGroup",
       "isClient": true,
       "summary": "AccordionGroup — FAQ-style wrapper for multiple Accordion panels (Phase 7 M4).",
-      "exports": [
-        "AccordionGroup"
-      ],
-      "types": [
-        "AccordionGroupMode",
-        "AccordionGroupProps"
-      ],
+      "exports": ["AccordionGroup"],
+      "types": ["AccordionGroupMode", "AccordionGroupProps"],
       "hooks": []
     },
     {
@@ -1104,12 +773,8 @@
       "path": "molecules/AvatarGroup",
       "isClient": false,
       "summary": "AvatarGroup — stacked-avatar molecule with overflow chip.",
-      "exports": [
-        "AvatarGroup"
-      ],
-      "types": [
-        "AvatarGroupProps"
-      ],
+      "exports": ["AvatarGroup"],
+      "types": ["AvatarGroupProps"],
       "hooks": []
     },
     {
@@ -1118,12 +783,8 @@
       "path": "molecules/BackLink",
       "isClient": false,
       "summary": "BackLink — \"back to previous view\" navigation molecule (Phase 7 M2).",
-      "exports": [
-        "BackLink"
-      ],
-      "types": [
-        "BackLinkProps"
-      ],
+      "exports": ["BackLink"],
+      "types": ["BackLinkProps"],
       "hooks": []
     },
     {
@@ -1132,15 +793,8 @@
       "path": "molecules/BreakdownList",
       "isClient": false,
       "summary": "BreakdownList — universal labeled progress list (compound molecule).",
-      "exports": [
-        "BreakdownList",
-        "BreakdownListItem"
-      ],
-      "types": [
-        "BreakdownListItemProps",
-        "BreakdownListProps",
-        "BreakdownListTone"
-      ],
+      "exports": ["BreakdownList", "BreakdownListItem"],
+      "types": ["BreakdownListItemProps", "BreakdownListProps", "BreakdownListTone"],
       "hooks": []
     },
     {
@@ -1149,15 +803,8 @@
       "path": "molecules/Chip",
       "isClient": false,
       "summary": "Chip — pill-shaped filter chip with toggle (default) or display-only mode.",
-      "exports": [
-        "Chip"
-      ],
-      "types": [
-        "ChipDotColor",
-        "ChipProps",
-        "ChipSize",
-        "ChipTone"
-      ],
+      "exports": ["Chip"],
+      "types": ["ChipDotColor", "ChipProps", "ChipSize", "ChipTone"],
       "hooks": []
     },
     {
@@ -1166,12 +813,8 @@
       "path": "molecules/DataRow",
       "isClient": false,
       "summary": "DataRow — label/value pair molecule (Phase 7 M1, server-safe).",
-      "exports": [
-        "DataRow"
-      ],
-      "types": [
-        "DataRowProps"
-      ],
+      "exports": ["DataRow"],
+      "types": ["DataRowProps"],
       "hooks": []
     },
     {
@@ -1180,13 +823,8 @@
       "path": "molecules/FileChip",
       "isClient": false,
       "summary": "FileChip — file attachment chip (Phase 5 M7).",
-      "exports": [
-        "FileChip"
-      ],
-      "types": [
-        "FileChipProps",
-        "FileChipVariant"
-      ],
+      "exports": ["FileChip"],
+      "types": ["FileChipProps", "FileChipVariant"],
       "hooks": []
     },
     {
@@ -1195,12 +833,8 @@
       "path": "molecules/Header",
       "isClient": false,
       "summary": "Header — universal block-header molecule.",
-      "exports": [
-        "Header"
-      ],
-      "types": [
-        "HeaderProps"
-      ],
+      "exports": ["Header"],
+      "types": ["HeaderProps"],
       "hooks": []
     },
     {
@@ -1209,12 +843,8 @@
       "path": "molecules/IconButton",
       "isClient": false,
       "summary": "IconButton — accessibility-enforcing wrapper over `Button` with `iconOnly={true}`.",
-      "exports": [
-        "IconButton"
-      ],
-      "types": [
-        "IconButtonProps"
-      ],
+      "exports": ["IconButton"],
+      "types": ["IconButtonProps"],
       "hooks": []
     },
     {
@@ -1223,13 +853,8 @@
       "path": "molecules/MetricTile",
       "isClient": false,
       "summary": "MetricTile — universal metric tile molecule (label + value + optional icon + optional description).",
-      "exports": [
-        "MetricTile"
-      ],
-      "types": [
-        "MetricTileProps",
-        "MetricTileTone"
-      ],
+      "exports": ["MetricTile"],
+      "types": ["MetricTileProps", "MetricTileTone"],
       "hooks": []
     },
     {
@@ -1238,13 +863,8 @@
       "path": "molecules/SectionDivider",
       "isClient": false,
       "summary": "SectionDivider — labeled visual section break (Phase 7 M3, server-safe).",
-      "exports": [
-        "SectionDivider"
-      ],
-      "types": [
-        "SectionDividerAlign",
-        "SectionDividerProps"
-      ],
+      "exports": ["SectionDivider"],
+      "types": ["SectionDividerAlign", "SectionDividerProps"],
       "hooks": []
     },
     {
@@ -1253,17 +873,8 @@
       "path": "molecules/Timeline",
       "isClient": false,
       "summary": "Timeline — chronological event-list molecule (compound: Timeline + TimelineItem + TimelineMarker, flat exports).",
-      "exports": [
-        "Timeline",
-        "TimelineItem",
-        "TimelineMarker"
-      ],
-      "types": [
-        "TimelineItemProps",
-        "TimelineMarkerProps",
-        "TimelineMarkerTint",
-        "TimelineProps"
-      ],
+      "exports": ["Timeline", "TimelineItem", "TimelineMarker"],
+      "types": ["TimelineItemProps", "TimelineMarkerProps", "TimelineMarkerTint", "TimelineProps"],
       "hooks": []
     },
     {
@@ -1272,12 +883,8 @@
       "path": "presets/FormSurface",
       "isClient": false,
       "summary": "FormSurface — semantic `<form>` wrapper around a Card surface (klocek).",
-      "exports": [
-        "FormSurface"
-      ],
-      "types": [
-        "FormSurfaceProps"
-      ],
+      "exports": ["FormSurface"],
+      "types": ["FormSurfaceProps"],
       "hooks": []
     },
     {
@@ -1286,14 +893,8 @@
       "path": "complex/AlertDialog",
       "isClient": true,
       "summary": "AlertDialog — modal alert dialog composing portal + overlay + focus-trapped content (Phase 10 CI2, E16).",
-      "exports": [
-        "AlertDialog"
-      ],
-      "types": [
-        "AlertDialogProps",
-        "AlertDialogSeverity",
-        "AlertDialogSize"
-      ],
+      "exports": ["AlertDialog"],
+      "types": ["AlertDialogProps", "AlertDialogSeverity", "AlertDialogSize"],
       "hooks": []
     },
     {
@@ -1354,16 +955,8 @@
       "path": "complex/Collapsible",
       "isClient": true,
       "summary": "Collapsible — APG `disclosure` compound for single-panel show/hide.",
-      "exports": [
-        "Collapsible",
-        "CollapsibleContent",
-        "CollapsibleTrigger"
-      ],
-      "types": [
-        "CollapsibleContentProps",
-        "CollapsibleProps",
-        "CollapsibleTriggerProps"
-      ],
+      "exports": ["Collapsible", "CollapsibleContent", "CollapsibleTrigger"],
+      "types": ["CollapsibleContentProps", "CollapsibleProps", "CollapsibleTriggerProps"],
       "hooks": []
     },
     {
@@ -1429,9 +1022,7 @@
         "CommandSeparatorProps",
         "CommandShortcutProps"
       ],
-      "hooks": [
-        "useCommandShortcut"
-      ]
+      "hooks": ["useCommandShortcut"]
     },
     {
       "family": "ContextMenu",
@@ -1465,10 +1056,7 @@
       "path": "complex/DataTable",
       "isClient": true,
       "summary": "DataTable — generic-data grid primitive z sortowaniem, filtrowaniem, paginacją, selection, expansion + APG `/grid/`…",
-      "exports": [
-        "DEFAULT_DATA_TABLE_LABELS",
-        "DataTable"
-      ],
+      "exports": ["DEFAULT_DATA_TABLE_LABELS", "DataTable"],
       "types": [
         "CellContext",
         "ColumnDef",
@@ -1484,9 +1072,7 @@
         "SortDirection",
         "SortState"
       ],
-      "hooks": [
-        "useDataTableState"
-      ]
+      "hooks": ["useDataTableState"]
     },
     {
       "family": "DatePicker",
@@ -1494,16 +1080,8 @@
       "path": "complex/DatePicker",
       "isClient": true,
       "summary": "DatePicker — accessible single-date form field composed of an editable text input + embedded Calendar popup per…",
-      "exports": [
-        "DatePicker",
-        "DatePickerContent",
-        "DatePickerInput"
-      ],
-      "types": [
-        "DatePickerContentProps",
-        "DatePickerInputProps",
-        "DatePickerProps"
-      ],
+      "exports": ["DatePicker", "DatePickerContent", "DatePickerInput"],
+      "types": ["DatePickerContentProps", "DatePickerInputProps", "DatePickerProps"],
       "hooks": []
     },
     {
@@ -1512,11 +1090,7 @@
       "path": "complex/DateRangePicker",
       "isClient": true,
       "summary": "DateRangePicker — accessible date-range form field composed of an editable text input + embedded multi-month Calendar…",
-      "exports": [
-        "DateRangePicker",
-        "DateRangePickerContent",
-        "DateRangePickerInput"
-      ],
+      "exports": ["DateRangePicker", "DateRangePickerContent", "DateRangePickerInput"],
       "types": [
         "DateRange",
         "DateRangePickerContentProps",
@@ -1531,16 +1105,8 @@
       "path": "complex/DateTimePicker",
       "isClient": true,
       "summary": "DateTimePicker — accessible single-instant form field composed of an editable combobox input + popover containing a…",
-      "exports": [
-        "DateTimePicker",
-        "DateTimePickerContent",
-        "DateTimePickerInput"
-      ],
-      "types": [
-        "DateTimePickerContentProps",
-        "DateTimePickerInputProps",
-        "DateTimePickerProps"
-      ],
+      "exports": ["DateTimePicker", "DateTimePickerContent", "DateTimePickerInput"],
+      "types": ["DateTimePickerContentProps", "DateTimePickerInputProps", "DateTimePickerProps"],
       "hooks": []
     },
     {
@@ -1549,17 +1115,9 @@
       "path": "complex/Dialog",
       "isClient": true,
       "summary": "Dialog — modal dialog composing portal + overlay + focus-trapped content (Phase 10 CI1, E15, first Complex Interactive…",
-      "exports": [
-        "Dialog",
-        "escapeStack"
-      ],
-      "types": [
-        "DialogProps",
-        "DialogSize"
-      ],
-      "hooks": [
-        "useFocusTrap"
-      ]
+      "exports": ["Dialog", "escapeStack"],
+      "types": ["DialogProps", "DialogSize"],
+      "hooks": ["useFocusTrap"]
     },
     {
       "family": "Drawer",
@@ -1567,13 +1125,8 @@
       "path": "complex/Drawer",
       "isClient": true,
       "summary": "Drawer — bottom-positioned modal sheet composing portal + overlay + focus-trapped content (Phase 10 CI3, E17).",
-      "exports": [
-        "Drawer"
-      ],
-      "types": [
-        "DrawerProps",
-        "DrawerSize"
-      ],
+      "exports": ["Drawer"],
+      "types": ["DrawerProps", "DrawerSize"],
       "hooks": []
     },
     {
@@ -1633,15 +1186,8 @@
       "path": "complex/FileUpload",
       "isClient": true,
       "summary": "FileUpload — drop zone + native file input wrapper.",
-      "exports": [
-        "FileUpload"
-      ],
-      "types": [
-        "FileRejection",
-        "FileRejectionReason",
-        "FileUploadProps",
-        "FileUploadRenderProps"
-      ],
+      "exports": ["FileUpload"],
+      "types": ["FileRejection", "FileRejectionReason", "FileUploadProps", "FileUploadRenderProps"],
       "hooks": []
     },
     {
@@ -1650,21 +1196,9 @@
       "path": "complex/Form",
       "isClient": true,
       "summary": "Form — accessible form root with native Constraint Validation API.",
-      "exports": [
-        "Form",
-        "FormRoot",
-        "FormSubmit",
-        "snapshotValidity"
-      ],
-      "types": [
-        "FieldValidity",
-        "FormContextValue",
-        "FormProps",
-        "FormSubmitProps"
-      ],
-      "hooks": [
-        "useFormContext"
-      ]
+      "exports": ["Form", "FormRoot", "FormSubmit", "snapshotValidity"],
+      "types": ["FieldValidity", "FormContextValue", "FormProps", "FormSubmitProps"],
+      "hooks": ["useFormContext"]
     },
     {
       "family": "HoverCard",
@@ -1672,12 +1206,7 @@
       "path": "complex/HoverCard",
       "isClient": true,
       "summary": "HoverCard — hover-triggered floating surface for rich contextual content.",
-      "exports": [
-        "HoverCard",
-        "HoverCardContent",
-        "HoverCardProvider",
-        "HoverCardTrigger"
-      ],
+      "exports": ["HoverCard", "HoverCardContent", "HoverCardProvider", "HoverCardTrigger"],
       "types": [
         "HoverCardContentProps",
         "HoverCardPlacement",
@@ -1693,12 +1222,7 @@
       "path": "complex/InputOTP",
       "isClient": true,
       "summary": "InputOTP — one-time password / verification code entry (Phase 10 CI18).",
-      "exports": [
-        "InputOTP",
-        "InputOTPGroup",
-        "InputOTPSeparator",
-        "InputOTPSlot"
-      ],
+      "exports": ["InputOTP", "InputOTPGroup", "InputOTPSeparator", "InputOTPSlot"],
       "types": [
         "InputOTPGroupProps",
         "InputOTPPattern",
@@ -1742,17 +1266,8 @@
       "path": "complex/Popover",
       "isClient": true,
       "summary": "Popover — floating panel anchored to a trigger for contextual content.",
-      "exports": [
-        "Popover",
-        "PopoverContent",
-        "PopoverTrigger"
-      ],
-      "types": [
-        "PopoverContentProps",
-        "PopoverPlacement",
-        "PopoverProps",
-        "PopoverTriggerProps"
-      ],
+      "exports": ["Popover", "PopoverContent", "PopoverTrigger"],
+      "types": ["PopoverContentProps", "PopoverPlacement", "PopoverProps", "PopoverTriggerProps"],
       "hooks": []
     },
     {
@@ -1814,14 +1329,8 @@
       "path": "complex/Sheet",
       "isClient": true,
       "summary": "Sheet — side panel modal sheet composing portal + overlay + focus-trapped content (Phase 10 CI4, E18).",
-      "exports": [
-        "Sheet"
-      ],
-      "types": [
-        "SheetProps",
-        "SheetSide",
-        "SheetSize"
-      ],
+      "exports": ["Sheet"],
+      "types": ["SheetProps", "SheetSide", "SheetSize"],
       "hooks": []
     },
     {
@@ -1855,9 +1364,7 @@
         "SidebarTriggerProps",
         "UseSidebarReturn"
       ],
-      "hooks": [
-        "useSidebar"
-      ]
+      "hooks": ["useSidebar"]
     },
     {
       "family": "Slider",
@@ -1865,12 +1372,7 @@
       "path": "complex/Slider",
       "isClient": true,
       "summary": "Slider — accessible single-thumb value selector (Phase 10 CI14).",
-      "exports": [
-        "Slider",
-        "SliderRange",
-        "SliderThumb",
-        "SliderTrack"
-      ],
+      "exports": ["Slider", "SliderRange", "SliderThumb", "SliderTrack"],
       "types": [
         "SliderDir",
         "SliderOrientation",
@@ -1887,10 +1389,7 @@
       "path": "complex/Stepper",
       "isClient": true,
       "summary": "Stepper — visual + semantic multi-step progress indicator with optional keyboard navigation when clickable.",
-      "exports": [
-        "Step",
-        "Stepper"
-      ],
+      "exports": ["Step", "Stepper"],
       "types": [
         "StepProps",
         "StepStatus",
@@ -1907,12 +1406,7 @@
       "path": "complex/Tabs",
       "isClient": true,
       "summary": "Tabs — accessible tabs widget per WAI-ARIA APG /tabs/.",
-      "exports": [
-        "Tabs",
-        "TabsContent",
-        "TabsList",
-        "TabsTrigger"
-      ],
+      "exports": ["Tabs", "TabsContent", "TabsList", "TabsTrigger"],
       "types": [
         "TabsActivationMode",
         "TabsContentProps",
@@ -1931,16 +1425,8 @@
       "path": "complex/TimePicker",
       "isClient": true,
       "summary": "TimePicker — accessible time form field composed of an editable text input (`role=\"combobox\"`) + popover with 2-3…",
-      "exports": [
-        "TimePicker",
-        "TimePickerContent",
-        "TimePickerInput"
-      ],
-      "types": [
-        "TimePickerContentProps",
-        "TimePickerInputProps",
-        "TimePickerProps"
-      ],
+      "exports": ["TimePicker", "TimePickerContent", "TimePickerInput"],
+      "types": ["TimePickerContentProps", "TimePickerInputProps", "TimePickerProps"],
       "hooks": []
     },
     {
@@ -1949,12 +1435,7 @@
       "path": "complex/Toast",
       "isClient": true,
       "summary": "Toaster — singleton notification surface for imperative `toast()` API.",
-      "exports": [
-        "Toaster",
-        "pauseAllTimers",
-        "resumeAllTimers",
-        "toast"
-      ],
+      "exports": ["Toaster", "pauseAllTimers", "resumeAllTimers", "toast"],
       "types": [
         "ToastAction",
         "ToastItem",
@@ -1964,9 +1445,7 @@
         "ToasterPosition",
         "ToasterProps"
       ],
-      "hooks": [
-        "useToastQueue"
-      ]
+      "hooks": ["useToastQueue"]
     },
     {
       "family": "Toolbar",
@@ -1974,14 +1453,8 @@
       "path": "complex/Toolbar",
       "isClient": true,
       "summary": "Toolbar — accessible toolbar container per WAI-ARIA APG `/toolbar/`.",
-      "exports": [
-        "Toolbar"
-      ],
-      "types": [
-        "ToolbarDir",
-        "ToolbarOrientation",
-        "ToolbarProps"
-      ],
+      "exports": ["Toolbar"],
+      "types": ["ToolbarDir", "ToolbarOrientation", "ToolbarProps"],
       "hooks": []
     },
     {
@@ -1990,15 +1463,8 @@
       "path": "complex/Tooltip",
       "isClient": true,
       "summary": "Tooltip — modeless floating label shown on hover or keyboard focus.",
-      "exports": [
-        "Tooltip",
-        "TooltipProvider"
-      ],
-      "types": [
-        "TooltipPlacement",
-        "TooltipProps",
-        "TooltipProviderProps"
-      ],
+      "exports": ["Tooltip", "TooltipProvider"],
+      "types": ["TooltipPlacement", "TooltipProps", "TooltipProviderProps"],
       "hooks": []
     }
   ],
@@ -2007,21 +1473,15 @@
       "family": "cn",
       "category": "utils",
       "path": "utils/cn",
-      "exports": [
-        "cn"
-      ],
-      "types": [
-        "ClassValue"
-      ],
+      "exports": ["cn"],
+      "types": ["ClassValue"],
       "hooks": []
     },
     {
       "family": "mergeRefs",
       "category": "utils",
       "path": "utils/mergeRefs",
-      "exports": [
-        "mergeRefs"
-      ],
+      "exports": ["mergeRefs"],
       "types": [],
       "hooks": []
     },
@@ -2029,24 +1489,16 @@
       "family": "Slot",
       "category": "utils",
       "path": "utils/Slot",
-      "exports": [
-        "Slot"
-      ],
-      "types": [
-        "SlotProps"
-      ],
+      "exports": ["Slot"],
+      "types": ["SlotProps"],
       "hooks": []
     },
     {
       "family": "VisuallyHidden",
       "category": "utils",
       "path": "utils/VisuallyHidden",
-      "exports": [
-        "VisuallyHidden"
-      ],
-      "types": [
-        "VisuallyHiddenProps"
-      ],
+      "exports": ["VisuallyHidden"],
+      "types": ["VisuallyHiddenProps"],
       "hooks": []
     }
   ],
@@ -2056,9 +1508,7 @@
       "category": "types",
       "path": "types/spacing",
       "exports": [],
-      "types": [
-        "SpaceIndex"
-      ],
+      "types": ["SpaceIndex"],
       "hooks": []
     }
   ]

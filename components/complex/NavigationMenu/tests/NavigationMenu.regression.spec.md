@@ -44,7 +44,9 @@ test('NM-R06 — Viewport allows children (no TS regression)', async ({ page }) 
   await expect(menu.getByRole('menuitem').first()).toBeVisible();
 });
 
-test('NM-R07 — forceMount does not break Escape for native dialog inside submenu', async ({ page }) => {
+test('NM-R07 — forceMount does not break Escape for native dialog inside submenu', async ({
+  page,
+}) => {
   await page.goto('/components/navigation-menu?forceMount=1&dialog=1');
   // Trigger submenu with embedded native <dialog>
   await page.getByRole('menuitem', { name: 'Products' }).click();

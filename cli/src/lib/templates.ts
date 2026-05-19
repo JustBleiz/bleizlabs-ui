@@ -33,10 +33,7 @@ export const MARKER_END_MD = /<!--\s*END:bleizlabs-ui\s*-->/;
  * categorised by manifest builder). Types listed in same block with
  * `type` keyword (TS verbatim-safe).
  */
-export function renderWrapperTsx(
-  family: ManifestFamily,
-  libVersion: string,
-): string {
+export function renderWrapperTsx(family: ManifestFamily, libVersion: string): string {
   const valueExports = [...family.exports, ...family.hooks].map((n) => `  ${n},`);
   const typeExports = family.types.map((n) => `  type ${n},`);
   const allLines = [...valueExports, ...typeExports].join('\n');
@@ -54,10 +51,7 @@ ${allLines}
  * Type-only families (e.g., SpaceIndex) need `export type { ... }` syntax —
  * exports[] is empty, types[] holds names.
  */
-export function renderWrapperTsxTypeOnly(
-  family: ManifestFamily,
-  libVersion: string,
-): string {
+export function renderWrapperTsxTypeOnly(family: ManifestFamily, libVersion: string): string {
   const typeLines = family.types.map((n) => `  ${n},`).join('\n');
   return `${GENERATED_MARKER_TS(libVersion)}
 // Project wrapper for @bleizlabs/ui ${family.family} (types only).
@@ -70,10 +64,7 @@ ${typeLines}
 /**
  * Empty placeholder SCSS — consumer fills when project styling needed.
  */
-export function renderWrapperScss(
-  family: ManifestFamily,
-  libVersion: string,
-): string {
+export function renderWrapperScss(family: ManifestFamily, libVersion: string): string {
   return `${GENERATED_MARKER_SCSS(libVersion)}
 // Project styling slot for ${family.family} wrapper.
 // Add project variant styles here; lib styling cascades from seed tokens.
@@ -133,18 +124,14 @@ export function renderRootBarrel(manifest: ComponentManifest): string {
   if (manifest.utilities.length > 0) {
     lines.push('');
     lines.push('// --- Utilities ---');
-    for (const f of [...manifest.utilities].sort((a, b) =>
-      a.family.localeCompare(b.family),
-    )) {
+    for (const f of [...manifest.utilities].sort((a, b) => a.family.localeCompare(b.family))) {
       lines.push(`export * from './${f.category}/${f.family}';`);
     }
   }
   if (manifest.typesOnly.length > 0) {
     lines.push('');
     lines.push('// --- Types ---');
-    for (const f of [...manifest.typesOnly].sort((a, b) =>
-      a.family.localeCompare(b.family),
-    )) {
+    for (const f of [...manifest.typesOnly].sort((a, b) => a.family.localeCompare(b.family))) {
       lines.push(`export * from './${f.category}/${f.family}';`);
     }
   }

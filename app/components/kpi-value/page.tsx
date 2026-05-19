@@ -15,11 +15,9 @@ export default function KpiValuePlaygroundPage() {
           KpiValue
         </Heading>
         <p className={styles.intro}>
-          Universal KPI big-number display atom. Server Component by default —
-          renders a numeric or string value, an optional unit label, and an
-          optional trend indicator. The companion{' '}
-          <code>KpiValueAnimated</code> client wrapper provides an entrance
-          count-up.
+          Universal KPI big-number display atom. Server Component by default — renders a numeric or
+          string value, an optional unit label, and an optional trend indicator. The companion{' '}
+          <code>KpiValueAnimated</code> client wrapper provides an entrance count-up.
         </p>
       </header>
 
@@ -28,9 +26,8 @@ export default function KpiValuePlaygroundPage() {
           1. Dashboard pillar cards — 4 typical KPI patterns
         </Heading>
         <Text variant="small" color="secondary">
-          Typical dashboard use cases: conversion stats, revenue overview,
-          public traffic, satisfaction score — anywhere a single high-impact
-          number leads the visual hierarchy.
+          Typical dashboard use cases: conversion stats, revenue overview, public traffic,
+          satisfaction score — anywhere a single high-impact number leads the visual hierarchy.
         </Text>
         <div className={styles.row}>
           <div className={styles.cell}>
@@ -143,41 +140,25 @@ export default function KpiValuePlaygroundPage() {
         </Heading>
         <div className={styles.row}>
           <div className={styles.cell}>
-            <KpiValue
-              value={1250}
-              unit="PLN"
-              trend={{ direction: 'up', label: '+12%' }}
-            />
+            <KpiValue value={1250} unit="PLN" trend={{ direction: 'up', label: '+12%' }} />
             <Text variant="caption" color="muted">
               up
             </Text>
           </div>
           <div className={styles.cell}>
-            <KpiValue
-              value={1250}
-              unit="PLN"
-              trend={{ direction: 'down', label: '-8%' }}
-            />
+            <KpiValue value={1250} unit="PLN" trend={{ direction: 'down', label: '-8%' }} />
             <Text variant="caption" color="muted">
               down
             </Text>
           </div>
           <div className={styles.cell}>
-            <KpiValue
-              value={1250}
-              unit="PLN"
-              trend={{ direction: 'flat', label: '0%' }}
-            />
+            <KpiValue value={1250} unit="PLN" trend={{ direction: 'flat', label: '0%' }} />
             <Text variant="caption" color="muted">
               flat
             </Text>
           </div>
           <div className={styles.cell}>
-            <KpiValue
-              value={1250}
-              unit="PLN"
-              trend={{ direction: 'up' }}
-            />
+            <KpiValue value={1250} unit="PLN" trend={{ direction: 'up' }} />
             <Text variant="caption" color="muted">
               up (no label)
             </Text>
@@ -248,8 +229,8 @@ export default function KpiValuePlaygroundPage() {
           7. Semantic wrapping — compose externally
         </Heading>
         <Text variant="small" color="secondary">
-          KpiValue intentionally has no asChild Slot (it owns its inner layout). For
-          semantic wrapping, wrap externally:
+          KpiValue intentionally has no asChild Slot (it owns its inner layout). For semantic
+          wrapping, wrap externally:
         </Text>
         <div className={styles.row}>
           <article aria-label="Service uptime">

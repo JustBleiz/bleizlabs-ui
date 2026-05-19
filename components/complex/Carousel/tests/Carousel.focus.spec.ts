@@ -31,9 +31,7 @@ test.describe('Carousel — focus + pointer behavior', () => {
       .filter({ has: page.getByRole('heading', { name: /^2\. Auto-rotate/ }) })
       .first();
     const root = auto.locator('[aria-roledescription="carousel"]').first();
-    const currentSlide = auto.locator(
-      '[aria-roledescription="slide"][data-current="true"]',
-    );
+    const currentSlide = auto.locator('[aria-roledescription="slide"][data-current="true"]');
     const initialLabel = await currentSlide.first().getAttribute('aria-label');
     await root.hover();
     // Wait past half the auto-rotate interval (3000ms) — rotation should
@@ -43,16 +41,12 @@ test.describe('Carousel — focus + pointer behavior', () => {
     expect(afterLabel).toBe(initialLabel);
   });
 
-  test('CAR-R06 — visibilitychange hidden pauses auto-rotation', async ({
-    page,
-  }) => {
+  test('CAR-R06 — visibilitychange hidden pauses auto-rotation', async ({ page }) => {
     const auto = page
       .locator('section')
       .filter({ has: page.getByRole('heading', { name: /^2\. Auto-rotate/ }) })
       .first();
-    const currentSlide = auto.locator(
-      '[aria-roledescription="slide"][data-current="true"]',
-    );
+    const currentSlide = auto.locator('[aria-roledescription="slide"][data-current="true"]');
     const initialLabel = await currentSlide.first().getAttribute('aria-label');
     // Simulate tab hidden — addPauseReason('visibility') fires.
     await page.evaluate(() => {
@@ -141,8 +135,6 @@ test.describe('Carousel — focus + pointer behavior', () => {
     await expect(playBtn).toHaveAttribute('aria-pressed', 'true');
     // Click again to resume.
     await playBtn.click();
-    await expect(
-      auto.getByRole('button', { name: 'Pause carousel' }),
-    ).toBeVisible();
+    await expect(auto.getByRole('button', { name: 'Pause carousel' })).toBeVisible();
   });
 });

@@ -214,8 +214,10 @@ function findNextFocusable(
 // ──────────────────────────────────────────────────────────────────────────
 // Calendar — root + state holder
 
-export interface CalendarProps
-  extends Omit<HTMLAttributes<HTMLDivElement>, 'children' | 'dir' | 'defaultValue' | 'onChange'> {
+export interface CalendarProps extends Omit<
+  HTMLAttributes<HTMLDivElement>,
+  'children' | 'dir' | 'defaultValue' | 'onChange'
+> {
   /** Controlled selected date. When provided, component is controlled. */
   value?: Date | null;
   /** Uncontrolled initial selected date. Ignored when controlled. */
@@ -371,10 +373,7 @@ export const Calendar = forwardRef<HTMLDivElement, CalendarProps>(function Calen
     () => (Array.isArray(disabled) ? disabled.map(startOfDay) : null),
     [disabled],
   );
-  const disabledFn = useMemo(
-    () => (typeof disabled === 'function' ? disabled : null),
-    [disabled],
-  );
+  const disabledFn = useMemo(() => (typeof disabled === 'function' ? disabled : null), [disabled]);
 
   const isDisabled = useCallback(
     (date: Date) => {
@@ -449,12 +448,7 @@ export const Calendar = forwardRef<HTMLDivElement, CalendarProps>(function Calen
 
   return (
     <CalendarContext.Provider value={ctx}>
-      <div
-        ref={ref}
-        dir={dir}
-        className={cn(styles.root, className)}
-        {...rest}
-      >
+      <div ref={ref} dir={dir} className={cn(styles.root, className)} {...rest}>
         {children ?? (
           <>
             <CalendarHeader />
@@ -542,12 +536,7 @@ export const CalendarHeader = forwardRef<HTMLDivElement, CalendarHeaderProps>(
         >
           <ChevronLeftIcon />
         </button>
-        <div
-          id={labelId}
-          className={styles.monthLabel}
-          aria-live="polite"
-          aria-atomic="true"
-        >
+        <div id={labelId} className={styles.monthLabel} aria-live="polite" aria-atomic="true">
           {monthLabel}
         </div>
         <button
@@ -613,144 +602,143 @@ export interface CalendarGridProps extends TableHTMLAttributes<HTMLTableElement>
   children?: ReactNode;
 }
 
-export const CalendarGrid = forwardRef<HTMLTableElement, CalendarGridProps>(function CalendarGrid(
-  props,
-  forwardedRef,
-) {
-  const { children, className, onMouseLeave: consumerOnMouseLeave, ...rest } = props;
-  const {
-    focusedDate,
-    setFocusedDate,
-    setSelectedDate,
-    min,
-    max,
-    isDisabled,
-    dir,
-    weekStartsOn,
-    baseId,
-    gridRef,
-    requestCellFocus,
-    onGridMouseLeave,
-  } = useCalendarContext('CalendarGrid');
-
-  const handleMouseLeave = useCallback(
-    (event: MouseEvent<HTMLTableElement>) => {
-      onGridMouseLeave?.();
-      consumerOnMouseLeave?.(event);
-    },
-    [onGridMouseLeave, consumerOnMouseLeave],
-  );
-
-  const mergedRef = useMemo(() => mergeRefs<HTMLTableElement>(gridRef, forwardedRef), [
-    gridRef,
-    forwardedRef,
-  ]);
-
-  const labelId = `${baseId}-label`;
-
-  const handleKeyDown = useCallback(
-    (event: KeyboardEvent<HTMLTableElement>) => {
-      // Skip non-Shift modifier combos — let browser hotkeys (Alt+←, Ctrl+Home,
-      // Cmd+arrow) pass through untouched. Shift IS used intentionally for
-      // year navigation.
-      if (event.altKey || event.metaKey || event.ctrlKey) return;
-
-      const isRtl = dir === 'rtl';
-      let next: Date | null = null;
-      let shouldSelect = false;
-
-      switch (event.key) {
-        case 'ArrowLeft':
-          next = findNextFocusable(focusedDate, isRtl ? 1 : -1, isDisabled, min, max);
-          break;
-        case 'ArrowRight':
-          next = findNextFocusable(focusedDate, isRtl ? -1 : 1, isDisabled, min, max);
-          break;
-        case 'ArrowUp':
-          next = findNextFocusable(focusedDate, -7, isDisabled, min, max);
-          break;
-        case 'ArrowDown':
-          next = findNextFocusable(focusedDate, 7, isDisabled, min, max);
-          break;
-        case 'Home': {
-          const startDay = startOfWeek(focusedDate, weekStartsOn);
-          next = isDisabled(startDay)
-            ? findNextFocusable(startDay, 1, isDisabled, min, max)
-            : startDay;
-          break;
-        }
-        case 'End': {
-          const endDay = endOfWeek(focusedDate, weekStartsOn);
-          next = isDisabled(endDay)
-            ? findNextFocusable(endDay, -1, isDisabled, min, max)
-            : endDay;
-          break;
-        }
-        case 'PageUp': {
-          const step = event.shiftKey ? -12 : -1;
-          const candidate = addMonths(focusedDate, step);
-          next = isDisabled(candidate)
-            ? findNextFocusable(candidate, 1, isDisabled, min, max)
-            : candidate;
-          break;
-        }
-        case 'PageDown': {
-          const step = event.shiftKey ? 12 : 1;
-          const candidate = addMonths(focusedDate, step);
-          next = isDisabled(candidate)
-            ? findNextFocusable(candidate, -1, isDisabled, min, max)
-            : candidate;
-          break;
-        }
-        case 'Enter':
-        case ' ':
-          if (!isDisabled(focusedDate)) {
-            shouldSelect = true;
-          }
-          break;
-        default:
-          return; // unhandled key — let browser handle
-      }
-
-      event.preventDefault();
-
-      if (shouldSelect) {
-        setSelectedDate(focusedDate);
-        return;
-      }
-
-      if (next && !isSameDay(next, focusedDate)) {
-        setFocusedDate(next);
-        requestCellFocus(next);
-      }
-    },
-    [
-      dir,
+export const CalendarGrid = forwardRef<HTMLTableElement, CalendarGridProps>(
+  function CalendarGrid(props, forwardedRef) {
+    const { children, className, onMouseLeave: consumerOnMouseLeave, ...rest } = props;
+    const {
       focusedDate,
-      isDisabled,
-      min,
-      max,
-      weekStartsOn,
       setFocusedDate,
       setSelectedDate,
+      min,
+      max,
+      isDisabled,
+      dir,
+      weekStartsOn,
+      baseId,
+      gridRef,
       requestCellFocus,
-    ],
-  );
+      onGridMouseLeave,
+    } = useCalendarContext('CalendarGrid');
 
-  return (
-    <table
-      ref={mergedRef}
-      role="grid"
-      aria-labelledby={labelId}
-      className={cn(styles.grid, className)}
-      onKeyDown={handleKeyDown}
-      onMouseLeave={handleMouseLeave}
-      {...rest}
-    >
-      {children}
-    </table>
-  );
-});
+    const handleMouseLeave = useCallback(
+      (event: MouseEvent<HTMLTableElement>) => {
+        onGridMouseLeave?.();
+        consumerOnMouseLeave?.(event);
+      },
+      [onGridMouseLeave, consumerOnMouseLeave],
+    );
+
+    const mergedRef = useMemo(
+      () => mergeRefs<HTMLTableElement>(gridRef, forwardedRef),
+      [gridRef, forwardedRef],
+    );
+
+    const labelId = `${baseId}-label`;
+
+    const handleKeyDown = useCallback(
+      (event: KeyboardEvent<HTMLTableElement>) => {
+        // Skip non-Shift modifier combos — let browser hotkeys (Alt+←, Ctrl+Home,
+        // Cmd+arrow) pass through untouched. Shift IS used intentionally for
+        // year navigation.
+        if (event.altKey || event.metaKey || event.ctrlKey) return;
+
+        const isRtl = dir === 'rtl';
+        let next: Date | null = null;
+        let shouldSelect = false;
+
+        switch (event.key) {
+          case 'ArrowLeft':
+            next = findNextFocusable(focusedDate, isRtl ? 1 : -1, isDisabled, min, max);
+            break;
+          case 'ArrowRight':
+            next = findNextFocusable(focusedDate, isRtl ? -1 : 1, isDisabled, min, max);
+            break;
+          case 'ArrowUp':
+            next = findNextFocusable(focusedDate, -7, isDisabled, min, max);
+            break;
+          case 'ArrowDown':
+            next = findNextFocusable(focusedDate, 7, isDisabled, min, max);
+            break;
+          case 'Home': {
+            const startDay = startOfWeek(focusedDate, weekStartsOn);
+            next = isDisabled(startDay)
+              ? findNextFocusable(startDay, 1, isDisabled, min, max)
+              : startDay;
+            break;
+          }
+          case 'End': {
+            const endDay = endOfWeek(focusedDate, weekStartsOn);
+            next = isDisabled(endDay)
+              ? findNextFocusable(endDay, -1, isDisabled, min, max)
+              : endDay;
+            break;
+          }
+          case 'PageUp': {
+            const step = event.shiftKey ? -12 : -1;
+            const candidate = addMonths(focusedDate, step);
+            next = isDisabled(candidate)
+              ? findNextFocusable(candidate, 1, isDisabled, min, max)
+              : candidate;
+            break;
+          }
+          case 'PageDown': {
+            const step = event.shiftKey ? 12 : 1;
+            const candidate = addMonths(focusedDate, step);
+            next = isDisabled(candidate)
+              ? findNextFocusable(candidate, -1, isDisabled, min, max)
+              : candidate;
+            break;
+          }
+          case 'Enter':
+          case ' ':
+            if (!isDisabled(focusedDate)) {
+              shouldSelect = true;
+            }
+            break;
+          default:
+            return; // unhandled key — let browser handle
+        }
+
+        event.preventDefault();
+
+        if (shouldSelect) {
+          setSelectedDate(focusedDate);
+          return;
+        }
+
+        if (next && !isSameDay(next, focusedDate)) {
+          setFocusedDate(next);
+          requestCellFocus(next);
+        }
+      },
+      [
+        dir,
+        focusedDate,
+        isDisabled,
+        min,
+        max,
+        weekStartsOn,
+        setFocusedDate,
+        setSelectedDate,
+        requestCellFocus,
+      ],
+    );
+
+    return (
+      <table
+        ref={mergedRef}
+        role="grid"
+        aria-labelledby={labelId}
+        className={cn(styles.grid, className)}
+        onKeyDown={handleKeyDown}
+        onMouseLeave={handleMouseLeave}
+        {...rest}
+      >
+        {children}
+      </table>
+    );
+  },
+);
 
 // ──────────────────────────────────────────────────────────────────────────
 // CalendarGridHead — weekday row (Mon Tue Wed ...)
@@ -784,12 +772,7 @@ export const CalendarGridHead = forwardRef<HTMLTableSectionElement, CalendarGrid
       <thead ref={ref} className={cn(styles.gridHead, className)} {...rest}>
         <tr className={styles.gridHeadRow}>
           {weekdays.map((day) => (
-            <th
-              key={day.key}
-              scope="col"
-              abbr={day.full}
-              className={styles.weekday}
-            >
+            <th key={day.key} scope="col" abbr={day.full} className={styles.weekday}>
               <span aria-hidden="true">{day.short}</span>
               <span className={styles.srOnly}>{day.full}</span>
             </th>

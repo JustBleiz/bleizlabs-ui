@@ -17,10 +17,7 @@ import {
 } from 'react';
 import { cn } from '../../utils/cn';
 import { mergeRefs } from '../../utils/mergeRefs';
-import {
-  usePointerDrag,
-  type UsePointerDragHandlers,
-} from '../../utils/gesture';
+import { usePointerDrag, type UsePointerDragHandlers } from '../../utils/gesture';
 import styles from './Slider.module.scss';
 
 /**
@@ -76,8 +73,10 @@ import styles from './Slider.module.scss';
 export type SliderOrientation = 'horizontal' | 'vertical';
 export type SliderDir = 'ltr' | 'rtl';
 
-export interface SliderProps
-  extends Omit<HTMLAttributes<HTMLSpanElement>, 'onChange' | 'defaultValue'> {
+export interface SliderProps extends Omit<
+  HTMLAttributes<HTMLSpanElement>,
+  'onChange' | 'defaultValue'
+> {
   /** Controlled value. */
   value?: number;
   /** Uncontrolled initial value. Default `min`. */
@@ -126,8 +125,10 @@ export interface SliderTrackProps extends HTMLAttributes<HTMLSpanElement> {
 
 export type SliderRangeProps = HTMLAttributes<HTMLSpanElement>;
 
-export interface SliderThumbProps
-  extends Omit<HTMLAttributes<HTMLSpanElement>, 'tabIndex' | 'role'> {
+export interface SliderThumbProps extends Omit<
+  HTMLAttributes<HTMLSpanElement>,
+  'tabIndex' | 'role'
+> {
   /** Override accessible name (otherwise inherits from Slider `aria-label`/`aria-labelledby`). */
   'aria-label'?: string;
   'aria-labelledby'?: string;
@@ -160,12 +161,7 @@ function valueToPercent(value: number, min: number, max: number): number {
   return ((value - min) / (max - min)) * 100;
 }
 
-function percentToValue(
-  percent: number,
-  min: number,
-  max: number,
-  step: number,
-): number {
+function percentToValue(percent: number, min: number, max: number, step: number): number {
   const raw = (percent / 100) * (max - min) + min;
   return clampValue(quantizeValue(raw, min, step), min, max);
 }
@@ -246,9 +242,7 @@ export const Slider = forwardRef<HTMLSpanElement, SliderProps>(function Slider(
       console.warn('<Slider>: min > max. Clamping.');
     }
     if (!ariaLabel && !ariaLabelledBy && process.env.NODE_ENV !== 'test') {
-      console.warn(
-        '<Slider>: missing accessible name. Provide `aria-label` or `aria-labelledby`.',
-      );
+      console.warn('<Slider>: missing accessible name. Provide `aria-label` or `aria-labelledby`.');
     }
   }
 
@@ -266,11 +260,7 @@ export const Slider = forwardRef<HTMLSpanElement, SliderProps>(function Slider(
     return clampValue(quantizeValue(raw, safeMin, safeStep), safeMin, safeMax);
   });
   const rawValue = isControlled ? controlledValue : uncontrolledValue;
-  const value = clampValue(
-    quantizeValue(rawValue, safeMin, safeStep),
-    safeMin,
-    safeMax,
-  );
+  const value = clampValue(quantizeValue(rawValue, safeMin, safeStep), safeMin, safeMax);
 
   const percent = valueToPercent(value, safeMin, safeMax);
   const valueText = formatValue ? formatValue(value) : String(value);
@@ -418,11 +408,7 @@ export const Slider = forwardRef<HTMLSpanElement, SliderProps>(function Slider(
 
       if (next === null) return;
       event.preventDefault();
-      const clamped = clampValue(
-        quantizeValue(next, safeMin, safeStep),
-        safeMin,
-        safeMax,
-      );
+      const clamped = clampValue(quantizeValue(next, safeMin, safeStep), safeMin, safeMax);
       commit(clamped);
       commitFinal(clamped);
     },
@@ -541,135 +527,131 @@ export const Slider = forwardRef<HTMLSpanElement, SliderProps>(function Slider(
 // SliderTrack
 // ============================================================================
 
-export const SliderTrack = forwardRef<HTMLSpanElement, SliderTrackProps>(
-  function SliderTrack({ children, className, ...rest }, ref) {
-    const ctx = useSliderContext('SliderTrack');
-    const mergedRef = useMemo(
-      () => mergeRefs<HTMLSpanElement>(ref, ctx.registerTrack),
-      [ref, ctx.registerTrack],
-    );
-    return (
-      <span
-        ref={mergedRef}
-        {...rest}
-        className={cn(styles.track, className)}
-        data-orientation={ctx.orientation}
-        data-disabled={ctx.disabled ? 'true' : undefined}
-        {...ctx.trackDragHandlers}
-      >
-        {children ?? (
-          <>
-            <SliderRange />
-            <SliderThumb />
-          </>
-        )}
-      </span>
-    );
-  },
-);
+export const SliderTrack = forwardRef<HTMLSpanElement, SliderTrackProps>(function SliderTrack(
+  { children, className, ...rest },
+  ref,
+) {
+  const ctx = useSliderContext('SliderTrack');
+  const mergedRef = useMemo(
+    () => mergeRefs<HTMLSpanElement>(ref, ctx.registerTrack),
+    [ref, ctx.registerTrack],
+  );
+  return (
+    <span
+      ref={mergedRef}
+      {...rest}
+      className={cn(styles.track, className)}
+      data-orientation={ctx.orientation}
+      data-disabled={ctx.disabled ? 'true' : undefined}
+      {...ctx.trackDragHandlers}
+    >
+      {children ?? (
+        <>
+          <SliderRange />
+          <SliderThumb />
+        </>
+      )}
+    </span>
+  );
+});
 
 // ============================================================================
 // SliderRange
 // ============================================================================
 
-export const SliderRange = forwardRef<HTMLSpanElement, SliderRangeProps>(
-  function SliderRange({ className, style, ...rest }, ref) {
-    const ctx = useSliderContext('SliderRange');
-    const isHorizontal = ctx.orientation === 'horizontal';
-    // Build inline style for dynamic position — layout math not expressible
-    // via CSS tokens alone. Choose start edge based on dir + inverted.
-    const rangeStyle: CSSProperties = (() => {
-      if (isHorizontal) {
-        const rtlLike = (ctx.dir === 'rtl') !== ctx.inverted; // XOR
-        return rtlLike
-          ? { right: '0%', width: `${ctx.percent}%` }
-          : { left: '0%', width: `${ctx.percent}%` };
-      }
-      // Vertical: grows from bottom upward by default; inverted flips.
-      return ctx.inverted
-        ? { top: '0%', height: `${ctx.percent}%` }
-        : { bottom: '0%', height: `${ctx.percent}%` };
-    })();
-    return (
-      <span
-        ref={ref}
-        {...rest}
-        className={cn(styles.range, className)}
-        data-orientation={ctx.orientation}
-        style={{ ...rangeStyle, ...style }}
-      />
-    );
-  },
-);
+export const SliderRange = forwardRef<HTMLSpanElement, SliderRangeProps>(function SliderRange(
+  { className, style, ...rest },
+  ref,
+) {
+  const ctx = useSliderContext('SliderRange');
+  const isHorizontal = ctx.orientation === 'horizontal';
+  // Build inline style for dynamic position — layout math not expressible
+  // via CSS tokens alone. Choose start edge based on dir + inverted.
+  const rangeStyle: CSSProperties = (() => {
+    if (isHorizontal) {
+      const rtlLike = (ctx.dir === 'rtl') !== ctx.inverted; // XOR
+      return rtlLike
+        ? { right: '0%', width: `${ctx.percent}%` }
+        : { left: '0%', width: `${ctx.percent}%` };
+    }
+    // Vertical: grows from bottom upward by default; inverted flips.
+    return ctx.inverted
+      ? { top: '0%', height: `${ctx.percent}%` }
+      : { bottom: '0%', height: `${ctx.percent}%` };
+  })();
+  return (
+    <span
+      ref={ref}
+      {...rest}
+      className={cn(styles.range, className)}
+      data-orientation={ctx.orientation}
+      style={{ ...rangeStyle, ...style }}
+    />
+  );
+});
 
 // ============================================================================
 // SliderThumb
 // ============================================================================
 
-export const SliderThumb = forwardRef<HTMLSpanElement, SliderThumbProps>(
-  function SliderThumb(
-    {
-      className,
-      style,
-      onKeyDown,
-      'aria-label': thumbAriaLabel,
-      'aria-labelledby': thumbAriaLabelledBy,
-      ...rest
-    },
-    ref,
-  ) {
-    const ctx = useSliderContext('SliderThumb');
-    const mergedRef = useMemo(
-      () => mergeRefs<HTMLSpanElement>(ref, ctx.thumbRef),
-      [ref, ctx.thumbRef],
-    );
-    const isHorizontal = ctx.orientation === 'horizontal';
-    const rtlLike = isHorizontal && (ctx.dir === 'rtl') !== ctx.inverted; // XOR
-
-    const thumbStyle: CSSProperties = (() => {
-      if (isHorizontal) {
-        return rtlLike
-          ? { right: `${ctx.percent}%` }
-          : { left: `${ctx.percent}%` };
-      }
-      return ctx.inverted
-        ? { top: `${ctx.percent}%` }
-        : { bottom: `${ctx.percent}%` };
-    })();
-
-    const effectiveAriaLabel = thumbAriaLabel ?? ctx.ariaLabel;
-    const effectiveAriaLabelledBy = thumbAriaLabelledBy ?? ctx.ariaLabelledBy;
-
-    return (
-      <span
-        ref={mergedRef}
-        {...rest}
-        id={ctx.thumbId}
-        className={cn(styles.thumb, className)}
-        role="slider"
-        // E142 L4 F11: always tabIndex=0 so disabled sliders stay Tab-
-        // reachable for SR discovery (matches library convention used by
-        // Select, NavigationMenu, Tabs — aria-disabled with focus preserved).
-        // Pointer/keyboard handlers already short-circuit on `disabled`.
-        tabIndex={0}
-        aria-orientation={ctx.orientation}
-        aria-valuenow={ctx.value}
-        aria-valuemin={ctx.min}
-        aria-valuemax={ctx.max}
-        aria-valuetext={ctx.valueText}
-        aria-disabled={ctx.disabled ? 'true' : undefined}
-        aria-readonly={ctx.readOnly ? 'true' : undefined}
-        aria-label={effectiveAriaLabel}
-        aria-labelledby={effectiveAriaLabelledBy}
-        data-orientation={ctx.orientation}
-        data-disabled={ctx.disabled ? 'true' : undefined}
-        data-readonly={ctx.readOnly ? 'true' : undefined}
-        style={{ ...thumbStyle, ...style }}
-        onKeyDown={(event) => {
-          ctx.handleThumbKeyDown(event);
-          onKeyDown?.(event);
-        }}
-      />
-    );
+export const SliderThumb = forwardRef<HTMLSpanElement, SliderThumbProps>(function SliderThumb(
+  {
+    className,
+    style,
+    onKeyDown,
+    'aria-label': thumbAriaLabel,
+    'aria-labelledby': thumbAriaLabelledBy,
+    ...rest
   },
-);
+  ref,
+) {
+  const ctx = useSliderContext('SliderThumb');
+  const mergedRef = useMemo(
+    () => mergeRefs<HTMLSpanElement>(ref, ctx.thumbRef),
+    [ref, ctx.thumbRef],
+  );
+  const isHorizontal = ctx.orientation === 'horizontal';
+  const rtlLike = isHorizontal && (ctx.dir === 'rtl') !== ctx.inverted; // XOR
+
+  const thumbStyle: CSSProperties = (() => {
+    if (isHorizontal) {
+      return rtlLike ? { right: `${ctx.percent}%` } : { left: `${ctx.percent}%` };
+    }
+    return ctx.inverted ? { top: `${ctx.percent}%` } : { bottom: `${ctx.percent}%` };
+  })();
+
+  const effectiveAriaLabel = thumbAriaLabel ?? ctx.ariaLabel;
+  const effectiveAriaLabelledBy = thumbAriaLabelledBy ?? ctx.ariaLabelledBy;
+
+  return (
+    <span
+      ref={mergedRef}
+      {...rest}
+      id={ctx.thumbId}
+      className={cn(styles.thumb, className)}
+      role="slider"
+      // E142 L4 F11: always tabIndex=0 so disabled sliders stay Tab-
+      // reachable for SR discovery (matches library convention used by
+      // Select, NavigationMenu, Tabs — aria-disabled with focus preserved).
+      // Pointer/keyboard handlers already short-circuit on `disabled`.
+      tabIndex={0}
+      aria-orientation={ctx.orientation}
+      aria-valuenow={ctx.value}
+      aria-valuemin={ctx.min}
+      aria-valuemax={ctx.max}
+      aria-valuetext={ctx.valueText}
+      aria-disabled={ctx.disabled ? 'true' : undefined}
+      aria-readonly={ctx.readOnly ? 'true' : undefined}
+      aria-label={effectiveAriaLabel}
+      aria-labelledby={effectiveAriaLabelledBy}
+      data-orientation={ctx.orientation}
+      data-disabled={ctx.disabled ? 'true' : undefined}
+      data-readonly={ctx.readOnly ? 'true' : undefined}
+      style={{ ...thumbStyle, ...style }}
+      onKeyDown={(event) => {
+        ctx.handleThumbKeyDown(event);
+        onKeyDown?.(event);
+      }}
+    />
+  );
+});

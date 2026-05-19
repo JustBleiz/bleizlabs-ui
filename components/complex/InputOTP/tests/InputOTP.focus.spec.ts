@@ -22,9 +22,7 @@ test.describe('InputOTP — focus behavior', () => {
     await page.goto('/components/input-otp');
   });
 
-  test('OTP-R05 — decorative slots have no tabindex (aria-hidden)', async ({
-    page,
-  }) => {
+  test('OTP-R05 — decorative slots have no tabindex (aria-hidden)', async ({ page }) => {
     // Section 1 slot container — the slots are divs, not tabbable.
     const section = page.locator('section').nth(0);
     const slots = section.locator('[aria-hidden="true"]');
@@ -36,29 +34,21 @@ test.describe('InputOTP — focus behavior', () => {
     }
   });
 
-  test('OTP-R05b — real input receives focus via keyboard Tab', async ({
-    page,
-  }) => {
-    const input = page
-      .getByRole('textbox', { name: 'Verification code' })
-      .first();
+  test('OTP-R05b — real input receives focus via keyboard Tab', async ({ page }) => {
+    const input = page.getByRole('textbox', { name: 'Verification code' }).first();
     // Focus via direct method (Tab count is unstable in multi-section playground)
     await input.focus();
     await expect(input).toBeFocused();
   });
 
-  test('OTP-R06 — click in slot area focuses real input', async ({
-    page,
-  }) => {
+  test('OTP-R06 — click in slot area focuses real input', async ({ page }) => {
     // Section 1 — type 123, then click the decorative slot visually.
     // The real <input> is position:absolute covering all slots, so
     // Playwright's .click() on the slot reports "input intercepts pointer".
     // That's the correct runtime behavior — any click lands on the input and
     // positions the caret. Use mouse.click on slot's bounding box instead.
     const section = page.locator('section').nth(0);
-    const input = page
-      .getByRole('textbox', { name: 'Verification code' })
-      .first();
+    const input = page.getByRole('textbox', { name: 'Verification code' }).first();
     await input.focus();
     await page.keyboard.type('123');
     const firstSlot = section.locator('[aria-hidden="true"]').nth(0);
@@ -71,16 +61,12 @@ test.describe('InputOTP — focus behavior', () => {
 
   test('Disabled input is not focusable', async ({ page }) => {
     // Section 6 — first stack has disabled input with aria-label="Disabled code"
-    const disabled = page
-      .getByRole('textbox', { name: 'Disabled code' })
-      .first();
+    const disabled = page.getByRole('textbox', { name: 'Disabled code' }).first();
     await expect(disabled).toBeDisabled();
   });
 
   test('Read-only input is focusable but ignores typing', async ({ page }) => {
-    const readOnly = page
-      .getByRole('textbox', { name: 'Read-only code' })
-      .first();
+    const readOnly = page.getByRole('textbox', { name: 'Read-only code' }).first();
     await readOnly.focus();
     await expect(readOnly).toBeFocused();
     const before = await readOnly.inputValue();
@@ -90,9 +76,7 @@ test.describe('InputOTP — focus behavior', () => {
   });
 
   test('Blur clears isFocused (slot loses data-active)', async ({ page }) => {
-    const input = page
-      .getByRole('textbox', { name: 'Verification code' })
-      .first();
+    const input = page.getByRole('textbox', { name: 'Verification code' }).first();
     await input.focus();
     // Focused → at least one slot has data-active (locator-bound auto-retry)
     const section = page.locator('section').nth(0);

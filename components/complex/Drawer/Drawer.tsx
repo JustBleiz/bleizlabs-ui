@@ -55,11 +55,10 @@ import styles from './Drawer.module.scss';
  */
 export type DrawerSize = 'sm' | 'md' | 'lg';
 
-export interface DrawerProps
-  extends Omit<
-    HTMLAttributes<HTMLDivElement>,
-    'title' | 'role' | 'aria-modal' | 'aria-labelledby' | 'aria-describedby'
-  > {
+export interface DrawerProps extends Omit<
+  HTMLAttributes<HTMLDivElement>,
+  'title' | 'role' | 'aria-modal' | 'aria-labelledby' | 'aria-describedby'
+> {
   /** Controlled open state. Drawer is always modal. */
   open: boolean;
   /** Callback invoked when drawer requests to close (Escape, overlay click, close button). */
@@ -254,9 +253,7 @@ export function Drawer({
     if (!open) return;
     const portalRoot = contentRef.current?.parentElement;
     if (!portalRoot) return;
-    const siblings = Array.from(document.body.children).filter(
-      (el) => el !== portalRoot,
-    );
+    const siblings = Array.from(document.body.children).filter((el) => el !== portalRoot);
     const hadInert = siblings.map((el) => el.hasAttribute('inert'));
     siblings.forEach((el) => el.setAttribute('inert', ''));
     return () => {
@@ -286,11 +283,7 @@ export function Drawer({
   const describedBy = description ? descriptionId : undefined;
 
   return createPortal(
-    <div
-      className={styles.root}
-      onClick={handleOverlayClick}
-      data-state={open ? 'open' : 'closed'}
-    >
+    <div className={styles.root} onClick={handleOverlayClick} data-state={open ? 'open' : 'closed'}>
       <div
         ref={contentRef}
         role="dialog"
@@ -317,12 +310,7 @@ export function Drawer({
           ) : null}
         </header>
         {description ? (
-          <Text
-            id={descriptionId}
-            variant="body"
-            color="muted"
-            className={styles.description}
-          >
+          <Text id={descriptionId} variant="body" color="muted" className={styles.description}>
             {description}
           </Text>
         ) : null}

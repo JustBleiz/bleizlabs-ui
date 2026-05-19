@@ -27,16 +27,6 @@
 export { Toaster } from './Toaster';
 export type { ToasterProps, ToasterPosition, ToasterDir } from './Toaster';
 
-export {
-  toast,
-  useToastQueue,
-  pauseAllTimers,
-  resumeAllTimers,
-} from './toastStore';
+export { toast, useToastQueue, pauseAllTimers, resumeAllTimers } from './toastStore';
 
-export type {
-  ToastOptions,
-  ToastItem,
-  ToastVariant,
-  ToastAction,
-} from './toastStore';
+export type { ToastOptions, ToastItem, ToastVariant, ToastAction } from './toastStore';

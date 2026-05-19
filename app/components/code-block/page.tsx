@@ -38,10 +38,9 @@ export default function CodeBlockPlaygroundPage() {
           CodeBlock
         </Heading>
         <p className={styles.intro}>
-          Preformatted code surface — structural shell only. Lib does NOT
-          tokenize or highlight (zero-deps charter). Feed pre-tokenized
-          children from your own Shiki / Prism / Highlight.js pipeline, or
-          plain string for a raw monospace block. Optional language badge,
+          Preformatted code surface — structural shell only. Lib does NOT tokenize or highlight
+          (zero-deps charter). Feed pre-tokenized children from your own Shiki / Prism /
+          Highlight.js pipeline, or plain string for a raw monospace block. Optional language badge,
           copy button, and 1-indexed line-number gutter.
         </p>
       </header>
@@ -52,9 +51,7 @@ export default function CodeBlockPlaygroundPage() {
         </Heading>
         <div className={styles.sectionBody}>
           <CodeBlock>{tsSnippet}</CodeBlock>
-          <p className={styles.bodyText}>
-            Bare preformatted block — surface + border + monospace.
-          </p>
+          <p className={styles.bodyText}>Bare preformatted block — surface + border + monospace.</p>
         </div>
       </section>
 
@@ -74,10 +71,12 @@ export default function CodeBlockPlaygroundPage() {
           3. Copy button (clipboard)
         </Heading>
         <div className={styles.sectionBody}>
-          <CodeBlock language="tsx" copy>{tsSnippet}</CodeBlock>
+          <CodeBlock language="tsx" copy>
+            {tsSnippet}
+          </CodeBlock>
           <p className={styles.bodyText}>
-            Click <em>Copy code</em> — label toggles to <em>Copied</em> for ~2s
-            after success. Falls back silently on insecure context.
+            Click <em>Copy code</em> — label toggles to <em>Copied</em> for ~2s after success. Falls
+            back silently on insecure context.
           </p>
         </div>
       </section>
@@ -91,9 +90,8 @@ export default function CodeBlockPlaygroundPage() {
             {longSnippet}
           </CodeBlock>
           <p className={styles.bodyText}>
-            Gutter is decorative (<code>aria-hidden</code>) — screen readers
-            read the code content, not numbering chrome. Tabular-nums keeps
-            multi-digit numbers aligned.
+            Gutter is decorative (<code>aria-hidden</code>) — screen readers read the code content,
+            not numbering chrome. Tabular-nums keeps multi-digit numbers aligned.
           </p>
         </div>
       </section>
@@ -113,9 +111,9 @@ export default function CodeBlockPlaygroundPage() {
             {`) => \`Hello \${name}\`;`}
           </CodeBlock>
           <p className={styles.bodyText}>
-            When <code>children</code> is a React tree (not a plain string),
-            pass <code>copyText</code> to control what lands in the
-            clipboard — the lib does not extract text from node trees.
+            When <code>children</code> is a React tree (not a plain string), pass{' '}
+            <code>copyText</code> to control what lands in the clipboard — the lib does not extract
+            text from node trees.
           </p>
         </div>
       </section>

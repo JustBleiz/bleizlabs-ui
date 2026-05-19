@@ -64,8 +64,10 @@ import styles from './Rating.module.scss';
  */
 export type RatingSize = 'sm' | 'md' | 'lg';
 
-export interface RatingProps
-  extends Omit<HTMLAttributes<HTMLDivElement>, 'onChange' | 'defaultValue'> {
+export interface RatingProps extends Omit<
+  HTMLAttributes<HTMLDivElement>,
+  'onChange' | 'defaultValue'
+> {
   /** Controlled rating value. Use together with `onChange`. */
   value?: number;
   /** Uncontrolled initial value. Default `0` (no rating). */
@@ -250,9 +252,7 @@ export const Rating = forwardRef<HTMLDivElement, RatingProps>(function Rating(
         className={cn(styles.star, isChecked && styles.starChecked)}
         onClick={readOnly ? undefined : () => handleStarClick(idx)}
         onKeyDown={readOnly ? undefined : (event) => handleKeyDown(event, idx)}
-        onPointerEnter={
-          readOnly ? undefined : (event) => handlePointerEnter(event, idx)
-        }
+        onPointerEnter={readOnly ? undefined : (event) => handlePointerEnter(event, idx)}
         onFocus={readOnly ? undefined : () => setFocusedIndex(idx)}
         style={{ ['--rating-star-fill' as never]: fillRatio }}
       >
@@ -301,12 +301,7 @@ function clamp01(value: number): number {
 
 function StarSvg({ className }: { className?: string }) {
   return (
-    <svg
-      className={className}
-      viewBox="0 0 24 24"
-      aria-hidden="true"
-      focusable="false"
-    >
+    <svg className={className} viewBox="0 0 24 24" aria-hidden="true" focusable="false">
       <path d="M12 2.5l2.93 6.16 6.57.72-4.92 4.6 1.41 6.52L12 17.27l-5.99 3.23 1.41-6.52L2.5 9.38l6.57-.72L12 2.5z" />
     </svg>
   );

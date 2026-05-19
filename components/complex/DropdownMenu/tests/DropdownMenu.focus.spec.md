@@ -27,9 +27,7 @@ test('on open with all first items disabled: focus moves to first enabled', asyn
   // For now: verify behavior via File menu where "Save as..." is disabled mid-list
   await page.goto('/components/dropdown-menu');
   await page.getByRole('button', { name: 'File' }).click();
-  const focused = await page.evaluate(() =>
-    document.activeElement?.getAttribute('aria-disabled')
-  );
+  const focused = await page.evaluate(() => document.activeElement?.getAttribute('aria-disabled'));
   expect(focused).not.toBe('true');
 });
 
@@ -75,7 +73,7 @@ test('disabled items are never focused by keyboard nav', async ({ page }) => {
   for (let i = 0; i < 20; i++) {
     await page.keyboard.press('ArrowDown');
     const ariaDisabled = await page.evaluate(() =>
-      document.activeElement?.getAttribute('aria-disabled')
+      document.activeElement?.getAttribute('aria-disabled'),
     );
     expect(ariaDisabled).not.toBe('true');
   }
@@ -85,8 +83,9 @@ test('tabIndex: all items have tabIndex=-1 (menu uses arrow keys)', async ({ pag
   await page.goto('/components/dropdown-menu');
   await page.getByRole('button', { name: 'Actions' }).click();
   const tabIndices = await page.evaluate(() =>
-    Array.from(document.querySelectorAll('[role="menuitem"]'))
-      .map((el) => (el as HTMLElement).tabIndex)
+    Array.from(document.querySelectorAll('[role="menuitem"]')).map(
+      (el) => (el as HTMLElement).tabIndex,
+    ),
   );
   expect(tabIndices.every((t) => t === -1)).toBe(true);
 });

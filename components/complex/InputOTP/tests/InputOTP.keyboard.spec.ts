@@ -32,20 +32,14 @@ test.describe('InputOTP — keyboard interactions', () => {
 
   test('OTP-R01 — typing a digit updates value', async ({ page }) => {
     // Section 1 — basic numeric
-    const input = page
-      .getByRole('textbox', { name: 'Verification code' })
-      .first();
+    const input = page.getByRole('textbox', { name: 'Verification code' }).first();
     await input.focus();
     await page.keyboard.type('1');
     await expect(input).toHaveValue('1');
   });
 
-  test('OTP-R02 — Backspace removes last char, input stays focused', async ({
-    page,
-  }) => {
-    const input = page
-      .getByRole('textbox', { name: 'Verification code' })
-      .first();
+  test('OTP-R02 — Backspace removes last char, input stays focused', async ({ page }) => {
+    const input = page.getByRole('textbox', { name: 'Verification code' }).first();
     await input.focus();
     await page.keyboard.type('12');
     await expect(input).toHaveValue('12');
@@ -54,15 +48,11 @@ test.describe('InputOTP — keyboard interactions', () => {
     await expect(input).toBeFocused();
   });
 
-  test('OTP-R03 — paste event distributes chars across slots', async ({
-    page,
-  }) => {
+  test('OTP-R03 — paste event distributes chars across slots', async ({ page }) => {
     // Section 1 — maxLength=6 numeric. Simulate paste via dispatching a
     // ClipboardEvent with clipboardData — programmatic paste so we don't
     // depend on OS clipboard permissions.
-    const input = page
-      .getByRole('textbox', { name: 'Verification code' })
-      .first();
+    const input = page.getByRole('textbox', { name: 'Verification code' }).first();
     await input.focus();
     await input.evaluate((el: HTMLInputElement) => {
       const dt = new DataTransfer();
@@ -77,13 +67,9 @@ test.describe('InputOTP — keyboard interactions', () => {
     await expect(input).toHaveValue('123456');
   });
 
-  test('OTP-R03b — paste strips hyphens and spaces (XXX-XXX form)', async ({
-    page,
-  }) => {
+  test('OTP-R03b — paste strips hyphens and spaces (XXX-XXX form)', async ({ page }) => {
     // Section 2 — grouped maxLength=6 numeric
-    const input = page
-      .getByRole('textbox', { name: 'Grouped code' })
-      .first();
+    const input = page.getByRole('textbox', { name: 'Grouped code' }).first();
     await input.focus();
     await input.evaluate((el: HTMLInputElement) => {
       const dt = new DataTransfer();
@@ -98,13 +84,9 @@ test.describe('InputOTP — keyboard interactions', () => {
     await expect(input).toHaveValue('123456');
   });
 
-  test('OTP-R04 — numeric pattern: alphabetic keystrokes rejected', async ({
-    page,
-  }) => {
+  test('OTP-R04 — numeric pattern: alphabetic keystrokes rejected', async ({ page }) => {
     // Section 1 — numeric. Typing 'a' is blocked via onBeforeInput preventDefault
-    const input = page
-      .getByRole('textbox', { name: 'Verification code' })
-      .first();
+    const input = page.getByRole('textbox', { name: 'Verification code' }).first();
     await input.focus();
     await page.keyboard.type('abc');
     await expect(input).toHaveValue('');
@@ -115,9 +97,7 @@ test.describe('InputOTP — keyboard interactions', () => {
 
   test('Alphanumeric pattern accepts letters + digits', async ({ page }) => {
     // Section 4 — alphanumeric maxLength=8
-    const input = page
-      .getByRole('textbox', { name: 'License key' })
-      .first();
+    const input = page.getByRole('textbox', { name: 'License key' }).first();
     await input.focus();
     await page.keyboard.type('ABC12de');
     await expect(input).toHaveValue('ABC12de');
@@ -131,12 +111,8 @@ test.describe('InputOTP — keyboard interactions', () => {
     await expect(input).toHaveValue('1234');
   });
 
-  test('ArrowLeft/ArrowRight move caret without changing value', async ({
-    page,
-  }) => {
-    const input = page
-      .getByRole('textbox', { name: 'Verification code' })
-      .first();
+  test('ArrowLeft/ArrowRight move caret without changing value', async ({ page }) => {
+    const input = page.getByRole('textbox', { name: 'Verification code' }).first();
     await input.focus();
     await page.keyboard.type('123');
     const before = await input.inputValue();
@@ -147,12 +123,8 @@ test.describe('InputOTP — keyboard interactions', () => {
     await expect(input).toHaveValue(before);
   });
 
-  test('Home/End move caret to start/end (value unchanged)', async ({
-    page,
-  }) => {
-    const input = page
-      .getByRole('textbox', { name: 'Verification code' })
-      .first();
+  test('Home/End move caret to start/end (value unchanged)', async ({ page }) => {
+    const input = page.getByRole('textbox', { name: 'Verification code' }).first();
     await input.focus();
     await page.keyboard.type('1234');
     await page.keyboard.press('Home');

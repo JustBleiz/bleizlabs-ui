@@ -11,13 +11,7 @@
 
 import { test, expect } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
-import {
-  stepperBy,
-  navBy,
-  stepsOf,
-  liveRegionOf,
-  activeStep,
-} from './_helpers';
+import { stepperBy, navBy, stepsOf, liveRegionOf, activeStep } from './_helpers';
 
 const URL = '/components/stepper';
 
@@ -26,9 +20,7 @@ test.describe('Stepper — ARIA', () => {
     await page.goto(URL);
   });
 
-  test('STEP-A01: visual mode renders <ol role="list">, NOT <nav>', async ({
-    page,
-  }) => {
+  test('STEP-A01: visual mode renders <ol role="list">, NOT <nav>', async ({ page }) => {
     const stepper = stepperBy(page, 'Order progress');
     await expect(stepper).toBeVisible();
     const tag = await stepper.evaluate((el) => el.tagName.toLowerCase());
@@ -40,28 +32,21 @@ test.describe('Stepper — ARIA', () => {
   test('STEP-A02: interactive mode renders <nav role="navigation"> wrapping <ol>', async ({
     page,
   }) => {
-    const nav = navBy(
-      page,
-      'Onboarding wizard — click visited steps to revisit',
-    );
+    const nav = navBy(page, 'Onboarding wizard — click visited steps to revisit');
     await expect(nav).toBeVisible();
     await expect(nav).toHaveAttribute('role', 'navigation');
     const list = nav.locator('ol[role="list"]');
     await expect(list).toBeVisible();
   });
 
-  test('STEP-A03: active step carries aria-current="step"', async ({
-    page,
-  }) => {
+  test('STEP-A03: active step carries aria-current="step"', async ({ page }) => {
     const stepper = stepperBy(page, 'Order progress');
     const current = activeStep(stepper);
     await expect(current).toHaveCount(1);
     await expect(current).toHaveAttribute('data-status', 'active');
   });
 
-  test('STEP-A04: complete/pending steps DO NOT carry aria-current', async ({
-    page,
-  }) => {
+  test('STEP-A04: complete/pending steps DO NOT carry aria-current', async ({ page }) => {
     const stepper = stepperBy(page, 'Order progress');
     const completeSteps = stepper.locator('li[data-status="complete"]');
     const pendingSteps = stepper.locator('li[data-status="pending"]');
@@ -78,10 +63,7 @@ test.describe('Stepper — ARIA', () => {
   test('STEP-A05: interactive non-clickable steps render aria-disabled="true"', async ({
     page,
   }) => {
-    const nav = navBy(
-      page,
-      'Onboarding wizard — click visited steps to revisit',
-    );
+    const nav = navBy(page, 'Onboarding wizard — click visited steps to revisit');
     // Default currentStep=2 in demo → step 2 ("Invite team") is active,
     // steps 0+1 complete (clickable), steps 2+3 non-clickable.
     const disabled = nav.locator('[aria-disabled="true"]');
@@ -89,22 +71,15 @@ test.describe('Stepper — ARIA', () => {
     expect(count).toBeGreaterThanOrEqual(1);
   });
 
-  test('STEP-A06: clickable steps render as <button type="button">', async ({
-    page,
-  }) => {
-    const nav = navBy(
-      page,
-      'Onboarding wizard — click visited steps to revisit',
-    );
+  test('STEP-A06: clickable steps render as <button type="button">', async ({ page }) => {
+    const nav = navBy(page, 'Onboarding wizard — click visited steps to revisit');
     const buttons = nav.locator('button[data-step-clickable="true"]');
     await expect(buttons.first()).toBeVisible();
     const type = await buttons.first().getAttribute('type');
     expect(type).toBe('button');
   });
 
-  test('STEP-A07: live region exists with role=status + aria-live=polite', async ({
-    page,
-  }) => {
+  test('STEP-A07: live region exists with role=status + aria-live=polite', async ({ page }) => {
     const stepper = stepperBy(page, 'Order progress');
     const live = liveRegionOf(stepper);
     await expect(live).toHaveAttribute('aria-live', 'polite');
@@ -141,9 +116,7 @@ test.describe('Stepper — ARIA', () => {
     expect(liveText).toContain('Shipping');
   });
 
-  test('STEP-A09: explicit status="error" overrides currentStep derivation', async ({
-    page,
-  }) => {
+  test('STEP-A09: explicit status="error" overrides currentStep derivation', async ({ page }) => {
     const stepper = stepperBy(page, 'Import wizard');
     // Demo: currentStep=3, steps 0..3. Step 2 has explicit status="error".
     const steps = stepsOf(stepper);
@@ -152,9 +125,7 @@ test.describe('Stepper — ARIA', () => {
   });
 
   test('STEP-A10: axe-core zero violations on demo route', async ({ page }) => {
-    const results = await new AxeBuilder({ page })
-      .disableRules(['region'])
-      .analyze();
+    const results = await new AxeBuilder({ page }).disableRules(['region']).analyze();
     expect(results.violations).toEqual([]);
   });
 });

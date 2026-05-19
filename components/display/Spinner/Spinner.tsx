@@ -48,33 +48,20 @@ const COLOR_CLASS: Record<SpinnerColor, string> = {
   muted: styles.colorMuted!,
 };
 
-export const Spinner = forwardRef<HTMLSpanElement, SpinnerProps>(
-  function Spinner(
-    {
-      size = 'sm',
-      color = 'brand',
-      label = 'Loading',
-      className,
-      ...rest
-    },
-    ref,
-  ) {
-    return (
-      <span
-        ref={ref}
-        role="status"
-        aria-live="polite"
-        className={cn(
-          styles.root,
-          SIZE_CLASS[size],
-          COLOR_CLASS[color],
-          className,
-        )}
-        {...rest}
-      >
-        <span aria-hidden="true" className={styles.ring} />
-        <span className={styles.srOnly}>{label}</span>
-      </span>
-    );
-  },
-);
+export const Spinner = forwardRef<HTMLSpanElement, SpinnerProps>(function Spinner(
+  { size = 'sm', color = 'brand', label = 'Loading', className, ...rest },
+  ref,
+) {
+  return (
+    <span
+      ref={ref}
+      role="status"
+      aria-live="polite"
+      className={cn(styles.root, SIZE_CLASS[size], COLOR_CLASS[color], className)}
+      {...rest}
+    >
+      <span aria-hidden="true" className={styles.ring} />
+      <span className={styles.srOnly}>{label}</span>
+    </span>
+  );
+});

@@ -44,8 +44,7 @@ export default function SpecializedPlaygroundPage() {
   const [counterValue, setCounterValue] = useState(12500);
   const [page, setPage] = useState(1);
 
-  const formatNumber = (n: number) =>
-    new Intl.NumberFormat('pl-PL').format(n);
+  const formatNumber = (n: number) => new Intl.NumberFormat('pl-PL').format(n);
 
   // Deterministic 30-day availability history (no RNG to avoid hydration flicker)
   const availabilityHistory = useMemo<AvailabilitySegment[]>(() => {
@@ -99,15 +98,13 @@ export default function SpecializedPlaygroundPage() {
           Specialized
         </Heading>
         <Text className={styles.intro}>
-          Fourteen focused primitives for data display and navigation —{' '}
-          <code>Dot</code>, <code>MetricBar</code>, <code>AnimatedCounter</code>,{' '}
-          <code>Breadcrumb</code>, <code>Pagination</code>,{' '}
-          <code>UsageDonut</code>, <code>AvailabilityBar</code>,{' '}
-          <code>Kbd</code>, <code>ThemeToggle</code>, plus the chart family{' '}
-          <code>BarChart</code>, <code>LineChart</code>, <code>AreaChart</code>,{' '}
-          <code>Sparkline</code>, <code>PieChart</code> (0.20.0). Each solves
-          one problem well, composes with the rest of the library, and reads
-          from the shared token system. Individual chart demos live on
+          Fourteen focused primitives for data display and navigation — <code>Dot</code>,{' '}
+          <code>MetricBar</code>, <code>AnimatedCounter</code>, <code>Breadcrumb</code>,{' '}
+          <code>Pagination</code>, <code>UsageDonut</code>, <code>AvailabilityBar</code>,{' '}
+          <code>Kbd</code>, <code>ThemeToggle</code>, plus the chart family <code>BarChart</code>,{' '}
+          <code>LineChart</code>, <code>AreaChart</code>, <code>Sparkline</code>,{' '}
+          <code>PieChart</code> (0.20.0). Each solves one problem well, composes with the rest of
+          the library, and reads from the shared token system. Individual chart demos live on
           dedicated routes — link from the home index.
         </Text>
       </header>
@@ -120,8 +117,8 @@ export default function SpecializedPlaygroundPage() {
           Dot
         </Heading>
         <Text>
-          Status indicator with 6 colors (aligned with Badge), 3 sizes, and an
-          optional animation plus sr-only label.
+          Status indicator with 6 colors (aligned with Badge), 3 sizes, and an optional animation
+          plus sr-only label.
         </Text>
 
         <div className={styles.row}>
@@ -159,8 +156,7 @@ export default function SpecializedPlaygroundPage() {
 
         <div className={styles.row}>
           <span className={styles.inline}>
-            <Dot color="error" label="System offline" /> System offline
-            (pulse + sr-only label)
+            <Dot color="error" label="System offline" /> System offline (pulse + sr-only label)
           </span>
         </div>
       </section>
@@ -174,20 +170,14 @@ export default function SpecializedPlaygroundPage() {
         </Heading>
         <Text>
           Standalone used/total indicator. Inline label row + bar.{' '}
-          <code>role=&quot;progressbar&quot;</code> + clamped{' '}
-          <code>aria-valuenow</code> + human-readable{' '}
-          <code>aria-valuetext</code>.
+          <code>role=&quot;progressbar&quot;</code> + clamped <code>aria-valuenow</code> +
+          human-readable <code>aria-valuetext</code>.
         </Text>
 
         <div className={styles.metricGrid}>
           <MetricBar used={42} total={100} unit="GB" label="Disk usage" />
           <MetricBar used={1450} total={2000} unit="MB" label="Memory (RAM)" />
-          <MetricBar
-            used={87}
-            total={100}
-            unit="%"
-            label="CPU (no formatter)"
-          />
+          <MetricBar used={87} total={100} unit="%" label="CPU (no formatter)" />
           <MetricBar
             used={12500}
             total={50000}
@@ -195,12 +185,7 @@ export default function SpecializedPlaygroundPage() {
             label="Project budget"
             formatValue={formatNumber}
           />
-          <MetricBar
-            used={150}
-            total={100}
-            unit="%"
-            label="Clamp test (used > total)"
-          />
+          <MetricBar used={150} total={100} unit="%" label="Clamp test (used > total)" />
         </div>
       </section>
 
@@ -212,29 +197,18 @@ export default function SpecializedPlaygroundPage() {
           AnimatedCounter
         </Heading>
         <Text>
-          Count-up from 0 to value via <code>requestAnimationFrame</code> with
-          an easeOutCubic curve. Formats with <code>Intl.NumberFormat</code>{' '}
-          (pl-PL by default). Respects <code>prefers-reduced-motion</code>{' '}
-          (instant jump) and exposes a <code>start</code> gate for intersection
-          or custom triggers.
+          Count-up from 0 to value via <code>requestAnimationFrame</code> with an easeOutCubic
+          curve. Formats with <code>Intl.NumberFormat</code> (pl-PL by default). Respects{' '}
+          <code>prefers-reduced-motion</code> (instant jump) and exposes a <code>start</code> gate
+          for intersection or custom triggers.
         </Text>
 
         <div className={styles.row}>
           <span className={styles.big}>
-            <AnimatedCounter
-              value={counterValue}
-              prefix="$"
-              suffix=" PLN"
-              start={counterStart}
-            />
+            <AnimatedCounter value={counterValue} prefix="$" suffix=" PLN" start={counterStart} />
           </span>
           <span className={styles.big}>
-            <AnimatedCounter
-              value={98.5}
-              suffix="%"
-              decimals={1}
-              start={counterStart}
-            />
+            <AnimatedCounter value={98.5} suffix="%" decimals={1} start={counterStart} />
           </span>
           <span className={styles.big}>
             <AnimatedCounter value={145} suffix="h" start={counterStart} />
@@ -242,25 +216,13 @@ export default function SpecializedPlaygroundPage() {
         </div>
 
         <div className={styles.controls}>
-          <Button
-            variant="secondary"
-            size="sm"
-            onClick={() => setCounterStart((s) => !s)}
-          >
+          <Button variant="secondary" size="sm" onClick={() => setCounterStart((s) => !s)}>
             Toggle start ({counterStart ? 'ON' : 'OFF'})
           </Button>
-          <Button
-            variant="secondary"
-            size="sm"
-            onClick={() => setCounterValue((v) => v + 2500)}
-          >
+          <Button variant="secondary" size="sm" onClick={() => setCounterValue((v) => v + 2500)}>
             +2500
           </Button>
-          <Button
-            variant="secondary"
-            size="sm"
-            onClick={() => setCounterValue(12500)}
-          >
+          <Button variant="secondary" size="sm" onClick={() => setCounterValue(12500)}>
             Reset
           </Button>
         </div>
@@ -274,10 +236,9 @@ export default function SpecializedPlaygroundPage() {
           Breadcrumb
         </Heading>
         <Text>
-          Semantic <code>&lt;nav&gt; + &lt;ol&gt; + &lt;li&gt;</code>{' '}
-          navigation. The last item always carries{' '}
-          <code>aria-current=&quot;page&quot;</code>. Separator slot with a
-          default chevron.
+          Semantic <code>&lt;nav&gt; + &lt;ol&gt; + &lt;li&gt;</code> navigation. The last item
+          always carries <code>aria-current=&quot;page&quot;</code>. Separator slot with a default
+          chevron.
         </Text>
 
         <div className={styles.stack}>
@@ -322,11 +283,10 @@ export default function SpecializedPlaygroundPage() {
           Pagination
         </Heading>
         <Text>
-          Two-mode page navigation.{' '}
-          <code>variant=&quot;full&quot;</code> renders a numbered list with
-          ellipsis; <code>&quot;compact&quot;</code> shows prev/next plus{' '}
-          &ldquo;Page X of Y&rdquo;. Native <code>&lt;button&gt;</code>{' '}
-          elements with <code>aria-current=&quot;page&quot;</code>.
+          Two-mode page navigation. <code>variant=&quot;full&quot;</code> renders a numbered list
+          with ellipsis; <code>&quot;compact&quot;</code> shows prev/next plus &ldquo;Page X of
+          Y&rdquo;. Native <code>&lt;button&gt;</code> elements with{' '}
+          <code>aria-current=&quot;page&quot;</code>.
         </Text>
 
         <div className={styles.stack}>
@@ -338,36 +298,17 @@ export default function SpecializedPlaygroundPage() {
             siblingCount={1}
           />
 
-          <Pagination
-            currentPage={page}
-            totalPages={10}
-            onPageChange={setPage}
-            variant="compact"
-          />
+          <Pagination currentPage={page} totalPages={10} onPageChange={setPage} variant="compact" />
         </div>
 
         <div className={styles.controls}>
-          <Button
-            variant="secondary"
-            size="sm"
-            onClick={() => setPage(1)}
-            disabled={page === 1}
-          >
+          <Button variant="secondary" size="sm" onClick={() => setPage(1)} disabled={page === 1}>
             Jump to 1
           </Button>
-          <Button
-            variant="secondary"
-            size="sm"
-            onClick={() => setPage(5)}
-          >
+          <Button variant="secondary" size="sm" onClick={() => setPage(5)}>
             Jump to 5
           </Button>
-          <Button
-            variant="secondary"
-            size="sm"
-            onClick={() => setPage(10)}
-            disabled={page === 10}
-          >
+          <Button variant="secondary" size="sm" onClick={() => setPage(10)} disabled={page === 10}>
             Jump to 10
           </Button>
         </div>
@@ -383,8 +324,8 @@ export default function SpecializedPlaygroundPage() {
         <Text>
           Multi-segment SVG donut chart. Zero deps, `stroke-dasharray` math w{' '}
           <code>viewBox 0 0 100 100</code>. <code>role=&quot;img&quot;</code> +{' '}
-          <code>aria-label</code> + SVG <code>&lt;title&gt;</code>. Default
-          color cycle brand → success → warning → info → error.
+          <code>aria-label</code> + SVG <code>&lt;title&gt;</code>. Default color cycle brand →
+          success → warning → info → error.
         </Text>
 
         <div className={styles.row}>
@@ -416,7 +357,6 @@ export default function SpecializedPlaygroundPage() {
           <UsageDonut
             label="Incident severity"
             size="lg"
-
             segments={[
               { label: 'Critical', value: 2 },
               { label: 'High', value: 5 },
@@ -441,10 +381,9 @@ export default function SpecializedPlaygroundPage() {
           AvailabilityBar <span className={styles.tierTag}>Tier B</span>
         </Heading>
         <Text>
-          Day-by-day status strip with native <code>title</code> tooltips on
-          hover. <code>role=&quot;img&quot;</code> on the wrapper carries a
-          computed summary. CSS Grid layout driven by the{' '}
-          <code>--availability-cells</code> custom property.
+          Day-by-day status strip with native <code>title</code> tooltips on hover.{' '}
+          <code>role=&quot;img&quot;</code> on the wrapper carries a computed summary. CSS Grid
+          layout driven by the <code>--availability-cells</code> custom property.
         </Text>
 
         <div className={styles.stack}>
@@ -453,10 +392,7 @@ export default function SpecializedPlaygroundPage() {
             segments={availabilityHistory}
             showLabels
           />
-          <AvailabilityBar
-            label="Service B status"
-            segments={availabilityHistory.slice(0, 14)}
-          />
+          <AvailabilityBar label="Service B status" segments={availabilityHistory.slice(0, 14)} />
         </div>
       </section>
 
@@ -468,10 +404,9 @@ export default function SpecializedPlaygroundPage() {
           Kbd <span className={styles.tierTag}>Tier B</span>
         </Heading>
         <Text>
-          Native semantic <code>&lt;kbd&gt;</code> with outlined pill styling.
-          Consumers pass raw text (Ctrl, ⌘, Enter). Combinations are composed
-          by rendering multiple <code>&lt;Kbd&gt;</code> with separators on
-          the consumer side.
+          Native semantic <code>&lt;kbd&gt;</code> with outlined pill styling. Consumers pass raw
+          text (Ctrl, ⌘, Enter). Combinations are composed by rendering multiple{' '}
+          <code>&lt;Kbd&gt;</code> with separators on the consumer side.
         </Text>
 
         <div className={styles.stack}>

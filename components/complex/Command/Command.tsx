@@ -127,8 +127,10 @@ export interface CommandItemRecord {
   onSelect: ((value: string) => void) | undefined;
 }
 
-export interface CommandProps
-  extends Omit<HTMLAttributes<HTMLDivElement>, 'children' | 'onSelect'> {
+export interface CommandProps extends Omit<
+  HTMLAttributes<HTMLDivElement>,
+  'children' | 'onSelect'
+> {
   /** Controlled open state. */
   open?: boolean;
   /** Uncontrolled initial open state. Default `false`. */
@@ -179,8 +181,7 @@ export interface CommandGroupProps extends HTMLAttributes<HTMLDivElement> {
   forceMount?: boolean;
 }
 
-export interface CommandItemProps
-  extends Omit<HTMLAttributes<HTMLDivElement>, 'onSelect'> {
+export interface CommandItemProps extends Omit<HTMLAttributes<HTMLDivElement>, 'onSelect'> {
   /** Unique identifier. Required. Passed to `onSelect`. */
   value: string;
   /**
@@ -312,9 +313,7 @@ export const Command = forwardRef<HTMLDivElement, CommandProps>(function Command
   // Item registry — STATE Map (not ref) so filter can read during render per
   // React 19 react-hooks/refs rule. setRegistry creates a new Map instance
   // on every mutation to trigger subscribers.
-  const [registry, setRegistry] = useState<ReadonlyMap<string, CommandItemRecord>>(
-    () => new Map(),
-  );
+  const [registry, setRegistry] = useState<ReadonlyMap<string, CommandItemRecord>>(() => new Map());
 
   const registerItem = useCallback((record: CommandItemRecord) => {
     setRegistry((prev) => {
@@ -343,14 +342,10 @@ export const Command = forwardRef<HTMLDivElement, CommandProps>(function Command
     } else if (typeof filter === 'function') {
       visibleIds = filter(all, search);
     } else {
-      visibleIds = all
-        .filter((r) => defaultFilterMatch(r.textContent, search))
-        .map((r) => r.id);
+      visibleIds = all.filter((r) => defaultFilterMatch(r.textContent, search)).map((r) => r.id);
     }
     const visibleSet = new Set(visibleIds);
-    const firstEnabled = all.find(
-      (r) => visibleSet.has(r.id) && !r.disabled,
-    );
+    const firstEnabled = all.find((r) => visibleSet.has(r.id) && !r.disabled);
     return {
       visibleItemIds: visibleSet,
       matchCount: visibleIds.length,
@@ -360,16 +355,13 @@ export const Command = forwardRef<HTMLDivElement, CommandProps>(function Command
 
   const [highlightedId, setHighlightedIdState] = useState<string | null>(null);
 
-  const setHighlightedId = useCallback(
-    (id: string | null, source: 'keyboard' | 'mouse') => {
-      setHighlightedIdState(id);
-      if (source === 'keyboard' && id !== null) {
-        const element = document.getElementById(id);
-        element?.scrollIntoView({ block: 'nearest' });
-      }
-    },
-    [],
-  );
+  const setHighlightedId = useCallback((id: string | null, source: 'keyboard' | 'mouse') => {
+    setHighlightedIdState(id);
+    if (source === 'keyboard' && id !== null) {
+      const element = document.getElementById(id);
+      element?.scrollIntoView({ block: 'nearest' });
+    }
+  }, []);
 
   // Render-time prop-sync for highlight reset — E34 Carousel / E31 DatePicker
   // precedent. Triggers when open / search / visibleItemIds changes.
@@ -392,10 +384,7 @@ export const Command = forwardRef<HTMLDivElement, CommandProps>(function Command
     });
     if (!open) {
       setHighlightedIdState(null);
-    } else if (
-      highlightedId === null ||
-      !visibleItemIds.has(highlightedId)
-    ) {
+    } else if (highlightedId === null || !visibleItemIds.has(highlightedId)) {
       setHighlightedIdState(firstVisibleEnabledId);
     }
   }
@@ -407,12 +396,9 @@ export const Command = forwardRef<HTMLDivElement, CommandProps>(function Command
     ((event: KeyboardEvent) => void) | null
   >(null);
 
-  const setListKeyHandler = useCallback(
-    (handler: ((event: KeyboardEvent) => void) | null) => {
-      setListKeyHandlerState(() => handler);
-    },
-    [],
-  );
+  const setListKeyHandler = useCallback((handler: ((event: KeyboardEvent) => void) | null) => {
+    setListKeyHandlerState(() => handler);
+  }, []);
 
   const invokeListKeyHandler = useCallback(
     (event: KeyboardEvent) => {
@@ -574,11 +560,7 @@ export const Command = forwardRef<HTMLDivElement, CommandProps>(function Command
     <CommandContext.Provider value={contextValue}>
       <FloatingPortal>
         <div data-cmd-portal className={styles.portalRoot}>
-          <div
-            className={styles.overlay}
-            data-state="open"
-            onClick={handleOverlayClick}
-          />
+          <div className={styles.overlay} data-state="open" onClick={handleOverlayClick} />
           <div
             ref={mergedRef}
             role="dialog"
@@ -601,223 +583,207 @@ export const Command = forwardRef<HTMLDivElement, CommandProps>(function Command
 // CommandInput
 // ============================================================================
 
-export const CommandInput = forwardRef<HTMLInputElement, CommandInputProps>(
-  function CommandInput(
-    { className, placeholder, onCompositionStart, onCompositionEnd, ...rest },
-    ref,
-  ) {
-    const ctx = useCommandContext('CommandInput');
-    const mergedRef = useMemo(
-      () => mergeRefs(ref, ctx.inputRef),
-      [ref, ctx.inputRef],
-    );
+export const CommandInput = forwardRef<HTMLInputElement, CommandInputProps>(function CommandInput(
+  { className, placeholder, onCompositionStart, onCompositionEnd, ...rest },
+  ref,
+) {
+  const ctx = useCommandContext('CommandInput');
+  const mergedRef = useMemo(() => mergeRefs(ref, ctx.inputRef), [ref, ctx.inputRef]);
 
-    const isComposingRef = useRef(false);
+  const isComposingRef = useRef(false);
 
-    const handleChange = useCallback(
-      (event: ChangeEvent<HTMLInputElement>) => {
-        if (isComposingRef.current) return;
-        ctx.setSearch(event.target.value);
-      },
-      [ctx],
-    );
+  const handleChange = useCallback(
+    (event: ChangeEvent<HTMLInputElement>) => {
+      if (isComposingRef.current) return;
+      ctx.setSearch(event.target.value);
+    },
+    [ctx],
+  );
 
-    const handleCompositionStart = useCallback(
-      (event: ReactCompositionEvent<HTMLInputElement>) => {
-        isComposingRef.current = true;
-        onCompositionStart?.(event);
-      },
-      [onCompositionStart],
-    );
+  const handleCompositionStart = useCallback(
+    (event: ReactCompositionEvent<HTMLInputElement>) => {
+      isComposingRef.current = true;
+      onCompositionStart?.(event);
+    },
+    [onCompositionStart],
+  );
 
-    const handleCompositionEnd = useCallback(
-      (event: ReactCompositionEvent<HTMLInputElement>) => {
-        isComposingRef.current = false;
-        ctx.setSearch((event.target as HTMLInputElement).value);
-        onCompositionEnd?.(event);
-      },
-      [ctx, onCompositionEnd],
-    );
+  const handleCompositionEnd = useCallback(
+    (event: ReactCompositionEvent<HTMLInputElement>) => {
+      isComposingRef.current = false;
+      ctx.setSearch((event.target as HTMLInputElement).value);
+      onCompositionEnd?.(event);
+    },
+    [ctx, onCompositionEnd],
+  );
 
-    const handleKeyDown = useCallback(
-      (event: ReactKeyboardEvent<HTMLInputElement>) => {
-        if (isComposingRef.current) return;
-        if (event.key === 'Process' || event.keyCode === 229) return;
+  const handleKeyDown = useCallback(
+    (event: ReactKeyboardEvent<HTMLInputElement>) => {
+      if (isComposingRef.current) return;
+      if (event.key === 'Process' || event.keyCode === 229) return;
 
-        // Escape — close dialog (inline, single dispatch).
-        if (event.key === 'Escape') {
-          if (ctx.closeOnEscape) {
-            event.preventDefault();
-            event.stopPropagation();
-            ctx.requestClose();
-          }
-          return;
-        }
-
-        // Enter — commit highlighted item.
-        if (event.key === 'Enter') {
-          if (ctx.highlightedId !== null) {
-            event.preventDefault();
-            ctx.commitHighlighted();
-          }
-          return;
-        }
-
-        // Arrow / Home / End — route to list handler.
-        if (
-          event.key === 'ArrowDown' ||
-          event.key === 'ArrowUp' ||
-          event.key === 'Home' ||
-          event.key === 'End' ||
-          event.key === 'PageDown' ||
-          event.key === 'PageUp'
-        ) {
-          if (event.ctrlKey || event.metaKey || event.altKey) return;
+      // Escape — close dialog (inline, single dispatch).
+      if (event.key === 'Escape') {
+        if (ctx.closeOnEscape) {
           event.preventDefault();
-          ctx.invokeListKeyHandler(event.nativeEvent);
+          event.stopPropagation();
+          ctx.requestClose();
         }
-      },
-      [ctx],
-    );
+        return;
+      }
 
-    return (
-      <div className={styles.inputWrap}>
-        <svg
-          className={styles.inputIcon}
-          width="16"
-          height="16"
-          viewBox="0 0 16 16"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="1.5"
-          strokeLinecap="round"
-          aria-hidden="true"
-        >
-          <circle cx="7" cy="7" r="4.5" />
-          <path d="M10.5 10.5L13 13" />
-        </svg>
-        <input
-          ref={mergedRef}
-          id={ctx.inputId}
-          type="text"
-          role="combobox"
-          aria-expanded="true"
-          aria-controls={ctx.listId}
-          aria-activedescendant={ctx.highlightedId ?? undefined}
-          aria-autocomplete="list"
-          autoComplete="off"
-          autoCorrect="off"
-          spellCheck={false}
-          placeholder={placeholder}
-          value={ctx.search}
-          onChange={handleChange}
-          onKeyDown={handleKeyDown}
-          onCompositionStart={handleCompositionStart}
-          onCompositionEnd={handleCompositionEnd}
-          className={cn(styles.input, className)}
-          {...rest}
-        />
-      </div>
-    );
-  },
-);
+      // Enter — commit highlighted item.
+      if (event.key === 'Enter') {
+        if (ctx.highlightedId !== null) {
+          event.preventDefault();
+          ctx.commitHighlighted();
+        }
+        return;
+      }
+
+      // Arrow / Home / End — route to list handler.
+      if (
+        event.key === 'ArrowDown' ||
+        event.key === 'ArrowUp' ||
+        event.key === 'Home' ||
+        event.key === 'End' ||
+        event.key === 'PageDown' ||
+        event.key === 'PageUp'
+      ) {
+        if (event.ctrlKey || event.metaKey || event.altKey) return;
+        event.preventDefault();
+        ctx.invokeListKeyHandler(event.nativeEvent);
+      }
+    },
+    [ctx],
+  );
+
+  return (
+    <div className={styles.inputWrap}>
+      <svg
+        className={styles.inputIcon}
+        width="16"
+        height="16"
+        viewBox="0 0 16 16"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        aria-hidden="true"
+      >
+        <circle cx="7" cy="7" r="4.5" />
+        <path d="M10.5 10.5L13 13" />
+      </svg>
+      <input
+        ref={mergedRef}
+        id={ctx.inputId}
+        type="text"
+        role="combobox"
+        aria-expanded="true"
+        aria-controls={ctx.listId}
+        aria-activedescendant={ctx.highlightedId ?? undefined}
+        aria-autocomplete="list"
+        autoComplete="off"
+        autoCorrect="off"
+        spellCheck={false}
+        placeholder={placeholder}
+        value={ctx.search}
+        onChange={handleChange}
+        onKeyDown={handleKeyDown}
+        onCompositionStart={handleCompositionStart}
+        onCompositionEnd={handleCompositionEnd}
+        className={cn(styles.input, className)}
+        {...rest}
+      />
+    </div>
+  );
+});
 
 // ============================================================================
 // CommandList
 // ============================================================================
 
-export const CommandList = forwardRef<HTMLDivElement, CommandListProps>(
-  function CommandList({ className, children, ...rest }, ref) {
-    const ctx = useCommandContext('CommandList');
-    const mergedRef = useMemo(
-      () => mergeRefs(ref, ctx.listRef),
-      [ref, ctx.listRef],
-    );
+export const CommandList = forwardRef<HTMLDivElement, CommandListProps>(function CommandList(
+  { className, children, ...rest },
+  ref,
+) {
+  const ctx = useCommandContext('CommandList');
+  const mergedRef = useMemo(() => mergeRefs(ref, ctx.listRef), [ref, ctx.listRef]);
 
-    // Register keyboard handler for input-routed keys. Handler reads listRef
-    // (own local ref from ctx, not mutated) + highlightedId via ctx. State
-    // registration (not ref slot) per React 19 immutability rule.
-    const { setListKeyHandler, setHighlightedId, highlightedId, listRef: ctxListRef } = ctx;
-    useLayoutEffect(() => {
-      const handler = (event: KeyboardEvent) => {
-        const all = Array.from(
-          ctxListRef.current?.querySelectorAll<HTMLElement>(
-            '[data-cmd-item][data-visible="true"]:not([aria-disabled="true"])',
-          ) ?? [],
-        );
-        if (all.length === 0) return;
-        const currentIdx = highlightedId
-          ? all.findIndex((el) => el.id === highlightedId)
-          : -1;
+  // Register keyboard handler for input-routed keys. Handler reads listRef
+  // (own local ref from ctx, not mutated) + highlightedId via ctx. State
+  // registration (not ref slot) per React 19 immutability rule.
+  const { setListKeyHandler, setHighlightedId, highlightedId, listRef: ctxListRef } = ctx;
+  useLayoutEffect(() => {
+    const handler = (event: KeyboardEvent) => {
+      const all = Array.from(
+        ctxListRef.current?.querySelectorAll<HTMLElement>(
+          '[data-cmd-item][data-visible="true"]:not([aria-disabled="true"])',
+        ) ?? [],
+      );
+      if (all.length === 0) return;
+      const currentIdx = highlightedId ? all.findIndex((el) => el.id === highlightedId) : -1;
 
-        let nextIdx = currentIdx;
-        if (event.key === 'ArrowDown') {
-          nextIdx = currentIdx === -1 ? 0 : (currentIdx + 1) % all.length;
-        } else if (event.key === 'ArrowUp') {
-          nextIdx =
-            currentIdx === -1
-              ? all.length - 1
-              : (currentIdx - 1 + all.length) % all.length;
-        } else if (event.key === 'Home') {
-          nextIdx = 0;
-        } else if (event.key === 'End') {
-          nextIdx = all.length - 1;
-        } else if (event.key === 'PageDown') {
-          nextIdx = Math.min(currentIdx + 10, all.length - 1);
-          if (currentIdx === -1) nextIdx = Math.min(10, all.length - 1);
-        } else if (event.key === 'PageUp') {
-          nextIdx = Math.max(currentIdx - 10, 0);
-          if (currentIdx === -1) nextIdx = 0;
-        } else {
-          return;
-        }
+      let nextIdx = currentIdx;
+      if (event.key === 'ArrowDown') {
+        nextIdx = currentIdx === -1 ? 0 : (currentIdx + 1) % all.length;
+      } else if (event.key === 'ArrowUp') {
+        nextIdx = currentIdx === -1 ? all.length - 1 : (currentIdx - 1 + all.length) % all.length;
+      } else if (event.key === 'Home') {
+        nextIdx = 0;
+      } else if (event.key === 'End') {
+        nextIdx = all.length - 1;
+      } else if (event.key === 'PageDown') {
+        nextIdx = Math.min(currentIdx + 10, all.length - 1);
+        if (currentIdx === -1) nextIdx = Math.min(10, all.length - 1);
+      } else if (event.key === 'PageUp') {
+        nextIdx = Math.max(currentIdx - 10, 0);
+        if (currentIdx === -1) nextIdx = 0;
+      } else {
+        return;
+      }
 
-        const target = all[nextIdx];
-        if (target) setHighlightedId(target.id, 'keyboard');
-      };
-      setListKeyHandler(handler);
-      return () => {
-        setListKeyHandler(null);
-      };
-    }, [setListKeyHandler, setHighlightedId, highlightedId, ctxListRef]);
+      const target = all[nextIdx];
+      if (target) setHighlightedId(target.id, 'keyboard');
+    };
+    setListKeyHandler(handler);
+    return () => {
+      setListKeyHandler(null);
+    };
+  }, [setListKeyHandler, setHighlightedId, highlightedId, ctxListRef]);
 
-    return (
-      <div
-        ref={mergedRef}
-        id={ctx.listId}
-        role="listbox"
-        aria-labelledby={ctx.inputId}
-        className={cn(styles.list, className)}
-        {...rest}
-      >
-        {ctx.loading ? <CommandLoading>Loading…</CommandLoading> : null}
-        {children}
-      </div>
-    );
-  },
-);
+  return (
+    <div
+      ref={mergedRef}
+      id={ctx.listId}
+      role="listbox"
+      aria-labelledby={ctx.inputId}
+      className={cn(styles.list, className)}
+      {...rest}
+    >
+      {ctx.loading ? <CommandLoading>Loading…</CommandLoading> : null}
+      {children}
+    </div>
+  );
+});
 
 // ============================================================================
 // CommandEmpty
 // ============================================================================
 
-export const CommandEmpty = forwardRef<HTMLDivElement, CommandEmptyProps>(
-  function CommandEmpty({ className, children, ...rest }, ref) {
-    const ctx = useCommandContext('CommandEmpty');
-    if (ctx.matchCount > 0) return null;
-    if (ctx.loading) return null;
-    return (
-      <div
-        ref={ref}
-        role="presentation"
-        className={cn(styles.empty, className)}
-        {...rest}
-      >
-        {children ?? 'No results found.'}
-      </div>
-    );
-  },
-);
+export const CommandEmpty = forwardRef<HTMLDivElement, CommandEmptyProps>(function CommandEmpty(
+  { className, children, ...rest },
+  ref,
+) {
+  const ctx = useCommandContext('CommandEmpty');
+  if (ctx.matchCount > 0) return null;
+  if (ctx.loading) return null;
+  return (
+    <div ref={ref} role="presentation" className={cn(styles.empty, className)} {...rest}>
+      {children ?? 'No results found.'}
+    </div>
+  );
+});
 
 // ============================================================================
 // CommandGroup
@@ -829,242 +795,211 @@ interface CommandGroupContextValue {
   registerVisibility: (id: string, visible: boolean) => void;
 }
 
-const CommandGroupContext = createContext<CommandGroupContextValue | null>(
-  null,
-);
+const CommandGroupContext = createContext<CommandGroupContextValue | null>(null);
 
-export const CommandGroup = forwardRef<HTMLDivElement, CommandGroupProps>(
-  function CommandGroup(
-    { heading, forceMount = false, className, children, ...rest },
-    ref,
-  ) {
-    const ctx = useCommandContext('CommandGroup');
-    const generatedId = useId();
-    const labelId = heading ? `cmd-group-label-${generatedId}` : undefined;
+export const CommandGroup = forwardRef<HTMLDivElement, CommandGroupProps>(function CommandGroup(
+  { heading, forceMount = false, className, children, ...rest },
+  ref,
+) {
+  const ctx = useCommandContext('CommandGroup');
+  const generatedId = useId();
+  const labelId = heading ? `cmd-group-label-${generatedId}` : undefined;
 
-    const visibleIdsRef = useRef<Set<string>>(new Set());
-    const [visibleCount, setVisibleCount] = useState(0);
+  const visibleIdsRef = useRef<Set<string>>(new Set());
+  const [visibleCount, setVisibleCount] = useState(0);
 
-    const registerVisibility = useCallback(
-      (id: string, visible: boolean) => {
-        const set = visibleIdsRef.current;
-        const had = set.has(id);
-        if (visible && !had) {
-          set.add(id);
-          setVisibleCount(set.size);
-        } else if (!visible && had) {
-          set.delete(id);
-          setVisibleCount(set.size);
-        }
-      },
-      [],
-    );
+  const registerVisibility = useCallback((id: string, visible: boolean) => {
+    const set = visibleIdsRef.current;
+    const had = set.has(id);
+    if (visible && !had) {
+      set.add(id);
+      setVisibleCount(set.size);
+    } else if (!visible && had) {
+      set.delete(id);
+      setVisibleCount(set.size);
+    }
+  }, []);
 
-    const groupContextValue = useMemo<CommandGroupContextValue>(
-      () => ({
-        labelId,
-        visibleCountRef: visibleIdsRef,
-        registerVisibility,
-      }),
-      [labelId, registerVisibility],
-    );
+  const groupContextValue = useMemo<CommandGroupContextValue>(
+    () => ({
+      labelId,
+      visibleCountRef: visibleIdsRef,
+      registerVisibility,
+    }),
+    [labelId, registerVisibility],
+  );
 
-    // Hide whole group when 0 items visible (unless forceMount).
-    const shouldHide =
-      !forceMount && !ctx.loading && visibleCount === 0;
+  // Hide whole group when 0 items visible (unless forceMount).
+  const shouldHide = !forceMount && !ctx.loading && visibleCount === 0;
 
-    return (
-      <CommandGroupContext.Provider value={groupContextValue}>
-        <div
-          ref={ref}
-          role="group"
-          aria-labelledby={labelId}
-          data-hidden={shouldHide ? 'true' : undefined}
-          className={cn(styles.group, className)}
-          {...rest}
-        >
-          {heading ? (
-            <div
-              id={labelId}
-              role="presentation"
-              className={styles.groupHeading}
-            >
-              {heading}
-            </div>
-          ) : null}
-          <div className={styles.groupItems}>{children}</div>
-        </div>
-      </CommandGroupContext.Provider>
-    );
-  },
-);
+  return (
+    <CommandGroupContext.Provider value={groupContextValue}>
+      <div
+        ref={ref}
+        role="group"
+        aria-labelledby={labelId}
+        data-hidden={shouldHide ? 'true' : undefined}
+        className={cn(styles.group, className)}
+        {...rest}
+      >
+        {heading ? (
+          <div id={labelId} role="presentation" className={styles.groupHeading}>
+            {heading}
+          </div>
+        ) : null}
+        <div className={styles.groupItems}>{children}</div>
+      </div>
+    </CommandGroupContext.Provider>
+  );
+});
 
 // ============================================================================
 // CommandItem
 // ============================================================================
 
-export const CommandItem = forwardRef<HTMLDivElement, CommandItemProps>(
-  function CommandItem(
-    {
-      value,
-      textValue,
-      disabled = false,
-      onSelect,
-      className,
-      children,
-      onMouseMove,
-      onClick,
-      ...rest
-    },
-    ref,
-  ) {
-    const ctx = useCommandContext('CommandItem');
-    const group = useContext(CommandGroupContext);
-    const generatedId = useId();
-    const id = `cmd-item-${generatedId}`;
-
-    const derivedText = useMemo(
-      () => textValue ?? deriveTextFromChildren(children),
-      [textValue, children],
-    );
-
-    // Depend only on the stable register/unregister callbacks (useCallback
-    // with empty deps in the root Command). Using the full `ctx` object as a
-    // dependency re-runs the effect on every Command re-render — the context
-    // value re-memos whenever the registry state changes (registry drives
-    // visibleItemIds / highlightedId), creating a register → setRegistry →
-    // ctx re-memo → effect re-runs → unregister → setRegistry infinite loop.
-    // Reported in E137 bug 2 ("Maximum update depth exceeded" at line 319's
-    // setRegistry). Same trap as Carousel registerSlide, fixed in E132.
-    //
-    // onSelect is held in a ref + read through `onSelectLatest` so we can
-    // pass a stable function identity into `registerItem` without churning
-    // the registry on every consumer re-render (E142 L4 F8). The ref mirror
-    // is updated on every render so the latest onSelect is always invoked.
-    const { registerItem, unregisterItem } = ctx;
-    const onSelectLatestRef = useRef(onSelect);
-    useLayoutEffect(() => {
-      onSelectLatestRef.current = onSelect;
-    });
-    const stableOnSelect = useCallback((v: string) => {
-      onSelectLatestRef.current?.(v);
-    }, []);
-    useLayoutEffect(() => {
-      registerItem({
-        id,
-        value,
-        textContent: derivedText,
-        disabled,
-        onSelect: disabled ? undefined : stableOnSelect,
-      });
-      return () => {
-        unregisterItem(id);
-      };
-    }, [registerItem, unregisterItem, id, value, derivedText, disabled, stableOnSelect]);
-
-    const isVisible = ctx.visibleItemIds.has(id);
-    const isHighlighted = ctx.highlightedId === id;
-
-    // Report visibility to group (for group-heading hide logic).
-    useLayoutEffect(() => {
-      if (!group) return;
-      group.registerVisibility(id, isVisible);
-      return () => {
-        group.registerVisibility(id, false);
-      };
-    }, [group, id, isVisible]);
-
-    const elementRef = useRef<HTMLDivElement | null>(null);
-    const mergedRef = useMemo(
-      () => mergeRefs(ref, elementRef),
-      [ref],
-    );
-
-    const handleMouseMove = useCallback(
-      (event: ReactMouseEvent<HTMLDivElement>) => {
-        onMouseMove?.(event);
-        if (disabled) return;
-        if (ctx.highlightedId !== id) {
-          ctx.setHighlightedId(id, 'mouse');
-        }
-      },
-      [onMouseMove, disabled, ctx, id],
-    );
-
-    const handleClick = useCallback(
-      (event: ReactMouseEvent<HTMLDivElement>) => {
-        onClick?.(event);
-        if (disabled) return;
-        onSelect?.(value);
-      },
-      [onClick, disabled, onSelect, value],
-    );
-
-    if (!isVisible) {
-      return <div data-cmd-item-hidden="true" style={{ display: 'none' }} />;
-    }
-
-    return (
-      <div
-        ref={mergedRef}
-        id={id}
-        role="option"
-        data-cmd-item=""
-        data-value={value}
-        data-visible="true"
-        data-highlighted={isHighlighted ? 'true' : undefined}
-        data-disabled={disabled ? 'true' : undefined}
-        aria-selected={isHighlighted}
-        aria-disabled={disabled ? true : undefined}
-        tabIndex={-1}
-        onMouseMove={handleMouseMove}
-        onClick={handleClick}
-        className={cn(styles.item, className)}
-        {...rest}
-      >
-        {children}
-      </div>
-    );
+export const CommandItem = forwardRef<HTMLDivElement, CommandItemProps>(function CommandItem(
+  {
+    value,
+    textValue,
+    disabled = false,
+    onSelect,
+    className,
+    children,
+    onMouseMove,
+    onClick,
+    ...rest
   },
-);
+  ref,
+) {
+  const ctx = useCommandContext('CommandItem');
+  const group = useContext(CommandGroupContext);
+  const generatedId = useId();
+  const id = `cmd-item-${generatedId}`;
+
+  const derivedText = useMemo(
+    () => textValue ?? deriveTextFromChildren(children),
+    [textValue, children],
+  );
+
+  // Depend only on the stable register/unregister callbacks (useCallback
+  // with empty deps in the root Command). Using the full `ctx` object as a
+  // dependency re-runs the effect on every Command re-render — the context
+  // value re-memos whenever the registry state changes (registry drives
+  // visibleItemIds / highlightedId), creating a register → setRegistry →
+  // ctx re-memo → effect re-runs → unregister → setRegistry infinite loop.
+  // Reported in E137 bug 2 ("Maximum update depth exceeded" at line 319's
+  // setRegistry). Same trap as Carousel registerSlide, fixed in E132.
+  //
+  // onSelect is held in a ref + read through `onSelectLatest` so we can
+  // pass a stable function identity into `registerItem` without churning
+  // the registry on every consumer re-render (E142 L4 F8). The ref mirror
+  // is updated on every render so the latest onSelect is always invoked.
+  const { registerItem, unregisterItem } = ctx;
+  const onSelectLatestRef = useRef(onSelect);
+  useLayoutEffect(() => {
+    onSelectLatestRef.current = onSelect;
+  });
+  const stableOnSelect = useCallback((v: string) => {
+    onSelectLatestRef.current?.(v);
+  }, []);
+  useLayoutEffect(() => {
+    registerItem({
+      id,
+      value,
+      textContent: derivedText,
+      disabled,
+      onSelect: disabled ? undefined : stableOnSelect,
+    });
+    return () => {
+      unregisterItem(id);
+    };
+  }, [registerItem, unregisterItem, id, value, derivedText, disabled, stableOnSelect]);
+
+  const isVisible = ctx.visibleItemIds.has(id);
+  const isHighlighted = ctx.highlightedId === id;
+
+  // Report visibility to group (for group-heading hide logic).
+  useLayoutEffect(() => {
+    if (!group) return;
+    group.registerVisibility(id, isVisible);
+    return () => {
+      group.registerVisibility(id, false);
+    };
+  }, [group, id, isVisible]);
+
+  const elementRef = useRef<HTMLDivElement | null>(null);
+  const mergedRef = useMemo(() => mergeRefs(ref, elementRef), [ref]);
+
+  const handleMouseMove = useCallback(
+    (event: ReactMouseEvent<HTMLDivElement>) => {
+      onMouseMove?.(event);
+      if (disabled) return;
+      if (ctx.highlightedId !== id) {
+        ctx.setHighlightedId(id, 'mouse');
+      }
+    },
+    [onMouseMove, disabled, ctx, id],
+  );
+
+  const handleClick = useCallback(
+    (event: ReactMouseEvent<HTMLDivElement>) => {
+      onClick?.(event);
+      if (disabled) return;
+      onSelect?.(value);
+    },
+    [onClick, disabled, onSelect, value],
+  );
+
+  if (!isVisible) {
+    return <div data-cmd-item-hidden="true" style={{ display: 'none' }} />;
+  }
+
+  return (
+    <div
+      ref={mergedRef}
+      id={id}
+      role="option"
+      data-cmd-item=""
+      data-value={value}
+      data-visible="true"
+      data-highlighted={isHighlighted ? 'true' : undefined}
+      data-disabled={disabled ? 'true' : undefined}
+      aria-selected={isHighlighted}
+      aria-disabled={disabled ? true : undefined}
+      tabIndex={-1}
+      onMouseMove={handleMouseMove}
+      onClick={handleClick}
+      className={cn(styles.item, className)}
+      {...rest}
+    >
+      {children}
+    </div>
+  );
+});
 
 // ============================================================================
 // CommandSeparator
 // ============================================================================
 
-export const CommandSeparator = forwardRef<
-  HTMLDivElement,
-  CommandSeparatorProps
->(function CommandSeparator({ className, ...rest }, ref) {
-  return (
-    <div
-      ref={ref}
-      role="none"
-      className={cn(styles.separator, className)}
-      {...rest}
-    />
-  );
-});
+export const CommandSeparator = forwardRef<HTMLDivElement, CommandSeparatorProps>(
+  function CommandSeparator({ className, ...rest }, ref) {
+    return <div ref={ref} role="none" className={cn(styles.separator, className)} {...rest} />;
+  },
+);
 
 // ============================================================================
 // CommandShortcut — inline <kbd> pill, decorative
 // ============================================================================
 
-export const CommandShortcut = forwardRef<
-  HTMLSpanElement,
-  CommandShortcutProps
->(function CommandShortcut({ className, children, ...rest }, ref) {
-  return (
-    <span
-      ref={ref}
-      aria-hidden="true"
-      className={cn(styles.shortcut, className)}
-      {...rest}
-    >
-      {children}
-    </span>
-  );
-});
+export const CommandShortcut = forwardRef<HTMLSpanElement, CommandShortcutProps>(
+  function CommandShortcut({ className, children, ...rest }, ref) {
+    return (
+      <span ref={ref} aria-hidden="true" className={cn(styles.shortcut, className)} {...rest}>
+        {children}
+      </span>
+    );
+  },
+);
 
 // ============================================================================
 // CommandLoading
@@ -1099,10 +1034,7 @@ export const CommandLoading = forwardRef<HTMLDivElement, CommandLoadingProps>(
  * const [open, setOpen] = useState(false);
  * useCommandShortcut('k', () => setOpen((o) => !o));
  */
-export function useCommandShortcut(
-  key: string,
-  callback: () => void,
-): void {
+export function useCommandShortcut(key: string, callback: () => void): void {
   useEffect(() => {
     const handler = (event: KeyboardEvent) => {
       const isModKey = event.metaKey || event.ctrlKey;

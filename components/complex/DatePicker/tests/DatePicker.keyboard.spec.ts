@@ -20,27 +20,21 @@ test.describe('DatePicker — keyboard interactions', () => {
     await page.goto('/components/date-picker');
   });
 
-  test('DP-R01 — Alt+ArrowDown opens Calendar popup from input', async ({
-    page,
-  }) => {
+  test('DP-R01 — Alt+ArrowDown opens Calendar popup from input', async ({ page }) => {
     const input = page.getByRole('combobox').first();
     await input.focus();
     await page.keyboard.press('Alt+ArrowDown');
     await expect(page.getByRole('grid')).toBeVisible();
   });
 
-  test('ArrowDown (no modifier) on closed input opens popup', async ({
-    page,
-  }) => {
+  test('ArrowDown (no modifier) on closed input opens popup', async ({ page }) => {
     const input = page.getByRole('combobox').first();
     await input.focus();
     await page.keyboard.press('ArrowDown');
     await expect(page.getByRole('grid')).toBeVisible();
   });
 
-  test('DP-R02 — Escape closes popup + keeps focus on input', async ({
-    page,
-  }) => {
+  test('DP-R02 — Escape closes popup + keeps focus on input', async ({ page }) => {
     const input = page.getByRole('combobox').first();
     await input.focus();
     await page.keyboard.press('ArrowDown');
@@ -69,9 +63,7 @@ test.describe('DatePicker — keyboard interactions', () => {
     await expect(input).toHaveValue('2026-05-15');
   });
 
-  test('DP-R04 — Calendar grid ArrowRight advances focused day by 1', async ({
-    page,
-  }) => {
+  test('DP-R04 — Calendar grid ArrowRight advances focused day by 1', async ({ page }) => {
     // idx 1 — controlled with defaultValue 2026-04-20
     const sections = page.locator('section');
     const controlled = sections.nth(1);

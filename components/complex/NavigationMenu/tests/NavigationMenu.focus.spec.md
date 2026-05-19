@@ -22,7 +22,9 @@ test('NM-R11 — click on disabled item: no focus steal, no state change', async
   expect(await disabled.getAttribute('aria-disabled')).toBe('true');
 });
 
-test('NM-R16 — focus on trigger opens instantly (WCAG SC 2.1.1 keyboard parity)', async ({ page }) => {
+test('NM-R16 — focus on trigger opens instantly (WCAG SC 2.1.1 keyboard parity)', async ({
+  page,
+}) => {
   await page.goto('/components/navigation-menu');
   const trigger = page.getByRole('menuitem', { name: 'Products' });
   await trigger.focus();

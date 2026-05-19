@@ -164,10 +164,7 @@ export * from './complex/Tooltip';
 export { Slot, type SlotProps } from './utils/Slot';
 export { cn, type ClassValue } from './utils/cn';
 export { mergeRefs } from './utils/mergeRefs';
-export {
-  VisuallyHidden,
-  type VisuallyHiddenProps,
-} from './utils/VisuallyHidden';
+export { VisuallyHidden, type VisuallyHiddenProps } from './utils/VisuallyHidden';
 
 // ----------------------------------------------------------------------------
 // Shared types

@@ -18,9 +18,7 @@ test.describe('DataTable — expansion behavior', () => {
     await page.goto('/components/data-table');
   });
 
-  test('DT-EX01 — clicking expand button toggles aria-expanded on row', async ({
-    page,
-  }) => {
+  test('DT-EX01 — clicking expand button toggles aria-expanded on row', async ({ page }) => {
     const grids = allGrids(page);
     const grid = grids.nth(3); // full-featured has expandable
     const firstRow = grid.locator('[role="row"][aria-rowindex="3"]');
@@ -32,9 +30,7 @@ test.describe('DataTable — expansion behavior', () => {
     await expect(firstRow).toHaveAttribute('aria-expanded', 'true');
   });
 
-  test('DT-EX02 — expanded content (description text) renders after toggle', async ({
-    page,
-  }) => {
+  test('DT-EX02 — expanded content (description text) renders after toggle', async ({ page }) => {
     const grids = allGrids(page);
     const grid = grids.nth(3);
     const firstRow = grid.locator('[role="row"][aria-rowindex="3"]');
@@ -64,9 +60,15 @@ test.describe('DataTable — expansion behavior', () => {
     const grid = grids.nth(3);
     const row1 = grid.locator('[role="row"][aria-rowindex="3"]');
     const row2 = grid.locator('[role="row"][aria-rowindex="4"]');
-    await row1.getByRole('button', { name: /Expand row/ }).first().click();
+    await row1
+      .getByRole('button', { name: /Expand row/ })
+      .first()
+      .click();
     await page.waitForTimeout(50);
-    await row2.getByRole('button', { name: /Expand row/ }).first().click();
+    await row2
+      .getByRole('button', { name: /Expand row/ })
+      .first()
+      .click();
     await page.waitForTimeout(100);
     await expect(row1).toHaveAttribute('aria-expanded', 'true');
     await expect(row2).toHaveAttribute('aria-expanded', 'true');
@@ -78,9 +80,7 @@ test.describe('DataTable — expansion behavior', () => {
     const grids = allGrids(page);
     const grid = grids.nth(3);
     const firstRow = grid.locator('[role="row"][aria-rowindex="3"]');
-    const btn = firstRow
-      .getByRole('button', { name: /Expand row|Collapse row/ })
-      .first();
+    const btn = firstRow.getByRole('button', { name: /Expand row|Collapse row/ }).first();
     const before = await btn.getAttribute('aria-label');
     expect(before).toMatch(/Expand row/);
     await btn.click();

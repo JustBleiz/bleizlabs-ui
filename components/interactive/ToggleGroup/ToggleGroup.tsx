@@ -63,8 +63,10 @@ import styles from './ToggleGroup.module.scss';
  */
 export type ToggleGroupOrientation = 'horizontal' | 'vertical';
 
-interface ToggleGroupBaseProps
-  extends Omit<HTMLAttributes<HTMLDivElement>, 'role' | 'defaultValue' | 'onChange'> {
+interface ToggleGroupBaseProps extends Omit<
+  HTMLAttributes<HTMLDivElement>,
+  'role' | 'defaultValue' | 'onChange'
+> {
   /** Layout direction of the group. Default `horizontal`. */
   orientation?: ToggleGroupOrientation;
   /** Collapse inner radii + dedupe borders via `joined-group`. Default `true`. */
@@ -193,9 +195,7 @@ function ToggleGroupMultiple({
 
   const handleToggle = useCallback(
     (next: string) => {
-      const resolved = active.includes(next)
-        ? active.filter((v) => v !== next)
-        : [...active, next];
+      const resolved = active.includes(next) ? active.filter((v) => v !== next) : [...active, next];
       if (!isControlled) setInternal(resolved);
       onValueChange?.(resolved);
     },
@@ -231,31 +231,29 @@ interface ShellProps {
   children: ReactNode;
 }
 
-const ToggleGroupShell = forwardRef<HTMLDivElement, ShellProps>(
-  function ToggleGroupShell(
-    { orientation, attached, className, rest, children },
-    ref,
-  ) {
-    const isVertical = orientation === 'vertical';
-    return (
-      <div
-        ref={ref}
-        role="group"
-        data-orientation={orientation}
-        className={cn(
-          styles.root,
-          isVertical && styles.vertical,
-          attached && (isVertical ? styles.attachedVertical : styles.attachedHorizontal),
-          !attached && styles.detached,
-          className,
-        )}
-        {...rest}
-      >
-        {children}
-      </div>
-    );
-  },
-);
+const ToggleGroupShell = forwardRef<HTMLDivElement, ShellProps>(function ToggleGroupShell(
+  { orientation, attached, className, rest, children },
+  ref,
+) {
+  const isVertical = orientation === 'vertical';
+  return (
+    <div
+      ref={ref}
+      role="group"
+      data-orientation={orientation}
+      className={cn(
+        styles.root,
+        isVertical && styles.vertical,
+        attached && (isVertical ? styles.attachedVertical : styles.attachedHorizontal),
+        !attached && styles.detached,
+        className,
+      )}
+      {...rest}
+    >
+      {children}
+    </div>
+  );
+});
 
 // ============================================================================
 // CHILD PROJECTION — Children.map + cloneElement injection
@@ -267,10 +265,7 @@ interface ChildSlot {
   groupDisabled: boolean;
 }
 
-function projectChildren(
-  children: ReactNode,
-  getSlot: (value: string) => ChildSlot,
-): ReactNode {
+function projectChildren(children: ReactNode, getSlot: (value: string) => ChildSlot): ReactNode {
   return Children.map(children, (child) => {
     if (!isValidElement(child)) return child;
     const toggleChild = child as ToggleChild;

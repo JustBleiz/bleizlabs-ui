@@ -41,9 +41,7 @@ test.describe('FileUpload — drag & drop', () => {
 
   test('FU-D03: drop processes files + clears drag state', async ({ page }) => {
     const zone = zoneBy(page, 'Upload single file');
-    await dispatchDrop(zone, [
-      { name: 'doc.pdf', mimeType: 'application/pdf', bytes: 500 },
-    ]);
+    await dispatchDrop(zone, [{ name: 'doc.pdf', mimeType: 'application/pdf', bytes: 500 }]);
     await expect(zone).toHaveAttribute('data-state', 'idle');
     // FileChip rendered for accepted file.
     await expect(page.getByText('doc.pdf')).toBeVisible();
@@ -97,9 +95,7 @@ test.describe('FileUpload — drag & drop', () => {
   test('FU-D07: drop on disabled zone does nothing', async ({ page }) => {
     // FU-R22
     const zone = zoneBy(page, 'Disabled file upload');
-    await dispatchDrop(zone, [
-      { name: 'x.txt', mimeType: 'text/plain' },
-    ]);
+    await dispatchDrop(zone, [{ name: 'x.txt', mimeType: 'text/plain' }]);
     // No FileChip rendered for "x.txt" since drop ignored.
     await expect(page.locator('body').getByText('x.txt')).toHaveCount(0);
     await expect(zone).toHaveAttribute('data-state', 'disabled');

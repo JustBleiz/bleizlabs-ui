@@ -17,11 +17,7 @@
  *   </DateRangePicker>
  */
 
-export {
-  DateRangePicker,
-  DateRangePickerInput,
-  DateRangePickerContent,
-} from './DateRangePicker';
+export { DateRangePicker, DateRangePickerInput, DateRangePickerContent } from './DateRangePicker';
 
 export type {
   DateRange,

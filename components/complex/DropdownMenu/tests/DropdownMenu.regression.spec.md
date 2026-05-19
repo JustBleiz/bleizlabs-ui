@@ -25,7 +25,7 @@ test('radix-R03 — typeahead skips disabled items', async ({ page }) => {
   // "Save as..." is disabled — typing "s" should land on "Save" (or first non-disabled "s" item)
   await page.keyboard.press('s');
   const ariaDisabled = await page.evaluate(() =>
-    document.activeElement?.getAttribute('aria-disabled')
+    document.activeElement?.getAttribute('aria-disabled'),
   );
   expect(ariaDisabled).not.toBe('true');
 });
@@ -118,7 +118,9 @@ test('radix-R15 — initial focus timing (first item focused after rAF)', async 
   await expect(page.getByRole('menuitem').first()).toBeFocused();
 });
 
-test('radix-R16 — close on select does not double-fire in React 19 batch mode', async ({ page }) => {
+test('radix-R16 — close on select does not double-fire in React 19 batch mode', async ({
+  page,
+}) => {
   // Click item — verify menu closes exactly once (no double-fire)
   await page.goto('/components/dropdown-menu');
   await page.getByRole('button', { name: 'Actions' }).click();
@@ -129,7 +131,9 @@ test('radix-R16 — close on select does not double-fire in React 19 batch mode'
   await expect(page.getByRole('menu')).toBeVisible();
 });
 
-test('radix-R17 — rapid trigger clicks do not leave menu in inconsistent state', async ({ page }) => {
+test('radix-R17 — rapid trigger clicks do not leave menu in inconsistent state', async ({
+  page,
+}) => {
   await page.goto('/components/dropdown-menu');
   const trigger = page.getByRole('button', { name: 'Actions' });
   await trigger.click();

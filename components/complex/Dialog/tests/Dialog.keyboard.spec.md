@@ -54,9 +54,7 @@ test.describe('Dialog — keyboard interactions (APG)', () => {
     // Press Tab N times — should stay inside dialog
     for (let i = 0; i < focusables.length + 2; i += 1) {
       await page.keyboard.press('Tab');
-      const activeInsideDialog = await dialog.evaluate((el) =>
-        el.contains(document.activeElement),
-      );
+      const activeInsideDialog = await dialog.evaluate((el) => el.contains(document.activeElement));
       expect(activeInsideDialog).toBe(true);
     }
   });
@@ -68,9 +66,7 @@ test.describe('Dialog — keyboard interactions (APG)', () => {
     // Press Shift+Tab — should NOT escape to background
     for (let i = 0; i < 5; i += 1) {
       await page.keyboard.press('Shift+Tab');
-      const activeInsideDialog = await dialog.evaluate((el) =>
-        el.contains(document.activeElement),
-      );
+      const activeInsideDialog = await dialog.evaluate((el) => el.contains(document.activeElement));
       expect(activeInsideDialog).toBe(true);
     }
   });

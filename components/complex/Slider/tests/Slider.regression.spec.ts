@@ -21,9 +21,7 @@
 import { test, expect } from '@playwright/test';
 
 test.describe('Slider — regression guards', () => {
-  test('SL-R02 — React 19 refs: no console warnings on mount', async ({
-    page,
-  }) => {
+  test('SL-R02 — React 19 refs: no console warnings on mount', async ({ page }) => {
     const warnings: string[] = [];
     page.on('console', (msg) => {
       if (msg.type() === 'warning' || msg.type() === 'error') {
@@ -32,18 +30,14 @@ test.describe('Slider — regression guards', () => {
     });
     await page.goto('/components/slider');
     await expect(page.getByRole('slider').first()).toBeVisible();
-    expect(
-      warnings.filter((w) => w.toLowerCase().includes('ref')),
-    ).toHaveLength(0);
+    expect(warnings.filter((w) => w.toLowerCase().includes('ref'))).toHaveLength(0);
   });
 
   test.skip('SL-R03 — no setState-in-render warnings [PLAYGROUND-DEP: no external value change button]', async () => {
     // Requires a button that mutates controlled value mid-render; not present.
   });
 
-  test('SL-R06 — drag past viewport clamps to min (no NaN)', async ({
-    page,
-  }) => {
+  test('SL-R06 — drag past viewport clamps to min (no NaN)', async ({ page }) => {
     await page.emulateMedia({ reducedMotion: 'reduce' });
     await page.goto('/components/slider');
     const sections = page.locator('section');
@@ -66,9 +60,7 @@ test.describe('Slider — regression guards', () => {
 
   test.skip('SL-R14 — controlled external override mid-drag [PLAYGROUND-DEP: no external setter]', async () => {});
 
-  test('SL-R15 — uncontrolled defaultValue initializes aria-valuenow', async ({
-    page,
-  }) => {
+  test('SL-R15 — uncontrolled defaultValue initializes aria-valuenow', async ({ page }) => {
     await page.emulateMedia({ reducedMotion: 'reduce' });
     await page.goto('/components/slider');
     const sections = page.locator('section');
@@ -84,22 +76,16 @@ test.describe('Slider — regression guards', () => {
 
   test.skip('SL-R21 — multi-thumb range slider [PLAYGROUND-DEP: single-thumb only in v1.0]', async () => {});
 
-  test('SL-R23 — prefers-reduced-motion: no long transitions on thumb', async ({
-    page,
-  }) => {
+  test('SL-R23 — prefers-reduced-motion: no long transitions on thumb', async ({ page }) => {
     await page.emulateMedia({ reducedMotion: 'reduce' });
     await page.goto('/components/slider');
     const thumb = page.getByRole('slider').first();
-    const transition = await thumb.evaluate(
-      (el) => window.getComputedStyle(el).transition,
-    );
+    const transition = await thumb.evaluate((el) => window.getComputedStyle(el).transition);
     // Reduced-motion global CSS clamps transitions to 0.001s (per a11y pipeline).
     expect(transition).toMatch(/none|0s|0\.001s/);
   });
 
-  test('SL-R24 — form participation: hidden input syncs value', async ({
-    page,
-  }) => {
+  test('SL-R24 — form participation: hidden input syncs value', async ({ page }) => {
     await page.emulateMedia({ reducedMotion: 'reduce' });
     await page.goto('/components/slider');
     // Section 11 — form with name="quality" defaultValue=75
@@ -126,9 +112,7 @@ test.describe('Slider — regression guards', () => {
     await expect(section.getByText(/Last commits:.*51/)).toBeVisible();
   });
 
-  test('Inverted rendering preserves aria-valuenow semantics', async ({
-    page,
-  }) => {
+  test('Inverted rendering preserves aria-valuenow semantics', async ({ page }) => {
     await page.emulateMedia({ reducedMotion: 'reduce' });
     await page.goto('/components/slider');
     const sections = page.locator('section');
@@ -151,8 +135,6 @@ test.describe('Slider — regression guards', () => {
     await page.goto('/components/slider');
     await page.reload();
     await expect(page.getByRole('slider').first()).toBeVisible();
-    expect(
-      warnings.filter((w) => w.toLowerCase().includes('hydration')),
-    ).toHaveLength(0);
+    expect(warnings.filter((w) => w.toLowerCase().includes('hydration'))).toHaveLength(0);
   });
 });

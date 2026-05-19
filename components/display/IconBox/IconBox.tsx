@@ -1,8 +1,4 @@
-import {
-  forwardRef,
-  type HTMLAttributes,
-  type ReactNode,
-} from 'react';
+import { forwardRef, type HTMLAttributes, type ReactNode } from 'react';
 import { Slot } from '../../utils/Slot';
 import { cn } from '../../utils/cn';
 import styles from './IconBox.module.scss';
@@ -30,13 +26,7 @@ import styles from './IconBox.module.scss';
  *   cross-system need (every consumer has a warning state). Additive — zero
  *   breaking changes.
  */
-export type IconBoxVariant =
-  | 'default'
-  | 'brand'
-  | 'success'
-  | 'warning'
-  | 'error'
-  | 'plain';
+export type IconBoxVariant = 'default' | 'brand' | 'success' | 'warning' | 'error' | 'plain';
 export type IconBoxSize = 'sm' | 'md' | 'lg';
 
 export interface IconBoxProps extends HTMLAttributes<HTMLDivElement> {
@@ -65,40 +55,25 @@ const SIZE_CLASS: Record<IconBoxSize, string> = {
   lg: styles.sizeLg!,
 };
 
-export const IconBox = forwardRef<HTMLDivElement, IconBoxProps>(
-  function IconBox(
-    {
-      icon,
-      variant = 'default',
-      size = 'md',
-      asChild = false,
-      className,
-      children,
-      ...rest
-    },
-    ref,
-  ) {
-    const Comp = asChild ? Slot : 'div';
+export const IconBox = forwardRef<HTMLDivElement, IconBoxProps>(function IconBox(
+  { icon, variant = 'default', size = 'md', asChild = false, className, children, ...rest },
+  ref,
+) {
+  const Comp = asChild ? Slot : 'div';
 
-    return (
-      <Comp
-        ref={ref}
-        className={cn(
-          styles.root,
-          VARIANT_CLASS[variant],
-          SIZE_CLASS[size],
-          className,
-        )}
-        {...rest}
-      >
-        {asChild ? (
-          children
-        ) : (
-          <span aria-hidden="true" className={styles.icon}>
-            {icon}
-          </span>
-        )}
-      </Comp>
-    );
-  },
-);
+  return (
+    <Comp
+      ref={ref}
+      className={cn(styles.root, VARIANT_CLASS[variant], SIZE_CLASS[size], className)}
+      {...rest}
+    >
+      {asChild ? (
+        children
+      ) : (
+        <span aria-hidden="true" className={styles.icon}>
+          {icon}
+        </span>
+      )}
+    </Comp>
+  );
+});

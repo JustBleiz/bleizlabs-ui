@@ -17,29 +17,21 @@ test.describe('LineChart — responsive', () => {
     await page.goto(URL, { waitUntil: 'networkidle' });
   });
 
-  test('LC-RS01: container has aspect-ratio set via CSS variable', async ({
-    page,
-  }) => {
+  test('LC-RS01: container has aspect-ratio set via CSS variable', async ({ page }) => {
     const chart = chartByTitle(page, 'Weekly leads');
     const container = chart.locator('[data-explicit-height]').first();
-    const aspectRatio = await container.evaluate(
-      (el) => window.getComputedStyle(el).aspectRatio,
-    );
+    const aspectRatio = await container.evaluate((el) => window.getComputedStyle(el).aspectRatio);
     // 16/9 = 1.777...
     expect(aspectRatio).toMatch(/^(16 \/ 9|1\.7)/);
   });
 
-  test('LC-RS02: SVG viewBox is fixed at 600x340 regardless of viewport', async ({
-    page,
-  }) => {
+  test('LC-RS02: SVG viewBox is fixed at 600x340 regardless of viewport', async ({ page }) => {
     const chart = chartByTitle(page, 'Weekly leads');
     const svg = svgOf(chart);
     await expect(svg).toHaveAttribute('viewBox', '0 0 600 340');
   });
 
-  test('LC-RS03: viewport resize does not throw or break chart render', async ({
-    page,
-  }) => {
+  test('LC-RS03: viewport resize does not throw or break chart render', async ({ page }) => {
     const chart = chartByTitle(page, 'Weekly leads');
     await expect(chart).toBeVisible();
 

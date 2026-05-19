@@ -222,14 +222,8 @@ export const Tabs = forwardRef<HTMLDivElement, TabsProps>(function Tabs(
     onValueChange: handleValueChange,
   });
 
-  const getTriggerId = useCallback(
-    (v: string) => `${baseId}-trigger-${v}`,
-    [baseId],
-  );
-  const getPanelId = useCallback(
-    (v: string) => `${baseId}-panel-${v}`,
-    [baseId],
-  );
+  const getTriggerId = useCallback((v: string) => `${baseId}-trigger-${v}`, [baseId]);
+  const getPanelId = useCallback((v: string) => `${baseId}-panel-${v}`, [baseId]);
 
   const listRef = useRef<HTMLDivElement | null>(null);
 
@@ -330,9 +324,7 @@ export const TabsList = forwardRef<HTMLDivElement, TabsListProps>(function TabsL
     if (tabs.length === 0) return;
     // Find the currently selected tab by matching `data-value` attribute.
     // Fall back to first enabled tab when no match (defaultValue=nonexistent).
-    const selectedIdx = tabs.findIndex(
-      (t) => t.getAttribute('data-value') === value,
-    );
+    const selectedIdx = tabs.findIndex((t) => t.getAttribute('data-value') === value);
     const activeIdx = selectedIdx >= 0 ? selectedIdx : 0;
     setRovingTabindex(tabs, activeIdx);
   }, [value, listRef]);
@@ -387,15 +379,13 @@ export const TabsList = forwardRef<HTMLDivElement, TabsListProps>(function TabsL
       switch (event.key) {
         case nextKey: {
           event.preventDefault();
-          const nextIdx =
-            activeIndex < tabs.length - 1 ? activeIndex + 1 : loop ? 0 : activeIndex;
+          const nextIdx = activeIndex < tabs.length - 1 ? activeIndex + 1 : loop ? 0 : activeIndex;
           focusTab(tabs, nextIdx);
           return;
         }
         case prevKey: {
           event.preventDefault();
-          const prevIdx =
-            activeIndex > 0 ? activeIndex - 1 : loop ? tabs.length - 1 : 0;
+          const prevIdx = activeIndex > 0 ? activeIndex - 1 : loop ? tabs.length - 1 : 0;
           focusTab(tabs, prevIdx);
           return;
         }
@@ -465,11 +455,10 @@ export const TabsList = forwardRef<HTMLDivElement, TabsListProps>(function TabsL
 // TabsTrigger — `<button role="tab">`
 // ──────────────────────────────────────────────────────────────────────────
 
-export interface TabsTriggerProps
-  extends Omit<
-    ButtonHTMLAttributes<HTMLButtonElement>,
-    'role' | 'aria-selected' | 'aria-controls' | 'id'
-  > {
+export interface TabsTriggerProps extends Omit<
+  ButtonHTMLAttributes<HTMLButtonElement>,
+  'role' | 'aria-selected' | 'aria-controls' | 'id'
+> {
   /** REQUIRED — matches the `value` on a TabsContent. */
   value: string;
   children: ReactNode;
@@ -487,14 +476,7 @@ export const TabsTrigger = forwardRef<HTMLButtonElement, TabsTriggerProps>(funct
   forwardedRef,
 ) {
   const ctx = useTabsContext('<TabsTrigger>');
-  const {
-    value: selectedValue,
-    setValue,
-    getTriggerId,
-    getPanelId,
-    listRef,
-    activationMode,
-  } = ctx;
+  const { value: selectedValue, setValue, getTriggerId, getPanelId, listRef, activationMode } = ctx;
 
   const isSelected = selectedValue === value;
   const triggerId = getTriggerId(value);
@@ -590,8 +572,10 @@ export const TabsTrigger = forwardRef<HTMLButtonElement, TabsTriggerProps>(funct
 // TabsContent — `<div role="tabpanel">`
 // ──────────────────────────────────────────────────────────────────────────
 
-export interface TabsContentProps
-  extends Omit<HTMLAttributes<HTMLDivElement>, 'role' | 'aria-labelledby' | 'id'> {
+export interface TabsContentProps extends Omit<
+  HTMLAttributes<HTMLDivElement>,
+  'role' | 'aria-labelledby' | 'id'
+> {
   /** REQUIRED — matches the `value` on a TabsTrigger. */
   value: string;
   children: ReactNode;
