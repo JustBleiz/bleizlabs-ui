@@ -61,9 +61,9 @@ import styles from './Button.module.scss';
  * <Button variant="secondary" size="sm">Cancel</Button>
  * <Button variant="primary" href="/dashboard">Go to dashboard</Button>
  * <Button variant="ghost" iconOnly icon={<TrashIcon />} aria-label="Delete" />
- * <Button asChild variant="link">
- *   <Link href="/docs">Documentation</Link>
- * </Button>
+ * // Links: use `href` (renders <a>, server-safe) — NOT asChild+<Link>,
+ * // which pulls Slot's 'use client' boundary for zero benefit (see @notes).
+ * <Button variant="link" href="/docs">Documentation</Button>
  */
 export type ButtonVariant = 'primary' | 'secondary' | 'ghost' | 'link' | 'warning';
 export type ButtonSize = 'sm' | 'md' | 'lg';
@@ -96,7 +96,11 @@ interface ButtonOwnProps {
    * when a Button is dropped inside a form without an explicit type.
    */
   type?: 'button' | 'submit' | 'reset';
-  /** Render as the single child element via Slot (e.g., Next `<Link>`). */
+  /**
+   * Render as the single child element via Slot. For links prefer the
+   * `href` prop (server-safe) — `asChild` pulls Slot's `'use client'`
+   * boundary; reserve it for elements without a dedicated prop.
+   */
   asChild?: boolean;
 }
 
@@ -209,10 +213,11 @@ export const Button = forwardRef<HTMLElement, ButtonProps>(function Button(
     // Next.js 16 RSC passing Fragment children as array across client boundary).
     //
     // Consumers who want icon-wrapping with asChild must include the icon
-    // markup in their own child:
+    // markup in their own child (single element — for plain links don't use
+    // asChild at all, use `<Button href>`):
     //
     // <Button asChild variant="link">
-    //   <Link href="/docs"><Icon /> Documentation</Link>
+    //   <SomeInteractiveElement><Icon /> Documentation</SomeInteractiveElement>
     // </Button>
     return (
       <Slot

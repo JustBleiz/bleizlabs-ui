@@ -217,7 +217,7 @@ If the same styled pattern repeats across 2+ pages, extract a shared molecule wr
 
 The library ships an agent-friendly cheat-sheet inside the npm tarball:
 
-- **Entry point** ([`AGENTS.md`](AGENTS.md), ~80 LOC) — mission paragraph, Q1-Q5 reuse-first decision tree, top-10 anti-patterns table, pointers to deeper docs
+- **Entry point** ([`AGENTS.md`](AGENTS.md), ~80 LOC) — mission paragraph, Q1-Q5 reuse-first decision tree, anti-patterns table, pointers to deeper docs
 - **Deep reference** ([`docs/AGENT-USAGE.md`](docs/AGENT-USAGE.md), ~750 LOC) — installation walkthrough, three-layer token cascade, SSR / RSC / Next.js 16 mapping, 9 per-domain quick-starts, troubleshooting table, full component inventory auto-generated from `manifest.json`
 
 After `npm install @bleizlabs/ui`, both files live under `node_modules/@bleizlabs/ui/`. Agents like Claude Code, Codex, and Cursor do NOT auto-scan `node_modules/` — you point them explicitly. Add this snippet to your project's own `AGENTS.md`:
