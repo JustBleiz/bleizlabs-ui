@@ -52,9 +52,10 @@
  * @tested tsc --noEmit ✓ | eslint + jsx-a11y via eslint-config-next ✓ |
  *   next build ✓ — DEFERRED: Playwright execution (per E15 scope decision),
  *   axe-core runtime sweep, manual NVDA sweep.
- * @regressions tests/Tabs.{keyboard,focus,aria,regression}.spec.md — 22
- *   regression cases mapped (TB-R01..R22). See `docs/_tmp/tabs-spec.md`
- *   Phase 1 Explore output for full bug+fix mapping.
+ * @regressions tests/Tabs.{keyboard,focus,aria,regression}.spec.md — 24
+ *   regression cases mapped (TB-R01..R24; R23/R24 = asChild rest-forwarding,
+ *   E01 audit remediation). See `docs/_tmp/tabs-spec.md` Phase 1 Explore
+ *   output for full bug+fix mapping.
  * @example
  *   <Tabs defaultValue="overview">
  *     <TabsList aria-label="Project sections">
@@ -546,6 +547,7 @@ export const TabsTrigger = forwardRef<HTMLButtonElement, TabsTriggerProps>(funct
         className={cn(styles.trigger, className)}
         onClick={handleClick}
         onFocus={handleFocus}
+        {...(rest as React.HTMLAttributes<HTMLElement>)}
       >
         {children}
       </Slot>

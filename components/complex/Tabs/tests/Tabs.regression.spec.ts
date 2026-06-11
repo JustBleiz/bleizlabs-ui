@@ -1,8 +1,11 @@
 /**
  * Tabs regression spec (Radix closed-issue mapping) — E142 L3c.
  *
- * Cases mapped TB-R01..TB-R22. Tests here cover TB-R05, R07, R09, R10, R11,
- * R18, R19. Others skipped with PLAYGROUND-DEP or cross-referenced.
+ * Cases mapped TB-R01..TB-R24. Tests here cover TB-R05, R07, R09, R10, R11,
+ * R18, R19, R23, R24. Others skipped with PLAYGROUND-DEP or cross-referenced.
+ * TB-R23/R24 (E01 audit remediation): asChild trigger dropped `{...rest}` —
+ * consumer data-testid/title/aria-* silently vanished; native branch always
+ * spread rest last.
  */
 
 import { test, expect } from '@playwright/test';
@@ -117,5 +120,24 @@ test.describe('Tabs — regression (closed-issue coverage)', () => {
     await year.click();
     await expect(year).toHaveAttribute('aria-selected', 'true');
     await expect(day).toHaveAttribute('aria-selected', 'false');
+  });
+
+  test('TB-R23 — asChild trigger forwards rest props without breaking activation', async ({
+    page,
+  }) => {
+    // Pre-fix: asChild branch dropped {...rest} — getByTestId found nothing.
+    const trigger = page.getByTestId('tab-aschild-alpha');
+    await expect(trigger).toHaveAttribute('title', 'alpha-title');
+    await expect(trigger).toHaveRole('tab');
+    expect(await trigger.evaluate((el) => el.tagName.toLowerCase())).toBe('a');
+    await trigger.click();
+    await expect(trigger).toHaveAttribute('aria-selected', 'true');
+  });
+
+  test('TB-R24 — native trigger rest passthrough (contrast)', async ({ page }) => {
+    const trigger = page.getByTestId('tab-native-beta');
+    await expect(trigger).toHaveAttribute('title', 'beta-title');
+    await trigger.click();
+    await expect(trigger).toHaveAttribute('aria-selected', 'true');
   });
 });

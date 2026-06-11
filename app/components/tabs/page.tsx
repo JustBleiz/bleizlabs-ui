@@ -341,6 +341,41 @@ export default function TabsPlayground() {
           </Tabs>
         </div>
       </section>
+
+      {/* ────────────────────────────────────────────────────────────── */}
+      <section className={styles.section}>
+        <Heading level={2} size="lg">
+          8. asChild trigger
+        </Heading>
+        <Text variant="body" color="muted">
+          <code>asChild</code> projects the trigger contract onto a consumer element. Rest props (
+          <code>data-testid</code>, <code>title</code>, extra <code>aria-*</code>) forward
+          identically to the native branch (TB-R23/R24 fixture).
+        </Text>
+        <div className={styles.demo}>
+          <Tabs defaultValue="alpha">
+            <TabsList aria-label="asChild demo">
+              <TabsTrigger
+                value="alpha"
+                asChild
+                data-testid="tab-aschild-alpha"
+                title="alpha-title"
+              >
+                <a href="#alpha">Alpha</a>
+              </TabsTrigger>
+              <TabsTrigger value="beta" data-testid="tab-native-beta" title="beta-title">
+                Beta
+              </TabsTrigger>
+            </TabsList>
+            <TabsContent value="alpha">
+              <Text variant="body">Alpha panel — trigger renders as a consumer anchor.</Text>
+            </TabsContent>
+            <TabsContent value="beta">
+              <Text variant="body">Beta panel — native button trigger for contrast.</Text>
+            </TabsContent>
+          </Tabs>
+        </div>
+      </section>
     </main>
   );
 }
