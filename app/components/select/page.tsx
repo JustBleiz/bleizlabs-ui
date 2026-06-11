@@ -379,6 +379,51 @@ export default function SelectPlayground() {
           </li>
         </ul>
       </section>
+
+      {/* ────────────────────────────────────────────────────────────── */}
+      <section className={styles.section}>
+        <Heading level={2} size="lg">
+          9. asChild trigger — rest props forwarding
+        </Heading>
+        <Text variant="body" color="muted">
+          <code>asChild</code> projects the combobox contract onto a consumer element. Rest props (
+          <code>data-testid</code>, <code>title</code>) forward identically to the native branch
+          (SL-R23/R24 fixture).
+        </Text>
+        <div className={styles.demo}>
+          <div className={styles.fieldGroup}>
+            <Select defaultValue={null}>
+              <SelectTrigger
+                asChild
+                aria-label="asChild rest select"
+                data-testid="select-trigger-aschild"
+                title="aschild-title"
+              >
+                <button type="button">
+                  <SelectValue placeholder="asChild trigger" />
+                </button>
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="one">One</SelectItem>
+                <SelectItem value="two">Two</SelectItem>
+              </SelectContent>
+            </Select>
+            <Select defaultValue={null}>
+              <SelectTrigger
+                aria-label="native rest select"
+                data-testid="select-trigger-native"
+                title="native-title"
+              >
+                <SelectValue placeholder="native trigger" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="one">One</SelectItem>
+                <SelectItem value="two">Two</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
+      </section>
     </main>
   );
 }

@@ -18,11 +18,11 @@
  *   **Skipped** `useFloatingFocus` — Select uses the APG combobox-select-only
  *   pattern where focus STAYS on the trigger the entire time (virtual
  *   "activedescendant" highlight inside the listbox), so there is no focus
- *   target inside the content to move to. Value state (`string | null`) and
- *   typeahead are inlined per E27 Phase 2 self-audit override — extraction to
- *   `useFloatingValueState<T>` + `useTypeahead<T>` deferred to E28 Combobox
- *   when the hook signatures can be battle-tested against a second listbox
- *   consumer. Own Slot primitive for `asChild` polymorphism on Trigger + Item.
+ *   target inside the content to move to. Value state uses the shared
+ *   `useFloatingValueState` hook (extracted in E29 — the original E27
+ *   inlining note is historical); typeahead remains inlined (Select-specific
+ *   pendingSeed/buffer semantics). Own Slot primitive for `asChild`
+ *   polymorphism on Trigger + Item.
  * @a11y APG /combobox/ collapsed-listbox (select-only) + /listbox/:
  *   Trigger: `role="combobox"` + `aria-haspopup="listbox"` + `aria-expanded` +
  *   `aria-controls` (when open) + `aria-labelledby` (when form label wired via
@@ -46,10 +46,14 @@
  *
  *   Keyboard model (APG combobox-select-only verbatim):
  *   Closed (focus on trigger):
- *   - ArrowDown/ArrowUp/Enter/Space: open listbox, highlight first (or current
- *     value) / last enabled option
+ *   - ArrowDown/Enter/Space: open listbox, highlight current value (or first
+ *     enabled option)
+ *   - ArrowUp: open listbox, highlight current value (or LAST enabled option
+ *     when nothing is selected)
  *   - Home/End: open listbox, highlight first / last enabled option
- *   - Printable char: open listbox + typeahead match (500ms reset buffer)
+ *     (unconditional — pendingSeed consumed by the mount effect)
+ *   - Printable char: open listbox + typeahead match applied on open
+ *     (500ms reset buffer; items register only after the open render)
  *   - Tab/Shift+Tab: no-op (browser moves focus normally)
  *   - Escape: no-op
  *   Open (focus STAYS on trigger; aria-activedescendant tracks highlighted option):
@@ -82,21 +86,25 @@
  *   it via `event.nativeEvent`.
  *
  *   Typeahead buffer (Phase 5 CRIT-5) lives on the root `typeaheadRef`
- *   and is shared between Trigger (closed-state instant-select) and
+ *   and is shared between Trigger (closed-state open + deferred match —
+ *   the buffered char is consumed by SelectContent's mount effect) and
  *   SelectContent (open-state highlight). `lastIndex` tracks the last
  *   matched position so single-char repeats cycle through siblings
  *   (native `<select>` + Radix parity), and the 500 ms reset timer is a
  *   single owner on the root so switching between open/closed does not
  *   reset the buffer mid-word.
  *
- *   `aria-activedescendant` (Phase 5 IMP-3) is declarative React state
- *   owned by SelectContent (`highlightedId`) and published via
- *   `SelectContentContext`. SelectTrigger reads `highlightedId` from that
- *   context and reconciles it onto the DOM on every render so React
- *   cannot strip the attribute by re-rendering trigger with other ARIA
- *   props. SelectItem is wrapped in `React.memo` to localize re-renders
- *   when the highlight moves (still re-renders on context churn, but the
- *   memo prevents unnecessary renders from consumer parent updates).
+ *   `aria-activedescendant` (Phase 5 IMP-3, hoisted in E142 L4 F1) is
+ *   declarative React state owned by the ROOT context (`highlightedId` —
+ *   SelectTrigger sits OUTSIDE SelectContent in the render tree, so a
+ *   Content-scoped provider could never reach it). SelectTrigger reads
+ *   `highlightedId` from the root context and reconciles it onto the DOM
+ *   on every render so React cannot strip the attribute by re-rendering
+ *   trigger with other ARIA props. SelectItem is wrapped in `React.memo`
+ *   to shield items from consumer parent-prop churn ONLY — highlight
+ *   moves change the root context identity and context updates bypass
+ *   memo, so all mounted items re-render per move (see the memo JSDoc
+ *   above SelectItem).
  *
  *   Form participation: when the `name` prop is provided, Select renders a
  *   hidden `<input type="hidden">` synced with the current value. `required` +
@@ -104,12 +112,14 @@
  *   FormData serialization work without consumer plumbing.
  * @apg https://www.w3.org/WAI/ARIA/apg/patterns/combobox/
  * @tested tsc --noEmit ✓ | eslint + jsx-a11y via eslint-config-next ✓ |
- *   DEFERRED: Playwright execution, axe-core runtime sweep, manual NVDA
- *   sweep, iOS/Android device testing (per E15 scope decision, to be
- *   completed during Phase 6 Integration / Phase 7 audit).
+ *   Playwright suite EXECUTED in-repo (keyboard/focus/aria/regression
+ *   `.spec.ts` quad, CI-gated) + axe-core smoke on the demo route.
+ *   DEFERRED: manual NVDA sweep, iOS/Android device testing.
  * @regressions tests/Select.{keyboard,focus,aria,regression}.spec.md —
- *   22 regression cases mapped (SL-R01..R22). See
- *   `docs/_tmp/select-spec.md` Phase 1 Explore output for bug+fix mapping.
+ *   regression cases SL-R01..R22 + SL-R23..R27 (E03 audit remediation:
+ *   asChild rest-forwarding, closed-state printable-char open+deferred
+ *   match, closed Home/End/ArrowUp seeding — SL-R27 executes the seeding
+ *   half of the SL-R04 mapping).
  * @example
  *   <Select name="country" defaultValue="pl" onValueChange={(v) => ...}>
  *     <SelectTrigger aria-labelledby="country-label">
@@ -210,6 +220,18 @@ interface SelectTypeaheadState {
    * → Peru → Poland…).
    */
   lastIndex: number;
+  /**
+   * Closed-state seed intent carried across the open transition (E03 audit
+   * fix). Set by closed Home (`'first'`), End (`'last'`) and ArrowUp with
+   * no current value (`'last'`); consumed + cleared by SelectContent's
+   * mount layout effect — items only register AFTER the open render, so
+   * the trigger cannot highlight directly. Pending typeahead buffer takes
+   * precedence over the seed. Accepted residual: a seed surviving a VETOED
+   * controlled open is consumed by the next open regardless of source
+   * (trigger interactions clear/overwrite it; a purely programmatic open
+   * after a veto inherits it — transient highlight only, no state impact).
+   */
+  pendingSeed: 'first' | 'last' | null;
 }
 
 interface SelectContextValue {
@@ -464,13 +486,14 @@ export function Select({
   }, []);
 
   // Shared typeahead state — single source of truth used by both Trigger
-  // (closed-state instant-select) and Content (open-state highlight).
+  // (closed-state open + deferred match) and Content (open-state highlight).
   // Keeping it at the root lets the two code paths cycle the same buffer
   // across an open/close transition mid-word (Radix parity).
   const typeaheadRef = useRef<SelectTypeaheadState>({
     buffer: '',
     timer: null,
     lastIndex: -1,
+    pendingSeed: null,
   });
 
   // Slot that Content publishes on mount — Trigger's React onKeyDown reads
@@ -579,9 +602,10 @@ export function Select({
 // persist `lastIndex` for single-char repeat cycling (Radix #30). Shared
 // between Trigger (closed state) and Content (open state) via the root
 // `typeaheadRef` so the buffer survives open/close transitions mid-word.
-// When extracted to `useTypeahead<T>` in E28, this function becomes the
-// body of the hook's `match` callback, parameterized on `getLabel` and
-// `isEnabled`.
+// Deliberately NOT extracted to a shared hook — E28 Combobox shipped
+// filter-based search instead, and Select's closed-state pendingSeed/buffer
+// semantics are component-specific (see the file header's "typeahead remains
+// inlined" note).
 
 interface TypeaheadMatch {
   record: SelectItemRecord;
@@ -638,7 +662,8 @@ export interface SelectTriggerProps extends Omit<
   /**
    * Optional explicit `aria-labelledby` — wires an external label element
    * to the combobox role. When omitted, consumer is expected to provide
-   * `aria-label` via `rest` or rely on a parent `<label>` association.
+   * the dedicated `aria-label` prop (explicitly destructured, not rest)
+   * or rely on a parent `<label>` association.
    */
   'aria-labelledby'?: string;
   /** Optional `aria-label` override — takes precedence when no labelledby. */
@@ -669,13 +694,12 @@ export const SelectTrigger = forwardRef<HTMLElement, SelectTriggerProps>(functio
     open,
     setOpen,
     value,
-    selectValue,
+    valueRef,
     triggerId,
     contentId,
     triggerRef,
     disabled,
     required,
-    getOrderedItems,
     typeaheadRef,
     listboxKeyHandlerRef,
     highlightedId,
@@ -687,11 +711,32 @@ export const SelectTrigger = forwardRef<HTMLElement, SelectTriggerProps>(functio
     },
     [triggerRef],
   );
-  const mergedRef = mergeRefs(forwardedRef, setTriggerNode);
+  // Memoized — a fresh callback ref every render makes React detach (null)
+  // and re-attach the ref on each trigger re-render (E03 audit fix; pattern:
+  // TabsList/Sidebar).
+  const mergedRef = useMemo(
+    () => mergeRefs(forwardedRef, setTriggerNode),
+    [forwardedRef, setTriggerNode],
+  );
+
+  // Require aria-label OR aria-labelledby — without one, the combobox
+  // computes its accessible name from contents, i.e. the SELECTED VALUE:
+  // the field's name silently mutates as the user picks options (WCAG
+  // 4.1.2). Dev-only runtime warning — mirrors TabsList + Slider.
+  useEffect(() => {
+    if (process.env.NODE_ENV !== 'production') {
+      if (!ariaLabel && !ariaLabelledBy) {
+        console.warn(
+          '<SelectTrigger> should have `aria-label` or `aria-labelledby` — without one the accessible name becomes the selected value (WCAG 4.1.2).',
+        );
+      }
+    }
+  }, [ariaLabel, ariaLabelledBy]);
 
   // Initial-highlight plumbing: closed-state open-with-highlight just
   // sets `open = true` and SelectContent's mount-time useLayoutEffect
-  // seeds the highlight from the current `value` (falling back to the
+  // seeds the highlight from the current `value`, a pending typeahead
+  // buffer, or a pending Home/End/ArrowUp seed (falling back to the
   // first enabled item). No extra cross-component refs needed.
 
   const handleClick = useCallback(
@@ -700,9 +745,13 @@ export const SelectTrigger = forwardRef<HTMLElement, SelectTriggerProps>(functio
         event.preventDefault();
         return;
       }
+      // Pointer opens carry no keyboard seed intent — clear any stale seed
+      // left by a vetoed controlled open (the buffer has a 500ms TTL, the
+      // seed does not; E03 audit fix).
+      typeaheadRef.current.pendingSeed = null;
       setOpen(!open);
     },
-    [disabled, open, setOpen],
+    [disabled, open, setOpen, typeaheadRef],
   );
 
   const handleKeyDown = useCallback(
@@ -734,14 +783,24 @@ export const SelectTrigger = forwardRef<HTMLElement, SelectTriggerProps>(functio
       // — SelectItems only mount inside SelectContent (open-gated), so
       // on the very first keydown the registry is empty (E142 L4 F2).
       // APG /combobox/ collapsed-listbox requires these keys to open.
-      // Only AFTER this switch do we read the registry for typeahead,
-      // which requires enabled items to exist (closed typeahead = instant
-      // select, no-op when registry is empty).
+      // Nothing in this closed-state path reads the registry — all
+      // highlight intent (pendingSeed / typeahead buffer) is carried on
+      // the shared typeaheadRef and consumed by SelectContent's mount
+      // effect once items have registered (E03 audit fix).
       switch (event.key) {
-        case 'ArrowDown':
+        case 'ArrowDown': {
+          if (hasModifier) return; // pass-through
+          event.preventDefault();
+          typeaheadRef.current.pendingSeed = null;
+          setOpen(true);
+          return;
+        }
         case 'ArrowUp': {
           if (hasModifier) return; // pass-through
           event.preventDefault();
+          // APG/JSDoc contract: with no current value ArrowUp seeds the
+          // LAST enabled option; with a value the current option wins.
+          typeaheadRef.current.pendingSeed = valueRef.current == null ? 'last' : null;
           setOpen(true);
           return;
         }
@@ -749,6 +808,7 @@ export const SelectTrigger = forwardRef<HTMLElement, SelectTriggerProps>(functio
         case ' ': {
           if (hasModifier) return;
           event.preventDefault();
+          typeaheadRef.current.pendingSeed = null;
           setOpen(true);
           return;
         }
@@ -756,6 +816,10 @@ export const SelectTrigger = forwardRef<HTMLElement, SelectTriggerProps>(functio
         case 'End': {
           if (hasModifier) return;
           event.preventDefault();
+          // Unconditional first/last seed per the JSDoc keyboard model —
+          // consumed by SelectContent's mount effect (items register only
+          // after the open render; E03 audit fix).
+          typeaheadRef.current.pendingSeed = event.key === 'Home' ? 'first' : 'last';
           setOpen(true);
           return;
         }
@@ -763,44 +827,30 @@ export const SelectTrigger = forwardRef<HTMLElement, SelectTriggerProps>(functio
           break;
       }
 
-      const orderedItems = getOrderedItems();
-      const enabled = orderedItems.filter((it) => !it.disabled);
-      if (enabled.length === 0) return;
-
-      // Printable character typeahead (CLOSED state) — instant-select,
-      // matches Radix + shadcn + native <select>. Shares the root
-      // `typeaheadRef` with the open-state handler so repeats cycle
-      // across the whole list and the buffer survives an open/close
-      // transition mid-word (Phase 5 CRIT-5).
+      // Printable char (CLOSED) — APG /combobox-select-only/: "first opens
+      // the listbox ... then moves visual focus to the first option that
+      // matches the typed character(s)". Items only mount inside
+      // SelectContent (open-gated) so the registry is EMPTY here — matching
+      // is deferred: buffer the char on the shared typeaheadRef, open, and
+      // SelectContent's mount layout effect (which runs AFTER child items
+      // register in the same commit) consumes the pending buffer. The old
+      // closed-state "instant-select" path was dead code — it read the
+      // always-empty registry and returned (E03 audit fix).
       if (event.key.length === 1 && !event.ctrlKey && !event.metaKey && !event.altKey) {
+        event.preventDefault();
         const tState = typeaheadRef.current;
-        const char = event.key.toLowerCase();
-        tState.buffer += char;
+        tState.buffer += event.key.toLowerCase();
         if (tState.timer) clearTimeout(tState.timer);
         tState.timer = setTimeout(() => {
           tState.buffer = '';
           tState.timer = null;
           tState.lastIndex = -1;
         }, 500);
-
-        // Single-char repeat → advance PAST lastIndex so repeats cycle.
-        // Multi-char extend → re-match from lastIndex so re-matching the
-        // same buffer can still land on the same item.
-        const fromIndex =
-          tState.buffer.length === 1
-            ? tState.lastIndex >= 0
-              ? (tState.lastIndex + 1) % enabled.length
-              : 0
-            : Math.max(0, tState.lastIndex);
-        const match = findTypeaheadMatch(enabled, tState.buffer, fromIndex);
-        if (match) {
-          event.preventDefault();
-          tState.lastIndex = match.index;
-          selectValue(match.record.value);
-        }
+        tState.pendingSeed = null;
+        setOpen(true);
       }
     },
-    [disabled, open, setOpen, getOrderedItems, selectValue, typeaheadRef, listboxKeyHandlerRef],
+    [disabled, open, setOpen, valueRef, typeaheadRef, listboxKeyHandlerRef],
   );
 
   const ariaProps = {
@@ -814,13 +864,14 @@ export const SelectTrigger = forwardRef<HTMLElement, SelectTriggerProps>(functio
     'aria-required': required || undefined,
     'aria-disabled': disabled || undefined,
     'aria-invalid': invalid || undefined,
-    // `aria-activedescendant` is declarative React state now (Phase 5
-    // IMP-3). SelectContent owns `highlightedId` as React state and
-    // publishes it via SelectContentContext; Trigger reads it here and
-    // React reconciles it onto the DOM on every render. This fixes the
-    // prior bug where a re-render of Trigger (e.g. from controlled
-    // `value` change) would write the full ariaProps back to DOM and
-    // silently strip the attribute written by an earlier DOM mutation.
+    // `aria-activedescendant` is declarative React state (Phase 5 IMP-3,
+    // hoisted to the ROOT context in E142 L4 F1 — Trigger is a sibling of
+    // SelectContent, so a Content-scoped provider could never reach it).
+    // Trigger reads `highlightedId` from the root context and React
+    // reconciles it onto the DOM on every render. This fixes the prior
+    // bug where a re-render of Trigger (e.g. from controlled `value`
+    // change) would write the full ariaProps back to DOM and silently
+    // strip the attribute written by an earlier DOM mutation.
     'aria-activedescendant': open && highlightedId ? highlightedId : undefined,
     'data-state': open ? ('open' as const) : ('closed' as const),
     'data-disabled': disabled ? '' : undefined,
@@ -843,6 +894,7 @@ export const SelectTrigger = forwardRef<HTMLElement, SelectTriggerProps>(functio
           handleKeyDown(event);
           onKeyDown?.(event as unknown as React.KeyboardEvent<HTMLButtonElement>);
         }}
+        {...(rest as React.HTMLAttributes<HTMLElement>)}
       >
         {children}
       </Slot>
@@ -1015,19 +1067,41 @@ export function SelectContent({ children, className, ...rest }: SelectContentPro
   useLayoutEffect(() => {
     if (!open) return;
 
+    // Consume + clear the closed-state seed intent FIRST — also when the
+    // list turns out to be empty/all-disabled below, so a stale seed can
+    // never leak into a later unrelated open (E03 audit fix).
+    const typeaheadState = typeaheadRef.current;
+    const pendingSeed = typeaheadState.pendingSeed;
+    typeaheadState.pendingSeed = null;
+
     const items = getOrderedItems();
     const enabled = items.filter((it) => !it.disabled);
     if (enabled.length === 0) return;
 
-    const current = valueRef.current;
-    const currentRecord =
-      current !== null ? items.find((it) => it.value === current && !it.disabled) : undefined;
-    const initial = currentRecord ?? enabled[0];
+    // Closed-state intent carried across the open transition (E03 audit
+    // fix). Precedence: pending typeahead buffer (printable char opened the
+    // listbox — APG: "opens ... then moves to the first matching option") →
+    // pending Home/End/ArrowUp seed → current value → first enabled.
+    let initial: SelectItemRecord | undefined;
+    if (typeaheadState.buffer !== '') {
+      const match = findTypeaheadMatch(enabled, typeaheadState.buffer, 0);
+      if (match) {
+        typeaheadState.lastIndex = match.index;
+        initial = match.record;
+      }
+    }
+    if (!initial && pendingSeed === 'first') initial = enabled[0];
+    if (!initial && pendingSeed === 'last') initial = enabled[enabled.length - 1];
+    if (!initial) {
+      const current = valueRef.current;
+      const currentRecord =
+        current !== null ? items.find((it) => it.value === current && !it.disabled) : undefined;
+      initial = currentRecord ?? enabled[0];
+    }
     if (!initial) return;
 
     setHighlight(initial.id, 'keyboard');
 
-    const typeaheadState = typeaheadRef.current;
     return () => {
       setHighlight(null, 'keyboard');
       if (typeaheadState.timer) {
@@ -1036,6 +1110,7 @@ export function SelectContent({ children, className, ...rest }: SelectContentPro
       }
       typeaheadState.buffer = '';
       typeaheadState.lastIndex = -1;
+      typeaheadState.pendingSeed = null;
     };
   }, [open, valueRef, getOrderedItems, setHighlight, typeaheadRef]);
 
@@ -1449,14 +1524,15 @@ function SelectItemImpl({
 }
 
 /**
- * SelectItem is wrapped in `React.memo` so moving the highlight re-renders
- * only the two items actually toggled (the previously highlighted one and
- * the newly highlighted one), not the whole option list. All other items'
- * props are referentially stable across highlight changes because the
- * context value they read from is memoized on `{ highlightedId, setHighlight }`
- * — `setHighlight` is a stable `useCallback`, and `highlightedId` is the
- * only value that changes per highlight move. React's default shallow
- * comparator inside `memo` is sufficient.
+ * SelectItem is wrapped in `React.memo` to shield items from re-renders
+ * caused by consumer PARENT updates (new children/className identities when
+ * the page re-renders). Note: this does NOT localize highlight moves — every
+ * item consumes the root SelectContext, whose memoized value changes
+ * identity whenever `highlightedId` changes, and context updates BYPASS
+ * `memo`; all mounted items re-render per highlight move (see the
+ * aria-activedescendant note in the file header). The memo's win is limited
+ * to parent-prop churn (E03 audit fix — the previous text claimed only the
+ * two toggled items re-render, which was false).
  */
 export const SelectItem = memo(SelectItemImpl);
 SelectItem.displayName = 'SelectItem';

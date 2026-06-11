@@ -1,6 +1,11 @@
 # Select — keyboard interaction spec
 
-**Execution status:** DEFERRED to first consumer adoption (per E15 scope decision).
+**Execution status:** EXECUTED in-repo — the canonical suite lives in the sibling
+`Select.keyboard.spec.ts` (CI-gated; status in Select.tsx `@tested`; only the manual NVDA
+sweep stays deferred). This file is a consumer-CI reference snapshot, not the source of truth.
+E03 audit remediation note: the seeding contract mapped below as SL-R04 is EXECUTED as
+**SL-R27** in the sibling `.spec.ts` (one case, two IDs — the `.ts` suite is canonical),
+alongside SL-R25/R26 (closed printable-char open + deferred typeahead match).
 **Format:** markdown code-fenced Playwright pseudo-code.
 
 ## Setup

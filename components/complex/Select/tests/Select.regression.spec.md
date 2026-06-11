@@ -1,8 +1,14 @@
 # Select — regression spec (Radix closed-issue mapping)
 
-**Execution status:** DEFERRED. 22 regression cases mapped (SL-R01..R22) from
-`docs/specs/select-spec.md`. This file covers SL-R01, R02, R03, R06, R09, R15,
-R16, R19 (remaining cases in keyboard/focus/aria spec files).
+**Execution status:** EXECUTED in-repo — the canonical suite lives in the sibling
+`Select.regression.spec.ts` (CI-gated; status in Select.tsx `@tested`; only the manual
+NVDA sweep stays deferred). This file is a consumer-CI reference snapshot, not the
+source of truth. Registry: SL-R01..R22 (E142 mapping; the spec-doc the mapping came
+from was an ephemeral `_tmp` draft, since retired — the per-case content below and the
+sibling `.spec.ts` are the canon) + SL-R23/R24 (E03 audit remediation: asChild
+rest-forwarding — EXECUTED in `.spec.ts`; SL-R25..R27 live in the keyboard spec).
+This file covers SL-R01, R02, R03, R06, R09, R15, R16, R19 (remaining cases in
+keyboard/focus/aria spec files).
 
 ## Tests
 

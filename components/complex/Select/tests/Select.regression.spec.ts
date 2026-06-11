@@ -9,6 +9,9 @@
  * - Form participation: submitting form serializes value
  * - SL-R17 required validation blocks form submit with empty value [LIB-BEHAVIOR]
  * - Disabled Select: click trigger is a no-op
+ * - SL-R23/R24 (E03 audit remediation): asChild trigger dropped {...rest} —
+ *   consumer data-testid/title vanished; native always spread rest last.
+ *   (SL-R25..R27 closed-state typeahead/seeding live in the keyboard spec.)
  */
 
 import { test, expect } from '@playwright/test';
@@ -116,5 +119,27 @@ test.describe('Select — regressions', () => {
 
   test.skip('SL-R16 — nested Dialog+Select Escape ordering [PLAYGROUND-DEP: no Dialog-wrapping-Select demo]', async () => {
     // Playground has no Dialog that wraps a Select.
+  });
+
+  test('SL-R23 — asChild trigger forwards rest props without breaking open (E03)', async ({
+    page,
+  }) => {
+    await page.goto('/components/select');
+    // Pre-fix: asChild branch dropped {...rest} — getByTestId found nothing.
+    const trigger = page.getByTestId('select-trigger-aschild');
+    await expect(trigger).toHaveAttribute('title', 'aschild-title');
+    await expect(trigger).toHaveRole('combobox');
+    expect(await trigger.evaluate((el) => el.tagName.toLowerCase())).toBe('button');
+    await trigger.click();
+    await expect(page.getByRole('listbox').first()).toBeVisible();
+    await expect(trigger).toHaveAttribute('aria-expanded', 'true');
+  });
+
+  test('SL-R24 — native trigger rest passthrough (contrast)', async ({ page }) => {
+    await page.goto('/components/select');
+    const trigger = page.getByTestId('select-trigger-native');
+    await expect(trigger).toHaveAttribute('title', 'native-title');
+    await trigger.click();
+    await expect(page.getByRole('listbox').first()).toBeVisible();
   });
 });
