@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1",
   "libVersion": "0.26.0",
-  "generatedAt": "2026-05-19T16:47:35.189Z",
+  "generatedAt": "2026-06-11T14:27:45.884Z",
   "categories": {
     "layout": ["Container", "GridLayout", "Inline", "Section", "Stack"],
     "typography": ["Anchor", "Eyebrow", "Heading", "Mark", "Text"],
@@ -374,7 +374,7 @@
       "isClient": false,
       "summary": "Button — primary interactive atom (Phase 4 I1).",
       "exports": ["Button"],
-      "types": ["ButtonProps", "ButtonSize", "ButtonVariant"],
+      "types": ["ButtonProps", "ButtonShape", "ButtonSize", "ButtonVariant"],
       "hooks": []
     },
     {
@@ -801,7 +801,7 @@
       "family": "Chip",
       "category": "molecules",
       "path": "molecules/Chip",
-      "isClient": false,
+      "isClient": true,
       "summary": "Chip — pill-shaped filter chip with toggle (default) or display-only mode.",
       "exports": ["Chip"],
       "types": ["ChipDotColor", "ChipProps", "ChipSize", "ChipTone"],

@@ -1,3 +1,5 @@
+'use client';
+
 import {
   forwardRef,
   type ButtonHTMLAttributes,
@@ -37,6 +39,14 @@ import styles from './Chip.module.scss';
  *          is the chip text + optional dot color). Optional `pressed`
  *          drives initial visual state for active-filter summary patterns
  *          where the chip is read-only.
+ *
+ * @notes   Client Component (`'use client'`) — the default interactive mode
+ *          unconditionally attaches `onClick` to the `<button>` (composes
+ *          `onPressedChange` + consumer `onClick`), mirroring Toggle/Switch.
+ *          The display mode (`interactive={false}`) renders a handler-free
+ *          `<span>` but shares this client module — it stays renderable
+ *          from Server Components as a client island (all props
+ *          serializable), at the cost of hydration.
  *
  * @example
  * // Interactive (default)
