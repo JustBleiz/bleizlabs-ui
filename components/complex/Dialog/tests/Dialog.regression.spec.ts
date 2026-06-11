@@ -1,9 +1,12 @@
 /**
- * Dialog regression spec — 21 Radix closed issues mapped to test cases (E15).
+ * Dialog regression spec — 21 Radix closed issues mapped to test cases (E15)
+ * + ES-01..ES-03 escapeStack/focus-trap cases (E02 audit remediation).
  *
- * Each test maps to a Radix UI primitives closed issue — the same edge cases
- * that bit Radix are explicit regression guards for bleizlabs-ui Dialog.
- * Sources documented in Dialog.tsx `@regressions` header.
+ * Each #NNNN test maps to a Radix UI primitives closed issue — the same edge
+ * cases that bit Radix are explicit regression guards for bleizlabs-ui Dialog.
+ * Sources documented in Dialog.tsx `@regressions` header. ES-* cases pin the
+ * 2026-06 fixes: stack reorder on unstable onOpenChange, closeOnEscape=false
+ * ancestor shadowing, hidden-tabbable filtering in useFocusTrap.
  */
 
 import { test, expect } from '@playwright/test';
@@ -66,15 +69,23 @@ test.describe('Dialog — regression cases (Radix closed issues)', () => {
   // #1249 — Multiple stacked dialogs; closing second one closes both
   test('#1249: nested dialogs — Escape only closes topmost', async ({ page }) => {
     await page.getByRole('button', { name: /open nested outer/i }).click();
-    const outer = page.getByRole('dialog').first();
+    const outer = page.getByRole('dialog', { name: 'Outer dialog' });
     await expect(outer).toBeVisible();
 
     await outer.getByRole('button', { name: /open nested inner/i }).click();
-    const allDialogs = page.getByRole('dialog');
-    expect(await allDialogs.count()).toBeGreaterThanOrEqual(1);
+    const inner = page.getByRole('dialog', { name: 'Inner dialog' });
+    await expect(inner).toBeVisible();
+    expect(await page.getByRole('dialog').count()).toBe(2);
 
+    // First Escape: ONLY the inner closes (pre-E02 the weak assertion here
+    // passed even when the inner survived and the outer closed).
     await page.keyboard.press('Escape');
+    await expect(inner).not.toBeVisible();
     await expect(outer).toBeVisible();
+
+    // Second Escape: outer closes too.
+    await page.keyboard.press('Escape');
+    await expect(outer).not.toBeVisible();
   });
 
   // #1891 — Focus stays trapped after Dialog unmounts
@@ -199,5 +210,97 @@ test.describe('Dialog — regression cases (Radix closed issues)', () => {
     await page.keyboard.press('Tab');
     await page.keyboard.press('Escape');
     await expect(dialog).not.toBeVisible();
+  });
+
+  // ES-01 (E02) — stack order survives host re-renders with an UNSTABLE
+  // (inline) outer onOpenChange + STABLE inner setter. Pre-fix: deps included
+  // onOpenChange, so a host re-render re-ran ONLY the outer's effect (inner's
+  // setter is stable) — splice+push moved the OUTER entry above the inner's
+  // and Escape closed the outer. NOTE the asymmetry is load-bearing: with
+  // BOTH callbacks inline, React's all-cleanups-then-all-effects flush
+  // re-pushes in tree order and accidentally restores the correct stack.
+  test('ES-01: inline outer onOpenChange + host re-render — Escape still closes only the inner', async ({
+    page,
+  }) => {
+    await page.getByTestId('open-inline-outer').click();
+    const outer = page.getByRole('dialog', { name: 'Inline outer dialog' });
+    await expect(outer).toBeVisible();
+
+    await page.getByTestId('open-inline-inner').click();
+    const inner = page.getByRole('dialog', { name: 'Inline inner dialog' });
+    await expect(inner).toBeVisible();
+
+    // Force host re-renders while BOTH dialogs are open — inline arrows get
+    // new identities; pre-fix this reordered the escapeStack. The trigger
+    // lives inside the INNER dialog (the outer is inert while inner is open).
+    await page.getByTestId('rerender-host-inner').click();
+    await page.getByTestId('rerender-host-inner').click();
+    await expect(page.getByTestId('rerender-count')).toContainText('Host re-renders: 2');
+
+    await page.keyboard.press('Escape');
+    await expect(inner).not.toBeVisible();
+    await expect(outer).toBeVisible();
+  });
+
+  // ES-02 (E02) — closeOnEscape=false dialog SHADOWS ancestors.
+  // Pre-fix: a non-escapable dialog never entered the stack, so Escape on top
+  // of it closed the regular dialog UNDERNEATH it.
+  test('ES-02: non-escapable dialog on top — Escape closes nothing', async ({ page }) => {
+    await page.getByTestId('open-noesc-outer').click();
+    const outer = page.getByRole('dialog', { name: 'Escapable outer dialog' });
+    await expect(outer).toBeVisible();
+
+    await page.getByTestId('open-noesc-inner').click();
+    const inner = page.getByRole('dialog', { name: 'Non-escapable inner dialog' });
+    await expect(inner).toBeVisible();
+
+    await page.keyboard.press('Escape');
+    await expect(inner).toBeVisible();
+    await expect(outer).toBeVisible();
+    await page.keyboard.press('Escape');
+    await expect(inner).toBeVisible();
+    await expect(outer).toBeVisible();
+
+    // The inner closes via its button; afterwards Escape works on the outer.
+    await page.getByTestId('close-noesc-inner').click();
+    await expect(inner).not.toBeVisible();
+    await page.keyboard.press('Escape');
+    await expect(outer).not.toBeVisible();
+  });
+
+  // ES-03 (E02) — useFocusTrap filters hidden tabbables.
+  // The hidden button is the LAST tabbable in the DOM. Pre-fix the trap saw
+  // it as the cycle edge: Tab from the real last VISIBLE element did not
+  // wrap (active !== last) and focus ESCAPED the dialog. Post-fix the trap
+  // wraps from the last visible element and never targets the hidden one.
+  test('ES-03: hidden tabbable is filtered — Tab wraps from last visible, focus stays trapped', async ({
+    page,
+  }) => {
+    await page.getByTestId('open-hidden-tabbable').click();
+    const dialog = page.getByRole('dialog', { name: 'Hidden tabbable dialog' });
+    await expect(dialog).toBeVisible();
+
+    const focusedInsideDialog = () =>
+      page.evaluate(() => {
+        const d = document.querySelector('[role="dialog"]');
+        return d ? d.contains(document.activeElement) : false;
+      });
+    const activeTestId = () =>
+      page.evaluate(
+        () => (document.activeElement as HTMLElement | null)?.dataset?.testid ?? '(none)',
+      );
+
+    // Walk the full cycle: X(close) → ht-first → ht-last → wrap → X → ht-first.
+    // Focus must stay inside the dialog on EVERY step (pre-fix it escaped on
+    // the Tab following ht-last) and must never land on ht-hidden.
+    const seen: string[] = [];
+    for (let i = 0; i < 5; i += 1) {
+      await page.keyboard.press('Tab');
+      expect(await focusedInsideDialog()).toBe(true);
+      seen.push(await activeTestId());
+    }
+    expect(seen).not.toContain('ht-hidden');
+    expect(seen).toContain('ht-first');
+    expect(seen).toContain('ht-last');
   });
 });

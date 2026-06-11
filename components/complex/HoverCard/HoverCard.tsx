@@ -388,13 +388,23 @@ export function HoverCard({
     return () => clearTimers();
   }, [clearTimers]);
 
+  // Ref for the escape effect — `closeImmediate` is structurally unstable
+  // (depends on `setOpen` from useFloatingState, which changes with `open`);
+  // with it in deps the effect re-ran and splice+pushed this entry above a
+  // nested child's on the shared stack (E02 audit fix; canonical pattern +
+  // rationale in Dialog.tsx/escapeStack.ts). Deps stay `[open]`.
+  const closeImmediateRef = useRef(closeImmediate);
+  useEffect(() => {
+    closeImmediateRef.current = closeImmediate;
+  });
+
   // Escape on document — routes through the shared Dialog escapeStack
   // (E142 L4 F4) so nested modal scenarios (Dialog + HoverCard) dismiss the
   // topmost surface only. Does NOT steal focus from trigger (SC 1.4.13).
   // Window blur + visibilitychange — hide on tab switch (Tooltip precedent).
   useEffect(() => {
     if (!open) return;
-    const close = () => closeImmediate();
+    const close = () => closeImmediateRef.current();
     escapeStack.push(close);
     const handleKey = (event: KeyboardEvent) => {
       if (event.key !== 'Escape') return;
@@ -403,19 +413,19 @@ export function HoverCard({
       close();
     };
     const handleVisibility = () => {
-      if (document.visibilityState === 'hidden') closeImmediate();
+      if (document.visibilityState === 'hidden') close();
     };
     document.addEventListener('keydown', handleKey);
     document.addEventListener('visibilitychange', handleVisibility);
-    window.addEventListener('blur', closeImmediate);
+    window.addEventListener('blur', close);
     return () => {
       document.removeEventListener('keydown', handleKey);
       document.removeEventListener('visibilitychange', handleVisibility);
-      window.removeEventListener('blur', closeImmediate);
+      window.removeEventListener('blur', close);
       const idx = escapeStack.indexOf(close);
       if (idx !== -1) escapeStack.splice(idx, 1);
     };
-  }, [open, closeImmediate]);
+  }, [open]);
 
   const isCoarsePointer = useCoarsePointer();
 

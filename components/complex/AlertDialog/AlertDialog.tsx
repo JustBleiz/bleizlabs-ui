@@ -222,18 +222,34 @@ export function AlertDialog({
     }
   }, [onCancel, onOpenChange]);
 
+  // Refs for the escape effect — commit-time updates so deps stay `[open]`;
+  // inline consumer callbacks made `handleCancel` unstable, which splice+pushed
+  // this modal's stack entry above a nested child's (E02 audit fix — see
+  // Dialog.tsx / escapeStack.ts for the canonical pattern + rationale).
+  const handleCancelRef = useRef(handleCancel);
+  useEffect(() => {
+    handleCancelRef.current = handleCancel;
+  });
+  const closeOnEscapeRef = useRef(closeOnEscape);
+  useEffect(() => {
+    closeOnEscapeRef.current = closeOnEscape;
+  });
+
   // Escape handler — stack-based so only the topmost open modal handles Escape
   // (Radix #1249 fix, shared across the dialog family via `escapeStack`).
+  // EVERY open modal pushes its entry — also closeOnEscape=false, which must
+  // SHADOW ancestors; the gate is read through closeOnEscapeRef at keypress.
   // APG safety: Escape calls `onCancel`, not `onConfirm`.
   // Radix #1951: document-level listener still lets nested native Select swallow
   // Escape first (browser handles focused select before document listeners fire).
   useEffect(() => {
-    if (!open || !closeOnEscape) return;
-    const close = handleCancel;
+    if (!open) return;
+    const close = () => handleCancelRef.current();
     escapeStack.push(close);
     function handleEscape(event: KeyboardEvent) {
       if (event.key !== 'Escape') return;
       if (escapeStack[escapeStack.length - 1] !== close) return;
+      if (!closeOnEscapeRef.current) return;
       event.preventDefault();
       close();
     }
@@ -243,7 +259,7 @@ export function AlertDialog({
       const idx = escapeStack.indexOf(close);
       if (idx !== -1) escapeStack.splice(idx, 1);
     };
-  }, [open, closeOnEscape, handleCancel]);
+  }, [open]);
 
   // Scroll lock (Radix #998 fix — only while open).
   useEffect(() => {

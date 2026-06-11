@@ -267,16 +267,30 @@ export function Sheet({
 
   useFocusTrap(contentRef, open, initialFocusRef);
 
-  // Escape handler — stack-based so only the topmost open modal handles Escape
-  // (Radix #1249 fix via shared `escapeStack`). Document listener still lets
-  // nested Select/Combobox swallow Escape first (Radix #1951 pattern).
+  // Refs for the escape effect — commit-time updates so deps stay `[open]`
+  // (E02 audit fix; canonical pattern + rationale in Dialog.tsx/escapeStack.ts).
+  const onOpenChangeRef = useRef(onOpenChange);
   useEffect(() => {
-    if (!open || !closeOnEscape) return;
-    const close = () => onOpenChange(false);
+    onOpenChangeRef.current = onOpenChange;
+  });
+  const closeOnEscapeRef = useRef(closeOnEscape);
+  useEffect(() => {
+    closeOnEscapeRef.current = closeOnEscape;
+  });
+
+  // Escape handler — stack-based so only the topmost open modal handles Escape
+  // (Radix #1249 fix via shared `escapeStack`). EVERY open modal pushes its
+  // entry — also closeOnEscape=false (shadows ancestors; gate read through the
+  // ref at keypress). Document listener still lets nested Select/Combobox
+  // swallow Escape first (Radix #1951 pattern).
+  useEffect(() => {
+    if (!open) return;
+    const close = () => onOpenChangeRef.current(false);
     escapeStack.push(close);
     function handleEscape(event: KeyboardEvent) {
       if (event.key !== 'Escape') return;
       if (escapeStack[escapeStack.length - 1] !== close) return;
+      if (!closeOnEscapeRef.current) return;
       event.preventDefault();
       close();
     }
@@ -286,7 +300,7 @@ export function Sheet({
       const idx = escapeStack.indexOf(close);
       if (idx !== -1) escapeStack.splice(idx, 1);
     };
-  }, [open, closeOnEscape, onOpenChange]);
+  }, [open]);
 
   // Scroll lock (Radix #998 fix).
   useEffect(() => {

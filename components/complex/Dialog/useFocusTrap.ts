@@ -3,8 +3,24 @@ import { useEffect, type RefObject } from 'react';
 const TABBABLE_SELECTOR =
   'a[href], button:not([disabled]), textarea:not([disabled]), input:not([disabled]):not([type="hidden"]), select:not([disabled]), [tabindex]:not([tabindex="-1"])';
 
+// Visibility filter (E02 audit remediation): selector-only matching let
+// hidden candidates (display:none / visibility:hidden / [hidden]) into the
+// trap cycle — Tab-wrap focused a hidden element (focus() no-op after
+// preventDefault = "dead" focus) and initial focus could target one too.
+// checkVisibility() covers display:none (flat tree), content-visibility and
+// the visibility property; the getClientRects() fallback (older engines)
+// deliberately avoids offsetParent, which is null for position:fixed.
+// Known non-goal: aria-hidden ancestors are NOT filtered (matches `tabbable`
+// package defaults; separate decision if ever needed).
+function isVisible(el: HTMLElement): boolean {
+  if (typeof el.checkVisibility === 'function') {
+    return el.checkVisibility({ checkVisibilityCSS: true, visibilityProperty: true });
+  }
+  return el.getClientRects().length > 0 && getComputedStyle(el).visibility !== 'hidden';
+}
+
 function getTabbables(container: HTMLElement): HTMLElement[] {
-  return Array.from(container.querySelectorAll<HTMLElement>(TABBABLE_SELECTOR));
+  return Array.from(container.querySelectorAll<HTMLElement>(TABBABLE_SELECTOR)).filter(isVisible);
 }
 
 function getFirstTabbable(container: HTMLElement): HTMLElement | null {
@@ -22,7 +38,9 @@ function getFirstTabbable(container: HTMLElement): HTMLElement | null {
  * - While enabled: listens for `Tab` / `Shift+Tab` on `document` and cycles
  *   focus within the container (wraps first ↔ last). Uses a fresh tabbable
  *   query on every keypress so dynamic content (late-mounted buttons,
- *   conditionally rendered inputs) is included.
+ *   conditionally rendered inputs) is included. Hidden candidates
+ *   (display:none / visibility:hidden / [hidden]) are filtered out via
+ *   `checkVisibility()` with a `getClientRects()` fallback (E02).
  * - On disable/cleanup: removes listener and restores focus to the saved
  *   trigger element via `requestAnimationFrame` (prevents race with React
  *   unmount — Radix issue #1891 fix).
