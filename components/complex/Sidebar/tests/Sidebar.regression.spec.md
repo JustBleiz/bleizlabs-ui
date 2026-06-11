@@ -1,6 +1,8 @@
 # Sidebar — regression spec (24 cases SB-R01..R24)
 
-**Execution status:** DEFERRED. `docs/specs/sidebar-spec.md`.
+**Execution status:** EXECUTED in-repo — the canonical suite lives in the sibling `.spec.ts`
+(CI-gated; status in Sidebar.tsx `@tested`; only the manual NVDA sweep stays deferred). This file
+is a consumer-CI reference snapshot, not the source of truth.
 
 ## Tests
 

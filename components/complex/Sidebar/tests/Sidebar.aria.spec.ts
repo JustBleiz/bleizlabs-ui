@@ -70,35 +70,42 @@ test.describe('Sidebar — ARIA (desktop)', () => {
 });
 
 test.describe('Sidebar — ARIA (mobile drawer)', () => {
-  // NOTE-FOR-LIB: Mobile drawer tests in the current playground cannot reliably
-  // transition to drawer mode under Playwright automation. The component uses
-  // useMatchMedia (useSyncExternalStore + matchMedia) with server snapshot
-  // returning false — hydration matches server render (desktop aside), and
-  // subsequent `setViewportSize({width:400})` does not reliably fire the
-  // matchMedia `change` event listener subscribed during hydration. Manual
-  // browser testing (resize real Chromium window) confirms drawer transition
-  // works; Playwright's synthetic viewport resize is the issue.
-  //
-  // Resolution options flagged for main context:
-  //   A) Playground adds a dedicated /components/sidebar?mobile=1 route that
-  //      uses a hardcoded isMobile={true} prop (bypasses matchMedia entirely)
-  //   B) Library adds a test-only prop override for breakpoint-triggered state
-  //   C) Use Playwright's project config with devices['iPhone 12'] for a
-  //      pre-mobile-viewport browser context (requires playwright.config update)
-  //
-  // All mobile-drawer ARIA assertions skipped with rationale.
+  // E02: the old NOTE-FOR-LIB deferral was disproven — viewport-BEFORE-goto
+  // makes useMatchMedia mobile from hydration (no reliance on the matchMedia
+  // change event), and the bounded Escape dismiss-loop clears the auto-opened
+  // demo drawers (Basic, Groups, Shortcut, SideRight — all defaultOpen).
+  // Mechanic established by SB-R13/SB-R14/SB-ES01.
 
-  test.skip('SB-R08 — drawer has role=dialog + aria-modal=true [PLAYGROUND-DEP: matchMedia resize does not transition]', async () => {
-    // Verified manually — drawer renders role=dialog + aria-modal=true.
-    // Component source (Sidebar.tsx:422-423): role="dialog" aria-modal="true".
+  async function openFixtureDrawer(page: import('@playwright/test').Page) {
+    await page.setViewportSize({ width: 400, height: 800 });
+    await page.goto('/components/sidebar');
+    await expect(page.locator('[role="dialog"]').first()).toBeVisible({ timeout: 5000 });
+    for (let i = 0; i < 6 && (await page.locator('[role="dialog"]').count()) > 0; i += 1) {
+      await page.keyboard.press('Escape');
+      await page.waitForTimeout(150);
+    }
+    await expect(page.locator('[role="dialog"]')).toHaveCount(0);
+    await page.getByTestId('open-drawer-sidebar').click();
+    const drawer = page.getByRole('dialog', { name: 'Drawer dialog sidebar' });
+    await expect(drawer).toBeVisible();
+    return drawer;
+  }
+
+  test('SB-R08 — drawer has role=dialog + aria-modal=true', async ({ page }) => {
+    const drawer = await openFixtureDrawer(page);
+    await expect(drawer).toHaveAttribute('aria-modal', 'true');
   });
 
-  test.skip('drawer has aria-label for accessible name [PLAYGROUND-DEP: matchMedia resize does not transition]', async () => {
-    // Verified manually — drawer forwards aria-label from the `<Sidebar aria-label>` prop.
+  test('drawer has aria-label for accessible name', async ({ page }) => {
+    const drawer = await openFixtureDrawer(page);
+    await expect(drawer).toHaveAttribute('aria-label', 'Drawer dialog sidebar');
   });
 
-  test.skip('axe-core zero violations — drawer open [PLAYGROUND-DEP: multiple auto-open drawers + matchMedia limitation]', async () => {
-    // Playground composition prevents reliable mobile drawer axe sweep; see
-    // component-level desktop axe sweep above.
+  test('axe-core zero violations — drawer open', async ({ page }) => {
+    await openFixtureDrawer(page);
+    const results = await new AxeBuilder({ page })
+      .withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa'])
+      .analyze();
+    expect(results.violations).toEqual([]);
   });
 });

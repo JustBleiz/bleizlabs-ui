@@ -1,8 +1,9 @@
 /**
  * escapeStack — shared module-level stack for the dialog family (Radix #1249 fix).
  *
- * Each modal (Dialog, AlertDialog, Drawer, Sheet) pushes its close callback
- * onto the stack when it opens and pops when it closes. Each modal registers
+ * Each modal surface (Dialog, AlertDialog, Drawer, Sheet, HoverCard, Sidebar
+ * mobile drawer) pushes its close callback onto the stack when it opens and
+ * pops when it closes. Each modal registers
  * its own `document.addEventListener('keydown')` handler, but only the HANDLER
  * AT THE TOP OF THE STACK actually acts on Escape — all other handlers return
  * early. This guarantees that in nested scenarios only the topmost (last

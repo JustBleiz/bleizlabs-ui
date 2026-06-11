@@ -14,6 +14,7 @@ import {
   useSidebar,
 } from '@/components/complex/Sidebar';
 import { Button } from '@/components/interactive/Button';
+import { Dialog } from '@/components/complex/Dialog';
 import { Heading } from '@/components/typography/Heading';
 import { Text } from '@/components/typography/Text';
 import { Inline } from '@/components/layout/Inline';
@@ -40,6 +41,7 @@ export default function SidebarPlayground() {
       <ControlledDemo />
       <ShortcutDemo />
       <SideRightDemo />
+      <DrawerDialogDemo />
       <KeyboardWalkthrough />
     </main>
   );
@@ -400,7 +402,75 @@ function SideRightDemo() {
 }
 
 // ============================================================================
-// 6. Keyboard walkthrough
+// 6. Mobile drawer + nested Dialog (SB-ES01 fixture)
+// ============================================================================
+
+function DrawerDialogDemo() {
+  const [open, setOpen] = useState(false);
+  const [dialogOpen, setDialogOpen] = useState(false);
+
+  return (
+    <section className={styles.section}>
+      <header className={styles.sectionHeader}>
+        <Heading level={2} size="lg">
+          6. Mobile drawer + nested Dialog
+        </Heading>
+        <Text variant="small" color="muted">
+          On a mobile viewport the sidebar renders as a modal drawer. Opening a Dialog from inside
+          it stacks two modals — one Escape closes ONLY the Dialog, a second closes the drawer
+          (shared escapeStack; SB-ES01 fixture).
+        </Text>
+      </header>
+      <Inline gap={2}>
+        <Button size="sm" data-testid="open-drawer-sidebar" onClick={() => setOpen(true)}>
+          Open sidebar
+        </Button>
+        <Badge label={open ? 'open' : 'closed'} color="default" />
+      </Inline>
+      <div className={styles.previewShell}>
+        <SidebarProvider open={open} onOpenChange={setOpen}>
+          <Sidebar aria-label="Drawer dialog sidebar">
+            <SidebarHeader>
+              <strong>Drawer + Dialog</strong>
+            </SidebarHeader>
+            <SidebarContent aria-label="Drawer demo navigation">
+              <SidebarGroup>
+                <SidebarItem href="#alpha" onClick={(e) => e.preventDefault()}>
+                  Alpha
+                </SidebarItem>
+              </SidebarGroup>
+              <Button
+                size="sm"
+                variant="secondary"
+                data-testid="open-drawer-dialog"
+                onClick={() => setDialogOpen(true)}
+              >
+                Open dialog from drawer
+              </Button>
+            </SidebarContent>
+          </Sidebar>
+          <div className={styles.previewMain}>
+            <Text variant="small" color="muted">
+              Sidebar is <code>{open ? 'open' : 'closed'}</code>.
+            </Text>
+          </div>
+        </SidebarProvider>
+        <Dialog
+          open={dialogOpen}
+          onOpenChange={setDialogOpen}
+          title="Dialog above the drawer"
+          description="Escape closes only this dialog; the drawer stays open underneath."
+          footer={<Button onClick={() => setDialogOpen(false)}>Close</Button>}
+        >
+          <Text>Press Escape: this dialog closes, the drawer survives.</Text>
+        </Dialog>
+      </div>
+    </section>
+  );
+}
+
+// ============================================================================
+// 7. Keyboard walkthrough
 // ============================================================================
 
 function KeyboardWalkthrough() {

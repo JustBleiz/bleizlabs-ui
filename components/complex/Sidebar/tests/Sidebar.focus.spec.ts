@@ -51,16 +51,34 @@ test.describe('Sidebar — focus management (desktop)', () => {
 });
 
 test.describe('Sidebar — focus management (mobile drawer)', () => {
-  // NOTE-FOR-LIB: See Sidebar.aria.spec.ts "Sidebar — ARIA (mobile drawer)"
-  // comment block for the matchMedia + Playwright resize limitation. Mobile
-  // drawer tests deferred until playground adds a dedicated mobile route or
-  // library adds a test-only breakpoint override.
+  // E02: old matchMedia deferral disproven — viewport-BEFORE-goto + Escape
+  // dismiss-loop mechanic (see Sidebar.aria.spec.ts mobile describe).
 
-  test.skip('SB-R05 — useFocusTrap keeps focus inside open drawer [PLAYGROUND-DEP: matchMedia resize]', async () => {
-    // Drawer uses useFocusTrap hook (Dialog E15 primitive). Verified manually.
+  test('SB-R05 — useFocusTrap keeps focus inside open drawer', async ({ page }) => {
+    await page.setViewportSize({ width: 400, height: 800 });
+    await page.goto('/components/sidebar');
+    await expect(page.locator('[role="dialog"]').first()).toBeVisible({ timeout: 5000 });
+    for (let i = 0; i < 6 && (await page.locator('[role="dialog"]').count()) > 0; i += 1) {
+      await page.keyboard.press('Escape');
+      await page.waitForTimeout(150);
+    }
+    await expect(page.locator('[role="dialog"]')).toHaveCount(0);
+    await page.getByTestId('open-drawer-sidebar').click();
+    const drawer = page.getByRole('dialog', { name: 'Drawer dialog sidebar' });
+    await expect(drawer).toBeVisible();
+    // Walk a full Tab cycle — focus must stay inside the drawer every step.
+    for (let i = 0; i < 5; i += 1) {
+      await page.keyboard.press('Tab');
+      const inside = await page.evaluate(() => {
+        const d = document.querySelector('[role="dialog"]');
+        return d ? d.contains(document.activeElement) : false;
+      });
+      expect(inside).toBe(true);
+    }
   });
 
-  test.skip('Escape closes top-most drawer [PLAYGROUND-DEP: matchMedia resize]', async () => {
-    // Sidebar.tsx:386-395 document-level Escape listener closes drawer.
+  test.skip('Escape closes top-most drawer [COVERED: SB-ES01 in Sidebar.regression.spec.ts + SB-R03 in Sidebar.keyboard.spec.ts]', async () => {
+    // Escape stacking (drawer + Dialog) is pinned by SB-ES01; plain Escape
+    // close by SB-R03. Kept as a pointer, not re-duplicated here.
   });
 });
