@@ -1,8 +1,10 @@
 # DropdownMenu — regression spec (Radix closed-issue mapping)
 
-**Execution status:** DEFERRED. 20 cases mapped from `radix-ui/primitives`
+**Execution status:** DEFERRED. 22 cases mapped from `radix-ui/primitives`
 closed DropdownMenu issues. ~6 marked `test.skip` with `PLAYGROUND-DEP:` /
-`SUBMENU-DEFERRED:` rationale.
+`SUBMENU-DEFERRED:` rationale. radix-R21/R22 (asChild rest-forwarding, E01
+audit remediation) are EXECUTED in `DropdownMenu.regression.spec.ts`, not
+deferred.
 
 ## Tests
 

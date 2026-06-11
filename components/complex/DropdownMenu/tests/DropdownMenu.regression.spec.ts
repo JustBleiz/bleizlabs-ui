@@ -1,8 +1,10 @@
 /**
  * DropdownMenu regression spec — Radix closed-issue mapping (E21).
  *
- * 20 cases; submenu-related and nested-integration scenarios marked
- * test.skip with rationale.
+ * 22 cases; submenu-related and nested-integration scenarios marked
+ * test.skip with rationale. radix-R21/R22 (E01 audit remediation): asChild
+ * trigger dropped {...rest} — consumer data-testid/title vanished; native
+ * branch always spread rest last.
  */
 
 import { test, expect } from '@playwright/test';
@@ -152,6 +154,25 @@ test.describe('DropdownMenu — regression cases (Radix closed issues)', () => {
   test('radix-R20 — onSelect preventDefault keeps menu open', async ({ page }) => {
     await page.getByRole('button', { name: 'View' }).click();
     await page.getByRole('menuitem', { name: /Toggle grid/ }).click();
+    await expect(page.getByRole('menu')).toBeVisible();
+  });
+
+  test('radix-R21 — asChild trigger forwards rest props without breaking open', async ({
+    page,
+  }) => {
+    // Pre-fix: asChild branch dropped {...rest} — getByTestId found nothing.
+    const trigger = page.getByTestId('dd-trigger-aschild');
+    await expect(trigger).toHaveAttribute('title', 'aschild-title');
+    await expect(trigger).toHaveAttribute('aria-haspopup', 'menu');
+    await trigger.click();
+    await expect(page.getByRole('menu')).toBeVisible();
+    await expect(trigger).toHaveAttribute('aria-expanded', 'true');
+  });
+
+  test('radix-R22 — native trigger rest passthrough (contrast)', async ({ page }) => {
+    const trigger = page.getByTestId('dd-trigger-native');
+    await expect(trigger).toHaveAttribute('title', 'native-title');
+    await trigger.click();
     await expect(page.getByRole('menu')).toBeVisible();
   });
 });

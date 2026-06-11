@@ -42,7 +42,8 @@
  *   Playwright execution, axe-core runtime sweep, manual NVDA sweep, iOS/Android
  *   device testing, submenu integration (not in E21 scope).
  * @regressions tests/DropdownMenu.{keyboard,focus,aria,regression}.spec.md —
- *   20 Radix closed-issue cases mapped. ~6 marked test.skip with
+ *   22 Radix closed-issue cases mapped (radix-R21/R22 = asChild
+ *   rest-forwarding, E01 audit remediation). ~6 marked test.skip with
  *   PLAYGROUND-DEP / SUBMENU-DEFERRED rationale.
  * @example
  *   <DropdownMenu>
@@ -343,6 +344,7 @@ export const DropdownMenuTrigger = forwardRef<HTMLElement, DropdownMenuTriggerPr
             handleKeyDown(event);
             onKeyDown?.(event as unknown as React.KeyboardEvent<HTMLButtonElement>);
           }}
+          {...(rest as React.HTMLAttributes<HTMLElement>)}
         >
           {slotChild}
         </Slot>
