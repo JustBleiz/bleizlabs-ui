@@ -43,11 +43,12 @@ Q4. Has the same pattern repeated 3+ times across BleizLabs projects?
 Q5. Borderline? → ask the user.
 ```
 
-## Top-10 anti-patterns
+## Top anti-patterns
 
 | You wrote                                                      | Fix                                                                                                                          |
 | -------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
 | `<button onClick=...>` in `.tsx`                               | `<Button onClick=...>` — never raw `<button>` in lib-consumer code                                                           |
+| `<Button asChild><Link href>` for navigation                   | `<Button href="...">` — renders `<a>`, server-safe; `asChild` pulls Slot's `'use client'` boundary for zero benefit          |
 | Local `Card` / `Stack` / `Heading` shadowing                   | Import from `@bleizlabs/ui` — local atoms drift from library updates                                                         |
 | `!important` in `.module.scss`                                 | Component variant or `className` passthrough — `!important` blocks consumer overrides                                        |
 | `<DateTimePicker>` value rendered as `"2026-05-13T14:30"` text | Use `value` for ISO transport; the field displays space-separated for humans automatically                                   |

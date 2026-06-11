@@ -2,7 +2,7 @@
 
 **Valid for:** `@bleizlabs/ui@__VERSION__` — if `npm view @bleizlabs/ui version` differs, this doc may be stale. Re-read after upgrading.
 
-This is the deep reference for AI coding agents working in consumer projects that depend on `@bleizlabs/ui`. The thin `AGENTS.md` (root of the package) is the entry point with mission + decision tree + top-10 anti-patterns + pointers. This document covers setup, decision rules, SSR/RSC mapping, per-domain quick-starts, troubleshooting, and the full component inventory.
+This is the deep reference for AI coding agents working in consumer projects that depend on `@bleizlabs/ui`. The thin `AGENTS.md` (root of the package) is the entry point with mission + decision tree + anti-patterns table + pointers. This document covers setup, decision rules, SSR/RSC mapping, per-domain quick-starts, troubleshooting, and the full component inventory.
 
 When in doubt about per-prop API, read the JSDoc on the actual component file:
 `node_modules/@bleizlabs/ui/components/<category>/<Name>/<Name>.tsx`.
@@ -153,13 +153,15 @@ The decision tree from `AGENTS.md` in full detail:
 Most interactive lib atoms support `asChild` — instead of rendering their default element, they project styles + behavior onto the single child element. Powered by an in-house `Slot` primitive (Radix-style).
 
 ```tsx
-// Render Button as Next.js Link (preserves routing semantics + a11y)
-import Link from 'next/link';
+// Button navigation: use the dedicated `href` prop — renders an `<a>`,
+// stays server-safe (no client boundary).
 import { Button } from '@bleizlabs/ui';
 
-<Button asChild>
-  <Link href="/dashboard">Open dashboard</Link>
-</Button>;
+<Button href="/dashboard">Open dashboard</Button>;
+
+// NOT `<Button asChild><Link href>` — asChild pulls the Slot primitive's
+// 'use client' boundary into your tree for zero benefit here. Reserve
+// asChild for elements WITHOUT a dedicated prop (examples below).
 ```
 
 ```tsx
@@ -540,7 +542,7 @@ Anti-pattern: importing Recharts / Chart.js / Victory for a 50-point trend line.
 
 ## F. Anti-patterns + situational appendix
 
-Top-10 fixed anti-patterns (also in `AGENTS.md`), expanded with fix recipes:
+Fixed anti-patterns (mirrored in `AGENTS.md`), expanded with fix recipes:
 
 1. **Raw `<button>` / `<input>` / `<h1-6>` in `.tsx`** → always import the lib atom. `library-first-guard.js` (OS hook) warns on raw atoms in `@bleizlabs/ui`-consumer projects.
 
@@ -561,6 +563,8 @@ Top-10 fixed anti-patterns (also in `AGENTS.md`), expanded with fix recipes:
 9. **Per-component scrollbar styling** → `@use '@bleizlabs/ui/styles/scrollbar';` in `app/globals.scss` once. Covers the whole app.
 
 10. **External chart libs (Recharts / Chart.js / D3) for typical dashboard charts** → lib ships 5 charts. Only reach external for >500 points or specialized viz.
+
+11. **`<Button asChild><Link href>` for navigation** → `<Button href="...">` — renders an `<a>`, stays server-safe. `asChild` pulls the Slot primitive's `'use client'` boundary into the tree for zero benefit when a dedicated `href` prop exists. Reserve `asChild` for elements without a dedicated prop (see §C.2).
 
 ### Situational anti-patterns (appendix)
 
@@ -605,6 +609,7 @@ Top-20 reached patterns, one-liner each:
 | Body text                     | `<Text variant="body" color="secondary">`                                                      |
 | Inline link                   | `<Anchor href="...">` or `<Anchor asChild><Link href="..." /></Anchor>`                        |
 | Button                        | `<Button variant="primary                                                                      | ghost       | danger" size="sm | md   | lg">` |
+| Button as link                | `<Button href="...">` — renders `<a>`, server-safe; NOT `asChild`+`<Link>` (pulls `'use client'`) |
 | Polymorphic render            | `<Component asChild><CustomElement /></Component>`                                             |
 | Surface container             | `<Card padding={N} radius="md                                                                  | lg          | xl">`            |
 | Status indicator              | `<Badge color="success                                                                         | warning     | danger           | info | brand | neutral">` |
@@ -626,7 +631,7 @@ Common failure modes + fixes:
 
 | Symptom                                                      | Cause                                                                                      | Fix                                                                                                                                                                 |
 | ------------------------------------------------------------ | ------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `Error: Slot expects a single React element child`           | `asChild` got multiple children, a Fragment with multiple elements, or a string-only child | Wrap in a single element: `<Button asChild><a href="...">...</a></Button>`. One child only.                                                                         |
+| `Error: Slot expects a single React element child`           | `asChild` got multiple children, a Fragment with multiple elements, or a string-only child | Wrap in a single element, e.g. `<Card asChild><article>...</article></Card>`. One child only. (Button links never need `asChild` — use `<Button href>`.)            |
 | Hydration mismatch warning on `<DateTimePicker>`             | Server-rendered date format ≠ client locale                                                | Pass `value` as ISO string; let the lib's Intl format on client. Avoid local `new Date()` derivations during render.                                                |
 | Token override not cascading                                 | Override placed in `:root` of a CSS module (scoped) instead of `app/globals.scss` (global) | Move to `app/globals.scss` — semantic token overrides belong global.                                                                                                |
 | `<Field.Message match="...">` never shows                    | `match` key doesn't match the actual ValidityState property                                | Use exact `valueMissing` / `typeMismatch` / `tooShort` / `patternMismatch` / `rangeOverflow` / `rangeUnderflow` / `stepMismatch` / `badInput` / `customError` keys. |
