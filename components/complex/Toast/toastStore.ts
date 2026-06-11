@@ -95,6 +95,18 @@ const timerMap = new Map<
 let isPausedGlobally = false;
 let idCounter = 0;
 
+const FALLBACK_DURATION = 4000;
+let globalDefaultDuration = FALLBACK_DURATION;
+
+/**
+ * Wired by `<Toaster duration>` (E02 audit fix — the prop was a silent no-op).
+ * Single-Toaster contract: last mounted/updated Toaster wins; its unmount
+ * resets to the 4000ms fallback. Per-toast `duration` always overrides.
+ */
+export function setGlobalDefaultDuration(ms?: number): void {
+  globalDefaultDuration = ms ?? FALLBACK_DURATION;
+}
+
 const EMPTY_SNAPSHOT: ReadonlyArray<ToastItem> = Object.freeze([]);
 
 function emit(): void {
@@ -158,6 +170,8 @@ function upsert(partial: ToastOptions): string {
   const id = partial.id ?? generateId();
   const existing = queue.find((t) => t.id === id);
 
+  const duration = partial.duration ?? existing?.duration ?? globalDefaultDuration;
+
   const next: ToastItem = {
     id,
     variant: partial.variant ?? existing?.variant ?? 'default',
@@ -166,11 +180,16 @@ function upsert(partial: ToastOptions): string {
     action: partial.action ?? existing?.action,
     icon: partial.icon ?? existing?.icon,
     closable: partial.closable ?? existing?.closable ?? true,
-    duration: partial.duration ?? existing?.duration ?? 4000,
+    duration,
     onDismiss: partial.onDismiss ?? existing?.onDismiss,
     onAutoClose: partial.onAutoClose ?? existing?.onAutoClose,
     createdAt: existing?.createdAt ?? Date.now(),
-    remainingOnPause: null,
+    // E02 audit fix: a toast created OR updated while globally paused must
+    // carry its remaining time, or resumeAllTimers skips it (null) and it
+    // never auto-dismisses. Infinity/<=0 stay null — the store's sticky
+    // semantic (also covers toast.promise loading state).
+    remainingOnPause:
+      isPausedGlobally && Number.isFinite(duration) && duration > 0 ? duration : null,
   };
 
   // Reset timer on update — duration counts from the latest call.

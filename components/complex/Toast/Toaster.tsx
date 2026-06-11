@@ -99,11 +99,13 @@ import { cn } from '../../utils/cn';
 import {
   pauseAllTimers,
   resumeAllTimers,
+  setGlobalDefaultDuration,
   toast as toastApi,
   useToastQueue,
   type ToastItem,
   type ToastVariant,
 } from './toastStore';
+import { VisuallyHidden } from '../../utils/VisuallyHidden';
 import styles from './Toast.module.scss';
 
 export type ToasterPosition =
@@ -119,7 +121,13 @@ export type ToasterDir = 'ltr' | 'rtl';
 export interface ToasterProps extends Omit<OlHTMLAttributes<HTMLOListElement>, 'dir'> {
   /** Stack position in viewport. Default `'bottom-right'`. */
   position?: ToasterPosition;
-  /** Global default duration (ms) — overridable per toast. Default `4000`. */
+  /**
+   * Global default duration (ms) — overridable per toast. Default `4000`.
+   * Single-Toaster contract: with multiple Toasters (unsupported) the last
+   * mounted/updated one wins. Toasts fired BEFORE the Toaster mounts capture
+   * the 4000ms fallback (duration snapshots at creation); live toasts keep
+   * their captured duration when the prop changes at runtime.
+   */
   duration?: number;
   /** Show close button on every toast. Default `true`. */
   closeButton?: boolean;
@@ -134,7 +142,7 @@ export interface ToasterProps extends Omit<OlHTMLAttributes<HTMLOListElement>, '
 export const Toaster = forwardRef<HTMLOListElement, ToasterProps>(function Toaster(props, ref) {
   const {
     position = 'bottom-right',
-    duration: _globalDuration, // reserved — individual toast overrides already win
+    duration,
     closeButton = true,
     richColors = false,
     dir = 'ltr',
@@ -142,9 +150,16 @@ export const Toaster = forwardRef<HTMLOListElement, ToasterProps>(function Toast
     className,
     ...rest
   } = props;
-  void _globalDuration;
 
   const toasts = useToastQueue();
+
+  // Wire the global default duration into the store (E02 audit fix — the
+  // prop was destructured and voided, a silent no-op). Cleanup resets to the
+  // 4000ms fallback so HMR/tests never leak a stale default.
+  useEffect(() => {
+    setGlobalDefaultDuration(duration);
+    return () => setGlobalDefaultDuration(undefined);
+  }, [duration]);
 
   // Pause on tab-hidden. Resume on visible. Prevents toasts from silently
   // expiring while user is in another tab.
@@ -206,14 +221,32 @@ export const Toaster = forwardRef<HTMLOListElement, ToasterProps>(function Toast
   }, []);
   if (!mounted) return null;
 
-  // Always render the <ol> landmark region — even when empty — so the ARIA
-  // live region exists in the DOM BEFORE the first toast mounts. Some SR +
-  // browser combinations miss announcements if the live-region container is
-  // mounted simultaneously with its first child (Phase 5 IMP-5 fix per
-  // Evaluator audit). Pointer-events + empty body ensure the empty region
-  // is non-interactive while present.
+  // Persistent polite announcer (E02 audit fix, Radix "Announce" pattern).
+  // The per-toast inner div carries role="status|alert" but mounts TOGETHER
+  // with its content — for polite announcements that is the patchy case on
+  // some SR/browser combos (the original IMP-5 rationale protected the <ol>,
+  // which carries no live role at all). This always-mounted, visually-hidden
+  // live region exists BEFORE any toast and mirrors the latest NON-error
+  // toast's text (errors keep role="alert", which reliably announces on
+  // insertion). Deliberately role-less (a bare aria-live span) and a SIBLING
+  // of the <ol> — role="status" here would double up getByRole counts, and a
+  // non-<li> child inside the <ol> would regress the axe `list` fix (E142 L4
+  // F3). Renders a bare aria-live span (VisuallyHidden). Known accepted
+  // trade-off: rare double-announcement where insertion announcement also
+  // fires.
+  const latestPolite = [...toasts].reverse().find((t) => t.variant !== 'error');
+
+  // The <ol> stays always-mounted (even empty) so the stack geometry is
+  // stable; pointer-events + empty body keep it non-interactive when empty.
   return (
     <FloatingPortal>
+      <VisuallyHidden aria-live="polite" aria-atomic="true" data-toast-announcer="">
+        {latestPolite ? (
+          <>
+            {latestPolite.title} {latestPolite.description}
+          </>
+        ) : null}
+      </VisuallyHidden>
       <ol
         ref={ref}
         aria-label={label}

@@ -23,6 +23,7 @@ function fakePromise(shouldSucceed: boolean, ms = 1500): Promise<string> {
 export default function ToastPlayground() {
   const [position, setPosition] = useState<ToasterPosition>('bottom-right');
   const [richColors, setRichColors] = useState(false);
+  const [globalDuration, setGlobalDuration] = useState<number | undefined>(undefined);
 
   return (
     <main className={styles.page}>
@@ -80,6 +81,30 @@ export default function ToastPlayground() {
             onClick={() => setRichColors((v) => !v)}
           >
             richColors: {richColors ? 'on' : 'off'}
+          </Button>
+        </Inline>
+        <Inline gap={2}>
+          <Button
+            variant={globalDuration === undefined ? 'primary' : 'ghost'}
+            onClick={() => setGlobalDuration(undefined)}
+          >
+            duration: default
+          </Button>
+          <Button
+            variant={globalDuration === 1000 ? 'primary' : 'ghost'}
+            onClick={() => setGlobalDuration(1000)}
+          >
+            duration: 1000 ms
+          </Button>
+          <Button
+            variant="secondary"
+            onClick={() => {
+              setTimeout(() => {
+                toast({ title: 'Delayed toast', description: 'Spawned 1.5s after click.' });
+              }, 1500);
+            }}
+          >
+            Spawn delayed (1.5s)
           </Button>
         </Inline>
       </section>
@@ -361,7 +386,7 @@ export default function ToastPlayground() {
 
       <Separator />
 
-      <Toaster position={position} richColors={richColors} />
+      <Toaster position={position} richColors={richColors} duration={globalDuration} />
     </main>
   );
 }
