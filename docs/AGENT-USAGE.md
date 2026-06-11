@@ -20,7 +20,7 @@ The library does NOT ship:
 - Business-domain organisms (no `<ProjectCard>`, `<TicketDetailHeader>`, `<ClientFinanceSummary>` — those live in your project)
 - Pre-composed product surfaces (no `<DashboardHero>`, `<LoginCard>`, `<FilterHero>` — compose from atoms)
 - Surface-prefixed components (no `<PanelHeader>`, `<MarketingFooter>` — universal naming only)
-- Styling-alternative variants (`Card variant="glass"` doesn't exist; consumer SCSS handles visual variation via `className` passthrough)
+- Styling-alternative variants beyond the documented set (`Card variant="neon"` doesn't exist; consumer SCSS handles visual variation via `className` passthrough)
 
 When you reach for any of those, write them locally in your project as a composition of lib atoms + your own SCSS module. The lib is the box of legos; the model is yours.
 
@@ -203,10 +203,14 @@ Override at the lowest layer that fits:
 The full per-component channel list is in each component's JSDoc `@tokens` tag. Example for `<Card>`:
 
 ```
-@tokens  --color-surface, --color-border, --color-border-subtle,
-         --shadow-card, --shadow-lg, --space-{0..20}, --radius-{sm..2xl},
-         --color-brand, --color-text-primary, --padding-card,
-         --radius-card. Local channels: --card-{padding,radius,direction,gap}.
+@tokens  --color-surface, --color-border-subtle, --shadow-card,
+         --space-{0..20}, --radius-{sm..2xl}, --color-brand,
+         --color-text-primary, --padding-card, --radius-card,
+         --border-width-accent, --duration-card-hover, --easing-default,
+         --card-bg-glass + --card-blur (theme-aware semantic tokens
+         defined in `_semantics.scss`).
+         Local channels: --card-{padding,radius,direction,gap,width},
+         --card-accent-color (accent variant border color override).
 ```
 
 ---

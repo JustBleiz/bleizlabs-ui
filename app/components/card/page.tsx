@@ -18,8 +18,8 @@ export default function CardPlaygroundPage() {
           Card
         </Heading>
         <p className={styles.intro}>
-          Surface container with 4 variants, opt-in hover, accent border modes, and 4 flat slot
-          components (CardHeader, CardBody, CardFooter, CardSection). Polymorphism via asChild.
+          Surface container with 4 variants (incl. a left accent border) and 4 flat slot components
+          (CardHeader, CardBody, CardFooter, CardSection). Polymorphism via asChild.
         </p>
       </header>
 
@@ -50,8 +50,13 @@ export default function CardPlaygroundPage() {
 
       <section className={styles.demo}>
         <Heading level={2} size="2xl">
-          2. Accent border position
+          2. Accent variant
         </Heading>
+        <Text variant="small" color="secondary">
+          <code>variant=&quot;accent&quot;</code> renders a static brand-color accent on the left
+          edge (<code>--card-accent-color</code> token override available). For other positions or
+          colors, compose the <code>EdgeBar</code> atom.
+        </Text>
         <div className={styles.grid}>
           <Card variant="accent">
             <CardHeader>
@@ -61,16 +66,6 @@ export default function CardPlaygroundPage() {
             </CardHeader>
             <CardBody>
               <Text>Default brand accent on the left edge.</Text>
-            </CardBody>
-          </Card>
-          <Card variant="accent">
-            <CardHeader>
-              <Heading level={3} size="lg">
-                Accent top — success
-              </Heading>
-            </CardHeader>
-            <CardBody>
-              <Text>Custom accentColor token override.</Text>
             </CardBody>
           </Card>
         </div>

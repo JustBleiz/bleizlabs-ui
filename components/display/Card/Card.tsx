@@ -8,12 +8,14 @@ import styles from './Card.module.scss';
  * Card — surface container atom (klocek display primitive).
  *
  * @layer   atom (display)
- * @tokens  --color-surface, --color-border, --color-border-subtle,
- *          --shadow-card, --shadow-lg, --space-{0..20}, --radius-{sm..2xl},
- *          --color-brand, --color-text-primary, --padding-card,
- *          --radius-card, --card-bg-glass + --card-blur (theme-aware
- *          semantic tokens defined in `_semantics.scss`).
- *          Local channels: --card-{padding,radius,direction,gap}.
+ * @tokens  --color-surface, --color-border-subtle, --shadow-card,
+ *          --space-{0..20}, --radius-{sm..2xl}, --color-brand,
+ *          --color-text-primary, --padding-card, --radius-card,
+ *          --border-width-accent, --duration-card-hover, --easing-default,
+ *          --card-bg-glass + --card-blur (theme-aware semantic tokens
+ *          defined in `_semantics.scss`).
+ *          Local channels: --card-{padding,radius,direction,gap,width},
+ *          --card-accent-color (accent variant border color override).
  * @deps    Slot (asChild boundary), cn, SpaceIndex type.
  * @a11y    Renders `<div>` by default — non-semantic surface. Use `asChild`
  *          to project onto `<article>`, `<section>`, or `<a>`.
@@ -25,8 +27,9 @@ import styles from './Card.module.scss';
  *            OR uses `variant="accent"` for static brand-color-left accent
  *          - hoverable → consumer SCSS module rule on Card via className
  *            passthrough (`:hover { transform: translateY(-2px); ... }`)
- *          - width → consumer wraps Card in `<Container>` or sets via own
- *            SCSS / inline style on parent
+ *          - width → consumer wraps Card in `<Container>`, sets via own
+ *            SCSS / inline style on parent, or overrides the
+ *            `--card-width` channel directly
  *
  * @example
  * <Card padding={5} radius="lg">
@@ -72,7 +75,10 @@ export interface CardProps extends HTMLAttributes<HTMLDivElement> {
 const VARIANT_CLASS: Record<CardVariant, string> = {
   default: styles.variantDefault!,
   elevated: styles.variantElevated!,
-  accent: styles.variantAccent!,
+  // accent = base chrome + the documented static left accent border
+  // (E04 audit remediation: .accentLeft was dead — no variant referenced it,
+  // so "accent" rendered identically to "default").
+  accent: cn(styles.variantAccent!, styles.accentLeft!),
   glass: styles.variantGlass!,
 };
 

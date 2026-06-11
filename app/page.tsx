@@ -106,7 +106,7 @@ const components: ComponentLink[] = [
     href: '/components/card',
     name: 'Card',
     description:
-      'Surface container with variants, hoverable state, accent positions, and four flat slot components for header / body / footer / section.',
+      'Surface container with variants (incl. a left accent border) and four flat slot components for header / body / footer / section.',
     phase: 'Phase 3 — Display',
     status: 'available',
   },
