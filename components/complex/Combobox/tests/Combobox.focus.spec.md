@@ -1,6 +1,9 @@
 # Combobox — focus behavior spec
 
-**Execution status:** DEFERRED to first consumer adoption (per E15 scope decision).
+**Execution status:** EXECUTED in-repo — the canonical suite lives in the sibling
+`Combobox.focus.spec.ts` (CI-gated; status in Combobox.tsx `@tested`; only the manual
+NVDA sweep stays deferred). This file is a consumer-CI reference snapshot, not the
+source of truth.
 **Format:** markdown code-fenced Playwright pseudo-code.
 
 ## Setup
@@ -11,17 +14,16 @@
 ## Tests
 
 ```ts
-test('CB-R06 — blur commits current search value (Strategy A Radix)', async ({ page }) => {
+test('CB-R06 — blur commits on exact textValue match (Strategy A Radix)', async ({ page }) => {
   await page.goto('/components/combobox');
   const input = page.getByRole('combobox');
   await input.focus();
-  await input.fill('app');
-  // Focus moves outside combobox
-  await page.getByRole('button', { name: 'Submit' }).focus();
-  // Search committed as selected value (or reverts to last valid if invalid)
-  // Strategy A: commit what's shown in input
-  const finalValue = await input.inputValue();
-  expect(finalValue).toBe('app');
+  await input.fill('Japan'); // exact match — non-matching text REVERTS instead
+  // Tab away — the Tab-commit path commits the highlighted exact match
+  // (the blur exact-match branch yields the identical outcome).
+  await page.keyboard.press('Tab');
+  await page.waitForTimeout(100); // microtask + blur delay
+  await expect(input).toHaveValue(/Japan/i);
 });
 
 test('Focus stays on input the entire time (APG editable-combobox)', async ({ page }) => {

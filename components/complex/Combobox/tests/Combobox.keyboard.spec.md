@@ -1,6 +1,9 @@
 # Combobox — keyboard interaction spec
 
-**Execution status:** DEFERRED to first consumer adoption (per E15 scope decision).
+**Execution status:** EXECUTED in-repo — the canonical suite lives in the sibling
+`Combobox.keyboard.spec.ts` (CI-gated; status in Combobox.tsx `@tested`; only the manual
+NVDA sweep stays deferred). This file is a consumer-CI reference snapshot, not the
+source of truth.
 **Format:** markdown code-fenced Playwright pseudo-code.
 
 ## Setup
@@ -68,7 +71,7 @@ test('Printable char opens listbox and filters (non-IME keyboard)', async ({ pag
   await input.focus();
   await page.keyboard.type('a');
   await expect(page.getByRole('listbox')).toBeVisible();
-  // Only options starting with 'a' visible (filter applied)
+  // Only options containing 'a' visible (case-insensitive contains filter)
   const visibleOptions = page.getByRole('option');
   const count = await visibleOptions.count();
   expect(count).toBeGreaterThan(0);

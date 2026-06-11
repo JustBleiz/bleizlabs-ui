@@ -90,9 +90,9 @@ export default function ComboboxPlayground() {
           1. Basic uncontrolled
         </Heading>
         <Text variant="body" color="muted">
-          Type any substring to filter — <code>an</code> matches Canada/Austria/Andorra
+          Type any substring to filter — <code>an</code> matches Canada/Finland/France/Germany
           (case-insensitive <code>contains</code>). Arrow keys navigate filtered results, Enter
-          commits, Escape clears.
+          commits, Escape reverts to the committed label.
         </Text>
         <div className={styles.demo}>
           <div className={styles.fieldGroup}>
@@ -100,7 +100,7 @@ export default function ComboboxPlayground() {
               Country
             </Text>
             <Combobox defaultValue={null}>
-              <ComboboxInput placeholder="Search countries…" />
+              <ComboboxInput placeholder="Search countries…" aria-label="Country" />
               <ComboboxContent>
                 {COUNTRIES.map(({ value, label }) => (
                   <ComboboxItem key={value} value={value} textValue={label}>
@@ -121,8 +121,8 @@ export default function ComboboxPlayground() {
         </Heading>
         <Text variant="body" color="muted">
           <code>ComboboxGroup</code> + <code>ComboboxLabel</code> create semantic groupings (
-          <code>role=&quot;group&quot;</code> + <code>aria-labelledby</code>). Groups filter as a
-          unit — empty groups hide automatically.
+          <code>role=&quot;group&quot;</code> + <code>aria-labelledby</code>). Items filter
+          individually — group labels and separators stay visible while any filter is active.
         </Text>
         <div className={styles.demo}>
           <div className={styles.fieldGroup}>
@@ -130,7 +130,7 @@ export default function ComboboxPlayground() {
               Deploy target
             </Text>
             <Combobox defaultValue="vercel-prod">
-              <ComboboxInput placeholder="Search targets…" />
+              <ComboboxInput placeholder="Search targets…" aria-label="Deploy target" />
               <ComboboxContent>
                 <ComboboxGroup>
                   <ComboboxLabel>Production</ComboboxLabel>
@@ -187,7 +187,7 @@ export default function ComboboxPlayground() {
               Country
             </Text>
             <Combobox value={controlledValue} onValueChange={setControlledValue}>
-              <ComboboxInput placeholder="Search countries…" />
+              <ComboboxInput placeholder="Search countries…" aria-label="Controlled country" />
               <ComboboxContent>
                 {COUNTRIES.map(({ value, label }) => (
                   <ComboboxItem key={value} value={value} textValue={label}>
@@ -228,7 +228,7 @@ export default function ComboboxPlayground() {
               AWS region
             </Text>
             <Combobox defaultValue="eu-west-1">
-              <ComboboxInput placeholder="Search regions…" />
+              <ComboboxInput placeholder="Search regions…" aria-label="Region" />
               <ComboboxContent>
                 <ComboboxItem value="eu-west-1" textValue="EU West (Ireland)">
                   EU West (Ireland)
@@ -262,9 +262,10 @@ export default function ComboboxPlayground() {
           5. Free text mode (<code>acceptFreeText</code>)
         </Heading>
         <Text variant="body" color="muted">
-          With <code>acceptFreeText</code>, Enter commits the typed text as the value even when no
-          item matches. Useful for tag inputs, custom category entry, or autocomplete-with-override
-          flows. Without the prop (default), Enter on no-match is a no-op.
+          With <code>acceptFreeText</code>, Enter commits the typed text (trimmed) as the value even
+          when no item matches. Useful for tag inputs, custom category entry, or
+          autocomplete-with-override flows. Without the prop (default), Enter on no-match is a
+          no-op.
         </Text>
         <div className={styles.demo}>
           <div className={styles.fieldGroup}>
@@ -272,7 +273,7 @@ export default function ComboboxPlayground() {
               Tag
             </Text>
             <Combobox acceptFreeText defaultValue="react">
-              <ComboboxInput placeholder="Type or pick a tag…" />
+              <ComboboxInput placeholder="Type or pick a tag…" aria-label="Tag" />
               <ComboboxContent>
                 <ComboboxItem value="react">react</ComboboxItem>
                 <ComboboxItem value="nextjs">nextjs</ComboboxItem>
@@ -305,7 +306,7 @@ export default function ComboboxPlayground() {
                   Country
                 </Text>
                 <Combobox name="country" required defaultValue="pl">
-                  <ComboboxInput placeholder="Search countries…" />
+                  <ComboboxInput placeholder="Search countries…" aria-label="Country picker" />
                   <ComboboxContent>
                     {COUNTRIES.map(({ value, label }) => (
                       <ComboboxItem key={value} value={value} textValue={label}>
@@ -461,18 +462,25 @@ export default function ComboboxPlayground() {
         <ul className={styles.keyList}>
           <li>
             <strong>Typing</strong> — opens the listbox (if closed) and filters results via
-            case-insensitive substring match. Highlight resets to first visible enabled item.
+            case-insensitive substring match. Highlight seeds to the current value when it still
+            matches the filter, else the first visible enabled item.
           </li>
           <li>
-            <kbd>ArrowDown</kbd> (closed) — opens listbox, highlights first enabled (or current
-            value).
+            <kbd>ArrowDown</kbd> (closed) — opens listbox, highlights the current value (or first
+            enabled).
           </li>
           <li>
-            <kbd>ArrowUp</kbd> (closed) — opens listbox, highlights last enabled.
+            <kbd>ArrowUp</kbd> (closed, with or without <kbd>Alt</kbd>) — opens listbox, highlights
+            the current value (or first enabled) — same seeding as <kbd>ArrowDown</kbd>.
           </li>
           <li>
-            <kbd>Alt</kbd>+<kbd>ArrowDown</kbd> — opens listbox showing ALL items (ignores current
-            filter — Radix convention for &quot;show all&quot;).
+            <kbd>Alt</kbd>+<kbd>ArrowDown</kbd> (closed) — opens listbox like plain{' '}
+            <kbd>ArrowDown</kbd>; the current filter still applies (clear the input to see all
+            items). No-op while open.
+          </li>
+          <li>
+            <kbd>Alt</kbd>+<kbd>ArrowUp</kbd> (open) — close without committing + revert search (APG
+            alternative to <kbd>Escape</kbd>).
           </li>
           <li>
             <kbd>ArrowDown</kbd> / <kbd>ArrowUp</kbd> (open) — move highlight to next/prev visible
@@ -490,7 +498,7 @@ export default function ComboboxPlayground() {
           </li>
           <li>
             <kbd>Enter</kbd> (open + empty matches + <code>acceptFreeText</code>) — commit the typed
-            search as the value.
+            search (trimmed) as the value.
           </li>
           <li>
             <kbd>Escape</kbd> (open) — close, revert input to current value&apos;s label.
@@ -503,9 +511,10 @@ export default function ComboboxPlayground() {
             (Radix convention).
           </li>
           <li>
-            <kbd>Blur</kbd> (click elsewhere) — auto-commit if typed text exactly matches an
-            item&apos;s label; else revert input to current value&apos;s label. Prevents orphaned
-            text (Radix Strategy A).
+            <kbd>Blur</kbd> (click elsewhere) — auto-commit if typed text matches an item&apos;s
+            label (case-insensitive, trimmed); else commit the typed text (trimmed) when{' '}
+            <code>acceptFreeText</code>, else revert input to current value&apos;s label. Prevents
+            orphaned text (Radix Strategy A).
           </li>
           <li>
             <kbd>Cmd</kbd>+<kbd>Arrow</kbd> / <kbd>Ctrl</kbd>+<kbd>Arrow</kbd> — NOT intercepted
@@ -536,6 +545,10 @@ export default function ComboboxPlayground() {
           <li>
             <kbd>Escape</kbd> (open) — close + clear search. Selections persist (chips remain) — no
             revert-to-committed-label since multi mode has no single committed label.
+          </li>
+          <li>
+            <kbd>Blur</kbd> — clear search + close. No auto-commit, no revert (strategy A is
+            single-mode only); selections persist as chips.
           </li>
           <li>
             <kbd>Click</kbd> on chip × button — remove that single value, restore focus to input.

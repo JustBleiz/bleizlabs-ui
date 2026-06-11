@@ -1,10 +1,13 @@
 # Combobox — regression spec (Radix + Select-inherited issue mapping)
 
-**Execution status:** DEFERRED. 28 regression cases planned from
-`docs/specs/combobox-spec.md` §Regression Cases. This file covers the
-6 highest-risk cases currently enumerated (CB-R02 SSR, CB-R03 filter
-race, CB-R16 SSR portal). CB-R06 (blur commit), CB-R07 (IME guard),
-CB-R17 (Escape bubble) in keyboard/focus specs.
+**Execution status:** EXECUTED in-repo — the canonical suite lives in the sibling
+`Combobox.regression.spec.ts` (CI-gated; status in Combobox.tsx `@tested`; only the
+manual NVDA sweep stays deferred). This file is a consumer-CI reference snapshot, not
+the source of truth. Registry: the per-case content below and the sibling `.spec.ts`
+are the canon (the spec-doc the original 28-case mapping came from was an ephemeral
+draft, since retired). This file covers the highest-risk cases (CB-R02 SSR, CB-R03
+filter race, CB-R16 SSR portal); CB-R06 (blur commit), CB-R07 (IME guard), CB-R17
+(Escape bubble) live in keyboard/focus specs; CB-R18..R21 (announcer) in the aria spec.
 
 ## Tests
 
@@ -45,7 +48,9 @@ test('CB-R16 — SSR portal: listbox not rendered server-side (client-only)', as
   // Portal content should NOT be in SSR HTML (FloatingPortal client-only)
   expect(html).not.toContain('role="listbox"');
   // Client hydration mounts portal after 'use client' boundary
-  await page.getByRole('combobox').click();
+  // (ArrowDown opens — click on the input doesn't open Combobox)
+  await page.getByRole('combobox').focus();
+  await page.keyboard.press('ArrowDown');
   await expect(page.getByRole('listbox')).toBeVisible();
 });
 
@@ -66,7 +71,8 @@ test('onValueChange does NOT fire for null transitions (only non-null commits)',
     return (window as any).__valueChangeCalls;
   });
   const input = page.getByRole('combobox');
-  await input.click();
+  await input.focus();
+  await page.keyboard.press('ArrowDown'); // opens (click on the input doesn't open Combobox)
   await page.getByRole('option').first().click();
   // One call with string value (no null fire)
   const calls = await callsHandle.jsonValue();
