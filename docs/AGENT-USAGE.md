@@ -599,29 +599,29 @@ If you're working on a feature that genuinely needs one of the above, install th
 
 Top-20 reached patterns, one-liner each:
 
-| Want                          | Use                                                                                            |
-| ----------------------------- | ---------------------------------------------------------------------------------------------- | ----------- | ---------------- | ---- | ----- | ---------- |
-| Vertical layout               | `<Stack gap={N}>`                                                                              |
-| Horizontal layout             | `<Inline gap={N}>`                                                                             |
-| Page width constraint         | `<Container size="lg">`                                                                        |
-| Section landmark              | `<Section tag="section" aria-labelledby="...">`                                                |
-| Headings                      | `<Heading level={N} size="...">` (level = semantics, size = visual)                            |
-| Body text                     | `<Text variant="body" color="secondary">`                                                      |
-| Inline link                   | `<Anchor href="...">` or `<Anchor asChild><Link href="..." /></Anchor>`                        |
-| Button                        | `<Button variant="primary                                                                      | ghost       | danger" size="sm | md   | lg">` |
+| Want                          | Use                                                                                               |
+| ----------------------------- | ------------------------------------------------------------------------------------------------- | ----------- | ---------------- | ---- | ----- | ---------- |
+| Vertical layout               | `<Stack gap={N}>`                                                                                 |
+| Horizontal layout             | `<Inline gap={N}>`                                                                                |
+| Page width constraint         | `<Container size="lg">`                                                                           |
+| Section landmark              | `<Section tag="section" aria-labelledby="...">`                                                   |
+| Headings                      | `<Heading level={N} size="...">` (level = semantics, size = visual)                               |
+| Body text                     | `<Text variant="body" color="secondary">`                                                         |
+| Inline link                   | `<Anchor href="...">` or `<Anchor asChild><Link href="..." /></Anchor>`                           |
+| Button                        | `<Button variant="primary                                                                         | ghost       | danger" size="sm | md   | lg">` |
 | Button as link                | `<Button href="...">` — renders `<a>`, server-safe; NOT `asChild`+`<Link>` (pulls `'use client'`) |
-| Polymorphic render            | `<Component asChild><CustomElement /></Component>`                                             |
-| Surface container             | `<Card padding={N} radius="md                                                                  | lg          | xl">`            |
-| Status indicator              | `<Badge color="success                                                                         | warning     | danger           | info | brand | neutral">` |
-| Avatar with initials fallback | `<Avatar src="..." name="..." />`                                                              |
-| Imperative notification       | `toast.success('...')` (after `<Toaster>` mounted once)                                        |
-| Modal                         | `<Dialog><Dialog.Trigger /><Dialog.Content>...</Dialog.Content></Dialog>`                      |
-| Side panel                    | `<Sheet side="right">`                                                                         |
-| Tooltip on hover              | `<Tooltip content="..."><Button>...</Button></Tooltip>`                                        |
-| Form with native validation   | `<Form><Field name="..."><Field.Label /><Input /><Field.Message match="..." /></Field></Form>` |
-| Data grid                     | `<DataTable data={...} columns={[...]} pagination={{...}} />`                                  |
-| Reveal on scroll              | `<Reveal tag="section">...</Reveal>`                                                           |
-| Loading skeleton              | `<Skeleton height={N} width={N                                                                 | "100%"} />` |
+| Polymorphic render            | `<Component asChild><CustomElement /></Component>`                                                |
+| Surface container             | `<Card padding={N} radius="md                                                                     | lg          | xl">`            |
+| Status indicator              | `<Badge color="success                                                                            | warning     | danger           | info | brand | neutral">` |
+| Avatar with initials fallback | `<Avatar src="..." name="..." />`                                                                 |
+| Imperative notification       | `toast.success('...')` (after `<Toaster>` mounted once)                                           |
+| Modal                         | `<Dialog><Dialog.Trigger /><Dialog.Content>...</Dialog.Content></Dialog>`                         |
+| Side panel                    | `<Sheet side="right">`                                                                            |
+| Tooltip on hover              | `<Tooltip content="..."><Button>...</Button></Tooltip>`                                           |
+| Form with native validation   | `<Form><Field name="..."><Field.Label /><Input /><Field.Message match="..." /></Field></Form>`    |
+| Data grid                     | `<DataTable data={...} columns={[...]} pagination={{...}} />`                                     |
+| Reveal on scroll              | `<Reveal tag="section">...</Reveal>`                                                              |
+| Loading skeleton              | `<Skeleton height={N} width={N                                                                    | "100%"} />` |
 
 ---
 
