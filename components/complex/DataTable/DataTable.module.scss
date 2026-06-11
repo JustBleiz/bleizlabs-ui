@@ -1,8 +1,8 @@
 @use '../../../styles/mixins' as mx;
 
 // ============================================================================
-// DataTable v1 — foundation styles (sort + pagination + states + density)
-// Selection / expansion / frozen / mobile fallback / RTL polish → next sessions
+// DataTable v1 — full styles: foundation (sort + pagination + states +
+// density) + selection + expansion + frozen columns + mobile fallback + RTL
 // ============================================================================
 
 .root {
@@ -24,6 +24,9 @@
   --data-table-cell-padding-x: var(--space-3);
   --data-table-header-padding-y: var(--space-3);
 
+  // kebab-case intentional (outlier vs camelCase codebase) — these classes are
+  // driven by tsx template lookups `styles[`density-${density}`]`;
+  // selector-class-pattern is disabled repo-wide, rename = churn for no gain.
   &.density-compact {
     --data-table-row-height: 36px;
     --data-table-cell-padding-y: var(--space-1);
@@ -154,6 +157,8 @@
 
 // Row variants (visual tonacja) — `.row-default` is intentional no-op
 // reserved as a symmetric class hook for consumer override.
+// kebab-case intentional — driven by tsx template lookup
+// `styles[`row-${variant}`]` (see density note above).
 .row-success {
   background-color: color-mix(in srgb, var(--color-success) 6%, transparent);
 }

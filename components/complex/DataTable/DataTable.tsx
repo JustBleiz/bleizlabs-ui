@@ -39,16 +39,34 @@ import styles from './DataTable.module.scss';
  *          --font-size-{sm,base}, --font-weight-medium,
  *          --duration-fast, --easing-default, --focus-ring
  * @deps    cn, useMatchMedia, lib primitives (Table compound, Empty, Alert,
- *          Skeleton, Pagination)
+ *          Skeleton, Pagination, Button, Input)
+ * @apg     https://www.w3.org/WAI/ARIA/apg/patterns/grid/
  * @a11y    APG `/grid/` pattern — `role="grid"` on Table root,
  *          `role="columnheader"` z `aria-sort`, `role="gridcell"`,
  *          `aria-rowcount` / `aria-colcount` / `aria-rowindex`,
  *          aria-live polite region dla state change announcements,
+ *          `aria-busy` while loading,
  *          keyboard model: Arrow keys (cell nav), Home/End (row boundaries),
- *          Ctrl+Home/End (table boundaries), PageUp/Down (~10 rows),
- *          Enter (activate), Space (selection), F2 (widget-mode entry),
- *          Escape (widget-mode exit). NIE traps Tab — exits naturally.
- *          Sort indicator NOT color-only (icon-based).
+ *          Ctrl+Home/End (table boundaries; data cells — deliberate APG
+ *          deviation, header excluded), PageUp/Down (~10 rows),
+ *          Enter (activate), Space (selection). Widget-mode (F2/Escape)
+ *          deferred — see @notes. NIE traps Tab — exits naturally.
+ *          Sort indicator NOT color-only (icon-based). Sort-button
+ *          accessible name = `<header>: <action>` (WCAG 2.5.3).
+ *          MOBILE: card fallback drops grid semantics entirely —
+ *          role="list"/"listitem" (cards can't satisfy grid required
+ *          children); selection/expansion state on interactive children.
+ * @tested  tsc --noEmit ✓ | eslint + jsx-a11y via eslint-config-next ✓ |
+ *          Playwright suite EXECUTED in-repo (11 `.spec.ts` suites:
+ *          aria/edge-cases/expansion/filter/focus/keyboard/pagination/
+ *          regression/responsive/selection/sort, CI-gated) + axe-core
+ *          desktop (DT-A08) and mobile 360px (DT-R05) runs.
+ *          DEFERRED: manual NVDA sweep, iOS/Android device testing.
+ * @regressions DT-* case IDs live in the spec headers (no `.spec.md`
+ *          mirrors — the `.spec.ts` suites are the canon). E03 audit
+ *          remediation: DT-SE08/SE09 (ID-based selection identity),
+ *          DT-S07 (sort accessible name), DT-R05 (mobile axe), DT-P04
+ *          rewritten to lock the no-page-size-selector v1 contract.
  * @notes   Server-Component UNSAFE — wymaga `'use client'` (stan, observer,
  *          keyboard). Consumer powinien `useMemo` columns dla perf.
  *          Default mode = client-side (slice po filter+sort). Server-side
@@ -162,7 +180,12 @@ export interface DataTablePaginationConfig {
   pageIndex?: number;
   /** Total rows (server-side mode marker). Gdy podane → controlled mode. */
   totalRows?: number;
-  /** Opcje page size selectora. Domyślnie [10, 25, 50, 100]. */
+  /**
+   * Opcje page size selectora. Domyślnie [10, 25, 50, 100].
+   * v1: accepted but NOT rendered yet — the pagination footer ships without
+   * a page-size selector (reserved API; wire `onPaginationChange` +
+   * `labels.rowsPerPage` when the selector lands in a future minor).
+   */
   pageSizeOptions?: number[];
   /** Callback przy zmianie strony LUB rozmiaru strony. */
   onPaginationChange?: (state: { pageIndex: number; pageSize: number }) => void;
@@ -224,13 +247,13 @@ interface DataTableBaseProps<T> extends Omit<HTMLAttributes<HTMLDivElement>, 'ch
   /** Definicje kolumn. Stable reference (useMemo) dla perf. */
   columns: ColumnDef<T>[];
   /**
-   * Stable row ID derivation — REQUIRED when `selection !== 'none'` AND pagination
-   * is enabled, because the default uses the visible-page index, which shifts
-   * across pages and silently desyncs selection state.
+   * Stable row ID derivation — REQUIRED for reliable selection. The default
+   * (`String(index)`) derives the ID from the row's position in `data` (global
+   * index — stable across pagination), so ANY reorder / insert / remove /
+   * refetch shifts IDs and silently re-targets selection onto different rows.
    *
    * Recommended: `getRowId={(row) => row.id}` (ignore index, derive from data).
-   * Default (`String(index)`) is safe ONLY when pagination is off and selection
-   * is `'none'`.
+   * Default is safe ONLY when selection is `'none'` or `data` never changes.
    */
   getRowId?: (row: T, index: number) => string;
   /** Tonacja density wpływająca na row height + padding. Domyślnie 'cozy'. */
@@ -680,22 +703,47 @@ export const DataTable = forwardRef(function DataTable<T>(
   props: DataTableProps<T>,
   ref: ForwardedRef<DataTableHandle<T>>,
 ) {
-  // Dev-mode contract check: default index-based getRowId is unsafe for selection
-  // across pages because page-local row index ≠ data-array index. Selection state
-  // silently desyncs after pagination/sort/filter. Consumer MUST provide a stable
-  // ID derivation function (e.g. `(row) => row.id`) when selection is enabled.
+  // Dev-mode contract check: default index-based getRowId is unsafe for
+  // selection because IDs derive from the row's position in `data` — any
+  // reorder / insert / remove / refetch shifts IDs and silently re-targets
+  // selection onto different rows. Consumer MUST provide a stable ID
+  // derivation function (e.g. `(row) => row.id`) when selection is enabled.
   if (process.env.NODE_ENV !== 'production') {
     if (
       props.selection &&
       props.selection !== 'none' &&
       props.getRowId === undefined &&
+      // Deliberate anti-noise heuristic: non-paginated tables are typically
+      // small/static (data never changes → default IDs hold). The reorder/
+      // refetch hazard applies to them too — the heuristic only trades that
+      // edge for not warning on every tiny static list.
       props.pagination !== false
     ) {
       console.warn(
         '[DataTable] `selection` is enabled but `getRowId` is missing. ' +
-          'The default uses visible-page index, which shifts across pages and ' +
-          'desyncs selection. Provide a stable ID, e.g. `getRowId={(row) => row.id}`.',
+          'The default derives IDs from row position in `data`, so any reorder/' +
+          'refetch silently re-targets selection. Provide a stable ID, e.g. ' +
+          '`getRowId={(row) => row.id}`.',
       );
+    }
+    // Index-sensitive custom getRowId probe: IDs must derive from row data
+    // only — IDs keyed on the index argument shift across sort/filter/page
+    // and break ID-based selection comparison (incl. controlled refetch).
+    if (
+      props.selection &&
+      props.selection !== 'none' &&
+      props.getRowId !== undefined &&
+      props.data.length > 0
+    ) {
+      const probe = props.data[0];
+      if (probe !== undefined && props.getRowId(probe, 0) !== props.getRowId(probe, 1)) {
+        console.warn(
+          '[DataTable] `getRowId` returns different IDs for the same row at ' +
+            'different index arguments. Derive the ID from row data only ' +
+            '(e.g. `getRowId={(row) => row.id}`) — index-sensitive IDs desync ' +
+            'selection across sort/filter/pagination and data refetches.',
+        );
+      }
     }
   }
 
@@ -794,13 +842,7 @@ export const DataTable = forwardRef(function DataTable<T>(
 
   // Detect czy jakaś kolumna ma filter UI (decyduje czy renderować filter row)
   const hasFilterRow = useMemo(
-    () =>
-      columns.some(
-        (c) =>
-          !c.hidden &&
-          (c.filterable || c.renderFilter) !== undefined &&
-          (!!c.filterable || !!c.renderFilter),
-      ),
+    () => columns.some((c) => !c.hidden && (!!c.filterable || !!c.renderFilter)),
     [columns],
   );
 
@@ -828,19 +870,35 @@ export const DataTable = forwardRef(function DataTable<T>(
   const selectionMode = selectionConfig.mode;
   const isControlledSelection = selectionConfig.controlledValue !== undefined;
 
+  // Canonical row-ID map — IDs derived ONCE per render from the GLOBAL data
+  // index. Every selection call-site (render, header state, keyboard, handle,
+  // controlled-value comparison) reads this map, so page-local row indexes can
+  // never desync the selected-set from the rendered rows.
+  const rowIdByRow = useMemo(() => {
+    const map = new Map<T, string>();
+    data.forEach((row, index) => map.set(row, getRowId(row, index)));
+    return map;
+  }, [data, getRowId]);
+
+  const idOf = useCallback(
+    // Fallback covers rows absent from `data` (e.g. controlled `selectedRows`
+    // holding pre-refetch object identities) — the ID, not the reference, is
+    // the selection contract, so compute it anyway (index argument = -1; an
+    // index-sensitive getRowId — including defaultGetRowId, which collapses
+    // every foreign row to "-1" — can't resolve such rows; "-1" never matches
+    // a rendered ID and the controlled-selection missing-ID dev-warn below
+    // surfaces the mismatch).
+    (row: T): string => rowIdByRow.get(row) ?? getRowId(row, -1),
+    [rowIdByRow, getRowId],
+  );
+
   const computeIdsFromRows = useCallback(
     (rows: T[] | T | null | undefined): Set<string> => {
       if (rows == null) return new Set();
       const arr = Array.isArray(rows) ? rows : [rows];
-      const ids = arr
-        .map((r) => {
-          const idx = data.indexOf(r);
-          return idx >= 0 ? getRowId(r, idx) : '';
-        })
-        .filter((s) => s !== '');
-      return new Set(ids);
+      return new Set(arr.map((r) => idOf(r)));
     },
-    [data, getRowId],
+    [idOf],
   );
 
   const [uncontrolledSelectedIds, setUncontrolledSelectedIds] = useState<Set<string>>(() => {
@@ -858,20 +916,41 @@ export const DataTable = forwardRef(function DataTable<T>(
     computeIdsFromRows,
   ]);
 
+  // Dev-mode: a controlled selected row whose ID does not exist in `data` can
+  // never render as selected — surface the ID mismatch (typically an
+  // index-derived ID after a refetch) instead of dropping it silently.
+  useEffect(() => {
+    if (process.env.NODE_ENV === 'production') return;
+    if (!isControlledSelection) return;
+    const value = selectionConfig.controlledValue as T | T[] | null | undefined;
+    if (value == null) return;
+    const arr = Array.isArray(value) ? value : [value];
+    if (arr.length === 0) return;
+    const knownIds = new Set(rowIdByRow.values());
+    const missing = arr.filter((r) => !knownIds.has(idOf(r)));
+    if (missing.length > 0) {
+      console.warn(
+        `[DataTable] ${missing.length} controlled selected row(s) have IDs absent from \`data\`. ` +
+          'Selection compares rows by `getRowId` ID — make IDs stable across refetches ' +
+          '(e.g. `getRowId={(row) => row.id}`), not reference- or index-based.',
+      );
+    }
+  }, [isControlledSelection, selectionConfig.controlledValue, rowIdByRow, idOf]);
+
   const emitSelectionChange = useCallback(
     (nextIds: Set<string>) => {
       if (!isControlledSelection) setUncontrolledSelectedIds(nextIds);
       if (!selectionConfig.onChange) return;
       if (selectionMode === 'single') {
         const id = nextIds.values().next().value;
-        const row = id ? (data.find((r, i) => getRowId(r, i) === id) ?? null) : null;
+        const row = id ? (data.find((r) => idOf(r) === id) ?? null) : null;
         (selectionConfig.onChange as (r: T | null) => void)(row);
       } else if (selectionMode === 'multiple') {
-        const rows = data.filter((r, i) => nextIds.has(getRowId(r, i)));
+        const rows = data.filter((r) => nextIds.has(idOf(r)));
         (selectionConfig.onChange as (rs: T[]) => void)(rows);
       }
     },
-    [isControlledSelection, selectionMode, selectionConfig.onChange, data, getRowId],
+    [isControlledSelection, selectionMode, selectionConfig.onChange, data, idOf],
   );
 
   const toggleRowSelection = useCallback(
@@ -892,7 +971,7 @@ export const DataTable = forwardRef(function DataTable<T>(
 
   const toggleAllVisibleSelection = useCallback(() => {
     if (selectionMode !== 'multiple') return;
-    const visibleIds = tableState.visibleRows.map((r, i) => getRowId(r, i));
+    const visibleIds = tableState.visibleRows.map((r) => idOf(r));
     const allSelected = visibleIds.length > 0 && visibleIds.every((id) => selectedIds.has(id));
     const next = new Set(selectedIds);
     if (allSelected) {
@@ -901,17 +980,17 @@ export const DataTable = forwardRef(function DataTable<T>(
       visibleIds.forEach((id) => next.add(id));
     }
     emitSelectionChange(next);
-  }, [selectionMode, tableState.visibleRows, selectedIds, getRowId, emitSelectionChange]);
+  }, [selectionMode, tableState.visibleRows, selectedIds, idOf, emitSelectionChange]);
 
   const headerSelectionState = useMemo<'none' | 'some' | 'all'>(() => {
     if (selectionMode !== 'multiple') return 'none';
-    const visibleIds = tableState.visibleRows.map((r, i) => getRowId(r, i));
+    const visibleIds = tableState.visibleRows.map((r) => idOf(r));
     if (visibleIds.length === 0) return 'none';
     const selectedVisible = visibleIds.filter((id) => selectedIds.has(id));
     if (selectedVisible.length === 0) return 'none';
     if (selectedVisible.length === visibleIds.length) return 'all';
     return 'some';
-  }, [selectionMode, tableState.visibleRows, selectedIds, getRowId]);
+  }, [selectionMode, tableState.visibleRows, selectedIds, idOf]);
 
   const selectionEnabled = selectionMode !== 'none';
 
@@ -939,7 +1018,6 @@ export const DataTable = forwardRef(function DataTable<T>(
     striped && styles.striped,
     hoverable && styles.hoverable,
     stickyHeader && styles.stickyHeader,
-    isMobile && styles.mobile,
     className,
   );
 
@@ -1051,13 +1129,16 @@ export const DataTable = forwardRef(function DataTable<T>(
             type="button"
             className={styles.sortButton}
             onClick={() => tableState.toggleSort(col.id)}
-            aria-label={
+            // WCAG 2.5.3 Label in Name: the accessible name must contain the
+            // visible header text — prefix the next-action label with it
+            // (string headers; ReactNode headers fall back to col.id).
+            aria-label={`${typeof col.header === 'string' ? col.header : col.id}: ${
               sortDir === 'asc'
                 ? labels.sortDescending
                 : sortDir === 'desc'
                   ? labels.sortNone
                   : labels.sortAscending
-            }
+            }`}
           >
             <span className={styles.headerLabel}>{col.header}</span>
             <SortIndicator direction={sortDir} />
@@ -1073,7 +1154,7 @@ export const DataTable = forwardRef(function DataTable<T>(
   // Renderer data row (+ optional expansion panel)
   // ─────────────────────────────────────────────────────────────────────────
   const renderDataRow = (row: T, rowIndex: number) => {
-    const rowId = getRowId(row, rowIndex);
+    const rowId = idOf(row);
     const variant = rowVariant?.(row) ?? 'default';
     const disabled = rowDisabled?.(row) ?? false;
     const selected = selectionEnabled && selectedIds.has(rowId);
@@ -1231,7 +1312,7 @@ export const DataTable = forwardRef(function DataTable<T>(
   }, [visibleColumns, mobileColumns]);
 
   const renderMobileCard = (row: T, rowIndex: number) => {
-    const rowId = getRowId(row, rowIndex);
+    const rowId = idOf(row);
     const variant = rowVariant?.(row) ?? 'default';
     const disabled = rowDisabled?.(row) ?? false;
     const selected = selectionEnabled && selectedIds.has(rowId);
@@ -1259,10 +1340,10 @@ export const DataTable = forwardRef(function DataTable<T>(
               }
             : undefined
         }
-        role="row"
-        aria-disabled={disabled || undefined}
-        aria-selected={selectionEnabled ? selected : undefined}
-        aria-expanded={expansionEnabled ? expanded : undefined}
+        role="listitem"
+        data-selected={selectionEnabled ? selected : undefined}
+        data-disabled={disabled || undefined}
+        data-expanded={expansionEnabled ? expanded : undefined}
       >
         {(selectionEnabled || expansionEnabled) && (
           <div className={styles.mobileCardHeader}>
@@ -1455,7 +1536,7 @@ export const DataTable = forwardRef(function DataTable<T>(
             if (row !== undefined) {
               const disabled = rowDisabled?.(row) ?? false;
               if (!disabled) {
-                const rowId = getRowId(row, dataRowIdx);
+                const rowId = idOf(row);
                 toggleRowSelection(rowId);
                 e.preventDefault();
               }
@@ -1479,10 +1560,10 @@ export const DataTable = forwardRef(function DataTable<T>(
               if (disabled) break;
               // Enter on expansion column → toggle expansion
               if (expansionEnabled && focused.col === selectionOffset) {
-                toggleRowExpansion(getRowId(row, dataRowIdx));
+                toggleRowExpansion(idOf(row));
                 e.preventDefault();
               } else if (selectionEnabled && focused.col === 0) {
-                toggleRowSelection(getRowId(row, dataRowIdx));
+                toggleRowSelection(idOf(row));
                 e.preventDefault();
               } else if (onRowClick && rowClickable) {
                 onRowClick(row);
@@ -1511,7 +1592,7 @@ export const DataTable = forwardRef(function DataTable<T>(
       expansionEnabled,
       tableState,
       visibleColumns,
-      getRowId,
+      idOf,
       rowDisabled,
       toggleRowSelection,
       toggleRowExpansion,
@@ -1568,7 +1649,7 @@ export const DataTable = forwardRef(function DataTable<T>(
   useImperativeHandle(
     ref,
     () => ({
-      getSelectedRows: (): T[] => data.filter((r, i) => selectedIds.has(getRowId(r, i))),
+      getSelectedRows: (): T[] => data.filter((r) => selectedIds.has(idOf(r))),
       clearSelection: () => {
         if (!isControlledSelection) setUncontrolledSelectedIds(new Set());
         if (selectionMode === 'single') {
@@ -1600,7 +1681,7 @@ export const DataTable = forwardRef(function DataTable<T>(
     [
       data,
       selectedIds,
-      getRowId,
+      idOf,
       isControlledSelection,
       selectionMode,
       selectionConfig,
@@ -1650,7 +1731,13 @@ export const DataTable = forwardRef(function DataTable<T>(
   const showError = stateMode === 'error';
   const showEmpty = !showLoading && !showError && tableState.visibleRows.length === 0;
 
-  // Mobile render branch — replaces table z card list
+  // Mobile render branch — replaces table z card list. The card list drops
+  // grid semantics ENTIRELY (E03 audit remediation): a card of stacked
+  // label/value fields cannot satisfy ARIA required-children grid > row >
+  // gridcell, so the mobile fallback is a plain list (role=list/listitem);
+  // selection/expansion state lives on the interactive children (checkbox
+  // checked state, expansion button aria-expanded).
+  const mobileShowsCards = !showLoading && !showError && !showEmpty;
   if (isMobile) {
     return (
       <div
@@ -1659,15 +1746,16 @@ export const DataTable = forwardRef(function DataTable<T>(
         data-density={density}
         data-state={stateMode}
         dir={dir}
-        role={expansionEnabled ? 'treegrid' : 'grid'}
-        aria-label={ariaLabel}
-        aria-labelledby={ariaLabelledBy}
-        aria-rowcount={tableState.totalRows + 1 + (hasFilterRow ? 1 : 0)}
-        aria-multiselectable={selectionMode === 'multiple' ? true : undefined}
-        aria-describedby={liveRegionId}
         {...rest}
       >
-        <div className={styles.mobileWrapper}>
+        <div
+          className={styles.mobileWrapper}
+          role={mobileShowsCards ? 'list' : undefined}
+          aria-label={mobileShowsCards ? ariaLabel : undefined}
+          aria-labelledby={mobileShowsCards ? ariaLabelledBy : undefined}
+          aria-describedby={mobileShowsCards ? liveRegionId : undefined}
+          aria-busy={showLoading || undefined}
+        >
           {showLoading
             ? renderMobileLoading()
             : showError
@@ -1710,6 +1798,7 @@ export const DataTable = forwardRef(function DataTable<T>(
           aria-colcount={totalGridCols}
           aria-multiselectable={selectionMode === 'multiple' ? true : undefined}
           aria-describedby={liveRegionId}
+          aria-busy={showLoading || undefined}
           id={gridId}
           onKeyDown={handleGridKeyDown}
         >
@@ -1762,7 +1851,7 @@ export const DataTable = forwardRef(function DataTable<T>(
                   onFocus={() => handleCellFocus(0, selectionOffset)}
                   data-cell-nav="true"
                   aria-colindex={selectionOffset + 1}
-                  aria-label="Expand"
+                  aria-label={labels.expand}
                 />
               )}
               {visibleColumns.map((col, i) => renderHeaderCell(col, totalLeadingCols + i))}

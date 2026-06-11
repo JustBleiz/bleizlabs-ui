@@ -2,15 +2,20 @@
  * DataTable keyboard interaction spec — APG `/grid/` pattern (E01 0.17.0).
  *
  * Coverage (cell-mode roving tabindex):
- * - DT-K01 ArrowRight / ArrowLeft navigate cells horizontally
- * - DT-K02 ArrowDown / ArrowUp navigate cells vertically
- * - DT-K03 Home / End jump to first / last cell of row
- * - DT-K04 Ctrl+Home / Ctrl+End jump to first / last cell of grid
- * - DT-K05 PageDown / PageUp move by viewport rows
+ * - DT-K01 ArrowRight moves focus to next cell horizontally
+ * - DT-K02 ArrowDown moves focus to cell in next row, same column
+ * - DT-K03 Home jumps to first cell of current row
+ * - DT-K04 End jumps to last cell of current row
+ * - DT-K05 Ctrl+Home jumps to first data cell of grid (deliberate APG
+ *   deviation — header row excluded; see handleGridKeyDown)
  * - DT-K06 RTL ArrowLeft / ArrowRight mirror direction
  * - DT-K07 Space toggles row selection when selectable
  * - DT-K08 Enter activates sort on column header
- * - DT-K09 Modifier-arrow pass-through (Alt/Meta combos)
+ * - DT-K09 Alt+ArrowRight passes through (does not change focus)
+ *
+ * Implemented but NOT yet covered here: Ctrl+End (last data cell),
+ * PageDown / PageUp (±10 rows) — candidates for a future suite extension
+ * (no phantom IDs reserved; this list mirrors the tests that exist).
  *
  * Demo route: /components/data-table
  *   Section 1 (idx 0) — Basic 5 rows
@@ -77,7 +82,9 @@ test.describe('DataTable — keyboard interactions', () => {
     expect(focusedCol).toBe(colCount);
   });
 
-  test('DT-K05 — Ctrl+Home jumps to first cell of grid', async ({ page }) => {
+  // Deliberate APG deviation: Ctrl+Home targets the first DATA cell
+  // ({row:1, col:0}), not the header row — see handleGridKeyDown.
+  test('DT-K05 — Ctrl+Home jumps to first data cell of grid', async ({ page }) => {
     const grid = allGrids(page).first();
     const cells = grid.locator('[role="gridcell"]');
     const count = await cells.count();
