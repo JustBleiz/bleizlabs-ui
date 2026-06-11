@@ -3,7 +3,6 @@ import {
   forwardRef,
   type AnchorHTMLAttributes,
   type ButtonHTMLAttributes,
-  type CSSProperties,
   type ReactNode,
 } from 'react';
 import { Slot } from '../../utils/Slot';
@@ -25,18 +24,28 @@ import styles from './Button.module.scss';
  *          --button-font-size injected by size variants.
  * @deps    Slot (own primitive, asChild boundary), cn, React: `forwardRef`,
  *          type imports `AnchorHTMLAttributes`, `ButtonHTMLAttributes`,
- *          `CSSProperties`, `ReactNode`
+ *          `ReactNode`
  * @a11y    Renders native `<button>` by default (carries focusable +
  *          keyboard semantics for free). Renders `<a>` automatically when
  *          `href` is provided. `asChild` projects onto a single ReactElement
  *          child (e.g., Next `<Link>`). `iconOnly` requires the consumer to
  *          pass `aria-label` because there is no visible text. Disabled
  *          state uses native `disabled` for `<button>` and
- *          `aria-disabled="true"` + `tabIndex={-1}` + href removal for `<a>`
- *          (anchors don't honor the `disabled` attribute). For `asChild`,
- *          disabled is forwarded as BOTH `aria-disabled="true"` AND
- *          `data-disabled` so consumer-rendered elements stay accessible
- *          to assistive tech (WCAG 4.1.2 Name/Role/Value).
+ *          `aria-disabled="true"` + `tabIndex={-1}` + href removal +
+ *          `role="link"` retention + `onClick` suppression for `<a>`
+ *          (anchors don't honor the `disabled` attribute; without `href`
+ *          the implicit role degrades to `generic`, where `aria-disabled`
+ *          is invalid — the explicit role keeps it a link for AT, and the
+ *          suppressed handler means programmatic/AT activation cannot
+ *          invoke it). For `asChild`, disabled is forwarded as BOTH
+ *          `aria-disabled="true"` AND `data-disabled` so consumer-rendered
+ *          elements stay accessible to assistive tech (WCAG 4.1.2
+ *          Name/Role/Value); `onClick` is forwarded to the child only
+ *          when NOT disabled. Note the forwarded `aria-disabled` also
+ *          triggers the `.root[aria-disabled='true']` pointer-events
+ *          lock for real pointers; the child's own `href`/handlers stay
+ *          outside Button's control (Slot child-wins), so the JS guard
+ *          covers only the Button-supplied handler.
  *          `variant="warning"` is intentionally VISUAL-ONLY — it signals
  *          destructive/caution actions (e.g., "Delete permanently") through
  *          color alone. NO `aria-live`, `role="alert"`, or runtime semantic
@@ -55,6 +64,9 @@ import styles from './Button.module.scss';
  *          boundary into their tree. Plain `<Button>` and `<Button href>`
  *          remain server-safe regardless. Hover/focus/active styling is
  *          CSS-only across all three render paths.
+ * @regressions tests/Button.regression.spec.ts — BT-R01..BT-R05 (disabled
+ *          href onClick suppression, pointer-events CSS layer, native
+ *          disabled contrast, asChild onClick forwarding)
  *
  * @example
  * <Button onClick={save}>Save</Button>
@@ -149,10 +161,6 @@ export const Button = forwardRef<HTMLElement, ButtonProps>(function Button(
 ) {
   const isLink = href !== undefined;
 
-  const buttonStyle: CSSProperties = {
-    ...style,
-  };
-
   const rootClass = cn(
     styles.root,
     VARIANT_CLASS[variant],
@@ -186,13 +194,16 @@ export const Button = forwardRef<HTMLElement, ButtonProps>(function Button(
 
   if (isLink) {
     const anchorRest = rest as AnchorHTMLAttributes<HTMLAnchorElement>;
-    const anchorOnClick = onClick as React.MouseEventHandler<HTMLAnchorElement> | undefined;
+    const anchorOnClick = disabled
+      ? undefined
+      : (onClick as React.MouseEventHandler<HTMLAnchorElement> | undefined);
     return (
       <a
         ref={ref as React.Ref<HTMLAnchorElement>}
         href={disabled ? undefined : href}
         className={rootClass}
-        style={buttonStyle}
+        style={style}
+        role={disabled ? 'link' : undefined}
         aria-disabled={disabled || undefined}
         tabIndex={disabled ? -1 : undefined}
         {...(anchorOnClick ? { onClick: anchorOnClick } : {})}
@@ -223,9 +234,12 @@ export const Button = forwardRef<HTMLElement, ButtonProps>(function Button(
       <Slot
         ref={ref as React.Ref<HTMLElement>}
         className={rootClass}
-        style={buttonStyle}
+        style={style}
         aria-disabled={disabled || undefined}
         data-disabled={disabled || undefined}
+        {...(onClick && !disabled
+          ? { onClick: onClick as React.MouseEventHandler<HTMLElement> }
+          : {})}
         {...(rest as React.HTMLAttributes<HTMLElement>)}
       >
         {children}
@@ -239,7 +253,7 @@ export const Button = forwardRef<HTMLElement, ButtonProps>(function Button(
       ref={ref as React.Ref<HTMLButtonElement>}
       type={type ?? 'button'}
       className={rootClass}
-      style={buttonStyle}
+      style={style}
       disabled={disabled}
       onClick={onClick as React.MouseEventHandler<HTMLButtonElement> | undefined}
       {...buttonRest}
