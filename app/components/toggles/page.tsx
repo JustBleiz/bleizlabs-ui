@@ -174,6 +174,22 @@ export default function TogglesPlaygroundPage() {
           <Text>This one manages its own state via defaultOpen.</Text>
         </Accordion>
       </section>
+
+      <section className={styles.section}>
+        <Heading level={2} size="2xl">
+          Accordion &mdash; headingLevel + disabled
+        </Heading>
+        <Text variant="body" color="muted">
+          Each trigger is wrapped in a heading element (APG accordion) — default <code>h3</code>,
+          override via <code>headingLevel</code> to fit the page outline.
+        </Text>
+        <Accordion question="Custom heading level (h4)" headingLevel={4}>
+          <Text>This trigger renders inside an h4 to match a deeper document outline.</Text>
+        </Accordion>
+        <Accordion question="Disabled accordion" disabled>
+          <Text>Trigger is disabled — panel cannot be opened.</Text>
+        </Accordion>
+      </section>
     </main>
   );
 }

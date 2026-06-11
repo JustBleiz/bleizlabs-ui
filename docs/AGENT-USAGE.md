@@ -463,7 +463,7 @@ Anti-pattern: external focus-trap or floating-UI library — already in-house. A
 
 ### E.7 Complex / Data
 
-`DataTable` (generic-data grid with sort + filter + pagination + selection + expansion + APG `/grid/` keyboard nav), `Tabs` (compound: TabList + Tab + TabPanel), `Accordion` (single or multi expansion modes), `Stepper` (multi-step wizard with progress + validation per step), `Sidebar` (chrome navigation rail with collapsible state), `NavigationMenu` (top-level multi-level nav), `Toolbar` (action button group with roving tabindex).
+`DataTable` (generic-data grid with sort + filter + pagination + selection + expansion + APG `/grid/` keyboard nav), `Tabs` (compound: TabList + Tab + TabPanel), `Accordion` (single disclosure panel; group single/multi expansion modes via `AccordionGroup`), `Stepper` (multi-step wizard with progress + validation per step), `Sidebar` (chrome navigation rail with collapsible state), `NavigationMenu` (top-level multi-level nav), `Toolbar` (action button group with roving tabindex).
 
 ```tsx
 import { DataTable } from '@bleizlabs/ui';
