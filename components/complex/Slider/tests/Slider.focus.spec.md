@@ -1,6 +1,8 @@
 # Slider — focus behavior spec
 
-**Execution status:** DEFERRED to first consumer adoption (per E15 scope decision).
+**Execution status:** EXECUTED in-repo — the canonical suite lives in the sibling
+`Slider.focus.spec.ts` (CI-gated; status in Slider.tsx `@tested`; only the manual NVDA
+sweep stays deferred). This file is a consumer-CI reference snapshot, not the source of truth.
 **Format:** markdown code-fenced Playwright pseudo-code.
 
 ## Setup

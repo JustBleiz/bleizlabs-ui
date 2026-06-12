@@ -1,12 +1,15 @@
 # AlertDialog.aria.spec
 
-> Deferred execution — Playwright spec ready for consumer CI/CD. See AlertDialog.tsx `@tested` header.
+> EXECUTED in-repo — the canonical suite lives in the sibling `AlertDialog.aria.spec.ts`
+> (CI-gated; only the manual NVDA sweep stays deferred). See AlertDialog.tsx `@tested`
+> header. This file is a consumer-CI reference snapshot, not the source of truth.
 
 ```typescript
 /**
  * AlertDialog ARIA attributes + accessibility tree spec — APG `/alertdialog/` compliance (E16).
  *
- * EXECUTION DEFERRED — runs on first consumer adoption.
+ * EXECUTION STATUS: EXECUTED in-repo — canonical suite in the sibling
+ * `AlertDialog.aria.spec.ts` (CI-gated).
  *
  * Coverage:
  * - role="alertdialog" present (NOT role="dialog")

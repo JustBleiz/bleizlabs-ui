@@ -41,7 +41,7 @@ Każda pozycja ma:
 0.24.1  ✗  ABANDONED                          rolled forward — content bundled into 0.25.0 (single npm publish vehicle)
 0.25.0  ✓  Agent Cheat-Sheet + 0.24.x rollup   SHIPPED 2026-05-13 (106 — `AGENTS.md` + `docs/AGENT-USAGE.md` inside npm tarball, 4 build scripts, manifest schema-additive isClient + summary fields, DateTimePicker spec fix, README For-AI-agents section)
 0.26.0  ✓  Text brand token + format baseline  SHIPPED 2026-05-19 (106 — Text color="brand" → --color-brand; Prettier + Stylelint baseline repo-wide)
-0.27.0  ✓  Audit remediation + SkipLink        SHIPPED 2026-06-12 (106 → 107 — pełny audyt 2026-06-11: 19 jednostek pętli fix→re-audit 0C/0I, SkipLink atom WCAG 2.4.1, CI quality job, smoke z filesystemu, packaging hygiene; CHANGELOG `[0.27.0]`)
+0.27.0  →  Audit remediation + SkipLink        READY 2026-06-12, publish po akceptacji PR (106 → 107 — pełny audyt 2026-06-11: 19 jednostek pętli fix→re-audit 0C/0I, SkipLink atom WCAG 2.4.1, CI quality job, smoke z filesystemu, packaging hygiene; CHANGELOG `[0.27.0]`; flip na ✓ SHIPPED po `npm view` — precedens 0.24.0)
 0.28.0+ →  STOP for real-world testing v3      [user verifies 0.27.0 in consumer projects (bump v4/v5/scout-hub), collects next round of bugs/feedback]
                                               ...
 1.0.0   →  ON USER TRIGGER ONLY               [API freeze + stabilization na sygnał użytkownika, nie auto-follow]

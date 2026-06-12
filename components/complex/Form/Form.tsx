@@ -105,14 +105,13 @@
  *   </Form>
  *
  * @tested tsc --noEmit ✓ | eslint via eslint-config-next ✓ |
- *   Phase 4 fresh-subagent evaluator audit (2026-05-08) ✓ —
- *   Verdict: PASS-WITH-EXCEPTION granted by user 2026-05-08.
- *   DEFERRED-WITH-EXCEPTION: full Playwright execution + axe-core runtime
- *   sweep + manual NVDA+Firefox sweep. Specs ship alongside (.keyboard,
- *   .focus, .aria, .regression — 22 cases FM-R01..R22), execution batched
- *   to dedicated test-execution sprint in 0.14+ cycle per E15 Tabs precedent.
- *   See `D:/OS/internal/bleizlabs-ui/work/2026-05_lib-audit-rebuild/devlog.md`
- *   E05.4 DONE_EPIC for exception rationale + scheduled follow-up.
+ *   Phase 4 fresh-subagent evaluator audit (2026-05-08) ✓
+ *   (PASS-WITH-EXCEPTION granted by user 2026-05-08; the batched
+ *   test-execution follow-up has since landed — E142 runtime pipeline) |
+ *   Playwright suite EXECUTED in-repo (.keyboard, .focus, .aria,
+ *   .regression — 23 cases FM-R01..R23, `.spec.ts` quad, CI-gated) +
+ *   axe-core smoke on the demo route.
+ *   DEFERRED: manual NVDA+Firefox sweep.
  *
  * @regressions tests/Form.regression.spec.ts — derived from Radix
  *   `@radix-ui/react-form` closed issues + native browser validation

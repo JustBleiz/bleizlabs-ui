@@ -48,7 +48,9 @@ import styles from './ScrollArea.module.scss';
  *           gesture/usePointerDrag.ts` extraction deferred to E36
  *           refactor Epic (E23/E29 precedent: extract AFTER all 3
  *           consumers ship with stable semantics).
- * @tested   tsc + eslint + next build (Playwright/NVDA/axe deferred per E15).
+ * @tested   tsc + eslint + next build | Playwright suite EXECUTED in-repo
+ *           (keyboard/focus/aria/regression `.spec.ts` quad, CI-gated) +
+ *           axe-core smoke on the demo route. DEFERRED: manual NVDA sweep.
  * @regressions tests/ScrollArea.{keyboard,focus,aria,regression}.spec.md —
  *           16 regression cases SA-R01..SA-R16 (executable canon in the
  *           sibling `tests/ScrollArea.*.spec.ts` quad).

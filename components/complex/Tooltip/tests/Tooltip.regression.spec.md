@@ -1,8 +1,11 @@
 # Tooltip — regression spec (Radix closed-issue mapping)
 
-**Execution status:** DEFERRED. 20 cases mapped from `radix-ui/primitives`
-closed issues. ~10 marked `test.skip` with `PLAYGROUND-DEP:` rationale —
-unskip when referenced integration scenarios land.
+**Execution status:** EXECUTED in-repo — the canonical suite lives in the sibling
+`Tooltip.regression.spec.ts` (CI-gated; status in Tooltip.tsx `@tested`; only the manual NVDA
+sweep stays deferred). This file is a consumer-CI reference snapshot, not the source of truth.
+20 cases mapped from `radix-ui/primitives` closed issues. ~10 marked
+`test.skip` with `PLAYGROUND-DEP:` rationale — unskip when referenced
+integration scenarios land.
 
 ## Tests
 

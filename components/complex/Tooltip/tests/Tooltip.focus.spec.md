@@ -1,6 +1,8 @@
 # Tooltip — focus management spec
 
-**Execution status:** DEFERRED to first consumer adoption.
+**Execution status:** EXECUTED in-repo — the canonical suite lives in the sibling
+`Tooltip.focus.spec.ts` (CI-gated; status in Tooltip.tsx `@tested`; only the manual NVDA
+sweep stays deferred). This file is a consumer-CI reference snapshot, not the source of truth.
 **Focus contract:** Tooltip is MODELESS — trigger retains focus at all times.
 Tooltip does NOT own focus, NOT trap focus, NOT move focus into content.
 

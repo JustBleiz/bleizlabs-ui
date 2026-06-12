@@ -61,7 +61,7 @@ Q5. Borderline? → ask the user.
 
 ## Where to read deeper
 
-- **Per-domain guide + decision rules + SSR notes + inventory of all ~106 components:** read `docs/AGENT-USAGE.md` (same package, ship together). When working in a consumer project's `node_modules/`, the explicit path is:
+- **Per-domain guide + decision rules + SSR notes + full component inventory (live count in `components/manifest.json`):** read `docs/AGENT-USAGE.md` (same package, ship together). When working in a consumer project's `node_modules/`, the explicit path is:
   - `node_modules/@bleizlabs/ui/docs/AGENT-USAGE.md`
 - **Per-component API reference (props, ARIA contract, tokens, examples):** read the JSDoc at the top of each component file:
   - `node_modules/@bleizlabs/ui/components/<category>/<Name>/<Name>.tsx`

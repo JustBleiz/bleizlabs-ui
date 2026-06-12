@@ -1,8 +1,10 @@
 # InputOTP — regression spec (20 cases OTP-R01..R20)
 
-**Execution status:** DEFERRED. Executable canon: sibling `InputOTP.regression.spec.ts`
-(covers OTP-R10..R20; this mirror covers OTP-R10..R16, remaining cases in
-keyboard/focus/aria specs).
+**Execution status:** EXECUTED in-repo — the canonical suite lives in the sibling
+`InputOTP.regression.spec.ts` (CI-gated; status in InputOTP.tsx `@tested`; only the manual NVDA
+sweep stays deferred). This file is a consumer-CI reference snapshot, not the source of truth.
+The sibling `.spec.ts` covers OTP-R10..R20; this mirror covers OTP-R10..R16
+(remaining cases in keyboard/focus/aria specs).
 
 ## Tests
 

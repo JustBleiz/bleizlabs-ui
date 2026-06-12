@@ -53,15 +53,17 @@
  *   RTL: `dir` prop mirrors left/right positions + icon/close order. `top-
  *   left` under RTL visually lands top-right relative to document.
  * @apg https://www.w3.org/WAI/ARIA/apg/patterns/alert/
- * @tested tsc --noEmit ✓ | eslint + jsx-a11y ✓ | next build ✓ — DEFERRED:
- *   Playwright execution (per E15 scope decision), axe-core runtime sweep,
- *   manual NVDA sweep.
+ * @tested tsc --noEmit ✓ | eslint + jsx-a11y ✓ | next build ✓ |
+ *   Playwright suite EXECUTED in-repo (keyboard/focus/aria/regression/
+ *   duration — five sibling `.spec.ts` suites, CI-gated) + axe-core smoke
+ *   on the demo route. DEFERRED: manual NVDA sweep.
  * @regressions tests/Toast.{keyboard,focus,aria,regression}.spec.md —
- *   17 edge cases TST-R01..R17 (executable canon in the sibling
- *   `tests/Toast.*.spec.ts` quad). Covers dedup by id, promise
- *   transitions, auto-dismiss, pause on hover/focus/visibilitychange,
- *   Infinity duration, ARIA role per variant, no focus-steal, reduced-
- *   motion, RTL, SSR safe.
+ *   21 edge cases TST-R01..TST-R21 (executable canon in the sibling
+ *   `tests/Toast.*.spec.ts` suites; TST-R18..R21 executable in
+ *   Toast.duration.spec.ts). Covers dedup by id, promise
+ *   transitions, auto-dismiss, duration semantics, pause on
+ *   hover/focus/visibilitychange, Infinity duration, ARIA role per
+ *   variant, no focus-steal, reduced-motion, RTL, SSR safe.
  * @example
  *   // In root layout:
  *   <body>

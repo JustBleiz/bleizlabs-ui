@@ -45,7 +45,9 @@ import styles from './Carousel.module.scss';
  *           Home/End first/last. 2nd drag-gesture consumer (Slider E33 = 1st) —
  *           drag inline per Rule of Three (extract at 3rd consumer).
  * @apg      https://www.w3.org/WAI/ARIA/apg/patterns/carousel/
- * @tested   tsc + eslint + next build (Playwright/NVDA/axe deferred per E15 scope).
+ * @tested   tsc + eslint + next build | Playwright suite EXECUTED in-repo
+ *           (keyboard/focus/aria/regression `.spec.ts` quad, CI-gated) +
+ *           axe-core smoke on the demo route. DEFERRED: manual NVDA sweep.
  * @regressions tests/Carousel.{keyboard,focus,aria,regression}.spec.md —
  *           19 regression cases CAR-R01..R19 (executable canon in the
  *           sibling `tests/Carousel.*.spec.ts` quad).

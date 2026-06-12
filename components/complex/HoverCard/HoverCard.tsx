@@ -36,9 +36,9 @@
  *   exposure if needed (consumer wires this).
  * @apg https://www.w3.org/WAI/ARIA/apg/patterns/dialog-modal/ (modeless modifier)
  * @tested tsc --noEmit ✓ | eslint + jsx-a11y via eslint-config-next ✓ |
- *   next build ✓ — DEFERRED: Playwright execution (Playwright MCP disconnected
- *   this session), axe-core runtime sweep, manual NVDA sweep, iOS/Android
- *   device testing. Per E15 scope decision.
+ *   next build ✓ | Playwright suite EXECUTED in-repo (keyboard/focus/aria/
+ *   regression `.spec.ts` quad, CI-gated) + axe-core smoke on the demo
+ *   route. DEFERRED: manual NVDA sweep, iOS/Android device testing.
  * @regressions tests/HoverCard.{keyboard,focus,aria,regression}.spec.md — 15
  *   Radix-style regression cases mapped (HC-R01 hover delay timing, HC-R02
  *   grace area cancel by content pointer enter, HC-R03 focus parity instant

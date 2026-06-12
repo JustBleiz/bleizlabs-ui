@@ -152,18 +152,18 @@ function CloseIcon() {
  *               Content padding-bottom honors `env(safe-area-inset-bottom)` for
  *               iOS notch/home indicator. Touch target enforcement on action
  *               buttons delegated to Button atom.
- * @tested       PARTIAL — static a11y verified, runtime a11y deferred:
+ * @tested       EXECUTED in-repo — static + runtime verified:
  *               ✓ `tsc --noEmit` clean (TypeScript strict, no any, proper Omit)
  *               ✓ `npm run lint` clean — includes `eslint-plugin-jsx-a11y` via
  *                 `eslint-config-next` (catches missing aria-label, invalid ARIA
  *                 attrs, accessible-name-required violations, etc.)
  *               ✓ Build clean — Next.js static prerender PASS
- *               DEFERRED (first consumer adoption, per E15 scope decision):
- *               - Playwright execution of 4 `.spec.md` files (keyboard, focus,
- *                 aria, regression) — specs ready, no browser env in build agent
- *               - axe-core runtime zero-violations sweep (requires live page)
+ *               ✓ Playwright suites EXECUTED in-repo (keyboard/focus/aria/
+ *                 regression `.spec.ts` quad, CI-gated) + axe-core smoke on
+ *                 the demo route
+ *               DEFERRED:
  *               - Manual NVDA sweep + iOS device testing (requires devices)
- *               - 17 regression tests `test.skip` with PLAYGROUND-DEP rationale
+ *               - Regression cases `test.skip` with PLAYGROUND-DEP rationale
  *                 (iOS-specific quirks, multi-drawer stacking, nested Select/Toast
  *                 scenarios pending other Phase 10 components)
  * @regressions  41 cases mapped in `tests/Drawer.regression.spec.md`: 21 inherited

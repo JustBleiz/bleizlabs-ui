@@ -67,8 +67,9 @@
  *   - Inside `NavigationMenuProvider`: skip-delay window mirrors HoverCardProvider
  * @apg https://www.w3.org/WAI/ARIA/apg/patterns/menubar/
  * @tested tsc --noEmit ✓ | eslint + jsx-a11y via eslint-config-next ✓ |
- *   next build ✓ — DEFERRED: Playwright execution (per E15 scope decision),
- *   axe-core runtime sweep, manual NVDA sweep, iOS/Android device testing.
+ *   next build ✓ | Playwright suite EXECUTED in-repo (keyboard/focus/aria/
+ *   regression `.spec.ts` quad, CI-gated) + axe-core smoke on the demo
+ *   route. DEFERRED: manual NVDA sweep, iOS/Android device testing.
  * @regressions tests/NavigationMenu.{keyboard,focus,aria,regression}.spec.md —
  *   22 regression cases mapped (NM-R01..R22). The original bug+fix mapping
  *   came from an ephemeral `_tmp` spec draft (since retired; the per-case

@@ -49,14 +49,14 @@ planned docs-only 0.26.1 is superseded by this release (deliberate).
 ### Changed
 
 - **Smoke suite routes are filesystem-derived** — every
-  `app/components/*/page.tsx` joins the axe scan automatically (51 → 79
-  scanned routes; the old hand-maintained list silently carried 5 dead
-  routes and missed ~40 live ones). Each excluded route lives in an
+  `app/components/*/page.tsx` joins the axe scan automatically (51 → 80
+  scanned routes incl. the new SkipLink demo; the old hand-maintained list
+  silently carried 5 dead routes and missed ~40 live ones). Each excluded route lives in an
   explicit `SKIP_ROUTES` map with an observed reason + staleness guard,
   and every scan now asserts HTTP 200 (a deleted demo previously passed
   against Next's axe-clean 404 page).
 - **Packaging:** `engines.node` relaxed `>=24` → `>=20`; tarball no
-  longer ships `components/**/tests` (172 spec files + mirrors, −1.3 MB
+  longer ships `components/**/tests` (173 spec files + mirrors, −1.3 MB
   unpacked); `sass` declared as an **optional** `peerDependency`
   (consumer build compiles the shipped SCSS; not auto-installed);
   `"./package.json"` export added; `prepack` builds the CLI so

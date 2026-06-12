@@ -1,6 +1,8 @@
 # ContextMenu — keyboard interaction spec
 
-**Execution status:** DEFERRED to first consumer adoption.
+**Execution status:** EXECUTED in-repo — the canonical suite lives in the sibling
+`ContextMenu.keyboard.spec.ts` (CI-gated; status in ContextMenu.tsx `@tested`; only the manual NVDA
+sweep stays deferred). This file is a consumer-CI reference snapshot, not the source of truth.
 **Inherits:** Full DropdownMenu keyboard model (ArrowDown/Up cycle, Home/End,
 Enter/Space activate, Tab closes, typeahead single+multi-char 500ms).
 

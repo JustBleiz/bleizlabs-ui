@@ -1,10 +1,12 @@
 # Tabs — regression spec (Radix closed-issue mapping)
 
-**Execution status:** DEFERRED. 24 regression cases mapped (TB-R01..R24);
-executable canon: sibling `Tabs.regression.spec.ts`. This file covers TB-R01, R05, R07, R09, R10, R11,
-R18, R19, R22 (keyboard/focus/aria-specific cases in respective spec files).
-TB-R23/R24 (asChild rest-forwarding, E01 audit remediation) are EXECUTED in
-`Tabs.regression.spec.ts`, not deferred.
+**Execution status:** EXECUTED in-repo — the canonical suite lives in the sibling
+`Tabs.regression.spec.ts` (CI-gated; status in Tabs.tsx `@tested`; only the manual NVDA
+sweep stays deferred). This file is a consumer-CI reference snapshot, not the source of truth.
+24 regression cases mapped (TB-R01..R24). This file covers TB-R01, R05, R07,
+R09, R10, R11, R18, R19, R22 (keyboard/focus/aria-specific cases in respective
+spec files). TB-R23/R24 (asChild rest-forwarding, E01 audit remediation)
+execute in `Tabs.regression.spec.ts`.
 
 ## Tests
 

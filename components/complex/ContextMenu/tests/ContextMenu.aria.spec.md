@@ -1,6 +1,8 @@
 # ContextMenu — ARIA / accessibility tree spec
 
-**Execution status:** DEFERRED.
+**Execution status:** EXECUTED in-repo — the canonical suite lives in the sibling
+`ContextMenu.aria.spec.ts` (CI-gated; status in ContextMenu.tsx `@tested`; only the manual NVDA
+sweep stays deferred). This file is a consumer-CI reference snapshot, not the source of truth.
 **Key distinction from DropdownMenu:** Trigger is NOT a widget — no
 `aria-haspopup`, `aria-expanded`, or `aria-controls` on the wrapper element.
 The trigger is just a right-click zone wrapping arbitrary children.

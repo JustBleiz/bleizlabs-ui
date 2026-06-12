@@ -62,15 +62,13 @@
  *
  * @apg https://www.w3.org/WAI/ARIA/apg/patterns/toolbar/
  * @tested tsc --noEmit ✓ | eslint + jsx-a11y via eslint-config-next ✓ |
- *   next build ✓ | Phase 4 fresh-subagent evaluator audit (2026-05-08) ✓ —
- *   Verdict: PASS-WITH-EXCEPTION granted by user 2026-05-08.
- *   DEFERRED-WITH-EXCEPTION: full Playwright execution + axe-core runtime
- *   sweep + manual NVDA+Firefox sweep. Specs ship alongside (.keyboard 13,
- *   .focus 8, .aria 8, .regression 20 = 49 total cases TBR-R01..R20),
- *   execution batched to dedicated test-execution sprint in 0.14+ cycle
- *   per E15 Tabs precedent. See `D:/OS/internal/bleizlabs-ui/work/
- *   2026-05_lib-audit-rebuild/devlog.md` E05.4 DONE_EPIC for exception
- *   rationale + scheduled follow-up.
+ *   next build ✓ | Phase 4 fresh-subagent evaluator audit (2026-05-08) ✓
+ *   (PASS-WITH-EXCEPTION granted by user 2026-05-08; the batched
+ *   test-execution follow-up has since landed — E142 runtime pipeline) |
+ *   Playwright suite EXECUTED in-repo (.keyboard 13, .focus 8, .aria 8,
+ *   .regression 20 = 49 total cases TBR-R01..R20, `.spec.ts` quad,
+ *   CI-gated) + axe-core smoke on the demo route.
+ *   DEFERRED: manual NVDA+Firefox sweep.
  * @regressions tests/Toolbar.{keyboard,focus,aria,regression}.spec.ts —
  *   regression cases derived from APG model + Radix `react-toolbar` issue
  *   shape (e.g., disabled items skipped, Tab does not steal arrow nav,

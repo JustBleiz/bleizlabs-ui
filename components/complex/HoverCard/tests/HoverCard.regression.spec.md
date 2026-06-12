@@ -1,8 +1,10 @@
 # HoverCard — regression spec (Radix-style closed-issue mapping)
 
-**Execution status:** DEFERRED. 15 regression cases mapped.
-~2 marked `test.skip` with `PLAYGROUND-DEP:` rationale (nested HoverCard,
-transformed-parent positioning).
+**Execution status:** EXECUTED in-repo — the canonical suite lives in the sibling
+`HoverCard.regression.spec.ts` (CI-gated; status in HoverCard.tsx `@tested`; only the manual NVDA
+sweep stays deferred). This file is a consumer-CI reference snapshot, not the source of truth.
+15 regression cases mapped. ~2 marked `test.skip` with `PLAYGROUND-DEP:`
+rationale (nested HoverCard, transformed-parent positioning).
 
 ## Tests
 

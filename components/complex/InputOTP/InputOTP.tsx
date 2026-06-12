@@ -71,7 +71,9 @@ import styles from './InputOTP.module.scss';
  *          `autocomplete="one-time-code"` WebSpec + shadcn/ui `input-otp`
  *          single-input-with-decorative-slots idiom, reimplemented zero-dep
  *          per D5/D25.
- * @tested  tsc + eslint + next build (Playwright/NVDA/axe deferred per E15 scope).
+ * @tested  tsc + eslint + next build | Playwright suite EXECUTED in-repo
+ *          (keyboard/focus/aria/regression `.spec.ts` quad, CI-gated) +
+ *          axe-core smoke on the demo route. DEFERRED: manual NVDA sweep.
  * @regressions tests/InputOTP.{keyboard,focus,aria,regression}.spec.md —
  *              20 regression cases OTP-R01..OTP-R20 (15 Radix/input-otp
  *              mapped + 5 bespoke; executable canon in the sibling

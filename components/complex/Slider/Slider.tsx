@@ -37,7 +37,9 @@ import styles from './Slider.module.scss';
  *           Disabled uses `aria-disabled` (focusable) per library convention;
  *           Tab order stays intact for SR discovery.
  * @apg      https://www.w3.org/WAI/ARIA/apg/patterns/slider/
- * @tested   tsc + eslint + next build (Playwright/NVDA/axe deferred per E15 scope).
+ * @tested   tsc + eslint + next build | Playwright suite EXECUTED in-repo
+ *           (keyboard/focus/aria/regression `.spec.ts` quad, CI-gated) +
+ *           axe-core smoke on the demo route. DEFERRED: manual NVDA sweep.
  * @regressions tests/Slider.{keyboard,focus,aria,regression}.spec.md —
  *           25 regression cases mapped (SL-R01..SL-R25; executable canon
  *           in the sibling `tests/Slider.*.spec.ts` quad).

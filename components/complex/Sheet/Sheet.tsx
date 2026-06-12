@@ -207,14 +207,15 @@ function CloseIcon() {
  *               for iPad notch / Dynamic Island / home indicator. Touch target
  *               enforcement on close button via `mx.touch-target` at pointer:
  *               coarse. Action buttons delegated to Button atom.
- * @tested       PARTIAL — static a11y verified, runtime a11y deferred:
+ * @tested       EXECUTED in-repo — static + runtime verified:
  *               ✓ `tsc --noEmit` clean
  *               ✓ `npm run lint` clean (includes `eslint-plugin-jsx-a11y` via
  *                 `eslint-config-next`)
  *               ✓ Build clean — Next.js static prerender PASS
- *               DEFERRED (first consumer adoption, per E15 scope decision):
- *               - Playwright execution of 4 `.spec.md` files
- *               - axe-core runtime zero-violations sweep
+ *               ✓ Playwright suites EXECUTED in-repo (keyboard/focus/aria/
+ *                 regression `.spec.ts` quad, CI-gated) + axe-core smoke on
+ *                 the demo route
+ *               DEFERRED:
  *               - Manual NVDA sweep + iOS device testing per side
  * @regressions  41 cases mapped in `tests/Sheet.regression.spec.md`: 21 inherited
  *               from Dialog (portal+trap+scroll-lock+inert primitives) + 20

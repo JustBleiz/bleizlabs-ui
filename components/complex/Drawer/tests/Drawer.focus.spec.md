@@ -1,12 +1,15 @@
 # Drawer.focus.spec
 
-> Deferred execution — Playwright spec ready for consumer CI/CD. See Drawer.tsx `@tested` header.
+> EXECUTED in-repo — the canonical suite lives in the sibling `Drawer.focus.spec.ts`
+> (CI-gated; only the manual NVDA sweep stays deferred). See Drawer.tsx `@tested`
+> header. This file is a consumer-CI reference snapshot, not the source of truth.
 
 ```typescript
 /**
  * Drawer focus management spec — APG `/dialog-modal/` compliance (E17).
  *
- * EXECUTION DEFERRED — runs on first consumer adoption.
+ * EXECUTION STATUS: EXECUTED in-repo — canonical suite in the sibling
+ * `Drawer.focus.spec.ts` (CI-gated).
  *
  * Coverage:
  * - Initial focus on first tabbable (Dialog parity, NOT least-destructive)

@@ -156,12 +156,13 @@ const DEFAULT_CONFIRM_VARIANT: Record<AlertDialogSeverity, ButtonVariant> = {
  *               Background `inert` toggle blocks AT virtual cursor / Browse Mode
  *               from reaching background content while the alert is open
  *               (progressive enhancement beyond focus trap).
- * @tested       DEFERRED — Playwright specs written in `tests/` (keyboard, focus,
- *               aria, regression) but execution deferred to first consumer adoption
- *               per E15 scope decision 2 (no browser env in build agent). Manual
- *               NVDA sweep deferred — documented in `docs/a11y-pipeline.md`.
+ * @tested       EXECUTED in-repo — Playwright suites in `tests/` (keyboard, focus,
+ *               aria, regression `.spec.ts` quad) run CI-gated + axe-core smoke on
+ *               the demo route; tsc/lint/build clean. Manual NVDA sweep stays
+ *               deferred — documented in `docs/a11y-pipeline.md`.
  * @regressions  41 regression cases mapped in `tests/AlertDialog.regression.spec.md`
- *               (`.spec.md` wraps typed Playwright fences — deferred execution, same
+ *               (`.spec.md` wraps typed Playwright fences — consumer-CI reference
+ *               snapshot; canonical suite in `tests/AlertDialog.*.spec.ts`, same
  *               format as Dialog/tests/). 29 active `test(...)` + 12 `test.skip(...)`
  *               with `PLAYGROUND-DEP:` rationale. Coverage: Dialog-inherited primitives
  *               (portal + focus trap + scroll lock + inert) + AlertDialog-specific

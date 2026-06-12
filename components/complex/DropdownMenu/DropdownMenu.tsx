@@ -38,9 +38,11 @@
  *   for native Enter/Space + disabled handling. `onSelect` can `event.preventDefault()`
  *   to keep menu open (future CheckboxItem/RadioItem pattern).
  * @apg https://www.w3.org/WAI/ARIA/apg/patterns/menu/
- * @tested tsc --noEmit ✓ | eslint + jsx-a11y ✓ | next build ✓ — DEFERRED:
- *   Playwright execution, axe-core runtime sweep, manual NVDA sweep, iOS/Android
- *   device testing, submenu integration (not in E21 scope).
+ * @tested tsc --noEmit ✓ | eslint + jsx-a11y ✓ | next build ✓ | Playwright
+ *   suite EXECUTED in-repo (keyboard/focus/aria/regression `.spec.ts` quad,
+ *   CI-gated) + axe-core smoke on the demo route. DEFERRED: manual NVDA
+ *   sweep, iOS/Android device testing, submenu integration (not in E21
+ *   scope — SUBMENU-DEFERRED test.skip cases).
  * @regressions tests/DropdownMenu.{keyboard,focus,aria,regression}.spec.md —
  *   22 Radix closed-issue cases mapped (radix-R21/R22 = asChild
  *   rest-forwarding, E01 audit remediation). ~6 marked test.skip with

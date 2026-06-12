@@ -28,9 +28,10 @@
  * @apg https://www.w3.org/WAI/ARIA/apg/patterns/tooltip/
  * @deviation Delay defaults to 700ms (not WAI-APG 1500ms). See D29 in docs/decisions.md.
  * @tested tsc --noEmit ✓ | eslint + jsx-a11y via eslint-config-next ✓ |
- *   next build ✓ — DEFERRED: Playwright execution, axe-core runtime sweep,
- *   manual NVDA sweep, iOS/Android device testing (Radix #1573/#2589/#1351)
- *   — per E15 scope decision, deferred to first consumer adoption.
+ *   next build ✓ | Playwright suite EXECUTED in-repo (keyboard/focus/aria/
+ *   regression `.spec.ts` quad, CI-gated) + axe-core smoke on the demo
+ *   route. DEFERRED: manual NVDA sweep, iOS/Android device testing
+ *   (Radix #1573/#2589/#1351).
  * @regressions tests/Tooltip.{keyboard,focus,aria,regression}.spec.md — 20
  *   Radix closed-issue cases mapped (#620, #705, #617, #1691, #1914, #1077,
  *   #2029, #2372, #1920, #1573, #2589, #1351, #2959, #2665, #899, #1010,

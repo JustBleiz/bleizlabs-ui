@@ -30,7 +30,9 @@
  *   **Close on scroll** via capture-phase window scroll listener (native OS
  *   context menu convention, configurable via `closeOnScroll` prop default `true`).
  * @apg https://www.w3.org/WAI/ARIA/apg/patterns/menu/
- * @tested tsc ✓ | lint ✓ | build ✓ — DEFERRED: Playwright, axe-core, manual NVDA.
+ * @tested tsc ✓ | lint ✓ | build ✓ | Playwright suite EXECUTED in-repo
+ *   (keyboard/focus/aria/regression `.spec.ts` quad, CI-gated) + axe-core
+ *   smoke on the demo route. DEFERRED: manual NVDA sweep.
  * @regressions tests/ContextMenu.{keyboard,focus,aria,regression}.spec.md —
  *   15 Radix closed-issue cases mapped + 13 inherited DropdownMenu tests.
  * @todo Long-press on touch devices (deferred — iOS Safari magnifier conflict,

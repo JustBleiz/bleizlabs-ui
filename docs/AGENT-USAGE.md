@@ -382,7 +382,7 @@ Anti-pattern: `const [email, setEmail] = useState('')` for every field, manual `
 
 ### E.4 Display
 
-`Card` (surface container compound: Card + CardHeader + CardBody + CardFooter, named regions on one concept), `Badge` (status indicator with `color="brand"|"success"|"warning"|"danger"|"info"|"neutral"`), `Avatar` (image with initials fallback + `AvatarGroup` for overlapping stacks), `KpiValue` (typographic number with optional delta + unit), `Reveal` (scroll-triggered IntersectionObserver gate — children animate in on viewport entry), `Separator` (horizontal or vertical rule), `Skeleton` (loading placeholder), `Spinner`, `Table` (semantic table primitive with subcomponents), `CodeBlock` (structural `<pre><code>` shell — consumer pre-tokenizes via Shiki/Prism).
+`Card` (surface container compound: Card + CardHeader + CardBody + CardFooter, named regions on one concept), `Badge` (status indicator with `color="default"|"brand"|"success"|"warning"|"error"|"info"`), `Avatar` (image with initials fallback + `AvatarGroup` for overlapping stacks), `KpiValue` (typographic number with optional delta + unit), `Reveal` (scroll-triggered IntersectionObserver gate — children animate in on viewport entry), `Separator` (horizontal or vertical rule), `Skeleton` (loading placeholder), `Spinner`, `Table` (semantic table primitive with subcomponents), `CodeBlock` (structural `<pre><code>` shell — consumer pre-tokenizes via Shiki/Prism).
 
 ```tsx
 import { Card, CardHeader, CardBody, Heading, Text, Badge, KpiValue, Avatar } from '@bleizlabs/ui';
@@ -613,7 +613,7 @@ If you're working on a feature that genuinely needs one of the above, install th
 Top-20 reached patterns, one-liner each:
 
 | Want                          | Use                                                                                               |
-| ----------------------------- | ------------------------------------------------------------------------------------------------- | ----------- | ---------------- | ---- | ----- | ---------- |
+| ----------------------------- | ------------------------------------------------------------------------------------------------- | ----------- |
 | Vertical layout               | `<Stack gap={N}>`                                                                                 |
 | Horizontal layout             | `<Inline gap={N}>`                                                                                |
 | Page width constraint         | `<Container size="lg">`                                                                           |
@@ -621,11 +621,11 @@ Top-20 reached patterns, one-liner each:
 | Headings                      | `<Heading level={N} size="...">` (level = semantics, size = visual)                               |
 | Body text                     | `<Text variant="body" color="secondary">`                                                         |
 | Inline link                   | `<Anchor href="...">` or `<Anchor asChild><Link href="..." /></Anchor>`                           |
-| Button                        | `<Button variant="primary                                                                         | ghost       | danger" size="sm | md   | lg">` |
+| Button                        | `<Button variant="primary \| secondary \| ghost \| link \| warning" size="sm \| md \| lg">`       |
 | Button as link                | `<Button href="...">` — renders `<a>`, server-safe; NOT `asChild`+`<Link>` (pulls `'use client'`) |
 | Polymorphic render            | `<Component asChild><CustomElement /></Component>`                                                |
-| Surface container             | `<Card padding={N} radius="md                                                                     | lg          | xl">`            |
-| Status indicator              | `<Badge color="success                                                                            | warning     | danger           | info | brand | neutral">` |
+| Surface container             | `<Card padding={N} radius="sm \| md \| lg \| xl \| 2xl">`                                         |
+| Status indicator              | `<Badge color="default \| brand \| success \| warning \| error \| info">`                         |
 | Avatar with initials fallback | `<Avatar src="..." name="..." />`                                                                 |
 | Imperative notification       | `toast.success('...')` (after `<Toaster>` mounted once)                                           |
 | Modal                         | `<Dialog><Dialog.Trigger /><Dialog.Content>...</Dialog.Content></Dialog>`                         |

@@ -1,8 +1,10 @@
 # ContextMenu — regression spec (Radix + internal issue mapping)
 
-**Execution status:** DEFERRED. 15 Radix ContextMenu cases + 3 internal
-cases. ~5 marked `test.skip` with `PLAYGROUND-DEP:` / `TOUCH-DEFERRED:`
-rationale.
+**Execution status:** EXECUTED in-repo — the canonical suite lives in the sibling
+`ContextMenu.regression.spec.ts` (CI-gated; status in ContextMenu.tsx `@tested`; only the manual NVDA
+sweep stays deferred). This file is a consumer-CI reference snapshot, not the source of truth.
+15 Radix ContextMenu cases + 3 internal cases. ~5 marked `test.skip` with
+`PLAYGROUND-DEP:` / `TOUCH-DEFERRED:` rationale.
 
 ## Tests
 

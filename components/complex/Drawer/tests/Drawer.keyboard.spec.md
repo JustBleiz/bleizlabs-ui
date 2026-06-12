@@ -1,12 +1,15 @@
 # Drawer.keyboard.spec
 
-> Deferred execution — Playwright spec ready for consumer CI/CD. See Drawer.tsx `@tested` header.
+> EXECUTED in-repo — the canonical suite lives in the sibling `Drawer.keyboard.spec.ts`
+> (CI-gated; only the manual NVDA sweep stays deferred). See Drawer.tsx `@tested`
+> header. This file is a consumer-CI reference snapshot, not the source of truth.
 
 ```typescript
 /**
  * Drawer keyboard interaction spec — APG `/dialog-modal/` compliance (E17).
  *
- * EXECUTION DEFERRED — runs on first consumer adoption.
+ * EXECUTION STATUS: EXECUTED in-repo — canonical suite in the sibling
+ * `Drawer.keyboard.spec.ts` (CI-gated).
  *
  * Coverage:
  * - Tab          → focus cycles forward through tabbable children, wraps last→first

@@ -132,6 +132,8 @@ jobs:
       - run: npm run check:manifest
       - name: Manifest sync (regenerated == committed)
         run: npm run check:manifest:sync
+      - name: Agent docs integrity (§J rows + stamp + fence imports)
+        run: node scripts/check-agents-doc.mjs
 
   smoke:
     name: Playwright smoke (all demo routes + axe-core)

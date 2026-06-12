@@ -72,8 +72,9 @@ import styles from './Command.module.scss';
  *           https://www.w3.org/WAI/ARIA/apg/patterns/dialog-modal/
  *           (composition — no dedicated "command palette" APG spec;
  *           keyboard + ARIA conform to both pattern intersections).
- * @tested   tsc + eslint + next build (Playwright/NVDA/axe deferred per
- *           E15 scope).
+ * @tested   tsc + eslint + next build | Playwright suite EXECUTED in-repo
+ *           (keyboard/focus/aria/regression `.spec.ts` quad, CI-gated) +
+ *           axe-core smoke on the demo route. DEFERRED: manual NVDA sweep.
  * @regressions tests/Command.{keyboard,focus,aria,regression}.spec.md —
  *           20 regression cases CMD-R01..R20 (executable canon in the
  *           sibling `tests/Command.*.spec.ts` quad).

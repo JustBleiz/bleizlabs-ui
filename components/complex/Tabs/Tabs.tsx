@@ -50,8 +50,9 @@
  *   Vertical orientation (Up/Down) is unaffected by dir.
  * @apg https://www.w3.org/WAI/ARIA/apg/patterns/tabs/
  * @tested tsc --noEmit ✓ | eslint + jsx-a11y via eslint-config-next ✓ |
- *   next build ✓ — DEFERRED: Playwright execution (per E15 scope decision),
- *   axe-core runtime sweep, manual NVDA sweep.
+ *   next build ✓ | Playwright suite EXECUTED in-repo (keyboard/focus/aria/
+ *   regression `.spec.ts` quad, CI-gated; incl. TB-R23/R24) + axe-core
+ *   smoke on the demo route. DEFERRED: manual NVDA sweep.
  * @regressions tests/Tabs.{keyboard,focus,aria,regression}.spec.md — 24
  *   regression cases mapped (TB-R01..R24; R23/R24 = asChild rest-forwarding,
  *   E01 audit remediation). The original bug+fix mapping came from an

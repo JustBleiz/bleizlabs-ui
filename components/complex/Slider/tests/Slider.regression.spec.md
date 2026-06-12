@@ -1,8 +1,11 @@
 # Slider — regression spec (25 cases SL-R01..SL-R25)
 
-**Execution status:** DEFERRED. 25 regression cases mapped (SL-R01..SL-R25);
-executable canon: sibling `Slider.regression.spec.ts`. This file covers SL-R02, R03, R06, R09,
-R14, R15, R16, R21, R23-R25 (remaining cases in keyboard/focus/aria specs).
+**Execution status:** EXECUTED in-repo — the canonical suite lives in the sibling
+`Slider.regression.spec.ts` (CI-gated; status in Slider.tsx `@tested`; only the manual NVDA
+sweep stays deferred). This file is a consumer-CI reference snapshot, not the source of truth.
+25 regression cases mapped (SL-R01..SL-R25). This file covers SL-R02, R03,
+R06, R09, R14, R15, R16, R21, R23-R25 (remaining cases in keyboard/focus/aria
+specs).
 
 ## Tests
 

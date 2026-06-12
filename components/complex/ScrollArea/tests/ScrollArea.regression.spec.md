@@ -1,6 +1,8 @@
 # ScrollArea — regression spec (16 cases SA-R01..R16)
 
-**Execution status:** DEFERRED. Executable canon: sibling `ScrollArea.regression.spec.ts`.
+**Execution status:** EXECUTED in-repo — the canonical suite lives in the sibling
+`ScrollArea.regression.spec.ts` (CI-gated; status in ScrollArea.tsx `@tested`; only the manual NVDA
+sweep stays deferred). This file is a consumer-CI reference snapshot, not the source of truth.
 This file covers SA-R09..R16 (remaining cases in keyboard/focus/aria specs).
 
 ## Tests

@@ -29,8 +29,9 @@
  *   (native `disabled` blocks events; `aria-disabled` is checked explicitly).
  * @apg https://www.w3.org/WAI/ARIA/apg/patterns/dialog-modal/ (modeless modifier)
  * @tested tsc --noEmit ✓ | eslint + jsx-a11y via eslint-config-next ✓ |
- *   next build ✓ — DEFERRED: Playwright execution, axe-core runtime sweep,
- *   manual NVDA sweep, iOS/Android device testing. Per E15 scope decision.
+ *   next build ✓ | Playwright suite EXECUTED in-repo (keyboard/focus/aria/
+ *   regression `.spec.ts` quad, CI-gated) + axe-core smoke on the demo
+ *   route. DEFERRED: manual NVDA sweep, iOS/Android device testing.
  * @regressions tests/Popover.{keyboard,focus,aria,regression}.spec.md — 20
  *   Radix closed-issue cases mapped. ~6 marked test.skip with PLAYGROUND-DEP
  *   rationale (require DropdownMenu/iframe/sortable-lib scenarios).

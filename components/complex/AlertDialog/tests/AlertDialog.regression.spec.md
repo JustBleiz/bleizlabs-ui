@@ -1,12 +1,15 @@
 # AlertDialog.regression.spec
 
-> Deferred execution — Playwright spec ready for consumer CI/CD. See AlertDialog.tsx `@regressions` header.
+> EXECUTED in-repo — the canonical suite lives in the sibling `AlertDialog.regression.spec.ts`
+> (CI-gated; only the manual NVDA sweep stays deferred). See AlertDialog.tsx `@regressions`
+> header. This file is a consumer-CI reference snapshot, not the source of truth.
 
 ```typescript
 /**
  * AlertDialog regression spec — 41 Radix closed issues mapped to test cases (E16).
  *
- * EXECUTION DEFERRED — runs on first consumer adoption.
+ * EXECUTION STATUS: EXECUTED in-repo — canonical suite in the sibling
+ * `AlertDialog.regression.spec.ts` (CI-gated).
  *
  * Source: github.com/radix-ui/primitives closed issues (alertdialog + dialog tags).
  * Categories:

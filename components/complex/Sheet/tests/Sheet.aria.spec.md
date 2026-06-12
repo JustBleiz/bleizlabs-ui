@@ -1,12 +1,15 @@
 # Sheet.aria.spec
 
-> Deferred execution — Playwright spec ready for consumer CI/CD. See Sheet.tsx `@tested` header.
+> EXECUTED in-repo — the canonical suite lives in the sibling `Sheet.aria.spec.ts`
+> (CI-gated; only the manual NVDA sweep stays deferred). See Sheet.tsx `@tested`
+> header. This file is a consumer-CI reference snapshot, not the source of truth.
 
 ```typescript
 /**
  * Sheet ARIA attributes + accessibility tree spec — APG `/dialog-modal/` compliance (E18).
  *
- * EXECUTION DEFERRED — runs on first consumer adoption.
+ * EXECUTION STATUS: EXECUTED in-repo — canonical suite in the sibling
+ * `Sheet.aria.spec.ts` (CI-gated).
  *
  * Coverage:
  * - role="dialog" (NOT alertdialog — Sheet is generic container)

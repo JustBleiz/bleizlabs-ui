@@ -1,6 +1,8 @@
 # Command — regression spec (20 cases CMD-R01..R20)
 
-**Execution status:** DEFERRED. Executable canon: sibling `Command.regression.spec.ts`.
+**Execution status:** EXECUTED in-repo — the canonical suite lives in the sibling
+`Command.regression.spec.ts` (CI-gated; status in Command.tsx `@tested`; only the manual NVDA
+sweep stays deferred). This file is a consumer-CI reference snapshot, not the source of truth.
 This file covers CMD-R14..R20 (remaining cases in keyboard/focus/aria specs).
 
 ## Tests

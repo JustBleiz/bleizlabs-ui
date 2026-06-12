@@ -1,10 +1,12 @@
 # DropdownMenu — regression spec (Radix closed-issue mapping)
 
-**Execution status:** DEFERRED. 22 cases mapped from `radix-ui/primitives`
-closed DropdownMenu issues. ~6 marked `test.skip` with `PLAYGROUND-DEP:` /
-`SUBMENU-DEFERRED:` rationale. radix-R21/R22 (asChild rest-forwarding, E01
-audit remediation) are EXECUTED in `DropdownMenu.regression.spec.ts`, not
-deferred.
+**Execution status:** EXECUTED in-repo — the canonical suite lives in the sibling
+`DropdownMenu.regression.spec.ts` (CI-gated; status in DropdownMenu.tsx `@tested`; only the manual NVDA
+sweep stays deferred). This file is a consumer-CI reference snapshot, not the source of truth.
+22 cases mapped from `radix-ui/primitives` closed DropdownMenu issues.
+~6 marked `test.skip` with `PLAYGROUND-DEP:` / `SUBMENU-DEFERRED:` rationale.
+radix-R21/R22 (asChild rest-forwarding, E01 audit remediation) execute in
+`DropdownMenu.regression.spec.ts`.
 
 ## Tests
 
