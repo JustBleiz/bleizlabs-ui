@@ -33,6 +33,7 @@
  * comparison (it changes every run by design). Wire: `npm run check:manifest:sync`.
  */
 
+import { execSync } from 'node:child_process';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -583,6 +584,18 @@ if (CHECK_MODE) {
 }
 
 fs.writeFileSync(OUTPUT, JSON.stringify(manifest, null, 2) + '\n', 'utf8');
+
+// Emit prettier-clean output: JSON.stringify expands every array multi-line,
+// while the committed manifest is prettier-formatted (short arrays collapsed
+// to one line) — without this pass every regen dirties `format:check` even
+// when content is unchanged (same footgun class as build-agent-inventory.mjs).
+// The `--check` mode above is format-independent (parses then re-stringifies
+// both sides), so this affects only the written file.
+try {
+  execSync(`npx prettier --write "${OUTPUT}"`, { cwd: ROOT, stdio: 'pipe' });
+} catch (e) {
+  fail(`prettier pass on regenerated manifest failed: ${e?.message ?? e}`);
+}
 
 const componentCount = components.length;
 const utilCount = utilities.length;
