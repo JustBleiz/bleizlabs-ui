@@ -1,8 +1,8 @@
-# Slider — regression spec (29 cases SL-R01..SL-R29)
+# Slider — regression spec (25 cases SL-R01..SL-R25)
 
-**Execution status:** DEFERRED. 29 regression cases mapped from
-`docs/specs/slider-spec.md`. This file covers SL-R02, R03, R06, R09,
-R14, R15, R16, R21, R23-R29 (remaining cases in keyboard/focus/aria specs).
+**Execution status:** DEFERRED. 25 regression cases mapped (SL-R01..SL-R25);
+executable canon: sibling `Slider.regression.spec.ts`. This file covers SL-R02, R03, R06, R09,
+R14, R15, R16, R21, R23-R25 (remaining cases in keyboard/focus/aria specs).
 
 ## Tests
 

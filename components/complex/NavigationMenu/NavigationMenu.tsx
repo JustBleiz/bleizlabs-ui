@@ -70,8 +70,10 @@
  *   next build ✓ — DEFERRED: Playwright execution (per E15 scope decision),
  *   axe-core runtime sweep, manual NVDA sweep, iOS/Android device testing.
  * @regressions tests/NavigationMenu.{keyboard,focus,aria,regression}.spec.md —
- *   22 regression cases mapped (NM-R01..R22). See `docs/_tmp/navigation-menu-spec.md`
- *   Phase 1 Explore output for full bug+fix mapping.
+ *   22 regression cases mapped (NM-R01..R22). The original bug+fix mapping
+ *   came from an ephemeral `_tmp` spec draft (since retired; the per-case
+ *   content in the tests/ quad is the canon — executable canon in the
+ *   sibling `.spec.ts` files).
  * @example
  *   <NavigationMenu>
  *     <NavigationMenuList aria-label="Main">

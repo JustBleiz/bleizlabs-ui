@@ -1,7 +1,7 @@
 /**
  * NavigationMenu regression spec (Radix closed-issue mapping) — E142 L3c.
  *
- * Cases mapped NM-R01..NM-R22 from docs/specs/navigation-menu-spec.md. Tests
+ * Cases mapped NM-R01..NM-R22 (markdown mirror: sibling `.spec.md`). Tests
  * here cover NM-R01, R02, R14, R15, R20, R21, R22 for runtime-verifiable
  * behavior. Others skipped with PLAYGROUND-DEP where the demo lacks the
  * required query-string scenario.

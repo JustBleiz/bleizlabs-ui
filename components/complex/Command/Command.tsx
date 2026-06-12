@@ -75,8 +75,8 @@ import styles from './Command.module.scss';
  * @tested   tsc + eslint + next build (Playwright/NVDA/axe deferred per
  *           E15 scope).
  * @regressions tests/Command.{keyboard,focus,aria,regression}.spec.md —
- *           22 regression cases CMD-R01..R22 in `docs/specs/command-spec.md`
- *           (promoted from `_tmp` in E42).
+ *           20 regression cases CMD-R01..R20 (executable canon in the
+ *           sibling `tests/Command.*.spec.ts` quad).
  *
  * @example
  * // Basic controlled

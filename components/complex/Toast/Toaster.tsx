@@ -57,8 +57,8 @@
  *   Playwright execution (per E15 scope decision), axe-core runtime sweep,
  *   manual NVDA sweep.
  * @regressions tests/Toast.{keyboard,focus,aria,regression}.spec.md —
- *   TST-R01..R22+ edge cases documented in `docs/specs/toast-spec.md`
- *   (promoted from `docs/_tmp/` in E42). Covers dedup by id, promise
+ *   17 edge cases TST-R01..R17 (executable canon in the sibling
+ *   `tests/Toast.*.spec.ts` quad). Covers dedup by id, promise
  *   transitions, auto-dismiss, pause on hover/focus/visibilitychange,
  *   Infinity duration, ARIA role per variant, no focus-steal, reduced-
  *   motion, RTL, SSR safe.

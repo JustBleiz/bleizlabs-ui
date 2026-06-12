@@ -1,6 +1,7 @@
-# Command — regression spec (22 cases CMD-R01..R22)
+# Command — regression spec (20 cases CMD-R01..R20)
 
-**Execution status:** DEFERRED. `docs/specs/command-spec.md`.
+**Execution status:** DEFERRED. Executable canon: sibling `Command.regression.spec.ts`.
+This file covers CMD-R14..R20 (remaining cases in keyboard/focus/aria specs).
 
 ## Tests
 

@@ -1,7 +1,7 @@
 # Toast — regression spec
 
-**Execution status:** DEFERRED. 22+ edge cases documented in
-`docs/specs/toast-spec.md` (promoted from `docs/_tmp/` in E42).
+**Execution status:** DEFERRED. 17 edge cases (TST-R01..R17) across the
+tests/ quad; executable canon: sibling `Toast.regression.spec.ts`.
 This file covers core regression cases; keyboard/focus/aria split.
 
 ## Tests

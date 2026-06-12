@@ -74,8 +74,9 @@ import styles from './InputOTP.module.scss';
  * @tested  tsc + eslint + next build (Playwright/NVDA/axe deferred per E15 scope).
  * @regressions tests/InputOTP.{keyboard,focus,aria,regression}.spec.md —
  *              20 regression cases OTP-R01..OTP-R20 (15 Radix/input-otp
- *              mapped + 5 bespoke) in `docs/specs/input-otp-spec.md`
- *              (promoted from `_tmp` in E42).
+ *              mapped + 5 bespoke; executable canon in the sibling
+ *              `tests/InputOTP.*.spec.ts` quad — the `.spec.md` mirrors
+ *              cover OTP-R01..R16).
  *
  * @example
  * // Basic uncontrolled, 6-digit numeric

@@ -1,6 +1,7 @@
-# Carousel — regression spec (25 cases CAR-R01..R25)
+# Carousel — regression spec (19 cases CAR-R01..R19)
 
-**Execution status:** DEFERRED. `docs/specs/carousel-spec.md`.
+**Execution status:** DEFERRED. Executable canon: sibling `Carousel.regression.spec.ts`.
+This file covers CAR-R13..R19 (remaining cases in keyboard/focus/aria specs).
 
 ## Tests
 

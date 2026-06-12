@@ -47,8 +47,8 @@ import styles from './Carousel.module.scss';
  * @apg      https://www.w3.org/WAI/ARIA/apg/patterns/carousel/
  * @tested   tsc + eslint + next build (Playwright/NVDA/axe deferred per E15 scope).
  * @regressions tests/Carousel.{keyboard,focus,aria,regression}.spec.md —
- *           25 regression cases CAR-R01..R25 in `docs/specs/carousel-spec.md`
- *           (promoted from `_tmp` in E42).
+ *           19 regression cases CAR-R01..R19 (executable canon in the
+ *           sibling `tests/Carousel.*.spec.ts` quad).
  *
  * @example
  * // Basic with auto-rotate + pause control

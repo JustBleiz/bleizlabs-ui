@@ -1,7 +1,7 @@
 # NavigationMenu — regression spec (Radix closed-issue mapping)
 
-**Execution status:** DEFERRED. 22 regression cases mapped (NM-R01..R22) from
-`docs/specs/navigation-menu-spec.md`. This file covers NM-R01, R02, R04, R05,
+**Execution status:** DEFERRED. 22 regression cases mapped (NM-R01..R22);
+executable canon: sibling `NavigationMenu.regression.spec.ts`. This file covers NM-R01, R02, R04, R05,
 R06, R07, R08, R14, R15, R18, R20, R21, R22 (keyboard/focus/aria-specific cases
 in respective spec files).
 

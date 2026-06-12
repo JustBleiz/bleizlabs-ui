@@ -1,7 +1,7 @@
 # Tabs — regression spec (Radix closed-issue mapping)
 
-**Execution status:** DEFERRED. 24 regression cases mapped (TB-R01..R24) from
-`docs/specs/tabs-spec.md`. This file covers TB-R01, R05, R07, R09, R10, R11,
+**Execution status:** DEFERRED. 24 regression cases mapped (TB-R01..R24);
+executable canon: sibling `Tabs.regression.spec.ts`. This file covers TB-R01, R05, R07, R09, R10, R11,
 R18, R19, R22 (keyboard/focus/aria-specific cases in respective spec files).
 TB-R23/R24 (asChild rest-forwarding, E01 audit remediation) are EXECUTED in
 `Tabs.regression.spec.ts`, not deferred.

@@ -1,6 +1,7 @@
-# ScrollArea — regression spec (20 cases SA-R01..R20)
+# ScrollArea — regression spec (16 cases SA-R01..R16)
 
-**Execution status:** DEFERRED. `docs/specs/scroll-area-spec.md`.
+**Execution status:** DEFERRED. Executable canon: sibling `ScrollArea.regression.spec.ts`.
+This file covers SA-R09..R16 (remaining cases in keyboard/focus/aria specs).
 
 ## Tests
 

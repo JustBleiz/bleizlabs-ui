@@ -39,8 +39,8 @@ import styles from './Slider.module.scss';
  * @apg      https://www.w3.org/WAI/ARIA/apg/patterns/slider/
  * @tested   tsc + eslint + next build (Playwright/NVDA/axe deferred per E15 scope).
  * @regressions tests/Slider.{keyboard,focus,aria,regression}.spec.md —
- *           29 regression cases (SL-R01..SL-R29) mapped from
- *           `docs/specs/slider-spec.md` (promoted from `_tmp` in E42).
+ *           25 regression cases mapped (SL-R01..SL-R25; executable canon
+ *           in the sibling `tests/Slider.*.spec.ts` quad).
  *
  * @example
  * // Basic uncontrolled

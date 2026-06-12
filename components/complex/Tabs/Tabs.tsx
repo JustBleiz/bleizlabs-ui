@@ -54,8 +54,10 @@
  *   axe-core runtime sweep, manual NVDA sweep.
  * @regressions tests/Tabs.{keyboard,focus,aria,regression}.spec.md — 24
  *   regression cases mapped (TB-R01..R24; R23/R24 = asChild rest-forwarding,
- *   E01 audit remediation). See `docs/_tmp/tabs-spec.md` Phase 1 Explore
- *   output for full bug+fix mapping.
+ *   E01 audit remediation). The original bug+fix mapping came from an
+ *   ephemeral `_tmp` spec draft (since retired; the per-case content in
+ *   the tests/ quad is the canon — executable canon in the sibling
+ *   `.spec.ts` files).
  * @example
  *   <Tabs defaultValue="overview">
  *     <TabsList aria-label="Project sections">

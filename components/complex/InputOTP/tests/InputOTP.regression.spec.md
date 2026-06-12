@@ -1,6 +1,8 @@
 # InputOTP — regression spec (20 cases OTP-R01..R20)
 
-**Execution status:** DEFERRED. `docs/specs/input-otp-spec.md`.
+**Execution status:** DEFERRED. Executable canon: sibling `InputOTP.regression.spec.ts`
+(covers OTP-R10..R20; this mirror covers OTP-R10..R16, remaining cases in
+keyboard/focus/aria specs).
 
 ## Tests
 
