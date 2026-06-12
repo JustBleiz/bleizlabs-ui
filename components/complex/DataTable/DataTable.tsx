@@ -66,7 +66,8 @@ import styles from './DataTable.module.scss';
  *          mirrors — the `.spec.ts` suites are the canon). E03 audit
  *          remediation: DT-SE08/SE09 (ID-based selection identity),
  *          DT-S07 (sort accessible name), DT-R05 (mobile axe), DT-P04
- *          rewritten to lock the no-page-size-selector v1 contract.
+ *          locks page-size selector when `pageSizeOptions` is set (0.28.0);
+ *          no selector when omitted or empty.
  * @notes   Server-Component UNSAFE — wymaga `'use client'` (stan, observer,
  *          keyboard). Consumer powinien `useMemo` columns dla perf.
  *          Default mode = client-side (slice po filter+sort). Server-side
