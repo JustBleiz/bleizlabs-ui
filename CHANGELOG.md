@@ -74,7 +74,7 @@ planned docs-only 0.26.1 is superseded by this release (deliberate).
   de-referenced the phantom `docs/specs/` directory (never existed) and
   now point at the per-component `tests/` quad, with 6 inflated case
   counts corrected to reality (Carousel 25→19, Command 22→20, DatePicker
-  22+→21, ScrollArea 20→16, Slider 29→25, Toast 22+→17); README component
+  22+→21, ScrollArea 20→16, Slider 29→25, Toast 22+→21); README component
   buckets realigned with the manifest.
 
 ### Fixed
