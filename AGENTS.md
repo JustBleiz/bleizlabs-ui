@@ -53,7 +53,7 @@ Q5. Borderline? → ask the user.
 | `!important` in `.module.scss`                                 | Component variant or `className` passthrough — `!important` blocks consumer overrides                                        |
 | `<DateTimePicker>` value rendered as `"2026-05-13T14:30"` text | Use `value` for ISO transport; the field displays space-separated for humans automatically                                   |
 | `'use client'` at page level when only one leaf is interactive | Push the directive to the interactive leaf component only                                                                    |
-| Local `BackLink` / `Chip` / `DataRow` / `Timeline` molecule    | Lib already ships these — check `Section J` inventory below                                                                  |
+| Local `BackLink` / `Chip` / `DataRow` / `Timeline` molecule    | Lib already ships these — check the Section J inventory in `docs/AGENT-USAGE.md`                                             |
 | Mirror SCSS rules across 2+ consumer files                     | Extract a shared molecule per Q3, single styling source                                                                      |
 | `useState` + `onChange` for every form field                   | `<Form>` + `<Field>` use the native Constraint Validation API; FormData reads automatically                                  |
 | Per-component scrollbar styling                                | `@use '@bleizlabs/ui/styles/scrollbar';` in `app/globals.scss` once                                                          |

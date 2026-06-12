@@ -74,7 +74,7 @@ export default config;
 @use '@bleizlabs/ui/styles/scrollbar';
 ```
 
-The first `@use` imports the full token system (`_seed.scss` → `_semantics.scss` → `_index.scss`). The opt-in `scrollbar` import styles WebKit-based scrollbars globally — useful for dashboards and panel surfaces; not needed for marketing sites.
+The first `@use` imports the full token system (`_project-settings.scss` → `_generator.scss` → `_semantics.scss`, then component-tokens / mixins / animations / project-overrides). The opt-in `scrollbar` import styles WebKit-based scrollbars globally — useful for dashboards and panel surfaces; not needed for marketing sites.
 
 ### B.4 Token override patterns
 
@@ -435,39 +435,44 @@ toast.success('Saved');
 
 ### E.6 Overlays
 
-`Dialog` (modal compound: Trigger + Content + Title + Description + Close + Cancel/Confirm action), `Sheet` (side-anchored Dialog variant — top/right/bottom/left), `Drawer` (mobile bottom-sheet style with snap points), `Popover` (anchored floating panel — non-modal), `Tooltip` (small hover/focus-only popover for short labels), `HoverCard` (rich preview on hover), `DropdownMenu` (anchored menu with `Item`/`CheckboxItem`/`RadioItem`/`Sub` sub-parts), `ContextMenu` (right-click variant), `AlertDialog` (modal confirmation with destructive-action-friendly defaults).
+`Dialog` (modal, **controlled, monolithic** — `open`/`onOpenChange` + `title`/`description`/`footer` props, NOT a Trigger/Content compound), `Sheet` (side-anchored Dialog variant — top/right/bottom/left), `Drawer` (mobile bottom-sheet style with snap points), `Popover` (anchored floating panel — non-modal), `Tooltip` (small hover/focus-only popover for short labels), `HoverCard` (rich preview on hover), `DropdownMenu` (anchored menu compound: `DropdownMenuTrigger`/`Content`/`Item`/`Label`/`Separator`/`Group`), `ContextMenu` (right-click variant), `AlertDialog` (modal confirmation with destructive-action-friendly defaults — `confirmLabel`/`onConfirm` props).
 
 ```tsx
-import { Dialog } from '@bleizlabs/ui';
+import { useState } from 'react';
+import { Button, Dialog, Text } from '@bleizlabs/ui';
 
-<Dialog>
-  <Dialog.Trigger asChild>
-    <Button>Open</Button>
-  </Dialog.Trigger>
-  <Dialog.Content>
-    <Dialog.Title>Confirm action</Dialog.Title>
-    <Dialog.Description>This cannot be undone.</Dialog.Description>
-    <Inline gap={3} justify="end">
-      <Dialog.Cancel asChild>
-        <Button variant="ghost">Cancel</Button>
-      </Dialog.Cancel>
-      <Dialog.Confirm asChild>
-        <Button variant="danger" onClick={handleDelete}>
+const [open, setOpen] = useState(false);
+
+<>
+  <Button onClick={() => setOpen(true)}>Open dialog</Button>
+  <Dialog
+    open={open}
+    onOpenChange={setOpen}
+    title="Confirm delete"
+    description="This action cannot be undone."
+    footer={
+      <>
+        <Button variant="ghost" onClick={() => setOpen(false)}>
+          Cancel
+        </Button>
+        <Button variant="warning" onClick={handleDelete}>
           Delete
         </Button>
-      </Dialog.Confirm>
-    </Inline>
-  </Dialog.Content>
-</Dialog>;
+      </>
+    }
+  >
+    <Text>The selected item and all its data will be permanently removed.</Text>
+  </Dialog>
+</>;
 ```
 
 All overlay primitives use the same in-house `useFloating` + `computePosition` engine + `useFocusTrap` + dismiss helper. Hydration is mount-gated (see D.4) — no SSR warnings.
 
-Anti-pattern: external focus-trap or floating-UI library — already in-house. Anti-pattern: rendering `<Dialog>` content conditionally outside the trigger compound (`{open && <Dialog>...</Dialog>}`) — let the compound own its `open` state, or use the controlled `open` + `onOpenChange` props.
+Anti-pattern: external focus-trap or floating-UI library — already in-house. Anti-pattern: inventing a `Dialog.Trigger`/`Dialog.Content` compound API — Dialog is controlled-only; the consumer owns the `open` state and the trigger button.
 
 ### E.7 Complex / Data
 
-`DataTable` (generic-data grid with sort + filter + pagination + selection + expansion + APG `/grid/` keyboard nav), `Tabs` (compound: TabList + Tab + TabPanel), `Accordion` (single disclosure panel; group single/multi expansion modes via `AccordionGroup`), `Stepper` (multi-step wizard with progress + validation per step), `Sidebar` (chrome navigation rail with collapsible state), `NavigationMenu` (top-level multi-level nav), `Toolbar` (action button group with roving tabindex).
+`DataTable` (generic-data grid with sort + filter + pagination + selection + expansion + APG `/grid/` keyboard nav), `Tabs` (compound: `TabsList` + `TabsTrigger` + `TabsContent`), `Accordion` (single disclosure panel; group single/multi expansion modes via `AccordionGroup`), `Stepper` (multi-step wizard with progress + validation per step), `Sidebar` (chrome navigation rail with collapsible state), `NavigationMenu` (top-level multi-level nav), `Toolbar` (action button group with roving tabindex).
 
 ```tsx
 import { DataTable } from '@bleizlabs/ui';

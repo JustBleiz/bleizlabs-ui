@@ -9,6 +9,11 @@
  *   2. Every `import { Foo } from '@bleizlabs/ui'` identifier in TS/TSX-tagged
  *      code fences resolves to a real export in `components/index.ts` barrel
  *      (via manifest's components/utilities/typesOnly arrays).
+ *   3. The §J inventory stamp ("at lib version X") matches `manifest.libVersion`
+ *      — a stale stamp means the committed table lags the release (E07: the
+ *      stamp previously sat at 0.25.0 across two releases with nobody noticing;
+ *      `check:manifest` already pins manifest.libVersion == package.json version,
+ *      so this transitively pins the doc to the released version).
  *
  * Explicitly OUT OF SCOPE:
  *   - Does NOT type-check fence contents.
@@ -117,6 +122,24 @@ if (invStartIdx === -1 || invEndIdx === -1 || invEndIdx < invStartIdx) {
     );
   } else {
     info(`inventory rows: ${rowCount} == manifest.components.length ✓`);
+  }
+
+  // ---------------------------------------------------------------------
+  // Check 3: §J stamp version matches manifest.libVersion
+  // ---------------------------------------------------------------------
+  const stampMatch = inventoryBlock.match(/at lib version\s+(\d+\.\d+\.\d+(?:-[\w.]+)?)/);
+  if (!stampMatch) {
+    err(
+      `docs/AGENT-USAGE.md inventory block has no "at lib version X" stamp. ` +
+        `Re-run \`node scripts/build-agent-inventory.mjs\` to regenerate.`,
+    );
+  } else if (stampMatch[1] !== manifest.libVersion) {
+    err(
+      `Inventory stamp drift: §J says "at lib version ${stampMatch[1]}" but manifest.libVersion is ${manifest.libVersion}. ` +
+        `Re-run \`node scripts/build-agent-inventory.mjs\` after the version bump.`,
+    );
+  } else {
+    info(`inventory stamp: lib version ${stampMatch[1]} == manifest.libVersion ✓`);
   }
 }
 
