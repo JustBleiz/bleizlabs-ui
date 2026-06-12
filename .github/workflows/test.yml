@@ -140,6 +140,9 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 25
     needs: [typecheck, lint, build]
+    # Pre-baked browsers — avoids GHA hangs on `playwright install` download (E09 CI).
+    container:
+      image: mcr.microsoft.com/playwright:v1.59.1-noble
     steps:
       - uses: actions/checkout@v5
       - uses: actions/setup-node@v5
@@ -148,21 +151,6 @@ jobs:
           cache: npm
           cache-dependency-path: package-lock.json
       - run: npm ci
-      - name: Resolve Playwright version (browser cache key)
-        id: playwright-version
-        run: echo "version=$(node -p "require('@playwright/test/package.json').version")" >> "$GITHUB_OUTPUT"
-      - name: Cache Playwright browsers
-        id: playwright-cache
-        uses: actions/cache@v4
-        with:
-          path: ~/.cache/ms-playwright
-          key: playwright-${{ runner.os }}-${{ steps.playwright-version.outputs.version }}
-      - name: Install Playwright browsers
-        if: steps.playwright-cache.outputs.cache-hit != 'true'
-        run: npx playwright install chromium
-      - name: Install Playwright OS deps (cache hit)
-        if: steps.playwright-cache.outputs.cache-hit == 'true'
-        run: npx playwright install-deps chromium
       - name: Run smoke suite
         run: npm run test:smoke
       - name: Upload Playwright report
@@ -178,6 +166,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 45
     needs: [smoke, changes]
+    container:
+      image: mcr.microsoft.com/playwright:v1.59.1-noble
     # Always on push-to-main (full guarantee on the trunk).
     # On PRs, only when the change actually touches code that can affect e2e —
     # docs / devlog / ROADMAP-only PRs stay fast and skip the ~10-min e2e job.
@@ -194,21 +184,6 @@ jobs:
           cache: npm
           cache-dependency-path: package-lock.json
       - run: npm ci
-      - name: Resolve Playwright version (browser cache key)
-        id: playwright-version
-        run: echo "version=$(node -p "require('@playwright/test/package.json').version")" >> "$GITHUB_OUTPUT"
-      - name: Cache Playwright browsers
-        id: playwright-cache
-        uses: actions/cache@v4
-        with:
-          path: ~/.cache/ms-playwright
-          key: playwright-${{ runner.os }}-${{ steps.playwright-version.outputs.version }}
-      - name: Install Playwright browsers
-        if: steps.playwright-cache.outputs.cache-hit != 'true'
-        run: npx playwright install chromium
-      - name: Install Playwright OS deps (cache hit)
-        if: steps.playwright-cache.outputs.cache-hit == 'true'
-        run: npx playwright install-deps chromium
       - name: Run e2e suite
         run: npm run test:e2e
       - name: Upload Playwright report
