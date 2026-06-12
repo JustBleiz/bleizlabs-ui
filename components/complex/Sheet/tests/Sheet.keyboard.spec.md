@@ -54,10 +54,7 @@ test.describe('Sheet — keyboard interactions (APG dialog-modal)', () => {
 
   test('closeOnOverlayClick=false prevents overlay dismissal', async ({ page }) => {
     await page.getByRole('button', { name: /open locked sheet/i }).click();
-    await page
-      .locator('[data-state="open"]')
-      .first()
-      .click({ position: { x: 10, y: 10 } });
+    await page.mouse.click(10, 10);
     await expect(page.getByRole('dialog')).toBeVisible();
   });
 

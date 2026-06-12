@@ -167,6 +167,7 @@ import {
   useFloatingState,
   useFloatingValueState,
   useFloatingDismiss,
+  useFloatingEscapeStack,
   FloatingPortal,
 } from '../../utils/floating';
 import styles from './Select.module.scss';
@@ -651,6 +652,7 @@ export interface SelectTriggerProps extends Omit<
   | 'aria-activedescendant'
   | 'role'
   | 'disabled'
+  | 'id'
 > {
   /** Trigger content — typically a SelectValue, or the single element to Slot-wrap when `asChild`. */
   children: ReactNode;
@@ -1054,6 +1056,13 @@ export function SelectContent({ children, className, ...rest }: SelectContentPro
     closeOnEscape: false,
     closeOnOutsideClick: true,
     closeOnScroll: false,
+  });
+
+  // Escape stack — topmost dismiss even though listbox also handles Escape
+  // on the trigger key path (nested Dialog + Select ordering, Radix #1951).
+  useFloatingEscapeStack(open, () => {
+    setOpen(false);
+    triggerRef.current?.focus();
   });
 
   // Initialize highlight on open. Items have already registered via their

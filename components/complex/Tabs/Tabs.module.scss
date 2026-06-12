@@ -216,7 +216,7 @@
 
   &:focus-visible {
     // The tabpanel is tabindex={0} so it receives focus from Tab. Show the
-    // focus ring via mixin (outline-offset handles inset appearance).
+    // focus ring via mixin (box-shadow token ring).
     @include mx.focus-ring;
   }
 

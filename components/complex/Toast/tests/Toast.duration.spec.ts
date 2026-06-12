@@ -7,11 +7,8 @@
  * - A toast created/updated while globally paused (hover over the stack) got
  *   `remainingOnPause: null`; resumeAllTimers skipped null — the toast never
  *   auto-dismissed (TST-R19 — covers paused creates/updates with FINITE
- *   duration; NOTE: default string-form `toast.promise` resolution inherits
- *   `duration: Infinity` from its loading state (`partial ?? existing ?? global`
- *   chain — pre-existing semantic, untouched here), so promise toasts stay
- *   sticky regardless of pause — follow-up decision logged in the work-unit
- *   devlog).
+ *   duration; NOTE: `toast.promise` resolved states now reset to global default
+ *   when loading used `duration: Infinity` (Sonner parity — TST-R22).
  * Plus the per-toast override contract (TST-R20) and the new persistent
  * polite announcer (TST-R21).
  *
@@ -84,5 +81,16 @@ test.describe('Toast — duration + pause timing (E02)', () => {
     // Errors keep role="alert" on-insertion semantics — announcer unchanged.
     await page.getByRole('button', { name: 'toast.error()' }).click();
     await expect(announcer).toContainText('Saved successfully');
+  });
+
+  test('TST-R22 — promise success auto-dismisses after global duration (Sonner parity)', async ({
+    page,
+  }) => {
+    await page.getByRole('button', { name: 'duration: 1000 ms' }).click();
+    await page.getByRole('button', { name: 'promise (success)' }).click();
+    const toast = page.getByRole('status').filter({ hasText: 'Article published' });
+    await expect(toast).toBeVisible({ timeout: 3000 });
+    // Pre-fix: success inherited Infinity from loading — stayed sticky forever.
+    await expect(toast).not.toBeVisible({ timeout: 2500 });
   });
 });

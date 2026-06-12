@@ -41,7 +41,6 @@
 
   &:focus-visible {
     @include mx.focus-ring;
-    outline-offset: -2px;
   }
 
   &:hover:not(:disabled) {

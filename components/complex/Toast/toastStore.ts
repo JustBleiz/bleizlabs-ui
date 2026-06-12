@@ -166,11 +166,19 @@ function removeFromQueue(id: string): void {
 // ──────────────────────────────────────────────────────────────────────────
 // Queue mutations
 
+function resolveToastDuration(partial: ToastOptions, existing: ToastItem | undefined): number {
+  if (partial.duration !== undefined) return partial.duration;
+  // toast.promise loading uses Infinity — resolved states inherit global default
+  // (Sonner parity) unless the consumer sets an explicit duration on success/error.
+  if (existing?.duration === Infinity) return globalDefaultDuration;
+  return existing?.duration ?? globalDefaultDuration;
+}
+
 function upsert(partial: ToastOptions): string {
   const id = partial.id ?? generateId();
   const existing = queue.find((t) => t.id === id);
 
-  const duration = partial.duration ?? existing?.duration ?? globalDefaultDuration;
+  const duration = resolveToastDuration(partial, existing);
 
   const next: ToastItem = {
     id,

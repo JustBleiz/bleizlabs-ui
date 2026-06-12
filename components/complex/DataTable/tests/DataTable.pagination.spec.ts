@@ -5,8 +5,7 @@
  * - DT-P01 Next page button advances pageIndex
  * - DT-P02 Prev page button returns to previous page
  * - DT-P03 First/Last page buttons jump to boundaries
- * - DT-P04 pageSize selector is NOT rendered (v1 reserved API — see
- *   `pageSizeOptions` JSDoc; flip this assertion when the selector lands)
+ * - DT-P04 pageSize selector changes visible row count (when pageSizeOptions set)
  * - DT-P05 "Page X of Y" label updates on navigation
  * - DT-P06 Pagination footer absent when pagination={false}
  * - DT-P07 Showing N of M label reflects current page
@@ -74,16 +73,17 @@ test.describe('DataTable — pagination behavior', () => {
     }
   });
 
-  test('DT-P04 — pageSize selector is NOT rendered (v1 reserved API)', async ({ page }) => {
-    // Pre-remediation this test silently no-opped behind an if-guard while the
-    // header claimed selector coverage. v1 ships the pagination footer WITHOUT
-    // a page-size selector (`pageSizeOptions` is accepted-but-not-rendered) —
-    // lock that contract; rewrite to an interaction test when the selector lands.
+  test('DT-P04 — pageSize selector changes rows per page', async ({ page }) => {
     const grids = allGrids(page);
     const grid = grids.nth(3);
     const section = grid.locator('xpath=ancestor::section[1]');
     const sizeControl = section.getByRole('combobox', { name: /rows per page/i });
-    expect(await sizeControl.count()).toBe(0);
+    await expect(sizeControl).toBeVisible();
+    await sizeControl.selectOption('25');
+    await page.waitForTimeout(100);
+    const label = section.getByText(/Showing \d+ of \d+ rows/).first();
+    const text = await label.textContent();
+    expect(text).toMatch(/Showing 25 of \d+ rows/);
   });
 
   test('DT-P05 — Page label format "Page X of Y"', async ({ page }) => {

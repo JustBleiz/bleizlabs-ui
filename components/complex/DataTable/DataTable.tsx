@@ -181,10 +181,9 @@ export interface DataTablePaginationConfig {
   /** Total rows (server-side mode marker). Gdy podane → controlled mode. */
   totalRows?: number;
   /**
-   * Opcje page size selectora. Domyślnie [10, 25, 50, 100].
-   * v1: accepted but NOT rendered yet — the pagination footer ships without
-   * a page-size selector (reserved API; wire `onPaginationChange` +
-   * `labels.rowsPerPage` when the selector lands in a future minor).
+   * Opcje page size selectora. Gdy podane (niepusta tablica) — footer
+   * renderuje natywny `<select>` z `labels.rowsPerPage`. Domyślnie brak
+   * selectora (tylko Pagination).
    */
   pageSizeOptions?: number[];
   /** Callback przy zmianie strony LUB rozmiaru strony. */
@@ -628,7 +627,14 @@ export function useDataTableState<T>(
 
   // Pagination config
   const paginationEnabled = pagination !== false;
-  const pageSize = paginationEnabled ? (pagination?.pageSize ?? 25) : data.length;
+  const defaultPageSize = paginationEnabled ? (pagination?.pageSize ?? 25) : data.length;
+  const [uncontrolledPageSize, setUncontrolledPageSize] = useState(defaultPageSize);
+  const isPaginationControlled = paginationEnabled && pagination?.onPaginationChange != null;
+  const pageSize = paginationEnabled
+    ? isPaginationControlled && pagination?.pageSize != null
+      ? pagination.pageSize
+      : uncontrolledPageSize
+    : data.length;
   const serverSide = paginationEnabled && pagination?.totalRows != null;
 
   const [uncontrolledPageIndex, setUncontrolledPageIndex] = useState(0);
@@ -669,12 +675,16 @@ export function useDataTableState<T>(
 
   const setPageSize = useCallback(
     (next: number) => {
-      if (pagination !== false) {
-        setUncontrolledPageIndex(0);
-        pagination?.onPaginationChange?.({ pageIndex: 0, pageSize: next });
+      if (pagination === false) return;
+      if (!isPaginationControlled || pagination?.pageSize === undefined) {
+        setUncontrolledPageSize(next);
       }
+      if (pagination?.pageIndex === undefined) {
+        setUncontrolledPageIndex(0);
+      }
+      pagination?.onPaginationChange?.({ pageIndex: 0, pageSize: next });
     },
-    [pagination],
+    [pagination, isPaginationControlled],
   );
 
   return {
@@ -1710,16 +1720,40 @@ export const DataTable = forwardRef(function DataTable<T>(
     if (pagination === false) return null;
     if (tableState.totalPages <= 1 && tableState.totalRows === 0) return null;
 
+    const pageSizeOptions =
+      pagination?.pageSizeOptions != null && pagination.pageSizeOptions.length > 0
+        ? pagination.pageSizeOptions
+        : null;
+
     return (
       <div className={styles.paginationFooter}>
         <span className={styles.rowCount}>
           {labels.showingRows(tableState.visibleRows.length, tableState.totalRows)}
         </span>
-        <Pagination
-          currentPage={tableState.pageIndex + 1}
-          totalPages={tableState.totalPages}
-          onPageChange={(page) => tableState.setPageIndex(page - 1)}
-        />
+        <div className={styles.paginationControls}>
+          {pageSizeOptions && (
+            <label className={styles.pageSizeControl}>
+              <span className={styles.pageSizeLabel}>{labels.rowsPerPage}</span>
+              <select
+                className={styles.pageSizeSelect}
+                value={tableState.pageSize}
+                aria-label={labels.rowsPerPage}
+                onChange={(event) => tableState.setPageSize(Number(event.target.value))}
+              >
+                {pageSizeOptions.map((size) => (
+                  <option key={size} value={size}>
+                    {size}
+                  </option>
+                ))}
+              </select>
+            </label>
+          )}
+          <Pagination
+            currentPage={tableState.pageIndex + 1}
+            totalPages={tableState.totalPages}
+            onPageChange={(page) => tableState.setPageIndex(page - 1)}
+          />
+        </div>
       </div>
     );
   };

@@ -398,7 +398,13 @@ export interface DropdownMenuContentProps extends Omit<
   className?: string;
 }
 
-export function DropdownMenuContent({ children, className, ...rest }: DropdownMenuContentProps) {
+export function DropdownMenuContent({
+  children,
+  className,
+  style: styleProp,
+  onKeyDown: onKeyDownProp,
+  ...rest
+}: DropdownMenuContentProps) {
   const ctx = useDropdownMenuContext('<DropdownMenuContent>');
   const {
     open,
@@ -572,7 +578,7 @@ export function DropdownMenuContent({ children, className, ...rest }: DropdownMe
 
   if (!open) return null;
 
-  const contentStyle: React.CSSProperties = {};
+  const contentStyle: React.CSSProperties = { ...styleProp };
   if (matchTriggerWidth && triggerWidth !== null) {
     contentStyle.minWidth = triggerWidth;
   }
@@ -587,9 +593,12 @@ export function DropdownMenuContent({ children, className, ...rest }: DropdownMe
           tabIndex={-1}
           data-placement={actualPlacement}
           className={cn(styles.content, className)}
-          style={contentStyle}
-          onKeyDown={handleMenuKeyDown}
           {...rest}
+          style={contentStyle}
+          onKeyDown={(event) => {
+            handleMenuKeyDown(event);
+            onKeyDownProp?.(event);
+          }}
         >
           {children}
         </div>

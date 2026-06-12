@@ -289,8 +289,8 @@ test.describe('Drawer — regression cases', () => {
 
   test('DR-17: overlay + content background colors distinct', async ({ page }) => {
     await page.getByRole('button', { name: /open basic drawer/i }).click();
-    const overlay = page.locator('[data-state="open"]').first();
     const content = page.getByRole('dialog');
+    const overlay = content.locator('xpath=..');
     const overlayBg = await overlay.evaluate((el) => window.getComputedStyle(el).backgroundColor);
     const contentBg = await content.evaluate((el) => window.getComputedStyle(el).backgroundColor);
     expect(overlayBg).not.toBe(contentBg);

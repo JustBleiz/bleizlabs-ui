@@ -25,5 +25,6 @@ export {
   type FloatingValueStateResult,
 } from './useFloatingValueState';
 export { useFloatingDismiss, type FloatingDismissConfig } from './useFloatingDismiss';
+export { useFloatingEscapeStack } from './useFloatingEscapeStack';
 export { FloatingPortal, type FloatingPortalProps } from './FloatingPortal';
 export { useFloatingFocus, findFirstTabbable, type FloatingFocusConfig } from './useFloatingFocus';

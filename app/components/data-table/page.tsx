@@ -452,7 +452,7 @@ export default function DataTablePlaygroundPage() {
                 </Stack>
               ),
             }}
-            pagination={{ pageSize: 10 }}
+            pagination={{ pageSize: 10, pageSizeOptions: [10, 25, 50] }}
             rowVariant={(row) => (row.overdue ? 'warning' : row.archived ? 'default' : 'default')}
             rowDisabled={(row) => row.archived}
             getRowId={(row) => row.id}

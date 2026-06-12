@@ -72,6 +72,11 @@ export interface AccordionGroupProps extends HTMLAttributes<HTMLDivElement> {
   onOpenChange?: (openIndexes: number[]) => void;
   /** Gap between Accordion items via Stack. Default `2` (8px). */
   gap?: SpaceIndex;
+  /**
+   * Default heading level for Accordion children that omit their own
+   * `headingLevel`. Per-child `headingLevel` wins when set.
+   */
+  headingLevel?: AccordionProps['headingLevel'];
 }
 
 function toOpenSet(value: number | number[] | undefined): Set<number> {
@@ -82,7 +87,16 @@ function toOpenSet(value: number | number[] | undefined): Set<number> {
 
 export const AccordionGroup = forwardRef<HTMLDivElement, AccordionGroupProps>(
   function AccordionGroup(
-    { children, mode = 'single', defaultOpen, onOpenChange, gap = 2, className, ...rest },
+    {
+      children,
+      mode = 'single',
+      defaultOpen,
+      onOpenChange,
+      gap = 2,
+      headingLevel,
+      className,
+      ...rest
+    },
     ref,
   ) {
     const [openSet, setOpenSet] = useState<Set<number>>(() => toOpenSet(defaultOpen));
@@ -117,6 +131,7 @@ export const AccordionGroup = forwardRef<HTMLDivElement, AccordionGroupProps>(
           accordionChild.props.onOpenChange?.(next);
           updateSet(index, next);
         },
+        headingLevel: accordionChild.props.headingLevel ?? headingLevel,
       });
     });
 

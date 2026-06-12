@@ -320,6 +320,7 @@ import {
   createFloatingContext,
   useFloatingState,
   useFloatingDismiss,
+  useFloatingEscapeStack,
   FloatingPortal,
 } from '../../utils/floating';
 import { VisuallyHidden } from '../../utils/VisuallyHidden';
@@ -1184,6 +1185,7 @@ export interface ComboboxInputProps extends Omit<
   | 'value'
   | 'defaultValue'
   | 'disabled'
+  | 'id'
 > {
   /** Extra class merged onto the trigger wrapper (not the inner `<input>`). */
   className?: string;
@@ -1911,6 +1913,17 @@ export function ComboboxContent({ children, className, ...rest }: ComboboxConten
     closeOnEscape: false,
     closeOnOutsideClick: true,
     closeOnScroll: false,
+  });
+
+  useFloatingEscapeStack(open, () => {
+    setOpen(false);
+    if (multiple) {
+      updateSearch('');
+    } else {
+      const committed = valueRef.current ? (getLabelByValue(valueRef.current) ?? '') : '';
+      updateSearch(committed);
+    }
+    inputRef.current?.focus();
   });
 
   // Initialize highlight on open + reset highlight on filter change.

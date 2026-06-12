@@ -9,6 +9,47 @@ and this project adheres to [Semantic Versioning 2.0](https://semver.org/spec/v2
 
 _No unreleased changes._
 
+## [0.28.0] — 2026-06-12
+
+**Minor release — post-0.27 quality + behavior patch (WU-1 Tier B + WU-2 Tier A).**
+Ships mechanical fixes from audit FOLLOW-UPs plus four intentional behavior
+changes (Sonner parity, typings, DataTable page-size selector, nested Escape).
+
+### Behavior changes
+
+- **`toast.promise`** — success/error states no longer inherit `duration:
+  Infinity` from the loading toast; they reset to the global default unless an
+  explicit `duration` is passed on the resolved call (Sonner parity). Test
+  TST-R22.
+- **`SelectTrigger` / `ComboboxInput`** — `id` is omitted from public props
+  (lib assigns stable ids for listbox wiring). Pass `aria-labelledby` /
+  `aria-label` or wrap with `<label htmlFor>` instead.
+- **`DataTable` pagination** — when `pagination.pageSizeOptions` is a
+  non-empty array, the footer renders a native page-size `<select>` wired to
+  `labels.rowsPerPage` and `onPaginationChange`.
+- **Floating dismiss + nested modals** — Popover/DropdownMenu (via
+  `useFloatingDismiss`) and Select/Combobox listboxes register on the shared
+  `escapeStack`; Escape closes the topmost surface first (Dialog + overlay APG
+  ordering, Radix #1951/#2450).
+
+### Fixed
+
+- **DropdownMenuContent** — `{...rest}` spread first; merged `style` and composed
+  `onKeyDown` no longer clobbered by consumer rest props.
+- **AlertDialog / Sheet / Drawer** — removed dead `data-state` attributes and
+  duplicate escapeStack JSDoc blocks.
+- **AccordionGroup** — optional `headingLevel` pass-through to child
+  `Accordion` headings.
+- **Accordion / TextLink / Anchor SCSS** — removed dead `outline-offset` after
+  focus-ring mixin.
+- **Drawer regression spec DR-17** — overlay locator no longer depends on
+  removed `data-state`.
+
+### Changed
+
+- **`useFloatingDismiss`** — Escape path delegates to `useFloatingEscapeStack`
+  instead of a flat document listener.
+
 ## [0.27.0] — 2026-06-12
 
 **Minor release — full remediation of the 2026-06-11 library audit (5

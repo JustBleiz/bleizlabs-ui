@@ -18,42 +18,6 @@ import { cn } from '../../utils/cn';
 import { useFocusTrap, escapeStack } from '../Dialog';
 import styles from './AlertDialog.module.scss';
 
-/**
- * AlertDialog — modal alert dialog composing portal + overlay + focus-trapped content (Phase 10 CI2, E16).
- *
- * Extends Dialog (CI1) pattern with alert-specific semantics per WAI-ARIA APG
- * `/alertdialog/`: `role="alertdialog"`, REQUIRED `aria-describedby` (not optional),
- * least-destructive initial focus (Cancel by default), blocked overlay click by
- * default, and confirm/cancel action row. Reuses `useFocusTrap` from Dialog —
- * the hook is generic and works on any container. Portal, scroll lock, and
- * Escape handler are duplicated inline (one-component-owns-behavior per D5/D25).
- *
- * @layer        complex interactive (Phase 10)
- * @apg          https://www.w3.org/WAI/ARIA/apg/patterns/alertdialog/
- * @tokens       --color-overlay, --color-surface, --color-border-subtle,
- *               --color-info, --color-warning, --color-error,
- *               --color-info-subtle, --color-warning-subtle, --color-error-subtle,
- *               --radius-lg, --shadow-2xl, --space-{3,4,5,8}, --duration-normal,
- *               --easing-default, --z-modal, --focus-ring
- * @deps         Heading, Text, Button, cn, createPortal, useFocusTrap (from Dialog)
- * @a11y         role="alertdialog" + aria-modal="true" + aria-labelledby (required) +
- *               aria-describedby (REQUIRED per APG, unlike Dialog). Tab/Shift+Tab
- *               focus cycle via useFocusTrap. Escape calls onCancel (not onConfirm).
- *               Initial focus defaults to Cancel button (least destructive). Body
- *               scroll-locked while open. Overlay click BLOCKED by default.
- *
- * @example
- * const [open, setOpen] = useState(false);
- * <AlertDialog
- *   open={open}
- *   onOpenChange={setOpen}
- *   title="Delete project?"
- *   description="This action cannot be undone."
- *   severity="critical"
- *   confirmLabel="Delete"
- *   onConfirm={() => { deleteProject(); setOpen(false); }}
- * />
- */
 export type AlertDialogSize = 'sm' | 'md' | 'lg';
 export type AlertDialogSeverity = 'info' | 'warning' | 'critical';
 
@@ -306,7 +270,7 @@ export function AlertDialog({
   const resolvedConfirmVariant = confirmVariant ?? DEFAULT_CONFIRM_VARIANT[severity];
 
   return createPortal(
-    <div className={styles.root} onClick={handleOverlayClick} data-state={open ? 'open' : 'closed'}>
+    <div className={styles.root} onClick={handleOverlayClick}>
       <div
         ref={contentRef}
         role="alertdialog"

@@ -209,10 +209,7 @@ test.describe('AlertDialog — Radix regression cases', () => {
   test('AD-4: closeOnOverlayClick defaults false (Dialog defaults true)', async ({ page }) => {
     await page.getByRole('button', { name: /open basic alert/i }).click();
     // Click overlay (not content)
-    await page
-      .locator('[data-state="open"]')
-      .first()
-      .click({ position: { x: 5, y: 5 } });
+    await page.mouse.click(10, 10);
     // Alert stays open
     await expect(page.getByRole('alertdialog')).toBeVisible();
   });

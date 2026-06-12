@@ -51,20 +51,14 @@ test.describe('Drawer — keyboard interactions (APG dialog-modal)', () => {
   test('Overlay click closes drawer (closeOnOverlayClick=true default)', async ({ page }) => {
     await page.getByRole('button', { name: /open basic drawer/i }).click();
     await expect(page.getByRole('dialog')).toBeVisible();
-    // Click overlay (top of viewport, above content which is bottom-anchored)
-    await page
-      .locator('[data-state="open"]')
-      .first()
-      .click({ position: { x: 200, y: 10 } });
+    // Drawer is bottom-anchored — click near the top of the viewport hits the overlay
+    await page.mouse.click(200, 10);
     await expect(page.getByRole('dialog')).not.toBeVisible();
   });
 
   test('closeOnOverlayClick=false prevents overlay dismissal', async ({ page }) => {
     await page.getByRole('button', { name: /open locked drawer/i }).click();
-    await page
-      .locator('[data-state="open"]')
-      .first()
-      .click({ position: { x: 200, y: 10 } });
+    await page.mouse.click(200, 10);
     await expect(page.getByRole('dialog')).toBeVisible();
   });
 

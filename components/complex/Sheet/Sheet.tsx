@@ -17,41 +17,6 @@ import { cn } from '../../utils/cn';
 import { useFocusTrap, escapeStack } from '../Dialog';
 import styles from './Sheet.module.scss';
 
-/**
- * Sheet — side panel modal sheet composing portal + overlay + focus-trapped
- * content (Phase 10 CI4, E18). 4-directional variant of Dialog pattern with
- * `side: 'left' | 'right' | 'top' | 'bottom'` — generalizes Drawer (bottom-only)
- * into a 4-side family.
- *
- * Visual modifier of APG `/dialog-modal/` pattern — uses `role="dialog"`.
- * Reuses `useFocusTrap` from Dialog. Portal + scroll lock + Escape handler +
- * background `inert` toggle are inline per D5/D25 one-component-owns-behavior.
- *
- * @layer   complex interactive (Phase 10)
- * @tokens  --color-surface, --color-surface-raised, --color-border-subtle,
- *          --color-overlay, --color-text-primary, --color-text-muted,
- *          --radius-lg, --radius-md, --shadow-2xl, --duration-normal,
- *          --duration-fast, --easing-default, --space-{3,4,5,8},
- *          --z-modal, --focus-ring
- * @deps    Heading, Text, cn, createPortal, useFocusTrap (from ../Dialog)
- * @a11y    role="dialog" + aria-modal="true" + aria-labelledby (required) +
- *          aria-describedby (optional). Tab/Shift+Tab focus cycle via
- *          useFocusTrap. Escape closes. First-tabbable initial focus.
- *          Body scroll-locked. Overlay click closes by default. Background
- *          `inert` toggle. Content padding honors `env(safe-area-inset-*)`.
- *
- * @example
- * const [open, setOpen] = useState(false);
- * <Sheet
- *   open={open}
- *   onOpenChange={setOpen}
- *   side="right"
- *   size="md"
- *   title="Product details"
- * >
- *   <Text>Details body…</Text>
- * </Sheet>
- */
 export type SheetSide = 'left' | 'right' | 'top' | 'bottom';
 export type SheetSize = 'sm' | 'md' | 'lg';
 
@@ -350,11 +315,7 @@ export function Sheet({
   const sizeClass = isHorizontal ? SIZE_CLASS_HORIZONTAL[size] : SIZE_CLASS_VERTICAL[size];
 
   return createPortal(
-    <div
-      className={cn(styles.root, SIDE_CLASS[side])}
-      onClick={handleOverlayClick}
-      data-state={open ? 'open' : 'closed'}
-    >
+    <div className={cn(styles.root, SIDE_CLASS[side])} onClick={handleOverlayClick}>
       <div
         ref={contentRef}
         role="dialog"
