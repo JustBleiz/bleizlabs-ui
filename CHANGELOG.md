@@ -9,6 +9,170 @@ and this project adheres to [Semantic Versioning 2.0](https://semver.org/spec/v2
 
 _No unreleased changes._
 
+## [0.27.0] — 2026-06-12
+
+**Minor release — full remediation of the 2026-06-11 library audit (5
+reviewers) + new `SkipLink` atom + CI quality gates.** Every audited
+component went through an adversarial fix loop (pre-audit → fix → fresh
+re-audit) closed at 0 CRITICAL / 0 IMPORTANT. Also ships the Button `href`
+docs fix (#56, merged 2026-06-11) that never reached npm — the previous
+"no unreleased changes" claim under `[Unreleased]` was wrong, and the
+planned docs-only 0.26.1 is superseded by this release (deliberate).
+
+### Added
+
+- **`SkipLink`** — new interactive atom (WCAG 2.4.1 Bypass Blocks):
+  visually-hidden anchor revealed on keyboard focus as a fixed top-left
+  pill above every layer. Server-safe (no `'use client'`), zero JS —
+  native fragment navigation; label is the accessible name (pass a
+  localized string for i18n). Default `href="#main"`; pair with
+  `<main id="main" tabIndex={-1}>`. Regression suite SK-R01..R04 + demo
+  route `/components/skip-link`.
+- **`--z-skip-link` token** (70) — new top tier of the z-index scale,
+  above `--z-toast` (60).
+- **CI `quality` job** — `lint:css`, `format:check`, `audit:jsdoc`,
+  `audit:demos`, `tokens:verify`, `check:manifest`, and the new
+  `check:manifest:sync` now run on every push/PR (previously publish-only
+  or never).
+- **`build:manifest --check`** (`npm run check:manifest:sync`) — CI drift
+  gate: regenerates the manifest in memory and fails when the committed
+  `components/manifest.json` is stale (`generatedAt` excluded).
+- **§J stamp gate** in `check-agents-doc` — the AGENT-USAGE inventory
+  stamp ("at lib version X") must match `manifest.libVersion`; a stale
+  committed table now fails CI instead of lagging releases unnoticed.
+- **`audit:jsdoc` checks every exported `*Props` interface** (previously
+  only the first per file) — 81 props across 15 compound components were
+  documented to bring the surface to 100%.
+- **Playwright browser cache** in CI (keyed by `@playwright/test`
+  version) for the smoke + e2e jobs.
+
+### Changed
+
+- **Smoke suite routes are filesystem-derived** — every
+  `app/components/*/page.tsx` joins the axe scan automatically (51 → 79
+  scanned routes; the old hand-maintained list silently carried 5 dead
+  routes and missed ~40 live ones). Each excluded route lives in an
+  explicit `SKIP_ROUTES` map with an observed reason + staleness guard,
+  and every scan now asserts HTTP 200 (a deleted demo previously passed
+  against Next's axe-clean 404 page).
+- **Packaging:** `engines.node` relaxed `>=24` → `>=20`; tarball no
+  longer ships `components/**/tests` (172 spec files + mirrors, −1.3 MB
+  unpacked); `sass` declared as an **optional** `peerDependency`
+  (consumer build compiles the shipped SCSS; not auto-installed);
+  `"./package.json"` export added; `prepack` builds the CLI so
+  `npm pack` artifacts are complete.
+- **Regen scripts emit prettier-clean output** (`build:manifest`,
+  `build-agent-inventory`) — regenerating no longer dirties
+  `format:check`.
+- **Docs truthfulness sweep:** AGENT-USAGE §E.6 now documents the REAL
+  `Dialog` API (controlled, monolithic `open`/`onOpenChange` +
+  `title`/`description`/`footer` — the previous example showed a
+  fictional `Dialog.Trigger`/`Dialog.Content` compound that never
+  compiled); §E.7 Tabs sub-part names corrected
+  (`TabsList`/`TabsTrigger`/`TabsContent`); §B.3 token chain corrected to
+  `_project-settings → _generator → _semantics`; 19 component headers
+  de-referenced the phantom `docs/specs/` directory (never existed) and
+  now point at the per-component `tests/` quad, with 6 inflated case
+  counts corrected to reality (Carousel 25→19, Command 22→20, DatePicker
+  22+→21, ScrollArea 20→16, Slider 29→25, Toast 22+→17); README component
+  buckets realigned with the manifest.
+
+### Fixed
+
+- **Button** — disabled `<Button href onClick>` no longer fires the
+  handler (programmatic/AT activation included); `asChild` forwards
+  `onClick` with the same disabled guard; disabled anchors keep
+  `role="link"` so `aria-disabled` stays valid.
+- **Tabs / DropdownMenu / Select** — `asChild` triggers forward
+  `{...rest}` mirroring the native branch (consumer `data-*`/`title`
+  attributes were silently dropped).
+- **Select** — closed-listbox typeahead was dead code; printable
+  characters now open the listbox and apply a deferred match (APG);
+  `Home`/`End`/`ArrowUp` on a closed, valueless trigger seed
+  first/last as documented; missing-accessible-name dev warning added.
+- **Combobox** — debounced `role="status"` announcer reports the filtered
+  result count (WCAG 4.1.3; `resultsAnnouncement` prop for i18n);
+  missing-accessible-name dev warning added.
+- **Dialog family (Dialog/AlertDialog/Sheet/Drawer/HoverCard)** — escape
+  stack no longer reorders when a parent re-renders with an inline
+  `onOpenChange` (nested Escape closed the wrong dialog);
+  `closeOnEscape={false}` now shadows ancestors instead of letting
+  Escape fall through; focus trap skips invisible tabbables.
+- **Sidebar** — the mobile drawer joins the shared escape stack: Escape
+  with a Dialog open above the drawer closes only the Dialog.
+- **Toast** — `<Toaster duration>` is wired to the store (was silently
+  discarded); a toast created/updated during hover-pause no longer
+  becomes permanently sticky; announcements use a persistent polite
+  live region so SRs catch every toast.
+- **DataTable** — selection identity unified on `getRowId` with a global
+  row index (index-based `getRowId` no longer desyncs on paging; controlled
+  `selectedRows` survives refetched object clones); sort buttons expose
+  `"<Header>: Sort …"` accessible names (WCAG 2.5.3); `pageSizeOptions`
+  de-claimed as reserved (was a silent no-op); mobile card list uses
+  `role="list"`/`listitem` (valid required-children); `aria-busy` on
+  loading.
+- **Accordion** — triggers render inside a real heading (`headingLevel`
+  prop, default `<h3>`, full style reset — APG conformance).
+- **Card** — `variant="accent"` delivers the documented 3px left brand
+  accent; dead `.accentTop`/`.hoverable` rules removed.
+- **Calendar** — hydration-safe "today" (`useSyncExternalStore`); SSR/SSG
+  HTML no longer risks a server/client mismatch on the today highlight.
+- **Alert / Banner** — "Server-safe" JSDoc claims qualified (function
+  props imply a client parent); Banner dismiss hover scrim is theme-aware
+  (`color-mix` on `--color-text-primary`); Alert forced-colors border;
+  dead CSS removed.
+- **PieChart** — label halo tokenized to the `--piechart-label-halo`
+  channel (visual no-op).
+- **NumberInput** — see Behavior changes; also `String()` formatting on
+  focus no longer rounds the model on a focus+blur without edits.
+- **Tokens** — `--color-accent-subtle/strong` follow the brand pattern
+  (`$seed-mode` + `[data-theme]` overrides); `_mixins.scss`
+  letter-spacings reference `--letter-spacing-*` tokens; animation roster
+  comment corrected (17 keyframes).
+- **Docs** — `AGENT-USAGE.md` Button example used a nonexistent
+  `variant="danger"` (→ `"warning"`); Select aria/focus spec mirrors
+  claimed DEFERRED while their suites run in CI.
+
+### Behavior changes
+
+Migration notes — each line is the one consumer-visible delta:
+
+1. **NumberInput + native forms:** the submitted value is now the
+   canonical numeric string (`"1234.56"`), not the locale-formatted
+   display (`"1 234,56"`). Backends parsing the old display format must
+   read the canonical value.
+2. **NumberInput focus:** focus+blur without an edit no longer mutates
+   the model (previously `toFixed` rounded it, e.g. 1.5 → 2 with
+   `decimals={0}`).
+3. **DataTable selection:** with the default `getRowId`, selection
+   follows the ROW (global data index) after sorting — not the visual
+   position; controlled `selectedRows` matches by id, so refetched
+   clones stay selected.
+4. **DataTable mobile:** card fallback exposes `role="list"`/`listitem`
+   instead of an invalid grid; selection/expansion states move from
+   `aria-*` to `data-*` attributes there.
+5. **DataTable sort buttons:** accessible name is now
+   `"<Header>: Sort ascending/descending"` — AT scripts matching the bare
+   "Sort …" name need the prefix.
+6. **Accordion DOM:** the trigger button is wrapped in a heading element
+   (default `<h3>`, configurable `headingLevel`) — DOM depth +1; CSS/test
+   selectors assuming the button is a direct child need updating.
+7. **Toaster `duration`:** the prop now actually applies as the global
+   default. Code passing `duration` that silently fell back to 4000 ms
+   will see the configured timing.
+8. **Card `variant="accent"`:** now renders the documented left accent
+   bar (previously identical to `default`).
+9. **Calendar today-marker:** rendered post-hydration; SSR/SSG HTML has
+   no `aria-current="date"` until the client mounts.
+10. **Chip:** now a Client Component (`'use client'`) — it no longer
+    crashes RSC trees with its default interactive props, but it adds a
+    client boundary where a bare Chip was previously server-rendered.
+11. **Dark-theme accent tokens:** `--color-accent-subtle/strong` resolve
+    to accent-900/300 in dark (previously light-theme values leaked);
+    no in-repo consumer used the dark path, but token values changed.
+12. **Tarball:** `components/**/tests` excluded — consumers importing
+    spec files from `node_modules` (unsupported) lose them.
+
 ## [0.26.0] — 2026-05-19
 
 **Minor release — `Text` brand-color token correction + repository-wide

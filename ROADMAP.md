@@ -1,8 +1,8 @@
 # `@bleizlabs/ui` — Roadmap 0.16 → 1.0
 
 **Status:** DRAFT
-**Last updated:** 2026-05-13
-**Current version:** 0.25.0 (106 components — Agent Cheat-Sheet inside npm tarball: `AGENTS.md` + `docs/AGENT-USAGE.md` + 4 new build scripts; bundles 0.24.0 display change + DateTimePicker spec alignment that unblocks npm publish)
+**Last updated:** 2026-06-12
+**Current version:** 0.27.0 (107 components — full 2026-06-11 audit remediation: 19-unit adversarial fix loop closed 0C/0I per component + new SkipLink atom + CI quality gates; details in CHANGELOG `[0.27.0]`)
 
 > Funkcjonalne luki biblioteki + kolejność domykania. Bez estymat czasowych — pracujemy etapami.
 
@@ -40,7 +40,9 @@ Każda pozycja ma:
 0.24.0  ⚠  Real-world testing batch 1          MERGED but UNTAGGED 2026-05-13 (107 — DateTimePicker display change broke 8 specs; CI failed; rolled into 0.25.0)
 0.24.1  ✗  ABANDONED                          rolled forward — content bundled into 0.25.0 (single npm publish vehicle)
 0.25.0  ✓  Agent Cheat-Sheet + 0.24.x rollup   SHIPPED 2026-05-13 (106 — `AGENTS.md` + `docs/AGENT-USAGE.md` inside npm tarball, 4 build scripts, manifest schema-additive isClient + summary fields, DateTimePicker spec fix, README For-AI-agents section)
-0.26.0+ →  STOP for real-world testing v2      [user verifies 0.25.0 in consumer projects, collects next round of bugs/feedback]
+0.26.0  ✓  Text brand token + format baseline  SHIPPED 2026-05-19 (106 — Text color="brand" → --color-brand; Prettier + Stylelint baseline repo-wide)
+0.27.0  ✓  Audit remediation + SkipLink        SHIPPED 2026-06-12 (106 → 107 — pełny audyt 2026-06-11: 19 jednostek pętli fix→re-audit 0C/0I, SkipLink atom WCAG 2.4.1, CI quality job, smoke z filesystemu, packaging hygiene; CHANGELOG `[0.27.0]`)
+0.28.0+ →  STOP for real-world testing v3      [user verifies 0.27.0 in consumer projects (bump v4/v5/scout-hub), collects next round of bugs/feedback]
                                               ...
 1.0.0   →  ON USER TRIGGER ONLY               [API freeze + stabilization na sygnał użytkownika, nie auto-follow]
 ```
