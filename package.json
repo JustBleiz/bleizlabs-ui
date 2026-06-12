@@ -83,7 +83,7 @@
     "test:e2e": "playwright test components/",
     "test:headed": "playwright test --headed",
     "verify": "npm run lint && npm run lint:css && npm run typecheck",
-    "prepack": "npm run build:cli",
+    "prepack": "npm run build:cli -- --silent",
     "prepublishOnly": "npm run typecheck && npm run lint && npm run check:barrel && npm run build:manifest && npm run check:manifest && node scripts/build-agent-inventory.mjs && node scripts/check-agents-doc.mjs && npm run build:cli && npm run test:cli && npm run build && node scripts/inject-doc-version.mjs",
     "postpublish": "node scripts/inject-doc-version.mjs --revert"
   },

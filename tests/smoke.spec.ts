@@ -92,6 +92,16 @@ const componentRoutes = fs
 // '/' is the playground catalogue page. The old list also carried '/demo' —
 // that route never existed in app/ (5th dead entry, masked by the axe-clean
 // 404 page before the 200-status assert below was added).
+// Staleness guard: a skip entry whose demo folder was deleted/renamed should
+// fail loudly instead of rotting in the list.
+for (const skipped of Object.keys(SKIP_ROUTES)) {
+  if (!componentRoutes.includes(skipped)) {
+    throw new Error(
+      `SKIP_ROUTES entry ${skipped} matches no app/components/<slug>/page.tsx — remove or update it.`,
+    );
+  }
+}
+
 const ROUTES = ['/', ...componentRoutes].filter((route) => !(route in SKIP_ROUTES));
 
 const WCAG_TAGS = ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa'];
@@ -113,8 +123,8 @@ test.describe('smoke: library-wide axe-core WCAG 2.1 AA scan', () => {
     test(`axe scan - ${route}`, async ({ page }) => {
       const consoleErrors: string[] = [];
       page.on('pageerror', (err) => {
-        // Hydration mismatches (React #418/#423) from Slot/Portal interactions
-        // get surfaced by per-component suites in L3 with richer diffs.
+        // Hydration mismatches (React #418/#419/#423/#425) from Slot/Portal
+        // interactions get surfaced by per-component suites in L3 with richer diffs.
         // Smoke's job is axe-contract coverage, not React reconciliation.
         if (/Minified React error #(418|419|423|425)/.test(err.message)) return;
         if (/Hydration failed/.test(err.message)) return;

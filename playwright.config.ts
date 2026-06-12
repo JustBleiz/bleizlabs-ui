@@ -11,7 +11,6 @@ import { defineConfig, devices } from '@playwright/test';
  *    exclusions). Runs on every push + PR.
  * 2. `components/*&#47;*&#47;tests/*.spec.ts` — per-component APG verification
  *    (keyboard + focus + aria + regression). Runs on push to main + on tag.
- *    Exec time target ≤15 min for full 23-component suite.
  *
  * Chromium-only per D-E142.7 (cross-browser matrix explicit out-of-scope).
  *
