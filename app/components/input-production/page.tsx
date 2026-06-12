@@ -28,6 +28,7 @@ export default function InputProductionPlaygroundPage() {
   const [loading, setLoading] = useState(false);
   const [price, setPrice] = useState<number | undefined>(1234.56);
   const [temperature, setTemperature] = useState<number | undefined>(21.5);
+  const [submittedAmount, setSubmittedAmount] = useState<string | null>(null);
   const [nip, setNip] = useState('');
   const [postcode, setPostcode] = useState('');
   const [phone, setPhone] = useState('');
@@ -159,6 +160,50 @@ export default function InputProductionPlaygroundPage() {
           decimals={0}
           helperText="Integer only (decimals={0})"
         />
+      </section>
+
+      {/* ============================================================ */}
+      {/* LAYER 3 — NumberInput form integration */}
+      {/* ============================================================ */}
+
+      <section className={styles.section}>
+        <Heading level={2} size="2xl">
+          Layer 3 — NumberInput form submission
+        </Heading>
+        <Text variant="small" color="secondary">
+          Native submit carries the CANONICAL numeric value (hidden input, period decimal, no
+          grouping) — not the locale-formatted display string.
+        </Text>
+        <form
+          aria-label="Number form"
+          onSubmit={(event) => {
+            event.preventDefault();
+            const data = new FormData(event.currentTarget);
+            const amount = data.get('amount');
+            setSubmittedAmount(amount === null ? '(absent)' : `"${String(amount)}"`);
+          }}
+        >
+          <NumberInput
+            label="Amount (PLN)"
+            name="amount"
+            locale="pl-PL"
+            currency="PLN"
+            defaultValue={1234.56}
+            decimals={2}
+            min={0}
+            max={99999.99}
+            helperText="Submit echoes FormData.get('amount')"
+          />
+          <NumberInput label="Disabled amount" name="disabled-amount" defaultValue={7} disabled />
+          <Button type="submit" variant="secondary" size="sm">
+            Submit number form
+          </Button>
+          {submittedAmount !== null && (
+            <Text variant="small" color="muted" data-testid="number-form-echo">
+              FormData.get(&apos;amount&apos;) = {submittedAmount}
+            </Text>
+          )}
+        </form>
       </section>
 
       {/* ============================================================ */}

@@ -12,14 +12,25 @@ import styles from './NumberInput.module.scss';
  * @layer   atom (interactive)
  * @tokens  --input-bg, --input-border, --input-border-focus,
  *          --input-addon-bg, --input-addon-text, --input-addon-border,
- *          --color-error, --color-text-primary, --color-text-muted,
- *          --color-text-secondary, --focus-ring, --focus-ring-error,
- *          --radius-input, --space-{2..4}, --font-secondary,
- *          --font-size-{xs,base}, --font-variant-numeric, --duration-fast,
- *          --easing-default
- * @deps    Label atom, cn, native `Intl.NumberFormat` (Baseline since 2017),
- *          React: `forwardRef`, `useId`, `useMemo`, `useState`, type import
+ *          --color-error{,-strong}, --color-text-primary,
+ *          --color-text-muted, --color-text-secondary, --focus-ring +
+ *          --focus-ring-error (via mixins), --size-touch-min (via
+ *          `@include mx.touch-target`), --radius-input, --space-{2..4},
+ *          --font-secondary, --font-size-{xs,base}, --font-weight-medium,
+ *          --line-height-normal, --duration-fast, --easing-default
+ * @deps    Label atom, cn, useResolvedLocale (SSR-safe locale detection),
+ *          native `Intl.NumberFormat` (Baseline since 2017), React:
+ *          `forwardRef`, `useId`, `useMemo`, `useState`, type import
  *          `InputHTMLAttributes<HTMLInputElement>`
+ * @tested  tsc --noEmit ✓ | eslint + jsx-a11y via eslint-config-next ✓ |
+ *          Playwright `tests/NumberInput.form.spec.ts` (NI-F01..F06,
+ *          CI-gated) + axe smoke on /components/input-production.
+ *          DEFERRED: manual NVDA sweep.
+ * @regressions NI-F01..F06 (E04 audit remediation: canonical-value form
+ *          submission — hidden carries name/model value, disabled does not
+ *          submit, empty key present, blur-clamp mirrored; NI-F06 pins the
+ *          focus+blur no-mutation fix — model-exact focus display, the
+ *          previous toFixed display rounded the model on mere focus+blur).
  * @a11y    Native `<input type="text" inputmode="decimal">` (NOT
  *          `type="number"` — we own formatting and don't want the
  *          browser's native spinner conflicting with our locale display).
@@ -66,6 +77,19 @@ import styles from './NumberInput.module.scss';
  *            owns the symbol positioning. The visible addon
  *            (`showSuffix = suffix && !currency`) only renders when
  *            `currency` is unset.
+ *
+ *          Form participation (BEHAVIOR CHANGE 0.27.0): `name` lives on a
+ *          parallel `<input type="hidden">` carrying the canonical numeric
+ *          value (`String(value)` — period decimal, no grouping; empty
+ *          string when the field is empty). Previously the visible input
+ *          carried `name`, so backends received the locale-formatted
+ *          display string ("1 234,56"). The hidden input mirrors
+ *          `disabled` (a disabled NumberInput does not submit) and `form`
+ *          (external form association); `required` stays on the visible
+ *          input (hidden inputs are barred from constraint validation).
+ *          Edge: submit-before-blur carries the last parsed, NOT-yet-
+ *          clamped value (clamp is blur-only); |x| >= 1e21 serializes in
+ *          e-notation.
  *
  *          Locale (v0.7.0+): when `locale` is omitted, the value is
  *          derived from `navigator.language` via `useResolvedLocale`.
@@ -114,7 +138,11 @@ export interface NumberInputProps extends Omit<
 > {
   /** Visible label text. Renders a coupled `<Label htmlFor>` above the input. */
   label: string;
-  /** Form field name (for native form submission via the formatted display value). */
+  /**
+   * Form field name. Native form submission carries the CANONICAL numeric
+   * value (period decimal, no grouping — e.g. "1234.56") via a parallel
+   * hidden input; the visible, locale-formatted input has no `name`.
+   */
   name: string;
   /** Controlled numeric value. Pass `undefined` for empty. */
   value?: number;
@@ -279,6 +307,7 @@ export const NumberInput = forwardRef<HTMLInputElement, NumberInputProps>(functi
     disabled,
     id,
     className,
+    form,
     onFocus: onFocusProp,
     onBlur: onBlurProp,
     ...rest
@@ -327,14 +356,19 @@ export const NumberInput = forwardRef<HTMLInputElement, NumberInputProps>(functi
   };
 
   const handleFocus = (event: React.FocusEvent<HTMLInputElement>) => {
-    // Show raw value (no formatting) so user can edit cleanly. Use
-    // toFixed instead of String() to avoid scientific notation
-    // (e.g., 1e+21) for very large magnitudes — that notation would
-    // confuse parseNumber on blur and silently corrupt the value.
-    // toFixed handles the magnitude range typical for form inputs
-    // (currency, counts, measurements, percentages).
+    // Show raw value (no formatting) so user can edit cleanly. String()
+    // preserves the EXACT model value — the previous toFixed(decimals)
+    // ROUNDED the model on mere focus+blur (e.g. value=1.5 with
+    // decimals=0 displayed "2" on focus and blur then committed 2).
+    // Scientific-notation guard: String() emits e-notation for
+    // |x| >= 1e21 or |x| < 1e-6, which parseNumber can't round-trip.
+    // The toFixed fallback genuinely fixes only the SMALL range
+    // (|x| < 1e-6 → "0.000…"); for |x| >= 1e21 toFixed ALSO emits
+    // e-notation (pre-existing corruption edge, unchanged by this fix —
+    // such magnitudes sit far outside typical form-input ranges).
     if (currentValue !== undefined) {
-      setTypedDisplay(currentValue.toFixed(effectiveDecimals));
+      const raw = String(currentValue);
+      setTypedDisplay(raw.includes('e') ? currentValue.toFixed(effectiveDecimals) : raw);
     }
     onFocusProp?.(event);
   };
@@ -381,11 +415,11 @@ export const NumberInput = forwardRef<HTMLInputElement, NumberInputProps>(functi
         <input
           ref={ref}
           id={inputId}
-          name={name}
           type="text"
           inputMode="decimal"
           required={required}
           disabled={disabled}
+          form={form}
           value={display}
           onChange={handleChange}
           onFocus={handleFocus}
@@ -394,6 +428,22 @@ export const NumberInput = forwardRef<HTMLInputElement, NumberInputProps>(functi
           aria-describedby={describedBy}
           className={styles.input}
           {...rest}
+        />
+        {/* Canonical numeric value for native form submission (E04 audit
+            remediation): the visible input shows the locale-formatted
+            display — submitting it sent "1 234,56" instead of "1234.56".
+            `name` lives HERE; disabled/form mirror the visible input so a
+            disabled NumberInput does not submit and external `form`
+            association survives. `required` stays on the visible input
+            (hidden inputs are barred from constraint validation). */}
+        <input
+          type="hidden"
+          name={name}
+          value={
+            currentValue === undefined || Number.isNaN(currentValue) ? '' : String(currentValue)
+          }
+          disabled={disabled || undefined}
+          form={form}
         />
         {showSuffix ? (
           <span className={styles.addonText} data-side="end">
