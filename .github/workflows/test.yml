@@ -159,11 +159,7 @@ jobs:
           key: playwright-${{ runner.os }}-${{ steps.playwright-version.outputs.version }}
       - name: Install Playwright browsers
         if: steps.playwright-cache.outputs.cache-hit != 'true'
-        env:
-          DEBIAN_FRONTEND: noninteractive
-        run: |
-          npx playwright install chromium
-          sudo npx playwright install-deps chromium
+        run: npx playwright install chromium
       - name: Install Playwright OS deps (cache hit)
         if: steps.playwright-cache.outputs.cache-hit == 'true'
         run: npx playwright install-deps chromium
@@ -209,11 +205,7 @@ jobs:
           key: playwright-${{ runner.os }}-${{ steps.playwright-version.outputs.version }}
       - name: Install Playwright browsers
         if: steps.playwright-cache.outputs.cache-hit != 'true'
-        env:
-          DEBIAN_FRONTEND: noninteractive
-        run: |
-          npx playwright install chromium
-          sudo npx playwright install-deps chromium
+        run: npx playwright install chromium
       - name: Install Playwright OS deps (cache hit)
         if: steps.playwright-cache.outputs.cache-hit == 'true'
         run: npx playwright install-deps chromium
