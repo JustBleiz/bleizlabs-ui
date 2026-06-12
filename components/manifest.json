@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1",
   "libVersion": "0.26.0",
-  "generatedAt": "2026-06-12T08:01:55.093Z",
+  "generatedAt": "2026-06-12T10:04:05.531Z",
   "categories": {
     "layout": ["Container", "GridLayout", "Inline", "Section", "Stack"],
     "typography": ["Anchor", "Eyebrow", "Heading", "Mark", "Text"],
@@ -34,6 +34,7 @@
       "PhoneInput",
       "RadioGroup",
       "Rating",
+      "SkipLink",
       "Switch",
       "TagsInput",
       "TextLink",
@@ -485,6 +486,16 @@
       "summary": "Rating — APG radiogroup star-rating input primitive.",
       "exports": ["Rating"],
       "types": ["RatingProps", "RatingSize"],
+      "hooks": []
+    },
+    {
+      "family": "SkipLink",
+      "category": "interactive",
+      "path": "interactive/SkipLink",
+      "isClient": false,
+      "summary": "SkipLink — WCAG 2.4.1 Bypass Blocks anchor (skip to main content).",
+      "exports": ["SkipLink"],
+      "types": ["SkipLinkProps"],
       "hooks": []
     },
     {

@@ -64,6 +64,7 @@ export * from './interactive/PasswordInput';
 export * from './interactive/PhoneInput';
 export * from './interactive/RadioGroup';
 export * from './interactive/Rating';
+export * from './interactive/SkipLink';
 export * from './interactive/Switch';
 export * from './interactive/TagsInput';
 export * from './interactive/Textarea';

@@ -279,6 +279,14 @@ const components: ComponentLink[] = [
     phase: 'Phase 4 — Interactive',
     status: 'available',
   },
+  {
+    href: '/components/skip-link',
+    name: 'SkipLink',
+    description:
+      'WCAG 2.4.1 Bypass Blocks anchor — sr-only until keyboard focus, then a fixed top-left pill above every layer. Native fragment navigation, server-safe, zero JavaScript.',
+    phase: 'Phase 4 — Interactive',
+    status: 'available',
+  },
 
   // ── Phase 5 — Feedback ─────────────────────────────────────────────────
   {
