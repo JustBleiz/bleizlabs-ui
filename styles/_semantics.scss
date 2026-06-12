@@ -166,10 +166,21 @@
   --color-accent-900: #{map.get($accent, 900)};
   --color-accent-950: #{map.get($accent, 950)};
 
+  // Semantic accent aliases — mirrors the brand pattern above (theme-aware
+  // subtle + strong; `--color-accent` / `--color-accent-light` stay
+  // theme-independent). Dark uses 900/300 like brand (NOT 950 — the 950
+  // level is the STATUS tinted-background pattern; brand/accent subtle is a
+  // "selected highlight" surface, deliberately one step lighter).
   --color-accent: var(--color-accent-500);
-  --color-accent-subtle: var(--color-accent-100);
   --color-accent-light: var(--color-accent-400);
-  --color-accent-strong: var(--color-accent-700);
+
+  @if $seed-mode == dark {
+    --color-accent-subtle: var(--color-accent-900);
+    --color-accent-strong: var(--color-accent-300);
+  } @else {
+    --color-accent-subtle: var(--color-accent-100);
+    --color-accent-strong: var(--color-accent-700);
+  }
 
   // ==========================================================================
   // STATUS COLORS — error / warning / success / info
@@ -569,6 +580,10 @@
   // and deep (700) for text so selected/accented rows pop without washing out.
   --color-brand-subtle: var(--color-brand-100);
   --color-brand-strong: var(--color-brand-700);
+
+  // Accent mirrors the brand pattern (E05 audit remediation).
+  --color-accent-subtle: var(--color-accent-100);
+  --color-accent-strong: var(--color-accent-700);
 }
 
 // ============================================================================
@@ -624,6 +639,10 @@
   // theme).
   --color-brand-subtle: var(--color-brand-900);
   --color-brand-strong: var(--color-brand-300);
+
+  // Accent mirrors the brand pattern (E05 audit remediation).
+  --color-accent-subtle: var(--color-accent-900);
+  --color-accent-strong: var(--color-accent-300);
 }
 
 // ============================================================================

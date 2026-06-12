@@ -85,7 +85,7 @@
   font-size: var(--font-size-5xl);
   line-height: var(--line-height-tight);
   font-weight: var(--font-weight-bold);
-  letter-spacing: -0.025em;
+  letter-spacing: var(--letter-spacing-tighter);
 }
 
 @mixin heading-2 {
@@ -93,6 +93,9 @@
   font-size: var(--font-size-4xl);
   line-height: var(--line-height-tight);
   font-weight: var(--font-weight-bold);
+  // -0.02em sits between --letter-spacing-tight (-0.015) and -tighter
+  // (-0.025) — intentional heading-2 step, not tokenised (same policy as
+  // the eyebrow's atelier letter-spacing below).
   letter-spacing: -0.02em;
 }
 
@@ -101,7 +104,7 @@
   font-size: var(--font-size-3xl);
   line-height: var(--line-height-snug);
   font-weight: var(--font-weight-semibold);
-  letter-spacing: -0.015em;
+  letter-spacing: var(--letter-spacing-tight);
 }
 
 @mixin heading-4 {
@@ -137,7 +140,7 @@
   font-size: var(--font-size-xs);
   line-height: var(--line-height-normal);
   font-weight: var(--font-weight-medium);
-  letter-spacing: 0.01em;
+  letter-spacing: var(--letter-spacing-wide);
 }
 
 // Atelier eyebrow typography vocabulary — 0.7rem uppercase tabular-nums
