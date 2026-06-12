@@ -1,6 +1,6 @@
 {
   "name": "@bleizlabs/ui",
-  "version": "0.26.0",
+  "version": "0.28.0",
   "description": "Zero-dependency, fully-styled React component library with seed-based design tokens. 100+ focused components with 100% JSDoc coverage, WAI-ARIA compliant, SCSS Modules, React 19.2 + Next.js 16.2. Ships with `bleizlabs-ui` CLI for project scaffold + agent-friendly docs (`AGENTS.md` + `docs/AGENT-USAGE.md`).",
   "license": "MIT",
   "author": "BleizLabs <hello@bleizlabs.eu>",
@@ -35,7 +35,8 @@
     "./styles": "./styles/index.scss",
     "./styles/project-settings": "./styles/_project-settings.scss",
     "./styles/*": "./styles/*",
-    "./components/*": "./components/*"
+    "./components/*": "./components/*",
+    "./package.json": "./package.json"
   },
   "sideEffects": [
     "*.scss",
@@ -43,6 +44,7 @@
   ],
   "files": [
     "components",
+    "!components/**/tests",
     "styles",
     "cli-dist",
     "docs/AGENT-USAGE.md",
@@ -67,6 +69,7 @@
     "check:barrel": "node scripts/check-barrel.mjs",
     "build:manifest": "node scripts/build-component-manifest.mjs",
     "check:manifest": "node scripts/check-manifest.mjs",
+    "check:manifest:sync": "node scripts/build-component-manifest.mjs --check",
     "audit:jsdoc": "node scripts/audit-jsdoc.mjs",
     "audit:demos": "node scripts/audit-demo-coverage.mjs",
     "build:cli": "tsup --config cli/tsup.config.ts",
@@ -80,12 +83,19 @@
     "test:e2e": "playwright test components/",
     "test:headed": "playwright test --headed",
     "verify": "npm run lint && npm run lint:css && npm run typecheck",
+    "prepack": "npm run build:cli -- --silent",
     "prepublishOnly": "npm run typecheck && npm run lint && npm run check:barrel && npm run build:manifest && npm run check:manifest && node scripts/build-agent-inventory.mjs && node scripts/check-agents-doc.mjs && npm run build:cli && npm run test:cli && npm run build && node scripts/inject-doc-version.mjs",
     "postpublish": "node scripts/inject-doc-version.mjs --revert"
   },
   "peerDependencies": {
     "react": ">=19.0.0",
-    "react-dom": ">=19.0.0"
+    "react-dom": ">=19.0.0",
+    "sass": ">=1.80.0"
+  },
+  "peerDependenciesMeta": {
+    "sass": {
+      "optional": true
+    }
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.11.2",
@@ -112,7 +122,7 @@
     "vitest": "^2.1.9"
   },
   "engines": {
-    "node": ">=24"
+    "node": ">=20"
   },
   "publishConfig": {
     "access": "public",

@@ -8,7 +8,8 @@ import styles from './CardSection.module.scss';
  * (Phase 3 D1 slot, optional separator between adjacent sections).
  *
  * @layer   atom (display, flat slot — D24)
- * @tokens  --space-{3,4}, --color-border-subtle
+ * @tokens  --space-{3,4}, --color-border-subtle.
+ *          Local channel: --card-section-direction.
  * @deps    Slot (asChild boundary), cn.
  * @a11y    Renders `<div>` by default. Use `asChild` to project onto
  *          a semantic element when grouping needs explicit meaning.

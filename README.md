@@ -39,9 +39,12 @@ Three walls hit every product team:
 
 ```bash
 npm install @bleizlabs/ui
+npm install -D sass
 ```
 
 Public on npm — no auth, no `.npmrc` setup.
+
+> `sass` is an optional peer dependency: the library ships raw SCSS Modules compiled by **your** build (Next.js `sassOptions` below), so the consumer project needs `sass` installed. It is marked optional so npm never force-installs it where SCSS is precompiled.
 
 > Migrating from an older internal release? If your `.npmrc` contains `@bleizlabs:registry=https://npm.pkg.github.com`, remove that line — the package moved to public npm registry in `0.22.x`.
 
@@ -132,17 +135,17 @@ That's it. No provider wrapping, no theme context, no runtime style computation.
 
 100+ focused components across 9 categories (live count in [`components/manifest.json`](components/manifest.json) — read for the canonical list at any version).
 
-| Category                     | Highlights                                                                                                                                                                                                                                                              |
-| ---------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Layout**                   | `Stack` · `Inline` · `Container` · `Section` · `GridLayout`                                                                                                                                                                                                             |
-| **Typography**               | `Heading` (decoupled level/size) · `Text` · `Anchor` · `Eyebrow` · `Mark`                                                                                                                                                                                               |
-| **Display**                  | `Card` (compound) · `Badge` · `Avatar` + `AvatarGroup` · `KpiValue` · `Reveal` · `Skeleton` · `Spinner` · `Table` · `CodeBlock`                                                                                                                                         |
-| **Interactive (forms)**      | `Button` · `Input` · `Select` · `Checkbox` · `RadioGroup` · `Switch` · `Toggle` · `Slider` · `Rating`                                                                                                                                                                   |
-| **Feedback**                 | `Alert` · `Banner` · `Empty` · `Progress` · `Toaster` (imperative `toast()` API)                                                                                                                                                                                        |
-| **Specialized + Navigation** | `Breadcrumb` · `Pagination` · `ThemeToggle` · `Timeline` · `Kbd` + 5 small data-viz primitives                                                                                                                                                                          |
-| **Molecules**                | `Header` · `Field` · `Chip` · `DataRow` · `FileChip` · `BackLink` · `IconButton` and more                                                                                                                                                                               |
-| **Charts**                   | `LineChart` · `AreaChart` · `BarChart` · `PieChart` · `Sparkline` (SVG, ≤500 points/series)                                                                                                                                                                             |
-| **Complex / Data**           | `Dialog` · `Sheet` · `Drawer` · `Popover` · `Tooltip` · `DropdownMenu` · `Combobox` · `DataTable` · `Form` + `Field` · `DatePicker` · `DateRangePicker` · `TimePicker` · `DateTimePicker` · `Sidebar` · `Tabs` · `Accordion` · `Stepper` · `NavigationMenu` · `Toolbar` |
+| Category                     | Highlights                                                                                                                                                                                                                                                                                                                           |
+| ---------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **Layout**                   | `Stack` · `Inline` · `Container` · `Section` · `GridLayout`                                                                                                                                                                                                                                                                          |
+| **Typography**               | `Heading` (decoupled level/size) · `Text` · `Anchor` · `Eyebrow` · `Mark`                                                                                                                                                                                                                                                            |
+| **Display**                  | `Card` (compound) · `Badge` · `Avatar` · `KpiValue` · `Reveal` · `Skeleton` · `Spinner` · `Table` · `CodeBlock`                                                                                                                                                                                                                      |
+| **Interactive**              | `Button` · `Input` · `Checkbox` · `RadioGroup` · `Switch` · `Toggle` · `Rating` · `NumberInput` · `TagsInput` · `SkipLink`                                                                                                                                                                                                           |
+| **Feedback**                 | `Alert` · `Banner` · `Empty` · `Progress`                                                                                                                                                                                                                                                                                            |
+| **Specialized + Navigation** | `Breadcrumb` · `Pagination` · `ThemeToggle` · `Kbd` + small data-viz primitives                                                                                                                                                                                                                                                      |
+| **Molecules**                | `Header` · `Chip` · `DataRow` · `FileChip` · `BackLink` · `IconButton` · `Timeline` · `AvatarGroup` and more                                                                                                                                                                                                                         |
+| **Charts**                   | `LineChart` · `AreaChart` · `BarChart` · `PieChart` · `Sparkline` (SVG, ≤500 points/series)                                                                                                                                                                                                                                          |
+| **Complex / Data**           | `Dialog` · `Sheet` · `Drawer` · `Popover` · `Tooltip` · `DropdownMenu` · `Select` · `Slider` · `Combobox` · `DataTable` · `Form` + `Field` · `Toaster` (imperative `toast()` API) · `DatePicker` · `DateRangePicker` · `TimePicker` · `DateTimePicker` · `Sidebar` · `Tabs` · `Accordion` · `Stepper` · `NavigationMenu` · `Toolbar` |
 
 **Highlights:**
 

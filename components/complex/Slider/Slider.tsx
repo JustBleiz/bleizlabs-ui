@@ -37,10 +37,12 @@ import styles from './Slider.module.scss';
  *           Disabled uses `aria-disabled` (focusable) per library convention;
  *           Tab order stays intact for SR discovery.
  * @apg      https://www.w3.org/WAI/ARIA/apg/patterns/slider/
- * @tested   tsc + eslint + next build (Playwright/NVDA/axe deferred per E15 scope).
+ * @tested   tsc + eslint + next build | Playwright suite EXECUTED in-repo
+ *           (keyboard/focus/aria/regression `.spec.ts` quad, CI-gated) +
+ *           axe-core smoke on the demo route. DEFERRED: manual NVDA sweep.
  * @regressions tests/Slider.{keyboard,focus,aria,regression}.spec.md —
- *           29 regression cases (SL-R01..SL-R29) mapped from
- *           `docs/specs/slider-spec.md` (promoted from `_tmp` in E42).
+ *           25 regression cases mapped (SL-R01..SL-R25; executable canon
+ *           in the sibling `tests/Slider.*.spec.ts` quad).
  *
  * @example
  * // Basic uncontrolled
@@ -120,6 +122,7 @@ export interface SliderProps extends Omit<
 }
 
 export interface SliderTrackProps extends HTMLAttributes<HTMLSpanElement> {
+  /** Track content. Defaults to `<SliderRange />` + `<SliderThumb />` when omitted. */
   children?: ReactNode;
 }
 
@@ -131,6 +134,7 @@ export interface SliderThumbProps extends Omit<
 > {
   /** Override accessible name (otherwise inherits from Slider `aria-label`/`aria-labelledby`). */
   'aria-label'?: string;
+  /** Override labelling element id (otherwise inherits from Slider `aria-labelledby`). */
   'aria-labelledby'?: string;
 }
 

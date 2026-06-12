@@ -12,7 +12,7 @@
 //   3. semantics         — emits CSS custom properties, sets :root base styles
 //   4. component-tokens  — optional per-component aliases (mostly empty by default)
 //   5. mixins            — breakpoints, touch-target, typography, focus-ring, sr-only
-//   6. animations        — 16 keyframes + global prefers-reduced-motion guard
+//   6. animations        — 17 keyframes + global prefers-reduced-motion guard
 //   7. project-overrides — last-layer escape hatch (empty by default)
 
 @forward './project-settings';

@@ -3,7 +3,7 @@ import { cn } from '../../utils/cn';
 import styles from './Empty.module.scss';
 
 /**
- * Empty — placeholder for empty lists / zero-result screens (klocek molecule).
+ * Empty — placeholder for empty lists / zero-result screens (klocek atom).
  *
  * @layer   atom (feedback)
  * @tokens  --color-text-{primary,secondary,muted}, --color-border-subtle,

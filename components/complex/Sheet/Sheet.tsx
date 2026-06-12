@@ -17,41 +17,6 @@ import { cn } from '../../utils/cn';
 import { useFocusTrap, escapeStack } from '../Dialog';
 import styles from './Sheet.module.scss';
 
-/**
- * Sheet — side panel modal sheet composing portal + overlay + focus-trapped
- * content (Phase 10 CI4, E18). 4-directional variant of Dialog pattern with
- * `side: 'left' | 'right' | 'top' | 'bottom'` — generalizes Drawer (bottom-only)
- * into a 4-side family.
- *
- * Visual modifier of APG `/dialog-modal/` pattern — uses `role="dialog"`.
- * Reuses `useFocusTrap` from Dialog. Portal + scroll lock + Escape handler +
- * background `inert` toggle are inline per D5/D25 one-component-owns-behavior.
- *
- * @layer   complex interactive (Phase 10)
- * @tokens  --color-surface, --color-surface-raised, --color-border-subtle,
- *          --color-overlay, --color-text-primary, --color-text-muted,
- *          --radius-lg, --radius-md, --shadow-2xl, --duration-normal,
- *          --duration-fast, --easing-default, --space-{3,4,5,8},
- *          --z-modal, --focus-ring
- * @deps    Heading, Text, cn, createPortal, useFocusTrap (from ../Dialog)
- * @a11y    role="dialog" + aria-modal="true" + aria-labelledby (required) +
- *          aria-describedby (optional). Tab/Shift+Tab focus cycle via
- *          useFocusTrap. Escape closes. First-tabbable initial focus.
- *          Body scroll-locked. Overlay click closes by default. Background
- *          `inert` toggle. Content padding honors `env(safe-area-inset-*)`.
- *
- * @example
- * const [open, setOpen] = useState(false);
- * <Sheet
- *   open={open}
- *   onOpenChange={setOpen}
- *   side="right"
- *   size="md"
- *   title="Product details"
- * >
- *   <Text>Details body…</Text>
- * </Sheet>
- */
 export type SheetSide = 'left' | 'right' | 'top' | 'bottom';
 export type SheetSize = 'sm' | 'md' | 'lg';
 
@@ -207,14 +172,15 @@ function CloseIcon() {
  *               for iPad notch / Dynamic Island / home indicator. Touch target
  *               enforcement on close button via `mx.touch-target` at pointer:
  *               coarse. Action buttons delegated to Button atom.
- * @tested       PARTIAL — static a11y verified, runtime a11y deferred:
+ * @tested       EXECUTED in-repo — static + runtime verified:
  *               ✓ `tsc --noEmit` clean
  *               ✓ `npm run lint` clean (includes `eslint-plugin-jsx-a11y` via
  *                 `eslint-config-next`)
  *               ✓ Build clean — Next.js static prerender PASS
- *               DEFERRED (first consumer adoption, per E15 scope decision):
- *               - Playwright execution of 4 `.spec.md` files
- *               - axe-core runtime zero-violations sweep
+ *               ✓ Playwright suites EXECUTED in-repo (keyboard/focus/aria/
+ *                 regression `.spec.ts` quad, CI-gated) + axe-core smoke on
+ *                 the demo route
+ *               DEFERRED:
  *               - Manual NVDA sweep + iOS device testing per side
  * @regressions  41 cases mapped in `tests/Sheet.regression.spec.md`: 21 inherited
  *               from Dialog (portal+trap+scroll-lock+inert primitives) + 20
@@ -267,16 +233,30 @@ export function Sheet({
 
   useFocusTrap(contentRef, open, initialFocusRef);
 
-  // Escape handler — stack-based so only the topmost open modal handles Escape
-  // (Radix #1249 fix via shared `escapeStack`). Document listener still lets
-  // nested Select/Combobox swallow Escape first (Radix #1951 pattern).
+  // Refs for the escape effect — commit-time updates so deps stay `[open]`
+  // (E02 audit fix; canonical pattern + rationale in Dialog.tsx/escapeStack.ts).
+  const onOpenChangeRef = useRef(onOpenChange);
   useEffect(() => {
-    if (!open || !closeOnEscape) return;
-    const close = () => onOpenChange(false);
+    onOpenChangeRef.current = onOpenChange;
+  });
+  const closeOnEscapeRef = useRef(closeOnEscape);
+  useEffect(() => {
+    closeOnEscapeRef.current = closeOnEscape;
+  });
+
+  // Escape handler — stack-based so only the topmost open modal handles Escape
+  // (Radix #1249 fix via shared `escapeStack`). EVERY open modal pushes its
+  // entry — also closeOnEscape=false (shadows ancestors; gate read through the
+  // ref at keypress). Document listener still lets nested Select/Combobox
+  // swallow Escape first (Radix #1951 pattern).
+  useEffect(() => {
+    if (!open) return;
+    const close = () => onOpenChangeRef.current(false);
     escapeStack.push(close);
     function handleEscape(event: KeyboardEvent) {
       if (event.key !== 'Escape') return;
       if (escapeStack[escapeStack.length - 1] !== close) return;
+      if (!closeOnEscapeRef.current) return;
       event.preventDefault();
       close();
     }
@@ -286,7 +266,7 @@ export function Sheet({
       const idx = escapeStack.indexOf(close);
       if (idx !== -1) escapeStack.splice(idx, 1);
     };
-  }, [open, closeOnEscape, onOpenChange]);
+  }, [open]);
 
   // Scroll lock (Radix #998 fix).
   useEffect(() => {
@@ -335,11 +315,7 @@ export function Sheet({
   const sizeClass = isHorizontal ? SIZE_CLASS_HORIZONTAL[size] : SIZE_CLASS_VERTICAL[size];
 
   return createPortal(
-    <div
-      className={cn(styles.root, SIDE_CLASS[side])}
-      onClick={handleOverlayClick}
-      data-state={open ? 'open' : 'closed'}
-    >
+    <div className={cn(styles.root, SIDE_CLASS[side])} onClick={handleOverlayClick}>
       <div
         ref={contentRef}
         role="dialog"

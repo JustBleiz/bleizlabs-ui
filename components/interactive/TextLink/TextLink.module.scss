@@ -39,7 +39,7 @@
 
 .root:focus-visible {
   @include mx.focus-ring;
-  outline-offset: var(--space-1);
+  border-radius: var(--radius-sm);
   border-bottom-color: var(--color-brand);
   color: var(--color-brand);
 }

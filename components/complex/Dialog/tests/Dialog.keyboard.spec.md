@@ -1,15 +1,15 @@
 # Dialog.keyboard.spec
 
-> Deferred execution — Playwright spec ready for consumer CI/CD. See Dialog.tsx `@tested` header.
+> Consumer-CI mirror — the CANONICAL, in-repo-executed suite lives in the sibling `.spec.ts`
+> (CI-gated; status in Dialog.tsx `@tested` — only the manual NVDA sweep stays deferred).
 
 ```typescript
 /**
  * Dialog keyboard interaction spec — APG `/dialog-modal/` compliance (E15).
  *
- * EXECUTION DEFERRED: written as Playwright specs; runs on first consumer adoption
- * when a browser env is available. No Playwright runner is configured in this
- * repository yet — these specs document the expected behavior and are ready to
- * execute against the `/components/dialog` playground.
+ * [Historical fence note — superseded 2026-06, E02: the suite EXECUTES in-repo
+ * via Dialog.keyboard.spec.ts (Playwright runner CI-gated since E142); only the
+ * manual NVDA sweep stays deferred.]
  *
  * Coverage (APG keyboard table):
  * - Tab                → focus cycles forward, wraps first→last

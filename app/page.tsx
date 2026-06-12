@@ -106,7 +106,7 @@ const components: ComponentLink[] = [
     href: '/components/card',
     name: 'Card',
     description:
-      'Surface container with variants, hoverable state, accent positions, and four flat slot components for header / body / footer / section.',
+      'Surface container with variants (incl. a left accent border) and four flat slot components for header / body / footer / section.',
     phase: 'Phase 3 — Display',
     status: 'available',
   },
@@ -276,6 +276,14 @@ const components: ComponentLink[] = [
     name: 'TagsInput',
     description:
       'Freeform tag input — inline chips with Backspace-to-remove, validate fn, delimiter/paste split, addOnBlur, maxTags, allowDuplicates. Hidden delimited input for FormData participation. IME composition safe.',
+    phase: 'Phase 4 — Interactive',
+    status: 'available',
+  },
+  {
+    href: '/components/skip-link',
+    name: 'SkipLink',
+    description:
+      'WCAG 2.4.1 Bypass Blocks anchor — sr-only until keyboard focus, then a fixed top-left pill above every layer. Native fragment navigation, server-safe, zero JavaScript.',
     phase: 'Phase 4 — Interactive',
     status: 'available',
   },

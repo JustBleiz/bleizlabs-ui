@@ -3,6 +3,7 @@ import { Button } from '@/components/interactive/Button';
 import { ButtonGroup } from '@/components/interactive/ButtonGroup';
 import { Heading } from '@/components/typography/Heading';
 import { Text } from '@/components/typography/Text';
+import { ClickBehaviorDemo } from './ClickBehaviorDemo';
 import styles from './page.module.scss';
 
 const VARIANTS = ['primary', 'secondary', 'ghost', 'link', 'warning'] as const;
@@ -125,6 +126,18 @@ export default function ButtonPlaygroundPage() {
             <Link href="/">Next Link via asChild</Link>
           </Button>
         </div>
+      </section>
+
+      <section className={styles.section}>
+        <Heading level={2} size="2xl">
+          Click behavior &mdash; disabled href
+        </Heading>
+        <Text className={styles.intro}>
+          Disabled <code>href</code> buttons strip the anchor&apos;s <code>href</code>, keep{' '}
+          <code>role=&quot;link&quot;</code> and suppress <code>onClick</code> — programmatic and
+          assistive-tech activation cannot invoke the handler.
+        </Text>
+        <ClickBehaviorDemo />
       </section>
 
       <section className={styles.section}>

@@ -1,12 +1,14 @@
 # Dialog.focus.spec
 
-> Deferred execution — Playwright spec ready for consumer CI/CD. See Dialog.tsx `@tested` header.
+> Consumer-CI mirror — the CANONICAL, in-repo-executed suite lives in the sibling `.spec.ts`
+> (CI-gated; status in Dialog.tsx `@tested` — only the manual NVDA sweep stays deferred).
 
 ```typescript
 /**
  * Dialog focus management spec — APG initial focus + trap + restore (E15).
  *
- * EXECUTION DEFERRED: written as Playwright specs; runs on first consumer adoption.
+ * [Historical fence note — superseded 2026-06, E02: the suite EXECUTES in-repo
+ * via Dialog.focus.spec.ts; only the manual NVDA sweep stays deferred.]
  *
  * Coverage:
  * - Initial focus on open — default: first tabbable inside content

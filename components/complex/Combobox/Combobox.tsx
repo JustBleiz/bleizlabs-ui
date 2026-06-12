@@ -74,14 +74,17 @@
  *   the label's text content without announcing the label as a separate
  *   listbox item. Separator: `role="none"` — WAI-ARIA restricts listbox
  *   children to `option`/`group`. Empty: `role="presentation"` — purely
- *   visual "no results" message, AT users hear it from the input live region
- *   if consumers wrap it. The clear button is a native `<button>` with
+ *   visual "no results" message; AT users hear the count (including
+ *   "0 results") from the built-in debounced sr-only `role="status"`
+ *   announcer rendered by the root (E03 audit fix; `resultsAnnouncement`
+ *   prop for i18n). The clear button is a native `<button>` with
  *   `aria-label="Clear selection"`.
  *
  *   Keyboard model (APG editable-combobox + Phase 2 overrides):
  *   Input — closed:
- *   - ArrowDown / Alt+ArrowDown / ArrowUp: open listbox (no commit), seed
- *     highlight to current value (or first enabled item).
+ *   - ArrowDown / Alt+ArrowDown / ArrowUp / Alt+ArrowUp: open listbox (no
+ *     commit), seed highlight to current value (or first enabled item).
+ *     The current search filter still applies in all four variants.
  *   - Enter: no-op (form submit bubbles up to consumer).
  *   - Escape: clear search if non-empty; else no-op (lets parent dialog
  *     handle it). Per Phase 2 override.
@@ -96,7 +99,7 @@
  *   - PageDown / PageUp: +/-10 (clamped + visible-only).
  *   - Enter: commit highlighted option (closes, fires onValueChange,
  *     focus stays on input, search updates to committed label). When
- *     `acceptFreeText` AND no highlight, commit the raw search as the
+ *     `acceptFreeText` AND no highlight, commit the trimmed search as the
  *     value. Otherwise (empty visible list + strict mode), Enter is a
  *     no-op that ALSO preventDefaults to suppress unintended form submit
  *     while the listbox is open — user can keep typing to refine (E28
@@ -107,11 +110,12 @@
  *   - Alt+ArrowDown: no-op while OPEN (E28 Phase 5 IMP-5 deviation from
  *     APG). APG allows Alt+ArrowDown to "show all items ignoring filter"
  *     while open — we intentionally skip that behavior because the UX
- *     value is marginal (user can Escape then Alt+ArrowDown to re-open
- *     showing all items, or simply clear the input). Implementing the
- *     filter-bypass flag + reset-on-next-keystroke logic was judged not
- *     worth the complexity for this edge case. Closed-state
- *     Alt+ArrowDown still opens the listbox showing all items per APG.
+ *     value is marginal (user can simply clear the input to see all
+ *     items). Implementing the filter-bypass flag +
+ *     reset-on-next-keystroke logic was judged not worth the complexity
+ *     for this edge case. Closed-state Alt+ArrowDown opens the listbox
+ *     like plain ArrowDown — the current search filter still applies
+ *     (no filter bypass in either state).
  *   - Tab/Shift+Tab: commit highlighted + close + let Tab propagate. When
  *     no highlight, just close — Tab still moves focus to the next field.
  *
@@ -124,8 +128,8 @@
  *     the filter, since combobox is filter-based.)
  *   - Enter (open, with highlight): TOGGLE highlighted (NOT commit-and-
  *     close as in single mode) — listbox stays open, search clears.
- *     Without highlight + acceptFreeText: append raw search to selection,
- *     listbox stays open, search clears.
+ *     Without highlight + acceptFreeText: append trimmed search to
+ *     selection, listbox stays open, search clears.
  *   - Tab (open): close + clear search; do NOT toggle highlighted. In
  *     multi mode Tab is "I'm done picking", not "commit". Selections
  *     persist as chips.
@@ -166,13 +170,17 @@
  *   minimal structural type (`ComboboxKeyEvent`) so React synthetic events
  *   satisfy it via `event.nativeEvent`.
  *
- *   `aria-activedescendant` (Select Phase 5 IMP-3 inheritance) is declarative
- *   React state owned by ComboboxContent (`highlightedId`) and published via
- *   `ComboboxContentContext`. ComboboxInput reads `highlightedId` from that
- *   context and reconciles it onto the DOM on every render so React cannot
- *   strip the attribute by re-rendering with other ARIA props. ComboboxItem
- *   is wrapped in `React.memo` to localize re-renders when the highlight
- *   moves.
+ *   `aria-activedescendant` (Select Phase 5 IMP-3 inheritance, hoisted in
+ *   E142 L4 F1) is declarative React state owned by the ROOT context
+ *   (`highlightedId` — ComboboxInput sits OUTSIDE ComboboxContent in the
+ *   render tree, so a Content-scoped provider could never reach it).
+ *   ComboboxInput reads it from the root context and reconciles it onto
+ *   the DOM on every render so React cannot strip the attribute by
+ *   re-rendering with other ARIA props. ComboboxItem is wrapped in
+ *   `React.memo` to shield items from consumer parent-prop churn ONLY —
+ *   highlight moves change the root context identity and context updates
+ *   bypass memo, so all mounted items re-render per move (see the memo
+ *   JSDoc above ComboboxItem).
  *
  *   IME composition (Phase 2 CB-R07 carve-out): Chinese / Japanese / Korean
  *   input composition writes intermediate characters to the input as the
@@ -190,7 +198,7 @@
  *   `startsWith`):
  *   - Mode `'auto'` (default): case-insensitive substring match
  *     (`textContent.toLowerCase().includes(search.toLowerCase())`). Matches
- *     shadcn / cmdk precedent — typing "an" reveals "Canada", "Austria",
+ *     shadcn / cmdk precedent — typing "an" reveals "Canada", "Finland",
  *     "Andorra", "Japan". Empty search shows ALL items.
  *   - Mode `false`: filter is disabled — every registered item is visible.
  *     Consumer owns the filtering (typically via async fetch keyed on
@@ -206,20 +214,23 @@
  *   ComboboxEmpty.
  *
  *   Blur strategy A (Radix — auto-commit on exact match, revert on
- *   mismatch): when the input loses focus, schedule a microtask check —
- *   if the current search exactly matches a registered item's textValue,
- *   commit that item's value. Otherwise revert search to the current
- *   committed value's label (or empty when no value). The microtask delay
- *   lets a click-on-item commit first, and we additionally check
- *   `relatedTarget` against the popper element so clicks inside the
- *   listbox skip the blur logic entirely.
+ *   mismatch; SINGLE mode only): when the input loses focus, schedule a
+ *   microtask check — if the current search exactly matches a registered
+ *   item's textValue, commit that item's value. Otherwise revert search to
+ *   the current committed value's label (or empty when no value). The
+ *   microtask delay lets a click-on-item commit first, and we additionally
+ *   check `relatedTarget` against the popper element so clicks inside the
+ *   listbox skip the blur logic entirely. MULTI mode opts out of strategy
+ *   A entirely: blur just clears the search and closes — no auto-commit,
+ *   no revert (selections persist as chips; there is no single committed
+ *   label to revert to).
  *
  *   `acceptFreeText` (Phase 2 explicit opt-in): default `false`. When
- *   `true`, Enter (with no highlight) commits the raw search string as the
- *   value and the blur revert step also accepts the raw search as a value
- *   when no highlight is present. Use this for "tag input" / "create new"
- *   patterns. Default off keeps the contract strict (Combobox is a select-
- *   from-list field by default).
+ *   `true`, Enter (with no highlight) commits the trimmed search string as
+ *   the value, and on blur the mismatch branch commits the trimmed search
+ *   instead of reverting (the blur path does not consult the highlight).
+ *   Use this for "tag input" / "create new" patterns. Default off keeps
+ *   the contract strict (Combobox is a select-from-list field by default).
  *
  *   Form participation: when the `name` prop is provided, Combobox renders
  *   hidden `<input type="hidden">` element(s) synced with the current
@@ -235,14 +246,16 @@
  *
  * @apg https://www.w3.org/WAI/ARIA/apg/patterns/combobox/
  * @tested tsc --noEmit ✓ | eslint + jsx-a11y via eslint-config-next ✓ |
- *   DEFERRED: Playwright execution, axe-core runtime sweep, manual NVDA /
- *   VoiceOver / JAWS sweep, iOS / Android device testing (per E15 scope
- *   decision, to be completed during Phase 6 Integration / Phase 7 audit).
- * @regressions tests/Combobox.{keyboard,focus,aria,regression}.spec.md — 28
- *   regression cases planned (docs/specs/combobox-spec.md §Regression Cases),
- *   highest-risk 6 currently covered (CB-R02 SSR, CB-R03 filter race,
- *   CB-R06 blur commit, CB-R07 IME composition guard, CB-R16 SSR portal,
- *   CB-R17 Escape bubble). Full enumeration deferred to consumer adoption.
+ *   Playwright suite EXECUTED in-repo (keyboard/focus/aria/regression
+ *   `.spec.ts` quad + multi-mode suite, CI-gated; incl. AxeBuilder sweep)
+ *   + axe-core smoke on the demo route. DEFERRED: manual NVDA / VoiceOver
+ *   / JAWS sweep, iOS / Android device testing.
+ * @regressions tests/Combobox.{keyboard,focus,aria,regression}.spec.md —
+ *   the original 28-case mapping came from an ephemeral `_tmp` spec draft
+ *   (since retired; the per-case content in the tests/ quad is the canon).
+ *   Implemented: CB-R02 SSR, CB-R03 filter race, CB-R06 blur commit,
+ *   CB-R07 IME composition guard, CB-R16 SSR portal, CB-R17 Escape bubble
+ *   + CB-R18..R21 (E03 audit remediation: filtered-result-count announcer).
  * @example
  *   // Single-select (default)
  *   <Combobox name="country" defaultValue="pl" onValueChange={(v) => ...}>
@@ -307,8 +320,10 @@ import {
   createFloatingContext,
   useFloatingState,
   useFloatingDismiss,
+  useFloatingEscapeStack,
   FloatingPortal,
 } from '../../utils/floating';
+import { VisuallyHidden } from '../../utils/VisuallyHidden';
 import styles from './Combobox.module.scss';
 
 export type ComboboxPlacement = Placement;
@@ -488,6 +503,13 @@ const [ComboboxContextProvider, useComboboxContext] =
  * flag in the discriminated union below selects which value/defaultValue/
  * onValueChange shape applies.
  */
+/**
+ * Default EN announcement for the filtered-result-count live region —
+ * module-level constant so the debounce effect's identity stays stable.
+ */
+const DEFAULT_RESULTS_ANNOUNCEMENT = (count: number) =>
+  count === 1 ? '1 result' : `${count} results`;
+
 interface ComboboxBaseProps {
   /** ComboboxOption / ComboboxGroup children rendered inside the listbox. */
   children: ReactNode;
@@ -509,11 +531,12 @@ interface ComboboxBaseProps {
    */
   filter?: ComboboxFilter;
   /**
-   * When `true`, Enter (without an active highlight) commits the raw search
-   * text as the value, and blur accepts the raw search as a value when no
-   * exact item match is found. Default `false` (strict select-from-list).
-   * Multi-mode note: in `multiple={true}` mode, free-text Enter appends the
-   * raw search to the selected array (deduplicated).
+   * When `true`, Enter (without an active highlight) commits the trimmed
+   * search text as the value, and blur accepts the trimmed search as a
+   * value when no exact item match is found. Default `false` (strict
+   * select-from-list). Multi-mode note: in `multiple={true}` mode,
+   * free-text Enter appends the trimmed search to the selected array
+   * (deduplicated).
    */
   acceptFreeText?: boolean;
   /**
@@ -538,6 +561,18 @@ interface ComboboxBaseProps {
   sideOffset?: number;
   /** Inner padding from viewport edges for flip + shift. Default `8`. */
   collisionPadding?: number;
+  /**
+   * i18n — builds the screen-reader announcement for the current filtered
+   * result count (debounced 300ms, announced via the built-in sr-only
+   * `role="status"` region while the listbox is open; WCAG 4.1.3).
+   * Function-shaped so non-EN plural forms work (DataTableLabels precedent).
+   * Pass a STABLE function (module-level or memoized) — an inline arrow
+   * re-arms the debounce per render (harmless, but wasteful). Async
+   * `filter` consumers: the count tracks registered+visible items, so
+   * stale items kept mounted during a fetch announce transiently.
+   * Default EN: `(n) => (n === 1 ? '1 result' : `${n} results`)`.
+   */
+  resultsAnnouncement?: (count: number) => string;
 }
 
 /**
@@ -596,6 +631,7 @@ export function Combobox(props: ComboboxProps) {
     placement = 'bottom-start',
     sideOffset = 4,
     collisionPadding = 8,
+    resultsAnnouncement = DEFAULT_RESULTS_ANNOUNCEMENT,
   } = props;
   const multiple = props.multiple === true;
 
@@ -830,7 +866,7 @@ export function Combobox(props: ComboboxProps) {
   // (`textContent.toLowerCase().includes(search.toLowerCase())`). Empty
   // search shows all items. Per Phase 2 override — REJECTED `startsWith`
   // (shadcn/cmdk precedent + user expectation: typing "an" finds Canada,
-  // Austria, Andorra, Japan).
+  // Finland, Andorra, Japan).
   //
   // `false` mode: every item is visible. Consumer owns filtering (typically
   // by supplying only the items that should display, often via async fetch).
@@ -857,7 +893,6 @@ export function Combobox(props: ComboboxProps) {
     }
     const nextSet = new Set<string>();
     for (const it of visible) nextSet.add(it.id);
-    // eslint-disable-next-line react-hooks/set-state-in-effect -- subscribe-to-external-system pattern (item registry is an imperative useRef<Map>); see Select E27 precedent
     setVisibleItemIds(nextSet);
     setMatchCount(visible.length);
   }, [search, registryVersion, filter, getOrderedItems]);
@@ -893,6 +928,23 @@ export function Combobox(props: ComboboxProps) {
       return nextId;
     });
   }, []);
+
+  // WCAG 4.1.3 Status Messages — debounced filtered-result-count announcer
+  // (E03 audit fix; the component's own NVDA sweep expected it). DataTable
+  // precedent: 300ms debounce + role="status" + function-shaped i18n label.
+  // Announces only while the listbox is OPEN (typing auto-opens); closing
+  // clears the text, which also silences the post-commit "1 result" echo
+  // and mid-IME composition states. Root-local state — deliberately NOT in
+  // contextValue, so announcer ticks never re-render items.
+  const [announcement, setAnnouncement] = useState('');
+  useEffect(() => {
+    if (!open) {
+      setAnnouncement('');
+      return;
+    }
+    const timer = setTimeout(() => setAnnouncement(resultsAnnouncement(matchCount)), 300);
+    return () => clearTimeout(timer);
+  }, [open, matchCount, resultsAnnouncement]);
 
   // Controlled-value → uncontrolled-search sync (0.20.1 B15 fix). When the
   // consumer owns `value` (single mode) and lets search stay uncontrolled,
@@ -958,7 +1010,6 @@ export function Combobox(props: ComboboxProps) {
       }
     }
     if (record && record.textContent) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect -- subscribe-to-external-system pattern (registry is imperative useRef<Map>); mirrors the existing visibility + highlight effects in this file
       setUncontrolledSearch(record.textContent);
       initialSearchSyncRef.current = true;
     }
@@ -1037,6 +1088,14 @@ export function Combobox(props: ComboboxProps) {
   return (
     <ComboboxContextProvider value={contextValue}>
       {children}
+      <VisuallyHidden
+        role="status"
+        aria-live="polite"
+        aria-atomic="true"
+        data-combobox-announcer=""
+      >
+        {announcement}
+      </VisuallyHidden>
       {name !== undefined && renderHiddenInputs(name, selectedValues, multiple, disabled, required)}
     </ComboboxContextProvider>
   );
@@ -1126,12 +1185,15 @@ export interface ComboboxInputProps extends Omit<
   | 'value'
   | 'defaultValue'
   | 'disabled'
+  | 'id'
 > {
+  /** Extra class merged onto the trigger wrapper (not the inner `<input>`). */
   className?: string;
   /**
    * Optional explicit `aria-labelledby` — wires an external label element
-   * to the combobox role. When omitted, consumer must provide `aria-label`
-   * via `rest` or rely on a parent `<label>` association.
+   * to the combobox role. When omitted, consumer must provide the dedicated
+   * `aria-label` prop (explicitly destructured, not rest) or rely on a
+   * native `<label>` association (wrapping label / htmlFor).
    */
   'aria-labelledby'?: string;
   /** Optional `aria-label` override — takes precedence when no labelledby. */
@@ -1214,6 +1276,21 @@ export const ComboboxInput = forwardRef<HTMLInputElement, ComboboxInputProps>(
       [inputRef],
     );
     const mergedRef = mergeRefs(forwardedRef, setInputNode);
+
+    // Require an accessible name — aria-label, aria-labelledby, or a native
+    // <label> association (wrapping label / htmlFor; first-class for a real
+    // <input>, hence the `labels` check — Select's button trigger has no
+    // such path). Placeholder is NOT a name substitute. Dev-only warning —
+    // mirrors SelectTrigger / TabsList / Slider (E03 audit fix).
+    useEffect(() => {
+      if (process.env.NODE_ENV !== 'production') {
+        if (!ariaLabel && !ariaLabelledBy && (inputRef.current?.labels?.length ?? 0) === 0) {
+          console.warn(
+            '<ComboboxInput> should have `aria-label`, `aria-labelledby`, or an associated <label> — without one the combobox has no accessible name (WCAG 4.1.2).',
+          );
+        }
+      }
+    }, [ariaLabel, ariaLabelledBy, inputRef]);
 
     // IME composition guard — Chinese / Japanese / Korean input methods
     // synthesize multiple keystrokes per visible character. Treating those
@@ -1704,7 +1781,9 @@ export interface ComboboxContentProps extends Omit<
   HTMLAttributes<HTMLDivElement>,
   'role' | 'aria-labelledby' | 'aria-activedescendant' | 'tabIndex'
 > {
+  /** Listbox content — ComboboxItem / ComboboxGroup / ComboboxSeparator / ComboboxEmpty. */
   children?: ReactNode;
+  /** Extra class merged onto the listbox element. */
   className?: string;
 }
 
@@ -1836,6 +1915,17 @@ export function ComboboxContent({ children, className, ...rest }: ComboboxConten
     closeOnScroll: false,
   });
 
+  useFloatingEscapeStack(open, () => {
+    setOpen(false);
+    if (multiple) {
+      updateSearch('');
+    } else {
+      const committed = valueRef.current ? (getLabelByValue(valueRef.current) ?? '') : '';
+      updateSearch(committed);
+    }
+    inputRef.current?.focus();
+  });
+
   // Initialize highlight on open + reset highlight on filter change.
   // Items have already registered via their own useLayoutEffect (child
   // effects commit before parent effects), so getOrderedItems() returns
@@ -1908,9 +1998,9 @@ export function ComboboxContent({ children, className, ...rest }: ComboboxConten
     (restoreFocus = true) => {
       const currentId = highlightedId;
       if (!currentId) {
-        // No highlight — Enter with acceptFreeText commits the raw search
-        // as the value; otherwise no-op. In multi mode, free-text commit
-        // appends and keeps the listbox open + clears search.
+        // No highlight — Enter with acceptFreeText commits the trimmed
+        // search as the value; otherwise no-op. In multi mode, free-text
+        // commit appends and keeps the listbox open + clears search.
         if (acceptFreeText) {
           const trimmed = search.trim();
           if (trimmed !== '') {
@@ -1975,9 +2065,10 @@ export function ComboboxContent({ children, className, ...rest }: ComboboxConten
         case 'ArrowDown': {
           // E28 Phase 5 IMP-5: Alt+ArrowDown while OPEN is a documented
           // no-op deviation from APG (which allows "show all ignoring
-          // filter"). Closed-state Alt+ArrowDown still opens the listbox
-          // showing all items — handled in the input's closed-state
-          // keydown handler. See JSDoc @a11y section for rationale.
+          // filter"). Closed-state Alt+ArrowDown opens the listbox like
+          // plain ArrowDown — the current search filter still applies (no
+          // filter bypass in either state); handled in the input's
+          // closed-state keydown handler. See JSDoc @a11y for rationale.
           if (hasModifier || event.altKey) return;
           if (visible.length === 0) {
             event.preventDefault();
@@ -2056,7 +2147,7 @@ export function ComboboxContent({ children, className, ...rest }: ComboboxConten
         case 'Enter': {
           if (hasModifier || event.altKey) return;
           // Enter with highlight → commit. Without highlight + acceptFreeText
-          // → commit raw search. Otherwise no-op — but still preventDefault
+          // → commit trimmed search. Otherwise no-op — but still preventDefault
           // (E28 Phase 5 IMP-1): when the listbox is visibly open with zero
           // matches, the user pressing Enter does not expect a parent form
           // submit to fire. We preventDefault + keep the listbox open so the
@@ -2234,7 +2325,9 @@ const [ComboboxGroupContextProvider, useComboboxGroupContext] =
   createFloatingContext<ComboboxGroupContextValue>('ComboboxGroup');
 
 export interface ComboboxGroupProps extends HTMLAttributes<HTMLDivElement> {
+  /** Group content — ComboboxItem elements plus an optional ComboboxLabel. */
   children: ReactNode;
+  /** Extra class merged onto the group element. */
   className?: string;
 }
 
@@ -2257,7 +2350,9 @@ export function ComboboxGroup({ children, className, ...rest }: ComboboxGroupPro
 // ──────────────────────────────────────────────────────────────────────────
 
 export interface ComboboxLabelProps extends HTMLAttributes<HTMLDivElement> {
+  /** Label text announced as the surrounding group's accessible name. */
   children: ReactNode;
+  /** Extra class merged onto the label element. */
   className?: string;
 }
 
@@ -2323,7 +2418,9 @@ export interface ComboboxItemProps extends Omit<
    * translated `<Trans>` element or a memoized span with live data).
    */
   textValue?: string;
+  /** Visible option content — filter/label text derives from it unless `textValue` is set. */
   children: ReactNode;
+  /** Extra class merged onto the option element. */
   className?: string;
 }
 
@@ -2500,12 +2597,17 @@ function ComboboxItemImpl({
 }
 
 /**
- * ComboboxItem is wrapped in `React.memo` so moving the highlight re-renders
- * only the two items actually toggled (the previously highlighted one and
- * the newly highlighted one), not the whole option list. Visibility changes
- * still re-render the affected item because `visibleItemIds` (a Set
- * reference) changes on every filter recompute — that's intentional, since
- * appearing / disappearing items must reconcile their DOM presence.
+ * ComboboxItem is wrapped in `React.memo` to shield items from re-renders
+ * caused by consumer PARENT updates (new children/className identities when
+ * the page re-renders). Note: this does NOT localize highlight moves — every
+ * item consumes the root ComboboxContext, whose memoized value changes
+ * identity whenever `highlightedId` changes, and context updates BYPASS
+ * `memo`; all mounted items re-render per highlight move. The same applies
+ * to filter recomputes (`visibleItemIds` Set identity) and selection
+ * changes (`selectedValues`) — all context-carried. The memo's win is
+ * limited to parent-prop churn (E03 audit fix — the previous text claimed
+ * only the two toggled items re-render, which was false; twin of the
+ * Select fix).
  */
 export const ComboboxItem = memo(ComboboxItemImpl);
 ComboboxItem.displayName = 'ComboboxItem';
@@ -2515,7 +2617,9 @@ ComboboxItem.displayName = 'ComboboxItem';
 // ──────────────────────────────────────────────────────────────────────────
 
 export interface ComboboxEmptyProps extends HTMLAttributes<HTMLDivElement> {
+  /** "No results" message content. Default `'No results.'`. */
   children?: ReactNode;
+  /** Extra class merged onto the empty-state element. */
   className?: string;
 }
 
@@ -2524,8 +2628,10 @@ export function ComboboxEmpty({ children, className, ...rest }: ComboboxEmptyPro
   const { matchCount } = ctx;
   if (matchCount > 0) return null;
   // role="presentation" — purely visual fallback message, AT virtual cursor
-  // skips it and reads the input's own state instead. Consumers who want
-  // the message announced can wrap it in their own live region.
+  // skips it and reads the input's own state instead. The zero-result count
+  // is announced by the built-in debounced announcer in the root (see @a11y
+  // header) — do NOT wrap this message in another live region (double
+  // announcement).
   return (
     <div role="presentation" className={cn(styles.empty, className)} {...rest}>
       {children ?? 'No results.'}
@@ -2538,6 +2644,7 @@ export function ComboboxEmpty({ children, className, ...rest }: ComboboxEmptyPro
 // ──────────────────────────────────────────────────────────────────────────
 
 export interface ComboboxSeparatorProps extends HTMLAttributes<HTMLDivElement> {
+  /** Extra class merged onto the separator element. */
   className?: string;
 }
 

@@ -1,15 +1,16 @@
 # AlertDialog.keyboard.spec
 
-> Deferred execution — Playwright spec ready for consumer CI/CD. See AlertDialog.tsx `@tested` header.
+> EXECUTED in-repo — the canonical suite lives in the sibling `AlertDialog.keyboard.spec.ts`
+> (CI-gated; only the manual NVDA sweep stays deferred). See AlertDialog.tsx `@tested`
+> header. This file is a consumer-CI reference snapshot, not the source of truth.
 
 ```typescript
 /**
  * AlertDialog keyboard interaction spec — APG `/alertdialog/` compliance (E16).
  *
- * EXECUTION DEFERRED: written as Playwright specs; runs on first consumer adoption
- * when a browser env is available. No Playwright runner is configured in this
- * repository yet — these specs document the expected behavior and are ready to
- * execute against the `/components/alert-dialog` playground.
+ * EXECUTION STATUS: EXECUTED in-repo — the canonical suite is the sibling
+ * `AlertDialog.keyboard.spec.ts` (CI-gated). This snapshot documents the expected
+ * behavior against the `/components/alert-dialog` playground.
  *
  * Coverage (APG keyboard table — identical to dialog-modal + alert-specific):
  * - Tab                   → focus cycles forward, wraps Cancel ↔ Confirm

@@ -1,6 +1,8 @@
 # Popover — ARIA / accessibility tree spec
 
-**Execution status:** DEFERRED.
+**Execution status:** EXECUTED in-repo — the canonical suite lives in the sibling
+`Popover.aria.spec.ts` (CI-gated; status in Popover.tsx `@tested`; only the manual NVDA
+sweep stays deferred). This file is a consumer-CI reference snapshot, not the source of truth.
 
 ## Tests
 

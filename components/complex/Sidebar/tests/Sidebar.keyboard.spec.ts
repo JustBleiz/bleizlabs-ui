@@ -91,15 +91,41 @@ test.describe('Sidebar — keyboard interactions (desktop)', () => {
 });
 
 test.describe('Sidebar — keyboard interactions (mobile drawer)', () => {
-  // NOTE-FOR-LIB: See Sidebar.aria.spec.ts comment block. Mobile drawer
-  // transition via Playwright setViewportSize does not fire the matchMedia
-  // change event listener registered during hydration. Deferred.
+  // E02: the old NOTE-FOR-LIB deferral ("matchMedia resize does not fire under
+  // Playwright") was disproven by SB-R13 — and viewport-BEFORE-goto sidesteps
+  // the change-event question entirely (useMatchMedia is mobile at hydration).
 
-  test.skip('SB-R03 — Escape closes mobile drawer [PLAYGROUND-DEP: matchMedia resize]', async () => {
-    // Verified manually — document-level Escape handler closes drawer.
+  test('SB-R03 — Escape closes mobile drawer', async ({ page }) => {
+    await page.setViewportSize({ width: 400, height: 800 });
+    await page.goto('/components/sidebar');
+    // useMatchMedia initializes false (SSR-safe) and flips to mobile AFTER
+    // hydration — the four defaultOpen demos (Basic, Groups, Shortcut,
+    // SideRight) mount as drawers at that flip. Wait for them, then dismiss
+    // one by one (each Escape closes the stack top).
+    await expect(page.locator('[role="dialog"]').first()).toBeVisible({ timeout: 5000 });
+    for (let i = 0; i < 6 && (await page.locator('[role="dialog"]').count()) > 0; i += 1) {
+      await page.keyboard.press('Escape');
+      await page.waitForTimeout(150);
+    }
+    await expect(page.locator('[role="dialog"]')).toHaveCount(0);
+    await page.getByTestId('open-drawer-sidebar').click();
+    const drawer = page.getByRole('dialog', { name: 'Drawer dialog sidebar' });
+    await expect(drawer).toBeVisible();
+    await page.keyboard.press('Escape');
+    await expect(drawer).not.toBeVisible();
   });
 
-  test.skip('Enter on trigger opens mobile drawer [PLAYGROUND-DEP: matchMedia resize]', async () => {
-    // Button native Enter/Space activation fires onClick which toggles state.
+  test('Enter on trigger opens mobile drawer', async ({ page }) => {
+    await page.setViewportSize({ width: 400, height: 800 });
+    await page.goto('/components/sidebar');
+    await expect(page.locator('[role="dialog"]').first()).toBeVisible({ timeout: 5000 });
+    for (let i = 0; i < 6 && (await page.locator('[role="dialog"]').count()) > 0; i += 1) {
+      await page.keyboard.press('Escape');
+      await page.waitForTimeout(150);
+    }
+    await expect(page.locator('[role="dialog"]')).toHaveCount(0);
+    await page.getByTestId('open-drawer-sidebar').focus();
+    await page.keyboard.press('Enter');
+    await expect(page.getByRole('dialog', { name: 'Drawer dialog sidebar' })).toBeVisible();
   });
 });

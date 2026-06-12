@@ -67,11 +67,14 @@
  *   - Inside `NavigationMenuProvider`: skip-delay window mirrors HoverCardProvider
  * @apg https://www.w3.org/WAI/ARIA/apg/patterns/menubar/
  * @tested tsc --noEmit ✓ | eslint + jsx-a11y via eslint-config-next ✓ |
- *   next build ✓ — DEFERRED: Playwright execution (per E15 scope decision),
- *   axe-core runtime sweep, manual NVDA sweep, iOS/Android device testing.
+ *   next build ✓ | Playwright suite EXECUTED in-repo (keyboard/focus/aria/
+ *   regression `.spec.ts` quad, CI-gated) + axe-core smoke on the demo
+ *   route. DEFERRED: manual NVDA sweep, iOS/Android device testing.
  * @regressions tests/NavigationMenu.{keyboard,focus,aria,regression}.spec.md —
- *   22 regression cases mapped (NM-R01..R22). See `docs/_tmp/navigation-menu-spec.md`
- *   Phase 1 Explore output for full bug+fix mapping.
+ *   22 regression cases mapped (NM-R01..R22). The original bug+fix mapping
+ *   came from an ephemeral `_tmp` spec draft (since retired; the per-case
+ *   content in the tests/ quad is the canon — executable canon in the
+ *   sibling `.spec.ts` files).
  * @example
  *   <NavigationMenu>
  *     <NavigationMenuList aria-label="Main">
@@ -272,6 +275,7 @@ const [NavigationMenuRootProvider, useNavigationMenuRoot] =
 // ──────────────────────────────────────────────────────────────────────────
 
 export interface NavigationMenuProps {
+  /** NavigationMenuList compound children. */
   children: ReactNode;
   /** Controlled open submenu value. When provided, component is controlled. */
   value?: string | null;
@@ -309,6 +313,7 @@ export interface NavigationMenuProps {
    * Default `true`.
    */
   hoverTrigger?: boolean;
+  /** Extra class for the NavigationMenu root container. */
   className?: string;
 }
 
@@ -468,9 +473,11 @@ export interface NavigationMenuListProps extends Omit<
   HTMLAttributes<HTMLUListElement>,
   'role' | 'aria-orientation'
 > {
+  /** NavigationMenuItem elements forming the menubar. */
   children: ReactNode;
   /** REQUIRED — accessible name for the menubar (APG `/menubar/` mandate). */
   'aria-label': string;
+  /** Extra class merged onto the `<ul role="menubar">` element. */
   className?: string;
 }
 
@@ -666,7 +673,9 @@ const [NavigationMenuItemProvider, useNavigationMenuItem] =
 export interface NavigationMenuItemProps extends Omit<LiHTMLAttributes<HTMLLIElement>, 'role'> {
   /** Unique id of this item within the menubar. Used as the open-state value. */
   value: string;
+  /** Item content — a Trigger + Content pair, or a standalone NavigationMenuLink. */
   children: ReactNode;
+  /** Extra class merged onto the `<li>` element. */
   className?: string;
 }
 
@@ -718,6 +727,7 @@ export interface NavigationMenuTriggerProps extends Omit<
   ButtonHTMLAttributes<HTMLButtonElement>,
   'aria-expanded' | 'aria-haspopup' | 'aria-controls' | 'role'
 > {
+  /** Trigger label content — text used for typeahead unless `textValue` is set. */
   children: ReactNode;
   /**
    * Override text used for menubar typeahead matching. When omitted, the
@@ -729,6 +739,7 @@ export interface NavigationMenuTriggerProps extends Omit<
    * event handlers. When `false` (default), renders a native `<button>`.
    */
   asChild?: boolean;
+  /** Extra class merged onto the trigger element. */
   className?: string;
 }
 
@@ -1018,6 +1029,7 @@ export interface NavigationMenuContentProps extends Omit<
   HTMLAttributes<HTMLDivElement>,
   'role' | 'aria-labelledby'
 > {
+  /** Submenu panel content — NavigationMenuLink elements or arbitrary panel markup. */
   children?: ReactNode;
   /** Submenu placement relative to its trigger. Default `'bottom-start'`. */
   placement?: NavigationMenuPlacement;
@@ -1025,6 +1037,7 @@ export interface NavigationMenuContentProps extends Omit<
   sideOffset?: number;
   /** Inner padding from viewport edges for flip + shift. Default `8`. */
   collisionPadding?: number;
+  /** Extra class merged onto the submenu panel element. */
   className?: string;
 }
 
@@ -1314,6 +1327,7 @@ export interface NavigationMenuLinkProps extends Omit<
   AnchorHTMLAttributes<HTMLAnchorElement>,
   'role' | 'onSelect'
 > {
+  /** Link content — text used for typeahead unless `textValue` is set. */
   children: ReactNode;
   /**
    * When `true`, marks this link as the current page (wires `aria-current="page"`
@@ -1337,6 +1351,7 @@ export interface NavigationMenuLinkProps extends Omit<
    * wrap a Next.js `<Link>` while keeping all NavigationMenu ARIA + handlers.
    */
   asChild?: boolean;
+  /** Extra class merged onto the link element. */
   className?: string;
 }
 

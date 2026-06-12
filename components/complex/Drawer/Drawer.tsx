@@ -17,42 +17,6 @@ import { cn } from '../../utils/cn';
 import { useFocusTrap, escapeStack } from '../Dialog';
 import styles from './Drawer.module.scss';
 
-/**
- * Drawer — bottom-positioned modal sheet composing portal + overlay +
- * focus-trapped content (Phase 10 CI3, E17). Visual modifier of APG
- * `/dialog-modal/` pattern. Uses `role="dialog"` (not `alertdialog`).
- *
- * Reuses `useFocusTrap` from Dialog. Portal + scroll lock + Escape handler +
- * background `inert` toggle are inline per D5/D25 one-component-owns-behavior.
- * SCSS bottom-aligned layout, slide-up keyframe, top-only border-radius, and
- * iOS safe-area padding.
- *
- * @layer   complex interactive (Phase 10)
- * @tokens  --color-surface, --color-surface-raised, --color-border-subtle,
- *          --color-overlay, --color-text-primary, --color-text-muted,
- *          --radius-lg, --radius-md, --shadow-2xl, --duration-normal,
- *          --duration-fast, --easing-default, --space-{3,4,5,8},
- *          --z-modal, --focus-ring
- * @deps    Heading, Text, cn, createPortal, useFocusTrap (from ../Dialog)
- * @a11y    role="dialog" + aria-modal="true" + aria-labelledby (required) +
- *          aria-describedby (optional, conditional). Tab/Shift+Tab focus
- *          cycle via useFocusTrap. Escape closes. Initial focus defaults to
- *          first tabbable. Body scroll-locked while open. Overlay click
- *          closes by default. Background `inert` toggle blocks AT virtual
- *          cursor. Content padding-bottom honors `env(safe-area-inset-bottom)`.
- *
- * @example
- * const [open, setOpen] = useState(false);
- * <Drawer
- *   open={open}
- *   onOpenChange={setOpen}
- *   title="Filter products"
- *   description="Narrow results by category."
- *   size="md"
- * >
- *   <Text>Filter controls go here…</Text>
- * </Drawer>
- */
 export type DrawerSize = 'sm' | 'md' | 'lg';
 
 export interface DrawerProps extends Omit<
@@ -152,18 +116,18 @@ function CloseIcon() {
  *               Content padding-bottom honors `env(safe-area-inset-bottom)` for
  *               iOS notch/home indicator. Touch target enforcement on action
  *               buttons delegated to Button atom.
- * @tested       PARTIAL — static a11y verified, runtime a11y deferred:
+ * @tested       EXECUTED in-repo — static + runtime verified:
  *               ✓ `tsc --noEmit` clean (TypeScript strict, no any, proper Omit)
  *               ✓ `npm run lint` clean — includes `eslint-plugin-jsx-a11y` via
  *                 `eslint-config-next` (catches missing aria-label, invalid ARIA
  *                 attrs, accessible-name-required violations, etc.)
  *               ✓ Build clean — Next.js static prerender PASS
- *               DEFERRED (first consumer adoption, per E15 scope decision):
- *               - Playwright execution of 4 `.spec.md` files (keyboard, focus,
- *                 aria, regression) — specs ready, no browser env in build agent
- *               - axe-core runtime zero-violations sweep (requires live page)
+ *               ✓ Playwright suites EXECUTED in-repo (keyboard/focus/aria/
+ *                 regression `.spec.ts` quad, CI-gated) + axe-core smoke on
+ *                 the demo route
+ *               DEFERRED:
  *               - Manual NVDA sweep + iOS device testing (requires devices)
- *               - 17 regression tests `test.skip` with PLAYGROUND-DEP rationale
+ *               - Regression cases `test.skip` with PLAYGROUND-DEP rationale
  *                 (iOS-specific quirks, multi-drawer stacking, nested Select/Toast
  *                 scenarios pending other Phase 10 components)
  * @regressions  41 cases mapped in `tests/Drawer.regression.spec.md`: 21 inherited
@@ -213,17 +177,30 @@ export function Drawer({
 
   useFocusTrap(contentRef, open, initialFocusRef);
 
-  // Escape handler — stack-based so only the topmost open modal handles Escape
-  // (Radix #1249 fix, shared with the dialog family via `escapeStack`). Document
-  // listener means nested Select/Combobox browser-level Escape still fires first
-  // (Radix #1951 pattern inherited from Dialog).
+  // Refs for the escape effect — commit-time updates so deps stay `[open]`
+  // (E02 audit fix; canonical pattern + rationale in Dialog.tsx/escapeStack.ts).
+  const onOpenChangeRef = useRef(onOpenChange);
   useEffect(() => {
-    if (!open || !closeOnEscape) return;
-    const close = () => onOpenChange(false);
+    onOpenChangeRef.current = onOpenChange;
+  });
+  const closeOnEscapeRef = useRef(closeOnEscape);
+  useEffect(() => {
+    closeOnEscapeRef.current = closeOnEscape;
+  });
+
+  // Escape handler — stack-based so only the topmost open modal handles Escape
+  // (Radix #1249 fix, shared with the dialog family via `escapeStack`). EVERY
+  // open modal pushes its entry — also closeOnEscape=false (shadows ancestors;
+  // gate read through the ref at keypress). Document listener means nested
+  // Select/Combobox browser-level Escape still fires first (Radix #1951).
+  useEffect(() => {
+    if (!open) return;
+    const close = () => onOpenChangeRef.current(false);
     escapeStack.push(close);
     function handleEscape(event: KeyboardEvent) {
       if (event.key !== 'Escape') return;
       if (escapeStack[escapeStack.length - 1] !== close) return;
+      if (!closeOnEscapeRef.current) return;
       event.preventDefault();
       close();
     }
@@ -233,7 +210,7 @@ export function Drawer({
       const idx = escapeStack.indexOf(close);
       if (idx !== -1) escapeStack.splice(idx, 1);
     };
-  }, [open, closeOnEscape, onOpenChange]);
+  }, [open]);
 
   // Scroll lock (Radix #998 fix — only while open).
   useEffect(() => {
@@ -283,7 +260,7 @@ export function Drawer({
   const describedBy = description ? descriptionId : undefined;
 
   return createPortal(
-    <div className={styles.root} onClick={handleOverlayClick} data-state={open ? 'open' : 'closed'}>
+    <div className={styles.root} onClick={handleOverlayClick}>
       <div
         ref={contentRef}
         role="dialog"

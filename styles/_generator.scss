@@ -210,6 +210,8 @@ $easing-default: $seed-easing-default;
 // Z-INDEX SCALE — for Phase 10 complex interactive
 // ============================================================================
 // Layering: overlay < dropdown < sticky < popover < tooltip < modal < toast
+// < skip-link (the focus-revealed SkipLink must beat every layer — a keyboard
+// user tabbing from document start may have sticky chrome/toasts on screen).
 
 $z-dropdown: 10;
 $z-sticky: 20;
@@ -217,6 +219,7 @@ $z-popover: 30;
 $z-tooltip: 40;
 $z-modal: 50;
 $z-toast: 60;
+$z-skip-link: 70;
 
 // ============================================================================
 // TYPOGRAPHY SCALE — rem-based, $seed-font-scale multiplier applied

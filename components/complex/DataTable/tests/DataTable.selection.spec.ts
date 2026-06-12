@@ -9,6 +9,9 @@
  * - DT-SE05 Selection persists across pagination via getRowId
  * - DT-SE06 Selection count label updates ("N rows selected")
  * - DT-SE07 Selection survives sort change
+ * - DT-SE08 Controlled selection survives data refetch (fresh object identities)
+ * - DT-SE09 No [DataTable] dev-warnings on the healthy demo page (warn probes
+ *   must not false-positive on index-independent getRowId)
  */
 
 import { test, expect } from '@playwright/test';
@@ -75,18 +78,16 @@ test.describe('DataTable — selection behavior', () => {
       .first();
     await firstRowCb.check();
     await page.waitForTimeout(50);
-    // Navigate to next page
+    // Navigate to next page (unconditional — section 3 has 25 rows / pageSize 8)
     const nextBtn = section.getByRole('button', { name: /next|»/i }).first();
-    if (await nextBtn.isVisible().catch(() => false)) {
-      await nextBtn.click();
-      await page.waitForTimeout(100);
-      // Navigate back
-      const prevBtn = section.getByRole('button', { name: /prev|«/i }).first();
-      await prevBtn.click();
-      await page.waitForTimeout(100);
-      const firstRow = grid.locator('[role="row"][aria-rowindex="2"]');
-      await expect(firstRow).toHaveAttribute('aria-selected', 'true');
-    }
+    await nextBtn.click();
+    await page.waitForTimeout(100);
+    // Navigate back
+    const prevBtn = section.getByRole('button', { name: /prev|«/i }).first();
+    await prevBtn.click();
+    await page.waitForTimeout(100);
+    const firstRow = grid.locator('[role="row"][aria-rowindex="2"]');
+    await expect(firstRow).toHaveAttribute('aria-selected', 'true');
   });
 
   test('DT-SE06 — selection count label updates', async ({ page }) => {
@@ -106,13 +107,55 @@ test.describe('DataTable — selection behavior', () => {
     const firstCb = grid.locator('[role="row"][aria-rowindex="2"]').getByRole('checkbox').first();
     await firstCb.check();
     await page.waitForTimeout(50);
+    // Unconditional — selectionColumns "Project" is sortable
     const sortBtn = grid.getByRole('button', { name: /sort/i }).first();
-    if (await sortBtn.isVisible().catch(() => false)) {
-      await sortBtn.click();
-      await page.waitForTimeout(100);
-      // After sort, total selected should still be >= 1
-      const stillSelected = await grid.locator('[role="row"][aria-selected="true"]').count();
-      expect(stillSelected).toBeGreaterThanOrEqual(1);
-    }
+    await sortBtn.click();
+    await page.waitForTimeout(100);
+    // After sort, total selected should still be >= 1
+    const stillSelected = await grid.locator('[role="row"][aria-selected="true"]').count();
+    expect(stillSelected).toBeGreaterThanOrEqual(1);
+  });
+
+  test('DT-SE08 — controlled selection survives data refetch (fresh object identities)', async ({
+    page,
+  }) => {
+    const grids = allGrids(page);
+    const grid = grids.nth(2);
+    const section = grid.locator('xpath=ancestor::section[1]');
+    const firstRowCb = grid
+      .locator('[role="row"][aria-rowindex="2"]')
+      .getByRole('checkbox')
+      .first();
+    await firstRowCb.check();
+    await expect(section.getByText(/1 row selected/i).first()).toBeVisible();
+    // Replace every data object with a clone — same IDs, new references.
+    await section.getByRole('button', { name: 'Simulate refetch' }).click();
+    await page.waitForTimeout(100);
+    // Pre-fix: computeIdsFromRows dropped rows failing data.indexOf(r) (reference
+    // identity) → aria-selected silently lost. Post-fix: ID-based comparison.
+    await expect(grid.locator('[role="row"][aria-rowindex="2"]')).toHaveAttribute(
+      'aria-selected',
+      'true',
+    );
+  });
+
+  test('DT-SE09 — no [DataTable] dev-warnings on the healthy demo page', async ({ page }) => {
+    const warnings: string[] = [];
+    page.on('console', (msg) => {
+      if (msg.type() === 'warning' && msg.text().includes('[DataTable]')) {
+        warnings.push(msg.text());
+      }
+    });
+    await page.goto('/components/data-table');
+    // Interact enough to mount every demo instance's selection machinery.
+    const grids = allGrids(page);
+    const grid = grids.nth(2);
+    const firstRowCb = grid
+      .locator('[role="row"][aria-rowindex="2"]')
+      .getByRole('checkbox')
+      .first();
+    await firstRowCb.check();
+    await page.waitForTimeout(100);
+    expect(warnings).toEqual([]);
   });
 });

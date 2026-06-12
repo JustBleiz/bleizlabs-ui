@@ -1,5 +1,5 @@
 /**
- * DataTable edge-cases spec — 12 boundary scenarios (E01 0.17.0).
+ * DataTable edge-cases spec — 11 boundary scenarios (E01 0.17.0).
  *
  * Coverage:
  * - DT-EC01 Empty data renders Empty primitive (no row beyond header)
@@ -11,9 +11,11 @@
  * - DT-EC07 Disabled row cannot fire onRowClick
  * - DT-EC08 Filter producing zero results renders empty body (no crash)
  * - DT-EC09 Single-row data renders correctly
- * - DT-EC10 Column with no accessor + no cell renders empty cell (no crash)
  * - DT-EC11 Page beyond range clamps to last valid page
  * - DT-EC12 Rapid keyboard navigation does not throw
+ *
+ * (DT-EC10 "column with no accessor + no cell" was a phantom entry — no such
+ * test existed and no demo column exercises it; ID retired, not renumbered.)
  */
 
 import { test, expect } from '@playwright/test';
@@ -51,10 +53,12 @@ test.describe('DataTable — edge cases', () => {
     }
   });
 
-  test('DT-EC03 — loading wrapper exposes aria-busy or data-state', async ({ page }) => {
+  test('DT-EC03 — loading grid exposes aria-busy', async ({ page }) => {
     const loadingSection = page.locator('section').nth(5);
     await loadingSection.scrollIntoViewIfNeeded();
-    const busy = await loadingSection.locator('[aria-busy="true"], [data-state="loading"]').count();
+    // E03 audit remediation: aria-busy is now set on the grid while loading
+    // (assert it directly — the data-state fallback masked its absence).
+    const busy = await loadingSection.locator('[aria-busy="true"]').count();
     expect(busy).toBeGreaterThanOrEqual(1);
   });
 

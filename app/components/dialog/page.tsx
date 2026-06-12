@@ -20,6 +20,12 @@ export default function DialogPlaygroundPage() {
   const [triggerBOpen, setTriggerBOpen] = useState(false);
   const [nestedOuterOpen, setNestedOuterOpen] = useState(false);
   const [nestedInnerOpen, setNestedInnerOpen] = useState(false);
+  const [inlineOuterOpen, setInlineOuterOpen] = useState(false);
+  const [inlineInnerOpen, setInlineInnerOpen] = useState(false);
+  const [rerenderCount, setRerenderCount] = useState(0);
+  const [noEscOuterOpen, setNoEscOuterOpen] = useState(false);
+  const [noEscInnerOpen, setNoEscInnerOpen] = useState(false);
+  const [hiddenTabbableOpen, setHiddenTabbableOpen] = useState(false);
 
   const confirmButtonRef = useRef<HTMLButtonElement | null>(null);
 
@@ -336,6 +342,166 @@ export default function DialogPlaygroundPage() {
           <Text>
             Inner modal. Pressing Escape here closes only this dialog — the outer remains visible.
           </Text>
+        </Dialog>
+      </section>
+
+      {/* ==================================================================== */}
+      {/* NESTED — INLINE CALLBACKS + RE-RENDER (ES-01 fixture)                  */}
+      {/* ==================================================================== */}
+      <section className={styles.section}>
+        <Heading level={2} size="2xl">
+          Nested dialogs — inline callbacks + host re-render
+        </Heading>
+        <Text color="muted">
+          Same nesting, but the OUTER dialog&apos;s <code>onOpenChange</code> is an INLINE arrow
+          (new identity every render) while the inner uses a stable setter — the asymmetry that used
+          to re-push only the outer entry above the inner on host re-renders. Stack order must
+          survive re-renders — Escape still closes only the topmost (E02 escapeStack fixture).
+        </Text>
+
+        <div className={styles.row}>
+          <Button data-testid="open-inline-outer" onClick={() => setInlineOuterOpen(true)}>
+            Open inline-callback outer
+          </Button>
+        </div>
+
+        <Dialog
+          open={inlineOuterOpen}
+          onOpenChange={(o) => setInlineOuterOpen(o)}
+          title="Inline outer dialog"
+          description="Open the inner dialog, then force a host re-render."
+          footer={<Button onClick={() => setInlineOuterOpen(false)}>Close</Button>}
+        >
+          <Text data-testid="rerender-count">Host re-renders: {rerenderCount}</Text>
+          <Button
+            variant="secondary"
+            data-testid="open-inline-inner"
+            onClick={() => setInlineInnerOpen(true)}
+          >
+            Open inline inner
+          </Button>
+          <Button
+            variant="ghost"
+            data-testid="rerender-host"
+            onClick={() => setRerenderCount((c) => c + 1)}
+          >
+            Re-render host
+          </Button>
+        </Dialog>
+
+        <Dialog
+          open={inlineInnerOpen}
+          onOpenChange={setInlineInnerOpen}
+          title="Inline inner dialog"
+          description="Escape must close THIS dialog even after host re-renders."
+          footer={<Button onClick={() => setInlineInnerOpen(false)}>Close</Button>}
+        >
+          <Text>
+            Inner modal with a STABLE onOpenChange — the outer&apos;s is inline, so a host re-render
+            re-runs only the outer&apos;s escape effect (the asymmetry under test).
+          </Text>
+          {/* Re-render trigger lives INSIDE the inner dialog — everything else
+              (incl. the outer dialog) is inert while this one is on top. */}
+          <Button
+            variant="ghost"
+            data-testid="rerender-host-inner"
+            onClick={() => setRerenderCount((c) => c + 1)}
+          >
+            Re-render host (from inner)
+          </Button>
+        </Dialog>
+      </section>
+
+      {/* ==================================================================== */}
+      {/* NON-ESCAPABLE NESTED (ES-02 fixture)                                   */}
+      {/* ==================================================================== */}
+      <section className={styles.section}>
+        <Heading level={2} size="2xl">
+          Non-escapable dialog nested above a regular one
+        </Heading>
+        <Text color="muted">
+          The inner dialog has <code>closeOnEscape=false</code>. While it is on top, Escape must
+          close NOTHING — it shadows the regular dialog underneath (close it with its button).
+        </Text>
+
+        <div className={styles.row}>
+          <Button data-testid="open-noesc-outer" onClick={() => setNoEscOuterOpen(true)}>
+            Open escapable outer
+          </Button>
+        </div>
+
+        <Dialog
+          open={noEscOuterOpen}
+          onOpenChange={setNoEscOuterOpen}
+          title="Escapable outer dialog"
+          description="Now open the non-escapable inner dialog."
+          footer={<Button onClick={() => setNoEscOuterOpen(false)}>Close</Button>}
+        >
+          <Button
+            variant="secondary"
+            data-testid="open-noesc-inner"
+            onClick={() => setNoEscInnerOpen(true)}
+          >
+            Open non-escapable inner
+          </Button>
+        </Dialog>
+
+        <Dialog
+          open={noEscInnerOpen}
+          onOpenChange={setNoEscInnerOpen}
+          title="Non-escapable inner dialog"
+          description="Escape is disabled here — and must not leak to the outer dialog."
+          closeOnEscape={false}
+          footer={
+            <Button data-testid="close-noesc-inner" onClick={() => setNoEscInnerOpen(false)}>
+              Close inner
+            </Button>
+          }
+        >
+          <Text>Press Escape: nothing should close while this dialog is on top.</Text>
+        </Dialog>
+      </section>
+
+      {/* ==================================================================== */}
+      {/* HIDDEN TABBABLE (ES-03 fixture)                                        */}
+      {/* ==================================================================== */}
+      <section className={styles.section}>
+        <Heading level={2} size="2xl">
+          Focus trap — hidden tabbable filtered
+        </Heading>
+        <Text color="muted">
+          The dialog contains a <code>display:none</code> button between visible tabbables. The trap
+          must skip it: initial focus and Tab-wrap land only on visible elements.
+        </Text>
+
+        <div className={styles.row}>
+          <Button data-testid="open-hidden-tabbable" onClick={() => setHiddenTabbableOpen(true)}>
+            Open hidden-tabbable dialog
+          </Button>
+        </div>
+
+        <Dialog
+          open={hiddenTabbableOpen}
+          onOpenChange={setHiddenTabbableOpen}
+          title="Hidden tabbable dialog"
+          description="The LAST button in the DOM is display:none — the trap must not treat it as the wrap edge."
+          footer={
+            <>
+              <Button data-testid="ht-last" onClick={() => setHiddenTabbableOpen(false)}>
+                Close (last visible)
+              </Button>
+              {/* Deliberately raw + hidden + LAST in DOM: pre-E02 the trap saw it
+                  as the cycle edge, so Tab from the real last visible escaped
+                  the dialog instead of wrapping. */}
+              <button type="button" style={{ display: 'none' }} data-testid="ht-hidden">
+                Hidden button
+              </button>
+            </>
+          }
+        >
+          <Button variant="secondary" data-testid="ht-first">
+            First visible
+          </Button>
         </Dialog>
       </section>
     </main>

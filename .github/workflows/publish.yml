@@ -75,7 +75,7 @@ jobs:
       - name: Install Playwright browsers
         run: npx playwright install --with-deps chromium
 
-      - name: Run Playwright smoke suite (E142 L1 — 51 routes + axe-core gate)
+      - name: Run Playwright smoke suite (E142 L1 — all demo routes + axe-core gate)
         run: npm run test:smoke
 
       - name: Publish

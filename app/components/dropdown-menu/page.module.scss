@@ -82,3 +82,15 @@
   background: var(--color-surface-raised);
   border-radius: var(--radius-sm);
 }
+
+// Native-trigger fixture (radix-R21/R22): the bare native branch renders an
+// unstyled <button> — token-based chrome keeps the axe color-contrast gate
+// green on the demo page (canonical consumer usage is asChild + lib Button).
+.nativeTriggerFixture {
+  padding: var(--space-2) var(--space-4);
+  background: var(--color-surface-raised);
+  color: var(--color-text-primary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-input);
+  cursor: pointer;
+}

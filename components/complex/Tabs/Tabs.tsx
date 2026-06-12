@@ -50,11 +50,15 @@
  *   Vertical orientation (Up/Down) is unaffected by dir.
  * @apg https://www.w3.org/WAI/ARIA/apg/patterns/tabs/
  * @tested tsc --noEmit ✓ | eslint + jsx-a11y via eslint-config-next ✓ |
- *   next build ✓ — DEFERRED: Playwright execution (per E15 scope decision),
- *   axe-core runtime sweep, manual NVDA sweep.
- * @regressions tests/Tabs.{keyboard,focus,aria,regression}.spec.md — 22
- *   regression cases mapped (TB-R01..R22). See `docs/_tmp/tabs-spec.md`
- *   Phase 1 Explore output for full bug+fix mapping.
+ *   next build ✓ | Playwright suite EXECUTED in-repo (keyboard/focus/aria/
+ *   regression `.spec.ts` quad, CI-gated; incl. TB-R23/R24) + axe-core
+ *   smoke on the demo route. DEFERRED: manual NVDA sweep.
+ * @regressions tests/Tabs.{keyboard,focus,aria,regression}.spec.md — 24
+ *   regression cases mapped (TB-R01..R24; R23/R24 = asChild rest-forwarding,
+ *   E01 audit remediation). The original bug+fix mapping came from an
+ *   ephemeral `_tmp` spec draft (since retired; the per-case content in
+ *   the tests/ quad is the canon — executable canon in the sibling
+ *   `.spec.ts` files).
  * @example
  *   <Tabs defaultValue="overview">
  *     <TabsList aria-label="Project sections">
@@ -265,6 +269,7 @@ export const Tabs = forwardRef<HTMLDivElement, TabsProps>(function Tabs(
 export type TabsListVariant = 'underline' | 'pill' | 'segmented';
 
 export interface TabsListProps extends HTMLAttributes<HTMLDivElement> {
+  /** TabsTrigger elements. */
   children: ReactNode;
   /**
    * Visual variant. `'underline'` (default) — border-bottom bar with active
@@ -277,6 +282,7 @@ export interface TabsListProps extends HTMLAttributes<HTMLDivElement> {
    * back to first and vice versa. Set `false` for clamped navigation.
    */
   loop?: boolean;
+  /** Extra class for the tablist container. */
   className?: string;
 }
 
@@ -461,6 +467,7 @@ export interface TabsTriggerProps extends Omit<
 > {
   /** REQUIRED — matches the `value` on a TabsContent. */
   value: string;
+  /** Tab label content. */
   children: ReactNode;
   /**
    * When `true`, Slot-wraps the single React element child, merging role +
@@ -468,6 +475,7 @@ export interface TabsTriggerProps extends Omit<
    * `<button type="button">`.
    */
   asChild?: boolean;
+  /** Extra class for the trigger element. */
   className?: string;
 }
 
@@ -546,6 +554,7 @@ export const TabsTrigger = forwardRef<HTMLButtonElement, TabsTriggerProps>(funct
         className={cn(styles.trigger, className)}
         onClick={handleClick}
         onFocus={handleFocus}
+        {...(rest as React.HTMLAttributes<HTMLElement>)}
       >
         {children}
       </Slot>
@@ -578,6 +587,7 @@ export interface TabsContentProps extends Omit<
 > {
   /** REQUIRED — matches the `value` on a TabsTrigger. */
   value: string;
+  /** Panel content shown while this tab is active. */
   children: ReactNode;
   /**
    * When `true`, the content stays mounted in the DOM even when inactive
@@ -586,6 +596,7 @@ export interface TabsContentProps extends Omit<
    * When `false` (default), inactive content is unmounted.
    */
   forceMount?: boolean;
+  /** Extra class for the tabpanel element. */
   className?: string;
 }
 

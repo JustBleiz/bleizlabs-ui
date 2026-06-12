@@ -3,24 +3,32 @@ import { cn } from '../../utils/cn';
 import styles from './Alert.module.scss';
 
 /**
- * Alert — semantic feedback notification with 4 variants (klocek molecule).
+ * Alert — semantic feedback notification with 4 variants (klocek atom).
  *
  * @layer   atom (feedback)
  * @tokens  --color-{error,warning,info,success}{,-subtle,-strong},
- *          --color-surface{,-raised}, --color-text-{primary,secondary,muted},
+ *          --color-surface{,-raised}, --color-text-{primary,secondary},
  *          --space-{1,3,4}, --font-size-{sm,base}, --font-weight-semibold,
  *          --line-height-{snug,normal}, --radius-{sm,md},
  *          --duration-{fast,normal}, --easing-default, --focus-ring,
+ *          --size-touch-min (via `@include mx.touch-target`),
  *          fadeIn keyframe.
- * @deps    cn. Server-safe.
+ * @deps    cn. Server-safe in the read-only case (see @notes).
  * @a11y    `variant="critical"` → `role="alert"` + `aria-live="assertive"`
  *          (interrupts SR immediately). Other variants → `role="status"` +
  *          `aria-live="polite"` (waits for next pause). Close button is native
  *          `<button type="button">` z `aria-label="Dismiss notification"` +
- *          44×44 touch target. Title slot renders as plain `<div>` — consumer
+ *          44×44 touch target (coarse pointer). Title slot renders as plain `<div>` — consumer
  *          wraps own `<strong>`/`<Heading>` for semantic emphasis.
  *
- * @notes   SIMPLIFY 0.15.0 — dropped 3 props (`timestamp`, `href`, `closeIcon`)
+ * @notes   No `'use client'` directive — Alert itself is purely
+ *          presentational (no state, no effects). When `onClose` is
+ *          supplied, the parent must naturally be a Client Component (you
+ *          cannot pass function props from a Server Component anyway) —
+ *          Alert remains RSC-compatible in the read-only case
+ *          (`<Alert variant="info" title="..." />`).
+ *
+ *          SIMPLIFY 0.15.0 — dropped 3 props (`timestamp`, `href`, `closeIcon`)
  *          + #4 auto-wrap fix. 7 props → 4. Migration patterns:
  *          - timestamp → wrap inside description ReactNode:
  *            `description={<><span>copy</span><time dateTime={iso}>{iso}</time></>}`

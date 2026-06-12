@@ -218,4 +218,63 @@ test.describe('Select — keyboard interactions', () => {
     await expect(page.getByRole('listbox')).toHaveCount(0);
     await expect(trigger).toContainText('React');
   });
+
+  test('SL-R25 — closed printable char opens listbox + applies typeahead match (E03, APG)', async ({
+    page,
+  }) => {
+    // Pre-fix: a printable char on the CLOSED trigger was a dead-code no-op
+    // (the registry is empty while closed) — the listbox never opened.
+    const sections = page.locator('section');
+    const long = sections.nth(4);
+    const trigger = long.getByRole('combobox');
+    await trigger.focus();
+    await page.keyboard.type('c');
+    const listbox = page.getByRole('listbox').first();
+    await expect(listbox).toBeVisible();
+    const canada = listbox.getByRole('option', { name: 'Canada', exact: true });
+    const canadaId = await canada.getAttribute('id');
+    await expect(trigger).toHaveAttribute('aria-activedescendant', canadaId as string);
+  });
+
+  test('SL-R26 — closed→open typeahead refinement (c → cr)', async ({ page }) => {
+    const sections = page.locator('section');
+    const long = sections.nth(4);
+    const trigger = long.getByRole('combobox');
+    await trigger.focus();
+    await page.keyboard.type('c');
+    // Assert-between-keystrokes: wait for the open commit before refining,
+    // so the second char routes to the open-state listbox handler.
+    const listbox = page.getByRole('listbox').first();
+    await expect(listbox).toBeVisible();
+    await page.keyboard.type('r');
+    const croatia = listbox.getByRole('option', { name: 'Croatia', exact: true });
+    const croatiaId = await croatia.getAttribute('id');
+    await expect(trigger).toHaveAttribute('aria-activedescendant', croatiaId as string);
+  });
+
+  test('SL-R27 — closed End seeds LAST enabled option; closed ArrowUp with no value too (E03)', async ({
+    page,
+  }) => {
+    // Pre-fix: all open-intent keys seeded value ?? first — the documented
+    // Home/End/ArrowUp seeding contract was silently broken.
+    const sections = page.locator('section');
+    const long = sections.nth(4);
+    const trigger = long.getByRole('combobox');
+    const listbox = page.getByRole('listbox');
+
+    await trigger.focus();
+    await page.keyboard.press('End');
+    await expect(listbox.first()).toBeVisible();
+    const options = listbox.first().getByRole('option');
+    const lastId = await options.last().getAttribute('id');
+    await expect(trigger).toHaveAttribute('aria-activedescendant', lastId as string);
+    await page.keyboard.press('Escape');
+    await expect(listbox).toHaveCount(0);
+
+    // ArrowUp with no selected value (defaultValue={null}) → last as well.
+    await page.keyboard.press('ArrowUp');
+    await expect(listbox.first()).toBeVisible();
+    const lastId2 = await listbox.first().getByRole('option').last().getAttribute('id');
+    await expect(trigger).toHaveAttribute('aria-activedescendant', lastId2 as string);
+  });
 });

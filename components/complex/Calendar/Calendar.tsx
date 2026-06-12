@@ -67,16 +67,27 @@
  * @apg https://www.w3.org/WAI/ARIA/apg/patterns/grid/
  *   https://www.w3.org/WAI/ARIA/apg/patterns/dialog-modal/examples/datepicker-dialog/
  * @tested tsc --noEmit ✓ | eslint + jsx-a11y via eslint-config-next ✓ |
- *   next build ✓ — DEFERRED: Playwright execution (per E15 scope decision),
- *   axe-core runtime sweep, manual NVDA sweep.
- * @regressions tests/Calendar.{keyboard,focus,aria,regression}.spec.md —
- *   24 regression cases (CAL-R01..R24) documented in
- *   `docs/specs/calendar-spec.md` (promoted from `_tmp` in E42) — RTL arrow
+ *   next build ✓ | Playwright suite EXECUTED in-repo (6 `.spec.ts` suites:
+ *   aria/keyboard/focus/regression/cellExtras/layoutBounds, CI-gated).
+ *   DEFERRED: manual NVDA sweep (tests/Calendar.nvda.sweep.md — pending,
+ *   never executed).
+ * @regressions CAL-R01..R25 — canonical suite lives in the sibling
+ *   `tests/Calendar.*.spec.ts` files (the `.spec.md` mirrors are
+ *   consumer-CI reference snapshots, not the source of truth) — RTL arrow
  *   mirror, DST seamless nav, year boundary (Dec → Jan), leap year Feb 29,
- *   locale week-start
- *   (PL=Mon, US=Sun, ar-SA=Sat), min/max clamp, disabled predicate skip,
- *   today marker only when today in grid, multi-instance independent
- *   roving.
+ *   locale week-start (PL=Mon, US=Sun, ar-SA=Sat), min/max clamp, disabled
+ *   predicate skip, today marker only when today in grid (CAL-R25:
+ *   hydration-safe — absent from SSR HTML, applied post-mount),
+ *   multi-instance independent roving.
+ * @notes The today marker is hydration-safe: `today` is null during SSR +
+ *   the hydration render (useSyncExternalStore with a null server
+ *   snapshot — no server/build-day baked into prerendered HTML) and takes
+ *   the client-clock value right after hydration. The INITIAL focused
+ *   date/month fallback is still clock-derived by design — for
+ *   SSG/SSR-critical inline calendars pass `defaultMonth` (or `value`) so
+ *   the initial grid and roving tabIndex don't depend on the rendering
+ *   clock. No midnight refresh (marker can go stale only across an open
+ *   session spanning midnight — acceptable trade-off).
  * @example
  *   // Uncontrolled
  *   <Calendar defaultValue={new Date(2026, 3, 15)} onValueChange={setDate} />
@@ -109,6 +120,7 @@ import {
   useMemo,
   useRef,
   useState,
+  useSyncExternalStore,
   type HTMLAttributes,
   type KeyboardEvent,
   type MouseEvent,
@@ -162,7 +174,8 @@ interface CalendarContextValue {
   showOutsideDays: boolean;
   fixedWeeks: boolean;
   dir: CalendarDir;
-  today: Date;
+  /** Null during SSR + first client paint (hydration-safe today marker). */
+  today: Date | null;
   baseId: string;
   gridRef: RefObject<HTMLTableElement | null>;
   requestCellFocus: (date: Date) => void;
@@ -211,6 +224,30 @@ function findNextFocusable(
   return null;
 }
 
+// Hydration-safe today snapshot (E04 audit remediation) — see the
+// useSyncExternalStore call in Calendar root. Day-cached so the snapshot
+// reference stays stable within a day (uSES re-reads on every render; a
+// fresh Date each call would loop). Server snapshot = null (no today marker
+// in prerendered HTML). Noop subscribe — no midnight refresh by design.
+let todaySnapshotCache: { key: string; date: Date } | null = null;
+
+function getTodaySnapshot(): Date | null {
+  const now = startOfDay(new Date());
+  const key = now.toDateString();
+  if (!todaySnapshotCache || todaySnapshotCache.key !== key) {
+    todaySnapshotCache = { key, date: now };
+  }
+  return todaySnapshotCache.date;
+}
+
+function getTodayServerSnapshot(): Date | null {
+  return null;
+}
+
+function subscribeToNothing(): () => void {
+  return () => {};
+}
+
 // ──────────────────────────────────────────────────────────────────────────
 // Calendar — root + state holder
 
@@ -224,7 +261,7 @@ export interface CalendarProps extends Omit<
   defaultValue?: Date | null;
   /** Fires on committed selection transitions (including clear to `null`). */
   onValueChange?: (date: Date | null) => void;
-  /** Initial month to display when uncontrolled and no `defaultValue`. Default today. */
+  /** Initial month to display when uncontrolled and no `defaultValue`. Defaults to the current clock day. */
   defaultMonth?: Date;
   /** Minimum selectable date (inclusive, day granularity). */
   min?: Date;
@@ -332,16 +369,28 @@ export const Calendar = forwardRef<HTMLDivElement, CalendarProps>(function Calen
     onValueChange: handleValueChange,
   });
 
-  // Today — computed once per mount. Day-granularity (midnight local).
-  const today = useMemo(() => startOfDay(new Date()), []);
+  // Today — hydration-safe (E04 audit remediation): useSyncExternalStore
+  // with a null server snapshot — server HTML and the hydration render carry
+  // NO today marker (computing it in the render path baked the server/build
+  // day into prerendered HTML: a guaranteed mismatch when hydrating on a
+  // different day — SSG build-day pages, TZ skew); the client snapshot takes
+  // over right after hydration. Mirrors the lib's useMatchMedia /
+  // useResolvedLocale SSR-safe pattern. Midnight refresh deliberately not
+  // implemented (noop subscribe — marker goes stale only across an open
+  // session spanning midnight; acceptable).
+  const today = useSyncExternalStore(subscribeToNothing, getTodaySnapshot, getTodayServerSnapshot);
 
-  // Initial focused date: selected → defaultMonth → today. Computed once on
-  // mount; user nav overrides after. Excluded from deps intentionally —
-  // recomputing on later selectedDate change would fight user's keyboard nav.
+  // Initial focused date: selected → defaultMonth → current clock day.
+  // Computed once on mount; user nav overrides after. Excluded from deps
+  // intentionally — recomputing on later selectedDate change would fight
+  // user's keyboard nav. NOTE: the clock fallback is inherently
+  // clock-derived — for SSG/SSR-critical inline calendars pass
+  // `defaultMonth` (or `value`) so the initial grid/tabIndex don't depend
+  // on the rendering clock (see @notes).
   const [focusedDate, setFocusedDate] = useState<Date>(() => {
     if (selectedDate && isDateInRange(selectedDate, min, max)) return startOfDay(selectedDate);
     if (defaultMonth) return startOfDay(defaultMonth);
-    return today;
+    return startOfDay(new Date());
   });
 
   const displayMonth = useMemo(() => startOfMonth(focusedDate), [focusedDate]);
@@ -599,6 +648,7 @@ function ChevronRightIcon() {
 // CalendarGrid — role="grid" + keyboard handler owner
 
 export interface CalendarGridProps extends TableHTMLAttributes<HTMLTableElement> {
+  /** Table sections — CalendarGridHead weekday row + CalendarGridBody date rows. */
   children?: ReactNode;
 }
 
@@ -863,7 +913,8 @@ export const CalendarCell = forwardRef<HTMLTableCellElement, CalendarCellProps>(
     const isInMonth = !isOutside;
     const isSelected = selectedDate != null && isSameDay(date, selectedDate);
     const isFocused = isSameDay(date, focusedDate);
-    const isToday = isSameDay(date, today);
+    // today === null during SSR + first paint → marker applied post-mount only.
+    const isToday = today !== null && isSameDay(date, today);
     const disabled = isDisabled(date);
 
     // Per-cell consumer slot — spread BEFORE fixed attrs so component owns

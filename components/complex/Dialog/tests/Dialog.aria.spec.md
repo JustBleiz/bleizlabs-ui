@@ -1,13 +1,14 @@
 # Dialog.aria.spec
 
-> Deferred execution — Playwright spec ready for consumer CI/CD. See Dialog.tsx `@tested` header.
+> Consumer-CI mirror — the CANONICAL, in-repo-executed suite lives in the sibling `.spec.ts`
+> (CI-gated; status in Dialog.tsx `@tested` — only the manual NVDA sweep stays deferred).
 
 ```typescript
 /**
  * Dialog ARIA accessibility tree spec — APG role/property compliance (E15).
  *
- * EXECUTION DEFERRED: written as Playwright specs + axe-core integration hooks;
- * runs on first consumer adoption.
+ * [Historical fence note — superseded 2026-06, E02: the suite EXECUTES in-repo
+ * via Dialog.aria.spec.ts; only the manual NVDA sweep stays deferred.]
  *
  * Coverage:
  * - role="dialog" + aria-modal="true"

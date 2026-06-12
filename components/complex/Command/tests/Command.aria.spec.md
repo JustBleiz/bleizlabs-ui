@@ -1,6 +1,8 @@
 # Command — ARIA semantics spec
 
-**Execution status:** DEFERRED per E15 scope.
+**Execution status:** EXECUTED in-repo — the canonical suite lives in the sibling
+`Command.aria.spec.ts` (CI-gated; status in Command.tsx `@tested`; only the manual NVDA
+sweep stays deferred). This file is a consumer-CI reference snapshot, not the source of truth.
 
 ## Tests
 

@@ -1,12 +1,20 @@
 # Dialog.regression.spec
 
-> Deferred execution — Playwright spec ready for consumer CI/CD. See Dialog.tsx `@tested` header.
+> Consumer-CI mirror — the CANONICAL, in-repo-executed suite lives in
+> `Dialog.regression.spec.ts` (CI-gated; status in Dialog.tsx `@tested`). This fence is a
+> reference snapshot for consumer CI/CD adoption, not the source of truth.
+> E02 audit remediation (2026-06): #1249 strengthened (asserts the INNER closes and the outer
+> survives — the old assertion passed even when the wrong dialog closed) + new EXECUTED cases
+> ES-01 (stack order survives host re-renders with inline onOpenChange), ES-02
+> (closeOnEscape=false shadows ancestors), ES-03 (hidden tabbable filtered from the trap) —
+> live in `Dialog.regression.spec.ts`.
 
 ```typescript
 /**
  * Dialog regression spec — 21 Radix closed issues mapped to test cases (E15).
  *
- * EXECUTION DEFERRED: written as Playwright specs; runs on first consumer adoption.
+ * [Historical fence note — superseded 2026-06, E02: the suite EXECUTES in-repo
+ * via Dialog.regression.spec.ts; only the manual NVDA sweep stays deferred.]
  *
  * Each test maps to a Radix UI primitives closed issue — the same edge cases
  * that bit Radix are explicit regression guards for bleizlabs-ui Dialog.
@@ -75,6 +83,11 @@ test.describe('Dialog — regression cases (Radix closed issues)', () => {
   });
 
   // #1249 — Multiple stacked dialogs; closing second one closes both
+  // [SUPERSEDED 2026-06, E02] — the weak assertions below passed even when the
+  // WRONG dialog closed. Canonical strengthened version lives in
+  // `Dialog.regression.spec.ts` (#1249 asserts the INNER closes and the outer
+  // survives, then the outer closes on the second Escape) alongside the new
+  // ES-01..ES-03 cases. Do NOT copy this fence for #1249.
   test('#1249: nested dialogs — Escape only closes topmost', async ({ page }) => {
     await page.getByRole('button', { name: /open nested outer/i }).click();
     const outer = page.getByRole('dialog').first();

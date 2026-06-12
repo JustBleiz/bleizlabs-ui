@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1",
-  "libVersion": "0.26.0",
-  "generatedAt": "2026-05-19T16:47:35.189Z",
+  "libVersion": "0.28.0",
+  "generatedAt": "2026-06-12T12:57:18.387Z",
   "categories": {
     "layout": ["Container", "GridLayout", "Inline", "Section", "Stack"],
     "typography": ["Anchor", "Eyebrow", "Heading", "Mark", "Text"],
@@ -34,6 +34,7 @@
       "PhoneInput",
       "RadioGroup",
       "Rating",
+      "SkipLink",
       "Switch",
       "TagsInput",
       "TextLink",
@@ -374,7 +375,7 @@
       "isClient": false,
       "summary": "Button — primary interactive atom (Phase 4 I1).",
       "exports": ["Button"],
-      "types": ["ButtonProps", "ButtonSize", "ButtonVariant"],
+      "types": ["ButtonProps", "ButtonShape", "ButtonSize", "ButtonVariant"],
       "hooks": []
     },
     {
@@ -488,6 +489,16 @@
       "hooks": []
     },
     {
+      "family": "SkipLink",
+      "category": "interactive",
+      "path": "interactive/SkipLink",
+      "isClient": false,
+      "summary": "SkipLink — WCAG 2.4.1 Bypass Blocks anchor (skip to main content).",
+      "exports": ["SkipLink"],
+      "types": ["SkipLinkProps"],
+      "hooks": []
+    },
+    {
       "family": "Switch",
       "category": "interactive",
       "path": "interactive/Switch",
@@ -568,7 +579,7 @@
       "category": "feedback",
       "path": "feedback/Alert",
       "isClient": false,
-      "summary": "Alert — semantic feedback notification with 4 variants (klocek molecule).",
+      "summary": "Alert — semantic feedback notification with 4 variants (klocek atom).",
       "exports": ["Alert"],
       "types": ["AlertProps", "AlertVariant"],
       "hooks": []
@@ -588,7 +599,7 @@
       "category": "feedback",
       "path": "feedback/Empty",
       "isClient": false,
-      "summary": "Empty — placeholder for empty lists / zero-result screens (klocek molecule).",
+      "summary": "Empty — placeholder for empty lists / zero-result screens (klocek atom).",
       "exports": ["Empty"],
       "types": ["EmptyProps"],
       "hooks": []
@@ -801,7 +812,7 @@
       "family": "Chip",
       "category": "molecules",
       "path": "molecules/Chip",
-      "isClient": false,
+      "isClient": true,
       "summary": "Chip — pill-shaped filter chip with toggle (default) or display-only mode.",
       "exports": ["Chip"],
       "types": ["ChipDotColor", "ChipProps", "ChipSize", "ChipTone"],
@@ -892,7 +903,7 @@
       "category": "complex",
       "path": "complex/AlertDialog",
       "isClient": true,
-      "summary": "AlertDialog — modal alert dialog composing portal + overlay + focus-trapped content (Phase 10 CI2, E16).",
+      "summary": "Required alert description — drives `aria-describedby`.",
       "exports": ["AlertDialog"],
       "types": ["AlertDialogProps", "AlertDialogSeverity", "AlertDialogSize"],
       "hooks": []
@@ -1124,7 +1135,7 @@
       "category": "complex",
       "path": "complex/Drawer",
       "isClient": true,
-      "summary": "Drawer — bottom-positioned modal sheet composing portal + overlay + focus-trapped content (Phase 10 CI3, E17).",
+      "summary": "Optional description — drives `aria-describedby` only when provided (Dialog parity, NOT AlertDialog's strictness since…",
       "exports": ["Drawer"],
       "types": ["DrawerProps", "DrawerSize"],
       "hooks": []
@@ -1328,7 +1339,7 @@
       "category": "complex",
       "path": "complex/Sheet",
       "isClient": true,
-      "summary": "Sheet — side panel modal sheet composing portal + overlay + focus-trapped content (Phase 10 CI4, E18).",
+      "summary": "Optional description — drives `aria-describedby` only when provided (Dialog parity, NOT AlertDialog strictness).",
       "exports": ["Sheet"],
       "types": ["SheetProps", "SheetSide", "SheetSize"],
       "hooks": []

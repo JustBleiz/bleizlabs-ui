@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Calendar, type CalendarDir, type CalendarWeekStart } from '@/components/complex/Calendar';
+import { Calendar } from '@/components/complex/Calendar';
 import { Heading } from '@/components/typography/Heading';
 import { Text } from '@/components/typography/Text';
 import { Inline } from '@/components/layout/Inline';
@@ -298,6 +298,3 @@ export default function CalendarPlayground() {
     </main>
   );
 }
-
-// Silence unused-type import warnings (exported for consumer reference in JSDoc)
-export type _CalendarTypes = { dir: CalendarDir; weekStart: CalendarWeekStart };

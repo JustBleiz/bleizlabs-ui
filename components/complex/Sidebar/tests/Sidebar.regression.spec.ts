@@ -1,8 +1,11 @@
 /**
- * Sidebar regression spec (24 cases SB-R01..R24) — E142 L3c.
+ * Sidebar regression spec (24 cases SB-R01..R24 + SB-ES01) — E142 L3c.
  *
- * Runtime-verifiable cases covered here: SB-R11, R13, R14. Others skipped with
- * PLAYGROUND-DEP (cookie persistence, groupDisclosure, asChild Next.js Link).
+ * Runtime-verifiable cases covered here: SB-R11, R13, R14 (un-skipped E02),
+ * SB-ES01 (E02 audit remediation: drawer joins the shared escapeStack — a
+ * Dialog above the drawer no longer drags it down on one Escape). Others
+ * skipped with PLAYGROUND-DEP (cookie persistence, groupDisclosure, asChild
+ * Next.js Link).
  */
 
 import { test, expect } from '@playwright/test';
@@ -32,9 +35,63 @@ test.describe('Sidebar — regression (responsive + behavior)', () => {
     await expect(dialog).toHaveAttribute('role', 'dialog');
   });
 
-  test.skip('SB-R14 — mobile drawer: backdrop click dismisses [PLAYGROUND-DEP: matchMedia resize does not transition to drawer mode under Playwright]', async () => {
-    // Verified manually — handleOverlayClick at Sidebar.tsx:397-403 closes
-    // drawer on overlay click (target === currentTarget check).
+  // Un-skipped in E02: the old PLAYGROUND-DEP rationale ("matchMedia resize
+  // does not transition under Playwright") was disproven by SB-R13 above;
+  // viewport-before-goto makes useMatchMedia mobile from hydration.
+  test('SB-R14 — mobile drawer: backdrop click dismisses', async ({ page }) => {
+    await page.setViewportSize({ width: 400, height: 800 });
+    await page.goto('/components/sidebar');
+    // useMatchMedia initializes false (SSR-safe) and flips to mobile AFTER
+    // hydration — the four defaultOpen demos (Basic, Groups, Shortcut,
+    // SideRight) mount as drawers at that flip. Wait for them, then dismiss
+    // one by one (each Escape closes the stack top).
+    await expect(page.locator('[role="dialog"]').first()).toBeVisible({ timeout: 5000 });
+    for (let i = 0; i < 6 && (await page.locator('[role="dialog"]').count()) > 0; i += 1) {
+      await page.keyboard.press('Escape');
+      await page.waitForTimeout(150);
+    }
+    await expect(page.locator('[role="dialog"]')).toHaveCount(0);
+    await page.getByTestId('open-drawer-sidebar').click();
+    const drawer = page.getByRole('dialog', { name: 'Drawer dialog sidebar' });
+    await expect(drawer).toBeVisible();
+    // Click the overlay (next to the drawer panel, target === currentTarget).
+    await page.mouse.click(395, 400);
+    await expect(drawer).not.toBeVisible();
+  });
+
+  // SB-ES01 (E02) — drawer joins the shared escapeStack. Pre-fix the drawer
+  // used a plain document keydown (stopPropagation does NOT stop other
+  // document-level listeners) — a Dialog opened above the drawer closed
+  // TOGETHER with it on one Escape.
+  test('SB-ES01 — Dialog above mobile drawer: Escape closes only the Dialog, then the drawer', async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 400, height: 800 });
+    await page.goto('/components/sidebar');
+    // useMatchMedia initializes false (SSR-safe) and flips to mobile AFTER
+    // hydration — the four defaultOpen demos (Basic, Groups, Shortcut,
+    // SideRight) mount as drawers at that flip. Wait for them, then dismiss
+    // one by one (each Escape closes the stack top).
+    await expect(page.locator('[role="dialog"]').first()).toBeVisible({ timeout: 5000 });
+    for (let i = 0; i < 6 && (await page.locator('[role="dialog"]').count()) > 0; i += 1) {
+      await page.keyboard.press('Escape');
+      await page.waitForTimeout(150);
+    }
+    await expect(page.locator('[role="dialog"]')).toHaveCount(0);
+    await page.getByTestId('open-drawer-sidebar').click();
+    const drawer = page.getByRole('dialog', { name: 'Drawer dialog sidebar' });
+    await expect(drawer).toBeVisible();
+
+    await page.getByTestId('open-drawer-dialog').click();
+    const dialog = page.getByRole('dialog', { name: 'Dialog above the drawer' });
+    await expect(dialog).toBeVisible();
+
+    await page.keyboard.press('Escape');
+    await expect(dialog).not.toBeVisible();
+    await expect(drawer).toBeVisible();
+
+    await page.keyboard.press('Escape');
+    await expect(drawer).not.toBeVisible();
   });
 
   test('cookie persistence: when persist=false (default), state not written', async ({
@@ -76,7 +133,7 @@ test.describe('Sidebar — regression (responsive + behavior)', () => {
 
   test('side=right sidebar renders with data-side=right (desktop mode)', async ({ page }) => {
     // Verify side=right prop forwards through to DOM attr on desktop aside.
-    // (Mobile drawer transition blocked by matchMedia limitation.)
+    // (Drawer-mode data-side is exercised by the mobile specs above.)
     await page.setViewportSize({ width: 1280, height: 900 });
     await page.goto('/components/sidebar');
     const rightSidebar = page.locator('aside[aria-label="Right sidebar"]');

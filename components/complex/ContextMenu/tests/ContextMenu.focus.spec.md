@@ -1,6 +1,8 @@
 # ContextMenu — focus management spec
 
-**Execution status:** DEFERRED.
+**Execution status:** EXECUTED in-repo — the canonical suite lives in the sibling
+`ContextMenu.focus.spec.ts` (CI-gated; status in ContextMenu.tsx `@tested`; only the manual NVDA
+sweep stays deferred). This file is a consumer-CI reference snapshot, not the source of truth.
 **Focus contract:** On open, move focus to first non-disabled menu item via
 `rAF` deferred `.focus()`. On close (Escape, item select, outside click),
 restore focus to whatever was `document.activeElement` at the moment the

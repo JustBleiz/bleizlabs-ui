@@ -37,7 +37,7 @@ export default function BannerPlaygroundPage() {
         </Heading>
         <Text variant="small" color="secondary">
           <code>info</code> · <code>warning</code> · <code>error</code> · <code>success</code>. Each
-          maps to a tinted background + <code>-strong</code> border + ARIA semantics.
+          maps to a tinted background + base-tone border + ARIA semantics.
         </Text>
         <div className={styles.stack}>
           <Banner tone="info">

@@ -1,6 +1,8 @@
 # Popover — focus management spec
 
-**Execution status:** DEFERRED.
+**Execution status:** EXECUTED in-repo — the canonical suite lives in the sibling
+`Popover.focus.spec.ts` (CI-gated; status in Popover.tsx `@tested`; only the manual NVDA
+sweep stays deferred). This file is a consumer-CI reference snapshot, not the source of truth.
 **Focus contract:** On open, focus moves INTO content (first tabbable or content
 element). On close, focus restores to trigger. Modal mode adds trap.
 

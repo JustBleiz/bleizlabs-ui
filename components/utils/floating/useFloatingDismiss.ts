@@ -31,6 +31,7 @@
  */
 
 import { useEffect, useRef, type RefObject } from 'react';
+import { useFloatingEscapeStack } from './useFloatingEscapeStack';
 
 export interface FloatingDismissConfig {
   /** When false, all listeners are detached and the hook is a no-op. */
@@ -72,19 +73,11 @@ export function useFloatingDismiss(config: FloatingDismissConfig): void {
     configRef.current = config;
   });
 
-  // Escape key dismiss — document level so nested components preventDefault first.
-  useEffect(() => {
-    if (!config.open) return;
-    if (config.closeOnEscape === false) return;
-    const handleKey = (event: KeyboardEvent) => {
-      if (event.key === 'Escape' && !event.defaultPrevented) {
-        event.preventDefault();
-        configRef.current.onDismiss();
-      }
-    };
-    document.addEventListener('keydown', handleKey);
-    return () => document.removeEventListener('keydown', handleKey);
-  }, [config.open, config.closeOnEscape]);
+  // Escape — shared Dialog escapeStack so nested modal + floating surfaces
+  // dismiss topmost-first (APG/Radix #1951/#2450; replaces flat document listener).
+  useFloatingEscapeStack(config.open && config.closeOnEscape !== false, () => {
+    configRef.current.onDismiss();
+  });
 
   // Outside pointerdown — capture phase, skip scrollbar + content + trigger.
   useEffect(() => {

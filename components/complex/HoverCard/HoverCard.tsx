@@ -36,9 +36,9 @@
  *   exposure if needed (consumer wires this).
  * @apg https://www.w3.org/WAI/ARIA/apg/patterns/dialog-modal/ (modeless modifier)
  * @tested tsc --noEmit ✓ | eslint + jsx-a11y via eslint-config-next ✓ |
- *   next build ✓ — DEFERRED: Playwright execution (Playwright MCP disconnected
- *   this session), axe-core runtime sweep, manual NVDA sweep, iOS/Android
- *   device testing. Per E15 scope decision.
+ *   next build ✓ | Playwright suite EXECUTED in-repo (keyboard/focus/aria/
+ *   regression `.spec.ts` quad, CI-gated) + axe-core smoke on the demo
+ *   route. DEFERRED: manual NVDA sweep, iOS/Android device testing.
  * @regressions tests/HoverCard.{keyboard,focus,aria,regression}.spec.md — 15
  *   Radix-style regression cases mapped (HC-R01 hover delay timing, HC-R02
  *   grace area cancel by content pointer enter, HC-R03 focus parity instant
@@ -250,6 +250,7 @@ const [HoverCardContextProvider, useHoverCardContext] =
 // ──────────────────────────────────────────────────────────────────────────
 
 export interface HoverCardProps {
+  /** HoverCardTrigger + HoverCardContent compound children. */
   children: ReactNode;
   /** Controlled open state. When provided, component is controlled. */
   open?: boolean;
@@ -388,13 +389,23 @@ export function HoverCard({
     return () => clearTimers();
   }, [clearTimers]);
 
+  // Ref for the escape effect — `closeImmediate` is structurally unstable
+  // (depends on `setOpen` from useFloatingState, which changes with `open`);
+  // with it in deps the effect re-ran and splice+pushed this entry above a
+  // nested child's on the shared stack (E02 audit fix; canonical pattern +
+  // rationale in Dialog.tsx/escapeStack.ts). Deps stay `[open]`.
+  const closeImmediateRef = useRef(closeImmediate);
+  useEffect(() => {
+    closeImmediateRef.current = closeImmediate;
+  });
+
   // Escape on document — routes through the shared Dialog escapeStack
   // (E142 L4 F4) so nested modal scenarios (Dialog + HoverCard) dismiss the
   // topmost surface only. Does NOT steal focus from trigger (SC 1.4.13).
   // Window blur + visibilitychange — hide on tab switch (Tooltip precedent).
   useEffect(() => {
     if (!open) return;
-    const close = () => closeImmediate();
+    const close = () => closeImmediateRef.current();
     escapeStack.push(close);
     const handleKey = (event: KeyboardEvent) => {
       if (event.key !== 'Escape') return;
@@ -403,19 +414,19 @@ export function HoverCard({
       close();
     };
     const handleVisibility = () => {
-      if (document.visibilityState === 'hidden') closeImmediate();
+      if (document.visibilityState === 'hidden') close();
     };
     document.addEventListener('keydown', handleKey);
     document.addEventListener('visibilitychange', handleVisibility);
-    window.addEventListener('blur', closeImmediate);
+    window.addEventListener('blur', close);
     return () => {
       document.removeEventListener('keydown', handleKey);
       document.removeEventListener('visibilitychange', handleVisibility);
-      window.removeEventListener('blur', closeImmediate);
+      window.removeEventListener('blur', close);
       const idx = escapeStack.indexOf(close);
       if (idx !== -1) escapeStack.splice(idx, 1);
     };
-  }, [open, closeImmediate]);
+  }, [open]);
 
   const isCoarsePointer = useCoarsePointer();
 
@@ -467,6 +478,7 @@ export interface HoverCardTriggerProps extends Omit<
   ButtonHTMLAttributes<HTMLElement>,
   'aria-expanded' | 'aria-haspopup' | 'aria-controls'
 > {
+  /** Trigger content — the element to enrich (link/avatar) when `asChild`, else `<span>` content. */
   children: ReactNode;
   /**
    * When `true`, Slot-wraps the single React element child, merging hover/
@@ -607,9 +619,11 @@ export interface HoverCardContentProps extends Omit<
   title?: string;
   /** Optional muted description rendered below the title. */
   description?: string;
+  /** Main card body content rendered below the optional title and description. */
   children?: ReactNode;
   /** Optional footer slot — typically meta info or action buttons. */
   footer?: ReactNode;
+  /** Extra class merged onto the content surface. */
   className?: string;
 }
 

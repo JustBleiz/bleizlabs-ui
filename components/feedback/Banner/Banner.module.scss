@@ -56,9 +56,14 @@
     opacity var(--duration-fast) var(--easing-default),
     background-color var(--duration-fast) var(--easing-default);
 
+  @include mx.touch-target;
+
   &:hover {
     opacity: 1;
-    background: rgb(0 0 0 / 0.06);
+    // Theme-aware scrim (E04 audit remediation): mixes from text-primary so
+    // it flips with the theme (light: dark scrim ≈ the old 6% black; dark:
+    // light scrim). The old `rgb(0 0 0 / 0.06)` literal was theme-blind.
+    background: color-mix(in srgb, var(--color-text-primary) 6%, transparent);
   }
 
   &:focus-visible {
@@ -69,7 +74,7 @@
 
 // TONES — drive --banner-{bg,border,fg} channel. Background uses the
 // `-subtle` semantic so the banner reads as a tinted surface rather
-// than a solid color block; border uses the `-strong` tone for clear
+// than a solid color block; border uses the BASE tone color for a clear
 // boundary; foreground stays primary text color (consumer-overridable
 // via globals.scss tone palette).
 

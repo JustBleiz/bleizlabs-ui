@@ -8,6 +8,8 @@
  * - DT-S04 Only one column sorted at a time (multi-sort deferred)
  * - DT-S05 Clicking unsortable column header does NOT sort
  * - DT-S06 Sort order reflects in rendered row order
+ * - DT-S07 Sort control accessible name contains the visible column name
+ *   (WCAG 2.5.3 Label in Name — E03 audit remediation)
  */
 
 import { test, expect } from '@playwright/test';
@@ -89,5 +91,21 @@ test.describe('DataTable — sort behavior', () => {
     const t1 = (await firstCell.textContent())?.trim() ?? '';
     const t2 = (await secondCell.textContent())?.trim() ?? '';
     expect(t1.localeCompare(t2)).toBeGreaterThanOrEqual(0);
+  });
+
+  test('DT-S07 — sort control accessible name contains the visible column name', async ({
+    page,
+  }) => {
+    const grids = allGrids(page);
+    const grid = grids.nth(1); // sortable+filterable — "Owner" column is sortable
+    // Pre-fix: aria-label was the bare action ("Sort ascending") and OVERRODE
+    // the visible header text — WCAG 2.5.3 Label in Name fail. Post-fix the
+    // name is "<header>: <action>" in every sort state.
+    const ownerSort = grid.getByRole('button', { name: /^Owner: Sort/i });
+    await expect(ownerSort).toBeVisible();
+    await ownerSort.click();
+    await page.waitForTimeout(50);
+    // After sorting asc the action label changes — column name must remain.
+    await expect(grid.getByRole('button', { name: /^Owner: Sort/i })).toBeVisible();
   });
 });

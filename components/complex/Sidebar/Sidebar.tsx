@@ -23,6 +23,7 @@ import { Slot } from '../../utils/Slot';
 import { FloatingPortal } from '../../utils/floating';
 import { useMatchMedia } from '../../utils/match-media';
 import { useFocusTrap } from '../Dialog/useFocusTrap';
+import { escapeStack } from '../Dialog/escapeStack';
 import styles from './Sidebar.module.scss';
 
 /**
@@ -62,11 +63,14 @@ import styles from './Sidebar.module.scss';
  *           https://www.w3.org/WAI/ARIA/apg/patterns/dialog-modal/
  *           (composition — navigation sidebars use plain nav not menubar
  *           APG per WCAG H48/ARIA11 guidance for site navigation)
- * @tested   tsc + eslint + next build (Playwright/NVDA/axe deferred per E15
- *           scope — consistent across 21 prior Phase 10 components).
+ * @tested   tsc + eslint + next build + Playwright suite EXECUTED in-repo
+ *           (keyboard/focus/aria/regression `.spec.ts` quad, CI-gated) +
+ *           axe-core smoke on the demo route. DEFERRED: manual NVDA sweep
+ *           (`tests/Sidebar.nvda.sweep.md`).
  * @regressions tests/Sidebar.{keyboard,focus,aria,regression}.spec.md —
- *           24 regression cases SB-R01..R24 in `docs/specs/sidebar-spec.md`
- *           (promoted from `_tmp` in E42).
+ *           24 regression cases SB-R01..R24 (promoted from `_tmp` in E42)
+ *           + SB-ES01 (E02 audit remediation: drawer joins the shared
+ *           escapeStack — Dialog above the drawer no longer closes with it).
  *
  * @example
  * // Basic desktop + mobile responsive
@@ -309,6 +313,9 @@ export const Sidebar = forwardRef<HTMLElement, SidebarProps>(function Sidebar(
   const asideRef = useRef<HTMLElement | null>(null);
   const mobileRef = useRef<HTMLDivElement | null>(null);
   const mergedAsideRef = useMemo(() => mergeRefs(ref, asideRef), [ref]);
+  // Drawer mode used to drop the forwarded ref (only mobileRef was attached) —
+  // consumers got null on mobile (E02 adjacent fix).
+  const mergedMobileRef = useMemo(() => mergeRefs(ref, mobileRef), [ref]);
 
   const isDrawer = isMobile && collapseMode === 'offcanvas';
   const isDrawerOpen = isDrawer && open;
@@ -360,18 +367,39 @@ export const Sidebar = forwardRef<HTMLElement, SidebarProps>(function Sidebar(
     };
   }, [isDrawerOpen]);
 
-  // Escape to close drawer (inline — single dispatch, no outside-click hook).
+  // Ref for the escape effect — `setOpen` is structurally unstable (Provider's
+  // useCallback deps include the consumer `onOpenChange`; an inline callback
+  // changes identity every parent render); with it in deps the effect re-ran
+  // and splice+pushed this entry above a nested child's on the shared stack
+  // (E02 audit fix; canonical pattern + rationale in Dialog.tsx/escapeStack.ts).
+  const setOpenRef = useRef(setOpen);
+  useEffect(() => {
+    setOpenRef.current = setOpen;
+  });
+
+  // Escape to close drawer — routes through the shared Dialog escapeStack so
+  // only the TOPMOST modal closes on a single Escape (Radix #1249 family fix;
+  // pre-E02 a plain document keydown with stopPropagation did NOT stop other
+  // document-level listeners, so a Dialog opened above the drawer closed
+  // together with it). The drawer is always escapable (no closeOnEscape prop
+  // — HoverCard variant of the pattern). Deps stay `[isDrawerOpen]`.
   useEffect(() => {
     if (!isDrawerOpen) return;
+    const close = () => setOpenRef.current(false);
+    escapeStack.push(close);
     const handleKey = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') {
-        event.stopPropagation();
-        setOpen(false);
-      }
+      if (event.key !== 'Escape') return;
+      if (escapeStack[escapeStack.length - 1] !== close) return;
+      event.preventDefault();
+      close();
     };
     document.addEventListener('keydown', handleKey);
-    return () => document.removeEventListener('keydown', handleKey);
-  }, [isDrawerOpen, setOpen]);
+    return () => {
+      document.removeEventListener('keydown', handleKey);
+      const idx = escapeStack.indexOf(close);
+      if (idx !== -1) escapeStack.splice(idx, 1);
+    };
+  }, [isDrawerOpen]);
 
   const handleOverlayClick = useCallback(
     (event: ReactMouseEvent<HTMLDivElement>) => {
@@ -391,15 +419,14 @@ export const Sidebar = forwardRef<HTMLElement, SidebarProps>(function Sidebar(
     return (
       <FloatingPortal>
         <div data-sidebar-portal className={styles.portalRoot}>
-          <div className={styles.overlay} data-state="open" onClick={handleOverlayClick} />
+          <div className={styles.overlay} onClick={handleOverlayClick} />
           <div
-            ref={mobileRef}
+            ref={mergedMobileRef}
             role="dialog"
             aria-modal="true"
             aria-label={ariaLabel}
             aria-labelledby={ariaLabelledby}
             id={sidebarId}
-            data-state="open"
             data-side={side}
             data-mobile="true"
             className={cn(

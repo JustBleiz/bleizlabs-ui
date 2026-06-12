@@ -20,7 +20,7 @@ The library does NOT ship:
 - Business-domain organisms (no `<ProjectCard>`, `<TicketDetailHeader>`, `<ClientFinanceSummary>` — those live in your project)
 - Pre-composed product surfaces (no `<DashboardHero>`, `<LoginCard>`, `<FilterHero>` — compose from atoms)
 - Surface-prefixed components (no `<PanelHeader>`, `<MarketingFooter>` — universal naming only)
-- Styling-alternative variants (`Card variant="glass"` doesn't exist; consumer SCSS handles visual variation via `className` passthrough)
+- Styling-alternative variants beyond the documented set (`Card variant="neon"` doesn't exist; consumer SCSS handles visual variation via `className` passthrough)
 
 When you reach for any of those, write them locally in your project as a composition of lib atoms + your own SCSS module. The lib is the box of legos; the model is yours.
 
@@ -74,7 +74,7 @@ export default config;
 @use '@bleizlabs/ui/styles/scrollbar';
 ```
 
-The first `@use` imports the full token system (`_seed.scss` → `_semantics.scss` → `_index.scss`). The opt-in `scrollbar` import styles WebKit-based scrollbars globally — useful for dashboards and panel surfaces; not needed for marketing sites.
+The first `@use` imports the full token system (`_project-settings.scss` → `_generator.scss` → `_semantics.scss`, then component-tokens / mixins / animations / project-overrides). The opt-in `scrollbar` import styles WebKit-based scrollbars globally — useful for dashboards and panel surfaces; not needed for marketing sites.
 
 ### B.4 Token override patterns
 
@@ -203,10 +203,14 @@ Override at the lowest layer that fits:
 The full per-component channel list is in each component's JSDoc `@tokens` tag. Example for `<Card>`:
 
 ```
-@tokens  --color-surface, --color-border, --color-border-subtle,
-         --shadow-card, --shadow-lg, --space-{0..20}, --radius-{sm..2xl},
-         --color-brand, --color-text-primary, --padding-card,
-         --radius-card. Local channels: --card-{padding,radius,direction,gap}.
+@tokens  --color-surface, --color-border-subtle, --shadow-card,
+         --space-{0..20}, --radius-{sm..2xl}, --color-brand,
+         --color-text-primary, --padding-card, --radius-card,
+         --border-width-accent, --duration-card-hover, --easing-default,
+         --card-bg-glass + --card-blur (theme-aware semantic tokens
+         defined in `_semantics.scss`).
+         Local channels: --card-{padding,radius,direction,gap,width},
+         --card-accent-color (accent variant border color override).
 ```
 
 ---
@@ -378,7 +382,7 @@ Anti-pattern: `const [email, setEmail] = useState('')` for every field, manual `
 
 ### E.4 Display
 
-`Card` (surface container compound: Card + CardHeader + CardBody + CardFooter, named regions on one concept), `Badge` (status indicator with `color="brand"|"success"|"warning"|"danger"|"info"|"neutral"`), `Avatar` (image with initials fallback + `AvatarGroup` for overlapping stacks), `KpiValue` (typographic number with optional delta + unit), `Reveal` (scroll-triggered IntersectionObserver gate — children animate in on viewport entry), `Separator` (horizontal or vertical rule), `Skeleton` (loading placeholder), `Spinner`, `Table` (semantic table primitive with subcomponents), `CodeBlock` (structural `<pre><code>` shell — consumer pre-tokenizes via Shiki/Prism).
+`Card` (surface container compound: Card + CardHeader + CardBody + CardFooter, named regions on one concept), `Badge` (status indicator with `color="default"|"brand"|"success"|"warning"|"error"|"info"`), `Avatar` (image with initials fallback + `AvatarGroup` for overlapping stacks), `KpiValue` (typographic number with optional delta + unit), `Reveal` (scroll-triggered IntersectionObserver gate — children animate in on viewport entry), `Separator` (horizontal or vertical rule), `Skeleton` (loading placeholder), `Spinner`, `Table` (semantic table primitive with subcomponents), `CodeBlock` (structural `<pre><code>` shell — consumer pre-tokenizes via Shiki/Prism).
 
 ```tsx
 import { Card, CardHeader, CardBody, Heading, Text, Badge, KpiValue, Avatar } from '@bleizlabs/ui';
@@ -431,39 +435,44 @@ toast.success('Saved');
 
 ### E.6 Overlays
 
-`Dialog` (modal compound: Trigger + Content + Title + Description + Close + Cancel/Confirm action), `Sheet` (side-anchored Dialog variant — top/right/bottom/left), `Drawer` (mobile bottom-sheet style with snap points), `Popover` (anchored floating panel — non-modal), `Tooltip` (small hover/focus-only popover for short labels), `HoverCard` (rich preview on hover), `DropdownMenu` (anchored menu with `Item`/`CheckboxItem`/`RadioItem`/`Sub` sub-parts), `ContextMenu` (right-click variant), `AlertDialog` (modal confirmation with destructive-action-friendly defaults).
+`Dialog` (modal, **controlled, monolithic** — `open`/`onOpenChange` + `title`/`description`/`footer` props, NOT a Trigger/Content compound), `Sheet` (side-anchored Dialog variant — top/right/bottom/left), `Drawer` (mobile bottom-sheet style with snap points), `Popover` (anchored floating panel — non-modal), `Tooltip` (small hover/focus-only popover for short labels), `HoverCard` (rich preview on hover), `DropdownMenu` (anchored menu compound: `DropdownMenuTrigger`/`Content`/`Item`/`Label`/`Separator`/`Group`), `ContextMenu` (right-click variant), `AlertDialog` (modal confirmation with destructive-action-friendly defaults — `confirmLabel`/`onConfirm` props).
 
 ```tsx
-import { Dialog } from '@bleizlabs/ui';
+import { useState } from 'react';
+import { Button, Dialog, Text } from '@bleizlabs/ui';
 
-<Dialog>
-  <Dialog.Trigger asChild>
-    <Button>Open</Button>
-  </Dialog.Trigger>
-  <Dialog.Content>
-    <Dialog.Title>Confirm action</Dialog.Title>
-    <Dialog.Description>This cannot be undone.</Dialog.Description>
-    <Inline gap={3} justify="end">
-      <Dialog.Cancel asChild>
-        <Button variant="ghost">Cancel</Button>
-      </Dialog.Cancel>
-      <Dialog.Confirm asChild>
-        <Button variant="danger" onClick={handleDelete}>
+const [open, setOpen] = useState(false);
+
+<>
+  <Button onClick={() => setOpen(true)}>Open dialog</Button>
+  <Dialog
+    open={open}
+    onOpenChange={setOpen}
+    title="Confirm delete"
+    description="This action cannot be undone."
+    footer={
+      <>
+        <Button variant="ghost" onClick={() => setOpen(false)}>
+          Cancel
+        </Button>
+        <Button variant="warning" onClick={handleDelete}>
           Delete
         </Button>
-      </Dialog.Confirm>
-    </Inline>
-  </Dialog.Content>
-</Dialog>;
+      </>
+    }
+  >
+    <Text>The selected item and all its data will be permanently removed.</Text>
+  </Dialog>
+</>;
 ```
 
 All overlay primitives use the same in-house `useFloating` + `computePosition` engine + `useFocusTrap` + dismiss helper. Hydration is mount-gated (see D.4) — no SSR warnings.
 
-Anti-pattern: external focus-trap or floating-UI library — already in-house. Anti-pattern: rendering `<Dialog>` content conditionally outside the trigger compound (`{open && <Dialog>...</Dialog>}`) — let the compound own its `open` state, or use the controlled `open` + `onOpenChange` props.
+Anti-pattern: external focus-trap or floating-UI library — already in-house. Anti-pattern: inventing a `Dialog.Trigger`/`Dialog.Content` compound API — Dialog is controlled-only; the consumer owns the `open` state and the trigger button.
 
 ### E.7 Complex / Data
 
-`DataTable` (generic-data grid with sort + filter + pagination + selection + expansion + APG `/grid/` keyboard nav), `Tabs` (compound: TabList + Tab + TabPanel), `Accordion` (single or multi expansion modes), `Stepper` (multi-step wizard with progress + validation per step), `Sidebar` (chrome navigation rail with collapsible state), `NavigationMenu` (top-level multi-level nav), `Toolbar` (action button group with roving tabindex).
+`DataTable` (generic-data grid with sort + filter + pagination + selection + expansion + APG `/grid/` keyboard nav), `Tabs` (compound: `TabsList` + `TabsTrigger` + `TabsContent`), `Accordion` (single disclosure panel; group single/multi expansion modes via `AccordionGroup`), `Stepper` (multi-step wizard with progress + validation per step), `Sidebar` (chrome navigation rail with collapsible state), `NavigationMenu` (top-level multi-level nav), `Toolbar` (action button group with roving tabindex).
 
 ```tsx
 import { DataTable } from '@bleizlabs/ui';
@@ -490,7 +499,7 @@ Anti-pattern: bringing TanStack Table, ag-Grid, or MUI DataGrid — `<DataTable>
 
 ### E.8 Specialized + Navigation
 
-`Breadcrumb` (hierarchical path with `items: BreadcrumbItem[]` — generic-data shape `{ label, href? }`), `Pagination` (page-by-page or numbered with prev/next), `ThemeToggle` (light/dark switch with system option), `Timeline` (vertical time-ordered list with `items: TimelineItem[]`), `Kbd` (`<kbd>` styled atom for keyboard shortcut display), `Chip` (small removable tag for filters/tags), plus small data-viz atoms: `AnimatedCounter` (animated number transition), `MetricBar` (single-axis bar gauge), `UsageDonut` (percentage donut), `AvailabilityBar` (capacity bar with thresholds).
+`Breadcrumb` (hierarchical path with `items: BreadcrumbItem[]` — generic-data shape `{ label, href? }`), `Pagination` (page-by-page or numbered with prev/next), `ThemeToggle` (light/dark switch with system option), `Timeline` (vertical time-ordered list with `items: TimelineItem[]`), `Kbd` (`<kbd>` styled atom for keyboard shortcut display), `Chip` (pill-shaped filter chip — toggle by default via `pressed`/`onPressedChange`, or `interactive={false}` display mode; NOT removable — for removable tags see `TagsInput`/`FileChip`), plus small data-viz atoms: `AnimatedCounter` (animated number transition), `MetricBar` (single-axis bar gauge), `UsageDonut` (percentage donut), `AvailabilityBar` (capacity bar with thresholds).
 
 ```tsx
 import { Breadcrumb, Pagination, Timeline, Kbd, Chip } from '@bleizlabs/ui';
@@ -518,7 +527,11 @@ import { Breadcrumb, Pagination, Timeline, Kbd, Chip } from '@bleizlabs/ui';
 <Text>Press <Kbd>Ctrl</Kbd>+<Kbd>K</Kbd> to open command palette.</Text>
 
 <Inline gap={2} wrap>
-  {tags.map(t => <Chip key={t} onRemove={() => removeTag(t)}>{t}</Chip>)}
+  {tags.map(t => (
+    <Chip key={t} pressed={active.includes(t)} onPressedChange={() => toggleTag(t)}>
+      {t}
+    </Chip>
+  ))}
 </Inline>
 ```
 
@@ -599,29 +612,29 @@ If you're working on a feature that genuinely needs one of the above, install th
 
 Top-20 reached patterns, one-liner each:
 
-| Want                          | Use                                                                                            |
-| ----------------------------- | ---------------------------------------------------------------------------------------------- | ----------- | ---------------- | ---- | ----- | ---------- |
-| Vertical layout               | `<Stack gap={N}>`                                                                              |
-| Horizontal layout             | `<Inline gap={N}>`                                                                             |
-| Page width constraint         | `<Container size="lg">`                                                                        |
-| Section landmark              | `<Section tag="section" aria-labelledby="...">`                                                |
-| Headings                      | `<Heading level={N} size="...">` (level = semantics, size = visual)                            |
-| Body text                     | `<Text variant="body" color="secondary">`                                                      |
-| Inline link                   | `<Anchor href="...">` or `<Anchor asChild><Link href="..." /></Anchor>`                        |
-| Button                        | `<Button variant="primary                                                                      | ghost       | danger" size="sm | md   | lg">` |
+| Want                          | Use                                                                                               |
+| ----------------------------- | ------------------------------------------------------------------------------------------------- | ----------- |
+| Vertical layout               | `<Stack gap={N}>`                                                                                 |
+| Horizontal layout             | `<Inline gap={N}>`                                                                                |
+| Page width constraint         | `<Container size="lg">`                                                                           |
+| Section landmark              | `<Section tag="section" aria-labelledby="...">`                                                   |
+| Headings                      | `<Heading level={N} size="...">` (level = semantics, size = visual)                               |
+| Body text                     | `<Text variant="body" color="secondary">`                                                         |
+| Inline link                   | `<Anchor href="...">` or `<Anchor asChild><Link href="..." /></Anchor>`                           |
+| Button                        | `<Button variant="primary \| secondary \| ghost \| link \| warning" size="sm \| md \| lg">`       |
 | Button as link                | `<Button href="...">` — renders `<a>`, server-safe; NOT `asChild`+`<Link>` (pulls `'use client'`) |
-| Polymorphic render            | `<Component asChild><CustomElement /></Component>`                                             |
-| Surface container             | `<Card padding={N} radius="md                                                                  | lg          | xl">`            |
-| Status indicator              | `<Badge color="success                                                                         | warning     | danger           | info | brand | neutral">` |
-| Avatar with initials fallback | `<Avatar src="..." name="..." />`                                                              |
-| Imperative notification       | `toast.success('...')` (after `<Toaster>` mounted once)                                        |
-| Modal                         | `<Dialog><Dialog.Trigger /><Dialog.Content>...</Dialog.Content></Dialog>`                      |
-| Side panel                    | `<Sheet side="right">`                                                                         |
-| Tooltip on hover              | `<Tooltip content="..."><Button>...</Button></Tooltip>`                                        |
-| Form with native validation   | `<Form><Field name="..."><Field.Label /><Input /><Field.Message match="..." /></Field></Form>` |
-| Data grid                     | `<DataTable data={...} columns={[...]} pagination={{...}} />`                                  |
-| Reveal on scroll              | `<Reveal tag="section">...</Reveal>`                                                           |
-| Loading skeleton              | `<Skeleton height={N} width={N                                                                 | "100%"} />` |
+| Polymorphic render            | `<Component asChild><CustomElement /></Component>`                                                |
+| Surface container             | `<Card padding={N} radius="sm \| md \| lg \| xl \| 2xl">`                                         |
+| Status indicator              | `<Badge color="default \| brand \| success \| warning \| error \| info">`                         |
+| Avatar with initials fallback | `<Avatar src="..." name="..." />`                                                                 |
+| Imperative notification       | `toast.success('...')` (after `<Toaster>` mounted once)                                           |
+| Modal                         | `<Dialog><Dialog.Trigger /><Dialog.Content>...</Dialog.Content></Dialog>`                         |
+| Side panel                    | `<Sheet side="right">`                                                                            |
+| Tooltip on hover              | `<Tooltip content="..."><Button>...</Button></Tooltip>`                                           |
+| Form with native validation   | `<Form><Field name="..."><Field.Label /><Input /><Field.Message match="..." /></Field></Form>`    |
+| Data grid                     | `<DataTable data={...} columns={[...]} pagination={{...}} />`                                     |
+| Reveal on scroll              | `<Reveal tag="section">...</Reveal>`                                                              |
+| Loading skeleton              | `<Skeleton height={N} width={N                                                                    | "100%"} />` |
 
 ---
 
@@ -661,7 +674,7 @@ Column meanings:
 For utilities (Slot / cn / mergeRefs / VisuallyHidden) and type-only exports not listed here, read the source under `node_modules/@bleizlabs/ui/components/utils/` and `components/types/` respectively.
 
 <!-- INVENTORY:START — auto-generated by scripts/build-agent-inventory.mjs. Do not edit by hand. -->
-<!-- Generated from components/manifest.json at lib version 0.25.0. Component count: 106. -->
+<!-- Generated from components/manifest.json at lib version 0.28.0. Component count: 107. -->
 
 | Component         | Category    | Client? | Import                                            | One-line summary                                                                                                        |
 | ----------------- | ----------- | ------- | ------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
@@ -701,6 +714,7 @@ For utilities (Slot / cn / mergeRefs / VisuallyHidden) and type-only exports not
 | `PhoneInput`      | interactive | yes     | `import { PhoneInput } from '@bleizlabs/ui'`      | PhoneInput — telephone number input with mask presets (Phase 4 expansion E08, Layer 3 of D26).                          |
 | `RadioGroup`      | interactive | yes     | `import { RadioGroup } from '@bleizlabs/ui'`      | RadioGroup — radio button group with shared name + value (Phase 4 I5).                                                  |
 | `Rating`          | interactive | yes     | `import { Rating } from '@bleizlabs/ui'`          | Rating — APG radiogroup star-rating input primitive.                                                                    |
+| `SkipLink`        | interactive | no      | `import { SkipLink } from '@bleizlabs/ui'`        | SkipLink — WCAG 2.4.1 Bypass Blocks anchor (skip to main content).                                                      |
 | `Switch`          | interactive | yes     | `import { Switch } from '@bleizlabs/ui'`          | Switch — boolean toggle with animated thumb (Phase 4 I8, Tier A).                                                       |
 | `TagsInput`       | interactive | yes     | `import { TagsInput } from '@bleizlabs/ui'`       | TagsInput — freeform tag input (E01.2 of 0.19.0 Forms expansion).                                                       |
 | `Textarea`        | interactive | yes     | `import { Textarea } from '@bleizlabs/ui'`        | Textarea — multi-line text form input (Phase 4 I3).                                                                     |
@@ -708,9 +722,9 @@ For utilities (Slot / cn / mergeRefs / VisuallyHidden) and type-only exports not
 | `TimeInput`       | interactive | yes     | `import { TimeInput } from '@bleizlabs/ui'`       | TimeInput — accessible 24h ISO time field rendered as a `role="group"` of `role="spinbutton"` inputs (hours, minutes,…  |
 | `Toggle`          | interactive | yes     | `import { Toggle } from '@bleizlabs/ui'`          | Toggle — single button with on/off state (Phase 4 I6).                                                                  |
 | `ToggleGroup`     | interactive | yes     | `import { ToggleGroup } from '@bleizlabs/ui'`     | ToggleGroup — group of Toggle children with single or multiple selection (Phase 4 I7).                                  |
-| `Alert`           | feedback    | no      | `import { Alert } from '@bleizlabs/ui'`           | Alert — semantic feedback notification with 4 variants (klocek molecule).                                               |
+| `Alert`           | feedback    | no      | `import { Alert } from '@bleizlabs/ui'`           | Alert — semantic feedback notification with 4 variants (klocek atom).                                                   |
 | `Banner`          | feedback    | no      | `import { Banner } from '@bleizlabs/ui'`          | Banner — page-wide notification primitive.                                                                              |
-| `Empty`           | feedback    | no      | `import { Empty } from '@bleizlabs/ui'`           | Empty — placeholder for empty lists / zero-result screens (klocek molecule).                                            |
+| `Empty`           | feedback    | no      | `import { Empty } from '@bleizlabs/ui'`           | Empty — placeholder for empty lists / zero-result screens (klocek atom).                                                |
 | `Progress`        | feedback    | no      | `import { Progress } from '@bleizlabs/ui'`        | Progress — step indicator OR percent progress bar.                                                                      |
 | `AnimatedCounter` | specialized | yes     | `import { AnimatedCounter } from '@bleizlabs/ui'` | AnimatedCounter — count-up animation from 0 to a target value (Phase 6 P3).                                             |
 | `AreaChart`       | specialized | yes     | `import { AreaChart } from '@bleizlabs/ui'`       | AreaChart — multi-series SVG area chart (line + filled region below) with crosshair tooltip + keyboard data-point…      |
@@ -730,7 +744,7 @@ For utilities (Slot / cn / mergeRefs / VisuallyHidden) and type-only exports not
 | `AvatarGroup`     | molecules   | no      | `import { AvatarGroup } from '@bleizlabs/ui'`     | AvatarGroup — stacked-avatar molecule with overflow chip.                                                               |
 | `BackLink`        | molecules   | no      | `import { BackLink } from '@bleizlabs/ui'`        | BackLink — "back to previous view" navigation molecule (Phase 7 M2).                                                    |
 | `BreakdownList`   | molecules   | no      | `import { BreakdownList } from '@bleizlabs/ui'`   | BreakdownList — universal labeled progress list (compound molecule).                                                    |
-| `Chip`            | molecules   | no      | `import { Chip } from '@bleizlabs/ui'`            | Chip — pill-shaped filter chip with toggle (default) or display-only mode.                                              |
+| `Chip`            | molecules   | yes     | `import { Chip } from '@bleizlabs/ui'`            | Chip — pill-shaped filter chip with toggle (default) or display-only mode.                                              |
 | `DataRow`         | molecules   | no      | `import { DataRow } from '@bleizlabs/ui'`         | DataRow — label/value pair molecule (Phase 7 M1, server-safe).                                                          |
 | `FileChip`        | molecules   | no      | `import { FileChip } from '@bleizlabs/ui'`        | FileChip — file attachment chip (Phase 5 M7).                                                                           |
 | `Header`          | molecules   | no      | `import { Header } from '@bleizlabs/ui'`          | Header — universal block-header molecule.                                                                               |
@@ -739,7 +753,7 @@ For utilities (Slot / cn / mergeRefs / VisuallyHidden) and type-only exports not
 | `SectionDivider`  | molecules   | no      | `import { SectionDivider } from '@bleizlabs/ui'`  | SectionDivider — labeled visual section break (Phase 7 M3, server-safe).                                                |
 | `Timeline`        | molecules   | no      | `import { Timeline } from '@bleizlabs/ui'`        | Timeline — chronological event-list molecule (compound: Timeline + TimelineItem + TimelineMarker, flat exports).        |
 | `FormSurface`     | presets     | no      | `import { FormSurface } from '@bleizlabs/ui'`     | FormSurface — semantic `<form>` wrapper around a Card surface (klocek).                                                 |
-| `AlertDialog`     | complex     | yes     | `import { AlertDialog } from '@bleizlabs/ui'`     | AlertDialog — modal alert dialog composing portal + overlay + focus-trapped content (Phase 10 CI2, E16).                |
+| `AlertDialog`     | complex     | yes     | `import { AlertDialog } from '@bleizlabs/ui'`     | Required alert description — drives `aria-describedby`.                                                                 |
 | `Calendar`        | complex     | yes     | `import { Calendar } from '@bleizlabs/ui'`        | Calendar — accessible single-date calendar grid per WAI-ARIA APG `/grid/`.                                              |
 | `Carousel`        | complex     | yes     | `import { Carousel } from '@bleizlabs/ui'`        | Carousel — accessible auto-rotating content slider (Phase 10 CI21).                                                     |
 | `Collapsible`     | complex     | yes     | `import { Collapsible } from '@bleizlabs/ui'`     | Collapsible — APG `disclosure` compound for single-panel show/hide.                                                     |
@@ -751,7 +765,7 @@ For utilities (Slot / cn / mergeRefs / VisuallyHidden) and type-only exports not
 | `DateRangePicker` | complex     | yes     | `import { DateRangePicker } from '@bleizlabs/ui'` | DateRangePicker — accessible date-range form field composed of an editable text input + embedded multi-month Calendar…  |
 | `DateTimePicker`  | complex     | yes     | `import { DateTimePicker } from '@bleizlabs/ui'`  | DateTimePicker — accessible single-instant form field composed of an editable combobox input + popover containing a…    |
 | `Dialog`          | complex     | yes     | `import { Dialog } from '@bleizlabs/ui'`          | Dialog — modal dialog composing portal + overlay + focus-trapped content (Phase 10 CI1, E15, first Complex Interactive… |
-| `Drawer`          | complex     | yes     | `import { Drawer } from '@bleizlabs/ui'`          | Drawer — bottom-positioned modal sheet composing portal + overlay + focus-trapped content (Phase 10 CI3, E17).          |
+| `Drawer`          | complex     | yes     | `import { Drawer } from '@bleizlabs/ui'`          | Optional description — drives `aria-describedby` only when provided (Dialog parity, NOT AlertDialog's strictness since… |
 | `DropdownMenu`    | complex     | yes     | `import { DropdownMenu } from '@bleizlabs/ui'`    | DropdownMenu — accessible menu triggered by a button per WAI-ARIA APG /menu/.                                           |
 | `Field`           | complex     | yes     | `import { Field } from '@bleizlabs/ui'`           | Field — accessible form-row compound (label + control + description + messages).                                        |
 | `FileUpload`      | complex     | yes     | `import { FileUpload } from '@bleizlabs/ui'`      | FileUpload — drop zone + native file input wrapper.                                                                     |
@@ -762,7 +776,7 @@ For utilities (Slot / cn / mergeRefs / VisuallyHidden) and type-only exports not
 | `Popover`         | complex     | yes     | `import { Popover } from '@bleizlabs/ui'`         | Popover — floating panel anchored to a trigger for contextual content.                                                  |
 | `ScrollArea`      | complex     | yes     | `import { ScrollArea } from '@bleizlabs/ui'`      | ScrollArea — accessible custom-scrollbar wrapper (Phase 10 CI20).                                                       |
 | `Select`          | complex     | yes     | `import { Select } from '@bleizlabs/ui'`          | Select — single-value dropdown form field per WAI-ARIA APG /combobox/ (collapsed listbox, select-only variant) +…       |
-| `Sheet`           | complex     | yes     | `import { Sheet } from '@bleizlabs/ui'`           | Sheet — side panel modal sheet composing portal + overlay + focus-trapped content (Phase 10 CI4, E18).                  |
+| `Sheet`           | complex     | yes     | `import { Sheet } from '@bleizlabs/ui'`           | Optional description — drives `aria-describedby` only when provided (Dialog parity, NOT AlertDialog strictness).        |
 | `Sidebar`         | complex     | yes     | `import { Sidebar } from '@bleizlabs/ui'`         | Sidebar — Phase 10 CI22 FINISHER (80/80 Phase 10 COMPLETE).                                                             |
 | `Slider`          | complex     | yes     | `import { Slider } from '@bleizlabs/ui'`          | Slider — accessible single-thumb value selector (Phase 10 CI14).                                                        |
 | `Stepper`         | complex     | yes     | `import { Stepper } from '@bleizlabs/ui'`         | Stepper — visual + semantic multi-step progress indicator with optional keyboard navigation when clickable.             |

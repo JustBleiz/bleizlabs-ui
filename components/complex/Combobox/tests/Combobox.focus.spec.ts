@@ -52,7 +52,8 @@ test.describe('Combobox — focus behavior', () => {
     const input = page.getByRole('combobox').first();
     await input.focus();
     await input.fill('Japan'); // exact match
-    // Tab away — relatedTarget outside popper → blur commits
+    // Tab away — the Tab-commit path commits the highlighted exact match
+    // (the blur exact-match branch yields the identical outcome).
     await page.keyboard.press('Tab');
     await page.waitForTimeout(100); // microtask + blur delay
     await expect(input).toHaveValue(/Japan/i);

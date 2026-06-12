@@ -35,16 +35,17 @@
 }
 
 .variantAccent {
+  // position: relative intentional — positioning context for consumers
+  // overlaying an <EdgeBar> (absolute) on the accent surface.
   position: relative;
   border: 1px solid var(--color-border-subtle);
 }
 
+// Wired into VARIANT_CLASS.accent (tsx) — delivers the documented static
+// left accent. (.accentTop deleted in E04 audit remediation: no variant
+// ever promised a top accent — compose <EdgeBar> for other positions.)
 .accentLeft {
   border-left: var(--border-width-accent) solid var(--card-accent-color, var(--color-brand));
-}
-
-.accentTop {
-  border-top: var(--border-width-accent) solid var(--card-accent-color, var(--color-brand));
 }
 
 .variantGlass {
@@ -55,39 +56,11 @@
 }
 
 // ============================================================================
-// HOVERABLE — opt-in interactive state
-// ============================================================================
-
-.hoverable {
-  cursor: pointer;
-
-  &:hover {
-    transform: translateY(-1px);
-    box-shadow: var(--shadow-lg);
-    border-color: var(--color-border);
-  }
-
-  &:focus-visible {
-    // `--focus-ring` is a full box-shadow expression (0 0 0 3px <color>) —
-    // not a color. Must be applied via `box-shadow`, not `outline`. Matches
-    // Alert.module.scss precedent. Previous `outline: 2px solid var(--focus-ring)`
-    // rendered as garbage because the shadow expression is not a valid
-    // <color> value.
-    outline: none;
-    box-shadow: var(--focus-ring);
-  }
-}
-
-// ============================================================================
 // REDUCED MOTION
 // ============================================================================
 
 @media (prefers-reduced-motion: reduce) {
   .root {
     transition: none;
-  }
-
-  .hoverable:hover {
-    transform: none;
   }
 }

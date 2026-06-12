@@ -38,11 +38,14 @@
  *   for native Enter/Space + disabled handling. `onSelect` can `event.preventDefault()`
  *   to keep menu open (future CheckboxItem/RadioItem pattern).
  * @apg https://www.w3.org/WAI/ARIA/apg/patterns/menu/
- * @tested tsc --noEmit ✓ | eslint + jsx-a11y ✓ | next build ✓ — DEFERRED:
- *   Playwright execution, axe-core runtime sweep, manual NVDA sweep, iOS/Android
- *   device testing, submenu integration (not in E21 scope).
+ * @tested tsc --noEmit ✓ | eslint + jsx-a11y ✓ | next build ✓ | Playwright
+ *   suite EXECUTED in-repo (keyboard/focus/aria/regression `.spec.ts` quad,
+ *   CI-gated) + axe-core smoke on the demo route. DEFERRED: manual NVDA
+ *   sweep, iOS/Android device testing, submenu integration (not in E21
+ *   scope — SUBMENU-DEFERRED test.skip cases).
  * @regressions tests/DropdownMenu.{keyboard,focus,aria,regression}.spec.md —
- *   20 Radix closed-issue cases mapped. ~6 marked test.skip with
+ *   22 Radix closed-issue cases mapped (radix-R21/R22 = asChild
+ *   rest-forwarding, E01 audit remediation). ~6 marked test.skip with
  *   PLAYGROUND-DEP / SUBMENU-DEFERRED rationale.
  * @example
  *   <DropdownMenu>
@@ -218,6 +221,7 @@ export interface DropdownMenuTriggerProps extends Omit<
   ButtonHTMLAttributes<HTMLButtonElement>,
   'aria-expanded' | 'aria-haspopup' | 'aria-controls'
 > {
+  /** Trigger content — button label, or the single element to Slot-wrap when `asChild`. */
   children: ReactNode;
   /**
    * When `true`, Slot-wraps the single React element child, merging ARIA and
@@ -343,6 +347,7 @@ export const DropdownMenuTrigger = forwardRef<HTMLElement, DropdownMenuTriggerPr
             handleKeyDown(event);
             onKeyDown?.(event as unknown as React.KeyboardEvent<HTMLButtonElement>);
           }}
+          {...(rest as React.HTMLAttributes<HTMLElement>)}
         >
           {slotChild}
         </Slot>
@@ -387,11 +392,19 @@ export interface DropdownMenuContentProps extends Omit<
   HTMLAttributes<HTMLDivElement>,
   'role' | 'aria-modal'
 > {
+  /** Menu content — DropdownMenuItem / DropdownMenuGroup / DropdownMenuSeparator / DropdownMenuLabel. */
   children?: ReactNode;
+  /** Extra class merged onto the menu element. */
   className?: string;
 }
 
-export function DropdownMenuContent({ children, className, ...rest }: DropdownMenuContentProps) {
+export function DropdownMenuContent({
+  children,
+  className,
+  style: styleProp,
+  onKeyDown: onKeyDownProp,
+  ...rest
+}: DropdownMenuContentProps) {
   const ctx = useDropdownMenuContext('<DropdownMenuContent>');
   const {
     open,
@@ -565,7 +578,7 @@ export function DropdownMenuContent({ children, className, ...rest }: DropdownMe
 
   if (!open) return null;
 
-  const contentStyle: React.CSSProperties = {};
+  const contentStyle: React.CSSProperties = { ...styleProp };
   if (matchTriggerWidth && triggerWidth !== null) {
     contentStyle.minWidth = triggerWidth;
   }
@@ -580,9 +593,12 @@ export function DropdownMenuContent({ children, className, ...rest }: DropdownMe
           tabIndex={-1}
           data-placement={actualPlacement}
           className={cn(styles.content, className)}
-          style={contentStyle}
-          onKeyDown={handleMenuKeyDown}
           {...rest}
+          style={contentStyle}
+          onKeyDown={(event) => {
+            handleMenuKeyDown(event);
+            onKeyDownProp?.(event);
+          }}
         >
           {children}
         </div>
@@ -599,6 +615,7 @@ export interface DropdownMenuItemProps extends Omit<
   ButtonHTMLAttributes<HTMLButtonElement>,
   'role' | 'onSelect'
 > {
+  /** Visible item content — text used for typeahead matching unless `textValue` is set. */
   children: ReactNode;
   /**
    * Callback fired when the item is activated (click, Enter, Space). Receives
@@ -670,6 +687,7 @@ export const DropdownMenuItem = forwardRef<HTMLButtonElement, DropdownMenuItemPr
 // ──────────────────────────────────────────────────────────────────────────
 
 export interface DropdownMenuSeparatorProps extends HTMLAttributes<HTMLDivElement> {
+  /** Extra class merged onto the separator element. */
   className?: string;
 }
 
@@ -689,7 +707,9 @@ export function DropdownMenuSeparator({ className, ...rest }: DropdownMenuSepara
 // ──────────────────────────────────────────────────────────────────────────
 
 export interface DropdownMenuLabelProps extends HTMLAttributes<HTMLDivElement> {
+  /** Label text — non-interactive section header content. */
   children: ReactNode;
+  /** Extra class merged onto the label element. */
   className?: string;
 }
 
@@ -707,6 +727,7 @@ export function DropdownMenuLabel({ children, className, id, ...rest }: Dropdown
 // ──────────────────────────────────────────────────────────────────────────
 
 export interface DropdownMenuGroupProps extends HTMLAttributes<HTMLDivElement> {
+  /** Group content — DropdownMenuItem elements plus an optional DropdownMenuLabel. */
   children: ReactNode;
   /**
    * When provided, wires `aria-labelledby` to the given id. Typical usage:
@@ -714,6 +735,7 @@ export interface DropdownMenuGroupProps extends HTMLAttributes<HTMLDivElement> {
    * announce the label when entering the group.
    */
   labelledBy?: string;
+  /** Extra class merged onto the group element. */
   className?: string;
 }
 

@@ -1,6 +1,8 @@
 # Tooltip — ARIA / accessibility tree spec
 
-**Execution status:** DEFERRED to first consumer adoption.
+**Execution status:** EXECUTED in-repo — the canonical suite lives in the sibling
+`Tooltip.aria.spec.ts` (CI-gated; status in Tooltip.tsx `@tested`; only the manual NVDA
+sweep stays deferred). This file is a consumer-CI reference snapshot, not the source of truth.
 **Key distinction:** `aria-describedby` (supplemental) NOT `aria-labelledby` (naming).
 
 ## Tests

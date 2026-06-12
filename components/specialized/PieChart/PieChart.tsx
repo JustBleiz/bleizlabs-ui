@@ -14,18 +14,20 @@
  *        line curves) are natural focus targets — Tab → focus first
  *        segment, Arrow keys cycle, Space/Enter click, Escape dismiss.
  * @tokens --color-{brand,success,warning,info,error} (DEFAULT_COLORS
- *         cycle, shared via _shared/chart-math), --color-border /
- *         --color-border-subtle (no axes here — used for segment
- *         stroke separation), --color-surface / --color-surface-raised
- *         (tooltip surface + segment halo), --color-text-{primary,
- *         secondary,muted} (labels), --shadow-md (tooltip), --focus-ring
- *         (focused segment via mixin), --duration-{fast,normal} +
- *         --easing-default, --radius-sm (tooltip), --space-{1,2,3,4,6}
+ *         cycle, shared via _shared/chart-math), --color-border
+ *         (tooltip border), --color-surface / --color-surface-raised
+ *         (segment separation stroke + label fill / tooltip surface),
+ *         --color-text-{primary,secondary,muted} (labels), --shadow-md
+ *         (tooltip), --focus-ring (focused segment via mixin),
+ *         --duration-{fast,normal} + --easing-default, --radius-sm
+ *         (tooltip) + --radius-full (tooltip swatch), --space-{1,2,3}
  *         (rhythm), --font-size-{xs,sm} + --font-weight-medium. ZERO
  *         new design tokens (Charter R7). Component-local channels:
  *         `--piechart-segment-stroke-width` (2px default — gap between
  *         segments), `--piechart-aspect` (1 default — square pie),
- *         `--piechart-tooltip-{x,y}`.
+ *         `--piechart-tooltip-{x,y}`, `--piechart-label-halo` (static
+ *         dark label outline — sits on theme-independent segment fill,
+ *         deliberately not theme-aware).
  * @deps   cn (internal); `../_shared/chart-math` (defaultColorForIndex,
  *         DEFAULT_COLORS, defaultYFormat). Polar geometry helpers
  *         (`polarToCartesian`, `describeArc`) stay INLINE — PieChart is

@@ -1,12 +1,15 @@
 # Drawer.regression.spec
 
-> Deferred execution — Playwright spec ready for consumer CI/CD. See Drawer.tsx `@regressions` header.
+> EXECUTED in-repo — the canonical suite lives in the sibling `Drawer.regression.spec.ts`
+> (CI-gated; only the manual NVDA sweep stays deferred). See Drawer.tsx `@regressions`
+> header. This file is a consumer-CI reference snapshot, not the source of truth.
 
 ```typescript
 /**
  * Drawer regression spec — 41 edge cases mapped to test cases (E17).
  *
- * EXECUTION DEFERRED — runs on first consumer adoption.
+ * EXECUTION STATUS: EXECUTED in-repo — canonical suite in the sibling
+ * `Drawer.regression.spec.ts` (CI-gated).
  *
  * Source: Radix Dialog closed issues (inherited — Drawer shares Dialog primitives)
  *         + Vaul bottom-sheet library closed issues (Drawer-specific iOS/mobile quirks)
@@ -286,8 +289,8 @@ test.describe('Drawer — regression cases', () => {
 
   test('DR-17: overlay + content background colors distinct', async ({ page }) => {
     await page.getByRole('button', { name: /open basic drawer/i }).click();
-    const overlay = page.locator('[data-state="open"]').first();
     const content = page.getByRole('dialog');
+    const overlay = content.locator('xpath=..');
     const overlayBg = await overlay.evaluate((el) => window.getComputedStyle(el).backgroundColor);
     const contentBg = await content.evaluate((el) => window.getComputedStyle(el).backgroundColor);
     expect(overlayBg).not.toBe(contentBg);

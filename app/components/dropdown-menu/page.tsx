@@ -271,6 +271,43 @@ export default function DropdownMenuPlaygroundPage() {
           </Button>
         </div>
       </section>
+
+      {/* ──────────────────────────────────────── */}
+      <section className={styles.section}>
+        <Heading level={2} size="2xl">
+          Rest props forwarding
+        </Heading>
+        <Text>
+          Trigger rest props (<code>data-testid</code>, <code>title</code>) forward identically in
+          asChild and native mode (radix-R21/R22 fixture).
+        </Text>
+        <div className={styles.row}>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild data-testid="dd-trigger-aschild" title="aschild-title">
+              <Button variant="secondary">asChild rest</Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+              <DropdownMenuItem onSelect={() => setLastAction('asChild rest item')}>
+                Item
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+          <DropdownMenu>
+            <DropdownMenuTrigger
+              data-testid="dd-trigger-native"
+              title="native-title"
+              className={styles.nativeTriggerFixture}
+            >
+              Native rest
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+              <DropdownMenuItem onSelect={() => setLastAction('native rest item')}>
+                Item
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+      </section>
     </main>
   );
 }

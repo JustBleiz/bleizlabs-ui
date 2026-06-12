@@ -53,6 +53,9 @@ export default function DataTablePlaygroundPage() {
   // Use case 3 — selection
   // ─────────────────────────────────────────────────────────────────────────
   const [selected3, setSelected3] = useState<Project[]>([]);
+  // Refetch simulation (DT-SE08): clones break reference identity on purpose —
+  // controlled selection must survive via ID-based comparison (getRowId).
+  const [data3, setData3] = useState<Project[]>(() => MOCK_PROJECTS.slice(0, 25));
 
   // ─────────────────────────────────────────────────────────────────────────
   // Use case 5 — real-world panel projects (data slice)
@@ -250,8 +253,9 @@ export default function DataTablePlaygroundPage() {
           Generic-data grid primitive z deklaratywnymi column defs, sortowaniem, filtrowaniem,
           paginacją, selection, expansion, frozen columns, mobile fallback i pełnym APG{' '}
           <code>/grid/</code> (lub <code>/treegrid/</code>z <code>expandable</code>) keyboard model.
-          Composes 10+ lib primitives (Table compound, Pagination, Checkbox, Input, Skeleton, Empty,
-          Alert) — zero external runtime deps.
+          Composes lib primitives (Table compound, Pagination, Button, Input, Skeleton, Empty,
+          Alert; selection checkboxes are documented raw <code>&lt;input&gt;</code> — see JSDoc) —
+          zero external runtime deps.
         </Text>
       </header>
 
@@ -306,8 +310,9 @@ export default function DataTablePlaygroundPage() {
         <Text className={styles.sectionIntro}>
           Discriminated union enforced via TypeScript: <code>selection=&quot;multiple&quot;</code>{' '}
           wymaga callback z <code>(rows: Project[])</code>. Header checkbox z indeterminate state.
-          Selected count + clear button via imperative handle (Space toggles selection wiersza po
-          klawiaturze).
+          Selected count + clear button via controlled <code>selectedRows</code> state (Space
+          toggles selection wiersza po klawiaturze). &quot;Simulate refetch&quot; podmienia data na
+          klony obiektów — selekcja przeżywa dzięki ID-based comparison.
         </Text>
         <Stack gap={3}>
           <Inline gap={3} justify="between" align="center">
@@ -316,14 +321,23 @@ export default function DataTablePlaygroundPage() {
                 ? 'No rows selected'
                 : `${selected3.length} ${selected3.length === 1 ? 'row' : 'rows'} selected`}
             </Text>
-            {selected3.length > 0 && (
-              <Button variant="ghost" size="sm" onClick={() => setSelected3([])}>
-                Clear
+            <Inline gap={2} align="center">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setData3((d) => d.map((r) => ({ ...r })))}
+              >
+                Simulate refetch
               </Button>
-            )}
+              {selected3.length > 0 && (
+                <Button variant="ghost" size="sm" onClick={() => setSelected3([])}>
+                  Clear
+                </Button>
+              )}
+            </Inline>
           </Inline>
           <DataTable
-            data={MOCK_PROJECTS.slice(0, 25)}
+            data={data3}
             columns={selectionColumns}
             selection="multiple"
             selectedRows={selected3}
@@ -344,7 +358,7 @@ export default function DataTablePlaygroundPage() {
         </Heading>
         <Text className={styles.sectionIntro}>
           Wszystko: frozen <code>name</code> column left + frozen <code>actions</code> right
-          (logical properties — automatyczne RTL swap), 7 sortable columns, filter row, selection,
+          (logical properties — automatyczne RTL swap), 6 sortable columns, filter row, selection,
           expansion, density toggle, RTL toggle, striped toggle, custom Badge cells. Try keyboard
           nav (Arrow keys, Home/End, Space, Enter).
         </Text>
@@ -438,7 +452,7 @@ export default function DataTablePlaygroundPage() {
                 </Stack>
               ),
             }}
-            pagination={{ pageSize: 10, pageSizeOptions: [5, 10, 20, 50] }}
+            pagination={{ pageSize: 10, pageSizeOptions: [10, 25, 50] }}
             rowVariant={(row) => (row.overdue ? 'warning' : row.archived ? 'default' : 'default')}
             rowDisabled={(row) => row.archived}
             getRowId={(row) => row.id}

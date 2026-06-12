@@ -82,12 +82,13 @@
  *   or closing mid-character for CJK users. Unusual in date input but
  *   consistent + zero-cost.
  * @apg https://www.w3.org/WAI/ARIA/apg/patterns/dialog-modal/examples/datepicker-dialog/
- * @tested tsc --noEmit ✓ | eslint + jsx-a11y ✓ | next build ✓ —
- *   DEFERRED: Playwright execution (per E15 scope decision), axe-core
- *   runtime sweep, manual NVDA sweep.
+ * @tested tsc --noEmit ✓ | eslint + jsx-a11y ✓ | next build ✓ |
+ *   Playwright suite EXECUTED in-repo (keyboard/focus/aria/regression
+ *   `.spec.ts` quad, CI-gated) + axe-core smoke on the demo route.
+ *   DEFERRED: manual NVDA sweep.
  * @regressions tests/DatePicker.{keyboard,focus,aria,regression}.spec.md —
- *   22+ regression cases DP-R01..R22 in `docs/specs/datepicker-spec.md`
- *   (promoted from `_tmp` in E42) — ISO parse always, invalid date
+ *   21 regression cases DP-R01..R21 (executable canon in the sibling
+ *   `tests/DatePicker.*.spec.ts` quad) — ISO parse always, invalid date
  *   reject, min/max clamp BOTH input + Calendar, disabled predicate
  *   blocks typed + Calendar, Alt+ArrowDown opens, Escape closes +
  *   keeps focus, click Calendar day closes + syncs input, blur commit

@@ -24,9 +24,6 @@
 
 .root:focus-visible {
   @include mx.focus-ring;
-  // Small offset so the ring reads as a halo around the inline word rather
-  // than a tight outline hugging the glyphs.
-  outline-offset: 2px;
   border-radius: var(--radius-sm);
   color: var(--color-brand);
   text-decoration-color: var(--color-brand);

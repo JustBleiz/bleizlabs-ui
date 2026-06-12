@@ -12,10 +12,13 @@
  *
  * Timer notes:
  * - `reducedMotion: 'reduce'` does NOT stop JS timers — only CSS animations.
- * - Default duration is 4000ms (per toastStore.ts:164).
+ * - Default duration is 4000ms (toastStore FALLBACK_DURATION; since E02 the
+ *   `<Toaster duration>` prop overrides it globally — these specs rely on the
+ *   playground default staying undefined → 4000ms headroom).
  * - Hover/focus pause is via pauseAllTimers() on the Toaster <ol> —
  *   pointer-leave + focus-out resumes (only when focus truly leaves the
- *   region per Toaster.tsx:171).
+ *   region — per the `handleFocusOut` relatedTarget containment check in
+ *   Toaster.tsx).
  */
 
 import { test, expect } from '@playwright/test';

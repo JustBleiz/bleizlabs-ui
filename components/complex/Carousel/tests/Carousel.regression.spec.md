@@ -1,6 +1,9 @@
-# Carousel — regression spec (25 cases CAR-R01..R25)
+# Carousel — regression spec (19 cases CAR-R01..R19)
 
-**Execution status:** DEFERRED. `docs/specs/carousel-spec.md`.
+**Execution status:** EXECUTED in-repo — the canonical suite lives in the sibling
+`Carousel.regression.spec.ts` (CI-gated; status in Carousel.tsx `@tested`; only the manual NVDA
+sweep stays deferred). This file is a consumer-CI reference snapshot, not the source of truth.
+This file covers CAR-R13..R19 (remaining cases in keyboard/focus/aria specs).
 
 ## Tests
 

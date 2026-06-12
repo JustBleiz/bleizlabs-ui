@@ -1,9 +1,10 @@
 // _animations.scss
 //
-// 16 base @keyframes + 1 utility modifier class + global prefers-reduced-motion guard.
+// 17 base @keyframes + 1 utility modifier class + global prefers-reduced-motion guard.
 //
-// Keyframe groups (16 total):
-//   Entry (6):     fadeIn, fadeInUp, fadeInDown, slideInLeft, slideInRight, scaleIn
+// Keyframe groups (17 total):
+//   Entry (7):     fadeIn, fadeInUp, fadeInDown, ruleReveal, slideInLeft,
+//                  slideInRight, scaleIn
 //   Feedback (4):  pulse, shake, spin, shimmer
 //   Exit (1):      fadeOut
 //   State (5):     expandDown, collapseUp, checkmark, radioFill, switchSlide
@@ -15,9 +16,10 @@
 //   .root { animation: fadeIn var(--duration-normal) var(--easing-default); }
 //
 // Projects may add custom keyframes (orbFloat, cardStagger, etc.) in their
-// own SCSS — these 16 are the minimum base everyone can rely on.
+// own SCSS — these 17 are the minimum base everyone can rely on.
 //
-// Animations doc bumped to 16 keyframes in E06 (added shimmer for Skeleton).
+// History: bumped to 16 in E06 (added shimmer for Skeleton); 17 after
+// ruleReveal landed (v0.3.5).
 
 // ============================================================================
 // ENTRY ANIMATIONS

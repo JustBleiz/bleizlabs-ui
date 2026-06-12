@@ -1,6 +1,9 @@
-# DatePicker — regression spec (22+ cases DP-R01..R22)
+# DatePicker — regression spec (21 cases DP-R01..R21)
 
-**Execution status:** DEFERRED. `docs/specs/datepicker-spec.md`.
+**Execution status:** EXECUTED in-repo — the canonical suite lives in the sibling
+`DatePicker.regression.spec.ts` (CI-gated; status in DatePicker.tsx `@tested`; only the manual NVDA
+sweep stays deferred). This file is a consumer-CI reference snapshot, not the source of truth.
+This file covers DP-R12..R21 (remaining cases in keyboard/focus/aria specs).
 
 ## Tests
 

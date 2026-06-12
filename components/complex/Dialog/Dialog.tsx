@@ -18,42 +18,7 @@ import { useFocusTrap } from './useFocusTrap';
 import { escapeStack } from './escapeStack';
 import styles from './Dialog.module.scss';
 
-/**
- * Dialog — modal dialog composing portal + overlay + focus-trapped content
- * (Phase 10 CI1, E15, first Complex Interactive — foundation of the dialog
- * family: AlertDialog CI2, Drawer CI3, Sheet CI4 all reuse `useFocusTrap` and
- * follow the same portal + overlay + inert + scroll-lock pattern).
- *
- * Renders via `createPortal` to `document.body` when `open=true`. Owns its own
- * focus trap, Escape handler, scroll lock, background `inert` toggle, and
- * focus restore on close. Content element carries `role="dialog"` +
- * `aria-modal="true"` + `aria-labelledby={titleId}` + optional
- * `aria-describedby={descId}`. Required `title` prop enforces APG compliance.
- *
- * @layer   complex-interactive (Phase 10)
- * @tokens  --color-surface, --color-surface-raised, --color-border-subtle,
- *          --color-overlay, --color-brand, --color-text-muted,
- *          --color-text-primary, --radius-lg, --radius-md, --shadow-2xl,
- *          --duration-normal, --easing-default, --space-{3,4,6,8}, --z-modal
- * @deps    Heading, Text, cn, createPortal, useFocusTrap (own hook, shared
- *          with AlertDialog/Drawer/Sheet via local import)
- * @a11y    role="dialog" + aria-modal="true" + aria-labelledby (required) +
- *          aria-describedby (conditional, only when `description` provided).
- *          Tab/Shift+Tab focus cycle via useFocusTrap. Initial focus via
- *          `initialFocusRef` or first tabbable. Escape closes. Body scroll
- *          locked while open. Background `inert` toggled.
- *
- * @example
- * const [open, setOpen] = useState(false);
- * <Dialog
- *   open={open}
- *   onOpenChange={setOpen}
- *   title="Edit project"
- *   footer={<Inline gap={2}><Button onClick={() => setOpen(false)}>Cancel</Button><Button variant="primary">Save</Button></Inline>}
- * >
- *   <Input label="Project name" />
- * </Dialog>
- */
+/** Dialog max-width size variant — see the `Dialog` component JSDoc below. */
 export type DialogSize = 'sm' | 'md' | 'lg' | 'xl';
 
 export interface DialogProps extends Omit<
@@ -145,19 +110,20 @@ const SIZE_CLASS: Record<DialogSize, string> = {
  *               overlay (no content bubbling). Close button has explicit
  *               aria-label. SSR-safe via `typeof document === 'undefined'`
  *               guard before portal.
- * @tested       PARTIAL — static a11y verified, runtime a11y deferred:
- *               ✓ `tsc --noEmit` clean (TypeScript strict, no any, proper Omit)
+ * @tested       ✓ `tsc --noEmit` clean (TypeScript strict, no any, proper Omit)
  *               ✓ `npm run lint` clean (eslint-plugin-jsx-a11y via
  *                 eslint-config-next catches missing aria-label, invalid ARIA
  *                 attrs, accessible-name-required violations)
  *               ✓ Build clean — Next.js static prerender PASS
- *               DEFERRED (first consumer adoption, per E15 scope decision 2):
- *               - Playwright execution of 4 `.spec.md` files (keyboard, focus,
- *                 aria, regression) — specs ready, no browser env in build agent
- *               - axe-core runtime zero-violations sweep (requires live page)
- *               - Manual NVDA sweep (requires real AT)
- *               - a11y pipeline documented in `docs/a11y-pipeline.md`
- * @regressions  21 Radix closed issues mapped to `tests/Dialog.regression.spec.md`:
+ *               ✓ Playwright suite EXECUTED in-repo (keyboard, focus, aria,
+ *                 regression `.spec.ts` quad — CI-gated since E142; E02 family
+ *                 run 2026-06: 189 passed) + axe-core smoke on the demo route
+ *               DEFERRED: manual NVDA sweep (requires real AT) — protocol in
+ *               `tests/Dialog.nvda.sweep.md`
+ * @regressions  21 Radix closed issues + ES-01..ES-03 (E02 audit remediation:
+ *               escapeStack reorder on unstable onOpenChange, closeOnEscape
+ *               =false ancestor shadowing, hidden-tabbable trap filtering)
+ *               mapped to `tests/Dialog.regression.spec.ts`:
  *               #2690 (nested toast click), #1951 (Escape inside Select), #2450
  *               (Escape bubble), #2961 (Select reopen), #2355 (Dropdown reopen),
  *               #1249 (nested Dialog Escape), #1891 (focus stuck after unmount),
@@ -208,19 +174,36 @@ export function Dialog({
 
   useFocusTrap(contentRef, open, initialFocusRef);
 
+  // Refs for the escape effect — commit-time updates (configRef pattern from
+  // useFloatingDismiss) so the effect deps stay `[open]`. With callbacks in
+  // deps, an inline consumer `onOpenChange` re-ran the effect every parent
+  // render, splice+pushing this dialog's stack entry ABOVE a nested child's —
+  // Escape then closed the parent instead of the child (E02 audit fix).
+  const onOpenChangeRef = useRef(onOpenChange);
+  useEffect(() => {
+    onOpenChangeRef.current = onOpenChange;
+  });
+  const closeOnEscapeRef = useRef(closeOnEscape);
+  useEffect(() => {
+    closeOnEscapeRef.current = closeOnEscape;
+  });
+
   // Escape handler — stack-based so only the TOPMOST open dialog handles Escape
-  // (Radix #1249 fix: nested dialogs). Each Dialog pushes its close callback onto
-  // `escapeStack` on open and pops on close. The document-level listener ignores
-  // the event unless its handler sits at the top of the stack at firing time.
+  // (Radix #1249 fix: nested dialogs). EVERY open Dialog pushes its entry —
+  // also closeOnEscape=false, which must SHADOW ancestors (Escape on top of a
+  // non-escapable dialog closes nothing, not the dialog underneath); the gate
+  // is read through closeOnEscapeRef at keypress time. The document-level
+  // listener ignores the event unless its handler sits at the top of the stack.
   // Radix #1951: document-phase listeners still let nested native Select swallow
   // Escape first (the select's own browser handler runs before document).
   useEffect(() => {
-    if (!open || !closeOnEscape) return;
-    const close = () => onOpenChange(false);
+    if (!open) return;
+    const close = () => onOpenChangeRef.current(false);
     escapeStack.push(close);
     function handleEscape(event: KeyboardEvent) {
       if (event.key !== 'Escape') return;
       if (escapeStack[escapeStack.length - 1] !== close) return;
+      if (!closeOnEscapeRef.current) return;
       event.preventDefault();
       close();
     }
@@ -230,7 +213,7 @@ export function Dialog({
       const idx = escapeStack.indexOf(close);
       if (idx !== -1) escapeStack.splice(idx, 1);
     };
-  }, [open, closeOnEscape, onOpenChange]);
+  }, [open]);
 
   // Scroll lock (Radix #998 fix — only lock while open, never on forceMount).
   useEffect(() => {
@@ -283,7 +266,7 @@ export function Dialog({
   const describedBy = description ? descriptionId : undefined;
 
   return createPortal(
-    <div className={styles.root} onClick={handleOverlayClick} data-state={open ? 'open' : 'closed'}>
+    <div className={styles.root} onClick={handleOverlayClick}>
       <div
         ref={contentRef}
         role="dialog"

@@ -11,10 +11,13 @@
 //   import { Button } from '@bleizlabs/ui/components/interactive/Button';
 //
 // Keep this file alphabetised within each category. When you add a new
-// component, add it here AND in README.md → Component catalogue.
+// component, add it here, then regenerate the derived inventories:
+// `npm run build:manifest` + `node scripts/build-agent-inventory.mjs`
+// (manifest.json + AGENT-USAGE §J; both are CI-gated by check:manifest /
+// check:manifest:sync / check-agents-doc — no hand-maintained catalogue).
 
 // ----------------------------------------------------------------------------
-// Layout (5)
+// Layout
 // ----------------------------------------------------------------------------
 export * from './layout/Container';
 export * from './layout/GridLayout';
@@ -23,7 +26,7 @@ export * from './layout/Section';
 export * from './layout/Stack';
 
 // ----------------------------------------------------------------------------
-// Typography (5)
+// Typography
 // ----------------------------------------------------------------------------
 export * from './typography/Anchor';
 export * from './typography/Eyebrow';
@@ -32,7 +35,7 @@ export * from './typography/Mark';
 export * from './typography/Text';
 
 // ----------------------------------------------------------------------------
-// Display (13)
+// Display
 // ----------------------------------------------------------------------------
 export * from './display/AspectRatio';
 export * from './display/Avatar';
@@ -49,7 +52,7 @@ export * from './display/Spinner';
 export * from './display/Table';
 
 // ----------------------------------------------------------------------------
-// Interactive (18) — 0.18.0 adds TimeInput (E01.2)
+// Interactive
 // ----------------------------------------------------------------------------
 export * from './interactive/Accordion';
 export * from './interactive/Button';
@@ -64,6 +67,7 @@ export * from './interactive/PasswordInput';
 export * from './interactive/PhoneInput';
 export * from './interactive/RadioGroup';
 export * from './interactive/Rating';
+export * from './interactive/SkipLink';
 export * from './interactive/Switch';
 export * from './interactive/TagsInput';
 export * from './interactive/Textarea';
@@ -73,7 +77,7 @@ export * from './interactive/Toggle';
 export * from './interactive/ToggleGroup';
 
 // ----------------------------------------------------------------------------
-// Feedback (3)
+// Feedback
 // ----------------------------------------------------------------------------
 export * from './feedback/Alert';
 export * from './feedback/Banner';
@@ -81,7 +85,7 @@ export * from './feedback/Empty';
 export * from './feedback/Progress';
 
 // ----------------------------------------------------------------------------
-// Specialized (14)
+// Specialized
 // ----------------------------------------------------------------------------
 export * from './specialized/AnimatedCounter';
 export * from './specialized/AreaChart';
@@ -99,7 +103,7 @@ export * from './specialized/ThemeToggle';
 export * from './specialized/UsageDonut';
 
 // ----------------------------------------------------------------------------
-// Molecules (11)
+// Molecules
 // ----------------------------------------------------------------------------
 export * from './molecules/AccordionGroup';
 export * from './molecules/AvatarGroup';
@@ -115,12 +119,12 @@ export * from './molecules/SectionDivider';
 export * from './molecules/Timeline';
 
 // ----------------------------------------------------------------------------
-// Card presets (1) — FormSurface
+// Card presets — FormSurface
 // ----------------------------------------------------------------------------
 export * from './presets/FormSurface';
 
 // ----------------------------------------------------------------------------
-// Complex interactive (29) — 0.18.0 adds DateRangePicker (E01.1) + TimePicker (E01.3) + DateTimePicker (E01.4)
+// Complex interactive
 // ----------------------------------------------------------------------------
 export * from './complex/AlertDialog';
 export * from './complex/Calendar';

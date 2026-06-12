@@ -1,12 +1,15 @@
 # Drawer.keyboard.spec
 
-> Deferred execution — Playwright spec ready for consumer CI/CD. See Drawer.tsx `@tested` header.
+> EXECUTED in-repo — the canonical suite lives in the sibling `Drawer.keyboard.spec.ts`
+> (CI-gated; only the manual NVDA sweep stays deferred). See Drawer.tsx `@tested`
+> header. This file is a consumer-CI reference snapshot, not the source of truth.
 
 ```typescript
 /**
  * Drawer keyboard interaction spec — APG `/dialog-modal/` compliance (E17).
  *
- * EXECUTION DEFERRED — runs on first consumer adoption.
+ * EXECUTION STATUS: EXECUTED in-repo — canonical suite in the sibling
+ * `Drawer.keyboard.spec.ts` (CI-gated).
  *
  * Coverage:
  * - Tab          → focus cycles forward through tabbable children, wraps last→first
@@ -48,20 +51,14 @@ test.describe('Drawer — keyboard interactions (APG dialog-modal)', () => {
   test('Overlay click closes drawer (closeOnOverlayClick=true default)', async ({ page }) => {
     await page.getByRole('button', { name: /open basic drawer/i }).click();
     await expect(page.getByRole('dialog')).toBeVisible();
-    // Click overlay (top of viewport, above content which is bottom-anchored)
-    await page
-      .locator('[data-state="open"]')
-      .first()
-      .click({ position: { x: 200, y: 10 } });
+    // Drawer is bottom-anchored — click near the top of the viewport hits the overlay
+    await page.mouse.click(200, 10);
     await expect(page.getByRole('dialog')).not.toBeVisible();
   });
 
   test('closeOnOverlayClick=false prevents overlay dismissal', async ({ page }) => {
     await page.getByRole('button', { name: /open locked drawer/i }).click();
-    await page
-      .locator('[data-state="open"]')
-      .first()
-      .click({ position: { x: 200, y: 10 } });
+    await page.mouse.click(200, 10);
     await expect(page.getByRole('dialog')).toBeVisible();
   });
 

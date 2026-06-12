@@ -13,6 +13,13 @@
   background: var(--color-surface-raised);
 }
 
+// APG heading wrapper around the trigger — full reset so UA heading styles
+// (margin, font-size/weight) cannot shift the pre-existing trigger visual.
+.headingWrap {
+  margin: 0;
+  font: inherit;
+}
+
 .trigger {
   display: flex;
   align-items: center;
@@ -34,7 +41,6 @@
 
   &:focus-visible {
     @include mx.focus-ring;
-    outline-offset: -2px;
   }
 
   &:hover:not(:disabled) {

@@ -1,11 +1,13 @@
 // =============================================================================
 // PieChart — SVG pie + donut chart (0.20.0 E01.4, final chart in pack)
 // =============================================================================
-// Token-only colors. Zero new lib tokens (Charter R7). Component-local
-// channels: stroke-width (segment separator), aspect (square default),
-// tooltip-{x,y} (absolute tooltip position). Reduced-motion suppresses
-// enter animation + tooltip fade. Forced-colors keeps segment outlines
-// visible via CanvasText stroke.
+// Token-only colors (+ the static label-halo channel below). Zero new lib
+// tokens (Charter R7). Component-local channels: stroke-width (segment
+// separator), aspect (square default), tooltip-{x,y} (absolute tooltip
+// position), label-halo (static dark label outline — deliberately not
+// theme-aware, see .root). Reduced-motion suppresses enter animation +
+// tooltip fade. Forced-colors keeps segment outlines visible via
+// CanvasText stroke.
 
 @use '../../../styles/mixins' as mx;
 
@@ -18,6 +20,12 @@
   --piechart-aspect: 1;
   --piechart-tooltip-x: 50%;
   --piechart-tooltip-y: 50%;
+  // Static dark halo for on-segment labels — the halo sits on the SEGMENT
+  // fill (theme-independent 500-level palette / arbitrary consumer colors),
+  // NOT on the page surface, so it is deliberately NOT theme-aware.
+  // Channel exposed for consumer override (E04 audit remediation — was an
+  // inline rgba literal).
+  --piechart-label-halo: rgb(0 0 0 / 0.35);
 
   position: relative;
   display: block;
@@ -104,7 +112,7 @@
   pointer-events: none;
   font-variant-numeric: tabular-nums;
   paint-order: stroke fill;
-  stroke: rgba(0, 0, 0, 0.35);
+  stroke: var(--piechart-label-halo);
   stroke-width: 0.4px;
 }
 

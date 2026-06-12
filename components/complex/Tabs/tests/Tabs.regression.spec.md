@@ -1,8 +1,12 @@
 # Tabs — regression spec (Radix closed-issue mapping)
 
-**Execution status:** DEFERRED. 22 regression cases mapped (TB-R01..R22) from
-`docs/specs/tabs-spec.md`. This file covers TB-R01, R05, R07, R09, R10, R11,
-R18, R19, R22 (keyboard/focus/aria-specific cases in respective spec files).
+**Execution status:** EXECUTED in-repo — the canonical suite lives in the sibling
+`Tabs.regression.spec.ts` (CI-gated; status in Tabs.tsx `@tested`; only the manual NVDA
+sweep stays deferred). This file is a consumer-CI reference snapshot, not the source of truth.
+24 regression cases mapped (TB-R01..R24). This file covers TB-R01, R05, R07,
+R09, R10, R11, R18, R19, R22 (keyboard/focus/aria-specific cases in respective
+spec files). TB-R23/R24 (asChild rest-forwarding, E01 audit remediation)
+execute in `Tabs.regression.spec.ts`.
 
 ## Tests
 
@@ -105,4 +109,9 @@ test.skip('TB-R22 — forceMount + animations use CSS data-[state=inactive]:hidd
   // Expected: inactive panels hidden via [data-state=inactive] attribute; CSS
   // transitions observable between active/inactive states.
 });
+
+// TB-R23 — asChild trigger forwards rest props (data-testid/title) without
+// breaking activation; TB-R24 — native trigger contrast. EXECUTED in
+// Tabs.regression.spec.ts (E01 audit remediation — asChild branch dropped
+// {...rest}; native always spread it last).
 ```

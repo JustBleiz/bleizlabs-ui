@@ -18,42 +18,6 @@ import { cn } from '../../utils/cn';
 import { useFocusTrap, escapeStack } from '../Dialog';
 import styles from './AlertDialog.module.scss';
 
-/**
- * AlertDialog — modal alert dialog composing portal + overlay + focus-trapped content (Phase 10 CI2, E16).
- *
- * Extends Dialog (CI1) pattern with alert-specific semantics per WAI-ARIA APG
- * `/alertdialog/`: `role="alertdialog"`, REQUIRED `aria-describedby` (not optional),
- * least-destructive initial focus (Cancel by default), blocked overlay click by
- * default, and confirm/cancel action row. Reuses `useFocusTrap` from Dialog —
- * the hook is generic and works on any container. Portal, scroll lock, and
- * Escape handler are duplicated inline (one-component-owns-behavior per D5/D25).
- *
- * @layer        complex interactive (Phase 10)
- * @apg          https://www.w3.org/WAI/ARIA/apg/patterns/alertdialog/
- * @tokens       --color-overlay, --color-surface, --color-border-subtle,
- *               --color-info, --color-warning, --color-error,
- *               --color-info-subtle, --color-warning-subtle, --color-error-subtle,
- *               --radius-lg, --shadow-2xl, --space-{3,4,5,8}, --duration-normal,
- *               --easing-default, --z-modal, --focus-ring
- * @deps         Heading, Text, Button, cn, createPortal, useFocusTrap (from Dialog)
- * @a11y         role="alertdialog" + aria-modal="true" + aria-labelledby (required) +
- *               aria-describedby (REQUIRED per APG, unlike Dialog). Tab/Shift+Tab
- *               focus cycle via useFocusTrap. Escape calls onCancel (not onConfirm).
- *               Initial focus defaults to Cancel button (least destructive). Body
- *               scroll-locked while open. Overlay click BLOCKED by default.
- *
- * @example
- * const [open, setOpen] = useState(false);
- * <AlertDialog
- *   open={open}
- *   onOpenChange={setOpen}
- *   title="Delete project?"
- *   description="This action cannot be undone."
- *   severity="critical"
- *   confirmLabel="Delete"
- *   onConfirm={() => { deleteProject(); setOpen(false); }}
- * />
- */
 export type AlertDialogSize = 'sm' | 'md' | 'lg';
 export type AlertDialogSeverity = 'info' | 'warning' | 'critical';
 
@@ -156,12 +120,13 @@ const DEFAULT_CONFIRM_VARIANT: Record<AlertDialogSeverity, ButtonVariant> = {
  *               Background `inert` toggle blocks AT virtual cursor / Browse Mode
  *               from reaching background content while the alert is open
  *               (progressive enhancement beyond focus trap).
- * @tested       DEFERRED — Playwright specs written in `tests/` (keyboard, focus,
- *               aria, regression) but execution deferred to first consumer adoption
- *               per E15 scope decision 2 (no browser env in build agent). Manual
- *               NVDA sweep deferred — documented in `docs/a11y-pipeline.md`.
+ * @tested       EXECUTED in-repo — Playwright suites in `tests/` (keyboard, focus,
+ *               aria, regression `.spec.ts` quad) run CI-gated + axe-core smoke on
+ *               the demo route; tsc/lint/build clean. Manual NVDA sweep stays
+ *               deferred — documented in `docs/a11y-pipeline.md`.
  * @regressions  41 regression cases mapped in `tests/AlertDialog.regression.spec.md`
- *               (`.spec.md` wraps typed Playwright fences — deferred execution, same
+ *               (`.spec.md` wraps typed Playwright fences — consumer-CI reference
+ *               snapshot; canonical suite in `tests/AlertDialog.*.spec.ts`, same
  *               format as Dialog/tests/). 29 active `test(...)` + 12 `test.skip(...)`
  *               with `PLAYGROUND-DEP:` rationale. Coverage: Dialog-inherited primitives
  *               (portal + focus trap + scroll lock + inert) + AlertDialog-specific
@@ -222,18 +187,34 @@ export function AlertDialog({
     }
   }, [onCancel, onOpenChange]);
 
+  // Refs for the escape effect — commit-time updates so deps stay `[open]`;
+  // inline consumer callbacks made `handleCancel` unstable, which splice+pushed
+  // this modal's stack entry above a nested child's (E02 audit fix — see
+  // Dialog.tsx / escapeStack.ts for the canonical pattern + rationale).
+  const handleCancelRef = useRef(handleCancel);
+  useEffect(() => {
+    handleCancelRef.current = handleCancel;
+  });
+  const closeOnEscapeRef = useRef(closeOnEscape);
+  useEffect(() => {
+    closeOnEscapeRef.current = closeOnEscape;
+  });
+
   // Escape handler — stack-based so only the topmost open modal handles Escape
   // (Radix #1249 fix, shared across the dialog family via `escapeStack`).
+  // EVERY open modal pushes its entry — also closeOnEscape=false, which must
+  // SHADOW ancestors; the gate is read through closeOnEscapeRef at keypress.
   // APG safety: Escape calls `onCancel`, not `onConfirm`.
   // Radix #1951: document-level listener still lets nested native Select swallow
   // Escape first (browser handles focused select before document listeners fire).
   useEffect(() => {
-    if (!open || !closeOnEscape) return;
-    const close = handleCancel;
+    if (!open) return;
+    const close = () => handleCancelRef.current();
     escapeStack.push(close);
     function handleEscape(event: KeyboardEvent) {
       if (event.key !== 'Escape') return;
       if (escapeStack[escapeStack.length - 1] !== close) return;
+      if (!closeOnEscapeRef.current) return;
       event.preventDefault();
       close();
     }
@@ -243,7 +224,7 @@ export function AlertDialog({
       const idx = escapeStack.indexOf(close);
       if (idx !== -1) escapeStack.splice(idx, 1);
     };
-  }, [open, closeOnEscape, handleCancel]);
+  }, [open]);
 
   // Scroll lock (Radix #998 fix — only while open).
   useEffect(() => {
@@ -289,7 +270,7 @@ export function AlertDialog({
   const resolvedConfirmVariant = confirmVariant ?? DEFAULT_CONFIRM_VARIANT[severity];
 
   return createPortal(
-    <div className={styles.root} onClick={handleOverlayClick} data-state={open ? 'open' : 'closed'}>
+    <div className={styles.root} onClick={handleOverlayClick}>
       <div
         ref={contentRef}
         role="alertdialog"

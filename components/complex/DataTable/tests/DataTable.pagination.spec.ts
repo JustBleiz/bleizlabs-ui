@@ -1,11 +1,11 @@
 /**
- * DataTable pagination spec — page navigation + size selector (E01 0.17.0).
+ * DataTable pagination spec — page navigation + footer contract (E01 0.17.0).
  *
  * Coverage:
  * - DT-P01 Next page button advances pageIndex
  * - DT-P02 Prev page button returns to previous page
  * - DT-P03 First/Last page buttons jump to boundaries
- * - DT-P04 pageSize selector changes rows per page
+ * - DT-P04 pageSize selector changes visible row count (when pageSizeOptions set)
  * - DT-P05 "Page X of Y" label updates on navigation
  * - DT-P06 Pagination footer absent when pagination={false}
  * - DT-P07 Showing N of M label reflects current page
@@ -77,19 +77,13 @@ test.describe('DataTable — pagination behavior', () => {
     const grids = allGrids(page);
     const grid = grids.nth(3);
     const section = grid.locator('xpath=ancestor::section[1]');
-    // pageSizeOptions: [5, 10, 20, 50] — try to find combobox or select
-    const sizeControl = section.getByRole('combobox', { name: /rows per page/i }).first();
-    const hasCombobox = await sizeControl.isVisible().catch(() => false);
-    if (hasCombobox) {
-      const before = await grid.locator('tbody [role="row"]').count();
-      await sizeControl.click();
-      await page.waitForTimeout(100);
-      // Select 20 from listbox
-      await page.getByRole('option', { name: '20' }).first().click();
-      await page.waitForTimeout(100);
-      const after = await grid.locator('tbody [role="row"]').count();
-      expect(after).toBeGreaterThan(before);
-    }
+    const sizeControl = section.getByRole('combobox', { name: /rows per page/i });
+    await expect(sizeControl).toBeVisible();
+    await sizeControl.selectOption('25');
+    await page.waitForTimeout(100);
+    const label = section.getByText(/Showing \d+ of \d+ rows/).first();
+    const text = await label.textContent();
+    expect(text).toMatch(/Showing 25 of \d+ rows/);
   });
 
   test('DT-P05 — Page label format "Page X of Y"', async ({ page }) => {

@@ -13,10 +13,12 @@
  * Playground: /components/combobox
  *   Section 1 (idx 0): Basic uncontrolled (defaultValue=null)
  *   Section 2 (idx 1): Grouped (Production/Preview/Local)
- *   Section 3 (idx 2): Controlled (defaultValue="pl")
+ *   Section 3 (idx 2): Controlled (value="pl" via useState)
  *   Section 4 (idx 3): Disabled items (AP South/AP Northeast)
  *   Section 5 (idx 4): acceptFreeText demo
  *   Section 6 (idx 5): Form participation (defaultValue="pl", name="country")
+ *   Section 7 (idx 6): Multi-select (multiple, name="countries") — CB-R21 target
+ *   Section 8: Keyboard walkthrough (docs only, no combobox instance)
  *
  * Note on open semantics: clicking the input does NOT open the listbox. To
  * open: press ArrowDown, type a character, or click the chevron button
@@ -59,7 +61,7 @@ test.describe('Combobox — ARIA + accessibility tree', () => {
   });
 
   test('Items have role="option" + aria-selected synced to value', async ({ page }) => {
-    // Section 3 — controlled Combobox with defaultValue="pl" (Poland)
+    // Section 3 — controlled Combobox with value="pl" via useState (Poland)
     const sections = page.locator('section');
     const controlledSection = sections.nth(2);
     const input = controlledSection.getByRole('combobox');
@@ -146,11 +148,76 @@ test.describe('Combobox — ARIA + accessibility tree', () => {
   test('axe-core zero violations — filtered listbox with matches', async ({ page }) => {
     const input = page.getByRole('combobox').first();
     await input.focus();
-    await input.fill('an'); // matches Canada, Iceland, etc.
+    await input.fill('an'); // matches Canada, Ireland, etc.
     await expect(page.getByRole('listbox').first()).toBeVisible();
     const results = await new AxeBuilder({ page })
       .withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa'])
       .analyze();
     expect(results.violations).toEqual([]);
+  });
+
+  // CB-R18..R21 (E03 audit remediation) — debounced filtered-result-count
+  // announcer (WCAG 4.1.3; the NVDA sweep expected it, the component had
+  // no live region at all pre-fix).
+
+  test('CB-R18 — announcer node pre-exists, role=status, empty before interaction', async ({
+    page,
+  }) => {
+    // Pre-fix: node absent entirely.
+    const announcer = page.locator('[data-combobox-announcer]').first();
+    await expect(announcer).toBeAttached();
+    await expect(announcer).toHaveAttribute('role', 'status');
+    await expect(announcer).toHaveAttribute('aria-live', 'polite');
+    await expect(announcer).toHaveText('');
+  });
+
+  test('CB-R19 — announcer reports filtered counts (plural / zero / singular)', async ({
+    page,
+  }) => {
+    const input = page.getByRole('combobox').first();
+    const announcer = page.locator('[data-combobox-announcer]').first();
+    await input.focus();
+    await input.fill('an');
+    const listbox = page.getByRole('listbox').first();
+    await expect(listbox).toBeVisible();
+    const count = await listbox.getByRole('option').count();
+    expect(count).toBeGreaterThan(1);
+    await expect(announcer).toHaveText(`${count} results`);
+    await input.fill('zxqv');
+    await expect(announcer).toHaveText('0 results');
+    await input.fill('croat');
+    await expect(announcer).toHaveText('1 result');
+  });
+
+  test('CB-R20 — announcement is debounced (coalesces a typing burst)', async ({ page }) => {
+    const input = page.getByRole('combobox').first();
+    const announcer = page.locator('[data-combobox-announcer]').first();
+    await input.focus();
+    await page.keyboard.type('croa', { delay: 40 });
+    // Immediately after the burst the 300ms debounce hasn't fired yet.
+    await expect(announcer).toHaveText('');
+    // Settles to the single final-count text.
+    await expect(announcer).toHaveText('1 result');
+  });
+
+  test('CB-R21 — multi mode: toggle resets count to total; Escape clears the announcer', async ({
+    page,
+  }) => {
+    // Multi demo (uncontrolled chips) — exact-name match ("Countries" is a
+    // substring of two other labels on the page).
+    const input = page.getByRole('combobox', { name: 'Countries', exact: true });
+    const announcer = page.locator('[data-combobox-announcer]').nth(6);
+    await input.focus();
+    await input.fill('pol');
+    const listbox = page.getByRole('listbox').first();
+    await expect(listbox).toBeVisible();
+    await expect(announcer).toHaveText('1 result');
+    // Toggle the pick — search clears, listbox stays open, count returns to total.
+    await listbox.getByRole('option').first().click();
+    await expect(listbox).toBeVisible();
+    const total = await listbox.getByRole('option').count();
+    await expect(announcer).toHaveText(total === 1 ? '1 result' : `${total} results`);
+    await page.keyboard.press('Escape');
+    await expect(announcer).toHaveText('');
   });
 });

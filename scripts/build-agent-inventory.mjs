@@ -33,6 +33,7 @@
  * any error (missing manifest, missing markers, write failure).
  */
 
+import { execSync } from 'node:child_process';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -139,6 +140,16 @@ const after = targetSrc.slice(endIdx + MARKER_END.length);
 const next = before + tableBlock + after;
 
 fs.writeFileSync(target, next, 'utf8');
+
+// Emit prettier-clean output: raw rows are unpadded while the committed doc
+// is prettier-formatted (padded table cells). Without this pass every regen
+// dirties the diff and fails `format:check` even when content is unchanged
+// (recurring footgun — see work/2026-06_audit-remediation devlog, session 2).
+try {
+  execSync(`npx prettier --write "${target}"`, { cwd: ROOT, stdio: 'pipe' });
+} catch (e) {
+  fail(`prettier pass on regenerated doc failed: ${e?.message ?? e}`);
+}
 
 const relTarget = path.relative(ROOT, target);
 console.log(`[build-agent-inventory] OK`);

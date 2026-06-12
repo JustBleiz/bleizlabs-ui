@@ -8,9 +8,11 @@
  *   - `prepublishOnly` runs this script in `inject` mode → tokens replaced
  *     with current version in place (working tree dirty, npm publish
  *     reads files from working tree).
- *   - After publish (success OR failure), this script in `revert` mode
- *     runs `git checkout -- AGENTS.md docs/AGENT-USAGE.md` to restore the
- *     template state, so the working tree returns to committed shape.
+ *   - After a SUCCESSFUL publish, npm's `postpublish` hook runs this script
+ *     in `revert` mode (`git checkout -- AGENTS.md docs/AGENT-USAGE.md`) to
+ *     restore the template state. npm has NO lifecycle hook for a FAILED
+ *     publish — in that case the working tree stays dirty and the operator
+ *     must run `node scripts/inject-doc-version.mjs --revert` manually.
  *
  * Usage:
  *   node scripts/inject-doc-version.mjs          # default: inject

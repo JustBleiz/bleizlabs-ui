@@ -1,8 +1,11 @@
 # Toast — regression spec
 
-**Execution status:** DEFERRED. 22+ edge cases documented in
-`docs/specs/toast-spec.md` (promoted from `docs/_tmp/` in E42).
-This file covers core regression cases; keyboard/focus/aria split.
+**Execution status:** EXECUTED in-repo — the canonical suite lives in the sibling
+`Toast.regression.spec.ts` (CI-gated; status in Toaster.tsx `@tested`; only the manual NVDA
+sweep stays deferred). This file is a consumer-CI reference snapshot, not the source of truth.
+21 edge cases (TST-R01..TST-R21) across the five sibling `.spec.ts` suites;
+TST-R18..R21 are executable in `Toast.duration.spec.ts`.
+This file covers core regression cases; keyboard/focus/aria/duration split.
 
 ## Tests
 
