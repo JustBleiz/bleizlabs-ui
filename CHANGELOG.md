@@ -18,7 +18,7 @@ changes (Sonner parity, typings, DataTable page-size selector, nested Escape).
 ### Behavior changes
 
 - **`toast.promise`** — success/error states no longer inherit `duration:
-  Infinity` from the loading toast; they reset to the global default unless an
+Infinity` from the loading toast; they reset to the global default unless an
   explicit `duration` is passed on the resolved call (Sonner parity). Test
   TST-R22.
 - **`SelectTrigger` / `ComboboxInput`** — `id` is omitted from public props
