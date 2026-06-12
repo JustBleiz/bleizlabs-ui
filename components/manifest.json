@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1",
-  "libVersion": "0.26.0",
-  "generatedAt": "2026-06-12T10:04:05.531Z",
+  "libVersion": "0.27.0",
+  "generatedAt": "2026-06-12T10:45:14.891Z",
   "categories": {
     "layout": ["Container", "GridLayout", "Inline", "Section", "Stack"],
     "typography": ["Anchor", "Eyebrow", "Heading", "Mark", "Text"],
