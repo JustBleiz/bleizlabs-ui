@@ -1,11 +1,13 @@
 // =============================================================================
 // PieChart — SVG pie + donut chart (0.20.0 E01.4, final chart in pack)
 // =============================================================================
-// Token-only colors. Zero new lib tokens (Charter R7). Component-local
-// channels: stroke-width (segment separator), aspect (square default),
-// tooltip-{x,y} (absolute tooltip position). Reduced-motion suppresses
-// enter animation + tooltip fade. Forced-colors keeps segment outlines
-// visible via CanvasText stroke.
+// Token-only colors (+ the static label-halo channel below). Zero new lib
+// tokens (Charter R7). Component-local channels: stroke-width (segment
+// separator), aspect (square default), tooltip-{x,y} (absolute tooltip
+// position), label-halo (static dark label outline — deliberately not
+// theme-aware, see .root). Reduced-motion suppresses enter animation +
+// tooltip fade. Forced-colors keeps segment outlines visible via
+// CanvasText stroke.
 
 @use '../../../styles/mixins' as mx;
 

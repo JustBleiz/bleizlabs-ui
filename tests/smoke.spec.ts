@@ -56,10 +56,12 @@ const ROUTES = [
   '/components/navigation-menu',
   '/components/paired-card',
   // '/components/pie-chart' deliberately EXCLUDED (with the other chart
-  // routes): charts carry documented pre-existing axe violations
-  // (aria-hidden-focus on segment SVG + caption contrast) scheduled for the
-  // 0.20.x charts-a11y follow-up (see CHANGELOG). The E06 ROUTES-from-
-  // filesystem resync needs a skip-list with reasons, not a blind glob.
+  // routes): axe on charts was never executed (CHANGELOG: chart test sprint
+  // deferred to 0.20.x), and a live run during E04 audit remediation
+  // (2026-06, work/2026-06_audit-remediation devlog) OBSERVED violations
+  // (aria-hidden-focus on segment SVG + caption contrast). The E06
+  // ROUTES-from-filesystem resync needs a skip-list with reasons, not a
+  // blind glob.
   '/components/popover',
   '/components/presets',
   '/components/scroll-area',
