@@ -385,6 +385,7 @@ export const FormRoot = forwardRef<HTMLFormElement, FormProps>(function Form(
 // ──────────────────────────────────────────────────────────────────────────
 
 export interface FormSubmitProps extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'type'> {
+  /** Submit button content — label text, or the single element to Slot-wrap when `asChild`. */
   children: ReactNode;
   /**
    * When `true`, Slot-wraps the single React element child, forwarding
@@ -392,6 +393,7 @@ export interface FormSubmitProps extends Omit<ButtonHTMLAttributes<HTMLButtonEle
    * styled buttons (e.g. lib `<Button>`) without nesting native `<button>`.
    */
   asChild?: boolean;
+  /** Extra class for the submit button element. */
   className?: string;
 }
 

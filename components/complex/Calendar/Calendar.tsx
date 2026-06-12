@@ -648,6 +648,7 @@ function ChevronRightIcon() {
 // CalendarGrid — role="grid" + keyboard handler owner
 
 export interface CalendarGridProps extends TableHTMLAttributes<HTMLTableElement> {
+  /** Table sections — CalendarGridHead weekday row + CalendarGridBody date rows. */
   children?: ReactNode;
 }
 

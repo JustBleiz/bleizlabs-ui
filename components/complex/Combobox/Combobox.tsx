@@ -1185,6 +1185,7 @@ export interface ComboboxInputProps extends Omit<
   | 'defaultValue'
   | 'disabled'
 > {
+  /** Extra class merged onto the trigger wrapper (not the inner `<input>`). */
   className?: string;
   /**
    * Optional explicit `aria-labelledby` — wires an external label element
@@ -1778,7 +1779,9 @@ export interface ComboboxContentProps extends Omit<
   HTMLAttributes<HTMLDivElement>,
   'role' | 'aria-labelledby' | 'aria-activedescendant' | 'tabIndex'
 > {
+  /** Listbox content — ComboboxItem / ComboboxGroup / ComboboxSeparator / ComboboxEmpty. */
   children?: ReactNode;
+  /** Extra class merged onto the listbox element. */
   className?: string;
 }
 
@@ -2309,7 +2312,9 @@ const [ComboboxGroupContextProvider, useComboboxGroupContext] =
   createFloatingContext<ComboboxGroupContextValue>('ComboboxGroup');
 
 export interface ComboboxGroupProps extends HTMLAttributes<HTMLDivElement> {
+  /** Group content — ComboboxItem elements plus an optional ComboboxLabel. */
   children: ReactNode;
+  /** Extra class merged onto the group element. */
   className?: string;
 }
 
@@ -2332,7 +2337,9 @@ export function ComboboxGroup({ children, className, ...rest }: ComboboxGroupPro
 // ──────────────────────────────────────────────────────────────────────────
 
 export interface ComboboxLabelProps extends HTMLAttributes<HTMLDivElement> {
+  /** Label text announced as the surrounding group's accessible name. */
   children: ReactNode;
+  /** Extra class merged onto the label element. */
   className?: string;
 }
 
@@ -2398,7 +2405,9 @@ export interface ComboboxItemProps extends Omit<
    * translated `<Trans>` element or a memoized span with live data).
    */
   textValue?: string;
+  /** Visible option content — filter/label text derives from it unless `textValue` is set. */
   children: ReactNode;
+  /** Extra class merged onto the option element. */
   className?: string;
 }
 
@@ -2595,7 +2604,9 @@ ComboboxItem.displayName = 'ComboboxItem';
 // ──────────────────────────────────────────────────────────────────────────
 
 export interface ComboboxEmptyProps extends HTMLAttributes<HTMLDivElement> {
+  /** "No results" message content. Default `'No results.'`. */
   children?: ReactNode;
+  /** Extra class merged onto the empty-state element. */
   className?: string;
 }
 
@@ -2620,6 +2631,7 @@ export function ComboboxEmpty({ children, className, ...rest }: ComboboxEmptyPro
 // ──────────────────────────────────────────────────────────────────────────
 
 export interface ComboboxSeparatorProps extends HTMLAttributes<HTMLDivElement> {
+  /** Extra class merged onto the separator element. */
   className?: string;
 }
 

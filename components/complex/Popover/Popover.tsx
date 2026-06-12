@@ -235,6 +235,7 @@ export interface PopoverTriggerProps extends Omit<
   ButtonHTMLAttributes<HTMLButtonElement>,
   'aria-expanded' | 'aria-haspopup' | 'aria-controls'
 > {
+  /** Trigger content — button label, or the single element to Slot-wrap when `asChild`. */
   children: ReactNode;
   /**
    * When `true`, Slot-wraps the single React element child, merging ARIA and
@@ -317,9 +318,11 @@ export interface PopoverContentProps extends Omit<
   title?: string;
   /** Optional description — renders as `<Text>` and wires `aria-describedby`. */
   description?: string;
+  /** Main popover body content rendered below the optional title and description. */
   children?: ReactNode;
   /** Optional footer slot — typically action buttons, separated by a top border. */
   footer?: ReactNode;
+  /** Extra class merged onto the content surface. */
   className?: string;
 }
 

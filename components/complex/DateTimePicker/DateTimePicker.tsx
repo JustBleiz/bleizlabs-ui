@@ -511,7 +511,9 @@ export interface DateTimePickerInputProps extends Omit<
   InputHTMLAttributes<HTMLInputElement>,
   'value' | 'defaultValue' | 'onChange' | 'type' | 'role' | 'disabled'
 > {
+  /** Placeholder when empty. Defaults to the active format mask (`YYYY-MM-DD HH:MM[:SS]`). */
   placeholder?: string;
+  /** Override `aria-invalid` on the input. Defaults to the internal parse-validation error. */
   ariaInvalid?: boolean;
 }
 
@@ -603,6 +605,7 @@ export const DateTimePickerInput = forwardRef<HTMLInputElement, DateTimePickerIn
 // DateTimePickerContent
 
 export interface DateTimePickerContentProps extends Omit<HTMLAttributes<HTMLDivElement>, 'role'> {
+  /** Accessible name for the popup dialog. Default `'Date and time picker'`. */
   ariaLabel?: string;
 }
 

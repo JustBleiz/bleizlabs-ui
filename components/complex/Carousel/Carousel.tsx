@@ -100,10 +100,12 @@ export interface CarouselProps extends Omit<HTMLAttributes<HTMLElement>, 'defaul
 }
 
 export interface CarouselViewportProps extends HTMLAttributes<HTMLDivElement> {
+  /** CarouselSlide elements rendered in the sliding strip. */
   children: ReactNode;
 }
 
 export interface CarouselSlideProps extends HTMLAttributes<HTMLDivElement> {
+  /** Slide content — any markup (image, card, copy) for this slide. */
   children: ReactNode;
 }
 

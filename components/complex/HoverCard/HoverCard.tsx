@@ -250,6 +250,7 @@ const [HoverCardContextProvider, useHoverCardContext] =
 // ──────────────────────────────────────────────────────────────────────────
 
 export interface HoverCardProps {
+  /** HoverCardTrigger + HoverCardContent compound children. */
   children: ReactNode;
   /** Controlled open state. When provided, component is controlled. */
   open?: boolean;
@@ -477,6 +478,7 @@ export interface HoverCardTriggerProps extends Omit<
   ButtonHTMLAttributes<HTMLElement>,
   'aria-expanded' | 'aria-haspopup' | 'aria-controls'
 > {
+  /** Trigger content — the element to enrich (link/avatar) when `asChild`, else `<span>` content. */
   children: ReactNode;
   /**
    * When `true`, Slot-wraps the single React element child, merging hover/
@@ -617,9 +619,11 @@ export interface HoverCardContentProps extends Omit<
   title?: string;
   /** Optional muted description rendered below the title. */
   description?: string;
+  /** Main card body content rendered below the optional title and description. */
   children?: ReactNode;
   /** Optional footer slot — typically meta info or action buttons. */
   footer?: ReactNode;
+  /** Extra class merged onto the content surface. */
   className?: string;
 }
 

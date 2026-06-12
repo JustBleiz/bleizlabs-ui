@@ -120,6 +120,7 @@ export interface SliderProps extends Omit<
 }
 
 export interface SliderTrackProps extends HTMLAttributes<HTMLSpanElement> {
+  /** Track content. Defaults to `<SliderRange />` + `<SliderThumb />` when omitted. */
   children?: ReactNode;
 }
 
@@ -131,6 +132,7 @@ export interface SliderThumbProps extends Omit<
 > {
   /** Override accessible name (otherwise inherits from Slider `aria-label`/`aria-labelledby`). */
   'aria-label'?: string;
+  /** Override labelling element id (otherwise inherits from Slider `aria-labelledby`). */
   'aria-labelledby'?: string;
 }
 

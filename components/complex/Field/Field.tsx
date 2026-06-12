@@ -264,6 +264,7 @@ const FieldRoot = forwardRef<HTMLDivElement, FieldProps>(function Field(
 // ──────────────────────────────────────────────────────────────────────────
 
 export interface FieldLabelProps extends Omit<LabelHTMLAttributes<HTMLLabelElement>, 'htmlFor'> {
+  /** Label text — rendered in a `<label>` wired to the field control via `htmlFor`. */
   children: ReactNode;
 }
 
@@ -316,6 +317,7 @@ const FieldControl = forwardRef<HTMLElement, FieldControlProps>(function FieldCo
 // ──────────────────────────────────────────────────────────────────────────
 
 export interface FieldDescriptionProps extends HTMLAttributes<HTMLParagraphElement> {
+  /** Helper text announced via the control's `aria-describedby`. */
   children: ReactNode;
 }
 
@@ -354,6 +356,7 @@ export interface FieldMessageProps extends HTMLAttributes<HTMLParagraphElement> 
    * messages immediately on every input event — no submit gate.
    */
   match: FieldValidityMatch;
+  /** Validation message shown when the `match` validity flag is active. */
   children: ReactNode;
 }
 

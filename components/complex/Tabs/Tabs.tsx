@@ -266,6 +266,7 @@ export const Tabs = forwardRef<HTMLDivElement, TabsProps>(function Tabs(
 export type TabsListVariant = 'underline' | 'pill' | 'segmented';
 
 export interface TabsListProps extends HTMLAttributes<HTMLDivElement> {
+  /** TabsTrigger elements. */
   children: ReactNode;
   /**
    * Visual variant. `'underline'` (default) — border-bottom bar with active
@@ -278,6 +279,7 @@ export interface TabsListProps extends HTMLAttributes<HTMLDivElement> {
    * back to first and vice versa. Set `false` for clamped navigation.
    */
   loop?: boolean;
+  /** Extra class for the tablist container. */
   className?: string;
 }
 
@@ -462,6 +464,7 @@ export interface TabsTriggerProps extends Omit<
 > {
   /** REQUIRED — matches the `value` on a TabsContent. */
   value: string;
+  /** Tab label content. */
   children: ReactNode;
   /**
    * When `true`, Slot-wraps the single React element child, merging role +
@@ -469,6 +472,7 @@ export interface TabsTriggerProps extends Omit<
    * `<button type="button">`.
    */
   asChild?: boolean;
+  /** Extra class for the trigger element. */
   className?: string;
 }
 
@@ -580,6 +584,7 @@ export interface TabsContentProps extends Omit<
 > {
   /** REQUIRED — matches the `value` on a TabsTrigger. */
   value: string;
+  /** Panel content shown while this tab is active. */
   children: ReactNode;
   /**
    * When `true`, the content stays mounted in the DOM even when inactive
@@ -588,6 +593,7 @@ export interface TabsContentProps extends Omit<
    * When `false` (default), inactive content is unmounted.
    */
   forceMount?: boolean;
+  /** Extra class for the tabpanel element. */
   className?: string;
 }
 

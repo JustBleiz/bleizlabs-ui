@@ -652,12 +652,14 @@ export interface SelectTriggerProps extends Omit<
   | 'role'
   | 'disabled'
 > {
+  /** Trigger content — typically a SelectValue, or the single element to Slot-wrap when `asChild`. */
   children: ReactNode;
   /**
    * When `true`, Slot-wraps the single React element child, merging ARIA +
    * click/keydown. When `false` (default), renders a native `<button>`.
    */
   asChild?: boolean;
+  /** Extra class merged onto the trigger element. */
   className?: string;
   /**
    * Optional explicit `aria-labelledby` — wires an external label element
@@ -941,6 +943,7 @@ export const SelectTrigger = forwardRef<HTMLElement, SelectTriggerProps>(functio
 export interface SelectValueProps extends HTMLAttributes<HTMLSpanElement> {
   /** Shown when no value is selected. */
   placeholder?: ReactNode;
+  /** Extra class merged onto the value `<span>`. */
   className?: string;
 }
 
@@ -974,7 +977,9 @@ export interface SelectContentProps extends Omit<
   HTMLAttributes<HTMLDivElement>,
   'role' | 'aria-labelledby' | 'aria-activedescendant' | 'tabIndex'
 > {
+  /** Listbox content — SelectItem / SelectGroup / SelectSeparator. */
   children?: ReactNode;
+  /** Extra class merged onto the listbox element. */
   className?: string;
 }
 
@@ -1348,7 +1353,9 @@ const [SelectGroupContextProvider, useSelectGroupContext] =
   createFloatingContext<SelectGroupContextValue>('SelectGroup');
 
 export interface SelectGroupProps extends HTMLAttributes<HTMLDivElement> {
+  /** Group content — SelectItem elements plus an optional SelectLabel. */
   children: ReactNode;
+  /** Extra class merged onto the group element. */
   className?: string;
 }
 
@@ -1371,7 +1378,9 @@ export function SelectGroup({ children, className, ...rest }: SelectGroupProps) 
 // ──────────────────────────────────────────────────────────────────────────
 
 export interface SelectLabelProps extends HTMLAttributes<HTMLDivElement> {
+  /** Label text announced as the surrounding group's accessible name. */
   children: ReactNode;
+  /** Extra class merged onto the label element. */
   className?: string;
 }
 
@@ -1403,7 +1412,9 @@ export interface SelectItemProps extends Omit<
    * pollute typeahead search.
    */
   textValue?: string;
+  /** Visible option content — typeahead/label text derives from it unless `textValue` is set. */
   children: ReactNode;
+  /** Extra class merged onto the option element. */
   className?: string;
 }
 
@@ -1542,6 +1553,7 @@ SelectItem.displayName = 'SelectItem';
 // ──────────────────────────────────────────────────────────────────────────
 
 export interface SelectSeparatorProps extends HTMLAttributes<HTMLDivElement> {
+  /** Extra class merged onto the separator element. */
   className?: string;
 }
 

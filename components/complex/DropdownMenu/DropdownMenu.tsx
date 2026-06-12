@@ -219,6 +219,7 @@ export interface DropdownMenuTriggerProps extends Omit<
   ButtonHTMLAttributes<HTMLButtonElement>,
   'aria-expanded' | 'aria-haspopup' | 'aria-controls'
 > {
+  /** Trigger content — button label, or the single element to Slot-wrap when `asChild`. */
   children: ReactNode;
   /**
    * When `true`, Slot-wraps the single React element child, merging ARIA and
@@ -389,7 +390,9 @@ export interface DropdownMenuContentProps extends Omit<
   HTMLAttributes<HTMLDivElement>,
   'role' | 'aria-modal'
 > {
+  /** Menu content — DropdownMenuItem / DropdownMenuGroup / DropdownMenuSeparator / DropdownMenuLabel. */
   children?: ReactNode;
+  /** Extra class merged onto the menu element. */
   className?: string;
 }
 
@@ -601,6 +604,7 @@ export interface DropdownMenuItemProps extends Omit<
   ButtonHTMLAttributes<HTMLButtonElement>,
   'role' | 'onSelect'
 > {
+  /** Visible item content — text used for typeahead matching unless `textValue` is set. */
   children: ReactNode;
   /**
    * Callback fired when the item is activated (click, Enter, Space). Receives
@@ -672,6 +676,7 @@ export const DropdownMenuItem = forwardRef<HTMLButtonElement, DropdownMenuItemPr
 // ──────────────────────────────────────────────────────────────────────────
 
 export interface DropdownMenuSeparatorProps extends HTMLAttributes<HTMLDivElement> {
+  /** Extra class merged onto the separator element. */
   className?: string;
 }
 
@@ -691,7 +696,9 @@ export function DropdownMenuSeparator({ className, ...rest }: DropdownMenuSepara
 // ──────────────────────────────────────────────────────────────────────────
 
 export interface DropdownMenuLabelProps extends HTMLAttributes<HTMLDivElement> {
+  /** Label text — non-interactive section header content. */
   children: ReactNode;
+  /** Extra class merged onto the label element. */
   className?: string;
 }
 
@@ -709,6 +716,7 @@ export function DropdownMenuLabel({ children, className, id, ...rest }: Dropdown
 // ──────────────────────────────────────────────────────────────────────────
 
 export interface DropdownMenuGroupProps extends HTMLAttributes<HTMLDivElement> {
+  /** Group content — DropdownMenuItem elements plus an optional DropdownMenuLabel. */
   children: ReactNode;
   /**
    * When provided, wires `aria-labelledby` to the given id. Typical usage:
@@ -716,6 +724,7 @@ export interface DropdownMenuGroupProps extends HTMLAttributes<HTMLDivElement> {
    * announce the label when entering the group.
    */
   labelledBy?: string;
+  /** Extra class merged onto the group element. */
   className?: string;
 }
 

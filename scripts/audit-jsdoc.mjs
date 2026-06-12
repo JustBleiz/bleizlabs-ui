@@ -6,7 +6,9 @@
  * and reports missing JSDoc artifacts:
  *   - Header block on the primary export (description + @layer + @tokens
  *     + @deps + @a11y + @example)
- *   - Per-prop description inside the Props interface
+ *   - Per-prop description inside EVERY exported `*Props` interface
+ *     (compound components ship multiple public Props interfaces per file;
+ *     non-exported internal `*Props` interfaces are skipped)
  *
  * Exit codes:
  *   0  — 100% coverage
@@ -69,22 +71,30 @@ function walk(dir, depth = 0) {
 }
 
 /**
- * Extract the first JSDoc block (`/** ... *\/`) preceding an export. We look
- * for the first `/** ... *\/` in the file (typically the header block).
+ * Extract the component header JSDoc block. Lib convention: exactly one
+ * JSDoc block per file carries `@layer` — that block is the header,
+ * regardless of position (small type-alias JSDoc one-liners may legally
+ * precede it, e.g. `DialogSize` above the Dialog header). Fallback: first
+ * JSDoc block in the file (so a file missing `@layer` entirely still gets
+ * its header candidate checked and reported as missing `@layer`).
  */
-function extractFirstJSDoc(source) {
-  const match = source.match(/\/\*\*([\s\S]*?)\*\//);
-  return match ? match[1] : null;
+function extractHeaderJSDoc(source) {
+  const blocks = Array.from(source.matchAll(/\/\*\*([\s\S]*?)\*\//g), (m) => m[1]);
+  if (blocks.length === 0) return null;
+  return blocks.find((b) => b.includes('@layer')) ?? blocks[0];
 }
 
 /**
- * Extract the Props interface body. Heuristic: first `interface XxxProps {`
- * block (or `export interface XxxProps`).
+ * Extract ALL exported Props interface bodies. Matches every
+ * `export interface XxxProps { ... }` block in the file — compound
+ * components (Combobox, Select, NavigationMenu, ...) ship up to 10 public
+ * Props interfaces per file and each one is part of the documented API.
+ * Non-exported `*Props` interfaces (internal helpers) are intentionally
+ * NOT matched — they are not public surface.
  */
-function extractPropsInterface(source) {
-  const ifaceMatch = source.match(/(?:export\s+)?interface\s+\w+Props\b[^{]*\{([\s\S]*?)\n\}/);
-  if (!ifaceMatch) return null;
-  return ifaceMatch[1];
+function extractPropsInterfaces(source) {
+  const matches = source.matchAll(/export\s+interface\s+(\w+Props)\b[^{]*\{([\s\S]*?)\n\}/g);
+  return Array.from(matches, (m) => ({ name: m[1], body: m[2] }));
 }
 
 /**
@@ -153,7 +163,7 @@ for (const file of files) {
   const source = fs.readFileSync(file, 'utf8');
   const rel = path.relative(ROOT, file).replace(/\\/g, '/');
 
-  const header = extractFirstJSDoc(source);
+  const header = extractHeaderJSDoc(source);
   const missingTags = [];
   if (!header) {
     REQUIRED_TAGS.forEach((t) => missingTags.push(t));
@@ -170,9 +180,11 @@ for (const file of files) {
     }
   }
 
-  const interfaceBody = extractPropsInterface(source);
-  const props = interfaceBody ? countProps(interfaceBody) : [];
-  const undocumentedProps = props.filter((p) => !p.hasDoc).map((p) => p.name);
+  const interfaces = extractPropsInterfaces(source);
+  const props = interfaces.flatMap((iface) =>
+    countProps(iface.body).map((p) => ({ ...p, iface: iface.name })),
+  );
+  const undocumentedProps = props.filter((p) => !p.hasDoc).map((p) => `${p.iface}.${p.name}`);
 
   const failed = missingTags.length > 0 || undocumentedProps.length > 0;
   if (failed) report.failed += 1;

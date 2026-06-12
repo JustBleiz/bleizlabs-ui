@@ -188,6 +188,7 @@ export function ContextMenu({
 // ──────────────────────────────────────────────────────────────────────────
 
 export interface ContextMenuTriggerProps {
+  /** Right-click target — the element(s) the context-menu gesture attaches to. */
   children: ReactNode;
   /**
    * When `true` (default), Slot-wraps the single React element child and
@@ -273,7 +274,9 @@ export interface ContextMenuContentProps extends Omit<
   HTMLAttributes<HTMLDivElement>,
   'role' | 'aria-modal'
 > {
+  /** Menu content — ContextMenuItem / ContextMenuGroup / ContextMenuSeparator / ContextMenuLabel. */
   children?: ReactNode;
+  /** Extra class merged onto the menu element. */
   className?: string;
 }
 
@@ -500,6 +503,7 @@ export interface ContextMenuItemProps extends Omit<
   ButtonHTMLAttributes<HTMLButtonElement>,
   'role' | 'onSelect'
 > {
+  /** Visible item content — text used for typeahead matching unless `textValue` is set. */
   children: ReactNode;
   /**
    * Callback fired when the item is activated (click, Enter, Space). Receives
@@ -565,6 +569,7 @@ export const ContextMenuItem = forwardRef<HTMLButtonElement, ContextMenuItemProp
 // ──────────────────────────────────────────────────────────────────────────
 
 export interface ContextMenuSeparatorProps extends HTMLAttributes<HTMLDivElement> {
+  /** Extra class merged onto the separator element. */
   className?: string;
 }
 
@@ -584,7 +589,9 @@ export function ContextMenuSeparator({ className, ...rest }: ContextMenuSeparato
 // ──────────────────────────────────────────────────────────────────────────
 
 export interface ContextMenuLabelProps extends HTMLAttributes<HTMLDivElement> {
+  /** Label text — non-interactive section header content. */
   children: ReactNode;
+  /** Extra class merged onto the label element. */
   className?: string;
 }
 
@@ -602,9 +609,11 @@ export function ContextMenuLabel({ children, className, id, ...rest }: ContextMe
 // ──────────────────────────────────────────────────────────────────────────
 
 export interface ContextMenuGroupProps extends HTMLAttributes<HTMLDivElement> {
+  /** Group content — ContextMenuItem elements plus an optional ContextMenuLabel. */
   children: ReactNode;
   /** Points to a nested Label id for `aria-labelledby` wiring. */
   labelledBy?: string;
+  /** Extra class merged onto the group element. */
   className?: string;
 }
 

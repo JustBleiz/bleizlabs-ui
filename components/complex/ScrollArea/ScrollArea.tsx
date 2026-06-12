@@ -95,6 +95,7 @@ export interface ScrollAreaProps extends HTMLAttributes<HTMLDivElement> {
 }
 
 export interface ScrollAreaViewportProps extends HTMLAttributes<HTMLDivElement> {
+  /** Scrollable content — the overflowing markup this viewport clips and scrolls. */
   children: ReactNode;
 }
 
