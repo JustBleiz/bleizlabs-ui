@@ -183,4 +183,18 @@ test.describe('Calendar — regression guards', () => {
   test.skip('CAL-R24 — date range selection [PLAYGROUND-DEP: single-date only in v1.0]', async () => {
     // Range selection deferred to future sprint per component design.
   });
+
+  test('CAL-R25 — today marker absent from SSR HTML, applied after mount', async ({ page }) => {
+    // E04 audit remediation: `today` was computed in the render path
+    // (useMemo + new Date()), baking the SERVER's day into prerendered HTML —
+    // a guaranteed hydration mismatch whenever the client hydrates on a
+    // different day (SSG build-day pages, TZ skew). Post-fix the marker is
+    // client-only (null until mount), so SSR HTML must carry NO aria-current.
+    const response = await page.goto('/components/calendar');
+    const html = (await response?.text()) ?? '';
+    expect(html).not.toContain('aria-current="date"');
+    // The marker still lands after mount (feature not regressed) — section 1
+    // (uncontrolled) displays the current month, so today is in the grid.
+    await expect(page.locator('[aria-current="date"]').first()).toBeVisible();
+  });
 });

@@ -59,9 +59,10 @@ test.describe('Calendar — ARIA + accessibility tree', () => {
     const sections = page.locator('section');
     const basic = sections.nth(0);
     const grid = basic.getByRole('grid');
-    // Find the cell with aria-current="date" — should be exactly one
+    // Marker is hydration-safe (CAL-R25): applied AFTER hydration — must use
+    // an auto-retrying assertion, not a one-shot count snapshot.
     const todayButtons = grid.locator('button[aria-current="date"]');
-    expect(await todayButtons.count()).toBe(1);
+    await expect(todayButtons).toHaveCount(1);
   });
 
   test('CAL-R14 — aria-disabled="true" on disabled cells (not native disabled)', async ({

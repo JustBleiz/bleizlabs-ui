@@ -1,6 +1,9 @@
 # Calendar — ARIA semantics spec
 
-**Execution status:** DEFERRED.
+**Execution status:** EXECUTED in-repo — the canonical suite lives in the sibling
+`Calendar.aria.spec.ts` (CI-gated; status in Calendar.tsx `@tested`; only the manual
+NVDA sweep stays deferred). This file is a consumer-CI reference snapshot, not the
+source of truth.
 
 ## Tests
 
@@ -19,9 +22,11 @@ test('CAL-R12 — cells have role="gridcell" with aria-selected', async ({ page 
 });
 
 test('CAL-R13 — today cell has aria-current="date"', async ({ page }) => {
-  await page.goto('/components/calendar'); // today = 2026-04-17 per currentDate
-  const todayBtn = page.getByRole('button', { name: /17/ });
-  expect(await todayBtn.getAttribute('aria-current')).toBe('date');
+  await page.goto('/components/calendar');
+  // Marker is hydration-safe (CAL-R25): applied AFTER hydration — use an
+  // auto-retrying assertion, never a one-shot getAttribute snapshot.
+  const todayButtons = page.locator('button[aria-current="date"]');
+  await expect(todayButtons.first()).toBeVisible();
 });
 
 test('CAL-R14 — aria-disabled="true" on disabled dates (not native disabled)', async ({ page }) => {

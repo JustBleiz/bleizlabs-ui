@@ -1,7 +1,12 @@
-# Calendar — regression spec (24 cases CAL-R01..R24)
+# Calendar — regression spec (cases CAL-R01..R25)
 
-**Execution status:** DEFERRED. 24 regression cases in `docs/specs/calendar-spec.md`.
-This file covers CAL-R15..R24.
+**Execution status:** EXECUTED in-repo — the canonical suite lives in the sibling
+`Calendar.regression.spec.ts` (CI-gated; status in Calendar.tsx `@tested`; only the
+manual NVDA sweep stays deferred). This file is a consumer-CI reference snapshot, not
+the source of truth. Registry: the per-case content below and the sibling `.spec.ts`
+are the canon (the spec-doc the original 24-case mapping came from was an ephemeral
+draft, since retired). CAL-R25 (hydration-safe today marker, E04 audit remediation)
+lives in the sibling `.spec.ts`. This file covers CAL-R15..R24.
 
 ## Tests
 

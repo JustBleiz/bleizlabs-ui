@@ -3,9 +3,10 @@
 **Component:** `@bleizlabs/ui/components/complex/Calendar`
 **Playground:** http://localhost:3000/components/calendar
 **APG pattern:** https://www.w3.org/WAI/ARIA/apg/patterns/grid/ (date-picker dialog variant: https://www.w3.org/WAI/ARIA/apg/patterns/dialog-modal/examples/datepicker-dialog/)
-**NVDA version tested:** NVDA 2024.x (record actual)
+**NVDA version tested:** PENDING — sweep never executed (deferred per Calendar.tsx
+`@tested`; record NVDA version when run)
 **Browser:** Firefox (primary) / Chrome (secondary)
-**Executed on:** YYYY-MM-DD by <name>
+**Executed on:** PENDING (record date + operator when run)
 **Verdict:** [ ] PASS [ ] PASS with notes [ ] FAIL
 
 ---
