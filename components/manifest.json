@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1",
   "libVersion": "0.26.0",
-  "generatedAt": "2026-06-12T00:50:17.931Z",
+  "generatedAt": "2026-06-12T08:01:55.093Z",
   "categories": {
     "layout": ["Container", "GridLayout", "Inline", "Section", "Stack"],
     "typography": ["Anchor", "Eyebrow", "Heading", "Mark", "Text"],
@@ -588,7 +588,7 @@
       "category": "feedback",
       "path": "feedback/Empty",
       "isClient": false,
-      "summary": "Empty — placeholder for empty lists / zero-result screens (klocek molecule).",
+      "summary": "Empty — placeholder for empty lists / zero-result screens (klocek atom).",
       "exports": ["Empty"],
       "types": ["EmptyProps"],
       "hooks": []
