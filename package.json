@@ -35,7 +35,8 @@
     "./styles": "./styles/index.scss",
     "./styles/project-settings": "./styles/_project-settings.scss",
     "./styles/*": "./styles/*",
-    "./components/*": "./components/*"
+    "./components/*": "./components/*",
+    "./package.json": "./package.json"
   },
   "sideEffects": [
     "*.scss",
@@ -43,6 +44,7 @@
   ],
   "files": [
     "components",
+    "!components/**/tests",
     "styles",
     "cli-dist",
     "docs/AGENT-USAGE.md",
@@ -80,12 +82,19 @@
     "test:e2e": "playwright test components/",
     "test:headed": "playwright test --headed",
     "verify": "npm run lint && npm run lint:css && npm run typecheck",
+    "prepack": "npm run build:cli",
     "prepublishOnly": "npm run typecheck && npm run lint && npm run check:barrel && npm run build:manifest && npm run check:manifest && node scripts/build-agent-inventory.mjs && node scripts/check-agents-doc.mjs && npm run build:cli && npm run test:cli && npm run build && node scripts/inject-doc-version.mjs",
     "postpublish": "node scripts/inject-doc-version.mjs --revert"
   },
   "peerDependencies": {
     "react": ">=19.0.0",
-    "react-dom": ">=19.0.0"
+    "react-dom": ">=19.0.0",
+    "sass": ">=1.80.0"
+  },
+  "peerDependenciesMeta": {
+    "sass": {
+      "optional": true
+    }
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.11.2",
@@ -112,7 +121,7 @@
     "vitest": "^2.1.9"
   },
   "engines": {
-    "node": ">=24"
+    "node": ">=20"
   },
   "publishConfig": {
     "access": "public",

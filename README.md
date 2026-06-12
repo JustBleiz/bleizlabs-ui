@@ -39,9 +39,12 @@ Three walls hit every product team:
 
 ```bash
 npm install @bleizlabs/ui
+npm install -D sass
 ```
 
 Public on npm — no auth, no `.npmrc` setup.
+
+> `sass` is an optional peer dependency: the library ships raw SCSS Modules compiled by **your** build (Next.js `sassOptions` below), so the consumer project needs `sass` installed. It is marked optional so npm never force-installs it where SCSS is precompiled.
 
 > Migrating from an older internal release? If your `.npmrc` contains `@bleizlabs:registry=https://npm.pkg.github.com`, remove that line — the package moved to public npm registry in `0.22.x`.
 
