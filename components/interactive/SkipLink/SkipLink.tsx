@@ -34,15 +34,19 @@ import styles from './SkipLink.module.scss';
  *          reveal is a browser-managed pseudo-class. No transition on the
  *          reveal: the element goes from clipped (1×1px) to visible, and
  *          animating that jump is meaningless + would need a reduced-motion
- *          guard for zero benefit.
+ *          guard for zero benefit. The reveal is keyed on `:focus-visible`
+ *          (not classic `:focus`) — deliberate: keyboard Tab always reveals,
+ *          while programmatic `el.focus()` may not under UA heuristics;
+ *          a skip link only serves sequential keyboard navigation, so the
+ *          stricter pseudo-class avoids a pointless flash on script focus.
  * @regressions tests/SkipLink.regression.spec.ts — SK-R01..SK-R04 (sr-only
  *          default, focus reveal geometry, Enter navigation to target,
  *          custom href/label + rest forwarding)
  *
  * @example
- * // Root layout — first child, before any chrome:
+ * // Root layout — first child, before any chrome (targets #main by default):
  * <body>
- *   <SkipLink />            {// targets #main by default}
+ *   <SkipLink />
  *   <SiteHeader />
  *   <main id="main" tabIndex={-1}>{children}</main>
  * </body>

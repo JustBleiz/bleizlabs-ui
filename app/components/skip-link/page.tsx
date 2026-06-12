@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { Heading } from '@/components/typography/Heading';
 import { Text } from '@/components/typography/Text';
 import { SkipLink } from '@/components/interactive/SkipLink';
+import { Kbd } from '@/components/specialized/Kbd';
 import styles from './page.module.scss';
 
 export default function SkipLinkPlaygroundPage() {
@@ -22,8 +23,8 @@ export default function SkipLinkPlaygroundPage() {
           <p className={styles.intro}>
             WCAG 2.4.1 Bypass Blocks anchor. Visually hidden (sr-only clip) until keyboard-focused,
             then revealed as a fixed pill at the top-left of the viewport, above every layer. Press{' '}
-            <kbd>Tab</kbd> from the address bar to reveal the one mounted at the top of this page;
-            press <kbd>Enter</kbd> to jump to this main landmark.
+            <Kbd>Tab</Kbd> from the address bar to reveal the one mounted at the top of this page;
+            press <Kbd>Enter</Kbd> to jump to this main landmark.
           </p>
         </header>
 

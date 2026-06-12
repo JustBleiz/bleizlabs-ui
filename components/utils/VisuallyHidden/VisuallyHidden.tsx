@@ -20,8 +20,8 @@ import styles from './VisuallyHidden.module.scss';
  * @a11y    Content remains in the accessibility tree and is announced by
  *          screen readers. Focusable children (e.g. skip links) become
  *          visible on focus via the consumer's own `:focus-visible` styling
- *          — VisuallyHidden does NOT auto-reveal on focus; reach for an
- *          intentional skip-link wrapper when that pattern is needed.
+ *          — VisuallyHidden does NOT auto-reveal on focus; reach for the
+ *          `SkipLink` atom (interactive/) when that pattern is needed.
  *
  * @example accessible chart label
  * <Chart>
