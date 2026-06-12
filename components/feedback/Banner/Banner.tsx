@@ -21,16 +21,27 @@ import styles from './Banner.module.scss';
  * responsible for the layout slot.
  *
  * @layer   atom (feedback)
- * @tokens  --color-{info,warning,error,success}{,-subtle,-strong},
- *          --color-surface, --color-text-{primary,secondary,inverse},
- *          --space-{2..5}, --radius-md, --duration-fast, --easing-default.
- * @deps    cn. Server-safe (no `'use client'`; no hooks).
+ * @tokens  --color-{info,warning,error,success}{,-subtle},
+ *          --color-surface-raised, --color-border-subtle,
+ *          --color-text-primary, --space-{2,3,4,7}, --radius-{sm,md},
+ *          --font-size-sm, --line-height-snug, --size-touch-min (via
+ *          `@include mx.touch-target`), --duration-fast, --easing-default,
+ *          --focus-ring (via `@include mx.focus-ring`).
+ *          Local channels: --banner-{bg,border,fg} (per-tone overrides).
+ * @deps    cn. Server-safe in the read-only case (see @notes).
  * @a11y    `tone="error"` → `role="alert"` + `aria-live="assertive"`
  *          (interrupts SR). Other tones → `role="status"` +
  *          `aria-live="polite"`. Dismiss button is native
  *          `<button type="button">` z `aria-label="Dismiss banner"`.
  *          Action slot accepts arbitrary children (typically `<Button>`
  *          / `<Anchor>`), consumer-owned semantics.
+ * @notes   No `'use client'` directive — Banner itself is purely
+ *          presentational (no state, no effects). When `dismissible` +
+ *          `onDismiss` (or function-bearing `actions`) are supplied, the
+ *          parent must naturally be a Client Component (you cannot pass
+ *          function props from a Server Component anyway) — Banner remains
+ *          RSC-compatible in the read-only case
+ *          (`<Banner tone="warning">...</Banner>`).
  *
  * @example
  * <Banner tone="warning">

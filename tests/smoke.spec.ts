@@ -29,6 +29,7 @@ const ROUTES = [
   '/components/aspect-ratio',
   '/components/avatar',
   '/components/badge',
+  '/components/banner',
   '/components/button',
   '/components/calendar',
   '/components/card',

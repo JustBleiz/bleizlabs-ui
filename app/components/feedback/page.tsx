@@ -100,8 +100,8 @@ export default function FeedbackPlaygroundPage() {
         </Heading>
         <Text>
           Four variants (critical / warning / info / success). Critical uses{' '}
-          <code>role=&quot;alert&quot;</code>, the others use <code>status</code>. Optional dismiss,
-          href on body, and timestamp slots.
+          <code>role=&quot;alert&quot;</code>, the others use <code>status</code>. Optional dismiss;
+          linked titles and timestamps compose via ReactNode slots.
         </Text>
 
         <div className={styles.stack}>
