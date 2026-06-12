@@ -69,6 +69,7 @@
     "check:barrel": "node scripts/check-barrel.mjs",
     "build:manifest": "node scripts/build-component-manifest.mjs",
     "check:manifest": "node scripts/check-manifest.mjs",
+    "check:manifest:sync": "node scripts/build-component-manifest.mjs --check",
     "audit:jsdoc": "node scripts/audit-jsdoc.mjs",
     "audit:demos": "node scripts/audit-demo-coverage.mjs",
     "build:cli": "tsup --config cli/tsup.config.ts",

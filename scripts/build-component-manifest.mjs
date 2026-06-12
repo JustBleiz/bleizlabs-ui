@@ -26,6 +26,11 @@
  *   - PascalCase + not hook + not type → exports[]
  *
  * Run: `npm run build:manifest`. Validates via `npm run check:manifest`.
+ *
+ * `--check` mode (CI drift gate): regenerates the manifest IN MEMORY and
+ * diffs it against the committed `components/manifest.json` — exits 1 on
+ * any difference instead of writing. `generatedAt` is excluded from the
+ * comparison (it changes every run by design). Wire: `npm run check:manifest:sync`.
  */
 
 import fs from 'node:fs';
@@ -544,6 +549,8 @@ components.sort((a, b) => {
 utilities.sort((a, b) => a.family.localeCompare(b.family));
 typesOnly.sort((a, b) => a.family.localeCompare(b.family));
 
+const CHECK_MODE = process.argv.includes('--check');
+
 const manifest = {
   schemaVersion: '1',
   libVersion,
@@ -553,6 +560,27 @@ const manifest = {
   utilities,
   typesOnly,
 };
+
+if (CHECK_MODE) {
+  if (!fs.existsSync(OUTPUT)) {
+    fail(`--check: committed manifest missing (${OUTPUT}). Run: npm run build:manifest`);
+  }
+  /** Serialize with `generatedAt` dropped — it differs on every regen by design. */
+  const stable = (m) => {
+    const rest = { ...m };
+    delete rest.generatedAt;
+    return JSON.stringify(rest, null, 2);
+  };
+  const committed = JSON.parse(fs.readFileSync(OUTPUT, 'utf8'));
+  if (stable(committed) !== stable(manifest)) {
+    console.error('[build-manifest] --check FAIL: components/manifest.json is stale.');
+    console.error('  The manifest regenerated from current sources differs from the committed');
+    console.error('  file (ignoring `generatedAt`). Run `npm run build:manifest` and commit.');
+    process.exit(1);
+  }
+  console.log('[build-manifest] --check OK — committed manifest matches regenerated output.');
+  process.exit(0);
+}
 
 fs.writeFileSync(OUTPUT, JSON.stringify(manifest, null, 2) + '\n', 'utf8');
 
