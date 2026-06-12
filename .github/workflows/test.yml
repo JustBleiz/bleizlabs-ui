@@ -138,6 +138,7 @@ jobs:
   smoke:
     name: Playwright smoke (all demo routes + axe-core)
     runs-on: ubuntu-latest
+    timeout-minutes: 25
     needs: [typecheck, lint, build]
     steps:
       - uses: actions/checkout@v5
@@ -158,7 +159,11 @@ jobs:
           key: playwright-${{ runner.os }}-${{ steps.playwright-version.outputs.version }}
       - name: Install Playwright browsers
         if: steps.playwright-cache.outputs.cache-hit != 'true'
-        run: npx playwright install --with-deps chromium
+        env:
+          DEBIAN_FRONTEND: noninteractive
+        run: |
+          npx playwright install chromium
+          sudo npx playwright install-deps chromium
       - name: Install Playwright OS deps (cache hit)
         if: steps.playwright-cache.outputs.cache-hit == 'true'
         run: npx playwright install-deps chromium
@@ -175,6 +180,7 @@ jobs:
   e2e:
     name: Playwright per-component (keyboard + focus + aria + regression)
     runs-on: ubuntu-latest
+    timeout-minutes: 45
     needs: [smoke, changes]
     # Always on push-to-main (full guarantee on the trunk).
     # On PRs, only when the change actually touches code that can affect e2e —
@@ -203,7 +209,11 @@ jobs:
           key: playwright-${{ runner.os }}-${{ steps.playwright-version.outputs.version }}
       - name: Install Playwright browsers
         if: steps.playwright-cache.outputs.cache-hit != 'true'
-        run: npx playwright install --with-deps chromium
+        env:
+          DEBIAN_FRONTEND: noninteractive
+        run: |
+          npx playwright install chromium
+          sudo npx playwright install-deps chromium
       - name: Install Playwright OS deps (cache hit)
         if: steps.playwright-cache.outputs.cache-hit == 'true'
         run: npx playwright install-deps chromium
